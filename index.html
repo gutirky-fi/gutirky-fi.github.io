@@ -231,6 +231,11 @@ body.v-g.idle{cursor:none}
 #pv .p-help{font-size:14px;color:var(--l-mut);margin:14px 2px 0}
 #pv .msgbox .p-btn{max-width:420px;margin-inline:auto}
 
+/* Кнопка «Пульт» у бібліотеці — лише на телефонах і планшетах */
+#lib .ptop{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:max(16px,4vw);z-index:2;display:none}
+@media (pointer:coarse){#lib .ptop{display:inline-flex}#lib header{padding-top:calc(72px + env(safe-area-inset-top,0px))}}
+#lib .foot-note{color:var(--l-mut);font-size:13px}
+
 </style>
 </head>
 <body>
@@ -241,6 +246,7 @@ body.v-g.idle{cursor:none}
       <svg viewBox="0 0 100 120" aria-hidden="true"><use href="#lily"/></svg>
       <div><div class="eyebrow">Пласт · гутірки і вишколи</div><h1>Бібліотека гутірок</h1></div>
     </div>
+    <button class="pbtn ptop" type="button" data-pult>📱 Пульт</button>
     <p class="tagline">Інтерактивні матеріали для сходин, таборів і вишколів</p>
     <div class="tools">
       <input id="l-q" type="search" placeholder="Пошук: тема, вік, тривалість…" aria-label="Пошук гутірки">
@@ -250,21 +256,10 @@ body.v-g.idle{cursor:none}
   <main class="wrap">
     <div class="grid" id="l-grid"></div>
     <div class="empty" id="l-empty" hidden>Нічого не знайдено.</div>
-    <section class="add" id="l-add" hidden>
-      <h3>Додати гутірку</h3>
-      <p>Вставте посилання (https://…) або назву файлу гутірки, що лежить у тій самій папці, що й цей файл (наприклад <b>pysankarstvo.html</b>). Картка збережеться в цьому браузері.</p>
-      <form id="l-form" novalidate>
-        <input id="l-title" type="text" maxlength="80" placeholder="Назва, напр. «Писанкарство»" aria-label="Назва гутірки" required>
-        <input id="l-url" type="text" maxlength="400" placeholder="pysankarstvo.html або https://…" aria-label="Файл або посилання на гутірку" required autocomplete="off" spellcheck="false">
-        <input id="l-desc" type="text" maxlength="200" placeholder="Коротко, про що (необовʼязково)" aria-label="Опис">
-        <button type="submit">＋ Додати</button>
-        <div class="msg" id="l-msg" role="status" aria-live="polite"></div>
-      </form>
-    </section>
   </main>
   <footer><div class="wrap">
     <span class="skob">СКОБ!</span>
-    <button class="pbtn" type="button" data-pult>📱 Цей телефон — пульт</button>
+    <span class="foot-note">Бібліотека гутірок</span>
   </div></footer>
 </div>
 
@@ -284,7 +279,7 @@ body.v-g.idle{cursor:none}
         <button class="p-btn go" id="p-join" type="button">Підключитись</button>
         <button class="p-btn" id="p-resume" type="button" hidden></button>
       </div>
-      <p class="p-help">На ноутбуці відкрийте гутірку й натисніть «📱 Пульт». Якщо вводите код вручну, ноутбук спитає «Це ваш телефон?» — натисніть там «Дозволити».</p>
+      <p class="p-help">На ноутбуці відкрийте гутірку, наведіть мишку в правий верхній кут і натисніть «📱 Пульт». Якщо вводите код вручну, ноутбук спитає «Це ваш телефон?» — натисніть там «Дозволити».</p>
     </section>
     <div class="msgbox" id="p-msg">
       <div class="big" id="p-mbig">📡</div>
@@ -1083,7 +1078,6 @@ next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:
     const list = items.filter(i => (!q || i.text.includes(q)) && (!tag || i.tags.includes(tag)));
     $('#l-grid').innerHTML = list.map(i => i.kind === 'b' ? cardB(i.b) : cardL(i.l, i.k)).join('');
     $('#l-empty').hidden = list.length > 0;
-    $('#l-add').hidden = false;
   }
   $('#l-q').addEventListener('input', renderLib);
   $('#l-chips').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; tag = b.dataset.t || ''; renderLib(); });
@@ -1092,7 +1086,7 @@ next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:
     if (!b.classList.contains('arm')) { b.classList.add('arm'); b.textContent = 'Точно прибрати? Натисніть ще раз'; setTimeout(() => { if (b.isConnected) { b.classList.remove('arm'); b.textContent = 'Прибрати'; } }, 4000); return; }
     links.splice(+b.dataset.del, 1); store.set(LKEY, links); renderLib();
   });
-  $('#l-form').addEventListener('submit', e => {
+  if ($('#l-form')) $('#l-form').addEventListener('submit', e => {
     e.preventDefault();
     const msg = $('#l-msg'); msg.className = 'msg';
     const title = $('#l-title').value.trim(), url = $('#l-url').value.trim().replace(/^"|"$/g, ''), desc = $('#l-desc').value.trim();
