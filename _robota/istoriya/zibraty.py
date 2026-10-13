@@ -30,7 +30,7 @@ def event(p):
             f'<p>{e(p["tekst"])}</p>{f"<div class=pics>{pics}</div>" if pics else ""}</div></li>')
 
 timeline = ''.join(f'<section class="day"><h2>{e(d)}</h2><ol>{"".join(event(p) for p in ps)}</ol></section>' for d, ps in days.items())
-arch = ''.join(f'<li><a href="{e(a["fail"])}" target="_blank" rel="noopener">{e(a["nazva"])}</a><span>{e(a["opys"])}</span></li>' for a in arkhiv)
+arch = ''.join(f'<li><time>{e(a["chas"])}</time><span><a href="{e(a["fail"])}" target="_blank" rel="noopener">{e(a["nazva"])}</a> — {e(a["opys"])}</span></li>' for a in arkhiv)
 pubs = ''.join(f'<li><time>{e(d)}</time><span>{e(s)}</span></li>' for h, d, s in commits if s != 'Initial commit')
 
 page = f'''<!DOCTYPE html>
@@ -72,10 +72,9 @@ figcaption{{margin-top:6px;font-size:14px;color:var(--mut)}}
 .pubs ul{{list-style:none;margin:0;padding:0}}
 .pubs li{{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:9px 0;border-top:1px solid var(--ln);font-size:15px}}
 .pubs time{{color:var(--mut);font-variant-numeric:tabular-nums}}
-.arch li{{grid-template-columns:minmax(0,320px) minmax(0,1fr)}}
 .arch a{{font-weight:700;text-decoration:none}}
 .arch a:hover{{text-decoration:underline}}
-.arch span{{color:#cfd5dc}}
+.arch span{{color:var(--mut)}}
 footer{{display:flex;flex-direction:column;align-items:center;margin-top:56px;padding-block:30px 40px;border-top:1px solid var(--ln);text-align:center}}
 footer img{{height:56px;width:auto;opacity:.85}}
 footer .skob{{margin-top:14px;padding-left:.3em;font:600 24px/1 var(--disp);letter-spacing:.3em;color:var(--gd)}}
@@ -96,7 +95,7 @@ a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
 {timeline}
 <section class="pubs arch">
 <h2>Ранні версії</h2>
-<p>Файли, з яких усе починалося, — приблизно в тому порядку, як вони зʼявлялися. Відкриваються в новій вкладці.</p>
+<p>Файли 13 жовтня, з яких усе починалося, — у тому порядку, як вони зʼявлялися. Відкриваються в новій вкладці. Час приблизний.</p>
 <ul>{arch}</ul>
 </section>
 <section class="pubs">

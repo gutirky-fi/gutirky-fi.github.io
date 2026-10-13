@@ -1,0 +1,5 @@
+# Використовується лише якщо сайт підключено до Netlify через GitHub.
+# Тоді після кожного додавання папки в gutirky/ список оновлюється сам.
+[build]
+  publish = "."
+  command = "node tools/build-library.mjs"

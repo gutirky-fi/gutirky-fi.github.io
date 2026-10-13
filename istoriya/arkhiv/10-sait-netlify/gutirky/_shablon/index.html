@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Нова гутірка</title>
+<!-- ШАБЛОН. Скопіюйте папку _shablon, перейменуйте латиницею (напр. pysankarstvo), заповніть SLIDES і meta.json.
+     Папки, що починаються з «_», у бібліотеці не показуються. -->
+<style>
+body{margin:0;height:100vh;overflow:hidden;background:#181a1d;color:#f2f4f6;font:clamp(18px,2.2vw,30px)/1.45 system-ui,sans-serif}
+#slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:6vh 8vw}
+h1{font-size:2.2em;margin:0 0 .4em}
+li{opacity:0;transition:opacity .4s}li.v{opacity:1}
+#home-link,#phone-mode{position:absolute;z-index:5;top:12px;padding:8px 14px;border-radius:99px;border:1px solid #383d44;background:#25282d;color:#f2f4f6;font-size:14px;text-decoration:none;cursor:pointer}
+#home-link{left:16px}#phone-mode{right:16px}
+#bar{position:absolute;left:0;bottom:0;height:4px;background:#ffc247;transition:width .3s}
+</style>
+</head>
+<body>
+<a id="home-link" href="../../">← Бібліотека</a>
+<button id="phone-mode" type="button">📱 Пульт</button>
+<div id="slide"></div><div id="bar"></div>
+<script>
+// title — заголовок, points — пункти (зʼявляються по одному), note — підказка ведучому (видно лише на телефоні)
+const SLIDES = [
+  { title: 'Назва гутірки', points: [], note: 'Привітайтеся й назвіть тему.' },
+  { title: 'Перша думка', points: ['Пункт 1', 'Пункт 2', 'Пункт 3'], note: 'Запитайте, що учасники вже знають.' },
+  { title: 'Дякуємо!', points: [], note: '' }
+];
+let idx = 0, rev = 0, T0 = 0;
+const TARGET_MIN = 30;
+function render() {
+  const s = SLIDES[idx];
+  document.getElementById('slide').innerHTML = '<h1></h1><ul></ul>';
+  document.querySelector('#slide h1').textContent = s.title;
+  const ul = document.querySelector('#slide ul');
+  s.points.forEach((p, k) => { const li = document.createElement('li'); li.textContent = p; li.classList.toggle('v', k < rev); ul.appendChild(li); });
+  document.getElementById('bar').style.width = (idx / (SLIDES.length - 1)) * 100 + '%';
+  if (!T0 && idx > 0) T0 = Date.now();
+  document.dispatchEvent(new CustomEvent('gutirka:slide'));   // повідомити пульт
+}
+function adv(d) {
+  const n = SLIDES[idx].points.length;
+  if (d > 0) { if (rev < n) rev++; else if (idx < SLIDES.length - 1) { idx++; rev = 0; } }
+  else { if (rev > 0) rev--; else if (idx > 0) { idx--; rev = SLIDES[idx].points.length; } }
+  render();
+}
+document.addEventListener('keydown', e => {
+  if ([' ', 'ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); adv(1); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); adv(-1); }
+});
+render();
+
+// Звʼязок зі спільним пультом
+window.GUTIRKA = {
+  id: 'shablon', title: 'Нова гутірка',
+  state: () => ({ index: idx, total: SLIDES.length, title: SLIDES[idx].title,
+    next: SLIDES[idx + 1] ? SLIDES[idx + 1].title : '', note: SLIDES[idx].note || '',
+    step: rev, steps: SLIDES[idx].points.length,
+    elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: TARGET_MIN * 60,
+    sections: SLIDES.map((s, i) => [s.title, i]) }),
+  next: () => adv(1), prev: () => adv(-1),
+  jump: i => { idx = i; rev = 0; render(); },
+  resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; }
+};
+</script>
+<script src="../../shared/qr.js"></script>
+<script src="../../shared/pult-host.js"></script>
+</body>
+</html>

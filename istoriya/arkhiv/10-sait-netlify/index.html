@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#181a1d">
+<title>Бібліотека гутірок</title>
+<meta name="description" content="Інтерактивні гутірки для пластових зустрічей і вишколів.">
+<link rel="icon" href="assets/lilia.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#181a1d;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ol:#7f9a5a;color-scheme:dark}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;min-height:100vh;color:var(--ink);font:17px/1.5 'Source Sans 3',system-ui,sans-serif;background:radial-gradient(70% 50% at 20% 0%,#2a2f27 0%,transparent 70%),radial-gradient(60% 40% at 100% 10%,#1f2d2c 0%,transparent 70%),var(--bg)}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+header{position:relative;padding:calc(36px + env(safe-area-inset-top)) 0 26px;border-bottom:1px solid var(--ln);overflow:hidden}
+header:after{content:"";position:absolute;right:-60px;top:-30px;width:340px;height:400px;background:url(assets/lilia.svg) no-repeat center/contain;opacity:.05;pointer-events:none}
+.brand{display:flex;align-items:center;gap:18px}
+.brand img{width:64px;height:auto;flex:none;filter:drop-shadow(0 4px 14px rgba(255,194,71,.25))}
+.eyebrow{font:600 13px Oswald,'Arial Narrow',sans-serif;letter-spacing:.32em;text-transform:uppercase;color:var(--ol)}
+h1{margin:2px 0 0;font:600 clamp(2rem,5.4vw,3.6rem)/1.02 Oswald,'Arial Narrow',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+.tag{font:500 clamp(1.25rem,2.4vw,1.6rem) Caveat,cursive;color:var(--ac);margin:12px 0 0}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:22px 0 4px}
+.tools input{flex:1 1 220px;min-width:0;padding:11px 14px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--ink);font:inherit}
+.tools input:focus{outline:2px solid var(--gd);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{padding:7px 13px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--mut);font:600 14px 'Source Sans 3',sans-serif;cursor:pointer}
+.chips button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#16130a}
+main{padding:22px 0 40px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,330px),1fr));gap:18px}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--a,var(--gd));border-radius:18px;padding:20px 20px 18px;overflow:hidden;transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-2px);border-color:#4a515b}
+.card .ic{position:absolute;right:14px;top:10px;font-size:46px;opacity:.9}
+.card .kind{font:600 12px Oswald,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.card h2{margin:4px 54px 8px 0;font:600 1.7rem/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.card p{margin:0 0 12px;color:#cfd5dc;font-size:16px}
+.card .tags{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.card .tags span{font-size:13px;padding:2px 9px;border-radius:99px;background:#1a1d21;border:1px solid var(--ln);color:var(--mut)}
+.vars{display:grid;gap:8px;margin-top:auto}
+.var{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;text-decoration:none;background:var(--card2);border:1px solid #454b54;font-weight:700}
+.var:hover,.var:focus-visible{background:var(--a,var(--gd));border-color:var(--a,var(--gd));color:#16130a;outline:none}
+.var small{font-weight:600;opacity:.85;white-space:nowrap}
+.var .who{display:block;font-weight:400;font-size:13px;opacity:.8}
+.empty{padding:40px 0;text-align:center;color:var(--mut)}
+.howto{margin-top:30px;padding:16px 18px;border:1px dashed #4a515b;border-radius:16px;color:var(--mut);font-size:15px}
+.howto b{color:var(--ink)}
+footer{border-top:1px solid var(--ln);padding:18px 0 calc(22px + env(safe-area-inset-bottom));color:var(--mut);font-size:14px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;align-items:center}
+.skob{font:600 1.1rem Oswald,sans-serif;letter-spacing:.2em;color:var(--gd)}
+.pbtn{display:inline-flex;gap:8px;align-items:center;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);text-decoration:none;color:var(--ink);font-weight:600}
+@media(prefers-reduced-motion:reduce){.card{transition:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand">
+    <img src="assets/lilia.svg" alt="" width="64" height="77">
+    <div><div class="eyebrow">Пласт · гутірки і вишколи</div><h1 id="site-title">Бібліотека гутірок</h1></div>
+  </div>
+  <p class="tag" id="site-tag">Інтерактивні матеріали для сходин, таборів і вишколів</p>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Пошук: тема, вік, тривалість…" aria-label="Пошук гутірки">
+    <div class="chips" id="chips"></div>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" hidden>Нічого не знайдено.</div>
+  <div class="howto">Як додати нову гутірку: покладіть її папку в <b>gutirky/</b>, відкрийте <b>update-library.html</b> і натисніть «Оновити список» — потім перезалийте сайт. Докладно — у файлі README.txt.</div>
+</main>
+
+<footer><div class="wrap">
+  <span class="skob">СКОБ!</span>
+  <a class="pbtn" href="pult/">📱 Пульт для телефона</a>
+</div></footer>
+
+<script src="library.js"></script>
+<script>
+(function () {
+  'use strict';
+  const items = Array.isArray(window.LIBRARY) ? window.LIBRARY : [];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const safeColor = c => /^#[0-9a-f]{3,8}$/i.test(c || '') ? c : '';
+
+  // Гутірки з однаковою «series» показуються однією карткою з кількома версіями.
+  const groups = [];
+  const bySeries = {};
+  items.forEach(it => {
+    const key = it.series ? 's:' + it.series : 'g:' + it.slug;
+    if (!bySeries[key]) { bySeries[key] = { title: it.series || it.title, items: [] }; groups.push(bySeries[key]); }
+    bySeries[key].items.push(it);
+  });
+
+  const allTags = [...new Set(items.flatMap(i => i.tags || []))];
+  let tag = '';
+  const chips = document.getElementById('chips');
+  const mk = (label, val) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+    b.setAttribute('aria-pressed', String(val === tag));
+    b.onclick = () => { tag = val; [...chips.children].forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw(); };
+    chips.appendChild(b);
+  };
+  if (allTags.length > 1) { mk('Усі', ''); allTags.forEach(t => mk(t, t)); }
+
+  const q = document.getElementById('q');
+  q.addEventListener('input', draw);
+
+  function card(g) {
+    const first = g.items[0];
+    const a = safeColor(first.accent);
+    const tags = [...new Set(g.items.flatMap(i => i.tags || []))];
+    const desc = first.description || '';
+    const vars = g.items.map(i => `<a class="var" href="gutirky/${encodeURIComponent(i.slug)}/" ${safeColor(i.accent) ? `style="--a:${i.accent}"` : ''}>
+        <span>${esc(i.variant || 'Відкрити')}${i.audience ? `<span class="who">${esc(i.audience)}</span>` : ''}</span>
+        <small>${esc(i.duration || '')} ›</small></a>`).join('');
+    return `<article class="card" ${a ? `style="--a:${a}"` : ''}>
+      <span class="ic" aria-hidden="true">${esc(first.icon || '📜')}</span>
+      <span class="kind">${g.items.length > 1 ? g.items.length + ' версії' : 'Гутірка'}</span>
+      <h2>${esc(g.title)}</h2>
+      <p>${esc(desc)}</p>
+      ${tags.length ? `<div class="tags">${tags.map(t => `<span>${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="vars">${vars}</div></article>`;
+  }
+  function draw() {
+    const s = q.value.trim().toLowerCase();
+    const list = groups.filter(g => {
+      const text = JSON.stringify(g.items).toLowerCase() + ' ' + g.title.toLowerCase();
+      return (!s || text.includes(s)) && (!tag || g.items.some(i => (i.tags || []).includes(tag)));
+    });
+    document.getElementById('grid').innerHTML = list.map(card).join('');
+    const e = document.getElementById('empty');
+    e.hidden = list.length > 0;
+    if (!items.length) e.textContent = 'Список гутірок порожній або не знайдено library.js. Відкрийте update-library.html, щоб його створити.';
+  }
+  draw();
+})();
+</script>
+</body>
+</html>

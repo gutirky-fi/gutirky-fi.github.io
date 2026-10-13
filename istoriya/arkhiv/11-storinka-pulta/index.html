@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#181a1d">
+<meta name="robots" content="noindex">
+<title>Пульт гутірки</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23181a1d'/%3E%3Cpath d='M32 10c5 8 5 14 0 22-5-8-5-14 0-22zM18 26c8 0 12 4 14 10-8 0-12-4-14-10zM46 26c-8 0-12 4-14 10 8 0 12-4 14-10zM27 38h10v6H27zM24 46h16v6H24z' fill='%23ffc247'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#181a1d;--card:#25282d;--card2:#2d3138;--ln:#3b4048;--ink:#f2f4f6;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ok:#3ee08f;--bad:#ff6a6a;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+body{font:17px/1.45 'Source Sans 3',system-ui,sans-serif;background:radial-gradient(90% 50% at 50% 0%,#2a2e35,var(--bg) 70%) no-repeat var(--bg);padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation}
+[hidden]{display:none!important}
+#app{max-width:560px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:12px 16px 16px}
+header{display:flex;align-items:center;gap:10px;justify-content:space-between;margin-bottom:12px}
+.brand{font:600 14px Oswald,'Arial Narrow',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--ac)}
+.chip{display:inline-flex;align-items:center;gap:8px;max-width:70%;padding:6px 12px;border-radius:99px;background:var(--card);border:1px solid var(--ln);font-size:14px;font-weight:600;line-height:1.2}
+.chip i{flex:none;width:10px;height:10px;border-radius:50%;background:#6b7480}
+.chip[data-s=ok] i{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.chip[data-s=wait] i{background:var(--gd);animation:p 1.1s infinite}
+.chip[data-s=bad] i{background:var(--bad)}
+@keyframes p{50%{opacity:.3}}
+h1{font:600 24px/1.15 Oswald,'Arial Narrow',sans-serif;letter-spacing:.05em;text-transform:uppercase;margin:6px 0 4px}
+.sub{color:var(--mut);font-size:15px;margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:16px}
+
+/* вхід */
+#entry .card{margin-top:6px}
+#entry label{display:block;font-weight:600;margin-bottom:8px}
+#code{width:100%;padding:14px 12px;border-radius:14px;border:2px solid #4a515b;background:#14171a;color:var(--gd);font:600 42px/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.2em;text-align:center}
+#code:focus{outline:none;border-color:var(--gd)}
+.btn{display:block;width:100%;margin-top:12px;padding:15px 16px;border-radius:16px;border:1px solid #4a515b;background:var(--card2);font-weight:700;font-size:18px}
+.btn.go{background:var(--gd);border-color:var(--gd);color:#16130a}
+.btn:active{transform:scale(.985);filter:brightness(1.12)}
+.help{font-size:14px;color:var(--mut);margin:14px 2px 0}
+.err{color:var(--bad);font-weight:600;margin:10px 2px 0;min-height:1.2em}
+
+/* повідомлення */
+#msg{margin-top:8vh;text-align:center}
+#msg .big{font-size:56px;line-height:1}
+#msg h2{font:600 24px/1.2 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase;margin:12px 0 6px}
+#msg p{color:#cfd5dc;margin:0 auto 6px;max-width:420px}
+
+/* пульт */
+#pad{flex:1;display:flex;flex-direction:column;gap:12px}
+.gname{font-size:13px;color:var(--mut);letter-spacing:.04em;margin-bottom:-6px}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+#count{font:600 34px/1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em}
+#count small{font-size:18px;color:var(--mut)}
+#steps{font-size:14px;color:var(--ac);font-weight:700}
+.bar{height:5px;border-radius:9px;background:#33383f;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gd);transition:width .3s}
+#stitle{font:600 25px/1.2 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase;margin:2px 0 0;word-break:break-word}
+#snext{font-size:14px;color:var(--mut)}
+#snext b{color:#d9dee4;font-weight:600}
+#note{border-left:4px solid var(--ac);background:rgba(47,210,192,.08);border-radius:0 14px 14px 0;padding:12px 14px;font-size:17px;min-height:3.2em}
+#note.empty{color:var(--mut);font-size:15px}
+.timer{display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 22px Oswald,sans-serif;letter-spacing:.06em;color:var(--ac)}
+.timer button{border:1px solid var(--ln);background:var(--card);border-radius:12px;padding:7px 12px;font:600 14px 'Source Sans 3',sans-serif;color:var(--mut)}
+.timer.over{color:var(--bad)}
+.nav{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-top:auto;position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));padding-top:6px}
+.nav button{min-height:96px;border-radius:22px;border:1px solid #5a6573;background:var(--card2);font:600 22px 'Source Sans 3',sans-serif;box-shadow:0 8px 24px #0006}
+.nav button.next{background:var(--gd);border-color:var(--gd);color:#16130a;font-size:28px}
+.nav button:active{transform:scale(.97);filter:brightness(1.15)}
+.nav button:disabled{opacity:.4}
+details{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:0 14px}
+summary{padding:13px 0;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+summary::-webkit-details-marker{display:none}
+summary:after{content:'▾';color:var(--mut)}
+details[open] summary:after{content:'▴'}
+#secs{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 14px}
+#secs button{padding:10px 8px;border-radius:12px;border:1px solid var(--ln);background:#1f2227;font-weight:600;font-size:15px;text-align:center;min-height:46px}
+#secs button.cur{border-color:var(--gd);color:var(--gd)}
+#secs button:active{background:var(--card2)}
+.foot{margin-top:10px;text-align:center}
+.link{background:none;border:0;color:var(--mut);text-decoration:underline;font-size:14px;padding:8px}
+noscript{display:block;padding:20px}
+</style>
+</head>
+<body>
+<noscript>Для пульта потрібен JavaScript.</noscript>
+<div id="app">
+  <header>
+    <span class="brand">Пульт</span>
+    <span class="chip" id="chip" data-s="" role="status" aria-live="polite"><i></i><span id="chiptxt">…</span></span>
+  </header>
+
+  <section id="entry" hidden>
+    <h1>Підключення</h1>
+    <p class="sub">Відскануйте QR-код на ноутбуці — або введіть код, який на екрані.</p>
+    <div class="card">
+      <label for="code">Код із ноутбука</label>
+      <input id="code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" autocomplete="off" placeholder="000 000" aria-describedby="err">
+      <div class="err" id="err" role="alert"></div>
+      <button class="btn go" id="join" type="button">Підключитись</button>
+      <button class="btn" id="resume" type="button" hidden></button>
+    </div>
+    <p class="help">На ноутбуці відкрийте гутірку й натисніть «📱 Пульт». Після цього тут зʼявиться запит — його треба підтвердити на ноутбуці.</p>
+  </section>
+
+  <section id="msg" hidden>
+    <div class="big" id="mbig">📡</div>
+    <h2 id="mh"></h2>
+    <p id="mp"></p>
+    <button class="btn go" id="mretry" type="button">Спробувати ще</button>
+    <button class="btn" id="mcode" type="button">Ввести інший код</button>
+  </section>
+
+  <section id="pad" hidden>
+    <div class="gname" id="gname"></div>
+    <div class="top"><div id="count">— <small>/ —</small></div><div id="steps"></div></div>
+    <div class="bar"><i id="barfill"></i></div>
+    <div>
+      <div id="stitle">…</div>
+      <div id="snext"></div>
+    </div>
+    <div id="note" class="empty">Підказок для цього слайда немає.</div>
+    <div class="timer" id="timer"><span id="ttxt">⏱ 00:00 / 00:00</span><button id="treset" type="button">↺ Скинути</button></div>
+    <details id="secbox"><summary>Розділи гутірки</summary><div id="secs"></div></details>
+    <div class="nav">
+      <button id="prev" type="button" aria-label="Назад">❮ Назад</button>
+      <button id="next" class="next" type="button" aria-label="Далі">Далі ❯</button>
+    </div>
+    <div class="foot"><button class="link" id="leave" type="button">Від’єднатись</button></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const KEY = 'gutirka.pult.v1';
+  const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js',
+    'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
+    'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+  const PEER_OPTS = window.GUTIRKA_PEER_OPTS || {};
+
+  /* ---------- пам'ять ---------- */
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (e) { return {}; } };
+  const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
+  let ses = load();   // {code, key, token, title}
+
+  /* ---------- стан ---------- */
+  let Peer = null, peer = null, conn = null, att = 0, retryT = 0, hbT = 0, tickT = 0, tries = 0, lastRx = 0, pingN = 0;
+  let phase = 'entry';       // entry | connecting | wait | ok | msg
+  let st = null, stAt = 0, wl = null, seenIndex = -1, leaving = false;
+
+  const show = name => {
+    ['entry', 'msg', 'pad'].forEach(n => { $('#' + n).hidden = n !== name; });
+  };
+  const chip = (s, txt) => { const c = $('#chip'); c.dataset.s = s; $('#chiptxt').textContent = txt; };
+  const digits = s => String(s || '').replace(/\D/g, '');
+  const fmtCode = c => c.length > 3 ? c.slice(0, 3) + ' ' + c.slice(3) : c;
+  const f2 = n => { n = Math.max(0, Math.floor(n)); return String(Math.floor(n / 60)).padStart(2, '0') + ':' + String(n % 60).padStart(2, '0'); };
+  const vib = () => { try { navigator.vibrate && navigator.vibrate(12); } catch (e) { /* ok */ } };
+  const deviceName = () => {
+    const u = navigator.userAgent;
+    if (/iPhone/.test(u)) return 'iPhone';
+    if (/iPad/.test(u)) return 'iPad';
+    if (/Android/.test(u)) { const m = u.match(/;\s*([^;)]+?)\s+Build/); return m ? m[1].slice(0, 30) : 'Android'; }
+    return 'Телефон';
+  };
+
+  /* ---------- екрани ---------- */
+  function showEntry(err) {
+    phase = 'entry'; stopLink(); show('entry');
+    chip('', 'Не підключено');
+    $('#err').textContent = err || '';
+    $('#code').value = '';
+    const r = $('#resume');
+    if (ses.code) { r.hidden = false; r.textContent = 'Продовжити з кодом ' + fmtCode(ses.code); } else r.hidden = true;
+    setTimeout(() => { try { $('#code').focus(); } catch (e) { /* ok */ } }, 50);
+  }
+  function showMsg(big, h, p, opts) {
+    show('msg');
+    $('#mbig').textContent = big; $('#mh').textContent = h; $('#mp').textContent = p || '';
+    $('#mretry').hidden = !(opts && opts.retry);
+    $('#mcode').hidden = false;
+  }
+
+  /* ---------- завантаження PeerJS ---------- */
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = src; s.async = true;
+      s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); };
+      document.head.appendChild(s);
+    });
+  }
+  async function getPeer() {
+    if (window.Peer) return window.Peer;
+    for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* наступне джерело */ } }
+    throw new Error('lib');
+  }
+
+  /* ---------- зʼєднання ---------- */
+  function stopLink() {
+    att++; clearTimeout(retryT); clearInterval(hbT); hbT = 0;
+    const c = conn, p = peer; conn = null; peer = null;
+    try { if (c) c.close(); } catch (e) { /* ok */ }
+    try { if (p) p.destroy(); } catch (e) { /* ok */ }
+    releaseWake();
+  }
+  function connect() {
+    if (!ses.code) return showEntry();
+    stopLink(); const my = att;
+    phase = (phase === 'ok') ? 'ok' : 'connecting';
+    show(st ? 'pad' : 'msg');
+    if (!st) showMsg('📡', 'Підключаємось…', 'Шукаємо презентацію з кодом ' + fmtCode(ses.code) + '.');
+    $('#mretry').hidden = true;
+    chip('wait', tries ? 'Відновлюємо звʼязок…' : 'Підключаємось…');
+    (async () => {
+      try { Peer = await getPeer(); } catch (e) { if (my === att) fail('lib'); return; }
+      if (my !== att) return;
+      let p;
+      try { p = new Peer(undefined, PEER_OPTS); } catch (e) { fail('incompatible'); return; }
+      peer = p;
+      let opened = false;
+      const tmo = setTimeout(() => { if (my === att && !opened) fail('timeout'); }, 14000);
+      p.on('error', err => {
+        if (my !== att) return; clearTimeout(tmo);
+        const ty = err && err.type;
+        if (ty === 'peer-unavailable') fail('notfound');
+        else if (ty === 'browser-incompatible') fail('incompatible');
+        else fail('net');
+      });
+      p.on('open', () => {
+        if (my !== att) return;
+        const c = p.connect('gutirka-' + ses.code, { reliable: true });
+        conn = c;
+        c.on('open', () => {
+          if (my !== att) return; opened = true; clearTimeout(tmo);
+          lastRx = Date.now();
+          c.send({ t: 'hello', v: 1, name: deviceName(), key: ses.key || '', token: ses.token || '' });
+          chip('wait', 'Чекаємо підтвердження…');
+          clearTimeout(retryT);
+          retryT = setTimeout(() => { if (my === att && phase !== 'ok') fail('nohello'); }, 25000);
+        });
+        c.on('data', d => { if (my === att) onData(d); });
+        c.on('close', () => { if (my === att && !leaving) fail(phase === 'ok' ? 'lost' : 'closed'); });
+        c.on('error', () => { if (my === att && !leaving) fail('net'); });
+      });
+    })();
+  }
+  function fail(reason) {
+    const my = att; stopLink(); att = my + 1;
+    if (leaving) return;
+    tries++;
+    if (tries > 6 && st) { st = null; setDim(false); }
+    const keep = !!st;
+    const delay = Math.min(10000, 800 * Math.pow(1.7, Math.min(tries, 8)));
+    const why = {
+      lib: 'Не вдалося завантажити бібліотеку зв’язку. Перевірте інтернет.',
+      timeout: 'Сервер зв’язку не відповідає.',
+      net: 'Немає зв’язку. Перевіряємо інтернет…',
+      notfound: 'Презентацію з кодом ' + fmtCode(ses.code) + ' не знайдено. Пульт на ноутбуці ввімкнено?',
+      nohello: 'Ноутбук не відповів на запит.',
+      closed: 'Зʼєднання закрилося.',
+      lost: 'Зв’язок втрачено.'
+    }[reason];
+    if (reason === 'incompatible') { showMsg('⚠️', 'Браузер не підтримується', 'Відкрийте цю сторінку в Chrome або Safari.', {}); chip('bad', 'Помилка'); return; }
+    chip('wait', reason === 'lost' ? 'Звʼязок втрачено — відновлюємо…' : 'Пробуємо знову…');
+    if (!keep) {
+      showMsg('📡', tries > 2 ? 'Не виходить підключитись' : 'Підключаємось…', why + (tries > 2 ? ' Спробуємо ще раз, або введіть інший код.' : ''), { retry: tries > 2 });
+    } else {
+      show('pad'); setDim(true);
+    }
+    retryT = setTimeout(connect, delay);
+  }
+  function terminal(big, h, p, retry, clear) {
+    stopLink(); att++; phase = 'dead';
+    if (clear) { ses.token = ''; ses.key = ''; save(ses); }
+    st = null; setDim(false);
+    chip('bad', 'Не підключено');
+    showMsg(big, h, p, { retry });
+  }
+
+  function onData(d) {
+    if (!d || typeof d !== 'object') return;
+    lastRx = Date.now();
+    switch (d.t) {
+      case 'wait':
+        clearTimeout(retryT);
+        chip('wait', 'Підтвердіть на ноутбуці');
+        showMsg('💻', 'Підтвердіть на ноутбуці', 'На екрані ноутбука зʼявилось питання «Це ваш телефон?». Натисніть «Дозволити».', {});
+        $('#mcode').hidden = false;
+        break;
+      case 'welcome':
+        clearTimeout(retryT); tries = 0; phase = 'ok';
+        ses.token = d.token || ses.token; ses.key = ''; if (d.g && d.g.title) ses.title = d.g.title; save(ses);
+        show('pad'); setDim(false); chip('ok', 'Підключено');
+        startHb(); getWake();
+        break;
+      case 'state': onState(d); break;
+      case 'pong': break;
+      case 'deny': {
+        const r = d.r;
+        if (r === 'declined') terminal('🚫', 'Ноутбук відхилив запит', 'Якщо це були ви — спробуйте ще раз і натисніть «Дозволити» на ноутбуці.', true, true);
+        else if (r === 'busy') terminal('⏳', 'Ноутбук зайнятий', 'Там уже чекає інший запит. Зачекайте хвилину й спробуйте ще.', true, false);
+        else if (r === 'replaced') terminal('📱', 'Керування перейняв інший телефон', 'Щоб повернути керування, підключіться знову.', true, false);
+        else if (r === 'kicked') terminal('👋', 'Вас від’єднали', 'Ведучий від’єднав цей телефон на ноутбуці.', false, true);
+        else if (r === 'stopped') terminal('⏹', 'Пульт вимкнено', 'На ноутбуці пульт зупинили. Увімкніть його знову й відскануйте новий QR-код.', false, true);
+        else if (r === 'version') terminal('🔄', 'Потрібно оновити сторінку', 'Закрийте й відкрийте пульт знову.', true, false);
+        else terminal('⚠️', 'Підключення відхилено', '', true, false);
+        break;
+      }
+    }
+  }
+
+  /* ---------- серцебиття ---------- */
+  function startHb() {
+    clearInterval(hbT);
+    hbT = setInterval(() => {
+      if (!conn || !conn.open) return;
+      if (Date.now() - lastRx > 13000) { fail('lost'); return; }
+      try { conn.send({ t: 'ping', n: ++pingN }); } catch (e) { /* ok */ }
+    }, 4000);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    getWake();
+    if (phase === 'ok' || (phase === 'connecting' && st)) {
+      if (!conn || !conn.open || Date.now() - lastRx > 9000) { tries = 0; connect(); }
+      else { try { conn.send({ t: 'sync' }); } catch (e) { /* ok */ } }
+    }
+  });
+  addEventListener('online', () => { if (ses.code && phase !== 'entry' && phase !== 'ok') { tries = 0; connect(); } });
+  async function getWake() {
+    try { if ('wakeLock' in navigator && !wl && phase === 'ok') { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => { wl = null; }); } } catch (e) { wl = null; }
+  }
+  function releaseWake() { try { if (wl) wl.release(); } catch (e) { /* ok */ } wl = null; }
+
+  /* ---------- відображення стану ---------- */
+  function setDim(on) { $('#pad').style.opacity = on ? '.55' : ''; $('#prev').disabled = on; $('#next').disabled = on; }
+  function onState(d) {
+    if (phase !== 'ok') { phase = 'ok'; chip('ok', 'Підключено'); }
+    if (d.idle) {   // на ноутбуці відкрита бібліотека, а не гутірка
+      st = null; seenIndex = -1;
+      showMsg('💻', 'Відкрийте гутірку на ноутбуці', 'Телефон підключено. Щойно на ноутбуці відкриєте гутірку, тут зʼявляться кнопки.', {});
+      $('#mcode').hidden = true;
+      return;
+    }
+    st = d; stAt = Date.now(); seenIndex = d.index;
+    show('pad'); setDim(false);
+    renderState();
+  }
+  function renderState() {
+    if (!st) return;
+    $('#gname').textContent = st.gtitle || ses.title || '';
+    $('#count').innerHTML = (st.index + 1) + ' <small>/ ' + st.total + '</small>';
+    $('#barfill').style.width = (st.total > 1 ? (st.index / (st.total - 1)) * 100 : 100) + '%';
+    $('#steps').textContent = st.steps > 0 ? 'Пункт ' + Math.min(st.step, st.steps) + ' з ' + st.steps : '';
+    $('#stitle').textContent = st.title || '';
+    if (st.next) { const b = document.createElement('b'); b.textContent = st.next; $('#snext').textContent = 'Далі: '; $('#snext').appendChild(b); }
+    else $('#snext').textContent = 'Це останній слайд.';
+    const n = $('#note'); n.textContent = st.note || 'Підказок для цього слайда немає.'; n.classList.toggle('empty', !st.note);
+    $('#prev').disabled = st.index === 0 && !(st.step > 0);
+    $('#next').disabled = st.index >= st.total - 1 && !(st.steps > 0 && st.step < st.steps);
+    document.title = (st.index + 1) + '/' + st.total + ' · Пульт';
+    const wrap = $('#secs'), list = st.sections || [];
+    const sig = JSON.stringify(list);
+    if (wrap.dataset.sig !== sig) {
+      wrap.dataset.sig = sig; wrap.textContent = '';
+      list.forEach(([name, i]) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = name; b.dataset.i = i; wrap.appendChild(b); });
+    }
+    let cur = -1; list.forEach(([, i], k) => { if (i <= st.index) cur = k; });
+    [...wrap.children].forEach((b, k) => b.classList.toggle('cur', k === cur));
+    $('#secbox').hidden = !list.length;
+    drawTimer();
+  }
+  function drawTimer() {
+    if (!st) return;
+    const el = (st.elapsed || 0) + (st.running === false ? 0 : Math.floor((Date.now() - stAt) / 1000));
+    $('#ttxt').textContent = '⏱ ' + f2(el) + ' / ' + f2(st.target || 0);
+    $('#timer').classList.toggle('over', !!st.target && el > st.target);
+  }
+  clearInterval(tickT); tickT = setInterval(drawTimer, 1000);
+
+  /* ---------- команди ---------- */
+  function cmd(a, extra) {
+    if (!conn || !conn.open || phase !== 'ok') return;
+    vib();
+    try { conn.send(Object.assign({ t: 'cmd', a, from: seenIndex }, extra || {})); } catch (e) { /* ok */ }
+  }
+  $('#next').addEventListener('click', () => cmd('next'));
+  $('#prev').addEventListener('click', () => cmd('prev'));
+  $('#secs').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    cmd('jump', { i: +b.dataset.i }); $('#secbox').open = false;
+  });
+  $('#treset').addEventListener('click', () => { if (confirm('Скинути таймер?')) cmd('timer-reset'); });
+  $('#leave').addEventListener('click', () => {
+    if (!confirm('Від’єднати цей телефон від пульта?')) return;
+    leaving = true; stopLink(); st = null; ses = {}; save(ses); phase = 'entry';
+    setTimeout(() => { leaving = false; showEntry(); }, 50);
+  });
+  document.addEventListener('keydown', e => {
+    if (phase !== 'ok') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); cmd('next'); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); cmd('prev'); }
+  });
+
+  /* ---------- вхід по коду ---------- */
+  const codeInput = $('#code');
+  codeInput.addEventListener('input', () => {
+    const d = digits(codeInput.value).slice(0, 6);
+    codeInput.value = fmtCode(d); $('#err').textContent = '';
+    if (d.length === 6) setTimeout(join, 250);
+  });
+  codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') join(); });
+  $('#join').addEventListener('click', join);
+  function join() {
+    if (phase !== 'entry') return;
+    const d = digits(codeInput.value);
+    if (d.length !== 6) { $('#err').textContent = 'Код складається з 6 цифр.'; return; }
+    ses = { code: d, key: '', token: '' }; save(ses); tries = 0; connect();
+  }
+  $('#resume').addEventListener('click', () => { if (ses.code) { tries = 0; connect(); } });
+  $('#mretry').addEventListener('click', () => { tries = 0; connect(); });
+  $('#mcode').addEventListener('click', () => { stopLink(); st = null; showEntry(); });
+
+  /* ---------- старт ---------- */
+  const q = new URLSearchParams(location.search);
+  const qc = digits(q.get('c')), qk = (q.get('k') || '').replace(/[^a-z0-9]/gi, '').slice(0, 20);
+  if (qc.length === 6) {
+    const same = ses.code === qc;
+    ses = { code: qc, key: qk, token: same ? (ses.token || '') : '' };
+    save(ses);
+    try { history.replaceState(null, '', location.pathname); } catch (e) { /* ok */ }
+    connect();
+  } else if (ses.code) {
+    connect();
+  } else {
+    showEntry();
+  }
+})();
+</script>
+</body>
+</html>

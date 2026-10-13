@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Оновити бібліотеку</title>
+<style>
+:root{color-scheme:dark}
+body{margin:0;background:#181a1d;color:#f2f4f6;font:17px/1.5 'Source Sans 3',system-ui,sans-serif}
+.w{max-width:720px;margin:0 auto;padding:28px 16px}
+h1{font:600 2rem/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.05em;text-transform:uppercase;margin:0 0 8px}
+ol{padding-left:22px;color:#cfd5dc}
+button,.lbl{display:inline-block;margin:6px 8px 6px 0;padding:13px 18px;border-radius:14px;border:1px solid #4a515b;background:#2a2f35;color:#fff;font:700 17px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+button.go{background:#ffc247;border-color:#ffc247;color:#16130a}
+#out{margin-top:18px;padding:14px 16px;border-radius:14px;background:#22262b;border:1px solid #383d44;white-space:pre-wrap;min-height:3em}
+.ok{color:#3ee08f}.bad{color:#ff6a6a}
+small{color:#a0a8b2}
+</style>
+</head>
+<body><div class="w">
+<h1>Оновити список гутірок</h1>
+<ol>
+  <li>Покладіть папку нової гутірки в <b>gutirky/</b> (у ній мають бути <b>index.html</b> і бажано <b>meta.json</b>).</li>
+  <li>Натисніть кнопку нижче й виберіть <b>папку сайту</b> (ту, де лежить цей файл).</li>
+  <li>Коли зʼявиться «Готово», перетягніть усю папку сайту в Netlify (вкладка Deploys).</li>
+</ol>
+<button class="go" id="pick" type="button">📂 Вибрати папку сайту й оновити список</button>
+<label class="lbl" id="alt" hidden>📂 Вибрати папку сайту (інший спосіб)<input id="dirin" type="file" webkitdirectory multiple hidden></label>
+<div id="out" role="status" aria-live="polite">Очікую…</div>
+<p><small>Працює в Chrome або Edge. Нічого не надсилається в інтернет — усе відбувається на вашому компʼютері.</small></p>
+</div>
+<script>
+(function () {
+  'use strict';
+  const out = document.getElementById('out');
+  const log = (t, cls) => { out.className = cls || ''; out.textContent = t; };
+  const HEAD = '/* Створено автоматично. Не редагуйте вручну — запустіть update-library.html або tools/build-library.mjs */\n';
+
+  function build(entries) {   // entries: [{slug, hasIndex, metaText}]
+    const items = [], notes = [];
+    entries.sort((a, b) => a.slug.localeCompare(b.slug)).forEach(e => {
+      if (e.slug.startsWith('_') || e.slug.startsWith('.')) return;
+      if (!e.hasIndex) { notes.push('⚠ пропущено «' + e.slug + '»: нема index.html'); return; }
+      let meta = {};
+      if (e.metaText != null) {
+        try { meta = JSON.parse(e.metaText.replace(/^﻿/, '')); }
+        catch (err) { notes.push('⚠ у «' + e.slug + '/meta.json» помилка — беру назву папки'); }
+      } else notes.push('ℹ у «' + e.slug + '» нема meta.json — беру назву папки');
+      items.push(Object.assign({}, meta, { slug: e.slug, title: meta.title || e.slug }));
+    });
+    items.sort((a, b) => ((a.order ?? 999) - (b.order ?? 999)) || String(a.title).localeCompare(String(b.title), 'uk'));
+    return { text: HEAD + 'window.LIBRARY = ' + JSON.stringify(items, null, 1) + ';\n', items, notes };
+  }
+  function report(r, how) {
+    log('✔ Готово! ' + how + '\nГутірок у бібліотеці: ' + r.items.length + '\n'
+      + r.items.map(i => '  • ' + (i.title || i.slug) + (i.variant ? ' — ' + i.variant : '') + '  (gutirky/' + i.slug + ')').join('\n')
+      + (r.notes.length ? '\n\n' + r.notes.join('\n') : '')
+      + '\n\nТепер перетягніть папку сайту в Netlify.', 'ok');
+  }
+
+  // Спосіб 1: Chrome/Edge — пише library.js прямо в папку.
+  async function viaPicker() {
+    const root = await window.showDirectoryPicker({ id: 'gutirky-site', mode: 'readwrite' });
+    let g;
+    try { g = await root.getDirectoryHandle('gutirky'); }
+    catch (e) { log('✖ У вибраній папці нема папки «gutirky». Виберіть саме папку сайту (де лежить index.html і update-library.html).', 'bad'); return; }
+    const entries = [];
+    for await (const [name, h] of g.entries()) {
+      if (h.kind !== 'directory') continue;
+      let hasIndex = false, metaText = null;
+      try { await h.getFileHandle('index.html'); hasIndex = true; } catch (e) { /* нема */ }
+      try { metaText = await (await (await h.getFileHandle('meta.json')).getFile()).text(); } catch (e) { /* нема */ }
+      entries.push({ slug: name, hasIndex, metaText });
+    }
+    const r = build(entries);
+    const w = await (await root.getFileHandle('library.js', { create: true })).createWritable();
+    await w.write(r.text); await w.close();
+    report(r, 'Файл library.js оновлено в папці сайту.');
+  }
+
+  // Спосіб 2: інші браузери — читаємо папку і пропонуємо завантажити library.js.
+  async function viaInput(files) {
+    const map = {};
+    for (const f of files) {
+      const parts = (f.webkitRelativePath || f.name).split('/');
+      const gi = parts.indexOf('gutirky');
+      if (gi < 0 || parts.length !== gi + 3) continue;
+      const slug = parts[gi + 1], file = parts[gi + 2];
+      map[slug] = map[slug] || { slug, hasIndex: false, metaText: null };
+      if (file === 'index.html') map[slug].hasIndex = true;
+      if (file === 'meta.json') map[slug].metaText = await f.text();
+    }
+    if (!Object.keys(map).length) { log('✖ Не знайшов папку «gutirky» з гутірками. Виберіть папку сайту.', 'bad'); return; }
+    const r = build(Object.values(map));
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([r.text], { type: 'text/javascript' }));
+    a.download = 'library.js'; document.body.appendChild(a); a.click(); a.remove();
+    report(r, 'Браузер завантажив новий library.js — покладіть його в папку сайту замість старого.');
+  }
+
+  window.LibraryTool = { build };
+  const pick = document.getElementById('pick'), alt = document.getElementById('alt');
+  if (!window.showDirectoryPicker) { pick.hidden = true; alt.hidden = false; }
+  pick.addEventListener('click', async () => {
+    try { await viaPicker(); }
+    catch (e) {
+      if (e && e.name === 'AbortError') { log('Скасовано.'); return; }
+      log('Цей спосіб не спрацював (' + (e && e.message || e) + '). Скористайтеся кнопкою «інший спосіб».', 'bad'); alt.hidden = false;
+    }
+  });
+  document.getElementById('dirin').addEventListener('change', e => viaInput(e.target.files));
+})();
+</script>
+</body>
+</html>
