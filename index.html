@@ -1363,6 +1363,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   $('#l-q').addEventListener('input', renderGrid);
 
   /* ---- каталог ---- */
+  /* порядок: спершу з гутірками, далі звичайні кольорові нашивки, у самому кінці — чорно-білі й без нашивки */
+  const rank = s => s.g ? 0 : !s.img ? 3 : picKind(s.img) === ' bw' ? 2 : 1;
   const specCount = () => { const c = {}; SKILLS.forEach(s => s.specs.forEach(x => { c[x] = (c[x] || 0) + 1; })); return c; };
   function renderKat() {
     const withG = SKILLS.filter(s => s.g).length;
@@ -1377,7 +1379,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       + (kMore ? '<button type="button" data-more="0">Згорнути ▴</button>' : rest > 0 ? `<button type="button" data-more="1">Ще ${rest} ▾</button>` : '');
     const q = $('#k-q').value.trim().toLowerCase(), only = $('#k-only').checked;
     const list = SKILLS.filter(s => (!kSpec || s.specs.includes(kSpec)) && (!q || s.lc.includes(q)) && (!only || s.g))
-      .sort((a, b) => (b.g ? 1 : 0) - (a.g ? 1 : 0) || a.n.localeCompare(b.n, 'uk'));
+      .sort((a, b) => rank(a) - rank(b) || a.n.localeCompare(b.n, 'uk'));
     $('#k-h').innerHTML = esc(kSpec || 'Усі вмілості') + `<small>${list.length} ${plural(list.length, ['вмілість', 'вмілості', 'вмілостей'])}</small>`;
     const grid = $('#k-grid');
     grid.innerHTML = list.map(s => {
