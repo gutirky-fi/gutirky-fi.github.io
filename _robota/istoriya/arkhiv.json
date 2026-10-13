@@ -1,116 +1,176 @@
 [
   {
     "chas": "≈ 05:20",
-    "fail": "arkhiv/00a-motiondeck.html",
+    "fail": "arkhiv/01-motiondeck.html",
     "nazva": "MotionDeck",
     "opys": "ChatGPT: редактор анімованих презентацій; слайди правили JSON-командами."
   },
   {
     "chas": "ранок",
-    "fail": "arkhiv/00b-persha-prezentatsiia.html",
+    "fail": "arkhiv/02-persha-prezentatsiia-chatgpt.html",
     "nazva": "Перша презентація",
     "opys": "ChatGPT: 15 слайдів, маршрут картою з 4 регіонів."
   },
   {
-    "chas": "до 09:10",
-    "fail": "arkhiv/01-persha-z-kartoiu.html",
+    "chas": "≈ 07:39",
+    "fail": "arkhiv/03-karta-vsikh-oblastei-claude.html",
     "nazva": "Карта всіх областей",
     "opys": "Claude, безкоштовна версія: 9 регіонів, ще без пульта."
   },
   {
     "chas": "≈ 09:14",
-    "fail": "arkhiv/02-pershyi-pult-netlify/",
+    "fail": "arkhiv/04-pershyi-pult-netlify/",
     "nazva": "Перший пульт",
     "opys": "ChatGPT: сайт для Netlify Drop, кнопка «Створити підключення» і QR-код."
   },
   {
     "chas": "ранок",
-    "fail": "arkhiv/03-povna-z-pultom.html",
+    "fail": "arkhiv/05-povna-z-pultom.html",
     "nazva": "Повна гутірка з пультом",
     "opys": "ChatGPT: кнопка «Пульт», позначка версії, фото піали."
   },
   {
     "chas": "ранок",
-    "fail": "arkhiv/03-vyshkil-z-pultom.html",
+    "fail": "arkhiv/05-vyshkil-z-pultom.html",
     "nazva": "Вишкіл з пультом",
     "opys": "Коротка версія, до 20 хвилин."
   },
   {
     "chas": "ранок",
-    "fail": "arkhiv/04-plan-povna-45-50.docx",
+    "fail": "arkhiv/06-plan-povna-45-50.docx",
     "nazva": "План повної гутірки (45–50 хв)",
     "opys": "Хід гутірки по хвилинах і що сказати про кожен регіон. Файл Word."
   },
   {
     "chas": "ранок",
-    "fail": "arkhiv/04-plan-vyshkil-20.docx",
+    "fail": "arkhiv/06-plan-vyshkil-20.docx",
     "nazva": "План гутірки для вишколу (до 20 хв)",
     "opys": "Для гуртка 5–6 осіб; здати до 20 жовтня 2026 року. Файл Word."
   },
   {
-    "chas": "≈ 12:24",
-    "fail": "arkhiv/05-povna-novyi-dyzain.html",
-    "nazva": "Новий дизайн",
-    "opys": "Claude: нові шрифти й виправлена карта."
+    "chas": "≈ 12:20",
+    "fail": "arkhiv/07-povna-novyi-dyzain.html",
+    "nazva": "Новий дизайн: повна",
+    "opys": "Claude, безкоштовна версія: нові шрифти й виправлена карта."
+  },
+  {
+    "chas": "≈ 12:20",
+    "fail": "arkhiv/07-vyshkil-novyi-dyzain.html",
+    "nazva": "Новий дизайн: вишкіл",
+    "opys": "Claude: та сама гутірка, коротка версія."
   },
   {
     "chas": "≈ 13:35",
-    "fail": "arkhiv/06-sait-dvi-versii/",
+    "fail": "arkhiv/08-sait-dvi-versii/",
     "nazva": "Перший сайт: дві версії",
-    "opys": "Стартова сторінка і дві папки для Netlify Drop."
+    "opys": "Claude: стартова сторінка і дві папки для Netlify Drop."
   },
   {
     "chas": "≈ 14:12",
-    "fail": "arkhiv/07-wifi-pult.zip",
+    "fail": "arkhiv/09-wifi-pult.zip",
     "nazva": "Пульт через Wi-Fi",
     "opys": "ChatGPT: архів з Python-сервером і інструкцією. Файл ZIP."
   },
   {
     "chas": "день",
-    "fail": "arkhiv/08-odyn-fail-i-wifi-pult.html",
+    "fail": "arkhiv/10-odyn-fail-i-wifi-pult.html",
     "nazva": "Один файл з обома версіями",
     "opys": "ChatGPT: вибір версії на старті, код підключення."
   },
   {
     "chas": "до 17:15",
-    "fail": "arkhiv/09-pult-6-tsyfr.html",
+    "fail": "arkhiv/11-pult-6-tsyfr.html",
     "nazva": "Пульт за 6 цифрами",
     "opys": "Остання версія з ChatGPT — пульт, що запрацював."
   },
   {
     "chas": "≈ 17:40",
-    "fail": "arkhiv/10-sait-netlify/",
+    "fail": "arkhiv/12-sait-netlify/",
     "nazva": "Сайт для Netlify",
-    "opys": "Claude: перша «Бібліотека гутірок», пульт з QR-кодом."
+    "opys": "Claude з підпискою: перша «Бібліотека гутірок», пульт з QR-кодом."
+  },
+  {
+    "chas": "≈ 17:53",
+    "fail": "arkhiv/13-biblioteka-odne-posylannia.html",
+    "nazva": "Бібліотека за одним посиланням",
+    "opys": "Claude: сторінка всередині Claude; пульт працював лише там."
   },
   {
     "chas": "≈ 18:24",
-    "fail": "arkhiv/11-storinka-pulta/",
+    "fail": "arkhiv/14-storinka-pulta/",
     "nazva": "Окрема сторінка пульта",
     "opys": "Для телефона; жила на Netlify. Відкривайте з телефона."
   },
   {
-    "chas": "вечір",
-    "fail": "arkhiv/12-biblioteka-odnym-failom.html",
+    "chas": "≈ 18:47",
+    "fail": "arkhiv/15-storinka-zavantazhennia.html",
+    "nazva": "Сторінка «Завантаження гутірок»",
+    "opys": "Дві кнопки й інструкція; кнопки працювали лише всередині Claude."
+  },
+  {
+    "chas": "20:10",
+    "fail": "arkhiv/16-pershyi-sait-na-github.html",
+    "nazva": "Перший сайт на GitHub",
+    "opys": "Перша версія gutirky-fi.github.io, ще з блоком «Додати гутірку»."
+  },
+  {
+    "chas": "≈ 20:29",
+    "fail": "arkhiv/17-biblioteka-odnym-failom.html",
     "nazva": "Бібліотека одним файлом",
-    "opys": "gutirky.html для Chrome, без Claude і Netlify."
+    "opys": "gutirky.html для Chrome — працює і без інтернету."
+  },
+  {
+    "chas": "20:30",
+    "fail": "arkhiv/18-ostannii-vyhliad-do-d1.html",
+    "nazva": "Останній вигляд до Д1",
+    "opys": "Пульт лише на телефоні, меню гутірки в куті."
+  },
+  {
+    "chas": "20:45–22:16",
+    "fail": "arkhiv/19-varianty-dyzainu/",
+    "nazva": "Варіанти дизайну",
+    "opys": "Усі 17 макетів: А, Б, В, їх поєднання, Г, Д1–Д3 і Е."
   },
   {
     "chas": "≈ 22:20",
-    "fail": "arkhiv/13-robocha-kopiia-d1.html",
+    "fail": "arkhiv/20-robocha-kopiia-d1.html",
     "nazva": "Робоча копія дизайну Д1",
     "opys": "Копія, по якій клацали перед тим, як ставити Д1 на сайт."
+  },
+  {
+    "chas": "22:55",
+    "fail": "arkhiv/21-d1-na-saiti-14-vmilostei.html",
+    "nazva": "Д1 на сайті",
+    "opys": "Перший день нового дизайну; у каталозі 14 вмілостей для прикладу."
+  },
+  {
+    "chas": "≈ 23:21",
+    "fail": "arkhiv/22-kopiia-kataloh-448.html",
+    "nazva": "Каталог із 448 вмілостей",
+    "opys": "Копія для перегляду: усі назви з бібліотеки вмілостей Пласту, ще без нашивок."
+  },
+  {
+    "chas": "23:43",
+    "fail": "arkhiv/23-kataloh-162-vmilosti.html",
+    "nazva": "Каталог із 162 вмілостей",
+    "opys": "Перелік і нашивки з каталогу Пласту у Фінляндії."
+  },
+  {
+    "chas": "14.10, 00:05",
+    "fail": "arkhiv/24-perevirka-nashyvok.html",
+    "nazva": "Сторінка перевірки нашивок",
+    "opys": "24 нестандартні нашивки — щоб вирішити, що з ними робити. Через 11 хв прибрана."
   },
   {
     "chas": "13.10",
     "fail": "arkhiv/vyvisky-1-sait.html",
     "nazva": "«Від ідеї до світла»",
-    "opys": "Сайт для майбутньої гутірки про вивіски, з конструктором вивіски."
+    "opys": "ChatGPT: сайт для майбутньої гутірки про вивіски, з конструктором вивіски."
   },
   {
     "chas": "13.10",
     "fail": "arkhiv/vyvisky-2-prezentatsiia.html",
     "nazva": "«Від логотипа до вивіски»",
-    "opys": "Презентація: повна (25–30 хв) і коротка (12–15 хв)."
+    "opys": "ChatGPT: презентація — повна (25–30 хв) і коротка (12–15 хв)."
   }
 ]
