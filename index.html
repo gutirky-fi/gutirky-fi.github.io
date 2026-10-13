@@ -1312,7 +1312,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const gById = k => BUILTIN.find(b => b.key === k);
   /* нашивка: картинка з plast.global; якщо не завантажиться (немає інтернету) — кружечок з першою літерою */
   /* чорно-білі нашивки (є лише такі) — на світлій круглій підкладці; картинка з білим квадратом — обрізана по колу */
-  const picKind = src => /ch_?b|chb|artboard/i.test(src) ? ' bw' : /\.png$/i.test(src) ? ' sq' : '';
+  /* bw — чорно-білі (вмілості Пласту в Польщі, завантажені 2026/03); sq — картинка з білим фоном; sp — інша нестандартна («Сигналізація-комунікація») */
+  const picKind = src => /ch_?b|chb/i.test(src) || /2026\/03\/.*artboard/i.test(src) ? ' bw' : /\.png$/i.test(src) ? ' sq' : /artboard/i.test(src) ? ' sp' : '';
   const pic = (src, n, cls) => `<span class="vb ${cls || ''}${src ? picKind(src) : ' noimg'}">${src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('noimg');this.remove()">` : ''}<span class="fb">${esc(n.replace(/^[^А-ЯІЇЄҐA-Z0-9]+/, '').charAt(0))}</span></span>`;
 
   let TAB = 'home', gf = '', kSpec = '', kOpen = '', kMore = false;
@@ -1363,9 +1364,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   $('#l-q').addEventListener('input', renderGrid);
 
   /* ---- каталог ---- */
-  /* порядок: спершу з гутірками, далі звичайні кольорові нашивки, потім картинка з білим фоном («Настільні ігри»),
+  /* порядок: спершу з гутірками, далі звичайні кольорові нашивки, потім нестандартні («Настільні ігри», «Сигналізація-комунікація»),
      у самому кінці — чорно-білі й без нашивки */
-  const rank = s => { if (s.g) return 0; if (!s.img) return 4; const k = picKind(s.img); return k === ' bw' ? 3 : k === ' sq' ? 2 : 1; };
+  const rank = s => { if (s.g) return 0; if (!s.img) return 4; const k = picKind(s.img); return k === ' bw' ? 3 : k === ' sq' || k === ' sp' ? 2 : 1; };
   const specCount = () => { const c = {}; SKILLS.forEach(s => s.specs.forEach(x => { c[x] = (c[x] || 0) + 1; })); return c; };
   function renderKat() {
     const withG = SKILLS.filter(s => s.g).length;
