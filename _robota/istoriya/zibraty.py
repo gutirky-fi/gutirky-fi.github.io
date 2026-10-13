@@ -26,14 +26,126 @@ for p in podii:
     days.setdefault(p['den'], []).append(p)
 
 def event(p):
-    pics = ''.join(f'<figure><a href="img/{e(f)}" target="_blank" rel="noopener"><img src="img/{e(f)}" alt="{e(c)}" loading="lazy"></a><figcaption>{e(c)}</figcaption></figure>'
+    pics = ''.join(f'<figure><a href="img/{e(f)}" data-ov="img" data-t="{e(c)}"><img src="img/{e(f)}" alt="{e(c)}" loading="lazy"></a><figcaption>{e(c)}</figcaption></figure>'
                    for f, c in p.get('kartynky', []))
     return (f'<li class="ev"><span class="t">{e(p["chas"])}</span><div class="b"><h3>{e(p["nazva"])}</h3>'
             f'<p>{e(p["tekst"])}</p>{f"<div class=pics>{pics}</div>" if pics else ""}</div></li>')
 
 intro = ''.join(f'<p>{e(x)}</p>' for x in korotko)
 timeline = ''.join(f'<section class="day"><h2>{e(d)}</h2><ol>{"".join(event(p) for p in ps)}</ol></section>' for d, ps in days.items())
-arch = ''.join(f'<li><time>{e(a["chas"])}</time><span><a href="{e(a["fail"])}" target="_blank" rel="noopener">{e(a["nazva"])}</a> — {e(a["opys"])}</span></li>' for a in arkhiv)
+def arch_link(a):
+    f = a['fail']
+    if f.endswith(('.docx', '.zip')):  # файли — просто завантажити
+        return f'<a href="{e(f)}" download>{e(a["nazva"])}</a>'
+    return f'<a href="{e(f)}" data-ov="page" data-t="{e(a["nazva"])}">{e(a["nazva"])}</a>'
+
+arch = ''.join(f'<li><time>{e(a["chas"])}</time><span>{arch_link(a)} — {e(a["opys"])}</span></li>' for a in arkhiv)
+
+# Перегляд поверх історії: картинка збільшується, сторінка архіву відкривається у вікні з кнопкою «До історії».
+# Кнопка «Назад» у браузері (і жест «назад» на телефоні) теж закриває перегляд.
+VIEWER_CSS = '''
+html.ov-on{overflow:hidden}
+#ov{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;background:#0c0d0f}
+#ov[hidden]{display:none}
+.ov-bar{flex:none;display:flex;align-items:center;gap:12px;padding:8px 12px;padding-top:max(8px,env(safe-area-inset-top));background:#1b1d21;border-bottom:1px solid #383d44}
+.ov-x{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:0 16px;border-radius:99px;border:1px solid #ffc247;background:#ffc247;color:#16130a;font:700 16px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+.ov-x:focus-visible{outline:2px solid #2fd2c0;outline-offset:2px}
+#ov-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 17px Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#f2f4f6}
+#ov-fr{flex:1;min-height:0;width:100%;border:0;background:#1b1d21}
+#ov-fr[hidden],.ov-img[hidden]{display:none}
+.ov-img{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:14px;cursor:zoom-out}
+.ov-img img{max-width:100%;max-height:calc(100% - 34px);object-fit:contain;border-radius:8px}
+#ov-cap{color:#a0a8b2;font-size:15px;text-align:center}
+.pics a{cursor:zoom-in}
+'''
+
+VIEWER_HTML = '''<div id="ov" hidden role="dialog" aria-modal="true" aria-labelledby="ov-t">
+<div class="ov-bar"><button class="ov-x" type="button">← До історії</button><span id="ov-t"></span></div>
+<div class="ov-img" hidden><img id="ov-img" alt=""><span id="ov-cap"></span></div>
+<iframe id="ov-fr" title="Перегляд" allow="fullscreen" hidden></iframe>
+</div>'''
+
+VIEWER_JS = r'''<script>
+(() => {
+  const ov = document.getElementById('ov'), fr = document.getElementById('ov-fr'), box = ov.querySelector('.ov-img'),
+        im = document.getElementById('ov-img'), cap = document.getElementById('ov-cap'), ttl = document.getElementById('ov-t'),
+        btn = ov.querySelector('.ov-x');
+  const base = location.pathname.replace(/index\.html$/, '');
+  const abs = u => new URL(u, location.href).href;
+  let lastFocus = null, savedY = 0;
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';  // прокрутку повертаємо самі
+  function frameGo(url) {
+    let cur = '';
+    try { cur = fr.contentWindow.location.href; } catch (e) {}
+    if (cur === url) return;
+    try { fr.contentWindow.location.replace(url); } catch (e) { fr.src = url; }  // replace — щоб не плодити записів «назад»
+  }
+  function show(s) {
+    if (ov.hidden) { lastFocus = document.activeElement; savedY = scrollY; }
+    ov.hidden = false; document.documentElement.classList.add('ov-on');
+    ttl.textContent = s.title || '';
+    if (s.kind === 'img') {
+      fr.hidden = true; frameGo('about:blank');
+      box.hidden = false; im.src = s.url; im.alt = s.title || ''; cap.textContent = s.title || '';
+    } else {
+      box.hidden = true; im.removeAttribute('src');
+      fr.hidden = false; frameGo(abs(s.url));
+    }
+    btn.focus({ preventScroll: true });
+  }
+  function hide() {
+    if (ov.hidden) return;
+    ov.hidden = true; document.documentElement.classList.remove('ov-on');
+    im.removeAttribute('src'); frameGo('about:blank');
+    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll: true });
+    scrollTo(0, savedY);  // туди ж, де читали
+  }
+  function open(kind, url, title) {
+    const d = ((history.state && history.state.ov) || 0) + 1;
+    const s = { ov: d, kind, url: abs(url), title };
+    history.pushState(s, '', '#' + (kind === 'img' ? 'z' : 'v') + '=' + encodeURIComponent(url));
+    show(s);
+  }
+  function close() {
+    const d = (history.state && history.state.ov) || 0;
+    if (d > 0) history.go(-d);
+    else { history.replaceState(null, '', location.pathname + location.search); hide(); }
+  }
+  addEventListener('popstate', ev => { const s = ev.state; if (s && s.url) show(s); else hide(); });
+  document.addEventListener('click', ev => {
+    const a = ev.target.closest('a[data-ov]');
+    if (!a || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.altKey || ev.button) return;
+    ev.preventDefault();
+    open(a.dataset.ov, a.getAttribute('href'), a.dataset.t || a.textContent.trim());
+  });
+  btn.addEventListener('click', close);
+  box.addEventListener('click', close);  // клік по збільшеній картинці — назад до історії
+  addEventListener('keydown', ev => { if (ev.key === 'Escape' && !ov.hidden) { ev.preventDefault(); close(); } });
+  // Посилання всередині сторінок архіву (галерея варіантів, стартові сторінки) відкриваються тут же.
+  fr.addEventListener('load', () => {
+    let doc;
+    try { doc = fr.contentDocument; } catch (e) { return; }
+    if (!doc || !doc.URL || doc.URL === 'about:blank') return;
+    if (!ttl.textContent) ttl.textContent = doc.title;
+    doc.addEventListener('click', ev => {
+      const a = ev.target.closest && ev.target.closest('a[href]');
+      if (!a || ev.defaultPrevented || ev.ctrlKey || ev.metaKey || ev.shiftKey || ev.button) return;
+      const u = new URL(a.getAttribute('href'), doc.URL);
+      if (u.origin !== location.origin || /\.(docx|zip)$/i.test(u.pathname)) return;  // інші сайти й файли — як звичайно
+      if (u.pathname === new URL(doc.URL).pathname && u.hash) return;                  // якорі на тій самій сторінці
+      ev.preventDefault();
+      if (u.pathname.replace(/index\.html$/, '') === base) { close(); return; }      // «← Історія сайту»
+      open('page', u.href, (a.textContent || '').trim() || doc.title);
+    }, true);
+  });
+  // якщо сторінку оновили, коли був відкритий перегляд
+  const m = location.hash.match(/^#([vz])=(.+)$/);
+  if (m) {
+    const s = { ov: 0, kind: m[1] === 'z' ? 'img' : 'page', url: abs(decodeURIComponent(m[2])), title: '' };
+    history.replaceState(s, '', location.href); show(s);
+  }
+})();
+</script>'''
 pubs = ''.join(f'<li><time>{e(d)}</time><span>{e(s)}</span></li>' for h, d, s in commits if s != 'Initial commit')
 
 page = f'''<!DOCTYPE html>
@@ -86,6 +198,7 @@ footer img{{height:56px;width:auto;opacity:.85}}
 footer .skob{{margin-top:14px;padding-left:.3em;font:600 24px/1 var(--disp);letter-spacing:.3em;color:var(--gd)}}
 footer small{{margin-top:8px;color:var(--mut);font-size:14px}}
 a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
+{VIEWER_CSS}
 @media (max-width:640px){{.ev{{grid-template-columns:1fr;gap:4px}}.pubs li{{grid-template-columns:1fr;gap:0}}header .wm{{height:170px}}}}
 </style>
 </head>
@@ -105,7 +218,7 @@ a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
 {timeline}
 <section class="pubs arch">
 <h2>Ранні версії</h2>
-<p>Файли 13 жовтня, з яких усе починалося, — у тому порядку, як вони зʼявлялися. Відкриваються в новій вкладці. Час приблизний.</p>
+<p>Файли 13 жовтня, з яких усе починалося, — у тому порядку, як вони зʼявлялися. Відкриваються тут же, поверх історії; повернутися — кнопка «← До історії» або «назад» у браузері. Файли Word і ZIP завантажуються. Час приблизний.</p>
 <ul>{arch}</ul>
 </section>
 <section class="pubs">
@@ -119,6 +232,8 @@ a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
 <span class="skob">СКОБ!</span>
 <small>Бібліотека гутірок Пласту у Фінляндії</small>
 </footer>
+{VIEWER_HTML}
+{VIEWER_JS}
 </body>
 </html>
 '''
