@@ -1,0 +1,125 @@
+<div id="lib">
+  <div class="prev-ribbon" id="l-prev" hidden>Попередній перегляд нового дизайну. Ваш сайт не змінено.</div>
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="#" data-tab="home" aria-label="Бібліотека гутірок, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+      <button class="pbtn ptop" type="button" data-pult>📱 Пульт</button>
+      <nav class="tabs" aria-label="Розділи">
+        <button type="button" data-tab="home" aria-current="page">Гутірки</button>
+        <button type="button" data-tab="kat">Каталог вмілостей</button>
+      </nav>
+    </header>
+
+    <div id="l-home">
+      <section class="hero">
+        <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+        <div class="h-text">
+          <span class="eyebrow">Пластове юнацтво</span>
+          <h1>Бібліотека<br>гутірок</h1>
+          <p class="hand">для сходин гуртка і таборів</p>
+        </div>
+        <dl class="stats" id="l-stats"></dl>
+      </section>
+
+      <section class="feat" id="l-feat" aria-label="Остання гутірка"></section>
+
+      <section class="all" aria-labelledby="l-all-h">
+        <div class="all-head">
+          <h2 id="l-all-h">Усі гутірки</h2>
+          <div class="all-tools">
+            <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="l-q" type="search" placeholder="Знайти гутірку" aria-label="Знайти гутірку"></label>
+            <div class="chips" id="l-chips" role="group" aria-label="Вид гутірок">
+              <button type="button" data-gf="" aria-pressed="true">Усі</button>
+              <button type="button" data-gf="vm" aria-pressed="false">До вмілостей</button>
+              <button type="button" data-gf="pz" aria-pressed="false">Пізнавальні</button>
+            </div>
+          </div>
+        </div>
+        <div class="grid" id="l-grid"></div>
+        <p class="empty" id="l-empty" hidden></p>
+      </section>
+    </div>
+
+    <div id="l-kat" hidden>
+      <section class="hero">
+        <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+        <div class="h-text">
+          <span class="eyebrow">Вмілості Пласту</span>
+          <h1>Каталог<br>вмілостей</h1>
+          <p class="hand">до яких вмілостей уже є гутірки</p>
+        </div>
+        <dl class="stats" id="k-stats"></dl>
+      </section>
+
+      <p class="demo" id="k-demo" hidden>Тут поки лише частина вмілостей. Повний перелік є в <a href="https://plast.global/biblioteka-vmilostej" target="_blank" rel="noopener noreferrer">бібліотеці вмілостей на plast.global</a>.</p>
+      <p class="src">Перелік вмілостей і нашивки взято з <a href="https://plast-finland.com/vmilosti" target="_blank" rel="noopener noreferrer">каталогу вмілостей Пласту у Фінляндії</a>, а той бере їх із <a href="https://plast.global/biblioteka-vmilostej" target="_blank" rel="noopener noreferrer">бібліотеки вмілостей Пласту</a>. Вимоги кожного рівня є на порталі Пласту у Фінляндії.</p>
+
+      <section class="k-tools" aria-label="Пошук і фільтри">
+        <div class="k-row">
+          <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="k-q" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
+          <div class="chips" id="k-specs" role="group" aria-label="Спеціалізація"></div>
+        </div>
+        <div class="legend">
+          <span><i style="background:#3ee08f"></i>Є гутірка</span>
+          <span><i style="background:#ffc247"></i>Частково</span>
+          <span><i style="border:2px solid #4a515b"></i>Ще немає</span>
+          <label><input type="checkbox" id="k-only"> Лише з матеріалами</label>
+        </div>
+      </section>
+
+      <section aria-labelledby="k-h">
+        <h2 class="k-h" id="k-h"></h2>
+        <div class="kgrid" id="k-grid"></div>
+        <p class="empty" id="k-empty" hidden></p>
+      </section>
+    </div>
+
+    <footer>
+      <img src="{{EMBLEM}}" alt="" aria-hidden="true">
+      <span class="skob">СКОБ!</span>
+      <span class="f-note">Бібліотека гутірок Пласту у Фінляндії</span>
+    </footer>
+  </div>
+</div>
+
+<div id="pv" hidden>
+  <div class="pw">
+    <header>
+      <button class="brand" type="button" data-lib>‹ Пульт</button>
+      <span class="chip" id="p-chip" data-s="wait" role="status" aria-live="polite"><i></i><span id="p-chiptxt">Підключаємось…</span></span>
+    </header>
+    <section id="p-entry" hidden>
+      <h2 class="p-h">Підключення</h2>
+      <p class="p-sub">Відскануйте QR-код на ноутбуці — або введіть код, який на екрані.</p>
+      <div class="p-card">
+        <label for="p-code">Код із ноутбука</label>
+        <input id="p-code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" autocomplete="off" placeholder="000 000" aria-describedby="p-err">
+        <div class="p-err" id="p-err" role="alert"></div>
+        <button class="p-btn go" id="p-join" type="button">Підключитись</button>
+        <button class="p-btn" id="p-resume" type="button" hidden></button>
+      </div>
+      <p class="p-help">На ноутбуці відкрийте гутірку, наведіть мишку в правий верхній кут і натисніть «📱 Пульт». Якщо вводите код вручну, ноутбук спитає «Це ваш телефон?» — натисніть там «Дозволити».</p>
+    </section>
+    <div class="msgbox" id="p-msg">
+      <div class="big" id="p-mbig">📡</div>
+      <h2 id="p-mh">Підключаємось…</h2>
+      <p id="p-mp"></p>
+      <button class="p-btn go" id="p-mretry" type="button" hidden>Спробувати ще</button>
+      <button class="p-btn" id="p-mcode" type="button" hidden>Ввести інший код</button>
+    </div>
+    <div class="pad" id="p-pad" hidden>
+      <div class="gname" id="p-gname"></div>
+      <div class="top"><div class="count" id="p-count">— <small>/ —</small></div><div class="steps" id="p-steps"></div></div>
+      <div class="bar"><i id="p-bar"></i></div>
+      <div><div class="stitle" id="p-title">…</div><div class="snext" id="p-next"></div></div>
+      <div class="note empty" id="p-note">Підказок для цього слайда немає.</div>
+      <div class="timer" id="p-timer"><span id="p-ttxt">⏱ 00:00 / 00:00</span><button class="small-btn" id="p-treset" type="button">↺ Скинути</button></div>
+      <details id="p-secbox"><summary>Розділи гутірки</summary><div class="secs" id="p-secs"></div></details>
+      <div class="nav">
+        <button id="p-prev" type="button">❮ Назад</button>
+        <button id="p-nextb" class="next" type="button">Далі ❯</button>
+      </div>
+      <div class="foot"><button class="link" id="p-leave" type="button">Від’єднатись</button></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,78 @@
+<div id="lib">
+  <header><div class="wrap">
+    <svg class="lily-bg" viewBox="0 0 100 120" aria-hidden="true"><use href="#lily"/></svg>
+    <div class="brand">
+      <svg viewBox="0 0 100 120" aria-hidden="true"><use href="#lily"/></svg>
+      <div><div class="eyebrow">Пласт · гутірки і вишколи</div><h1>Бібліотека гутірок</h1></div>
+    </div>
+    <button class="pbtn ptop" type="button" data-pult>📱 Пульт</button>
+    <p class="tagline">Інтерактивні матеріали для сходин, таборів і вишколів</p>
+    <div class="tools">
+      <input id="l-q" type="search" placeholder="Пошук: тема, вік, тривалість…" aria-label="Пошук гутірки">
+      <div class="chips" id="l-chips"></div>
+    </div>
+  </div></header>
+  <main class="wrap">
+    <div class="grid" id="l-grid"></div>
+    <div class="empty" id="l-empty" hidden>Нічого не знайдено.</div>
+  </main>
+  <footer><div class="wrap">
+    <span class="skob">СКОБ!</span>
+    <span class="foot-note">Бібліотека гутірок</span>
+  </div></footer>
+</div>
+
+<div id="pv" hidden>
+  <div class="pw">
+    <header>
+      <button class="brand" type="button" data-lib>‹ Пульт</button>
+      <span class="chip" id="p-chip" data-s="wait" role="status" aria-live="polite"><i></i><span id="p-chiptxt">Підключаємось…</span></span>
+    </header>
+    <section id="p-entry" hidden>
+      <h2 class="p-h">Підключення</h2>
+      <p class="p-sub">Відскануйте QR-код на ноутбуці — або введіть код, який на екрані.</p>
+      <div class="p-card">
+        <label for="p-code">Код із ноутбука</label>
+        <input id="p-code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" autocomplete="off" placeholder="000 000" aria-describedby="p-err">
+        <div class="p-err" id="p-err" role="alert"></div>
+        <button class="p-btn go" id="p-join" type="button">Підключитись</button>
+        <button class="p-btn" id="p-resume" type="button" hidden></button>
+      </div>
+      <p class="p-help">На ноутбуці відкрийте гутірку, наведіть мишку в правий верхній кут і натисніть «📱 Пульт». Якщо вводите код вручну, ноутбук спитає «Це ваш телефон?» — натисніть там «Дозволити».</p>
+    </section>
+    <div class="msgbox" id="p-msg">
+      <div class="big" id="p-mbig">📡</div>
+      <h2 id="p-mh">Підключаємось…</h2>
+      <p id="p-mp"></p>
+      <button class="p-btn go" id="p-mretry" type="button" hidden>Спробувати ще</button>
+      <button class="p-btn" id="p-mcode" type="button" hidden>Ввести інший код</button>
+    </div>
+    <div class="pad" id="p-pad" hidden>
+      <div class="gname" id="p-gname"></div>
+      <div class="top"><div class="count" id="p-count">— <small>/ —</small></div><div class="steps" id="p-steps"></div></div>
+      <div class="bar"><i id="p-bar"></i></div>
+      <div><div class="stitle" id="p-title">…</div><div class="snext" id="p-next"></div></div>
+      <div class="note empty" id="p-note">Підказок для цього слайда немає.</div>
+      <div class="timer" id="p-timer"><span id="p-ttxt">⏱ 00:00 / 00:00</span><button class="small-btn" id="p-treset" type="button">↺ Скинути</button></div>
+      <details id="p-secbox"><summary>Розділи гутірки</summary><div class="secs" id="p-secs"></div></details>
+      <div class="nav">
+        <button id="p-prev" type="button">❮ Назад</button>
+        <button id="p-nextb" class="next" type="button">Далі ❯</button>
+      </div>
+      <div class="foot"><button class="link" id="p-leave" type="button">Від’єднатись</button></div>
+    </div>
+  </div>
+</div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <g id="lily">
+    <g fill="#ffc247">
+      <path d="M50 4c11 14 15 30 9 50l-3 10h-12l-3-10c-6-20-2-36 9-50z"/>
+      <path d="M42 64C30 44 14 40 5 50c-6 7-1 18 9 18 8 0 9-8 4-11 11-3 17 3 22 12z"/>
+      <path d="M58 64c12-20 28-24 37-14 6 7 1 18-9 18-8 0-9-8-4-11-11-3-17 3-22 12z"/>
+      <rect x="22" y="68" width="56" height="9" rx="4.5"/>
+      <path d="M44 77h12l-2 20 8 10H38l8-10z"/>
+    </g>
+    <path d="M50 22v32" stroke="#181a1d" stroke-width="3" stroke-linecap="round"/>
+  </g>
+</defs></svg>

@@ -1,0 +1,40 @@
+/* ===== Гутірка в дизайні Д1: меню в куті, зміст, вікно пульта ===== */
+/* підказка в куті — бліда емблема замість трьох крапок */
+#hot:after{content:""!important;top:calc(12px + env(safe-area-inset-top,0px))!important;right:16px!important;width:26px;height:31px;background:url("{{EMBLEM}}") center/contain no-repeat;opacity:.2!important}
+body.idle #hot:after,body:not(.touchmode) #corner:hover #hot:after,#corner.open #hot:after{opacity:0!important}
+
+/* меню в правому верхньому куті */
+#cmenu{width:264px!important;gap:2px!important;padding:12px!important;border-radius:20px!important;background:rgba(34,38,43,.97)!important;border:1px solid #383d44!important;box-shadow:0 20px 60px rgba(0,0,0,.6)!important}
+#cmenu .cm-head{display:flex;align-items:center;gap:12px;padding:4px 6px 12px;margin-bottom:6px;border-bottom:1px solid #383d44}
+#cmenu .cm-head img{flex:none;width:30px;height:auto;opacity:.9}
+#cmenu .cm-head b{display:block;font:600 16px/1.15 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#f2f4f6}
+#cmenu #mode-label{padding:3px 0 0!important;color:#ffc247!important;font:500 11px/1.3 Oswald,'Arial Narrow',sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase}
+#cmenu button,#cmenu a{gap:12px!important;padding:10px 12px!important;border-radius:12px!important;border:1px solid transparent!important;background:transparent!important;color:#f2f4f6!important;font:600 15px/1.2 'Source Sans 3',system-ui,sans-serif!important}
+#cmenu button:hover,#cmenu a:hover,#cmenu button:focus-visible,#cmenu a:focus-visible{background:#2a2f35!important;border-color:#383d44!important}
+#cmenu svg{flex:none;width:19px;height:19px;color:#a0a8b2}
+#cmenu button:hover svg,#cmenu a:hover svg,#cmenu button:focus-visible svg,#cmenu a:focus-visible svg{color:#ffc247}
+#cmenu #home-link{margin-top:6px!important;border-top:1px solid #383d44!important;border-radius:0 0 12px 12px!important;padding-top:12px!important}
+#cmenu #home-link:hover{border-top-color:#383d44!important}
+
+/* зміст гутірки */
+#hs{background:#1b1d21}
+#hs .in{max-width:900px;padding:26px max(16px,4vw) 48px}
+#hs .in h2{display:flex;align-items:center;gap:16px;margin:30px 0 20px;font:600 clamp(2.2rem,5vw,3.4rem)/1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase}
+#hs .in h2:before{content:"";flex:none;width:44px;height:53px;background:url("{{EMBLEM}}") center/contain no-repeat;opacity:.9}
+#hs .in .sc{margin:26px 0 12px;font:500 13px Oswald,'Arial Narrow',sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#9fb57a}
+#hs .in button{padding:12px 18px;border-radius:14px;border:1px solid #383d44;background:#22262b;color:#f2f4f6;font:600 16px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+#hs .in button:hover,#hs .in button:focus-visible{border-color:#ffc247;outline:none}
+#hs .in button[style*="--rc"]{display:inline-flex;align-items:center;gap:10px}
+#hs .in button[style*="--rc"]:before{content:"";flex:none;width:12px;height:12px;border-radius:50%;background:var(--rc)}
+#hs .hx,#hs .back-home{padding:9px 16px!important;border-radius:99px!important;border:1px solid #383d44!important;background:#22262b!important;color:#cfd5dc!important;font:700 15px 'Source Sans 3',system-ui,sans-serif!important}
+#hs .hx:hover,#hs .back-home:hover{color:#f2f4f6!important;border-color:#5a6573!important}
+
+/* вікно «Пульт на телефоні» (стилі пульта додаються пізніше, тому тут сильніші селектори) */
+html body #pult-dlg .pd-box{width:min(480px,100%);padding:26px 26px 22px;border-radius:22px;border:1px solid #383d44;border-top:4px solid #ffc247;background:#22262b}
+html body #pult-dlg h2{display:flex;align-items:center;gap:12px;margin:0 44px 16px 0;font:600 24px/1.15 Oswald,'Arial Narrow',sans-serif;letter-spacing:.05em}
+html body #pult-dlg h2 img{flex:none;width:28px;height:auto}
+html body #pult-dlg .pd-x{right:14px;top:14px;background:#2a2f35;border-color:#383d44}
+html body #pult-dlg .pd-status{background:#1b1d21;border-color:#383d44}
+html body #pult-dlg .pd-b{border-radius:12px;background:#2a2f35;border-color:#4a515b}
+html body #pult-dlg .pd-b.go{background:#ffc247;border-color:#ffc247;color:#16130a}
+html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
