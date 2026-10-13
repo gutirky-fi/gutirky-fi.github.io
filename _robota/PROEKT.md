@@ -20,6 +20,7 @@
 | Сховище | `gutirky-fi/gutirky-fi.github.io` (публічне; обліковий запис GitHub власника — `gutirky-fi`) |
 | Готова сторінка сайту | `index.html` (один файл, усе вбудовано; **не правити руками — збирається**) |
 | Сторінка пульта для телефона | `pult/index.html` (окрема, редагується прямо тут) |
+| Історія сайту (внутрішня, не в меню) | https://gutirky-fi.github.io/istoriya/ — створює `_robota/istoriya/zibraty.py` з `_robota/istoriya/podii.json` і історії git; картинки в `istoriya/img/` |
 | Приховування | `robots.txt` (`Disallow: /`) + `<meta name="robots" content="noindex, nofollow">` у сторінках |
 | `.nojekyll` | щоб GitHub Pages віддавав файли як є (зокрема папку `_robota`) |
 | Робочі файли (джерела) | `_robota/` — з них збирається `index.html` |
@@ -80,6 +81,7 @@ cd gutirky-fi.github.io
 python3 _robota/vmilosti/zibraty_katalog.py   # лише якщо змінювали дані каталогу
 python3 _robota/build.py                      # -> index.html (дизайн Д1, з noindex)
 python3 _robota/perevirka/perevirka.py        # має закінчитись «УСЕ ГАРАЗД»
+python3 _robota/istoriya/zibraty.py           # сторінка історії (після помітних змін — спершу додати подію в podii.json)
 git add -A && git commit -m "..." && git push origin HEAD:main
 gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs --jq '.workflow_runs[0] | "\(.head_sha[0:7]) \(.status) \(.conclusion)"'
 ```
@@ -148,4 +150,4 @@ gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs --jq '.workflow_runs[0
 - **13.10.2026** — сайт на GitHub Pages (раніше файл + Netlify). Пульт через QR і 6-значний код. Прихований від пошуковиків. Меню гутірки — в одному куті.
 - **13.10.2026** — обрано дизайн Д1 (з варіантів А–Е на полотні), правки тексту («Пластове юнацтво», «для сходин гуртка і таборів», без «вишколів» і обіцянок), карта в «Остання гутірка», вирівняний підвал, меню/зміст/пульт у стилі Д1. Опубліковано.
 - **13.10.2026** — значок вкладки (емблема). Каталог вмілостей: спершу 14 прикладів, потім 448 з plast.global, потім — за рішенням власника — 162 з порталу Пласту у Фінляндії з нашивками.
-- **14.10.2026** — чорно-білі нашивки на світлій підкладці, «Настільні ігри» обрізані по колу. Робочі файли перенесено в `_robota/`, створено цей опис і `CLAUDE.md`. Заплановано щорічну перевірку каталогу (1 вересня).
+- **14.10.2026** — чорно-білі нашивки на світлій підкладці, «Настільні ігри» обрізані по колу. Робочі файли перенесено в `_robota/`, створено цей опис і `CLAUDE.md`. Заплановано щорічну перевірку каталогу (1 вересня). Сторінка «Історія сайту» (/istoriya/).
