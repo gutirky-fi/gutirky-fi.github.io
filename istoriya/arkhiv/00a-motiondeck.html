@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>MotionDeck — твій анімований редактор презентацій</title>
+<style>
+  :root{font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#eef0fd;background:#10121d;font-synthesis:none}
+  *{box-sizing:border-box} body{margin:0;min-height:100vh}button,input,textarea,select{font:inherit}button{cursor:pointer}button:disabled{opacity:.38;cursor:not-allowed}button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #b4a0ff;outline-offset:2px}a{color:inherit}
+  .app{height:100dvh;min-height:680px;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{height:70px;flex-shrink:0;display:flex;align-items:center;gap:16px;padding:0 23px;border-bottom:1px solid #292c3c;background:#171924}
+  .brand{display:flex;gap:11px;align-items:center;font-size:17px;font-weight:800;letter-spacing:-.65px;white-space:nowrap}.brand-mark{width:33px;height:33px;border-radius:11px;background:linear-gradient(135deg,#ff71cf,#8c65ff 60%,#48caff);display:grid;place-items:center;color:white;font-size:18px;box-shadow:0 3px 18px #9b62ff55}.brand small{color:#ad9bff;font-size:9px;letter-spacing:1.5px;font-weight:800;display:block;margin-top:-2px}
+  .separator{height:29px;width:1px;background:#38394a}.project-name{min-width:120px;max-width:270px;flex:1;background:transparent;border:1px solid transparent;color:#eff1ff;padding:9px 11px;border-radius:9px;font-weight:600;white-space:nowrap;text-overflow:ellipsis}.project-name:hover,.project-name:focus{border-color:#47445c;background:#202230;outline:0}
+  .save-hint{font-size:12px;color:#9397aa;white-space:nowrap;display:flex;gap:6px;align-items:center}.save-dot{width:7px;height:7px;border-radius:50%;background:#4bce9a}.actions{display:flex;gap:8px;align-items:center;margin-left:auto;flex-wrap:nowrap}
+  .btn{border:1px solid #3b3c4d;border-radius:10px;background:#262936;color:#ecedfa;font-weight:650;font-size:13px;padding:10px 13px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.18s}.btn:hover:not(:disabled){background:#34364a;border-color:#696184}.btn.primary{border-color:#b39dff;background:linear-gradient(125deg,#b48aff,#805eff);color:#111026;box-shadow:0 4px 20px #9472ff40}.btn.primary:hover{filter:brightness(1.08)}.btn.ghost{border-color:transparent;background:transparent}.btn.small{padding:7px 10px;font-size:12px}.btn.icon{width:33px;height:33px;padding:0;font-size:18px}.btn.danger:hover{color:#ffb2b2}.desktop-only{} .mobile-label{display:none}
+  .workspace{flex:1;min-height:0;display:grid;grid-template-columns:215px minmax(0,1fr) 280px}
+  .left,.right{overflow-y:auto;scrollbar-color:#494459 transparent}.left{border-right:1px solid #2d3040;background:#171924;padding:17px 13px}.right{border-left:1px solid #2d3040;background:#171924;padding:20px}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:1px 3px 14px}.eyebrow{font-size:10px;letter-spacing:1.8px;color:#969bae;font-weight:800;text-transform:uppercase}.small-count{font-size:11px;color:#969bae;background:#272938;border-radius:8px;padding:5px 8px}
+  .slide-list{display:flex;flex-direction:column;gap:10px}.slide-choice{display:block;width:100%;text-align:left;border:1.5px solid transparent;border-radius:12px;background:transparent;color:#b8bac9;padding:6px;transition:background .2s}.slide-choice:hover{background:#222433}.slide-choice.selected{background:#292439;border-color:#8f74ff}.thumb{aspect-ratio:16/9;width:100%;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;position:relative;padding:12px;text-align:center}.thumb:before{content:"";position:absolute;width:85px;height:85px;background:#ffffff18;border-radius:50%;right:-22px;top:-25px;filter:blur(1px)}.thumb b{position:relative;font-size:12px;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#fff;word-break:break-word}.thumb.aurora{background:linear-gradient(135deg,#4c228d,#5e3eb7 53%,#ca59b6)}.thumb.midnight{background:linear-gradient(135deg,#080d23,#1c3260 60%,#345e79)}.thumb.sunset{background:linear-gradient(125deg,#f45f79,#f69b5c)}.thumb.mint{background:linear-gradient(125deg,#0c6b78,#17bba1)}.slide-caption{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin:6px 2px 0}.slide-index{color:#c5b5ff;font-weight:800}.add-slide{width:100%;border:1px dashed #575267;border-radius:10px;background:#232331;color:#c9bbff;padding:13px;font-size:13px;font-weight:750;margin-top:15px}.add-slide:hover{background:#342a4c}
+  .center{min-width:0;min-height:0;background:radial-gradient(ellipse at 50% 15%,#2b2345 0%,#191b29 58%,#151721);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;gap:20px}.stage-header,.stage-footer{width:min(100%,980px);display:flex;align-items:center;justify-content:space-between;gap:10px}.stage-title{font-weight:650;font-size:13px;color:#cac8dd}.tip{font-size:12px;color:#9294a9}.canvas-wrapper{width:min(100%,980px);margin:auto 0 0;box-shadow:0 27px 90px #05051172,0 0 0 1px #ffffff19;border-radius:15px;overflow:hidden}.canvas{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative}.stage-footer{margin:0 0 auto;flex-wrap:wrap}.stage-footer .controls{display:flex;gap:8px;align-items:center}.help-text{font-size:12px;color:#a29daf}
+  .section{margin-bottom:24px}.section-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}.section-title{font-size:12px;font-weight:750;color:#eff0fc}.field-label{font-size:11px;font-weight:700;color:#aaadbf;margin-bottom:7px;display:block}.field{width:100%;border:1px solid #404253;border-radius:9px;background:#252734;color:#f2f0fe;outline:0;padding:10px 11px;font-size:13px;line-height:1.5}.field:focus{border-color:#a68dff}.field::placeholder{color:#7a7e94}textarea.field{min-height:90px;resize:vertical}.field-group{margin-bottom:13px}.layout-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.choice{border:1px solid #434455;color:#c6c6d9;border-radius:10px;background:#242633;text-align:center;padding:10px 4px;font-size:12px;font-weight:700}.choice:hover{background:#353146}.choice.active{border-color:#a68cff;background:#3c305b;color:#e4d7ff}.choice .symbol{font-size:19px;display:block;margin-bottom:4px}.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.theme-dot{aspect-ratio:1;border-radius:10px;border:3px solid #171924;outline:1px solid #444;box-shadow:0 0 0 0 #000}.theme-dot.active{outline:2px solid #d7c6ff;outline-offset:1px}.theme-dot.aurora{background:linear-gradient(130deg,#5b36b5,#ef69bc)}.theme-dot.midnight{background:linear-gradient(130deg,#071225,#2c577e)}.theme-dot.sunset{background:linear-gradient(130deg,#ed4d86,#ffbd6e)}.theme-dot.mint{background:linear-gradient(130deg,#12566c,#23bdad)}.helper{font-size:11px;line-height:1.5;color:#9095ad;margin-top:8px}.image-status{font-size:11px;color:#b2a2da;overflow-wrap:anywhere}.rule{height:1px;background:#333442;margin:22px 0}.mini-row{display:flex;gap:7px;flex-wrap:wrap}.footnote{border-radius:12px;background:#232633;padding:13px;color:#aaaabb;line-height:1.55;font-size:11px}
+  /* Slide appearance: this block is also embedded in exported presentations. */
+  .deck-slide{position:relative;isolation:isolate;overflow:hidden;width:100%;height:100%;color:#fff;container-type:inline-size;display:flex;align-items:center;justify-content:center;background:#2e245f}
+  .deck-slide.theme-aurora{background:linear-gradient(115deg,#1b1246 0%,#5432a0 52%,#b85ac5 100%);--accent:#f3c8fc;--soft:#f1ddff}
+  .deck-slide.theme-midnight{background:linear-gradient(118deg,#061020 0%,#16345c 56%,#207b9d 100%);--accent:#73e2ff;--soft:#d9f6ff}
+  .deck-slide.theme-sunset{background:linear-gradient(120deg,#51204d 0%,#c44670 58%,#f4a353 100%);--accent:#ffe4a8;--soft:#fff1e9}
+  .deck-slide.theme-mint{background:linear-gradient(120deg,#073844 0%,#097d84 58%,#16c29f 100%);--accent:#befce1;--soft:#e2fff8}
+  .shape{position:absolute;pointer-events:none;border-radius:100%;filter:blur(2px);opacity:.4}.shape.one{width:45cqw;height:45cqw;background:radial-gradient(circle,#f0bfff77,transparent 68%);top:-23cqw;right:-7cqw}.shape.two{width:50cqw;height:50cqw;background:radial-gradient(circle,#56caff66,transparent 67%);bottom:-28cqw;left:-15cqw}.shape.three{width:32cqw;height:32cqw;border:1.8cqw solid #ffffff12;top:13cqw;right:-16cqw;transform:rotate(25deg)}.grain{position:absolute;inset:0;opacity:.16;pointer-events:none;background-image:radial-gradient(#fff .55px,transparent .6px);background-size:9px 9px}
+  .slide-main{position:relative;z-index:2;width:100%;padding:7.5cqw 8.7cqw;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}.slide-kicker{text-transform:uppercase;font-size:1.45cqw;letter-spacing:.28em;color:var(--accent);font-weight:800;margin-bottom:2.3cqw}.slide-title{font-size:6.3cqw;line-height:1.08;font-weight:850;letter-spacing:-.055em;margin:0;max-width:85cqw;overflow-wrap:anywhere}.slide-body{font-size:2.15cqw;line-height:1.55;font-weight:450;color:var(--soft);white-space:pre-line;margin:2.2cqw 0 0;max-width:69cqw;overflow-wrap:anywhere}.slide-decor{position:absolute;bottom:3cqw;left:8.7cqw;font-size:1.1cqw;letter-spacing:.3em;opacity:.6;font-weight:700}.slide-no{position:absolute;right:5cqw;bottom:3cqw;font-size:1.2cqw;font-weight:750;opacity:.6}
+  .layout-center .slide-main{align-items:center;text-align:center}.layout-center .slide-title{max-width:83cqw}.layout-center .slide-body{max-width:70cqw}.layout-split .slide-main{width:60%;padding-right:2cqw}.layout-split .slide-title{font-size:5cqw}.layout-split .slide-body{font-size:1.95cqw}.slide-media{position:absolute;right:4.7cqw;top:7.2cqw;width:36cqw;height:40cqw;border-radius:2.5cqw;overflow:hidden;transform:rotate(3deg);box-shadow:0 3cqw 8cqw #0008;border:.5cqw solid #ffffff55;background:linear-gradient(135deg,#ffffff40,#ffffff05)}.slide-media img{width:100%;height:100%;object-fit:cover}.slide-media.no-image{display:grid;place-items:center}.slide-media.no-image:before{content:"✦";font-size:15cqw;color:#ffffffae;text-shadow:0 0 55px #fff8}.layout-quote .slide-main{padding:7cqw 12cqw}.layout-quote .slide-title{font-size:6.4cqw;font-weight:760}.layout-quote .slide-title:before{content:"“";display:block;font-size:13cqw;line-height:.65;color:var(--accent)}
+  .deck-slide:not(.layout-split) .slide-media{display:none}
+  @keyframes slide-rise{from{opacity:0;transform:translateY(4.5cqw)}to{opacity:1;transform:translateY(0)}}@keyframes slide-zoom{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:scale(1)}}@keyframes slide-in{from{opacity:0;transform:translateX(-8cqw)}to{opacity:1;transform:translateX(0)}}@keyframes slide-fade{from{opacity:0}to{opacity:1}}
+  .deck-slide.playing .slide-kicker,.deck-slide.playing .slide-title,.deck-slide.playing .slide-body,.deck-slide.playing .slide-media{animation-duration:.75s;animation-fill-mode:both;animation-timing-function:cubic-bezier(.22,.87,.2,1)}
+  .deck-slide.playing .slide-kicker{animation-delay:.06s}.deck-slide.playing .slide-title{animation-delay:.22s}.deck-slide.playing .slide-body{animation-delay:.44s}.deck-slide.playing .slide-media{animation-delay:.35s}
+  .deck-slide.playing.ani-rise .slide-kicker,.deck-slide.playing.ani-rise .slide-title,.deck-slide.playing.ani-rise .slide-body,.deck-slide.playing.ani-rise .slide-media{animation-name:slide-rise}
+  .deck-slide.playing.ani-zoom .slide-kicker,.deck-slide.playing.ani-zoom .slide-title,.deck-slide.playing.ani-zoom .slide-body,.deck-slide.playing.ani-zoom .slide-media{animation-name:slide-zoom}
+  .deck-slide.playing.ani-slide .slide-kicker,.deck-slide.playing.ani-slide .slide-title,.deck-slide.playing.ani-slide .slide-body,.deck-slide.playing.ani-slide .slide-media{animation-name:slide-in}
+  .deck-slide.playing.ani-fade .slide-kicker,.deck-slide.playing.ani-fade .slide-title,.deck-slide.playing.ani-fade .slide-body,.deck-slide.playing.ani-fade .slide-media{animation-name:slide-fade}
+  @media(prefers-reduced-motion:reduce){.deck-slide.playing .slide-kicker,.deck-slide.playing .slide-title,.deck-slide.playing .slide-body,.deck-slide.playing .slide-media{animation:none!important}}
+  /* End slide appearance */
+  .presenter{position:fixed;inset:0;background:#070911;z-index:50;display:none;flex-direction:column;align-items:center;justify-content:center}.presenter.open{display:flex}.presenter-stage{width:min(100vw,177.77778vh);height:min(56.25vw,100vh);overflow:hidden}.presenter-controls{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);background:#111426df;border:1px solid #ffffff26;backdrop-filter:blur(18px);border-radius:14px;padding:9px 13px;display:flex;align-items:center;gap:14px;font-size:13px}.presenter-controls button{background:#33354a;color:#fff;border:0;border-radius:9px;padding:8px 12px;font-size:16px}.presenter-controls button:hover{background:#585176}.presenter-exit{position:absolute;top:18px;right:20px;background:#171a2cca;border:1px solid #ffffff2a;color:white;border-radius:10px;padding:10px 15px;font-weight:750}
+  /* AI patch panel: JSON is validated data, never executable JavaScript. */
+  .btn.ai-action{border:1px solid #e2b7ff77;background:linear-gradient(120deg,#403069,#553d86);color:#fff1ff}
+  .btn.ai-action:hover{background:linear-gradient(120deg,#584187,#6850a4)}
+  .ai-overlay[hidden]{display:none!important}
+  .ai-overlay{position:fixed;inset:0;z-index:90;background:#040611d9;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(9px)}
+  .ai-panel{width:min(100%,650px);max-height:min(90dvh,900px);overflow:auto;background:linear-gradient(150deg,#252238,#181b2b);border:1px solid #746194;border-radius:21px;padding:27px;box-shadow:0 25px 105px #01020ba6;color:#f4eeff}
+  .ai-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:12px}.ai-head h2{margin:0;font-size:24px;letter-spacing:-.8px}.ai-head p{color:#beb8d1;line-height:1.5;margin:7px 0 0;font-size:13px}
+  .ai-steps{margin:10px 0 16px;padding-left:24px;color:#e4dbf8;font-size:13px;line-height:1.8}.ai-steps strong{color:#fff}
+  .ai-code{width:100%;display:block;min-height:200px;max-height:360px;resize:vertical;background:#0d1221;color:#d9f4e9;border:1px solid #54506d;padding:15px;border-radius:12px;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}
+  .ai-code:focus-visible{outline:2px solid #bb9bff;outline-offset:2px}
+  .ai-toolbar{display:flex;flex-wrap:wrap;gap:9px;margin:12px 0}.ai-toolbar .btn{flex:1}
+  .ai-message{min-height:20px;font-size:12px;margin:8px 0;color:#ffc2c2;line-height:1.5}.ai-message.ok{color:#baf6d7}
+  .ai-small{font-size:12px;color:#aaa7bf;line-height:1.55;margin:12px 0 0}
+  @media(max-width:620px){.ai-panel{padding:17px;border-radius:15px}.ai-head h2{font-size:20px}.ai-code{min-height:155px}.ai-toolbar .btn{font-size:12px}.btn.ai-action{order:-1}}
+  .toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%) translateY(30px);background:#f1eaff;color:#2b2044;border-radius:13px;padding:12px 18px;box-shadow:0 15px 35px #08081488;z-index:70;opacity:0;pointer-events:none;transition:.25s;font-size:13px;font-weight:750;max-width:min(90vw,500px);text-align:center}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:1120px){.workspace{grid-template-columns:155px minmax(0,1fr) 235px}.right{padding:14px}.left{padding:13px 9px}.topbar{padding:0 12px;gap:8px}.brand{font-size:15px}.actions{gap:5px}.btn{padding:9px 10px}.save-hint{display:none}.center{padding:16px}}
+  @media(max-width:800px){.app{height:auto;min-height:100dvh;overflow:visible}.topbar{height:auto;min-height:65px;flex-wrap:wrap;padding:10px 12px}.separator{display:none}.project-name{flex:1;min-width:125px}.actions{width:100%;justify-content:space-between}.desktop-only{display:none}.mobile-label{display:initial}.workspace{display:flex;flex-direction:column}.left{order:2;overflow:visible;border:0;border-top:1px solid #303243;padding:14px}.slide-list{flex-direction:row;overflow-x:auto}.slide-choice{min-width:140px;width:140px}.add-slide{width:140px;flex-shrink:0;margin-top:0;min-height:99px}.left .panel-head{margin-bottom:10px}.center{order:1;min-height:auto;padding:19px 12px 24px;gap:12px}.canvas-wrapper{margin:6px 0 0}.stage-footer{margin:0}.right{order:3;border:0;border-top:1px solid #2c2c3a;overflow:visible;display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}.right .section{margin-bottom:14px}.right .rule{display:none}.right .footnote{grid-column:1/-1}}
+  @media(max-width:520px){.right{display:block;padding:19px}.actions{gap:5px}.actions .btn{font-size:11px;padding:9px 8px}.project-name{max-width:55vw}.center{padding:13px 10px}.stage-header{align-items:flex-start}.tip,.help-text{display:none}.stage-footer{justify-content:center}.slide-caption{font-size:10px}.presenter-controls{bottom:10px}.presenter-exit{top:8px;right:8px;padding:7px 10px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark">✦</div><span>MotionDeck<small>STUDIO</small></span></div>
+    <div class="separator"></div>
+    <input id="projectName" class="project-name" aria-label="Назва презентації" maxlength="85" title="Натисни, щоб перейменувати презентацію">
+    <span class="save-hint"><span class="save-dot"></span>Зберігається на пристрої</span>
+    <div class="actions">
+      <button id="openAI" class="btn ai-action" title="Додати чи змінити слайди кодом від ChatGPT">✦ Код від ChatGPT</button>
+      <button id="downloadProject" class="btn" title="Завантажити редагований проєкт">↓ <span class="desktop-only">Проєкт</span><span class="mobile-label">.json</span></button>
+      <button id="importProject" class="btn" title="Відкрити раніше збережений проєкт">↑ <span class="desktop-only">Відкрити</span><span class="mobile-label">Файл</span></button>
+      <button id="exportPresentation" class="btn" title="Завантажити готову презентацію, що працює без інтернету">↗ <span class="desktop-only">Експорт HTML</span><span class="mobile-label">HTML</span></button>
+      <button id="presentButton" class="btn primary">▶ Показати</button>
+    </div>
+  </header>
+  <div class="workspace">
+    <aside class="left"><div class="panel-head"><span class="eyebrow">Слайди</span><span id="slideCount" class="small-count">3 слайди</span></div><div id="slideList" class="slide-list"></div><button id="addSlide" class="add-slide">＋ Додати слайд</button></aside>
+    <main class="center">
+      <div class="stage-header"><div class="stage-title">✦ Редактор презентації</div><div class="tip">16:9 · широкий екран</div></div>
+      <div class="canvas-wrapper"><div class="canvas" id="slideCanvas" aria-label="Попередній перегляд слайда"></div></div>
+      <div class="stage-footer"><div class="controls"><button id="previousSlide" class="btn icon" title="Попередній слайд">‹</button><span id="slidePosition" class="tip" style="min-width:38px;text-align:center">1 / 3</span><button id="nextSlide" class="btn icon" title="Наступний слайд">›</button><button id="playAnimation" class="btn small">✧ Переглянути анімацію</button></div><span class="help-text">У режимі показу: ← → та Esc</span></div>
+    </main>
+    <aside class="right" id="inspector"></aside>
+  </div>
+</div>
+<div id="presenter" class="presenter" role="dialog" aria-modal="true" aria-label="Режим презентації">
+  <div id="presenterStage" class="presenter-stage"></div>
+  <button id="exitPresenter" class="presenter-exit">✕ Вийти · Esc</button>
+  <div class="presenter-controls"><button id="presentPrev" aria-label="Попередній слайд">←</button><span id="presentCount">1 / 3</span><button id="presentNext" aria-label="Наступний слайд">→</button></div>
+</div>
+<div id="aiDialog" class="ai-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="aiTitle">
+  <section class="ai-panel">
+    <div class="ai-head">
+      <div><h2 id="aiTitle">✨ Зміни від ChatGPT</h2><p>Додавай, замінюй та переставляй слайди, не відкриваючи код сайту.</p></div>
+      <button id="closeAI" type="button" class="btn icon" aria-label="Закрити вікно">✕</button>
+    </div>
+    <ol class="ai-steps"><li>Натисни <strong>«Скопіювати план для ChatGPT»</strong>.</li><li>Встав його в чат зі мною та напиши, що хочеш змінити.</li><li>Скопіюй мою JSON-команду, встав нижче та натисни <strong>«Застосувати зміни»</strong>.</li></ol>
+    <button id="copyAIRequest" class="btn ai-action" type="button" style="width:100%">📋 Скопіювати план для ChatGPT</button>
+    <label for="aiCodeInput" class="field-label" style="margin-top:16px">Сюди встав код від ChatGPT (JSON)</label>
+    <textarea id="aiCodeInput" class="ai-code" spellcheck="false" autocomplete="off" placeholder="Встав сюди JSON-команду, яку я надішлю тобі..."></textarea>
+    <div id="aiMessage" class="ai-message" role="status" aria-live="polite"></div>
+    <div class="ai-toolbar"><button id="sampleAI" type="button" class="btn">👀 Показати приклад</button><button id="applyAI" type="button" class="btn primary">✓ Застосувати зміни</button></div>
+    <p class="ai-small">⚡ Команди працюють без інтернету. Вставляй лише JSON (не JavaScript чи HTML). Порядок визначається полями <code>after</code> («після») та <code>before</code> («перед»). Кожен слайд перенумерується автоматично.</p>
+  </section>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div><input id="projectFileInput" type="file" accept="application/json,.json" hidden><input id="imageFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+<script>
+(()=>{'use strict';
+const storageKey='motiondeck-personal-v1';
+const themes=['aurora','midnight','sunset','mint'];
+const layouts=['center','split','quote'];
+const animations=['rise','zoom','slide','fade'];
+const labels={center:'По центру',split:'З картинкою',quote:'Цитата',rise:'Знизу вгору',zoom:'Збільшення',slide:'Зліва',fade:'Поява'};
+const defaults={name:'Моя крута презентація',slides:[
+ {kicker:'СТВОРЕНО ТОБОЮ',title:'Ідеї, які оживають.',body:'Твоя перша анімована презентація ✨\nЗмінюй текст, кольори та ефекти.',theme:'aurora',layout:'center',animation:'zoom',image:''},
+ {kicker:'РОБИ ПО-СВОЄМУ',title:'Кожен слайд — особливий.',body:'Додавай власні фото, експериментуй із дизайном і створюй свою історію.',theme:'midnight',layout:'split',animation:'slide',image:''},
+ {kicker:'ЧАС ДИВУВАТИ',title:'Вау-ефект за секунди.',body:'Натисни «Показати», щоб побачити анімацію. А потім збережи все одним HTML-файлом.',theme:'sunset',layout:'quote',animation:'rise',image:''}
+]};
+const clone=x=>JSON.parse(JSON.stringify(x));
+const safeText=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+function normalizeSlide(s){return{title:String(s?.title??'Новий слайд').slice(0,300),body:String(s?.body??'').slice(0,1500),kicker:String(s?.kicker??'').slice(0,120),theme:themes.includes(s?.theme)?s.theme:'aurora',layout:layouts.includes(s?.layout)?s.layout:'center',animation:animations.includes(s?.animation)?s.animation:'rise',image:typeof s?.image==='string'&&/^data:image\/(?:png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(s.image)?s.image:''}}
+function normalize(x){return{name:String(x?.name??defaults.name).slice(0,85)||defaults.name,slides:Array.isArray(x?.slides)&&x.slides.length?x.slides.slice(0,100).map(normalizeSlide):clone(defaults.slides)}}
+let project;try{project=normalize(JSON.parse(localStorage.getItem(storageKey)))}catch{project=clone(defaults)}
+let selected=0, presenting=false, presentIndex=0, timer;
+const el=id=>document.getElementById(id), current=()=>project.slides[selected];
+function toast(message){let e=el('toast');e.textContent=message;e.classList.add('show');clearTimeout(timer);timer=setTimeout(()=>e.classList.remove('show'),3200)}
+function store(){try{localStorage.setItem(storageKey,JSON.stringify(project));el('saveHint')?.setAttribute('title','Збережено')}catch{toast('Місце в браузері закінчилося: збережи проєкт у .json')}}
+function markup(slide,n,playing=false){const s=normalizeSlide(slide);return `<section class="deck-slide theme-${s.theme} layout-${s.layout} ani-${s.animation}${playing?' playing':''}"><div class="shape one"></div><div class="shape two"></div><div class="shape three"></div><div class="grain"></div><div class="slide-main"><div class="slide-kicker">${safeText(s.kicker)||'&nbsp;'}</div><h1 class="slide-title">${safeText(s.title)||'Новий слайд'}</h1><p class="slide-body">${safeText(s.body)}</p></div><div class="slide-media ${s.image?'':'no-image'}">${s.image?`<img src="${s.image}" alt="Фото слайда">`:''}</div><div class="slide-decor">MOTIONDECK · STUDIO</div><div class="slide-no">${String(n+1).padStart(2,'0')}</div></section>`}
+function renderList(){el('slideCount').textContent=`${project.slides.length} слайд(ів)`;el('slideList').innerHTML=project.slides.map((s,i)=>`<button type="button" class="slide-choice ${i===selected?'selected':''}" data-index="${i}" aria-label="Обрати слайд ${i+1}"><div class="thumb ${s.theme}"><b>${safeText(s.title)}</b></div><div class="slide-caption"><span><span class="slide-index">${String(i+1).padStart(2,'0')}</span> · ${safeText(s.kicker).slice(0,15)||'Слайд'}</span><span>${i===selected?'●':'○'}</span></div></button>`).join('')}
+function renderCanvas(animate=false){el('slideCanvas').innerHTML=markup(current(),selected,animate);el('slidePosition').textContent=`${selected+1} / ${project.slides.length}`;el('previousSlide').disabled=selected===0;el('nextSlide').disabled=selected===project.slides.length-1}
+function renderInspector(){const s=current();el('inspector').innerHTML=`
+ <div class="section"><div class="section-heading"><span class="eyebrow">Вміст слайда ${selected+1}</span></div><div class="field-group"><label class="field-label" for="editKicker">Надпис зверху</label><input class="field" id="editKicker" maxlength="120" data-field="kicker" value="${safeText(s.kicker)}" placeholder="НАПРИКЛАД: МОЯ ІДЕЯ"></div><div class="field-group"><label class="field-label" for="editTitle">Заголовок</label><textarea class="field" id="editTitle" rows="2" maxlength="300" data-field="title" placeholder="Назва слайда">${safeText(s.title)}</textarea></div><div class="field-group"><label class="field-label" for="editBody">Опис</label><textarea class="field" id="editBody" maxlength="1500" data-field="body" placeholder="Додай опис">${safeText(s.body)}</textarea></div></div>
+ <div class="rule"></div><div class="section"><div class="section-heading"><span class="section-title">Макет</span></div><div class="layout-grid">${layouts.map((v,i)=>`<button type="button" class="choice ${v===s.layout?'active':''}" data-layout="${v}"><span class="symbol">${['▣','◧','❝'][i]}</span>${labels[v]}</button>`).join('')}</div></div>
+ <div class="section"><div class="section-heading"><span class="section-title">Кольори</span></div><div class="theme-grid">${themes.map(v=>`<button type="button" aria-label="Тема ${v}" title="Тема ${v}" class="theme-dot ${v} ${v===s.theme?'active':''}" data-theme="${v}"></button>`).join('')}</div></div>
+ <div class="section" style="margin-top:-9px"><button class="btn small" type="button" id="themeAll">🎨 Застосувати цей колір до всіх слайдів</button></div>
+ <div class="section"><div class="section-heading"><span class="section-title">Анімація появи</span></div><div class="layout-grid">${animations.map((v,i)=>`<button type="button" class="choice ${v===s.animation?'active':''}" data-animation="${v}"><span class="symbol">${['↑','✧','→','◌'][i]}</span>${labels[v]}</button>`).join('')}</div></div>
+ <div class="section"><div class="section-heading"><span class="section-title">Фото на слайді</span></div><div class="mini-row"><button class="btn small" id="uploadImage">＋ Додати фото</button>${s.image?'<button class="btn small danger" id="removeImage">Прибрати</button>':''}</div><p class="helper">Фото видно в макеті «З картинкою». PNG, JPG, WebP або GIF до 5 МБ.</p></div>
+ <div class="rule"></div><div class="section"><div class="section-heading"><span class="section-title">Дії зі слайдом</span></div><div class="mini-row"><button class="btn small" id="duplicateSlide">⧉ Копія</button><button class="btn small" id="moveLeft" ${selected===0?'disabled':''}>← Вище</button><button class="btn small" id="moveRight" ${selected===project.slides.length-1?'disabled':''}>→ Нижче</button><button class="btn small danger" id="deleteSlide">✕ Видалити</button></div></div>
+ <div class="footnote">🔒 Сайт працює без акаунта. Твої дані залишаються в цьому браузері. Щоб не втратити роботу, періодично завантажуй файл проєкту (.json).</div>`}
+function draw(){el('projectName').value=project.name;renderList();renderCanvas();renderInspector()}
+function pick(i){if(i<0||i>=project.slides.length)return;selected=i;draw()}
+function edit(field,v){current()[field]=v;store();renderCanvas();renderList()}
+function updateProp(prop,value){current()[prop]=value;store();renderCanvas(true);renderList();renderInspector()}
+function add(){project.slides.splice(selected+1,0,{kicker:'НОВА ІДЕЯ',title:'Мій новий слайд',body:'Напиши тут щось цікаве.',theme:themes[selected%themes.length],layout:'center',animation:'rise',image:''});selected++;store();draw();toast('Слайд додано ✨')}
+function duplicate(){project.slides.splice(selected+1,0,clone(current()));selected++;store();draw();toast('Копію слайда створено')}
+function remove(){if(project.slides.length===1){toast('Має залишитися хоча б один слайд');return}project.slides.splice(selected,1);selected=Math.min(selected,project.slides.length-1);store();draw();toast('Слайд видалено')}
+function move(dir){let i=selected+dir;if(i<0||i>=project.slides.length)return;[project.slides[selected],project.slides[i]]=[project.slides[i],project.slides[selected]];selected=i;store();draw()}
+function present(){presentIndex=selected;presenting=true;el('presenter').classList.add('open');el('app').setAttribute('aria-hidden','true');showPresent();el('exitPresenter').focus()}
+function showPresent(){el('presenterStage').innerHTML=markup(project.slides[presentIndex],presentIndex,true);el('presentCount').textContent=`${presentIndex+1} / ${project.slides.length}`;el('presentPrev').disabled=presentIndex===0;el('presentNext').disabled=presentIndex===project.slides.length-1}
+function exit(){presenting=false;el('presenter').classList.remove('open');el('app').removeAttribute('aria-hidden');el('presentButton').focus()}
+function download(contents,name,type){const blob=new Blob([contents],{type}),link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),60000)}
+function fileBase(){return(project.name.trim()||'prezentatsiia').replace(/[\\/:*?"<>|]/g,'').replace(/\s+/g,'-').slice(0,65)||'prezentatsiia'}
+function downloadJson(){download(JSON.stringify(project,null,2),fileBase()+'.json','application/json;charset=utf-8');toast('Редагований проєкт завантажено')}
+function exportHTML(){
+ const styleText=Array.from(document.styleSheets).map(sheet=>{try{return Array.from(sheet.cssRules).map(r=>r.cssText).join('\n')}catch{return ''}}).join('\n');
+ // Include the exact slide markup and offline CSS in a standalone slideshow.
+ const slides=project.slides.map((s,i)=>markup(s,i,true));
+ const html=`<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(project.name)}</title><style>*{box-sizing:border-box}html,body{margin:0;background:#090b16;color:white;font-family:Inter,ui-sans-serif,system-ui,sans-serif;height:100%;overflow:hidden}${styleText}\nbody{display:flex;align-items:center;justify-content:center}.export-stage{position:relative;width:min(100vw,177.77778vh);height:min(56.25vw,100vh)}.export-stage>.deck-slide{position:absolute;inset:0;display:none}.export-stage>.deck-slide.active{display:flex}.export-controls{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:13px;padding:8px 12px;border-radius:12px;background:#14172bdb;color:#fff;z-index:8;font-size:13px;backdrop-filter:blur(12px);opacity:.45;transition:opacity .2s}.export-controls:hover,.export-controls:focus-within{opacity:1}.export-controls button{border:0;background:#36394d;color:#fff;border-radius:8px;font:inherit;padding:8px 13px;cursor:pointer}.export-controls button:disabled{opacity:.3;cursor:default}@media print{.export-controls{display:none!important}.export-stage{width:100vw;height:56.25vw;page-break-after:always}}</style></head><body><main class="export-stage" id="stage">${slides.join('')}</main><nav class="export-controls" aria-label="Керування презентацією"><button id="prev" aria-label="Попередній слайд">←</button><span id="counter"></span><button id="next" aria-label="Наступний слайд">→</button></nav><script>(()=>{const pages=[...document.querySelectorAll('.export-stage>.deck-slide')];let i=0;const p=document.getElementById('prev'),n=document.getElementById('next'),count=document.getElementById('counter');function show(){pages.forEach((el,j)=>{el.classList.toggle('active',j===i);el.classList.remove('playing');if(j===i){void el.offsetWidth;el.classList.add('playing')}});p.disabled=i===0;n.disabled=i===pages.length-1;count.textContent=(i+1)+' / '+pages.length}p.onclick=()=>{i=Math.max(0,i-1);show()};n.onclick=()=>{i=Math.min(pages.length-1,i+1);show()};document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();n.click()}if(e.key==='ArrowLeft'){e.preventDefault();p.click()}});show()})()<\/script></body></html>`;
+ download(html,fileBase()+'-show.html','text/html;charset=utf-8');toast('Готову презентацію HTML завантажено')
+}
+function importJson(file){if(!file)return;if(file.size>30*1024*1024){toast('Файл проєкту завеликий');return}const reader=new FileReader();reader.onload=()=>{try{const obj=JSON.parse(reader.result);if(!obj||!Array.isArray(obj.slides)||obj.slides.length===0)throw Error('bad');project=normalize(obj);selected=0;store();draw();toast('Проєкт успішно відкрито 🎉')}catch{toast('Цей файл не схожий на проєкт MotionDeck')}};reader.readAsText(file)}
+function uploadImage(file){if(!file)return;if(file.size>5*1024*1024){toast('Максимальний розмір фото — 5 МБ');return}if(!['image/png','image/jpeg','image/webp','image/gif'].includes(file.type)){toast('Обери PNG, JPG, WebP або GIF');return}const index=selected,reader=new FileReader();reader.onload=()=>{if(typeof reader.result!=='string')return;project.slides[index].image=reader.result;project.slides[index].layout='split';store();draw();toast('Фото додано на слайд')};reader.readAsDataURL(file)}
+// AI operations change presentation data, not executable source code.
+const validSlideFields=['title','body','kicker','theme','layout','animation'];
+function requireIndex(where, slides){
+ let index=-1;
+ if(typeof where==='number' && Number.isInteger(where)) index=where-1;
+ else if(typeof where==='string'){
+   let q=where.trim();
+   if(/^\d+$/.test(q))index=Number(q)-1;
+   else{
+     const matches=slides.map((s,i)=>({s,i})).filter(x=>x.s.title.trim().toLocaleLowerCase('uk')===q.toLocaleLowerCase('uk'));
+     if(matches.length===1)index=matches[0].i;
+     else if(matches.length>1)throw Error('Є кілька слайдів із назвою «'+q+'». Укажи номер слайда.');
+     else throw Error('Не знайдено слайд «'+q+'». Скопіюй точну назву з плану.');
+   }
+ } else throw Error('Укажи номер або точну назву слайда.');
+ if(index<0||index>=slides.length)throw Error('Слайда з таким номером немає.');
+ return index;
+}
+function placementIndex(cmd,slides,defaultIndex){
+ if(cmd.before!==undefined && cmd.after!==undefined)throw Error('Укажи лише «after» або «before», не обидва.');
+ if(cmd.after!==undefined)return requireIndex(cmd.after,slides)+1;
+ if(cmd.before!==undefined)return requireIndex(cmd.before,slides);
+ return Math.max(0,Math.min(defaultIndex,slides.length));
+}
+function cleanPatch(obj){
+ if(!obj || typeof obj!=='object' || Array.isArray(obj))throw Error('Слайд має бути об’єктом із назвою та текстом.');
+ const patch={};
+ for(const key of validSlideFields)if(Object.prototype.hasOwnProperty.call(obj,key)){
+   if(typeof obj[key]!=='string')throw Error('Поле «'+key+'» має містити текст.');
+   if(key==='theme'&&!themes.includes(obj[key]))throw Error('Невідома тема. Обери aurora, midnight, sunset або mint.');
+   if(key==='layout'&&!layouts.includes(obj[key]))throw Error('Невідомий макет. Обери center, split або quote.');
+   if(key==='animation'&&!animations.includes(obj[key]))throw Error('Невідома анімація. Обери rise, zoom, slide або fade.');
+   patch[key]=obj[key];
+ }
+ if(!Object.keys(patch).length)throw Error('У коді немає інформації, яку можна змінити.');
+ return patch;
+}
+function applyCommand(cmd, work, currentFocus){
+ if(!cmd||typeof cmd!=='object'||Array.isArray(cmd))throw Error('Неправильна форма команди.');
+ const action=String(cmd.action??'').toLowerCase();
+ const slides=work.slides;
+ if(action==='add'||action==='insert'){
+   if(slides.length>=100)throw Error('Максимум 100 слайдів у презентації.');
+   const patch=cleanPatch(cmd.slide);
+   if(!patch.title)throw Error('Новому слайду потрібен «title» (назва).');
+   const at=placementIndex(cmd,slides,currentFocus+1);
+   const source=slides[Math.max(0,Math.min(at-1,slides.length-1))];
+   slides.splice(at,0,normalizeSlide({theme:source?.theme||'aurora',layout:'center',animation:'rise',...patch}));
+   return at;
+ }
+ if(action==='update'||action==='edit'||action==='replace'){
+   const at=requireIndex(cmd.target,slides);
+   const patch=cleanPatch(cmd.changes||cmd.slide);
+   slides[at]=normalizeSlide({...slides[at],...patch});
+   return at;
+ }
+ if(action==='delete'||action==='remove'){
+   if(slides.length<2)throw Error('Не можна видалити останній слайд.');
+   const at=requireIndex(cmd.target,slides);
+   slides.splice(at,1);
+   return Math.min(at,slides.length-1);
+ }
+ if(action==='move'){
+   const from=requireIndex(cmd.target,slides);
+   if(cmd.after===undefined && cmd.before===undefined)throw Error('Для переміщення вкажи «after» або «before».');
+   const moving=slides.splice(from,1)[0];
+   try{
+     const to=placementIndex(cmd,slides,from);
+     slides.splice(to,0,moving);
+     return to;
+   }catch(e){slides.splice(from,0,moving);throw e}
+ }
+ if(action==='theme'||action==='settheme'){
+   if(!themes.includes(cmd.theme))throw Error('Тема повинна бути aurora, midnight, sunset або mint.');
+   for(const slide of slides)slide.theme=cmd.theme;
+   return Math.min(currentFocus,slides.length-1);
+ }
+ throw Error('Невідома дія «'+action+'». Доступні: add, update, delete, move, theme.');
+}
+function parseCode(text){
+ const raw=text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```\s*$/,'');
+ if(!raw)throw Error('Спочатку встав JSON-код у поле.');
+ if(raw.length>100000)throw Error('Код надто великий. Застосовуй зміни частинами.');
+ let parsed;try{parsed=JSON.parse(raw)}catch{throw Error('Не вдалося прочитати JSON. Скопіюй усю команду разом із фігурними дужками { }.')}
+ const commands=Array.isArray(parsed)?parsed:Array.isArray(parsed?.commands)?parsed.commands:[parsed];
+ if(!commands.length||commands.length>30)throw Error('За раз можна виконати від 1 до 30 команд.');
+ return commands;
+}
+function applyAICode(){
+ const message=el('aiMessage');message.classList.remove('ok');
+ try{
+   const commands=parseCode(el('aiCodeInput').value);
+   const work=clone(project);
+   let focus=selected;
+   for(const cmd of commands)focus=applyCommand(cmd,work,focus);
+   project=normalize(work);selected=Math.min(focus,project.slides.length-1);
+   store();draw();message.classList.add('ok');
+   message.textContent='Готово! Застосовано '+commands.length+' змін(и). Збережи проєкт у .json як резервну копію.';
+   toast('Зміни додано до презентації ✨');
+ }catch(e){message.textContent='⚠️ '+e.message}
+}
+function aiOutline(){
+ const lines=project.slides.map((s,i)=>`${i+1}. ${s.title} — ${s.body.replace(/\s+/g,' ').slice(0,170)}`).join('\n');
+ return `Я роблю презентацію в MotionDeck. Допоможи мені додати або змінити слайди.\n\nМОЯ ПРЕЗЕНТАЦІЯ: ${project.name}\nПОТОЧНА ПОСЛІДОВНІСТЬ:\n${lines}\n\nМОЄ ПРОХАННЯ: [ТУТ НАПИШУ, ЩО ПОТРІБНО ЗРОБИТИ]\n\nВАЖЛИВО: Поверни ЛИШЕ валідний JSON без пояснень та без Markdown. Використовуй тільки підтримувані дії:\n- Додати: {"action":"add","after":"точна назва існуючого слайда","slide":{"title":"...","body":"...","kicker":"...","theme":"aurora","layout":"center","animation":"rise"}}\n- Змінити: {"action":"update","target":"точна назва існуючого слайда","changes":{"title":"...","body":"..."}}\n- Видалити: {"action":"delete","target":"точна назва існуючого слайда"}\n- Перемістити: {"action":"move","target":"точна назва слайда","before":"точна назва іншого слайда"}\n- Стиль усіх: {"action":"theme","theme":"midnight"}\nДля додавання можна використовувати before замість after. Для кількох дій поверни об’єкт {"commands":[...]} (команди послідовні). Не вигадуй назви існуючих слайдів; бери з плану. Теми: aurora, midnight, sunset, mint. Макети: center, split, quote. Анімації: rise, zoom, slide, fade. Поле image не використовуй. Якщо я прошу впорядкувати інформацію, сам обери логічне місце та постав точне after або before.\n`;
+}
+function openAI(){el('aiDialog').hidden=false;el('aiMessage').textContent='';el('aiCodeInput').focus()}
+function closeAI(){el('aiDialog').hidden=true;el('openAI').focus()}
+function showAISample(){
+ el('aiCodeInput').value=JSON.stringify({action:'add',after:current().title,slide:{kicker:'НОВИЙ РОЗДІЛ',title:'Мій новий анімований слайд',body:'Сюди можна написати будь-яку інформацію. А сайт сам поставить слайд після вибраного.',theme:'aurora',layout:'center',animation:'zoom'}},null,2);
+ el('aiMessage').classList.remove('ok');el('aiMessage').textContent='Це приклад. Зміни текст, якщо хочеш, і натисни «Застосувати зміни».';
+ el('aiCodeInput').focus();
+}
+async function copyAIOutline(){
+ const text=aiOutline();
+ try{await navigator.clipboard.writeText(text);el('aiMessage').classList.add('ok');el('aiMessage').textContent='План скопійовано! Встав його в чат та заміни [ТУТ НАПИШУ...] своїм проханням.'}
+ catch{
+   // Clipboard can be blocked from local files; display the text so copying is still possible.
+   el('aiCodeInput').value=text;el('aiCodeInput').focus();el('aiCodeInput').select();
+   el('aiMessage').classList.remove('ok');el('aiMessage').textContent='Браузер не дозволив автоматично копіювати. Текст для ChatGPT виділено в полі — скопіюй його вручну. Потім заміни цей текст JSON-командою від мене.';
+ }
+}
+// Event handlers
+el('openAI').onclick=openAI;el('closeAI').onclick=closeAI;el('sampleAI').onclick=showAISample;el('applyAI').onclick=applyAICode;el('copyAIRequest').onclick=copyAIOutline;el('aiDialog').addEventListener('click',e=>{if(e.target===el('aiDialog'))closeAI()});
+el('projectName').addEventListener('input',e=>{project.name=e.target.value;store()});
+el('slideList').addEventListener('click',e=>{const btn=e.target.closest('[data-index]');if(btn)pick(Number(btn.dataset.index))});
+el('addSlide').onclick=add;el('previousSlide').onclick=()=>pick(selected-1);el('nextSlide').onclick=()=>pick(selected+1);
+el('playAnimation').onclick=()=>renderCanvas(true);
+el('presentButton').onclick=present;el('exitPresenter').onclick=exit;el('presentPrev').onclick=()=>{presentIndex=Math.max(0,presentIndex-1);showPresent()};el('presentNext').onclick=()=>{presentIndex=Math.min(project.slides.length-1,presentIndex+1);showPresent()};
+el('downloadProject').onclick=downloadJson;el('exportPresentation').onclick=exportHTML;el('importProject').onclick=()=>el('projectFileInput').click();el('projectFileInput').onchange=e=>{importJson(e.target.files[0]);e.target.value=''};el('imageFileInput').onchange=e=>{uploadImage(e.target.files[0]);e.target.value=''};
+el('inspector').addEventListener('input',e=>{let key=e.target.dataset.field;if(['kicker','title','body'].includes(key))edit(key,e.target.value)});
+el('inspector').addEventListener('click',e=>{let btn=e.target.closest('button');if(!btn)return;const d=btn.dataset;if(d.layout)updateProp('layout',d.layout);else if(d.theme)updateProp('theme',d.theme);else if(d.animation)updateProp('animation',d.animation);else switch(btn.id){case'themeAll':project.slides.forEach(s=>s.theme=project.slides[selected].theme);store();draw();toast('Тему застосовано до всіх слайдів');break;case'uploadImage':el('imageFileInput').click();break;case'removeImage':updateProp('image','');break;case'duplicateSlide':duplicate();break;case'deleteSlide':remove();break;case'moveLeft':move(-1);break;case'moveRight':move(1)}});
+document.addEventListener('keydown',e=>{if(!el('aiDialog').hidden && e.key==='Escape'){closeAI();return}if(!presenting)return;if(e.key==='Escape'){e.preventDefault();exit()}else if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();presentIndex=Math.min(project.slides.length-1,presentIndex+1);showPresent()}else if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();presentIndex=Math.max(0,presentIndex-1);showPresent()}});
+draw();
+})();
+</script>
+</body>
+</html>

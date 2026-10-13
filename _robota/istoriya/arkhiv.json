@@ -1,9 +1,21 @@
 [
   {
-    "chas": "зранку",
+    "chas": "≈ 05:20",
+    "fail": "arkhiv/00a-motiondeck.html",
+    "nazva": "MotionDeck",
+    "opys": "ChatGPT: редактор анімованих презентацій; слайди правили JSON-командами."
+  },
+  {
+    "chas": "ранок",
+    "fail": "arkhiv/00b-persha-prezentatsiia.html",
+    "nazva": "Перша презентація",
+    "opys": "ChatGPT: 15 слайдів, маршрут картою з 4 регіонів."
+  },
+  {
+    "chas": "до 09:10",
     "fail": "arkhiv/01-persha-z-kartoiu.html",
-    "nazva": "Перша версія з картою",
-    "opys": "Подорож картою України, ще без пульта."
+    "nazva": "Карта всіх областей",
+    "opys": "9 регіонів, ще без пульта."
   },
   {
     "chas": "≈ 09:14",
