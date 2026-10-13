@@ -319,6 +319,8 @@ body.v-g.idle{cursor:none}
 #lib .vb img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
 #lib .vb .fb{display:none;align-items:center;justify-content:center;width:92px;height:92px;border-radius:50%;background:#2a2f35;border:2px dashed #4a515b;font:600 34px var(--l-disp);color:#a0a8b2}
 #lib .vb.noimg .fb{display:flex}
+#lib .vb.bw img{border-radius:50%;background:#e9ecef;box-shadow:0 0 0 3px #c7cdd4}
+#lib .vb.sq img{clip-path:circle(45% at 50% 50%);transform:scale(1.08)}
 #lib .vb.lg{width:150px;height:150px}
 #lib .vb.lg .fb{width:130px;height:130px;font-size:46px}
 #lib .vb.sm{width:34px;height:34px}
@@ -1308,7 +1310,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const ptsWord = n => plural(n, ['точка', 'точки', 'точок']);
   const gById = k => BUILTIN.find(b => b.key === k);
   /* нашивка: картинка з plast.global; якщо не завантажиться (немає інтернету) — кружечок з першою літерою */
-  const pic = (src, n, cls) => `<span class="vb ${cls || ''}${src ? '' : ' noimg'}">${src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('noimg');this.remove()">` : ''}<span class="fb">${esc(n.replace(/^[^А-ЯІЇЄҐA-Z0-9]+/, '').charAt(0))}</span></span>`;
+  /* чорно-білі нашивки (є лише такі) — на світлій круглій підкладці; картинка з білим квадратом — обрізана по колу */
+  const picKind = src => /ch_?b|chb|artboard/i.test(src) ? ' bw' : /\.png$/i.test(src) ? ' sq' : '';
+  const pic = (src, n, cls) => `<span class="vb ${cls || ''}${src ? picKind(src) : ' noimg'}">${src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('noimg');this.remove()">` : ''}<span class="fb">${esc(n.replace(/^[^А-ЯІЇЄҐA-Z0-9]+/, '').charAt(0))}</span></span>`;
 
   let TAB = 'home', gf = '', kSpec = '', kOpen = '', kMore = false;
   const stats = (el, list) => { el.innerHTML = list.map(([n, l]) => `<div><dt>${esc(l)}</dt><dd>${esc(n)}</dd></div>`).join(''); };
