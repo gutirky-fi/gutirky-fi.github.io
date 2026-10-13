@@ -83,8 +83,9 @@
   $('#l-q').addEventListener('input', renderGrid);
 
   /* ---- каталог ---- */
-  /* порядок: спершу з гутірками, далі звичайні кольорові нашивки, у самому кінці — чорно-білі й без нашивки */
-  const rank = s => s.g ? 0 : !s.img ? 3 : picKind(s.img) === ' bw' ? 2 : 1;
+  /* порядок: спершу з гутірками, далі звичайні кольорові нашивки, потім картинка з білим фоном («Настільні ігри»),
+     у самому кінці — чорно-білі й без нашивки */
+  const rank = s => { if (s.g) return 0; if (!s.img) return 4; const k = picKind(s.img); return k === ' bw' ? 3 : k === ' sq' ? 2 : 1; };
   const specCount = () => { const c = {}; SKILLS.forEach(s => s.specs.forEach(x => { c[x] = (c[x] || 0) + 1; })); return c; };
   function renderKat() {
     const withG = SKILLS.filter(s => s.g).length;
