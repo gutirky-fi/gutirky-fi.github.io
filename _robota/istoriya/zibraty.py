@@ -4,6 +4,7 @@
 Події — з _robota/istoriya/podii.json (дописувати після помітних змін), публікації — з історії git.
 Картинки до подій лежать у istoriya/img/.
 Ранні версії (файли в istoriya/arkhiv/) — список у _robota/istoriya/arkhiv.json.
+Вступ «Як усе почалося» — абзаци з _robota/istoriya/korotko.txt (через порожній рядок).
 Запуск:  python3 _robota/istoriya/zibraty.py
 """
 import json, os, subprocess, html, collections
@@ -15,6 +16,7 @@ e = html.escape
 
 podii = json.load(open(os.path.join(HERE, 'podii.json'), encoding='utf8'))
 arkhiv = json.load(open(os.path.join(HERE, 'arkhiv.json'), encoding='utf8'))
+korotko = [x.strip() for x in open(os.path.join(HERE, 'korotko.txt'), encoding='utf8').read().split('\n\n') if x.strip()]
 log = subprocess.run(['git', '-C', ROOT, 'log', '--date=format-local:%d.%m.%Y %H:%M', '--pretty=%h\t%ad\t%s'],
                      capture_output=True, text=True, env=dict(os.environ, TZ='Europe/Helsinki')).stdout.strip().split('\n')
 commits = [l.split('\t', 2) for l in log if l.count('\t') >= 2]
@@ -29,6 +31,7 @@ def event(p):
     return (f'<li class="ev"><span class="t">{e(p["chas"])}</span><div class="b"><h3>{e(p["nazva"])}</h3>'
             f'<p>{e(p["tekst"])}</p>{f"<div class=pics>{pics}</div>" if pics else ""}</div></li>')
 
+intro = ''.join(f'<p>{e(x)}</p>' for x in korotko)
 timeline = ''.join(f'<section class="day"><h2>{e(d)}</h2><ol>{"".join(event(p) for p in ps)}</ol></section>' for d, ps in days.items())
 arch = ''.join(f'<li><time>{e(a["chas"])}</time><span><a href="{e(a["fail"])}" target="_blank" rel="noopener">{e(a["nazva"])}</a> — {e(a["opys"])}</span></li>' for a in arkhiv)
 pubs = ''.join(f'<li><time>{e(d)}</time><span>{e(s)}</span></li>' for h, d, s in commits if s != 'Initial commit')
@@ -57,6 +60,9 @@ h1{{margin:10px 0 0;font:600 clamp(2.6rem,7vw,4.6rem)/.95 var(--disp);letter-spa
 .hand{{margin:12px 0 0;font:500 clamp(1.4rem,3vw,1.8rem)/1.15 var(--hand);color:var(--ac)}}
 .back{{display:inline-block;margin-top:18px;padding:8px 16px;border-radius:99px;border:1px solid var(--ln);color:var(--ink);text-decoration:none;font-weight:700;font-size:15px}}
 .back:hover{{border-color:var(--gd)}}
+.intro{{margin-top:36px;padding-bottom:6px}}
+.intro h2{{margin:0 0 10px;font:600 24px var(--disp);letter-spacing:.08em;text-transform:uppercase}}
+.intro p{{margin:0 0 14px;max-width:68ch;font-size:18px;color:#d7dce2}}
 .day h2{{margin:40px 0 6px;font:600 24px var(--disp);letter-spacing:.08em;color:var(--gd)}}
 ol{{list-style:none;margin:0;padding:0}}
 .ev{{display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;padding:18px 0;border-top:1px solid var(--ln)}}
@@ -92,6 +98,10 @@ a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
 <a class="back" href="../">← До бібліотеки</a>
 </div></header>
 <main class="wrap">
+<section class="intro">
+<h2>Як усе почалося</h2>
+{intro}
+</section>
 {timeline}
 <section class="pubs arch">
 <h2>Ранні версії</h2>
