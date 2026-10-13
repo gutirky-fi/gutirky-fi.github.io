@@ -3,6 +3,7 @@
 
 Події — з _robota/istoriya/podii.json (дописувати після помітних змін), публікації — з історії git.
 Картинки до подій лежать у istoriya/img/.
+Ранні версії (файли в istoriya/arkhiv/) — список у _robota/istoriya/arkhiv.json.
 Запуск:  python3 _robota/istoriya/zibraty.py
 """
 import json, os, subprocess, html, collections
@@ -13,6 +14,7 @@ OUT = os.path.join(ROOT, 'istoriya', 'index.html')
 e = html.escape
 
 podii = json.load(open(os.path.join(HERE, 'podii.json'), encoding='utf8'))
+arkhiv = json.load(open(os.path.join(HERE, 'arkhiv.json'), encoding='utf8'))
 log = subprocess.run(['git', '-C', ROOT, 'log', '--date=format-local:%d.%m.%Y %H:%M', '--pretty=%h\t%ad\t%s'],
                      capture_output=True, text=True, env=dict(os.environ, TZ='Europe/Helsinki')).stdout.strip().split('\n')
 commits = [l.split('\t', 2) for l in log if l.count('\t') >= 2]
@@ -28,6 +30,7 @@ def event(p):
             f'<p>{e(p["tekst"])}</p>{f"<div class=pics>{pics}</div>" if pics else ""}</div></li>')
 
 timeline = ''.join(f'<section class="day"><h2>{e(d)}</h2><ol>{"".join(event(p) for p in ps)}</ol></section>' for d, ps in days.items())
+arch = ''.join(f'<li><a href="{e(a["fail"])}" target="_blank" rel="noopener">{e(a["nazva"])}</a><span>{e(a["opys"])}</span></li>' for a in arkhiv)
 pubs = ''.join(f'<li><time>{e(d)}</time><span>{e(s)}</span></li>' for h, d, s in commits if s != 'Initial commit')
 
 page = f'''<!DOCTYPE html>
@@ -69,6 +72,10 @@ figcaption{{margin-top:6px;font-size:14px;color:var(--mut)}}
 .pubs ul{{list-style:none;margin:0;padding:0}}
 .pubs li{{display:grid;grid-template-columns:150px minmax(0,1fr);gap:16px;padding:9px 0;border-top:1px solid var(--ln);font-size:15px}}
 .pubs time{{color:var(--mut);font-variant-numeric:tabular-nums}}
+.arch li{{grid-template-columns:minmax(0,320px) minmax(0,1fr)}}
+.arch a{{font-weight:700;text-decoration:none}}
+.arch a:hover{{text-decoration:underline}}
+.arch span{{color:#cfd5dc}}
 footer{{display:flex;flex-direction:column;align-items:center;margin-top:56px;padding-block:30px 40px;border-top:1px solid var(--ln);text-align:center}}
 footer img{{height:56px;width:auto;opacity:.85}}
 footer .skob{{margin-top:14px;padding-left:.3em;font:600 24px/1 var(--disp);letter-spacing:.3em;color:var(--gd)}}
@@ -87,6 +94,11 @@ a:focus-visible{{outline:2px solid var(--gd);outline-offset:2px}}
 </div></header>
 <main class="wrap">
 {timeline}
+<section class="pubs arch">
+<h2>Ранні версії</h2>
+<p>Файли, з яких усе починалося, — приблизно в тому порядку, як вони зʼявлялися. Відкриваються в новій вкладці.</p>
+<ul>{arch}</ul>
+</section>
 <section class="pubs">
 <h2>Усі публікації сайту</h2>
 <p>Кожне оновлення, яке потрапило на gutirky-fi.github.io, — від найновішого.</p>

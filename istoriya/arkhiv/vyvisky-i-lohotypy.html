@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta name="robots" content="noindex, nofollow">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Інтерактивний сайт про створення зовнішньої реклами: логотипи, об’ємні літери, світлові вивіски — від ескізу до монтажу.">
+  <title>Від ідеї до світла — Як виготовляють вивіски</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#07101b;--surface:#0e1b2a;--surface-2:#15283a;--text:#f3f7fb;--muted:#9caec1;--border:#263d50;--accent:#ffc45c;--accent-rgb:255,196,92;--shadow:0 24px 75px rgba(0,0,0,.45);color-scheme:dark;font-family:'Manrope',system-ui,-apple-system,Segoe UI,sans-serif}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-size:16px;line-height:1.55}
+    button,input{font:inherit}
+    button{cursor:pointer;color:inherit}
+    button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+    [hidden]{display:none!important}
+    ::selection{background:var(--accent);color:#08121f}
+    .app{min-height:100svh;display:grid;grid-template-columns:minmax(0,1.26fr) minmax(365px,.74fr);grid-template-rows:83px minmax(0,1fr) 117px;max-height:100svh;overflow:hidden;background:radial-gradient(ellipse at 27% 45%,#142a43 0%,#07101b 57%,#060b13 100%)}
+    .top{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding:10px clamp(20px,3.1vw,52px);position:relative;z-index:2;border-bottom:1px solid rgba(255,255,255,.07)}
+    .brand{display:flex;align-items:center;gap:14px;min-width:0}
+    .brand-icon{width:39px;height:39px;flex:none;display:grid;place-items:center;border:1px solid rgba(var(--accent-rgb),.55);border-radius:12px;box-shadow:inset 0 0 18px rgba(var(--accent-rgb),.11)}
+    .brand-icon svg{width:22px;height:22px}
+    .brand-text{font-size:12px;letter-spacing:.19em;line-height:1.35;font-weight:800}
+    .brand-text span{display:block;color:var(--muted);font-size:10px;font-weight:500;letter-spacing:.11em;margin-top:4px}
+    .top-actions{display:flex;align-items:center;gap:9px}
+    .pill-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:39px;border:1px solid #34495e;background:#152438;padding:8px 17px;border-radius:100px;font-size:12px;font-weight:800;white-space:nowrap;transition:transform .2s,background .2s,border-color .2s}
+    .pill-btn:hover,.round-btn:hover{transform:translateY(-2px);border-color:var(--accent)}
+    .pill-btn.strong{background:var(--accent);border-color:var(--accent);color:#0a1521}
+    .pill-btn .ico{font-size:16px;line-height:1}
+    .stage{position:relative;min-width:0;overflow:hidden;display:flex;align-items:center;justify-content:center;isolation:isolate}
+    .stage::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 48% 50%,rgba(var(--accent-rgb),.13),transparent 58%);z-index:-1;pointer-events:none;transition:background .4s}
+    .stage::after{content:"";position:absolute;inset:0;opacity:.35;pointer-events:none;background-image:linear-gradient(rgba(143,168,200,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(143,168,200,.08) 1px,transparent 1px);background-size:45px 45px;mask-image:radial-gradient(ellipse at center,#000,transparent 72%)}
+    .stage svg{width:100%;height:100%;max-height:740px;filter:drop-shadow(0 24px 28px rgba(0,0,0,.2));overflow:visible}
+    .stage svg .fade-in{animation:vis .75s both}
+    @keyframes vis{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .stage svg .pulse{animation:breathe 2.5s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}
+    @keyframes breathe{from{opacity:.4}to{opacity:1}}
+    .stage svg .dash{stroke-dasharray:9 8;animation:dash 16s linear infinite}
+    @keyframes dash{to{stroke-dashoffset:-340}}
+    .stage svg .hover{animation:float 4s ease-in-out infinite}
+    @keyframes float{50%{transform:translateY(-9px)}}
+    .stage svg .spark{animation:breathe .45s linear infinite alternate}
+    .scene-no{position:absolute;top:clamp(23px,3vw,47px);left:clamp(22px,3vw,50px);font-size:12px;letter-spacing:.22em;font-weight:800;color:var(--accent);z-index:1}
+    .scene-bottom{position:absolute;bottom:clamp(20px,3vw,42px);left:clamp(22px,3vw,50px);right:30px;display:flex;align-items:center;gap:12px;font-size:10px;letter-spacing:.18em;color:#9aaabc;z-index:1}
+    .scene-bottom .line{height:1px;flex:1;background:linear-gradient(90deg,rgba(var(--accent-rgb),.9),transparent)}
+    .story{position:relative;z-index:1;display:flex;justify-content:center;flex-direction:column;padding:44px clamp(28px,4vw,76px) 38px clamp(22px,3.15vw,58px);background:linear-gradient(90deg,rgba(10,19,31,.12),rgba(9,17,28,.94) 17%,rgba(9,17,28,.96));border-left:1px solid rgba(255,255,255,.05);min-width:0;overflow-y:auto}
+    .story-content{width:100%;max-width:540px;margin-inline:auto;animation:vis .45s both}
+    .eyebrow{display:flex;align-items:center;gap:13px;color:var(--accent);font-weight:800;letter-spacing:.21em;font-size:10px;text-transform:uppercase;margin:0 0 17px}
+    .eyebrow::before{content:"";height:1px;width:29px;background:var(--accent)}
+    h1,h2,h3,p{margin-top:0}
+    .story h1,.story h2{font-family:'Playfair Display',Georgia,serif;font-weight:900;line-height:1.09;letter-spacing:-.035em;font-size:clamp(2.25rem,3.25vw,4.2rem);margin:0 0 22px;text-wrap:balance}
+    .story h1 em,.story h2 em{font-style:normal;color:var(--accent)}
+    .lead{color:#c0cfde;font-size:clamp(1rem,1.23vw,1.18rem);line-height:1.76;margin:0 0 28px}
+    .mini-line{height:1px;background:linear-gradient(90deg,var(--border),transparent);margin:21px 0 24px}
+    .steps-list{list-style:none;padding:0;margin:0 0 18px}
+    .steps-list li{display:flex;gap:13px;color:#deebf5;font-size:14px;padding:9px 0;line-height:1.52}
+    .steps-list .check{color:var(--accent);font-size:17px;font-weight:800;flex:none;line-height:1.25}
+    .takeaway{background:linear-gradient(90deg,rgba(var(--accent-rgb),.13),transparent);border-left:3px solid var(--accent);padding:14px 17px;margin:19px 0 28px;border-radius:0 10px 10px 0;font-size:13px;color:#c8d6e3}
+    .takeaway strong{display:block;color:var(--accent);font-size:10px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+    .next{display:inline-flex;align-items:center;gap:12px;padding:13px 21px;color:#0b1520;border:0;background:var(--accent);border-radius:12px;font-size:13px;font-weight:800;box-shadow:0 9px 34px rgba(var(--accent-rgb),.14);transition:transform .2s}
+    .next:hover{transform:translateY(-3px)}
+    .next .arrow{font-size:20px;line-height:1}
+    .stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 27px}
+    .stat{padding:16px 10px 16px 0;border-top:1px solid var(--border)}
+    .stat b{font-size:clamp(1.6rem,2.5vw,2.8rem);font-family:Georgia,serif;line-height:1;color:var(--accent)}
+    .stat span{display:block;color:var(--muted);font-size:10px;margin-top:8px}
+    .foot{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:center;padding:20px clamp(20px,3vw,49px);border-top:1px solid rgba(255,255,255,.08);background:rgba(4,11,20,.64);z-index:2}
+    .navbtns{display:flex;gap:9px}
+    .round-btn{height:48px;width:48px;display:grid;place-items:center;background:#162638;border:1px solid #31465a;border-radius:50%;font-size:25px;line-height:1;transition:transform .2s,border-color .2s;user-select:none}
+    .round-btn:disabled{opacity:.27;cursor:default;transform:none;border-color:#31465a}
+    .track{min-width:0;display:flex;flex-direction:column;gap:14px}
+    .progress{height:3px;background:#26364a;overflow:hidden;border-radius:8px}
+    .progress > span{display:block;height:100%;width:0;background:var(--accent);box-shadow:0 0 12px var(--accent);transition:width .4s}
+    .chapters{display:flex;align-items:center;gap:8px;min-width:0;overflow-x:auto;scrollbar-width:none}
+    .chapters::-webkit-scrollbar{display:none}
+    .chapter{flex:none;border:0;background:none;padding:1px 13px 0 0;font-size:10px;letter-spacing:.035em;color:#778ca1;text-align:left;font-weight:700;transition:color .2s;white-space:nowrap}
+    .chapter.is-active{color:var(--accent)}
+    .chapter:hover{color:#fff}
+    .counter{font-size:12px;letter-spacing:.1em;color:#7c91a7;white-space:nowrap}
+    .counter b{font-size:21px;color:var(--text)}
+    .muted{color:var(--muted)}
+    .overlay{position:fixed;inset:0;z-index:12;background:rgba(3,7,14,.83);backdrop-filter:blur(13px);display:grid;place-items:center;padding:20px;animation:vis .2s both;overflow-y:auto}
+    .modal{width:min(760px,100%);max-height:min(90svh,840px);overflow-y:auto;border:1px solid #30455b;border-radius:20px;background:linear-gradient(140deg,#14263b,#0b1421 75%);box-shadow:var(--shadow);padding:clamp(21px,3vw,36px)}
+    .modal.wide{width:min(1100px,100%)}
+    .modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:20px}
+    .modal-kicker{color:var(--accent);text-transform:uppercase;letter-spacing:.2em;font-size:10px;font-weight:800;margin:0 0 8px}
+    .modal h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(1.6rem,3vw,2.45rem);line-height:1.15;margin:0}
+    .close{width:38px;height:38px;flex:none;border-radius:50%;background:#1e3046;border:1px solid #364b61;font-size:21px;line-height:1}
+    .toc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .toc button{display:flex;align-items:center;gap:15px;text-align:left;min-height:66px;border-radius:13px;padding:14px 16px;background:#142338;border:1px solid #2b4055;font-size:14px;font-weight:700}
+    .toc button:hover{border-color:var(--accent)}
+    .toc b{font-size:11px;color:var(--accent);letter-spacing:.13em}
+    .studio-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(270px,.8fr);gap:27px;align-items:stretch}
+    .demo-stage{min-height:385px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:16px;border:1px solid #344459;background:radial-gradient(ellipse at 50% 40%,#324055,#0a1521 70%);transition:background .25s}
+    .demo-stage.day{background:linear-gradient(#a8c9df,#dae4e9 58%,#c7b6a6 58%)}
+    .demo-stage::after{content:"";position:absolute;bottom:0;left:0;right:0;height:14%;background:repeating-linear-gradient(90deg,#132232,#132232 3px,#192b3b 3px,#192b3b 65px);opacity:.9}
+    .building{height:72%;width:83%;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:12%;background:linear-gradient(90deg,#27384c,#3b4b60 48%,#26374c);border:1px solid rgba(255,255,255,.09);box-shadow:25px 15px 50px rgba(0,0,0,.25)}
+    .building::after{content:"";position:absolute;inset:auto 16% 0;height:37%;border:9px solid #142336;border-bottom:0;background:linear-gradient(90deg,#182c42 0%,#334e61 48%,#172838 100%);opacity:.95}
+    .door-line{position:absolute;z-index:2;bottom:0;left:50%;width:2px;height:29%;background:#728295}
+    .demo-sign{width:84%;max-width:420px;position:relative;z-index:3;display:grid;place-items:center;min-height:85px;padding:12px 8px;text-align:center;--sign:#ffbb58;--sglow:255,187,88}
+    .demo-sign span{font:900 clamp(22px,4vw,46px)/1.07 'Manrope',Arial,sans-serif;letter-spacing:.045em;white-space:nowrap;text-align:center;transform:scaleX(.95);max-width:100%}
+    .demo-sign.letters span{color:#f1f3f5;text-shadow:3px 4px #0a1420,6px 8px #102033,0 0 14px rgba(var(--sglow),.7),0 0 36px rgba(var(--sglow),.55)}
+    .demo-sign.box{background:#f9fbff;border:10px solid #141c29;border-radius:7px;box-shadow:0 0 28px rgba(var(--sglow),.35)}
+    .demo-sign.box span{color:#112235}
+    .demo-sign.neon span{color:var(--sign);-webkit-text-stroke:1px var(--sign);text-shadow:0 0 6px var(--sign),0 0 17px var(--sign),0 0 34px var(--sign),0 0 65px rgba(var(--sglow),.85);font-family:Georgia,serif;font-style:italic}
+    .demo-stage.off .demo-sign.letters span{color:#a7b0b9;text-shadow:3px 5px #111923,6px 8px #172332}
+    .demo-stage.off .demo-sign.box{background:#a5adb5;box-shadow:none}
+    .demo-stage.off .demo-sign.neon span{color:#775c4f;-webkit-text-stroke:1px #775c4f;text-shadow:none}
+    .demo-caption{position:absolute;top:14px;left:16px;font-size:10px;font-weight:800;letter-spacing:.17em;color:#bbccdf}
+    .studio-controls{display:flex;flex-direction:column;gap:19px}
+    .field label{display:block;color:#d1dde9;font-size:12px;font-weight:800;margin-bottom:9px}
+    .field input[type="text"]{width:100%;padding:13px 14px;border-radius:10px;border:1px solid #41566c;background:#101f31;color:white;outline-offset:1px;font-size:15px}
+    .options{display:flex;flex-wrap:wrap;gap:7px}
+    .option{border:1px solid #385065;background:#14273a;border-radius:10px;padding:10px 11px;font-size:11px;font-weight:800}
+    .option.active{border-color:var(--accent);color:var(--accent);background:rgba(var(--accent-rgb),.09)}
+    .colors{display:flex;gap:11px;align-items:center}
+    .color-dot{width:31px;height:31px;border:2px solid transparent;border-radius:50%;background:var(--dot);box-shadow:0 0 16px rgba(0,0,0,.3)}
+    .color-dot.active{outline:2px solid white;outline-offset:3px}
+    .switch-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-top:1px solid var(--border)}
+    .switch-row span{font-size:12px;font-weight:800}
+    .toggle{height:29px;width:49px;border:0;border-radius:20px;background:#536174;padding:3px;transition:background .2s;text-align:left}
+    .toggle i{display:block;width:23px;height:23px;border-radius:50%;background:white;transition:transform .2s}
+    .toggle[aria-checked="true"]{background:var(--accent)}
+    .toggle[aria-checked="true"] i{transform:translateX(20px)}
+    .studio-note{font-size:11px;color:var(--muted);line-height:1.65;padding-top:4px}
+    @media(max-width:1000px){.app{grid-template-columns:minmax(0,1fr) minmax(335px,.82fr)}.story{padding:26px 25px}.story h1,.story h2{font-size:clamp(2rem,3.8vw,3rem)}.lead{font-size:14px;margin-bottom:19px}.foot{gap:15px}.stage{min-height:0}.steps-list li{font-size:13px;padding:6px 0}}
+    @media(max-width:760px){.app{display:flex;flex-direction:column;min-height:100svh;max-height:none;overflow:visible}.top{min-height:69px;padding:12px 16px}.brand-icon{width:33px;height:33px}.brand-text{font-size:10px}.brand-text span{font-size:8px}.pill-btn{font-size:11px;padding:7px 12px;min-height:36px}.top-actions{gap:6px}.stage{height:clamp(290px,49svh,480px);flex:none}.stage svg{width:100%;height:100%}.scene-no{top:15px;left:18px;font-size:9px}.scene-bottom{bottom:11px;left:18px;font-size:8px}.story{background:#0b1523;padding:28px 23px 35px;overflow:visible;border:0;border-top:1px solid #213549}.story-content{max-width:650px}.story h1,.story h2{font-size:clamp(2.15rem,9vw,3rem);margin-bottom:14px}.lead{font-size:15px;line-height:1.67}.steps-list li{font-size:14px;padding:8px 0}.takeaway{margin:18px 0 23px}.foot{position:sticky;bottom:0;background:rgba(6,13,23,.94);backdrop-filter:blur(14px);padding:12px 16px;grid-template-columns:auto 1fr auto;gap:11px}.round-btn{width:43px;height:43px}.navbtns{gap:5px}.chapters{gap:6px}.chapter{font-size:9px;padding-right:12px}.track{gap:9px}.counter{font-size:10px}.counter b{font-size:16px}.toc{grid-template-columns:1fr}.studio-grid{grid-template-columns:1fr}.demo-stage{min-height:300px}.modal{max-height:90svh}}
+    @media(max-width:400px){.brand-text span{display:none}.pill-btn.strong{padding:7px 11px}.brand{gap:8px}.top{padding-inline:11px}.brand-icon{width:31px;height:31px}.top-actions .pill-btn{padding-inline:10px}.top-actions .pill-btn .label-long{display:none}.story{padding-inline:19px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="top">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 20 11 4h3l7 16M7 14h11" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="3" cy="5" r="1.4" fill="var(--accent)"/></svg>
+        </div>
+        <div class="brand-text">МАЙСТЕРНЯ РЕКЛАМИ<span>ВІД ІДЕЇ ДО СВІТЛА</span></div>
+      </div>
+      <div class="top-actions">
+        <button class="pill-btn" id="menuBtn" type="button" aria-haspopup="dialog"><span class="ico" aria-hidden="true">☷</span><span class="label-long">ЗМІСТ</span></button>
+        <button class="pill-btn strong" id="studioBtn" type="button" aria-haspopup="dialog"><span class="ico" aria-hidden="true">✦</span>КОНСТРУКТОР</button>
+      </div>
+    </header>
+    <section class="stage" aria-label="Ілюстрація етапу виготовлення вивіски">
+      <div class="scene-no" id="sceneNum">ІНТЕРАКТИВНА ІСТОРІЯ / 00</div>
+      <div id="visual" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center" aria-live="polite"></div>
+      <div class="scene-bottom"><span id="sceneTag">DESIGN — BUILD — LIGHT</span><span class="line"></span><span>UA / 2026</span></div>
+    </section>
+    <aside class="story" aria-live="polite"><div class="story-content" id="storyContent"></div></aside>
+    <footer class="foot">
+      <div class="navbtns">
+        <button id="prev" class="round-btn" type="button" aria-label="Попередній етап">‹</button>
+        <button id="next" class="round-btn" type="button" aria-label="Наступний етап">›</button>
+      </div>
+      <nav class="track" aria-label="Етапи виготовлення">
+        <div class="progress" role="progressbar" id="progressBar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="0" aria-label="Прогрес історії"><span id="progressFill"></span></div>
+        <div class="chapters" id="chapters"></div>
+      </nav>
+      <div class="counter"><b id="counterCurrent">00</b> / 08</div>
+    </footer>
+  </div>
+
+  <div class="overlay" id="tocOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="tocTitle">
+      <div class="modal-head"><div><p class="modal-kicker">ШВИДКА НАВІГАЦІЯ</p><h2 id="tocTitle">Усі етапи виробництва</h2></div><button class="close" type="button" data-close aria-label="Закрити">×</button></div>
+      <div class="toc" id="tocList"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="studioOverlay" hidden>
+    <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="studioTitle">
+      <div class="modal-head"><div><p class="modal-kicker">ІНТЕРАКТИВНИЙ МАКЕТ</p><h2 id="studioTitle">Створи власну вивіску</h2></div><button class="close" type="button" data-close aria-label="Закрити">×</button></div>
+      <div class="studio-grid">
+        <div class="demo-stage" id="demoStage">
+          <div class="demo-caption">ПОПЕРЕДНІЙ ВИГЛЯД / ФАСАД</div>
+          <div class="building"><div class="demo-sign letters" id="demoSign"><span id="demoText">ВАШ БРЕНД</span></div><div class="door-line"></div></div>
+        </div>
+        <div class="studio-controls">
+          <div class="field"><label for="brandInput">Назва або логотип (текст)</label><input id="brandInput" type="text" value="ВАШ БРЕНД" maxlength="18" spellcheck="false" autocomplete="off"></div>
+          <div class="field"><label>Тип вивіски</label><div class="options" role="group" aria-label="Тип вивіски">
+            <button type="button" class="option active" data-type="letters" aria-pressed="true">Об'ємні літери</button>
+            <button type="button" class="option" data-type="box" aria-pressed="false">Лайтбокс</button>
+            <button type="button" class="option" data-type="neon" aria-pressed="false">LED-неон</button>
+          </div></div>
+          <div class="field"><label>Колір світла</label><div class="colors" role="group" aria-label="Колір підсвічування">
+            <button class="color-dot active" type="button" data-hex="#ffbb58" data-rgb="255,187,88" style="--dot:#ffbb58" aria-label="Теплий жовтий" aria-pressed="true"></button>
+            <button class="color-dot" type="button" data-hex="#30dbff" data-rgb="48,219,255" style="--dot:#30dbff" aria-label="Блакитний" aria-pressed="false"></button>
+            <button class="color-dot" type="button" data-hex="#ff689e" data-rgb="255,104,158" style="--dot:#ff689e" aria-label="Рожевий" aria-pressed="false"></button>
+            <button class="color-dot" type="button" data-hex="#8cf4a7" data-rgb="140,244,167" style="--dot:#8cf4a7" aria-label="Зелений" aria-pressed="false"></button>
+            <button class="color-dot" type="button" data-hex="#ddd8ff" data-rgb="221,216,255" style="--dot:#ddd8ff" aria-label="Білий" aria-pressed="false"></button>
+          </div></div>
+          <div class="switch-row"><span>Підсвічування</span><button class="toggle" id="lightToggle" type="button" role="switch" aria-label="Увімкнути підсвічування" aria-checked="true"><i></i></button></div>
+          <div class="switch-row"><span>Денний вигляд</span><button class="toggle" id="dayToggle" type="button" role="switch" aria-label="Денний вигляд" aria-checked="false"><i></i></button></div>
+          <p class="studio-note">Це концептуальний макет, а не виробниче креслення. Реальні розміри, матеріали, конструкцію та електроживлення підбирають після замірів і проєктування.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+    const steps = [
+      {short:'Початок',accent:'#ffc45c',rgb:'255,196,92',tag:'IDEA / PROCESS / LIGHT',eye:'Інтерактивна історія',title:'Як народжується <em>зовнішня реклама</em>',lead:'Вивіска починається не з металу чи світлодіодів, а з ідеї. Пройди шлях від першого ескізу до готового логотипа на фасаді.',stats:[['07','етапів роботи'],['03','типи вивісок'],['01','яскрава ідея']],cta:'Почати подорож →'},
+      {short:'Заміри',accent:'#5bd6f4',rgb:'91,214,244',tag:'01 / RESEARCH & MEASURE',eye:'Етап 01 / Підготовка',title:'Бриф та <em>заміри</em>',lead:'Спочатку команда з’ясовує, що саме має повідомити вивіска, де вона стоятиме та з якої відстані її читатимуть.',points:['Оглядають і фотографують фасад, заміряють доступний простір.','Визначають місця кріплення та можливість підведення живлення.','Уточнюють побажання бренду й правила розміщення вивісок.'],result:'Точні вихідні дані для проєкту.',cta:'Далі: дизайн →'},
+      {short:'Дизайн',accent:'#e2a5ff',rgb:'226,165,255',tag:'02 / VISUAL IDENTITY',eye:'Етап 02 / Візуальна ідея',title:'Логотип і <em>дизайн</em>',lead:'Дизайнер перетворює ідею на читабельний макет. Перевіряє, як виглядатимуть букви вдень, уночі та на реальному фасаді.',points:['Готують векторний логотип, шрифт і композицію.','Вибирають розміри, кольори та тип підсвічування.','Погоджують візуалізацію й технічні креслення.'],result:'Затверджений макет із розмірами.',cta:'Далі: матеріали →'},
+      {short:'Матеріали',accent:'#ffb679',rgb:'255,182,121',tag:'03 / MATERIAL SELECTION',eye:'Етап 03 / Основа',title:'Вибір <em>матеріалів</em>',lead:'Матеріал визначає форму, вагу, вигляд і довговічність конструкції. Для фасадів обирають рішення, які витримують зовнішні умови.',points:['Акрил використовують для світлорозсіювальних лицьових частин.','Алюміній та композитні панелі — для корпусів і основ.','ПВХ, плівку та інші матеріали — залежно від проєкту.'],result:'Комплектація та специфікація деталей.',cta:'Далі: різання →'},
+      {short:'Різання',accent:'#ff766b',rgb:'255,118,107',tag:'04 / PRECISION CUTTING',eye:'Етап 04 / Виробництво',title:'Різання та <em>фрезерування</em>',lead:'За цифровим макетом обладнання виготовляє деталі: літери, задні стінки, борти й елементи основи.',points:['Контури переводять у файли для відповідного верстата.','Деталі ріжуть, фрезерують або обробляють відповідною технологією.','Краї зачищають і перевіряють точність стикування.'],result:'Набір деталей, готових до складання.',cta:'Далі: збірка →'},
+      {short:'Збірка',accent:'#88da8b',rgb:'136,218,139',tag:'05 / ASSEMBLY',eye:'Етап 05 / Конструкція',title:'Збірка <em>об’ємних літер</em>',lead:'Плоскі деталі стають об’ємною конструкцією. Саме тут вивіска отримує глибину, жорсткість і завершену форму.',points:['З’єднують лицьову частину, борти та задню основу.','Передбачають кріплення, кабельні проходи й захист з’єднань.','Перевіряють геометрію та зовнішній вигляд виробу.'],result:'Міцний корпус із підготовкою до освітлення.',cta:'Далі: світло →'},
+      {short:'Світло',accent:'#ffd35f',rgb:'255,211,95',tag:'06 / LED & TESTING',eye:'Етап 06 / Електрика',title:'Монтаж <em>LED-підсвічування</em>',lead:'Світлодіодні модулі роблять літери помітними ввечері. Важливі не лише яскравість, а й рівномірність світла та захист електрики.',points:['Монтують модулі, проводку й відповідні блоки живлення.','Перевіряють рівномірність світіння, з’єднання та ізоляцію.','Тестують готову вивіску до виїзду на об’єкт.'],result:'Вивіска з перевіреним підсвічуванням.',cta:'Далі: монтаж →'},
+      {short:'Монтаж',accent:'#72b8ff',rgb:'114,184,255',tag:'07 / INSTALLATION',eye:'Етап 07 / На фасаді',title:'Фінальний <em>монтаж</em>',lead:'Готові літери або світловий короб встановлюють на будівлю. Монтаж має враховувати основу фасаду, вагу конструкції та безпеку.',points:['Розмічають точки кріплення й монтують несучі елементи.','Фіксують вивіску, підключають живлення кваліфіковані фахівці.','Перевіряють надійність, роботу світла та вигляд із вулиці.'],result:'Реклама на місці — готова привертати увагу.',cta:'Побачити результат →'},
+      {short:'Результат',accent:'#ffc45c',rgb:'255,196,92',tag:'08 / READY TO SHINE',eye:'Фінал / Готова робота',title:'Ідея стає <em>світлом</em>',lead:'Від розмірів і логотипа — до вивіски, яку бачать сотні людей. Тепер спробуй власний варіант у мініконструкторі.',points:['Об’ємні літери — виразний рельєф і можливість підсвічування.','Лайтбокс — світловий короб із графікою або написом.','LED-неон — гнучка світлова лінія для декоративних написів.'],result:'Відкрий конструктор, обери тип, назву й колір світла.',cta:'✦ Створити свою вивіску'}
+    ];
+    const $ = (s,root=document)=>root.querySelector(s);
+    const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+    let index=0,activeModal=null,lastFocus=null;
+    function safe(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+    function svgWrap(body){return `<svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="halo"><stop stop-color="var(--accent)" stop-opacity=".20"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></radialGradient>
+        <linearGradient id="steel" x2="1" y2="1"><stop stop-color="#38495d"/><stop offset=".53" stop-color="#17283b"/><stop offset="1" stop-color="#26374a"/></linearGradient>
+        <linearGradient id="wall"><stop stop-color="#28374b"/><stop offset=".5" stop-color="#1d2d40"/><stop offset="1" stop-color="#35465a"/></linearGradient>
+        <linearGradient id="plate"><stop stop-color="#314f65"/><stop offset=".5" stop-color="#1c364d"/><stop offset="1" stop-color="#142537"/></linearGradient>
+        <filter id="glow" x="-70%" y="-100%" width="240%" height="300%"><feGaussianBlur stdDeviation="10" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="frost"><feGaussianBlur stdDeviation="24"/></filter>
+        <pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#7c99b3" opacity=".25"/></pattern>
+      </defs>
+      <ellipse cx="450" cy="325" rx="350" ry="240" fill="url(#halo)"/>
+      <ellipse cx="450" cy="530" rx="355" ry="24" fill="var(--accent)" opacity=".08" filter="url(#frost)"/>
+      <g opacity=".18" fill="none" stroke="#7193ad"><circle cx="450" cy="315" r="265" stroke-dasharray="2 13"/><circle cx="450" cy="315" r="315" opacity=".55"/></g>
+      ${body}</svg>`;}
+    const label=(x,y,title,sub)=>`<g class="fade-in"><path d="M${x-9} ${y-14}h10" stroke="var(--accent)" stroke-width="3"/><text x="${x+9}" y="${y-8}" fill="var(--accent)" font-size="10" font-weight="800" letter-spacing="2">${title}</text>${sub?`<text x="${x+9}" y="${y+10}" fill="#afc2d2" font-size="10">${sub}</text>`:''}</g>`;
+    const facade=(lit=true,measure=false)=>`<g class="fade-in">
+       <rect x="140" y="154" width="625" height="358" rx="4" fill="url(#wall)" stroke="#45596b" stroke-width="3"/>
+       <path d="M140 202H765M140 464H765" stroke="#41576d" stroke-width="5"/>
+       <path d="M153 154V512M752 154V512" stroke="#132335" stroke-width="10" opacity=".35"/>
+       <rect x="204" y="317" width="194" height="195" fill="#0b1c2f" stroke="#607184" stroke-width="12"/>
+       <rect x="481" y="317" width="215" height="195" fill="#10263b" stroke="#627589" stroke-width="12"/>
+       <path d="M588 323v190M212 421h180M487 421h201" stroke="#496179" stroke-width="4"/>
+       <path d="M212 320l160 192M487 323l190 189" stroke="#91a6b9" stroke-width="2" opacity=".08"/>
+       <rect x="187" y="222" width="523" height="78" rx="4" fill="#0c1828" stroke="#66829b" stroke-width="2"/>
+       <text x="449" y="282" font-family="Manrope,Arial,sans-serif" font-weight="900" font-size="67" text-anchor="middle" letter-spacing="10" fill="${lit?'#ffdf97':'#adc0d3'}" ${lit?'filter="url(#glow)"':''}>NOVA</text>
+       <path d="M120 514H788" stroke="#738da3" stroke-width="9"/><path d="M100 539H810" stroke="#47596e" stroke-width="3"/>
+       </g>${measure?`<g class="fade-in" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M186 210V172M711 210V172M186 186H711"/><path d="m186 181v10m525-10v10"/><path d="M723 223h33M723 301h33M747 223v78M742 223h10M742 301h10"/><text x="448" y="178" fill="var(--accent)" font-size="13" text-anchor="middle" stroke="none" letter-spacing="3">ШИРИНА ВИВІСКИ</text><text x="761" y="260" fill="var(--accent)" font-size="13" stroke="none" transform="rotate(90 761 260)">ВИСОТА</text><circle cx="186" cy="186" r="5" fill="var(--accent)"/><circle cx="711" cy="186" r="5" fill="var(--accent)"/></g>`:''}`;
+    const graphics=[
+      ()=>`${facade(true)}<g class="fade-in" opacity=".75"><path d="M129 134h85M129 134v55M777 476h-55M777 476v-55" fill="none" stroke="var(--accent)" stroke-width="2"/><circle cx="744" cy="135" r="5" fill="var(--accent)" class="pulse"/></g>${label(126,95,'ЗОВНІШНЯ РЕКЛАМА','Від ескізу до фасаду')}`,
+      ()=>`${facade(false,true)}<g class="fade-in"><rect x="234" y="343" width="135" height="85" rx="6" fill="#0c1e2e" stroke="var(--accent)" opacity=".86"/><path d="M251 370h90M251 386h65M251 402h79" stroke="var(--accent)" stroke-width="2" opacity=".8"/></g>${label(125,108,'АНАЛІЗ ОБ’ЄКТА','Фасад · розміри · кріплення')}`,
+      ()=>`<g class="fade-in">
+        <rect x="136" y="120" width="626" height="400" rx="15" fill="#14243a" stroke="#526d85" stroke-width="5"/>
+        <rect x="152" y="137" width="594" height="339" fill="#0b1a2e"/><rect x="152" y="137" width="594" height="339" fill="url(#dots)"/>
+        <path d="M168 194H732M210 151v312" stroke="#314860" stroke-width="2"/>
+        <g fill="none" stroke="var(--accent)" opacity=".7"><path d="M300 250L355 372l55-122 55 122 55-122" stroke-width="9" stroke-linejoin="round"/><rect x="288" y="231" width="250" height="164" stroke-dasharray="8 7"/><path d="M288 415h250M288 410v10M538 410v10"/></g>
+        <text x="411" y="226" fill="#e5f4fb" font-size="59" font-weight="900" text-anchor="middle" letter-spacing="7">NOVA</text>
+        <circle cx="625" cy="232" r="18" fill="#ffbd60"/><circle cx="625" cy="281" r="18" fill="#72c9ed"/><circle cx="625" cy="330" r="18" fill="#ed7b96"/>
+        <text x="615" y="414" fill="#9fb9ce" font-size="12">VECTOR / 1:1</text>
+        <path d="M402 521h108l25 22H379z" fill="#3a526a"/><rect x="342" y="540" width="228" height="14" rx="7" fill="#516a7f"/>
+      </g>${label(125,90,'ДИЗАЙН І ЛОГОТИП','Креслення · контур · кольори')}`,
+      ()=>`<g class="fade-in">
+        <g transform="translate(75 40)">
+        <path d="M95 356 450 193 692 287 337 452z" fill="#102035" stroke="#788da0" stroke-width="3"/>
+        <path d="M95 356v45l242 95v-44M337 452v44l355-165v-44" fill="#23374a" stroke="#6e8497" stroke-width="3"/>
+        <path d="M124 334 473 175l210 81-350 161z" fill="#b7d6e2" opacity=".55" stroke="#e3f5fc" stroke-width="3"/>
+        <path d="M136 286 455 144l211 82-327 151z" fill="#edcf95" opacity=".83" stroke="#fff1cf" stroke-width="3"/>
+        <path d="M151 235 461 94l204 80-316 143z" fill="#546b82" stroke="#a9c1d7" stroke-width="3"/>
+        <path d="M173 174 458 48l202 78-294 135z" fill="url(#plate)" stroke="#7aa1ba" stroke-width="3"/>
+        <path d="M236 170 445 78l142 55-215 97z" fill="none" stroke="var(--accent)" stroke-width="5"/>
+        </g>
+      </g>${label(137,118,'ШАРИ КОНСТРУКЦІЇ','Основа · корпус · акрил')}`,
+      ()=>`<g class="fade-in">
+        <path d="M106 431 579 239 795 323 328 522z" fill="#233a4e" stroke="#536f84" stroke-width="4"/>
+        <path d="M106 431v34l222 88v-31M328 522v31l467-198v-32" fill="#14273b" stroke="#4f687b" stroke-width="3"/>
+        <path d="M155 420 579 256 737 319 319 489z" fill="#426074" stroke="#879ba9" stroke-width="2"/>
+        <path d="M261 406 563 293 638 323 330 448z" fill="none" stroke="var(--accent)" stroke-width="5" class="dash"/>
+        <path d="M388 183V104H552V183" fill="none" stroke="#667c91" stroke-width="16"/>
+        <rect x="412" y="141" width="118" height="98" rx="6" fill="url(#steel)" stroke="#8b9bad" stroke-width="4"/>
+        <rect x="445" y="231" width="47" height="94" rx="5" fill="#778b9f" stroke="#c9d3dd" stroke-width="3"/>
+        <path d="M457 322h24l-12 26z" fill="#d9e6ed"/>
+        <path d="M468 350l-12 42m12-42 9 42m-9-42 29 26m-29-26-30 22" stroke="var(--accent)" stroke-width="3" class="spark"/>
+        <circle cx="467" cy="350" r="12" fill="var(--accent)" opacity=".9" filter="url(#glow)"/>
+      </g>${label(117,140,'ТОЧНИЙ РОЗКРІЙ','Верстат · контури · деталі')}`,
+      ()=>`<g class="fade-in">
+        <g transform="translate(8 14)">
+          <path d="M337 168 217 463h65l26-69h187l26 69h67L468 168zm-6 176 71-119 71 119z" fill="#0e1d2d" fill-rule="evenodd" stroke="#7395aa" stroke-width="9"/>
+          <path d="M344 127 224 422h65l26-69h187l26 69h67L475 127zm-6 176 71-119 71 119z" fill="#253c51" fill-rule="evenodd" stroke="#8aa2b6" stroke-width="6"/>
+          <path d="M366 85 246 380h65l26-69h187l26 69h67L497 85zm-6 176 71-119 71 119z" fill="#e9f5fb" fill-rule="evenodd" stroke="var(--accent)" stroke-width="5"/>
+          <g fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 6" opacity=".7"><path d="M260 381 238 420m330-41 3 42M380 88l-15 39"/></g>
+        </g>
+        <path d="M648 178H773M649 308H790M648 418H783" stroke="#8aa6bd" stroke-width="2"/><circle cx="648" cy="178" r="5" fill="var(--accent)"/><circle cx="648" cy="308" r="5" fill="var(--accent)"/><circle cx="648" cy="418" r="5" fill="var(--accent)"/>
+        <text x="667" y="165" fill="var(--accent)" font-size="13" font-weight="700">ЛИЦЕ</text>
+        <text x="667" y="295" fill="var(--accent)" font-size="13" font-weight="700">БОРТ</text>
+        <text x="667" y="405" fill="var(--accent)" font-size="13" font-weight="700">ОСНОВА</text>
+      </g>${label(117,106,'ОБ’ЄМНІ ЛІТЕРИ','Складання конструкції')}`,
+      ()=>`<g class="fade-in">
+        <path d="M154 220 616 178l102 114-462 42z" fill="#182c3e" stroke="#768b9d" stroke-width="5"/>
+        <path d="M154 220v193l102 110V334M256 334l462-42v189l-462 42" fill="url(#steel)" stroke="#718a9c" stroke-width="4"/>
+        <path d="M288 356l390-37v138l-390 40z" fill="#122438" stroke="#5d768a" stroke-width="3"/>
+        <g fill="var(--accent)" class="pulse">
+          <circle cx="329" cy="387" r="11" filter="url(#glow)"/><circle cx="407" cy="380" r="11" filter="url(#glow)"/><circle cx="486" cy="370" r="11" filter="url(#glow)"/><circle cx="563" cy="363" r="11" filter="url(#glow)"/><circle cx="644" cy="354" r="11" filter="url(#glow)"/>
+          <circle cx="329" cy="456" r="11" filter="url(#glow)"/><circle cx="407" cy="448" r="11" filter="url(#glow)"/><circle cx="486" cy="440" r="11" filter="url(#glow)"/><circle cx="563" cy="432" r="11" filter="url(#glow)"/><circle cx="644" cy="423" r="11" filter="url(#glow)"/>
+        </g><path d="M329 387 407 380 486 370 563 363 644 354 644 423 563 432 486 440 407 448 329 456z" fill="none" stroke="var(--accent)" stroke-dasharray="5 10" opacity=".42" stroke-width="2"/>
+        <path d="M288 354v148m390-184v143" stroke="#c5d1de" stroke-width="6" opacity=".5"/>
+      </g>${label(131,116,'ПЕРЕВІРКА СВІТЛА','LED · проводка · тестування')}`,
+      ()=>`<g class="fade-in">
+        <rect x="134" y="135" width="629" height="384" rx="5" fill="url(#wall)" stroke="#596e83" stroke-width="4"/>
+        <g stroke="#556c7d" stroke-width="2" opacity=".55"><path d="M134 188H763M134 240H763M134 292H763M134 344H763M134 396H763M134 448H763"/><path d="M244 136v51M420 189v51M600 136v51M320 241v51M520 293v51M260 345v51M680 396v51"/></g>
+        <path d="M209 223h500v185H209z" fill="#122237" stroke="#6e879e" stroke-width="8"/>
+        <rect x="220" y="231" width="477" height="170" fill="#15283d"/>
+        <text x="457" y="338" text-anchor="middle" fill="#ffdfa4" filter="url(#glow)" font-size="88" font-family="Manrope,Arial,sans-serif" font-weight="900" letter-spacing="11">NOVA</text>
+        <path d="M210 252h-40m40 134h-40m541-134h40m-40 134h40" stroke="var(--accent)" stroke-width="5"/>
+        <g fill="var(--accent)"><circle cx="171" cy="252" r="6"/><circle cx="171" cy="386" r="6"/><circle cx="751" cy="252" r="6"/><circle cx="751" cy="386" r="6"/></g>
+        <path d="M170 252v134m581-134v134" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 7"/>
+      </g>${label(137,105,'ВСТАНОВЛЕННЯ','Кріплення · живлення · контроль')}`,
+      ()=>`${facade(true)}<g class="fade-in"><path d="M200 189h490" stroke="var(--accent)" stroke-width="2" opacity=".7"/><path d="M181 198l17-17m500 16-17-17" stroke="var(--accent)" stroke-width="3"/><circle cx="747" cy="152" r="9" fill="var(--accent)" filter="url(#glow)" class="pulse"/></g>${label(125,101,'ГОТОВА ВИВІСКА','Ваш бренд помітно здалеку')}`
+    ];
+    function render(){
+      const s=steps[index];
+      $('#app').style.setProperty('--accent',s.accent);
+      $('#app').style.setProperty('--accent-rgb',s.rgb);
+      document.documentElement.style.setProperty('--accent',s.accent);
+      document.documentElement.style.setProperty('--accent-rgb',s.rgb);
+      $('#visual').innerHTML=svgWrap(graphics[index]());
+      $('#sceneNum').textContent=index===0?'ІНТЕРАКТИВНА ІСТОРІЯ / 00':`ЕТАП / ${String(index).padStart(2,'0')}`;
+      $('#sceneTag').textContent=s.tag;
+      const html=`<p class="eyebrow">${s.eye}</p><${index===0?'h1':'h2'}>${s.title}</${index===0?'h1':'h2'}><p class="lead">${s.lead}</p>`+
+       (s.stats?`<div class="stats">${s.stats.map(([v,lab])=>`<div class="stat"><b>${v}</b><span>${lab}</span></div>`).join('')}</div>`:
+       `<div class="mini-line"></div><ul class="steps-list">${s.points.map(p=>`<li><span class="check" aria-hidden="true">↗</span><span>${p}</span></li>`).join('')}</ul><div class="takeaway"><strong>${index===8?'Спробуй сам':'Результат етапу'}</strong>${s.result}</div>`)+
+       `<button class="next" id="storyNext" type="button"><span>${s.cta}</span><span class="arrow" aria-hidden="true">${index===8?'✦':'↗'}</span></button>`;
+      const holder=$('#storyContent');holder.innerHTML=html;holder.style.animation='none';void holder.offsetWidth;holder.style.animation='';
+      $('#storyNext').addEventListener('click',()=>index===8?openModal('studioOverlay'):go(index+1));
+      $('#prev').disabled=index===0;$('#next').disabled=index===steps.length-1;
+      $('#counterCurrent').textContent=String(index).padStart(2,'0');
+      $('#progressBar').setAttribute('aria-valuenow',index);
+      $('#progressFill').style.width=`${index/(steps.length-1)*100}%`;
+      $$('.chapter').forEach((el,i)=>{el.classList.toggle('is-active',i===index);el.setAttribute('aria-current',i===index?'step':'false')});
+      $('.chapter.is-active')?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'nearest'});
+    }
+    function go(i){const next=Math.min(steps.length-1,Math.max(0,i));if(next===index)return;index=next;render();if(matchMedia('(max-width:760px)').matches)window.scrollTo({top:0,behavior:'smooth'});}
+    $('#chapters').innerHTML=steps.map((s,i)=>`<button type="button" class="chapter" data-step="${i}">${String(i).padStart(2,'0')} ${safe(s.short)}</button>`).join('');
+    $('#tocList').innerHTML=steps.map((s,i)=>`<button type="button" data-toc="${i}"><b>${String(i).padStart(2,'0')}</b><span>${safe(s.short)}${i===0?' — Вступ':i===8?' — Фінал':''}</span></button>`).join('');
+    $('#prev').addEventListener('click',()=>go(index-1));$('#next').addEventListener('click',()=>go(index+1));
+    $('#chapters').addEventListener('click',e=>{const b=e.target.closest('[data-step]');if(b)go(Number(b.dataset.step))});
+    $('#tocList').addEventListener('click',e=>{const b=e.target.closest('[data-toc]');if(b){go(Number(b.dataset.toc));closeModal()}});
+    function openModal(id){lastFocus=document.activeElement;activeModal=$('#'+id);activeModal.hidden=false;document.body.style.overflow='hidden';$('.close',activeModal)?.focus();}
+    function closeModal(){if(!activeModal)return;activeModal.hidden=true;activeModal=null;document.body.style.overflow='';lastFocus?.focus();}
+    $('#menuBtn').addEventListener('click',()=>openModal('tocOverlay'));
+    $('#studioBtn').addEventListener('click',()=>openModal('studioOverlay'));
+    $$('.overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-close]'))closeModal()}));
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape'&&activeModal){closeModal();return}
+      if(activeModal)return;
+      if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName))return;
+      if(['ArrowRight','PageDown'].includes(e.key)){e.preventDefault();go(index+1)}
+      if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();go(index-1)}
+      if(e.key==='Home'){e.preventDefault();go(0)}
+      if(e.key==='End'){e.preventDefault();go(steps.length-1)}
+    });
+    let startX=0,startY=0;
+    $('.stage').addEventListener('touchstart',e=>{startX=e.changedTouches[0].screenX;startY=e.changedTouches[0].screenY},{passive:true});
+    $('.stage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].screenX-startX,dy=e.changedTouches[0].screenY-startY;if(Math.abs(dx)>70&&Math.abs(dx)>Math.abs(dy)*1.3)go(index+(dx<0?1:-1))},{passive:true});
+    $('#brandInput').addEventListener('input',e=>{const t=e.target.value.trim()||'ВАШ БРЕНД';$('#demoText').textContent=t.toLocaleUpperCase('uk-UA');$('#demoText').style.fontSize=`clamp(17px,${Math.max(2.1,5.3-t.length*.16)}vw,${Math.max(22,46-t.length*1.5)}px)`});
+    $$('.option').forEach(b=>b.addEventListener('click',()=>{$$('.option').forEach(n=>{n.classList.toggle('active',n===b);n.setAttribute('aria-pressed',String(n===b))});$('#demoSign').className='demo-sign '+b.dataset.type}));
+    $$('.color-dot').forEach(b=>b.addEventListener('click',()=>{$$('.color-dot').forEach(n=>{n.classList.toggle('active',n===b);n.setAttribute('aria-pressed',String(n===b))});$('#demoSign').style.setProperty('--sign',b.dataset.hex);$('#demoSign').style.setProperty('--sglow',b.dataset.rgb)}));
+    $('#lightToggle').addEventListener('click',()=>{const b=$('#lightToggle'),on=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',String(on));$('#demoStage').classList.toggle('off',!on)});
+    $('#dayToggle').addEventListener('click',()=>{const b=$('#dayToggle'),on=b.getAttribute('aria-checked')!=='true';b.setAttribute('aria-checked',String(on));$('#demoStage').classList.toggle('day',on)});
+    render();
+  </script>
+</body>
+</html>
