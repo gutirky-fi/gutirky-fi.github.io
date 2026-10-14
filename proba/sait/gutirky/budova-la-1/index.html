@@ -29,7 +29,7 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .req b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
 .req ol{margin:0;padding-left:22px;color:var(--body)}.req li{margin:3px 0}
 .req small{display:block;margin-top:8px;color:var(--mut);font-size:14px}
-.doors{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
 .door{display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px 18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--card);text-decoration:none;color:var(--ink)}
 .door:hover{border-color:var(--gd)}
 .door i{font:normal 600 13px var(--disp);letter-spacing:.16em;text-transform:uppercase;color:var(--ol)}
@@ -37,7 +37,25 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .door span{color:var(--mut);font-size:15px}
 .door.main{background:var(--gd);border-color:var(--gd);color:#16130a}.door.main i,.door.main span{color:#4a3b10}
 .kh{margin-top:16px;color:var(--mut);font-size:15px}
-@media (max-width:760px){.doors{grid-template-columns:1fr}}
+@media (max-width:1000px){.doors{grid-template-columns:1fr 1fr}}@media (max-width:560px){.doors{grid-template-columns:1fr}}
+/* нотатки ведучого */
+#notes{position:fixed;z-index:9;left:max(14px,env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));width:min(560px,calc(100% - 28px));max-height:34vh;overflow-y:auto;padding:12px 16px;border-radius:14px;background:rgba(18,21,26,.94);border:1px solid #383d44;border-left:4px solid var(--gd);box-shadow:0 10px 40px rgba(0,0,0,.5);font-size:clamp(14px,1.1vw,17px);line-height:1.45}
+#notes b{display:block;margin-bottom:3px;font:600 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}
+#notes p{margin:0;color:var(--body)}
+#cmenu #b-notes .sw{margin-left:auto;width:30px;height:18px;border-radius:99px;background:#3b4048;position:relative;flex:none}
+#cmenu #b-notes .sw::after{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#a0a8b2;transition:transform .2s}
+#cmenu #b-notes.on .sw{background:var(--gd)}#cmenu #b-notes.on .sw::after{transform:translateX(12px);background:#16130a}
+/* план для виховника */
+#plan-box .mat{margin:16px 0;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+#plan-box .mat b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
+#plan-box .mat ul{margin:0;padding-left:20px;color:var(--body)}
+#plan-box h2{margin:26px 0 8px;font:600 22px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+#plan-box h2 small{font:500 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut);margin-left:8px}
+#plan-box .row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:4px 16px;padding:10px 0;border-top:1px solid var(--ln)}
+#plan-box .row .t{font-weight:700;color:var(--ink)}#plan-box .row .t small{display:block;font-weight:600;color:var(--mut);font-size:13px}
+#plan-box .row .s{color:var(--body)}#plan-box .row .s em{color:var(--ac);font-style:normal}
+@media (max-width:640px){#plan-box .row{grid-template-columns:1fr}}
+@media print{body{background:#fff;color:#000}#plan .back{display:none}#plan-box .row,#plan-box .mat{border-color:#ccc;background:none}#plan-box .row .t,#plan-box .row .s,#plan-box .mat ul{color:#000}}
 
 /* ---------- гутірка ---------- */
 #pres{position:fixed;inset:0;background:radial-gradient(70% 60% at 30% 45%,#232a33,var(--bg) 75%);overflow:hidden}
@@ -203,6 +221,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>40–45 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
     <a class="door" href="#vyvchy"><i>Юнакові</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Юнакові</i><b>Перевір себе</b><span>15 запитань із поясненнями.</span></a>
+    <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали.</span></a>
   </div>
   <p class="kh">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
 </main>
@@ -215,6 +234,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       <button id="b-toc" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Зміст</span></button>
       <button id="b-skob" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg><span>Потужний СКОБ!</span><b id="skob-n"></b></button>
       <button id="phone-mode" type="button" aria-label="Керування презентацією з телефона"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Пульт</span></button>
+      <button id="b-notes" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg><span>Нотатки ведучого</span><i class="sw" aria-hidden="true"></i></button>
       <button id="b-fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
       <a id="home-link" href="../../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Бібліотека</span></a>
     </nav></div>
@@ -238,6 +258,17 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 </main>
 
 <!-- перевір себе -->
+<aside id="notes" hidden aria-live="polite"><b>Нотатка ведучого</b><p></p></aside>
+
+<!-- план для виховника -->
+<main id="plan" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">План для виховника</span>
+  <h1>Будова літальних апаратів І</h1>
+  <p class="hand">що робити й казати на кожному слайді</p>
+  <div id="plan-box"></div>
+</main>
+
 <main id="test" class="page" hidden>
   <a class="back" href="#">← На початок</a>
   <span class="eyebrow">Перевір себе</span>
@@ -481,11 +512,16 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
-#skob-lobby .how .url{display:inline-block;margin:4px 0;font:600 clamp(1.3rem,2.6vw,2rem)/1.1 Oswald,sans-serif;color:#fff;letter-spacing:.02em}
+
 #skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;background:#fff;border-radius:16px;padding:12px;display:grid;place-items:center}
 #skob-lobby .qr svg{width:100%;height:100%}
-#skob-lobby .how{margin:0 0 8px;color:#cfd5dc;font-size:clamp(1rem,1.5vw,1.35rem)}#skob-lobby .how b{color:#fff;word-break:break-all}
-#skob-lobby .code{font:600 clamp(2.8rem,8vw,6rem)/1 Oswald,sans-serif;letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
+#skob-lobby .steps{min-width:0}
+#skob-lobby .s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 'Source Sans 3',sans-serif;color:#fff}
+#skob-lobby .or{display:flex;align-items:center;gap:12px;margin:12px 0 8px;color:#6b7480;font-size:14px}
+#skob-lobby .or::before,#skob-lobby .or::after{content:"";flex:1;height:1px;background:#383d44}
+#skob-lobby .lbl{margin:10px 0 2px;color:#a0a8b2;font-size:14px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+#skob-lobby .url{font:600 clamp(1.4rem,2.6vw,2.2rem)/1.1 Oswald,'Arial Narrow',sans-serif;color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+#skob-lobby .code{font:600 clamp(2.6rem,6vw,4.8rem)/1 Oswald,sans-serif;letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
 #skob-lobby .st{margin-top:10px;color:#a0a8b2;font-size:15px}
 #skob-lobby h3{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;font:600 20px Oswald,sans-serif;letter-spacing:.08em;text-transform:uppercase}
 #skob-lobby h3 span{color:#ffc247}
@@ -807,7 +843,12 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
       L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${LOGO()}
-        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона<br>або відкрийте <b class="url"></b><br>і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="row"><div class="qr"></div><div class="steps">
+          <p class="s1">Скануйте QR-код камерою телефона</p>
+          <p class="or"><span>або</span></p>
+          <p class="lbl">відкрийте</p><div class="url"></div>
+          <p class="lbl">і введіть код</p><div class="code"></div>
+          <div class="st"></div></div></div>
         <div class="pend" hidden><h3>Чекають підтвердження <span class="np"></span></h3><div class="chips pchips"></div></div>
         <h3>Гравці <span class="n"></span></h3><div class="chips"></div>
         <p class="note">Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p>
@@ -832,7 +873,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
     if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
-    L.querySelector('.url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
     const all = accepted().sort((a, b) => a.seq - b.seq), pend = [...players.values()].filter(P => P.pending);
@@ -1581,6 +1622,45 @@ window.LA = {
   ]
 };
 
+/* ---------- нотатки ведучого: що сказати й зробити (за порядком слайдів вище) ----------
+   Видно на телефоні-пульті, на ноутбуці (меню в куті → «Нотатки ведучого») і на сторінці «План для виховника». */
+window.LA.say = [
+  'Привітайтеся й назвіть тему: вмілість «Будова літальних апаратів І», 5 вимог. Якщо гратимете з телефонів — меню в куті → «Потужний СКОБ!»: нехай юнаки підключаються, поки ви починаєте. ≈ 2 хв.',
+  'Коротко пройдіться по 5 кроках — це 5 вимог вмілості. Скажіть, що після кожної — коротке запитання, а наприкінці — гра. ≈ 1 хв.',
+  'Прочитайте вимогу вголос. На всю точку — ≈ 5 хв.',
+  'Спершу запитання до залу: 30 секунд, нехай називають усе, що літає. Потім дайте визначення ЛА.',
+  'Розкривайте по одному пункту. До кожної групи попросіть приклад із тих, що назвали на початку.',
+  '',
+  'Прочитайте вимогу вголос. ≈ 7 хв.',
+  'Запитання до залу, далі по одній частині: покажіть на малюнку й скажіть, для чого вона. Шасі — на вигляді збоку.',
+  'Потрібні модель літака, фото або паперовий літачок. Юнаки по черзі показують частину й пояснюють, для чого вона. ≈ 3 хв.',
+  '',
+  'Найважча вимога — ≈ 10 хв.',
+  'Поясніть: розріжемо крило вздовж польоту — побачимо профіль. Покажіть передню й задню кромки, хорду, кут атаки.',
+  'Роздайте папір і олівці. 3 хв: кожен малює профіль і підписує частини. Покажіть 2–3 малюнки всім.',
+  'Два пояснення разом: зверху тиск менший, знизу більший — і крило скеровує повітря вниз. Не кажіть «повітрю треба встигнути зустрітися» — це міф. Зрив — коли кут атаки завеликий.',
+  'Кожному — смужка паперу ≈ 3 × 20 см. Притиснути під нижньою губою, сильно дмухнути над смужкою — вона піднімається. Поясніть, що так частково працює й крило. ≈ 2 хв.',
+  '',
+  'Прочитайте вимогу вголос. ≈ 7 хв.',
+  'На 3D-літачку натискайте «Тангаж», «Крен», «Рискання». Попросіть юнаків показати кожен рух рукою-«літаком».',
+  'Запитання до залу. Відповідь: літак нахилиться ліворуч — це крен. Поясніть штурвал (на себе / від себе, ліворуч / праворуч) і педалі.',
+  'Папір А4 і ножиці. Кожен складає літачок, надрізає «рулі» й пробує тангаж, крен і рискання. Запускати — в безпечний бік. ≈ 5 хв.',
+  '',
+  'Прочитайте вимогу вголос. ≈ 7 хв.',
+  'Головне питання: де горизонтальне оперення — позаду, попереду чи його немає. Далі — п’ять схем по черзі.',
+  'Найпоширеніша схема: оперення позаду крила (світиться золотим). Приклади — Cessna, Boeing 737, Ан-225 «Мрія».',
+  'Оперення попереду крила — літак ніби витягує шию, як качка. Перший літак братів Райт (1903) був саме «качкою».',
+  'Горизонтального оперення немає — тангажем керують рулі на задній кромці крила. Кіль лишається. Приклад — Concorde.',
+  'Немає ні фюзеляжу, ні хвоста: усе в крилі. Мало опору, але важче керувати. Приклад — B-2 Spirit.',
+  'Два крила приблизно однакового розміру, обидва несуть літак. «Небесна блоха» — літак, який у 1930-х люди будували самі.',
+  'Гра на 5 силуетів. Без телефонів: група радиться й називає схему, хтось один натискає відповідь. Правильно — далі само, неправильно — прочитайте пояснення. ≈ 2 хв.',
+  '',
+  'Фінальна гра: 15 запитань, ≈ 7 хв. Якщо телефони ще не підключені — «Підключити телефони», зачекайте, поки всі ввійдуть. Незнайомі імена пускайте кнопкою ✓, ✕ — попросити справжнє ім’я.',
+  'Підсумок. Скажіть про «Вивчай сам» і «Перевір себе» (бібліотека → картка цієї гутірки). Хто готовий — може складати вмілість: попросіть пояснити 1–2 точки своїми словами.'
+];
+window.LA.slides.forEach((s, i) => { if (window.LA.say[i]) s.say = window.LA.say[i]; });
+window.LA.materialy = ['ноутбук (за можливості — проєктор або великий екран)', 'папір А4 — по аркушу на кожного', 'олівці', 'смужки паперу ≈ 3 × 20 см — по одній на кожного', 'ножиці (для паперових літачків)', 'модель літака або фото (за бажанням)', 'телефони юнаків з інтернетом — для гри «Потужний СКОБ!» (за бажанням)'];
+
 </script>
 <script>
 (() => {
@@ -1682,7 +1762,8 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 let T0 = 0;
 const strip = h => String(h || '').replace(/<[^>]+>/g, '');
 const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'gintro' ? 'Гра «Вгадай схему»' : s.t === 'q' ? (s.guess ? 'Вгадай схему ' + s.guess + ' з 5' : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
-const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: ${s.a[s.ok]}. ${s.why}` : s.t === 'kintro' ? '«Далі» — почати гру. Телефони юнаків підключаються через «Потужний СКОБ!» у меню.' : [s.ask ? 'Запитання до залу: ' + strip(s.ask) : '', strip(s.note)].filter(Boolean).join(' ');
+const noteFor = s => !s ? '' : s.t === 'q' ? `${s.guess ? 'Силует: ' + s.a[s.ok] + '. ' : ''}Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.`
+  : s.t === 'gintro' ? D.say[D.slides.findIndex(x => x.t === 'guess')] : s.t === 'kintro' ? D.say[D.slides.findIndex(x => x.t === 'gra')] : (s.say || '');
 const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
 const API = { id: 'budova-la-1', title: 'Будова літальних апаратів І',
@@ -1690,7 +1771,14 @@ const API = { id: 'budova-la-1', title: 'Будова літальних апа�
     elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: 45 * 60, sections: SECTIONS }),
   next: () => SKOB.active() ? gameKey('ArrowRight') : adv(1), prev: () => SKOB.active() ? null : adv(-1),
   jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
-const slideEvt = () => document.dispatchEvent(new CustomEvent('gutirka:slide'));
+const slideEvt = () => { document.dispatchEvent(new CustomEvent('gutirka:slide')); paintNotes(); };
+let showNotes = false; try { showNotes = localStorage.getItem('gutirky:la-notes') === '1'; } catch (e) {}
+function paintNotes() {
+  const b = $('#b-notes'); b.classList.toggle('on', showNotes); b.setAttribute('aria-pressed', String(showNotes));
+  const t = !P.hidden && showNotes ? noteFor(SL[idx]) : '';
+  $('#notes').hidden = !t; $('#notes p').textContent = t;
+}
+$('#b-notes').addEventListener('click', () => { showNotes = !showNotes; try { localStorage.setItem('gutirky:la-notes', showNotes ? '1' : '0'); } catch (e) {} paintNotes(); });
 SKOB.on(() => { const n = SKOB.count(); $('#skob-n').textContent = n ? String(n) : ''; });
 document.addEventListener('keydown', e => {
   if (P.hidden) return;
@@ -1803,11 +1891,26 @@ $('#t-box').addEventListener('click', e => {
 });
 
 /* ===================== перемикання ===================== */
+function renderPlan() {
+  const secT = n => (D.say[D.slides.findIndex(x => x.t === 'sec' && x.n === n)] || '').match(/≈\s*\d+\s*хв/);
+  let h = `<div class="mat"><b>Що підготувати</b><ul>${D.materialy.map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>
+    <div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, нотатки ведучого, повний екран.</li><li>Пункти на слайді з’являються по одному — розповідайте до кожного.</li><li>Пульт на телефоні показує ці нотатки й правильні відповіді.</li></ul></div>`;
+  D.slides.forEach((s, i) => {
+    if (s.t === 'sec') { const m = secT(s.n); h += `<h2>Вимога ${s.n}${m ? `<small>${m[0]}</small>` : ''}</h2><p style="margin:0 0 6px;color:var(--mut)">${esc(D.vymogy[s.n - 1])}</p>`; return; }
+    const name = s.t === 'title' ? 'Титульний слайд' : s.t === 'q' ? 'Перевірка' : s.t === 'guess' ? 'Гра «Вгадай схему»' : s.t === 'gra' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Підсумок' : (s.h || '').replace(/<[^>]+>/g, '');
+    const kind = s.t === 'prac' ? (s.k || 'Практика') : s.t === 'q' ? '20 секунд' : s.t === 'scheme' ? 'Схема' : '';
+    const say = s.t === 'q' ? `<em>${esc(s.q)}</em> — правильна відповідь: «${esc(s.a[s.ok])}». ${esc(s.why)}` : esc(D.say[i] || '');
+    if (s.t === 'title') h += '<h2>Початок<small>≈ 3 хв</small></h2>';
+    if (s.t === 'gra') h += '<h2>Підсумок<small>≈ 8 хв</small></h2>';
+    h += `<div class="row"><div class="t">${esc(name)}${kind ? `<small>${esc(kind)}</small>` : ''}</div><div class="s">${say}</div></div>`;
+  });
+  $('#plan-box').innerHTML = h;
+}
 function route() {
   const h = location.hash.slice(1);
   $('#start').hidden = !!h && h !== 'start';
   const wasG = !P.hidden;
-  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test';
+  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan';
   window.GUTIRKA = h === 'hutirka' ? API : null;
   if (h === 'hutirka' && !wasG) peekCorner(2500);
   if (!h || h === 'start') $('#start').hidden = false;
@@ -1815,6 +1918,7 @@ function route() {
   if (h === 'hutirka') render(); else slideEvt();
   if (h !== 'hutirka') { try { window.GutirkaPult && window.GutirkaPult.close(); } catch (e) {} }
   if (h === 'vyvchy') { renderStudy(); scrollTo(0, 0); }
+  if (h === 'plan') { renderPlan(); scrollTo(0, 0); }
   if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
 }
 $('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');

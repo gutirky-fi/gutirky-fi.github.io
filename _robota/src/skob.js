@@ -114,11 +114,16 @@
 #skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
-#skob-lobby .how .url{display:inline-block;margin:4px 0;font:600 clamp(1.3rem,2.6vw,2rem)/1.1 Oswald,sans-serif;color:#fff;letter-spacing:.02em}
+
 #skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;background:#fff;border-radius:16px;padding:12px;display:grid;place-items:center}
 #skob-lobby .qr svg{width:100%;height:100%}
-#skob-lobby .how{margin:0 0 8px;color:#cfd5dc;font-size:clamp(1rem,1.5vw,1.35rem)}#skob-lobby .how b{color:#fff;word-break:break-all}
-#skob-lobby .code{font:600 clamp(2.8rem,8vw,6rem)/1 Oswald,sans-serif;letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
+#skob-lobby .steps{min-width:0}
+#skob-lobby .s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 'Source Sans 3',sans-serif;color:#fff}
+#skob-lobby .or{display:flex;align-items:center;gap:12px;margin:12px 0 8px;color:#6b7480;font-size:14px}
+#skob-lobby .or::before,#skob-lobby .or::after{content:"";flex:1;height:1px;background:#383d44}
+#skob-lobby .lbl{margin:10px 0 2px;color:#a0a8b2;font-size:14px;letter-spacing:.12em;text-transform:uppercase;font-weight:600}
+#skob-lobby .url{font:600 clamp(1.4rem,2.6vw,2.2rem)/1.1 Oswald,'Arial Narrow',sans-serif;color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+#skob-lobby .code{font:600 clamp(2.6rem,6vw,4.8rem)/1 Oswald,sans-serif;letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
 #skob-lobby .st{margin-top:10px;color:#a0a8b2;font-size:15px}
 #skob-lobby h3{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;font:600 20px Oswald,sans-serif;letter-spacing:.08em;text-transform:uppercase}
 #skob-lobby h3 span{color:#ffc247}
@@ -440,7 +445,12 @@
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
       L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${LOGO()}
-        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона<br>або відкрийте <b class="url"></b><br>і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="row"><div class="qr"></div><div class="steps">
+          <p class="s1">Скануйте QR-код камерою телефона</p>
+          <p class="or"><span>або</span></p>
+          <p class="lbl">відкрийте</p><div class="url"></div>
+          <p class="lbl">і введіть код</p><div class="code"></div>
+          <div class="st"></div></div></div>
         <div class="pend" hidden><h3>Чекають підтвердження <span class="np"></span></h3><div class="chips pchips"></div></div>
         <h3>Гравці <span class="n"></span></h3><div class="chips"></div>
         <p class="note">Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p>
@@ -465,7 +475,7 @@
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
     if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
-    L.querySelector('.url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
     const all = accepted().sort((a, b) => a.seq - b.seq), pend = [...players.values()].filter(P => P.pending);
