@@ -10,6 +10,7 @@ src = (TUT / 'index.html').read_text(encoding='utf-8')
 inl = lambda p: '<script>\n' + p.read_text(encoding='utf-8') + '\n</script>'
 for tag, path in [('<script src="../../src/qr.js"></script>', ROB / 'src' / 'qr.js'),
                   ('<script src="../../src/skob.js"></script>', ROB / 'src' / 'skob.js'),
+                  ('<script src="maliunky.js"></script>', TUT / 'maliunky.js'),
                   ('<script src="dani.js"></script>', TUT / 'dani.js')]:
     assert src.count(tag) == 1, tag
     src = src.replace(tag, inl(path))

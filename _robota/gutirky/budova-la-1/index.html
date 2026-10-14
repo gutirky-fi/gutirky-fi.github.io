@@ -90,6 +90,15 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .kbtn{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;pointer-events:auto}
 .kbtn .go{margin:0}
 .kbtn .pb{height:52px;padding:0 18px}
+.la-mix{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.la-box{position:relative;width:100%;max-height:100%;aspect-ratio:3/2}
+.la-box .la-ph{position:absolute;inset:0}
+.la-inset{position:absolute;right:8px;top:8px;width:38%;padding:4px;border-radius:12px;background:rgba(22,24,28,.88);border:1px solid #383d44}
+.la-inset svg{display:block;width:100%;height:auto}
+.la-mix.nofoto .la-box{aspect-ratio:auto}.la-mix.nofoto .la-inset{position:static;width:100%;background:none;border:0;padding:0}
+.phrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 12px}.phrow .la-ph{aspect-ratio:3/2}
+.fsw{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font-size:15px}
+.fsw b{color:var(--gd)}.fsw[aria-pressed=false] b{color:var(--mut)}
 .mini{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:2px}
 #b-skob b{color:var(--gd);margin-left:4px}
 #hint{position:absolute;z-index:4;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--mut);font-size:15px;pointer-events:none}
@@ -173,6 +182,7 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
     <a class="door" href="#vyvchy"><i>Юнакові</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Юнакові</i><b>Перевір себе</b><span>15 запитань із поясненнями.</span></a>
   </div>
+  <button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button>
   <p class="kh">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
 </main>
 
@@ -187,7 +197,7 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
   <div id="hint"></div><div id="bar"><i></i></div>
   <div id="tapfx" aria-hidden="true"></div>
 </section>
-<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div></div></div>
+<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div><button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button></div></div>
 
 <!-- вивчай сам -->
 <main id="vyvch" class="page" hidden>
@@ -219,6 +229,7 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 
 <script src="../../src/qr.js"></script>
 <script src="../../src/skob.js"></script>
+<script src="maliunky.js"></script>
 <script src="dani.js"></script>
 <script>
 (() => {
@@ -226,158 +237,44 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-/* ===================== малюнки ===================== */
-const INK = '#cfd5dc', SKY = '#6fb3ff', GD = '#ffc247', AC = '#2fd2c0', FILL = 'rgba(111,179,255,.16)';
-const mirror = pts => pts.concat(pts.slice().reverse().map(([x, y]) => [-x, y]));
-const poly = (pts, extra = '') => `<polygon points="${pts.map(p => p.join(',')).join(' ')}" ${extra}/>`;
-const FUS = 'M0,-118 C7,-113 10,-98 10,-80 L10,92 C10,106 5,114 0,118 C-5,114 -10,106 -10,92 L-10,-80 C-10,-98 -7,-113 0,-118 Z';
-function plane(kind, o = {}) {
-  const st = `fill="${o.fill || FILL}" stroke="${o.stroke || SKY}" stroke-width="2" stroke-linejoin="round"`;
-  const hi = `fill="rgba(255,194,71,.28)" stroke="${GD}" stroke-width="2" stroke-linejoin="round"`;
-  let g = '';
-  const fin = (y1, y2) => `<rect x="-2" y="${y1}" width="4" height="${y2 - y1}" rx="2" fill="${GD}"/>`;
-  if (kind === 'normal') {
-    g += poly(mirror([[10, -30], [100, -14], [100, 4], [10, 10]]), st);
-    g += poly(mirror([[10, 76], [44, 88], [44, 98], [10, 96]]), o.tail === 'hi' ? hi : st);
-    g += `<path d="${FUS}" ${st}/>` + fin(70, 112);
-    if (o.parts) {
-      g += poly([[60, 2.5], [100, 3.6], [100, 4], [60, 6]], `fill="${GD}" stroke="${GD}" stroke-width="3"`) + poly([[-60, 2.5], [-100, 3.6], [-100, 4], [-60, 6]], `fill="${GD}" stroke="${GD}" stroke-width="3"`);
-      g += poly([[14, 8.5], [55, 5.8], [55, 7.5], [14, 10]], `fill="${AC}" stroke="${AC}" stroke-width="3"`);
-      g += `<rect x="38" y="-36" width="12" height="22" rx="5" ${st}/><rect x="-50" y="-36" width="12" height="22" rx="5" ${st}/>`;
-      g += `<path d="M-6,-104 Q0,-112 6,-104 L5,-96 L-5,-96 Z" fill="${AC}" opacity=".8"/>`;
-      g += `<line x1="10" y1="95" x2="44" y2="97.5" stroke="${GD}" stroke-width="3"/><line x1="-10" y1="95" x2="-44" y2="97.5" stroke="${GD}" stroke-width="3"/>`;
-    }
-  } else if (kind === 'canard') {
-    g += poly(mirror([[10, -84], [42, -76], [42, -68], [10, -66]]), o.tail === 'hi' ? hi : st);
-    g += poly(mirror([[10, 30], [100, 52], [100, 66], [10, 72]]), st);
-    g += `<path d="${FUS}" ${st}/>` + fin(66, 112);
-  } else if (kind === 'tailless') {
-    g += poly(mirror([[10, -62], [98, 80], [98, 92], [10, 90]]), st);
-    g += `<path d="${FUS}" ${st}/>` + fin(56, 110);
-  } else if (kind === 'flyingwing') {
-    g += poly([[0, -52], [104, 28], [98, 44], [66, 32], [38, 46], [0, 30], [-38, 46], [-66, 32], [-98, 44], [-104, 28]], st);
-  } else if (kind === 'tandem') {
-    g += poly(mirror([[10, -72], [92, -64], [92, -50], [10, -50]]), st);
-    g += poly(mirror([[10, 50], [92, 58], [92, 72], [10, 74]]), st);
-    g += `<path d="${FUS}" ${st}/>` + fin(80, 112);
-  }
-  return g;
+/* ===================== малюнки (maliunky.js) і фото ===================== */
+const FKEY = 'gutirky:la-foto';
+let foto = true; try { foto = localStorage.getItem(FKEY) !== '0'; } catch (e) {}
+const art = k => LA_ART.get(k);
+/* схема: фото справжнього літака + малюнок-підказка в куті (якщо фото не завантажиться — лишається малюнок) */
+function schemeArt(k) {
+  const svg = art('scheme:' + k);
+  if (!foto || !LA_ART.has(k)) return svg;
+  return `<div class="la-mix"><div class="la-box">${LA_ART.photo(k).replace('onerror="', 'onerror="this.closest(\'.la-mix\').classList.add(\'nofoto\');')}<div class="la-inset">${svg}</div></div></div>`;
 }
-const LAB = (x1, y1, x2, y2, t, anchor = 'start', col = INK, fs = 15) => {
-  const L = String(t).split('\n'), tx = x2 + (anchor === 'start' ? 5 : -5), y0 = y2 + fs * .35 - (L.length - 1) * fs * .55;
-  return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="1.2" opacity=".6"/><circle cx="${x1}" cy="${y1}" r="3" fill="${col}"/>` +
-    `<text x="${tx}" y="${y0}" font-size="${fs}" fill="${col}" text-anchor="${anchor}">${L.map((l, i) => `<tspan x="${tx}" dy="${i ? fs * 1.1 : 0}">${l}</tspan>`).join('')}</text>`;
-};
-const AF = 'M0,0 C0,-20 28,-38 90,-41 C170,-44 262,-22 320,0 C262,4 170,9 90,9 C34,9 0,11 0,0 Z';
-const ARR = (id, col) => `<marker id="${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="${col}"/></marker>`;
-let uid = 0;
-const ART = {
-  title: () => `<svg viewBox="-120 -125 240 250" role="img" aria-label="Літак, вигляд згори"><g transform="rotate(-28)">${plane('normal', { parts: true })}</g></svg>`,
-  parts: () => `<svg viewBox="-255 -132 510 278" role="img" aria-label="Частини літака">${plane('normal', { parts: true })}
-    ${LAB(0, -100, 122, -112, 'Кабіна')}${LAB(44, -25, 122, -58, 'Двигун')}${LAB(34, 9, 122, 2, 'Закрилок', 'start', AC)}${LAB(0, 40, 122, 44, 'Фюзеляж')}
-    ${LAB(0, 104, 122, 98, 'Кіль і руль\nнапрямку', 'start', GD)}
-    ${LAB(-70, -12, -122, -60, 'Крило', 'end')}${LAB(-82, 4, -122, 14, 'Елерон', 'end', GD)}${LAB(-30, 85, -122, 66, 'Стабілізатор', 'end')}${LAB(-27, 96.5, -122, 102, 'Руль висоти', 'end', GD)}
-    <text x="0" y="140" font-size="12.5" fill="${INK}" opacity=".75" text-anchor="middle">Вигляд згори. Шасі — під літаком, тут його не видно.</text></svg>`,
-  airfoil: () => { const i = ++uid; return `<svg viewBox="0 0 460 250" role="img" aria-label="Профіль крила">
-    <defs>${ARR('fa' + i, INK)}</defs>
-    ${[110, 150, 190].map(y => `<line x1="4" y1="${y}" x2="52" y2="${y}" stroke="${INK}" stroke-width="1.6" opacity=".6" marker-end="url(#fa${i})"/>`).join('')}
-    <text x="4" y="96" font-size="14" fill="${INK}" opacity=".85">зустрічний потік</text>
-    <line x1="70" y1="150" x2="300" y2="150" stroke="${INK}" stroke-width="1" stroke-dasharray="4 5" opacity=".45"/>
-    <g transform="translate(70,150) rotate(-10)"><path d="${AF}" fill="${FILL}" stroke="${SKY}" stroke-width="2.5"/>
-      <line x1="0" y1="0" x2="320" y2="0" stroke="${GD}" stroke-width="2" stroke-dasharray="7 5"/></g>
-    <path d="M260,150 A190,190 0 0 0 257.1,117" fill="none" stroke="${GD}" stroke-width="2.5"/>
-    <text x="268" y="143" font-size="16" fill="${GD}" font-weight="700">α — кут атаки</text>
-    <circle cx="70" cy="150" r="4.5" fill="${AC}"/><circle cx="385" cy="94.4" r="4.5" fill="${AC}"/>
-    ${LAB(66, 154, 22, 214, 'передня кромка', 'start', AC, 14)}${LAB(168, 133, 156, 214, 'хорда', 'start', GD, 14)}${LAB(239, 129, 250, 214, 'нижня поверхня', 'start', INK, 14)}
-    ${LAB(388, 92, 440, 60, 'задня кромка', 'end', AC, 14)}${LAB(230, 77, 230, 30, 'верхня поверхня — опукліша', 'start', INK, 14)}</svg>`; },
-  lift: () => { const i = ++uid; return `<svg viewBox="0 0 460 270" role="img" aria-label="Підйомна сила">
-    <defs>${ARR('fl' + i, AC)}${ARR('fm' + i, INK)}${ARR('fg' + i, GD)}</defs>
-    <path d="M10,100 C70,98 110,72 170,66 C240,58 310,60 350,70 C390,80 420,98 452,118" fill="none" stroke="${AC}" stroke-width="1.8" marker-end="url(#fl${i})"/>
-    <path d="M10,128 C60,126 100,96 165,90 C230,82 300,82 340,92 C380,100 410,120 452,144" fill="none" stroke="${AC}" stroke-width="1.8" marker-end="url(#fl${i})"/>
-    <path d="M10,190 C150,190 300,184 452,200" fill="none" stroke="${INK}" stroke-width="1.6" opacity=".55" marker-end="url(#fm${i})"/>
-    <path d="M10,218 C150,218 300,214 452,226" fill="none" stroke="${INK}" stroke-width="1.6" opacity=".55" marker-end="url(#fm${i})"/>
-    <g transform="translate(80,165) rotate(-6)"><path d="${AF}" fill="${FILL}" stroke="${SKY}" stroke-width="2.5"/></g>
-    <line x1="250" y1="142" x2="250" y2="22" stroke="${GD}" stroke-width="6" marker-end="url(#fg${i})"/>
-    <text x="262" y="30" font-size="17" fill="${GD}" font-weight="700">підйомна сила</text>
-    <text x="10" y="40" font-size="14" fill="${AC}">швидше → тиск менший</text>
-    <text x="10" y="256" font-size="14" fill="${INK}">повільніше → тиск більший</text>
-    <text x="452" y="174" font-size="14" fill="${AC}" text-anchor="end">повітря — донизу</text></svg>`; },
-  strip: () => { const i = ++uid; return `<svg viewBox="0 0 420 210" role="img" aria-label="Дослід зі смужкою паперу">
-    <defs>${ARR('fs' + i, AC)}</defs>
-    <path d="M28,64 Q58,58 68,90 Q58,120 28,114" fill="none" stroke="${INK}" stroke-width="3" opacity=".7"/><text x="8" y="140" font-size="13" fill="${INK}" opacity=".7">губи</text>
-    <path d="M72,96 C150,98 240,140 330,182" fill="none" stroke="${INK}" stroke-width="3" stroke-dasharray="6 6" opacity=".4"/><text x="338" y="190" font-size="14" fill="${INK}" opacity=".7">до</text>
-    <path d="M72,96 C150,92 240,96 340,108" fill="none" stroke="#fff" stroke-width="4"/><text x="348" y="113" font-size="14" fill="#fff">після</text>
-    ${[0, 1, 2].map(k => `<line x1="80" y1="${78 - k * 14}" x2="${250 - k * 30}" y2="${80 - k * 12}" stroke="${AC}" stroke-width="2" marker-end="url(#fs${i})"/>`).join('')}
-    <text x="84" y="28" font-size="14" fill="${AC}">дуємо над смужкою</text></svg>`; },
-  axes: () => {
-    const i = ++uid;
-    const arc = r => `<path d="M${105 - r},70 A${r},${r * 0.55} 0 1 1 ${105 + r * 0.2},${70 + r * 0.54}" fill="none" stroke="${GD}" stroke-width="2.5" marker-end="url(#fx${i})"/>`;
-    const st = `fill="${FILL}" stroke="${SKY}" stroke-width="2" stroke-linejoin="round"`;
-    const rows = [
-      [`<g transform="translate(5,-18)" ${st}><path d="M30,100 C40,90 60,88 80,88 L150,90 L165,62 L172,62 L170,92 C172,98 168,104 160,106 L80,108 C60,108 40,108 30,100 Z"/><line x1="80" y1="98" x2="130" y2="98"/></g>`, 78, 'Тангаж', 'ніс угору або вниз', 'руль висоти', 'збоку'],
-      [`<g transform="translate(-195,-26)" ${st}><circle cx="300" cy="96" r="13"/><line x1="220" y1="98" x2="380" y2="98"/><path d="M300,83 L300,55 L307,58 L307,83"/><line x1="276" y1="74" x2="324" y2="74"/></g>`, 92, 'Крен', 'нахил крил ліворуч / праворуч', 'елерони', 'спереду'],
-      [`<g transform="translate(105,70) scale(.5) rotate(90)">${plane('normal').replace(/<rect[^>]*>/g, '')}</g>`, 80, 'Рискання', 'ніс ліворуч або праворуч', 'руль напрямку', 'згори']
-    ];
-    return `<svg viewBox="0 0 440 420" role="img" aria-label="Тангаж, крен і рискання"><defs>${ARR('fx' + i, GD)}</defs>
-      ${rows.map(([g, r, n, d, c, v], k) => `<g transform="translate(0,${k * 140})">${k ? '<line x1="0" y1="0" x2="440" y2="0" stroke="#383d44"/>' : ''}${g}${arc(r)}
-        <text x="6" y="20" font-size="12" fill="${INK}" opacity=".7">${v}</text>
-        <text x="222" y="56" font-size="26" fill="#fff" font-weight="700">${n}</text><text x="222" y="82" font-size="15" fill="${INK}">${d}</text>
-        <text x="222" y="106" font-size="15" fill="${GD}">керує: ${c}</text></g>`).join('')}</svg>`;
-  },
-  types: () => {
-    const c = (i, svg, t) => { const x = (i % 4) * 110, y = Math.floor(i / 4) * 125; return `<g transform="translate(${x},${y})"><rect x="4" y="4" width="102" height="114" rx="14" fill="rgba(255,255,255,.04)" stroke="#383d44"/><g fill="${FILL}" stroke="${SKY}" stroke-width="2" stroke-linejoin="round">${svg}</g><text x="55" y="109" font-size="13" fill="${INK}" text-anchor="middle">${t}</text></g>`; };
-    return `<svg viewBox="0 0 440 250" role="img" aria-label="Види літальних апаратів">
-      ${c(0, '<circle cx="55" cy="40" r="26"/><path d="M38,58 L48,76 L62,76 L72,58" fill="none"/><rect x="47" y="76" width="16" height="10" rx="2"/>', 'Повітряна куля')}
-      ${c(1, '<ellipse cx="55" cy="44" rx="40" ry="16"/><path d="M90,44 L102,32 L102,56 Z"/><rect x="45" y="60" width="20" height="9" rx="3"/>', 'Дирижабль')}
-      ${c(2, '<path d="M14,52 L96,52 M55,24 L55,86 M40,80 L70,80" stroke-width="6" stroke-linecap="round"/><path d="M52,20 C55,14 58,20 58,24"/>', 'Літак')}
-      ${c(3, '<path d="M6,54 L104,50 M55,34 L55,82 M46,78 L64,78" stroke-width="4" stroke-linecap="round"/>', 'Планер')}
-      ${c(4, '<path d="M22,36 L90,36" stroke-width="3"/><path d="M55,36 L55,44"/><ellipse cx="50" cy="58" rx="22" ry="14"/><path d="M72,56 L100,50 L100,58 L72,62"/><path d="M38,76 L64,76" stroke-width="3"/>', 'Гелікоптер')}
-      ${c(5, '<path d="M30,34 L80,84 M80,34 L30,84" stroke-width="4"/><circle cx="30" cy="34" r="11"/><circle cx="80" cy="34" r="11"/><circle cx="30" cy="84" r="11"/><circle cx="80" cy="84" r="11"/><rect x="47" y="51" width="16" height="16" rx="4"/>', 'Дрон')}
-      ${c(6, '<path d="M14,40 Q55,6 96,40 Q55,26 14,40 Z"/><path d="M18,40 L50,78 M92,40 L60,78 M40,30 L52,78 M70,30 L58,78" fill="none" stroke-width="1"/><circle cx="55" cy="80" r="6"/>', 'Параплан')}
-      ${c(7, '<path d="M55,14 C70,30 70,60 66,80 L44,80 C40,60 40,30 55,14 Z"/><path d="M44,66 L32,86 L44,82 M66,66 L78,86 L66,82"/><path d="M48,86 L55,98 L62,86" stroke="#ffc247"/>', 'Ракета')}</svg>`;
-  },
-  schemes: () => {
-    const L = [['normal', 'Нормальна'], ['canard', '«Качка»'], ['tailless', '«Безхвістка»'], ['flyingwing', '«Літаюче крило»'], ['tandem', '«Тандем»']];
-    const pos = [[75, 70], [220, 70], [365, 70], [147, 222], [293, 222]];
-    return `<svg viewBox="0 0 440 300" role="img" aria-label="П’ять аеродинамічних схем">${L.map(([k, t], i) => `<g transform="translate(${pos[i][0]},${pos[i][1] - 6}) scale(.46)">${plane(k, { tail: 'hi' })}</g><text x="${pos[i][0]}" y="${pos[i][1] + 66}" font-size="16" fill="#fff" text-anchor="middle" font-weight="600">${t}</text>`).join('')}</svg>`;
-  },
-  paper: () => `<svg viewBox="-215 -128 430 262" role="img" aria-label="Паперовий літачок з рулями, вигляд згори">
-    <polygon points="0,-120 112,100 14,80 0,100 -14,80 -112,100" fill="rgba(255,255,255,.08)" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
-    <line x1="0" y1="-120" x2="0" y2="100" stroke="${INK}" stroke-width="1.5" stroke-dasharray="5 5" opacity=".7"/>
-    <polygon points="58,74 104,83.5 107,97.4 61,88" fill="rgba(255,194,71,.35)" stroke="${GD}" stroke-width="2"/>
-    <polygon points="-58,74 -104,83.5 -107,97.4 -61,88" fill="rgba(255,194,71,.35)" stroke="${GD}" stroke-width="2"/>
-    ${LAB(84, 86, 132, 40, 'надріз —\n«руль»', 'start', GD)}${LAB(-84, 86, -132, 40, 'надріз —\n«руль»', 'end', GD)}${LAB(0, 30, 132, -40, 'згин —\n«кіль»', 'start', INK)}
-    <text x="0" y="128" font-size="13" fill="${INK}" opacity=".75" text-anchor="middle">Вигляд згори. Рулі — на задньому краї крил.</text></svg>`
-};
-const SCH = {
-  normal: [LAB(-70, -10, -125, -50, 'крило', 'end'), LAB(-30, 90, -125, 96, 'оперення\nпозаду', 'end', GD)],
-  canard: [LAB(-30, -74, -125, -86, 'оперення\nпопереду', 'end', GD), LAB(-70, 55, -125, 72, 'крило', 'end')],
-  tailless: [LAB(-60, 62, -125, 40, 'рулі — на\nзадній кромці', 'end'), LAB(0, 82, 125, 90, 'кіль', 'start', GD)],
-  flyingwing: [LAB(-60, 20, -125, -20, 'усе —\nу крилі', 'end'), LAB(0, 30, 125, 80, 'без фюзеляжу\nі хвоста')],
-  tandem: [LAB(-60, -58, -125, -78, 'переднє\nкрило', 'end'), LAB(-60, 64, -125, 86, 'заднє\nкрило', 'end')]
-};
-const art = k => k && k.startsWith('scheme:') ? `<svg viewBox="-235 -125 470 250" role="img" aria-label="Силует схеми">${plane(k.slice(7), { tail: 'hi' })}${(SCH[k.slice(7)] || []).join('')}</svg>` : (ART[k] ? ART[k]() : '');
+function paintFotoSw() { $$('.fsw').forEach(b => { b.setAttribute('aria-pressed', String(foto)); b.querySelector('b').textContent = foto ? 'увімкнено' : 'вимкнено'; }); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.fsw'); if (!b) return;
+  foto = !foto; try { localStorage.setItem(FKEY, foto ? '1' : '0'); } catch (err) {}
+  paintFotoSw(); if (!P.hidden) render(); if (!$('#vyvch').hidden) renderStudy();
+});
 
 /* ===================== гутірка ===================== */
 const kviz = D.kviz;
 const SL = D.slides.map(s => s.t === 'gra' ? { t: 'kintro' } : s);
-let idx = 0, rev = 0, tot = 0, qctl = null;
+let idx = 0, rev = 0, tot = 0, qctl = null, stop3d = null;
 const P = $('#pres'), panel = $('#panel'), artEl = $('#art');
 function steps(s) { return s.t === 'q' ? 0 : (s.pts ? s.pts.length : 0); }
 function render() {
   if (qctl) { qctl.stop(); qctl = null; }
+  if (stop3d) { stop3d(); stop3d = null; }
   const s = SL[idx]; let h = '', a = '', wide = false, quiz = false, hint = '';
   tot = steps(s); rev = Math.min(rev, tot);
   const pts = s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
   const note = s.note ? `<p class="note">${s.note}</p>` : '';
   switch (s.t) {
-    case 'title': wide = true; h = `<div class="big ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова<br>літальних апаратів</h2><p>гутірка для юнацтва · ${D.chas}</p>${ART.title()}</div>`;
+    case 'title': wide = true; h = `<div class="big ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова<br>літальних апаратів</h2><p>гутірка для юнацтва · ${D.chas}</p>${art('title')}</div>`;
       hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
-    case 'plan': a = ART.types(); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
+    case 'plan': a = art('types'); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
     case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Вимога вмілості</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
     case 'card': case 'prac': a = s.art ? art(s.art) : '';
       h = `${s.t === 'prac' ? `<span class="badge">${s.k}</span>` : `<div class="k">${s.k}</div>`}<h2 class="hh">${s.h}</h2>${s.p ? `<p class="pp">${s.p}</p>` : ''}${pts}${s.ask ? `<p class="ask">${s.ask}</p>` : ''}${note}`; break;
-    case 'scheme': a = art('scheme:' + s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>`; break;
+    case 'scheme': a = schemeArt(s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>`; break;
     case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz.length} запитань по всіх п’яти вимогах. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
       <div class="kbtn"><button class="go" type="button" data-skob="game">Почати гру</button><button class="pb" type="button" data-skob="lobby">Підключити телефони</button><button class="pb" type="button" data-skob="skip">Пропустити</button></div></div>`;
       hint = 'Далі — почати гру'; break;
@@ -388,6 +285,7 @@ function render() {
   }
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz);
   artEl.innerHTML = a; artEl.hidden = !a;
+  if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
   panel.innerHTML = h; panel.scrollTop = 0;
   if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: `Перевірка · точка ${s.n}`, T: 20, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
   showRev(); $('#hint').textContent = hint;
@@ -475,7 +373,7 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
   $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
-    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}
+    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 && foto ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
     <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
   const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%';
@@ -525,14 +423,14 @@ function route() {
   $('#start').hidden = !!h && h !== 'start';
   P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test';
   if (!h || h === 'start') $('#start').hidden = false;
-  if (h !== 'hutirka') { $('#toc').hidden = true; if (document.fullscreenElement) try { document.exitFullscreen().catch(() => {}); } catch (e) {} }
+  if (h !== 'hutirka') { SKOB.close(); if (qctl) { qctl.stop(); qctl = null; } if (stop3d) { stop3d(); stop3d = null; } $('#toc').hidden = true; if (document.fullscreenElement) try { document.exitFullscreen().catch(() => {}); } catch (e) {} }
   if (h === 'hutirka') render();
   if (h === 'vyvchy') { renderStudy(); scrollTo(0, 0); }
   if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
 }
 $('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
 $('#req-src').href = D.dzherelo;
-addEventListener('hashchange', route); route();
+addEventListener('hashchange', route); route(); paintFotoSw();
 })();
 </script>
 </body>

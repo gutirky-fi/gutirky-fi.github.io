@@ -443,6 +443,7 @@
 
   window.SKOB = {
     lobby, ask, game, key, logo: LOGO,
+    close: () => { closeGame(true); closeLobby(); },
     count: () => online().length,
     active: () => !!G || !!(L && !L.hidden),
     on: fn => { subs.add(fn); return () => subs.delete(fn); },
