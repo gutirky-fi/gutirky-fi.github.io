@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Кераміка І</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ol:#9fb57a;--sky:#6fb3ff;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;
+  --qa:#e2574c;--qb:#3f7fd9;--qc:#e0a526;--qd:#3aa565}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.55 var(--txt);-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+svg text{font-family:var(--txt)}
+
+/* ---------- старт ---------- */
+#start{min-height:100%;display:flex;flex-direction:column;justify-content:center;max-width:980px;margin:0 auto;padding:32px max(16px,4vw) 40px}
+.eyebrow{font:500 14px var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--ol)}
+h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.hand{font:500 clamp(1.4rem,3vw,1.9rem)/1.15 var(--hand);color:var(--ac);margin:6px 0 0}
+.req{margin:22px 0 6px;padding:14px 18px;border:1px solid var(--ln);border-radius:16px;background:var(--card)}
+.req b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
+.req ol{margin:0;padding-left:22px;color:var(--body)}.req li{margin:3px 0}
+.req small{display:block;margin-top:8px;color:var(--mut);font-size:14px}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
+body.yun .for-v,body:not(.yun) .for-y{display:none!important}
+.door{display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px 18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--card);text-decoration:none;color:var(--ink)}
+.door:hover{border-color:var(--gd)}
+.door i{font:normal 600 13px var(--disp);letter-spacing:.16em;text-transform:uppercase;color:var(--ol)}
+.door b{font:600 24px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.door span{color:var(--mut);font-size:15px}
+.door.main{background:var(--gd);border-color:var(--gd);color:#16130a}.door.main i,.door.main span{color:#4a3b10}
+.kh{margin-top:16px;color:var(--mut);font-size:15px}
+@media (max-width:560px){.doors{grid-template-columns:1fr}}
+/* для юнаків: посилання й QR (у виховника) */
+.share{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start;margin-top:20px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.share .qr{width:200px;padding:10px;border-radius:14px;background:#fff;line-height:0}.share .qr svg{width:100%;height:auto}
+.share p{margin:0 0 10px;color:var(--body)}.share .url{font:600 17px var(--txt);color:var(--ink);word-break:break-all}
+.share .warn{color:var(--mut);font-size:15px}.share .acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.share .acts .go,.share .acts .back{margin:0}
+@media (max-width:640px){.share{grid-template-columns:1fr}.share .qr{width:180px}}
+/* план для виховника */
+#plan-box .mat{margin:16px 0;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+#plan-box .mat b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
+#plan-box .mat ul{margin:0;padding-left:20px;color:var(--body)}
+#plan-box h2{margin:26px 0 8px;font:600 22px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+#plan-box h2 small{font:500 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut);margin-left:8px}
+#plan-box .row{display:grid;grid-template-columns:minmax(0,15em) minmax(0,1fr);gap:4px 16px;padding:10px 0;border-top:1px solid var(--ln)}
+#plan-box .row .t{font-weight:700;color:var(--ink)}#plan-box .row .t small{display:block;font-weight:600;color:var(--mut);font-size:13px}
+#plan-box .row .s{color:var(--body)}#plan-box .row .s em{color:var(--ac);font-style:normal}
+@media (max-width:640px){#plan-box .row{grid-template-columns:1fr}}
+.go.pr{display:inline-flex;align-items:center;gap:10px;margin:16px 0 4px}.go.pr svg{width:20px;height:20px;flex:none}
+/* друк плану: білий аркуш A4, лише план (у браузері — «Друкувати» або «Зберегти як PDF») */
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  :root{color-scheme:light}
+  html,body{height:auto;background:#fff!important;color:#000;font-size:10.5pt;line-height:1.4}
+  body>*:not(#plan){display:none!important}
+  #plan{max-width:none;padding:0}#plan .back,#plan .pr{display:none}
+  #plan .eyebrow{color:#555}#plan h1{margin:4px 0 0;font-size:22pt;color:#000}#plan .hand{color:#333;font-size:15pt}
+  #plan-box .mat{margin:10px 0;padding:8px 12px;border:1px solid #bbb;border-radius:8px;background:none;break-inside:avoid}
+  #plan-box .mat b{color:#000;font-size:10pt}
+  #plan-box h2{margin:16px 0 4px;font-size:14pt;color:#000;break-after:avoid}#plan-box h2 small{color:#444}
+  #plan-box .row{grid-template-columns:11em minmax(0,1fr);padding:6px 0;border-top:1px solid #ccc;break-inside:avoid}
+  #plan-box .row .t,#plan-box .row .s,#plan-box .mat ul,#plan-box p{color:#000!important}#plan-box .row .t small{color:#555}
+  #plan-box .row .s em{color:#000;font-weight:700}
+}
+
+/* ---------- гутірка ---------- */
+#pres{position:fixed;inset:0;background:radial-gradient(70% 60% at 30% 45%,#232a33,var(--bg) 75%);overflow:hidden}
+/* меню в куті (як у «Кераміці», дизайн Д1): мишкою — навести в правий верхній кут, на дотику — натиснути */
+#corner{position:absolute;z-index:8;top:0;right:0;width:110px;height:110px}
+#hot{position:absolute;inset:0;cursor:pointer}
+#hot::after{content:"";position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:16px;width:26px;height:31px;background:url("{{EMBLEM}}") center/contain no-repeat;opacity:.22;transition:opacity .4s}
+#corner.open #hot::after{opacity:0}
+#cmenu{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));right:12px;width:270px;display:flex;flex-direction:column;gap:2px;padding:12px;border-radius:20px;background:rgba(34,38,43,.97);border:1px solid #383d44;box-shadow:0 20px 60px rgba(0,0,0,.6);opacity:0;transform:translateY(-6px) scale(.98);transform-origin:top right;pointer-events:none;transition:opacity .2s,transform .2s}
+#corner.open #cmenu,#corner:has(:focus-visible) #cmenu{opacity:1;transform:none;pointer-events:auto}
+@media (hover:hover){body:not(.touchmode) #corner:hover #cmenu{opacity:1;transform:none;pointer-events:auto}body:not(.touchmode) #corner:hover #hot::after{opacity:0}}
+#cmenu .cm-head{display:flex;align-items:center;gap:12px;padding:4px 6px 12px;margin-bottom:6px;border-bottom:1px solid #383d44}
+#cmenu .cm-head img{flex:none;width:30px;height:auto;opacity:.9}
+#cmenu .cm-head b{display:block;font:600 16px/1.15 var(--disp);letter-spacing:.04em;text-transform:uppercase;color:#f2f4f6}
+#cmenu #mode-label{padding-top:3px;color:var(--gd);font:500 12px/1.3 var(--disp);letter-spacing:.16em;text-transform:uppercase}
+#cmenu button,#cmenu a{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:12px;border:1px solid transparent;background:transparent;color:#f2f4f6;font:600 15px/1.2 var(--txt);text-decoration:none;text-align:left;cursor:pointer}
+#cmenu button:hover,#cmenu a:hover,#cmenu button:focus-visible,#cmenu a:focus-visible{background:#2a2f35;border-color:#383d44;outline:none}
+#cmenu svg{flex:none;width:19px;height:19px;color:#a0a8b2}
+#cmenu button:hover svg,#cmenu a:hover svg{color:var(--gd)}
+#cmenu #home-link{margin-top:6px;border-top:1px solid #383d44;border-radius:0 0 12px 12px;padding-top:12px}
+#b-skob b{margin-left:auto;color:var(--gd);font-family:var(--disp)}
+#phone-mode .pd-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:auto;background:#6b7480}
+#phone-mode .pd-dot.ok{background:#3ee08f;box-shadow:0 0 8px #3ee08f}#phone-mode .pd-dot.warn{background:#ffc247}#phone-mode .pd-dot.bad{background:#ff5d5d}
+html body #pult-dlg .pd-box{width:min(480px,100%);padding:26px 26px 22px;border-radius:22px;border:1px solid #383d44;border-top:4px solid #ffc247;background:#22262b}
+html body #pult-dlg h2{display:flex;align-items:center;gap:12px;margin:0 44px 16px 0;font:600 24px/1.15 var(--disp);letter-spacing:.05em}
+html body #pult-dlg h2 img{flex:none;width:28px;height:auto}
+html body #pult-dlg .pd-status{background:#1b1d21;border-color:#383d44}
+html body #pult-dlg .pd-b{border-radius:12px;background:#2a2f35;border-color:#4a515b}
+html body #pult-dlg .pd-b.go{background:#ffc247;border-color:#ffc247;color:#16130a}
+html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
+@media (prefers-reduced-motion:reduce){#cmenu,#hot::after{transition:none}}
+#stage{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:2vw;padding:64px 4vw 40px}
+#art{height:100%;max-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;min-width:0}
+#art svg{width:100%;height:100%;max-height:72vh}
+#panel{min-width:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding:6px 4px 6px 0;scrollbar-width:none}
+#panel::-webkit-scrollbar{display:none}
+#panel>*{animation:up .45s both}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+.k{font:500 clamp(1.3rem,1.9vw,2.2rem)/1.1 var(--hand);color:var(--ac)}
+.hh{margin:4px 0 12px;font:600 clamp(1.7rem,3.2vw,3.6rem)/1.04 var(--disp);letter-spacing:.02em;text-transform:uppercase}
+.pp{font-size:clamp(1.05rem,1.55vw,1.7rem);color:var(--body);margin:0 0 12px}
+.pts{list-style:none;margin:0;padding:0}
+.pts li{font-size:clamp(1rem,1.45vw,1.6rem);line-height:1.4;margin:9px 0;padding:.5em .8em;border-left:4px solid var(--sky);border-radius:0 12px 12px 0;background:rgba(255,255,255,.05);opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
+.pts li.v{opacity:1;transform:none}
+.pts li b{color:#fff}
+.ask{margin:12px 0 6px;padding:.6em .9em;border:1px dashed var(--gd);border-radius:12px;color:#ffe3a1;font-size:clamp(1rem,1.4vw,1.5rem)}
+.ask::before{content:"Запитання до залу: ";font-weight:700;color:var(--gd)}
+.note{margin-top:12px;font-size:clamp(.95rem,1.25vw,1.35rem);color:var(--mut);opacity:0;transition:opacity .35s}
+.note.v{opacity:1}
+.badge{display:inline-block;padding:3px 12px;border-radius:99px;background:var(--gd);color:#16130a;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.ex{margin-top:10px;font-size:clamp(.95rem,1.3vw,1.4rem);color:var(--body)}
+.ex b{color:var(--gd);font-weight:600}
+/* титул і розділ */
+#pres.wide #stage{grid-template-columns:1fr}
+#pres.noart #stage{grid-template-columns:minmax(0,900px);justify-content:center}
+.big{grid-column:1/-1;text-align:left;max-width:min(1100px,92vw)}
+.big .n{font:600 clamp(4rem,14vw,11rem)/.9 var(--disp);color:var(--gd)}
+.big .n small{font-size:.35em;color:var(--mut);margin-left:.2em}
+.big blockquote{margin:14px 0 0;padding:0 0 0 18px;border-left:4px solid var(--gd);font-size:clamp(1.2rem,2.4vw,2.4rem);line-height:1.3;color:var(--ink)}
+.big .vy{display:block;margin-top:6px;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
+.ttl .vy{display:block;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
+.ttl h2{margin:12px 0 0;font:600 clamp(2.4rem,5.6vw,6.4rem)/.94 var(--disp);letter-spacing:.03em;text-transform:uppercase;text-wrap:balance}
+.ttl p{font:500 clamp(1.4rem,2.4vw,2.4rem) var(--hand);color:var(--ac);margin:12px 0 0}
+.ttl .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.ttl .meta span{padding:7px 16px;border-radius:99px;border:1px solid #2f5f8f;background:rgba(11,22,38,.7);color:#dbe9f7;font-weight:600;font-size:clamp(.9rem,1.1vw,1.15rem)}
+.ttl .meta span b{color:var(--gd)}
+#pres.hero #stage{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+#pres.hero #panel{order:1}#pres.hero #art{order:2}
+.exph{max-width:520px}.exph .la-ph{aspect-ratio:16/9;margin-top:4px}
+/* вікторина */
+.qq{margin:6px 0 16px;font:600 clamp(1.5rem,2.8vw,3rem)/1.12 var(--disp);letter-spacing:.01em}
+#pres.quiz #stage{grid-template-columns:1fr}
+#pres.quiz #art{display:none}
+.qwrap{max-width:min(1250px,94vw);margin:0 auto;width:100%}
+.kin .sk-logo{font-size:clamp(64px,11vw,150px)}
+.kin blockquote{margin-top:22px}
+.endq{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,4vw,60px);align-items:center}
+.endq figure{margin:0;text-align:center}.endq figure>div{width:clamp(150px,19vw,260px);padding:10px;border-radius:16px;background:#fff;line-height:0}.endq figure svg{width:100%;height:auto}
+.endq figcaption{margin-top:10px;font:600 clamp(.9rem,1.3vw,1.3rem) var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
+@media (orientation:portrait) and (max-width:700px){.endq{grid-template-columns:1fr}.endq figure{justify-self:start}}
+.kbtn{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;pointer-events:auto}
+.kbtn .go{margin:0}
+.pb{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:42px;height:42px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font-size:15px;font-weight:600}
+.pb:hover{border-color:var(--gd)}
+.kbtn .pb{height:52px;padding:0 18px}
+.phrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 12px}.phrow .la-ph{aspect-ratio:3/2}
+.mini{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:2px}
+
+#hint{position:absolute;z-index:4;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--mut);font-size:15px;pointer-events:none}
+#bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#2a2f35;z-index:5}#bar i{display:block;height:100%;background:var(--gd);transition:width .35s}
+#tapfx{position:fixed;top:0;bottom:0;width:33.4%;z-index:6;pointer-events:none;opacity:0;transition:opacity .35s;display:flex;align-items:center;justify-content:center;font:300 64px var(--disp);color:rgba(255,194,71,.55)}
+#tapfx.l{left:0;background:linear-gradient(90deg,rgba(255,194,71,.13),transparent)}
+#tapfx.r{right:0;width:66.6%;justify-content:flex-end;padding-right:6%;background:linear-gradient(270deg,rgba(255,194,71,.13),transparent 60%)}
+#tapfx.l::before{content:"‹"}#tapfx.r::before{content:"›"}#tapfx.on{opacity:1;transition:none}
+/* зміст */
+#toc{position:fixed;inset:0;z-index:20;background:rgba(15,16,19,.96);overflow-y:auto;padding:max(20px,env(safe-area-inset-top)) max(16px,4vw) 30px}
+#toc .in{max-width:760px;margin:0 auto}
+#toc h3{font:600 28px var(--disp);letter-spacing:.06em;text-transform:uppercase;margin:16px 0 12px}
+#toc button.j{display:flex;gap:14px;align-items:baseline;width:100%;text-align:left;margin:8px 0;padding:12px 16px;border-radius:14px;border:1px solid var(--ln);background:var(--card)}
+#toc button.j b{font:600 22px var(--disp);color:var(--gd);min-width:1.4em}
+#toc button.j:hover{border-color:var(--gd)}
+/* вертикальний екран: малюнок угорі, текст унизу */
+@media (max-aspect-ratio:1/1){
+  #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,46%) minmax(0,1fr);align-items:stretch;padding:60px 18px 34px}
+  #art{max-height:none}#art svg{max-height:100%}
+  #panel{align-self:start}
+  #pres.wide #stage,#pres.quiz #stage,#pres.noart #stage{grid-template-rows:minmax(0,1fr);align-items:center}
+  #pres.wide #panel,#pres.quiz #panel,#pres.noart #panel{align-self:center}
+  #pres.hero #stage{grid-template-columns:1fr}#pres.hero #art{order:0}
+  .ttl h2{font-size:clamp(2.2rem,10vw,3.4rem)}.ttl .meta{margin-top:16px}
+}
+@media (orientation:landscape) and (max-height:520px){
+  #stage{padding:50px 3vw 26px}
+  .hh{font-size:1.5rem;margin:2px 0 8px}.pts li{font-size:.95rem;margin:6px 0;padding:.35em .7em}.pp,.ask{font-size:1rem}
+  .ttl h2{font-size:2rem}.ttl .meta{margin-top:12px}
+}
+
+/* ---------- вивчай сам ---------- */
+.page{max-width:860px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) max(16px,4vw) 60px}
+.page>.eyebrow{display:block;margin-top:14px}
+.back{display:inline-block;margin:8px 0 10px;padding:9px 16px;border-radius:99px;border:1px solid var(--ln);background:none;color:var(--ink);font-weight:700;font-size:15px;text-decoration:none}
+.prog{display:flex;align-items:center;gap:12px;margin:18px 0 6px;color:var(--mut);font-size:15px}
+.prog .tr{flex:1;height:8px;border-radius:99px;background:var(--card2);overflow:hidden}.prog .tr i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.sec{margin:16px 0;padding:18px;border:1px solid var(--ln);border-radius:18px;background:var(--card)}
+.sec .num{font:600 15px var(--disp);letter-spacing:.16em;text-transform:uppercase;color:var(--gd)}
+.sec h2{margin:2px 0 10px;font:600 26px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.sec svg{width:100%;max-height:300px;margin:4px 0 8px}
+.sec ul{margin:0;padding-left:20px;color:var(--body)}.sec li{margin:5px 0}
+.sec .zn{margin-top:12px;padding:10px 14px;border-radius:12px;background:rgba(47,210,192,.08);border:1px solid rgba(47,210,192,.35);color:#cff6f1}
+.sec .zn b{color:var(--ac)}
+.know{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px 14px;border-radius:12px;border:1px solid var(--ln);background:none;font-weight:700;width:100%;text-align:left}
+.know i{width:24px;height:24px;border-radius:7px;border:2px solid var(--mut);display:grid;place-items:center;font-style:normal}
+.know.on{border-color:var(--ac);color:var(--ac)}.know.on i{border-color:var(--ac);background:var(--ac);color:#0f1714}
+.know.on i::before{content:"✓"}
+.go{display:inline-block;margin-top:14px;padding:14px 22px;border-radius:14px;border:0;background:var(--gd);color:#16130a;font:700 17px var(--txt);text-decoration:none}
+.priv{margin-top:26px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--ln);color:var(--mut);font-size:14px}
+.priv button{margin-top:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:none;color:var(--ink);font-size:14px}
+#ask-save{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;width:min(560px,calc(100% - 24px));padding:16px;border-radius:16px;border:1px solid var(--gd);background:#22262b;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#ask-save p{margin:0 0 10px}
+#ask-save div{display:flex;gap:10px}#ask-save button{flex:1;padding:11px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font-weight:700}
+#ask-save button.y{background:var(--gd);border-color:var(--gd);color:#16130a}
+
+/* ---------- перевір себе ---------- */
+.tq{margin-top:18px;padding:20px;border-radius:18px;border:1px solid var(--ln);background:var(--card)}
+.tq .meta{display:flex;justify-content:space-between;color:var(--mut);font-size:14px;margin-bottom:6px}
+.tq h2{margin:0 0 14px;font:600 24px/1.2 var(--disp);letter-spacing:.01em}
+.opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;margin:8px 0;padding:13px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font-size:17px}
+.opt i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font:600 15px var(--disp);color:#fff}
+.opt:nth-of-type(1) i{background:var(--qa)}.opt:nth-of-type(2) i{background:var(--qb)}.opt:nth-of-type(3) i{background:var(--qc)}.opt:nth-of-type(4) i{background:var(--qd)}
+.opt.ok{border-color:var(--qd);background:rgba(58,165,101,.18)}.opt.bad{border-color:var(--qa);background:rgba(226,87,76,.18)}
+.opt:disabled{cursor:default}
+.fb{margin-top:10px;font-size:16px;color:var(--body)}.fb b{color:var(--ac)}.fb b.no{color:#ff8a7f}
+.res{margin-top:18px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.res .sc{font:600 56px/1 var(--disp);color:var(--gd)}
+.res ul{padding-left:20px;color:var(--body)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- старт: для перегляду — три входи -->
+<main id="start" hidden>
+  <a class="back for-v" id="home-back" href="../../" style="align-self:flex-start;margin:0 0 18px">← Бібліотека гутірок</a>
+  <span class="eyebrow">Мистецька вмілість · проба 1</span>
+  <h1>Кераміка І</h1>
+  <p class="hand for-v">гутірка, гра і матеріали для юнаків</p>
+  <p class="hand for-y">усе, що треба знати й уміти для вмілості</p>
+  <div class="req"><b>Вимоги до вмілості</b><ol id="req"></ol><small><span id="req-how">Дослівно з</span> <a id="req-src" target="_blank" rel="noopener">каталогу вмілостей Пласту у Фінляндії</a>.</small></div>
+  <div class="doors for-v">
+    <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>45 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
+    <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали. Можна роздрукувати.</span></a>
+    <a class="door" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
+  </div>
+  <p class="kh for-v">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
+  <div class="doors for-y">
+    <a class="door main" href="#vyvchy"><i>Крок 1</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
+    <a class="door" href="#test"><i>Крок 2</i><b>Перевір себе</b><span>15 запитань із поясненнями. Щоразу в іншому порядку.</span></a>
+  </div>
+  <p class="kh for-y">Усе знаєш і тест іде добре — скажи виховникові, що можеш скласти вмілість.</p>
+</main>
+
+<!-- гутірка -->
+<section id="pres" hidden aria-label="Гутірка">
+  <div id="corner"><div id="hot" aria-hidden="true"></div>
+    <nav id="cmenu" aria-label="Меню гутірки">
+      <div class="cm-head"><img src="{{EMBLEM}}" alt=""><div><b>Кераміка І</b><div id="mode-label">Гутірка · 45 хв</div></div></div>
+      <button id="b-toc" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Зміст</span></button>
+      <button id="b-skob" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg><span>Потужний СКОБ!</span><b id="skob-n"></b></button>
+      <button id="phone-mode" type="button" aria-label="Керування презентацією з телефона"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Пульт</span></button>
+      <button id="b-fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
+      <a id="home-link" href="../../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Бібліотека</span></a>
+    </nav></div>
+  <div id="stage"><div id="art"></div><div id="panel" aria-live="polite"></div></div>
+  <div id="hint"></div><div id="bar"><i></i></div>
+  <div id="tapfx" aria-hidden="true"></div>
+</section>
+<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div></div></div>
+
+<!-- вивчай сам -->
+<main id="vyvch" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">Вивчай сам</span>
+  <h1>Кераміка І</h1>
+  <p class="hand">усе, що треба знати й уміти для вмілості</p>
+  <div class="prog"><span id="pv-t">Вивчено 0 з 5</span><span class="tr"><i id="pv-bar" style="width:0"></i></span></div>
+  <div id="pv-list"></div>
+  <a class="go" href="#test">Перевір себе →</a>
+  <div class="priv">Цей сайт нічого не збирає й нікуди не надсилає. Прогрес зберігається лише на цьому пристрої — і лише якщо ти погодишся.
+    <br><button type="button" class="wipe">Стерти мій прогрес</button></div>
+</main>
+
+<!-- перевір себе -->
+
+<!-- план для виховника -->
+<main id="plan" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">План для виховника</span>
+  <h1>Кераміка І</h1>
+  <p class="hand">що робити й казати на кожному слайді</p>
+  <button class="go pr" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>Друкувати або зберегти PDF</button>
+  <div id="plan-box"></div>
+</main>
+
+<!-- посилання для юнаків (бачить лише виховник) -->
+<main id="yunakam" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">Для юнаків</span>
+  <h1>Кераміка І</h1>
+  <p class="hand">дайте після гутірки</p>
+  <div class="share">
+    <div class="qr" id="y-qr"></div>
+    <div>
+      <p>На цій сторінці лише «Вивчай сам» і «Перевір себе». Гутірки, плану й гри там немає — юнаки повторюють матеріал і готуються скласти вмілість.</p>
+      <p class="url" id="y-url"></p>
+      <div class="acts"><button class="go" type="button" id="y-send">Копіювати посилання</button><a class="back" id="y-open" target="_blank" rel="noopener">Подивитися, що побачать юнаки</a></div>
+      <p class="warn" style="margin-top:14px">Не давайте до гутірки: у «Перевір себе» ті самі запитання, що й у грі «Потужний СКОБ!». Цей QR-код є й на останньому слайді гутірки.</p>
+    </div>
+  </div>
+</main>
+
+<main id="test" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">Перевір себе</span>
+  <h1>Кераміка І</h1>
+  <div id="t-box"></div>
+  <div class="priv">Відповіді нікуди не надсилаються. Найкращий результат зберігається лише на цьому пристрої — якщо ти погодишся.
+    <br><button type="button" class="wipe">Стерти мій прогрес</button></div>
+</main>
+
+<div id="ask-save" hidden role="dialog" aria-label="Зберігати прогрес?">
+  <p><b>Зберігати твій прогрес на цьому пристрої?</b><br>Він нікуди не надсилається — лише щоб наступного разу продовжити з того самого місця.</p>
+  <div><button class="y" type="button" data-save="1">Так, зберігати</button><button type="button" data-save="0">Ні</button></div>
+</div>
+
+<script src="../../src/qr.js"></script>
+<script src="../../src/skob.js"></script>
+<script src="maliunky.js"></script>
+<script src="dani.js"></script>
+<script>
+(() => {
+'use strict';
+const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* дві сторінки з одного файла: для виховника (усе) і для юнаків (yunakam/…: лише «Вивчай сам» і «Перевір себе») */
+const YUN = !!window.GUTIRKA_YUN;
+document.body.classList.toggle('yun', YUN);
+/* куди «назад» з гутірки: за замовчуванням — бібліотека; збирач може задати інше ({ href, label }) */
+const HOME = window.GUTIRKA_HOME;
+if (HOME) {
+  const hb = $('#home-back'); hb.href = HOME.href; hb.textContent = '← ' + HOME.label; hb.classList.remove('for-v');
+  $('#home-link').href = HOME.href; $('#home-link span').textContent = HOME.label;
+}
+const YUN_URL = new URL(window.GUTIRKA_YUN_URL || '#vyvchy', location.href).href.replace(/#$/, '');
+const qrBox = (sel, url, px) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px); el.dataset.for = url; } };
+
+/* ===================== малюнки (maliunky.js) і фото ===================== */
+const art = k => LA_ART.get(k);
+
+/* ===================== гутірка ===================== */
+const kviz = D.kviz;
+/* гра «Вгадай …» (D.guess): предмети у випадковому порядку, у кожному — 4 варіанти */
+const GN = D.guess.name, GUESS = (() => {
+  const K = D.guess.items;
+  return SKOB.shuffle(K).map(([k, name, q, why], i) => {
+    const a = SKOB.shuffle([name, ...SKOB.shuffle(K.filter(x => x[0] !== k)).slice(0, 3).map(x => x[1])]);
+    return { t: 'q', n: D.guess.n, guess: i + 1, q: q || D.guess.q, a, ok: a.indexOf(name), why, img: 'g:' + k };
+  });
+})();
+const SL = D.slides.flatMap(s => s.t === 'gra' ? [{ t: 'kintro' }] : s.t === 'guess' ? [{ t: 'gintro' }, ...GUESS] : [s]);
+let idx = 0, rev = 0, tot = 0, qctl = null, stop3d = null;
+const P = $('#pres'), panel = $('#panel'), artEl = $('#art');
+function steps(s) { return s.t === 'q' ? 0 : (s.pts ? s.pts.length : 0); }
+function render() {
+  if (qctl) { qctl.stop(); qctl = null; }
+  if (stop3d) { stop3d(); stop3d = null; }
+  const s = SL[idx]; let h = '', a = '', wide = false, quiz = false, hint = '';
+  tot = steps(s); rev = Math.min(rev, tot);
+  const pts = s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
+  const note = s.note ? `<p class="note">${s.note}</p>` : '';
+  switch (s.t) {
+    case 'title': a = art('title'); h = `<div class="ttl"><span class="vy">${D.ey}</span><h2>${D.nazva}</h2><p>гутірка для юнацтва</p>
+      <div class="meta"><span><b>5</b> вимог вмілості</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
+      hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
+    case 'plan': a = art(s.art || 'types'); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
+    case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Вимога вмілості</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
+    case 'card': case 'prac': a = s.art ? art(s.art) : '';
+      h = `${s.t === 'prac' ? `<span class="badge">${s.k}</span>` : `<div class="k">${s.k}</div>`}<h2 class="hh">${s.h}</h2>${s.p ? `<p class="pp">${s.p}</p>` : ''}${pts}${s.ask ? `<p class="ask">${s.ask}</p>` : ''}${note}`; break;
+    case 'scheme': a = art('scheme:' + s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>${LA_ART.has(s.s) ? `<div class="note exph">${LA_ART.photo(s.s)}</div>` : ''}`; break;
+    case 'gintro': wide = true; h = `<div class="big"><span class="vy">Гра · точка ${D.guess.n}</span><div class="n" style="font-size:clamp(2.4rem,6.4vw,5.6rem)">${GN}</div>
+      <blockquote>${D.guess.intro}</blockquote></div>`;
+      hint = 'Далі — перший предмет'; break;
+    case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz.length} запитань по всіх п’яти вимогах. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
+      <div class="kbtn"><button class="go" type="button" data-skob="game">Почати гру</button><button class="pb" type="button" data-skob="lobby">Підключити телефони</button><button class="pb" type="button" data-skob="skip">Пропустити</button></div></div>`;
+      hint = 'Далі — почати гру'; break;
+    case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
+      hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
+    case 'end': wide = true; h = `<div class="big endq"><div><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
+      <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «${D.title}».</blockquote></div>
+      <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
+  }
+  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
+  artEl.innerHTML = a; artEl.hidden = !a;
+  if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
+  else if (s.t === 'title') stop3d = LA_ART.mount3D(artEl, { hero: true });
+  LA_ART.fit(artEl);
+  panel.innerHTML = h; panel.scrollTop = 0;
+  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `${GN} · ${s.guess} з ${GUESS.length}` : `Перевірка · точка ${s.n}`, T: 20,
+    auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  showRev(); $('#hint').textContent = hint;
+  $('#bar i').style.width = (idx / (SL.length - 1) * 100) + '%';
+  if (idx > 0 && !T0) T0 = Date.now();
+  slideEvt();
+}
+function showRev() {
+  const s = SL[idx];
+  if (s.t === 'q') return;
+  $$('#panel .pts li').forEach((li, k) => li.classList.toggle('v', k < rev));
+  const n = $('#panel .note'); if (n) n.classList.toggle('v', rev >= tot);
+  const last = $$('#panel .pts li.v').pop(); if (last && panel.scrollHeight > panel.clientHeight + 2) try { last.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+}
+function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
+function adv(d) {
+  const s = SL[idx];
+  if (d > 0) {
+    if (s.t === 'q' && qctl && qctl.next()) return;
+    if (s.t === 'kintro') { startGame(); return; }
+    if (rev < tot) { rev++; showRev(); return; } if (idx < SL.length - 1) go(idx + 1);
+  } else { if (rev > 0) { rev--; showRev(); return; } if (idx > 0) go(idx - 1, true); }
+}
+function startGame() { SKOB.game(kviz, { T: 20, onClose: () => { if (SL[idx].t === 'kintro') go(idx + 1); } }); }
+panel.addEventListener('click', e => {
+  const b = e.target.closest('[data-skob]'); if (!b) return;
+  const k = b.dataset.skob; if (k === 'game') startGame(); else if (k === 'lobby') SKOB.lobby(); else if (k === 'skip') go(idx + 1);
+});
+$('#b-skob').addEventListener('click', () => SKOB.lobby());
+/* меню в куті */
+const corner = $('#corner'); let cornerT = 0;
+function peekCorner(ms) { corner.classList.add('open'); corner.dataset.user = ''; clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
+$('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.dataset.user = corner.classList.toggle('open') ? '1' : ''; });
+document.addEventListener('pointerdown', e => {
+  document.body.classList.toggle('touchmode', e.pointerType === 'touch');
+  if (!corner.contains(e.target)) { clearTimeout(cornerT); corner.classList.remove('open'); }
+}, true);
+$('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,a'); if (!b) return; clearTimeout(cornerT); corner.classList.remove('open'); if (e.detail > 0) setTimeout(() => { try { b.blur(); } catch (er) {} }, 0); });
+/* пульт на телефоні (pult-host-file.js) керує гутіркою через window.GUTIRKA */
+let T0 = 0;
+const strip = h => String(h || '').replace(/<[^>]+>/g, '');
+const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'gintro' ? 'Гра «' + GN + '»' : s.t === 'q' ? (s.guess ? GN + ' ' + s.guess + ' з ' + GUESS.length : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.`
+  : s.t === 'gintro' ? D.say[D.slides.findIndex(x => x.t === 'guess')] : s.t === 'kintro' ? D.say[D.slides.findIndex(x => x.t === 'gra')] : (s.say || '');
+const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
+const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
+const API = { id: D.id, title: D.title,
+  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
+    elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: (parseInt(D.chas) || 45) * 60, sections: SECTIONS }),
+  next: () => SKOB.active() ? gameKey('ArrowRight') : adv(1), prev: () => SKOB.active() ? null : adv(-1),
+  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
+const slideEvt = () => document.dispatchEvent(new CustomEvent('gutirka:slide'));
+
+SKOB.on(() => { const n = SKOB.count(); $('#skob-n').textContent = n ? String(n) : ''; });
+document.addEventListener('keydown', e => {
+  if (P.hidden) return;
+  if (!$('#toc').hidden) { if (e.key === 'Escape') $('#toc').hidden = true; return; }
+  const k = e.key;
+  if ([' ', 'ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(k)) { e.preventDefault(); adv(1); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); adv(-1); }
+  else if (k === 'Home') go(0); else if (k === 'End') go(SL.length - 1);
+  else if (k === 'f' || k === 'F' || k === 'а' || k === 'А') fs();
+});
+/* дотик: ліва третина — назад, решта — далі; свайп теж */
+(() => {
+  const fx = $('#tapfx'); let st = null, eat = false, t = 0;
+  P.addEventListener('pointerdown', e => {
+    const menuOpen = corner.classList.contains('open') && corner.dataset.user === '1';
+    st = (e.pointerType === 'mouse' || !e.isPrimary || menuOpen || e.target.closest('button,a,#toc,#corner,.la3d-btn')) ? null : { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId };
+  });
+  P.addEventListener('pointerup', e => {
+    const s = st; st = null; if (!s || s.id !== e.pointerId) return;
+    const dx = e.clientX - s.x, dy = e.clientY - s.y;
+    let dir = 0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.3) dir = dx < 0 ? 1 : -1;               // свайп
+    else if (Math.hypot(dx, dy) < 12 && Date.now() - s.t < 700) dir = e.clientX < innerWidth / 3 ? -1 : 1;   // дотик
+    if (!dir) return;
+    eat = true; setTimeout(() => { eat = false; }, 500);
+    adv(dir); fx.className = dir > 0 ? 'r on' : 'l on'; clearTimeout(t); t = setTimeout(() => { fx.className = dir > 0 ? 'r' : 'l'; }, 140);
+  });
+  P.addEventListener('click', e => { if (eat) { eat = false; e.stopPropagation(); } }, true);
+})();
+document.addEventListener('fullscreenchange', () => { $('#b-fs span').textContent = document.fullscreenElement ? 'Вийти з повного екрана' : 'На весь екран'; });
+if (!document.documentElement.requestFullscreen) $('#b-fs').hidden = true;
+function fs() { try { const r = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+$('#b-fs').addEventListener('click', fs);
+$('#b-toc').addEventListener('click', () => {
+  const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
+  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «' + GN + '»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
+  $('#toc').hidden = false;
+});
+$('#toc').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { go(+b.dataset.go); $('#toc').hidden = true; } });
+$('#toc-x').addEventListener('click', () => { $('#toc').hidden = true; });
+
+/* ===================== прогрес (лише на пристрої, за згодою) ===================== */
+const KEY = 'gutirky:' + D.id;
+let consent = null;            // null — ще не питали в цей раз
+try { consent = localStorage.getItem('gutirky:zgoda') === 'tak' ? true : null; } catch (e) {}
+let prog = { znau: [], best: null };
+if (consent) try { prog = Object.assign(prog, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+let pendingAsk = false;
+function save() {
+  if (consent === true) { try { localStorage.setItem(KEY, JSON.stringify(prog)); } catch (e) {} return; }
+  if (consent === null && !pendingAsk) { pendingAsk = true; $('#ask-save').hidden = false; }
+}
+$('#ask-save').addEventListener('click', e => {
+  const b = e.target.closest('[data-save]'); if (!b) return;
+  consent = b.dataset.save === '1'; $('#ask-save').hidden = true;
+  if (consent) { try { localStorage.setItem('gutirky:zgoda', 'tak'); } catch (e) {} save(); }
+});
+$$('.wipe').forEach(b => b.addEventListener('click', () => {
+  try { localStorage.removeItem(KEY); localStorage.removeItem('gutirky:zgoda'); } catch (e) {}
+  consent = null; pendingAsk = false; prog = { znau: [], best: null }; renderStudy(); b.textContent = 'Стерто ✓';
+}));
+
+/* ===================== вивчай сам ===================== */
+function renderStudy() {
+  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
+    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}
+    <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
+    <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
+  const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
+}
+$('#pv-list').addEventListener('click', e => {
+  const b = e.target.closest('.know'); if (!b) return; const n = +b.dataset.n;
+  prog.znau = prog.znau.includes(n) ? prog.znau.filter(x => x !== n) : prog.znau.concat(n);
+  renderStudy(); save();
+});
+
+/* ===================== перевір себе ===================== */
+let T = null;
+let lastOrder = '';
+function newTest() {   // щоразу інший порядок запитань і варіантів — щоб не завчити, куди тиснути
+  let order; do { order = SKOB.shuffle(kviz.map((q, i) => i)); } while (order.join() === lastOrder);
+  lastOrder = order.join();
+  T = { order, i: 0, right: 0, byPoint: {}, answered: false, pick: -1, mix: order.map(() => SKOB.shuffle([0, 1, 2, 3])) };
+  renderTest();
+}
+function renderTest() {
+  const box = $('#t-box');
+  if (T.i >= T.order.length) {
+    const n = kviz.length, r = T.right;
+    if (prog.best == null || r > prog.best) { prog.best = r; save(); }
+    const weak = [1, 2, 3, 4, 5].filter(p => T.byPoint[p] && T.byPoint[p].r < T.byPoint[p].n);
+    box.innerHTML = `<div class="res"><div class="sc">${r} / ${n}</div><p>${r === n ? 'Бездоганно! Можна йти складати вмілість.' : r >= n * .8 ? 'Дуже добре! Ще трохи — і готово.' : 'Непогано для початку. Повтори точки нижче й спробуй ще раз.'}</p>
+      ${weak.length ? `<p>Варто повторити:</p><ul>${weak.map(p => `<li>Точка ${p}: ${esc(D.konspekt[p - 1].h)} — ${T.byPoint[p].r} з ${T.byPoint[p].n}</li>`).join('')}</ul>` : ''}
+      ${prog.best != null ? `<p style="color:var(--mut)">Найкращий результат: ${prog.best} / ${n}</p>` : ''}
+      <button class="go" type="button" id="t-again">Ще раз</button> <a class="back" href="#vyvchy">Повторити матеріал</a></div>`;
+    $('#t-again').addEventListener('click', newTest); return;
+  }
+  const q = kviz[T.order[T.i]], mix = T.mix[T.i];
+  box.innerHTML = `<div class="tq"><div class="meta"><span>Запитання ${T.i + 1} з ${T.order.length}</span><span>Точка ${q.n}</span></div><h2>${esc(q.q)}</h2>
+    ${mix.map((o, k) => `<button class="opt" type="button" data-o="${o}"><i>${'ABCD'[k]}</i>${esc(q.a[o])}</button>`).join('')}<div id="t-fb"></div></div>`;
+}
+$('#t-box').addEventListener('click', e => {
+  const b = e.target.closest('.opt'); if (!b || T.answered) return;
+  const q = kviz[T.order[T.i]], o = +b.dataset.o, ok = o === q.ok;
+  T.answered = true; if (ok) T.right++;
+  const bp = T.byPoint[q.n] = T.byPoint[q.n] || { n: 0, r: 0 }; bp.n++; if (ok) bp.r++;
+  $$('#t-box .opt').forEach(x => { x.disabled = true; const v = +x.dataset.o; if (v === q.ok) x.classList.add('ok'); else if (v === o) x.classList.add('bad'); });
+  $('#t-fb').innerHTML = `<p class="fb"><b class="${ok ? '' : 'no'}">${ok ? 'Правильно!' : 'Не зовсім.'}</b> ${esc(q.why)}</p><button class="go" type="button" id="t-next">${T.i + 1 < T.order.length ? 'Далі' : 'Результат'}</button>`;
+  $('#t-next').addEventListener('click', () => { T.i++; T.answered = false; renderTest(); }); $('#t-next').focus();
+});
+
+/* ===================== перемикання ===================== */
+function renderPlan() {
+  const secT = n => (D.say[D.slides.findIndex(x => x.t === 'sec' && x.n === n)] || '').match(/≈\s*\d+\s*хв/);
+  let h = `<div class="mat"><b>Що підготувати</b><ul>${D.materialy.map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>
+    <div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, повний екран.</li><li>Пункти на слайді з’являються по одному — розповідайте до кожного.</li><li>Ці нотатки й правильні відповіді видно лише вам — на телефоні-пульті (меню → «Пульт»). На спільному екрані їх немає.</li></ul></div>`;
+  D.slides.forEach((s, i) => {
+    if (s.t === 'sec') { const m = secT(s.n); h += `<h2>Вимога ${s.n}${m ? `<small>${m[0]}</small>` : ''}</h2><p style="margin:0 0 6px;color:var(--mut)">${esc(D.vymogy[s.n - 1])}</p>`; return; }
+    const name = s.t === 'title' ? 'Титульний слайд' : s.t === 'q' ? 'Перевірка' : s.t === 'guess' ? 'Гра «' + GN + '»' : s.t === 'gra' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Підсумок' : (s.h || '').replace(/<[^>]+>/g, '');
+    const kind = s.t === 'prac' ? (s.k || 'Практика') : s.t === 'q' ? '20 секунд' : s.t === 'scheme' ? 'Схема' : '';
+    const say = s.t === 'q' ? `<em>${esc(s.q)}</em> — правильна відповідь: «${esc(s.a[s.ok])}». ${esc(s.why)}` : esc(D.say[i] || '');
+    if (s.t === 'title') h += '<h2>Початок<small>≈ 3 хв</small></h2>';
+    if (s.t === 'gra') h += '<h2>Підсумок<small>≈ 8 хв</small></h2>';
+    h += `<div class="row"><div class="t">${esc(name)}${kind ? `<small>${esc(kind)}</small>` : ''}</div><div class="s">${say}</div></div>`;
+  });
+  $('#plan-box').innerHTML = h;
+}
+function renderYun() {
+  qrBox('#y-qr', YUN_URL, 200);
+  $('#y-url').textContent = YUN_URL.replace(/^https?:\/\//, '');
+  $('#y-open').href = YUN_URL;
+  const b = $('#y-send'), share = !!navigator.share && matchMedia('(pointer:coarse)').matches;
+  b.textContent = share ? 'Надіслати посилання' : 'Копіювати посилання';
+  b.onclick = async () => {
+    if (share) { try { await navigator.share({ title: D.title + ' — для юнаків', url: YUN_URL }); } catch (e) {} return; }
+    try { await navigator.clipboard.writeText(YUN_URL); } catch (e) { const r = document.createRange(); r.selectNodeContents($('#y-url')); getSelection().removeAllRanges(); getSelection().addRange(r); try { document.execCommand('copy'); } catch (e2) {} }
+    b.textContent = 'Скопійовано'; setTimeout(() => { b.textContent = 'Копіювати посилання'; }, 1800);
+  };
+}
+/* друк плану: у вікні друку можна вибрати принтер або «Зберегти як PDF»; назва файла — з заголовка */
+const T_DOC = document.title;
+$('#b-print').addEventListener('click', () => { renderPlan(); window.print(); });
+addEventListener('beforeprint', () => { if (!$('#plan').hidden) document.title = 'План гутірки — ' + T_DOC; });
+addEventListener('afterprint', () => { document.title = T_DOC; });
+function route() {
+  let h = location.hash.slice(1);
+  if (YUN && h && h !== 'vyvchy' && h !== 'test') { history.replaceState(null, '', location.pathname + location.search); h = ''; }
+  $('#start').hidden = !!h && h !== 'start';
+  const wasG = !P.hidden;
+  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan'; $('#yunakam').hidden = h !== 'yunakam';
+  window.GUTIRKA = h === 'hutirka' ? API : null;
+  if (h === 'hutirka' && !wasG) peekCorner(2500);
+  if (!h || h === 'start') $('#start').hidden = false;
+  if (h !== 'hutirka') { SKOB.close(); if (qctl) { qctl.stop(); qctl = null; } if (stop3d) { stop3d(); stop3d = null; } $('#toc').hidden = true; if (document.fullscreenElement) try { document.exitFullscreen().catch(() => {}); } catch (e) {} }
+  if (h === 'hutirka') render(); else slideEvt();
+  if (h !== 'hutirka') { try { window.GutirkaPult && window.GutirkaPult.close(); } catch (e) {} }
+  if (h === 'vyvchy') { renderStudy(); scrollTo(0, 0); }
+  if (h === 'plan') { renderPlan(); scrollTo(0, 0); }
+  if (h === 'yunakam') { renderYun(); scrollTo(0, 0); }
+  if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
+}
+$('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
+$('#req-src').href = D.dzherelo; if (D.dzhereloText) $('#req-how').textContent = D.dzhereloText;
+addEventListener('hashchange', route); route();
+})();
+</script>
+<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script src="../../src/pult-host-file.js"></script>
+</body>
+</html>
