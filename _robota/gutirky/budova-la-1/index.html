@@ -38,13 +38,6 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .door.main{background:var(--gd);border-color:var(--gd);color:#16130a}.door.main i,.door.main span{color:#4a3b10}
 .kh{margin-top:16px;color:var(--mut);font-size:15px}
 @media (max-width:1000px){.doors{grid-template-columns:1fr 1fr}}@media (max-width:560px){.doors{grid-template-columns:1fr}}
-/* нотатки ведучого */
-#notes{position:fixed;z-index:9;left:max(14px,env(safe-area-inset-left));bottom:calc(14px + env(safe-area-inset-bottom));width:min(560px,calc(100% - 28px));max-height:34vh;overflow-y:auto;padding:12px 16px;border-radius:14px;background:rgba(18,21,26,.94);border:1px solid #383d44;border-left:4px solid var(--gd);box-shadow:0 10px 40px rgba(0,0,0,.5);font-size:clamp(14px,1.1vw,17px);line-height:1.45}
-#notes b{display:block;margin-bottom:3px;font:600 12px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}
-#notes p{margin:0;color:var(--body)}
-#cmenu #b-notes .sw{margin-left:auto;width:30px;height:18px;border-radius:99px;background:#3b4048;position:relative;flex:none}
-#cmenu #b-notes .sw::after{content:"";position:absolute;top:3px;left:3px;width:12px;height:12px;border-radius:50%;background:#a0a8b2;transition:transform .2s}
-#cmenu #b-notes.on .sw{background:var(--gd)}#cmenu #b-notes.on .sw::after{transform:translateX(12px);background:#16130a}
 /* план для виховника */
 #plan-box .mat{margin:16px 0;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
 #plan-box .mat b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
@@ -234,7 +227,6 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       <button id="b-toc" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Зміст</span></button>
       <button id="b-skob" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg><span>Потужний СКОБ!</span><b id="skob-n"></b></button>
       <button id="phone-mode" type="button" aria-label="Керування презентацією з телефона"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Пульт</span></button>
-      <button id="b-notes" type="button" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M8.5 8.5h7M8.5 12h7M8.5 15.5h4"/></svg><span>Нотатки ведучого</span><i class="sw" aria-hidden="true"></i></button>
       <button id="b-fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
       <a id="home-link" href="../../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Бібліотека</span></a>
     </nav></div>
@@ -258,7 +250,6 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 </main>
 
 <!-- перевір себе -->
-<aside id="notes" hidden aria-live="polite"><b>Нотатка ведучого</b><p></p></aside>
 
 <!-- план для виховника -->
 <main id="plan" class="page" hidden>
@@ -396,14 +387,8 @@ const API = { id: 'budova-la-1', title: 'Будова літальних апа�
     elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: 45 * 60, sections: SECTIONS }),
   next: () => SKOB.active() ? gameKey('ArrowRight') : adv(1), prev: () => SKOB.active() ? null : adv(-1),
   jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
-const slideEvt = () => { document.dispatchEvent(new CustomEvent('gutirka:slide')); paintNotes(); };
-let showNotes = false; try { showNotes = localStorage.getItem('gutirky:la-notes') === '1'; } catch (e) {}
-function paintNotes() {
-  const b = $('#b-notes'); b.classList.toggle('on', showNotes); b.setAttribute('aria-pressed', String(showNotes));
-  const t = !P.hidden && showNotes ? noteFor(SL[idx]) : '';
-  $('#notes').hidden = !t; $('#notes p').textContent = t;
-}
-$('#b-notes').addEventListener('click', () => { showNotes = !showNotes; try { localStorage.setItem('gutirky:la-notes', showNotes ? '1' : '0'); } catch (e) {} paintNotes(); });
+const slideEvt = () => document.dispatchEvent(new CustomEvent('gutirka:slide'));
+
 SKOB.on(() => { const n = SKOB.count(); $('#skob-n').textContent = n ? String(n) : ''; });
 document.addEventListener('keydown', e => {
   if (P.hidden) return;
@@ -519,7 +504,7 @@ $('#t-box').addEventListener('click', e => {
 function renderPlan() {
   const secT = n => (D.say[D.slides.findIndex(x => x.t === 'sec' && x.n === n)] || '').match(/≈\s*\d+\s*хв/);
   let h = `<div class="mat"><b>Що підготувати</b><ul>${D.materialy.map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>
-    <div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, нотатки ведучого, повний екран.</li><li>Пункти на слайді з’являються по одному — розповідайте до кожного.</li><li>Пульт на телефоні показує ці нотатки й правильні відповіді.</li></ul></div>`;
+    <div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, повний екран.</li><li>Пункти на слайді з’являються по одному — розповідайте до кожного.</li><li>Ці нотатки й правильні відповіді видно лише вам — на телефоні-пульті (меню → «Пульт»). На спільному екрані їх немає.</li></ul></div>`;
   D.slides.forEach((s, i) => {
     if (s.t === 'sec') { const m = secT(s.n); h += `<h2>Вимога ${s.n}${m ? `<small>${m[0]}</small>` : ''}</h2><p style="margin:0 0 6px;color:var(--mut)">${esc(D.vymogy[s.n - 1])}</p>`; return; }
     const name = s.t === 'title' ? 'Титульний слайд' : s.t === 'q' ? 'Перевірка' : s.t === 'guess' ? 'Гра «Вгадай схему»' : s.t === 'gra' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Підсумок' : (s.h || '').replace(/<[^>]+>/g, '');
