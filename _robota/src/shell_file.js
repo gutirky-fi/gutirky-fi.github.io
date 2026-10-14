@@ -58,8 +58,42 @@
   /* ---------------- кутове меню гутірки ---------------- */
   const corner = $('#corner');
   let cornerT = 0;
-  function peekCorner(ms) { corner.classList.add('open'); clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
-  $('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.classList.toggle('open'); });   // для сенсорного екрана
+  function peekCorner(ms) { corner.classList.add('open'); corner.dataset.user = ''; clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
+  $('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.dataset.user = corner.classList.toggle('open') ? '1' : ''; });   // для сенсорного екрана
+  /* Сенсорний екран: дотик лівої третини екрана — назад, решти — далі (свайп теж працює).
+     Не спрацьовує на кнопках і посиланнях, у меню, змісті й пульті, коли відкрите меню в куті.
+     Гутірка може позначити, що дотик потрібен їй самій:
+       data-tap  — завжди (наприклад, області на карті у вікторині);
+       data-pick — лише в середній третині екрана (області, які можна обирати на огляді й у фіналі),
+                   а з країв дотик однаково гортає.
+     Гортання йде тими самими клавішами ← →, тож працює з будь-якою гутіркою. */
+  (() => {
+    const SKIP = 'button,a,input,select,textarea,label,summary,[role=button],[data-j],[data-n],[data-tap],#corner,#cmenu,#pult-dlg,#pult-ask,#hs';
+    const fx = document.createElement('div'); fx.id = 'tapfx'; fx.setAttribute('aria-hidden', 'true'); document.body.appendChild(fx);
+    let st = null, eat = false, fxT = 0;
+    addEventListener('pointerdown', e => {
+      st = null;
+      if (VIEW !== 'g' || e.pointerType === 'mouse' || !e.isPrimary) return;
+      const menuOpen = corner.classList.contains('open') && corner.dataset.user === '1';
+      const overlay = document.querySelector('#hs.on, #pult-dlg.on, #pult-ask:not([hidden])');
+      if (menuOpen || overlay) return;              // спершу закрити відкрите — без гортання
+      st = { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId, el: e.target };
+    }, true);
+    addEventListener('pointercancel', () => { st = null; }, true);
+    addEventListener('pointerup', e => {
+      const s = st; st = null;
+      if (!s || e.pointerId !== s.id || VIEW !== 'g') return;
+      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) > 12 || Date.now() - s.t > 700) return;   // свайп чи прокрутка, а не дотик
+      if (s.el.closest && s.el.closest(SKIP)) return;
+      const x = e.clientX / innerWidth;
+      if (x >= 1 / 3 && x <= 2 / 3 && s.el.closest && s.el.closest('[data-pick]')) return;   // посередині — обрати область
+      const dir = x < 1 / 3 ? -1 : 1;
+      eat = true; setTimeout(() => { eat = false; }, 600);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: dir > 0 ? 'ArrowRight' : 'ArrowLeft', bubbles: true, cancelable: true }));
+      fx.className = dir > 0 ? 'r on' : 'l on'; clearTimeout(fxT); fxT = setTimeout(() => { fx.className = dir > 0 ? 'r' : 'l'; }, 140);
+    }, true);
+    addEventListener('click', e => { if (eat) { eat = false; e.stopPropagation(); e.preventDefault(); } }, true);   // той самий дотик не відкриває область на карті
+  })();
   document.addEventListener('pointerdown', e => {
     document.body.classList.toggle('touchmode', e.pointerType === 'touch');   // на дотику меню відкривається лише натисканням, а не «наведенням»
     if (!corner.contains(e.target)) { clearTimeout(cornerT); corner.classList.remove('open'); }

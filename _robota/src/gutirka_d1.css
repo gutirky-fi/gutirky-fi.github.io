@@ -85,3 +85,11 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   .pic svg{height:24vh}.pic img{max-height:28vh}#pan .tech-photo{max-height:20vh}
   #ttl:not(.big){font-size:.95rem}#ttl:not(.big) i{font-size:1.15rem}
 }
+
+/* підказка при дотику: ледь помітна смуга з того боку, куди гортаємо */
+#tapfx{position:fixed;top:0;bottom:0;width:33.4%;z-index:6;pointer-events:none;opacity:0;transition:opacity .35s ease-out;display:flex;align-items:center;justify-content:center;font:300 64px/1 Oswald,sans-serif;color:rgba(255,194,71,.55)}
+#tapfx.l{left:0;background:linear-gradient(90deg,rgba(255,194,71,.13),transparent)}
+#tapfx.r{right:0;width:66.6%;justify-content:flex-end;padding-right:6%;background:linear-gradient(270deg,rgba(255,194,71,.13),transparent 60%)}
+#tapfx.l::before{content:"‹"}#tapfx.r::before{content:"›"}
+#tapfx.on{opacity:1;transition:none}
+@media(prefers-reduced-motion:reduce){#tapfx{transition:none}}

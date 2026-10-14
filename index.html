@@ -475,6 +475,14 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   #ttl:not(.big){font-size:.95rem}#ttl:not(.big) i{font-size:1.15rem}
 }
 
+/* підказка при дотику: ледь помітна смуга з того боку, куди гортаємо */
+#tapfx{position:fixed;top:0;bottom:0;width:33.4%;z-index:6;pointer-events:none;opacity:0;transition:opacity .35s ease-out;display:flex;align-items:center;justify-content:center;font:300 64px/1 Oswald,sans-serif;color:rgba(255,194,71,.55)}
+#tapfx.l{left:0;background:linear-gradient(90deg,rgba(255,194,71,.13),transparent)}
+#tapfx.r{right:0;width:66.6%;justify-content:flex-end;padding-right:6%;background:linear-gradient(270deg,rgba(255,194,71,.13),transparent 60%)}
+#tapfx.l::before{content:"‹"}#tapfx.r::before{content:"›"}
+#tapfx.on{opacity:1;transition:none}
+@media(prefers-reduced-motion:reduce){#tapfx{transition:none}}
+
 </style>
 </head>
 <body>
@@ -726,7 +734,7 @@ const lightMk=n=>sv.querySelectorAll(".mk").forEach(m=>m.classList.toggle("on",n
 const li=(x,k)=>`<li style="--k:${k}">${x}</li>`;
 function render(){const s=S[idx],r=R[s.i]||null;let h="",g=-1,hint="",big=0,f=F(),c=r?r.col:"#ffc247";
 switch(s.t){
-case"title":big=1;f=1;hint="Натисніть пропуск, щоб почати";break;
+case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкніться праворуч, щоб почати":"Натисніть пропуск, щоб почати";break;
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2><ul>${s.x[2].map(li).join("")}</ul>`;break;
 case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2><ul>${s.e.items.map(li).join("")}</ul>${s.e.q?`<div class="ask">Запитання: <b>${s.e.q}</b></div>`:""}`;break;
 case"hist":h=`<small>${s.e[0]}</small><h2>${s.e[1]}</h2><div class="pic">${pc([s.e[3],s.e[4],"",AC],AC)}</div><p>${s.e[2]}</p>`;g=s.g;break;
@@ -740,7 +748,7 @@ case"ask":h=`<small>Запитання</small><h2>${s.q}</h2>`;hint="Торкн�
 case"end":h=`<h2>Дякуємо за увагу!</h2><p>Є запитання? Торкніться будь-якої області на карті, щоб побачити її кераміку; ще раз на ту саму область — повернутися сюди.</p><p><a class="back-home" href="#" data-lib>← До бібліотеки гутірок</a></p>`;break}
 if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p><div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2>${PH[pk+"-0"]?"":`<p class="sch">Схематичний малюнок · фото буде додано</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");
-$("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;$("#bar i").style.width=idx/(S.length-1)*100+"%";
+$("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
 lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();document.dispatchEvent(new CustomEvent("gutirka:slide"))}
 const adv=d=>{if(pk>=0){if(d>0)go(idx+1);else{pk=-1;render()}return}const rv=()=>{[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
 const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));rev=full?9999:0;pk=-1;qd=false;$("#hs").classList.remove("on");render()};
@@ -1308,8 +1316,42 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   /* ---------------- кутове меню гутірки ---------------- */
   const corner = $('#corner');
   let cornerT = 0;
-  function peekCorner(ms) { corner.classList.add('open'); clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
-  $('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.classList.toggle('open'); });   // для сенсорного екрана
+  function peekCorner(ms) { corner.classList.add('open'); corner.dataset.user = ''; clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
+  $('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.dataset.user = corner.classList.toggle('open') ? '1' : ''; });   // для сенсорного екрана
+  /* Сенсорний екран: дотик лівої третини екрана — назад, решти — далі (свайп теж працює).
+     Не спрацьовує на кнопках і посиланнях, у меню, змісті й пульті, коли відкрите меню в куті.
+     Гутірка може позначити, що дотик потрібен їй самій:
+       data-tap  — завжди (наприклад, області на карті у вікторині);
+       data-pick — лише в середній третині екрана (області, які можна обирати на огляді й у фіналі),
+                   а з країв дотик однаково гортає.
+     Гортання йде тими самими клавішами ← →, тож працює з будь-якою гутіркою. */
+  (() => {
+    const SKIP = 'button,a,input,select,textarea,label,summary,[role=button],[data-j],[data-n],[data-tap],#corner,#cmenu,#pult-dlg,#pult-ask,#hs';
+    const fx = document.createElement('div'); fx.id = 'tapfx'; fx.setAttribute('aria-hidden', 'true'); document.body.appendChild(fx);
+    let st = null, eat = false, fxT = 0;
+    addEventListener('pointerdown', e => {
+      st = null;
+      if (VIEW !== 'g' || e.pointerType === 'mouse' || !e.isPrimary) return;
+      const menuOpen = corner.classList.contains('open') && corner.dataset.user === '1';
+      const overlay = document.querySelector('#hs.on, #pult-dlg.on, #pult-ask:not([hidden])');
+      if (menuOpen || overlay) return;              // спершу закрити відкрите — без гортання
+      st = { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId, el: e.target };
+    }, true);
+    addEventListener('pointercancel', () => { st = null; }, true);
+    addEventListener('pointerup', e => {
+      const s = st; st = null;
+      if (!s || e.pointerId !== s.id || VIEW !== 'g') return;
+      if (Math.hypot(e.clientX - s.x, e.clientY - s.y) > 12 || Date.now() - s.t > 700) return;   // свайп чи прокрутка, а не дотик
+      if (s.el.closest && s.el.closest(SKIP)) return;
+      const x = e.clientX / innerWidth;
+      if (x >= 1 / 3 && x <= 2 / 3 && s.el.closest && s.el.closest('[data-pick]')) return;   // посередині — обрати область
+      const dir = x < 1 / 3 ? -1 : 1;
+      eat = true; setTimeout(() => { eat = false; }, 600);
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: dir > 0 ? 'ArrowRight' : 'ArrowLeft', bubbles: true, cancelable: true }));
+      fx.className = dir > 0 ? 'r on' : 'l on'; clearTimeout(fxT); fxT = setTimeout(() => { fx.className = dir > 0 ? 'r' : 'l'; }, 140);
+    }, true);
+    addEventListener('click', e => { if (eat) { eat = false; e.stopPropagation(); e.preventDefault(); } }, true);   // той самий дотик не відкриває область на карті
+  })();
   document.addEventListener('pointerdown', e => {
     document.body.classList.toggle('touchmode', e.pointerType === 'touch');   // на дотику меню відкривається лише натисканням, а не «наведенням»
     if (!corner.contains(e.target)) { clearTimeout(cornerT); corner.classList.remove('open'); }
