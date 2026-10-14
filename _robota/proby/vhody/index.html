@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Пластова бібліотека — макет</title>
+<link rel="icon" href="{{EMBLEM}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Макет «Один сайт — кілька входів» у стилі Д1 (як нинішня бібліотека). Лише для перегляду власником. */
+:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ol:#9fb57a;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;--a:#ffc247}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt);-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.ribbon{padding:7px 14px;background:#2fd2c0;color:#0c2421;text-align:center;font-weight:700;font-size:14px}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:max(16px,4vw)}
+
+/* шапка */
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding-block:22px 18px;border-bottom:1px solid var(--ln)}
+.logo{display:block;line-height:0;margin-right:auto;border-radius:8px}
+.logo img{height:64px;width:auto}
+.tabs{display:flex;gap:8px;align-items:center}
+.tabs a{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:9px 16px;border-radius:99px;border:1px solid transparent;color:var(--mut);font:700 15px var(--txt);text-decoration:none}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current=page]{background:var(--card2);border-color:var(--ln);color:var(--ink);box-shadow:inset 0 -3px 0 var(--t)}
+.tabs svg{width:14px;height:14px;flex:none}
+@media (max-width:700px){
+  .top{padding-top:14px}.logo img{height:46px}
+  .tabs{order:3;flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:99px;background:#14171a;border:1px solid var(--ln)}
+  .tabs a{padding:9px 4px;font-size:14px}
+}
+
+/* заголовок сторінки */
+.hero{position:relative;display:grid;gap:4px;padding-block:52px 40px}
+.hero .wm{position:absolute;right:20px;top:14px;height:340px;width:auto;opacity:.07;pointer-events:none}
+.ey{font:500 14px var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--ol)}
+.hero h1{position:relative;margin:6px 0 2px;font:600 clamp(2.8rem,8vw,5.4rem)/.95 var(--disp);letter-spacing:.02em;text-transform:uppercase}
+.hero.in h1{color:var(--a)}
+.hand{position:relative;margin:8px 0 0;font:500 clamp(1.4rem,3vw,2rem)/1.15 var(--hand);color:var(--ac)}
+.hero.in .hand{color:var(--body)}
+@media (max-width:700px){.hero{padding-block:34px 26px}.hero .wm{height:200px;right:-10px}}
+
+/* розділ */
+.sec{margin:6px 0 52px}
+.sec>h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 18px;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.sec>h2 small{font:400 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.lead{margin:-8px 0 18px;color:var(--mut);font-size:16px;max-width:62ch}
+
+/* входи на головній */
+.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin:4px 0 20px}
+.door{display:flex;flex-direction:column;gap:12px;min-height:300px;padding:24px 22px 22px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--d);text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+.door:hover{border-color:#5a6573;border-top-color:var(--d);transform:translateY(-2px)}
+.door h3{margin:0;font:600 34px/1 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--d)}
+.door .who{margin:-4px 0 0;font-size:15px;color:var(--mut)}
+.door ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.door li{position:relative;padding-left:16px;font-size:16px;color:var(--body)}
+.door li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--d)}
+.door .enter{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-radius:12px;background:var(--card2);font-weight:700;font-size:15px}
+.door .enter svg{width:18px;height:18px;flex:none}
+.door .enter.lock{background:var(--d);color:#2a2108}
+.ph{display:flex;align-items:center;justify-content:center;border:2px dashed var(--ln);border-radius:20px;background:none}
+.ph img{height:80px;width:auto;opacity:.08}
+.doors .ph{min-height:300px}
+.how{margin:0 0 56px;color:var(--mut);font-size:15px;max-width:70ch}
+@media (max-width:1000px){.doors{grid-template-columns:1fr 1fr}}
+@media (max-width:700px){.doors{grid-template-columns:1fr}.door{min-height:0}.door h3{font-size:30px}.doors .ph{display:none}}
+
+/* плитки (підказки, «також для вас») */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:16px}
+.tile{display:flex;flex-direction:column;gap:6px;min-height:150px;padding:20px 18px 18px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--a);text-align:left;text-decoration:none;color:inherit}
+.tile:hover{border-color:#5a6573;border-top-color:var(--a)}
+.tile b{font:600 22px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.tile span{color:var(--mut);font-size:15px}
+.tile .go{margin-top:auto;color:var(--a);font-weight:700;font-size:15px}
+.tiles .ph{min-height:150px;border-radius:18px}
+.tiles .ph img{height:56px}
+@media (max-width:700px){.tiles .ph{display:none}}
+
+/* співаник */
+.songs{display:flex;flex-direction:column;border-top:1px solid var(--ln)}
+.song{display:flex;align-items:center;gap:14px;width:100%;padding:14px 4px;border:0;border-bottom:1px solid var(--ln);background:none;text-align:left}
+.song b{font-weight:700;font-size:18px}
+.song span{color:var(--mut);font-size:15px}
+.song i{margin-left:auto;font-style:normal;font-size:14px;font-weight:700;color:var(--a);white-space:nowrap}
+.song[aria-disabled=true]{cursor:default}.song[aria-disabled=true] b{color:var(--mut)}.song[aria-disabled=true] i{color:#6b727b;font-weight:600}
+.song:not([aria-disabled=true]):hover b{color:var(--a)}
+
+/* цікаве */
+.facts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:16px}
+.fact{padding:20px 18px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.fact b{display:block;font:600 34px/1 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--a);margin-bottom:8px}
+.fact p{margin:0;color:var(--body);font-size:16px}
+
+/* юнацтво: мої вмілості */
+.mine{display:flex;flex-wrap:wrap;align-items:center;gap:16px 34px;padding:18px 22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);margin-bottom:22px}
+.mine dl{display:flex;gap:30px;margin:0}
+.mine dl div{display:flex;flex-direction:column}
+.mine dd{order:-1;margin:0;font:600 40px/1 var(--disp);color:var(--a)}
+.mine dt{font-size:14px;color:var(--mut)}
+.mine p{flex:1 1 260px;margin:0;color:var(--mut);font-size:14px}
+.mine button{padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:none;font-size:14px;font-weight:700}
+
+/* картка вмілості з матеріалами */
+.featv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px 26px;align-items:center;padding:22px 24px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--a)}
+.featv h3{margin:0 0 4px;font:600 30px/1.05 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.featv p{margin:0 0 14px;color:var(--body);font-size:16px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;border:0;background:var(--a);color:#0f1a19;font-weight:700;font-size:16px;text-decoration:none}
+.btn.ghost{background:none;border:1px solid var(--ln);color:var(--ink)}
+.btn.ghost:hover{border-color:var(--a)}
+@media (max-width:560px){.featv{grid-template-columns:1fr}.featv .vb{justify-self:start}}
+
+/* каталог */
+.tools{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.search{display:flex;align-items:center;gap:8px;width:300px;max-width:100%;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);background:#14171a;color:var(--mut)}
+.search:focus-within{border-color:var(--a)}
+.search input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--ink);font:15px var(--txt)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{padding:7px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--mut);font:700 14px var(--txt)}
+.chips button:hover{color:var(--ink)}
+.chips button[aria-pressed=true]{background:var(--a);border-color:var(--a);color:#0f1a19}
+.chips .n{margin-left:4px;font-weight:600;opacity:.65}
+.kh{margin:0 0 16px;font:600 20px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.kh small{margin-left:10px;font:400 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:16px}
+.badge{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--card);text-align:center}
+.badge:hover{border-color:#5a6573}
+.badge b{max-width:100%;font:600 16px/1.15 var(--disp);letter-spacing:.04em;text-transform:uppercase;overflow-wrap:break-word;hyphens:auto}
+.badge em{font-style:normal;font-size:13px;font-weight:600;color:var(--mut)}
+.badge.mat{border-top:4px solid var(--a)}
+.badge.mat em{color:var(--a)}
+.badge .mk{position:absolute;top:10px;right:10px;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-weight:700;font-size:15px}
+.badge[data-st=maju] .mk{background:#3ee08f;color:#0b2416}
+.badge[data-st=gotuyus] .mk{border:2px solid var(--a);color:var(--a);font-size:13px}
+.empty{color:var(--mut)}
+.more{margin-top:18px;padding:11px 18px;border-radius:12px;border:1px solid var(--ln);background:none;font-weight:700}
+@media (max-width:520px){.kgrid{grid-template-columns:1fr 1fr;gap:12px}.badge b{font-size:14px;letter-spacing:.03em}}
+
+/* нашивки (як у каталозі бібліотеки) */
+.vb{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:96px;height:96px}
+.vb img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+.vb .fb{display:none;align-items:center;justify-content:center;width:84px;height:84px;border-radius:50%;background:#2a2f35;border:2px dashed #4a515b;font:600 32px var(--disp);color:#a0a8b2}
+.vb.noimg .fb{display:flex}
+.vb.bw img,.vb.sp img{border-radius:50%;background:#e9ecef;box-shadow:0 0 0 3px #c7cdd4}
+.vb.sq img{clip-path:circle(45% at 50% 50%);transform:scale(1.08)}
+.vb.lg{width:130px;height:130px}.vb.lg .fb{width:116px;height:116px;font-size:42px}
+@media (max-width:520px){.vb{width:80px;height:80px}.vb .fb{width:70px;height:70px;font-size:26px}}
+
+/* виховники */
+.lockbox{max-width:460px;margin:0 0 56px;padding:26px 24px 22px;border-radius:22px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--a)}
+.lockbox h2{margin:0 0 6px;font:600 30px/1.05 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--a)}
+.lockbox p{margin:0 0 16px;color:var(--body);font-size:16px}
+.lockbox input{width:100%;padding:14px 16px;border-radius:14px;border:2px solid var(--a);background:var(--bg);color:var(--ink);font:600 28px var(--disp);letter-spacing:.3em;text-align:center}
+.lockbox input::placeholder{color:#555c66;letter-spacing:.3em}
+.lockbox .btn{width:100%;justify-content:center;margin-top:12px;color:#2a2108}
+.lockbox small{display:block;margin-top:12px;color:var(--mut);font-size:14px}
+.lockbox .err{margin:10px 0 0;color:#ff8a7a;font-weight:700;font-size:15px}
+.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
+.gcard{display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--g)}
+.gcard .kind{font:500 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.gcard h3{margin:0;font:600 26px/1.1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.gcard p{margin:0;font-size:15px;color:var(--body)}
+.gcard .vars{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.var{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:14px;text-decoration:none}
+.var small{color:var(--gd);font-weight:700;font-size:13px}
+.var:hover{border-color:var(--g)}
+.gcards .ph{min-height:200px;border-radius:18px}
+@media (max-width:700px){.gcards .ph{display:none}}
+.leave{display:inline-block;margin-top:-26px;margin-bottom:40px;padding:9px 14px;border-radius:10px;border:1px solid var(--ln);background:none;font-size:14px;font-weight:700;color:var(--mut)}
+
+/* підвал */
+footer{display:flex;flex-direction:column;align-items:center;margin-top:30px;padding-block:36px 40px;border-top:1px solid var(--ln);text-align:center}
+footer img{display:block;height:64px;width:auto;opacity:.85}
+footer .skob{margin-top:16px;padding-left:.3em;font:600 28px/1 var(--disp);letter-spacing:.3em;color:var(--gd)}
+footer span{margin-top:10px;font-size:14px;color:var(--mut)}
+
+/* вікно (підказка, пісня, вмілість) */
+#sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+#sheet .bd{position:absolute;inset:0;background:rgba(10,11,13,.72)}
+#sheet .pn{position:relative;width:min(580px,100%);max-height:min(88vh,860px);overflow:auto;padding:26px 24px 24px;border-radius:22px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--a);box-shadow:0 24px 70px rgba(0,0,0,.6);overscroll-behavior:contain}
+#sheet .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:18px;line-height:1}
+#sheet h3{margin:0 44px 4px 0;font:600 30px/1.05 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--a)}
+#sheet h4{margin:20px 0 8px;font:600 16px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+#sheet .sub{margin:0 0 14px;color:var(--mut);font-size:16px}
+#sheet ol{margin:0;padding-left:24px;color:var(--body)}#sheet ol li{margin:6px 0}
+#sheet .tip{margin:16px 0 0;padding:12px 14px;border-radius:12px;background:var(--card2);color:var(--body);font-size:16px}
+#sheet .tip b{color:var(--a)}
+#sheet .morse{margin:6px 0 4px;font:600 clamp(2rem,9vw,3.2rem)/1.1 var(--disp);letter-spacing:.12em;color:var(--ink)}
+#sheet .verse{margin:0 0 14px;white-space:pre-line;color:var(--body);font-size:18px;line-height:1.5}
+#sheet .verse.ch{padding-left:14px;border-left:3px solid var(--a)}
+#sheet .skh{display:flex;gap:18px;align-items:center;margin-bottom:6px}
+#sheet .skh h3{margin-right:0}
+#sheet .lv{margin:0;padding:0;list-style:none;border-top:1px solid var(--ln)}
+#sheet .lv a{display:flex;justify-content:space-between;gap:12px;padding:11px 2px;border-bottom:1px solid var(--ln);text-decoration:none;font-weight:700}
+#sheet .lv a span{color:var(--mut);font-weight:600;font-size:14px;white-space:nowrap}
+#sheet .lv a:hover span{color:var(--a)}
+.st3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.st3 button{padding:11px 6px;border-radius:10px;border:0;background:none;font-weight:700;font-size:15px;color:var(--mut)}
+.st3 button[aria-pressed=true]{background:var(--card2);color:var(--ink);box-shadow:inset 0 -3px 0 var(--a)}
+.st3 button[data-st=maju][aria-pressed=true]{box-shadow:inset 0 -3px 0 #3ee08f}
+.consent{margin-top:12px;padding:14px;border-radius:12px;border:1px solid var(--a);background:#20302f}
+.consent p{margin:0 0 10px;font-size:15px;color:var(--body)}
+.consent .btns .btn{padding:9px 14px;font-size:15px}
+.matbox{margin:14px 0 18px;padding:14px 16px;border-radius:14px;background:var(--card2)}
+.matbox b{display:block;margin-bottom:10px;font:600 15px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--a)}
+@media (max-width:640px){
+  #sheet{align-items:flex-end;padding:0}
+  #sheet .pn{width:100%;max-height:90vh;border-radius:22px 22px 0 0;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="ribbon">Макет для перегляду. Справжній сайт не змінено.</div>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="#" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+    <nav class="tabs" aria-label="Входи">
+      <a href="#vsi" data-r="vsi" style="--t:#9fb57a">Для всіх</a>
+      <a href="#yun" data-r="yun" style="--t:#2fd2c0">Юнацтво</a>
+      <a href="#vyh" data-r="vyh" style="--t:#ffc247">Виховники<span id="lk"></span></a>
+    </nav>
+  </header>
+
+  <!-- головна -->
+  <main id="v-home">
+    <section class="hero">
+      <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+      <span class="ey">Пласт у Фінляндії</span>
+      <h1>Пластова<br>бібліотека</h1>
+      <p class="hand">гутірки, вмілості, пісні й підказки</p>
+    </section>
+    <div class="doors">
+      <a class="door" href="#vsi" style="--d:#9fb57a"><h3>Для всіх</h3><p class="who">юнацтву, виховникам, гостям</p>
+        <ul><li>Швидкі підказки: вузли, азбука Морзе, орієнтування</li><li>Співаник для ватри</li><li>Цікаве про Пласт</li></ul>
+        <span class="enter">Вхід вільний <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="door" href="#yun" style="--d:#2fd2c0"><h3>Юнацтво</h3><p class="who">12–17 років</p>
+        <ul><li>Вмілості з нашивками</li><li>«Вивчай сам» і «Перевір себе»</li><li>Мої вмілості: що вже маю, до чого готуюсь</li></ul>
+        <span class="enter">Вхід вільний <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="door" href="#vyh" style="--d:#ffc247"><h3>Виховники</h3><p class="who">усе, що на сайті, і ще</p>
+        <ul><li>Гутірки на весь екран, пульт з телефона</li><li>Плани гутірок (друк, PDF)</li><li>Гра «Потужний СКОБ!»</li></ul>
+        <span class="enter lock">Вхід за кодом <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></a>
+      <div class="ph" aria-hidden="true"><img src="{{EMBLEM}}" alt=""></div>
+    </div>
+    <p class="how">Порожнє місце — для наступного входу (наприклад, новацтва). Виховник бачить усе, юнак — свою частину і «Для всіх».</p>
+  </main>
+
+  <!-- для всіх -->
+  <main id="v-vsi" hidden>
+    <section class="hero in">
+      <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+      <h1>Для всіх</h1>
+      <p class="hand">юнацтву, новацтву, виховникам і гостям</p>
+    </section>
+    <section class="sec" aria-labelledby="h-tips">
+      <h2 id="h-tips">Швидкі підказки<small>натисни — і бачиш, як робити</small></h2>
+      <div class="tiles" id="tips"></div>
+    </section>
+    <section class="sec" aria-labelledby="h-songs">
+      <h2 id="h-songs">Співаник<small>народні й старі пісні — з текстом</small></h2>
+      <div class="songs" id="songs"></div>
+    </section>
+    <section class="sec" aria-labelledby="h-facts">
+      <h2 id="h-facts">Цікаве</h2>
+      <div class="facts" id="facts"></div>
+    </section>
+  </main>
+
+  <!-- юнацтво -->
+  <main id="v-yun" hidden>
+    <section class="hero in">
+      <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+      <h1>Юнацтво</h1>
+      <p class="hand">вивчай, перевіряй себе, збирай нашивки</p>
+    </section>
+    <div class="mine" id="mine"></div>
+    <section class="sec" aria-labelledby="h-mat">
+      <h2 id="h-mat">Є матеріали<small>вивчити самому й перевірити себе</small></h2>
+      <div id="mat"></div>
+    </section>
+    <section class="sec" aria-labelledby="h-kat">
+      <h2 id="h-kat">Вмілості</h2>
+      <p class="lead">Натисни на вмілість — побачиш рівні й зможеш позначити, що вже маєш або до чого готуєшся.</p>
+      <div class="tools">
+        <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
+        <div class="chips" id="chips" role="group" aria-label="Показати"></div>
+      </div>
+      <h3 class="kh" id="kh"></h3>
+      <div class="kgrid" id="kgrid"></div>
+      <p class="empty" id="kempty" hidden></p>
+      <button class="more" type="button" id="kmore" hidden></button>
+    </section>
+  </main>
+
+  <!-- виховники -->
+  <main id="v-vyh" hidden>
+    <section class="hero in">
+      <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+      <h1>Виховники</h1>
+      <p class="hand">гутірки, плани й ігри — і все, що бачать юнаки</p>
+    </section>
+    <form class="lockbox" id="lockbox" autocomplete="off">
+      <h2>Вхід для виховників</h2>
+      <p>Тут гутірки, плани й відповіді до ігор — щоб юнаки не бачили їх наперед.</p>
+      <input id="code" inputmode="numeric" maxlength="8" placeholder="• • • •" aria-label="Код для виховників">
+      <button class="btn" type="submit">Увійти</button>
+      <p class="err" id="cerr" hidden>Код не той. Спробуйте ще раз.</p>
+      <small>Код запам’ятовується на цьому пристрої — вводити лише раз. <b>У макеті код — 1912.</b></small>
+    </form>
+    <div id="vyh-in" hidden>
+      <section class="sec" aria-labelledby="h-g">
+        <h2 id="h-g">Гутірки<small>відкриваються справжні, з чернетки сайту</small></h2>
+        <div class="gcards" id="gcards"></div>
+      </section>
+      <section class="sec" aria-labelledby="h-also">
+        <h2 id="h-also">Також для вас</h2>
+        <div class="tiles" id="also"></div>
+      </section>
+      <button class="leave" type="button" id="leave">Вийти з частини для виховників</button>
+    </div>
+  </main>
+
+  <footer>
+    <img src="{{EMBLEM}}" alt="" aria-hidden="true">
+    <span class="skob">СКОБ!</span>
+    <span>Пластова бібліотека · Пласт у Фінляндії</span>
+  </footer>
+</div>
+
+<div id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh-t"><div class="bd" data-close></div><div class="pn"><button class="x" type="button" data-close aria-label="Закрити">✕</button><div id="sh-c"></div></div></div>
+
+<script src="../../src/skills_data.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const plural = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
+/* пам’ять браузера — лише для зручності; якщо недоступна, усе працює й без неї */
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); } catch (e) { /* ok */ } }
+};
+const K_CODE = 'proba-vhody:vyh', K_MINE = 'proba-vhody:moi', K_OK = 'proba-vhody:zgoda', CODE = '1912';
+const COL = { home: '#ffc247', vsi: '#9fb57a', yun: '#2fd2c0', vyh: '#ffc247' };
+const EMB = $('.hero .wm').src;
+const PH = `<div class="ph" aria-hidden="true"><img src="${EMB}" alt=""></div>`;
+const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></svg>';
+
+/* ===================== зміст «Для всіх» ===================== */
+const TIPS = [
+  { t: 'Прямий вузол', s: 'Зв’язати дві мотузки однакової товщини.', steps: ['Візьміть кінці двох мотузок.', 'Покладіть правий кінець на лівий і обкрутіть навколо — як перший вузлик на шнурках.', 'Тепер лівий кінець — на правий, і знову обкрутіть.', 'Затягніть. Кінці мають лежати поруч, уздовж мотузок, а вузол — бути пласким.'], tip: 'Якщо кінці стирчать навскіс — вийшов «бабський» вузол, він розв’язується сам. Перев’яжіть.' },
+  { t: 'Вісімка', s: 'Вузол на кінці мотузки, щоб вона не вислизнула.', steps: ['Зробіть петлю: покладіть кінець мотузки поверх неї самої.', 'Обведіть кінець ззаду навколо основної мотузки.', 'Просуньте кінець у петлю спереду.', 'Затягніть — вийде цифра 8.'], tip: 'Вісімку легко розв’язати навіть після сильного натягу.' },
+  { t: 'Булінь', s: 'Петля, яка не затягується: обв’язатися, прив’язати до дерева.', steps: ['На основній мотузці зробіть маленьку петлю — «нору». Кінець має лежати зверху.', 'Кролик вилазить з нори: просуньте кінець у петлю знизу.', 'Кролик оббігає дерево: обведіть кінець ззаду навколо основної мотузки.', 'Кролик пірнає назад у нору: поверніть кінець у ту саму петлю згори.', 'Затягніть, тримаючи разом кінець і велику петлю.'], tip: 'Запам’ятати легко: «з нори — навколо дерева — назад у нору».' },
+  { t: 'SOS азбукою Морзе', s: 'Сигнал біди: ліхтариком, свистком, стуком.', morse: '· · ·  — — —  · · ·', steps: ['Три короткі сигнали.', 'Три довгі.', 'Знову три короткі — і пауза. Повторюйте.'], tip: 'Довгий сигнал — утричі довший за короткий.' },
+  { t: 'Де північ уночі', s: 'Знайти Полярну зірку за Великим Возом.', steps: ['Знайдіть Великий Віз — сім яскравих зірок, схожих на ківш.', 'Візьміть дві крайні зірки ковша (протилежні від ручки).', 'Продовжте лінію між ними вгору приблизно в п’ять разів.', 'Там — Полярна зірка. Під нею — північ.'], tip: 'Полярна зірка не дуже яскрава, але майже не рухається по небу.' }
+];
+const SONGS = [
+  { t: 'Ще не вмерла України', a: 'Державний гімн України · слова Павла Чубинського (1862)', v: [
+    ['Ще не вмерла України і слава, і воля,\nЩе нам, браття молодії, усміхнеться доля.\nЗгинуть наші воріженьки, як роса на сонці,\nЗапануєм і ми, браття, у своїй сторонці.'],
+    ['Душу й тіло ми положим за нашу свободу,\nІ покажем, що ми, браття, козацького роду.', 1]] },
+  { t: 'Несе Галя воду', a: 'народна', v: [
+    ['Несе Галя воду,\nКоромисло гнеться,\nЗа нею Іванко,\nЯк барвінок, в’ється.'],
+    ['— Галю ж моя, Галю,\nДай води напиться,\nТи така хороша —\nДай хоч подивиться!'],
+    ['— Вода у криниці,\nПіди та й напийся,\nЯк буду в садочку —\nПрийди подивися.']] },
+  { t: 'Ой у лузі червона калина', a: 'стрілецька пісня' },
+  { t: 'Ой, чий то кінь стоїть', a: 'народна' }
+];
+const FACTS = [
+  ['СКОБ!', 'Пластове привітання: Сильно, Красно, Обережно, Бистро.'],
+  ['1911–1912', 'Пласт засновано у Львові. Засновники — Олександр Тисовський, Петро Франко та Іван Чмола.'],
+  ['Пластуни', 'Назва «Пласт» — від пластунів, козаків-розвідників.'],
+  ['Будь готов!', 'Пластове гасло.']
+];
+function renderVsi() {
+  $('#tips').innerHTML = TIPS.map((x, i) => `<button class="tile" type="button" data-tip="${i}"><b>${esc(x.t)}</b><span>${esc(x.s)}</span><span class="go">Як робити</span></button>`).join('') + PH;
+  $('#songs').innerHTML = SONGS.map((x, i) => x.v
+    ? `<button class="song" type="button" data-song="${i}"><span><b>${esc(x.t)}</b><br><span>${esc(x.a)}</span></span><i>Текст</i></button>`
+    : `<div class="song" aria-disabled="true"><span><b>${esc(x.t)}</b><br><span>${esc(x.a)}</span></span><i>текст — згодом</i></div>`).join('');
+  $('#facts').innerHTML = FACTS.map(([b, p]) => `<div class="fact"><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join('');
+}
+$('#tips').addEventListener('click', e => {
+  const b = e.target.closest('[data-tip]'); if (!b) return; const x = TIPS[+b.dataset.tip];
+  sheet(`<h3 id="sh-t">${esc(x.t)}</h3><p class="sub">${esc(x.s)}</p>${x.morse ? `<div class="morse">${esc(x.morse)}</div>` : ''}<ol>${x.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol>${x.tip ? `<p class="tip"><b>Порада.</b> ${esc(x.tip)}</p>` : ''}
+    <p class="tip">У справжньому сайті тут буде ще малюнок або коротка анімація.</p>`, COL.vsi);
+});
+$('#songs').addEventListener('click', e => {
+  const b = e.target.closest('[data-song]'); if (!b) return; const x = SONGS[+b.dataset.song];
+  sheet(`<h3 id="sh-t">${esc(x.t)}</h3><p class="sub">${esc(x.a)}</p>${x.v.map(([t, ch]) => `<p class="verse${ch ? ' ch' : ''}">${esc(t)}</p>`).join('')}`, COL.vsi);
+});
+
+/* ===================== юнацтво ===================== */
+const PF = 'https://plast-finland.com/vmilosti/', IMGB = 'https://plast.global/wp-content/uploads/';
+/* до яких рівнів уже є матеріали для юнацтва (справжні сторінки з чернетки сайту) */
+const MAT = { 'budova-litalnyh-aparativ-i': { lvl: 'І', d: 'Види літальних апаратів, частини літака, профіль крила, тангаж, крен і рискання, п’ять аеродинамічних схем.',
+  vyv: '../sait/yunakam/budova-la-1/#vyvchy', test: '../sait/yunakam/budova-la-1/#test' } };
+const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
+  const levels = lv.map(([label, slug]) => ({ label, slug, url: PF + slug }));
+  const ml = levels.find(l => MAT[l.slug]);
+  return { id: levels[0].slug, n, specs: sp.map(i => SKILL_SPECS[i]), img: img ? IMGB + img : '', levels, mat: ml ? Object.assign({ slug: ml.slug }, MAT[ml.slug]) : null, lc: n.toLowerCase() };
+});
+const byId = {}; SKILLS.forEach(s => { byId[s.id] = s; });
+const lvName = (s, l) => l.label === 'Опис' ? s.n : l.label.startsWith('Опис') ? s.n + ' (' + l.label.replace(/^Опис\s*\(|\)$/g, '') + ')' : s.n + ' ' + l.label;
+const picKind = src => /ch_?b|chb/i.test(src) || /2026\/03\/.*artboard/i.test(src) ? ' bw' : /\.png$/i.test(src) ? ' sq' : /artboard/i.test(src) ? ' sp' : '';
+const pic = (src, n, cls) => `<span class="vb ${cls || ''}${src ? picKind(src) : ' noimg'}">${src ? `<img src="${esc(src)}" alt="" loading="lazy" decoding="async" onerror="this.parentNode.classList.add('noimg');this.remove()">` : ''}<span class="fb">${esc(n.replace(/^[^А-ЯІЇЄҐA-Z0-9]+/, '').charAt(0))}</span></span>`;
+const rank = s => { if (s.mat) return 0; if (!s.img) return 4; const k = picKind(s.img); return k === ' bw' ? 3 : k === ' sq' || k === ' sp' ? 2 : 1; };
+
+/* мої вмілості: { id: 'maju' | 'gotuyus' }; на пристрої — лише за згодою */
+let OK = store.get(K_OK);                   // true — зберігати, false — ні, null — ще не питали
+let MINE = (OK === true && store.get(K_MINE)) || {};
+let ASK = false;                            // показати питання про згоду у відкритому вікні
+const saveMine = () => { if (OK === true) store.set(K_MINE, MINE); };
+const stWord = { maju: 'Маю', gotuyus: 'Готуюсь' };
+
+let F = '', SP = '', MORE = false, LIMIT = 24;
+function renderMine() {
+  const v = Object.values(MINE), m = v.filter(x => x === 'maju').length, g = v.filter(x => x === 'gotuyus').length;
+  $('#mine').innerHTML = `<dl><div><dt>маю</dt><dd>${m}</dd></div><div><dt>готуюсь</dt><dd>${g}</dd></div></dl>
+    <p>${OK === true ? 'Позначки зберігаються лише на цьому пристрої. Нікуди не надсилаються.' : 'Позначай вмілості, які вже маєш або до яких готуєшся. Сайт нічого не збирає й нікуди не надсилає.'}</p>
+    ${m + g ? '<button type="button" id="wipe">Стерти мої позначки</button>' : ''}`;
+}
+$('#mine').addEventListener('click', e => {
+  if (!e.target.closest('#wipe')) return;
+  MINE = {}; store.del(K_MINE); store.del(K_OK); OK = null; renderYun();
+});
+function renderMat() {
+  const list = SKILLS.filter(s => s.mat);
+  $('#mat').innerHTML = list.map(s => `<div class="featv">${pic(s.img, s.n, 'lg')}<div><h3>${esc(s.n)} ${esc(s.mat.lvl)}</h3><p>${esc(s.mat.d)}</p>
+    <div class="btns"><a class="btn" href="${esc(s.mat.vyv)}">Вивчай сам</a><a class="btn ghost" href="${esc(s.mat.test)}">Перевір себе</a></div></div></div>`).join('');
+}
+function renderChips() {
+  const cnt = {}; SKILLS.forEach(s => s.specs.forEach(x => { cnt[x] = (cnt[x] || 0) + 1; }));
+  const ord = SKILL_SPECS.slice().sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || a.localeCompare(b, 'uk'));
+  let shown = MORE ? ord : ord.slice(0, 3); if (SP && !shown.includes(SP)) shown = shown.concat(SP);
+  const nMine = Object.keys(MINE).length;
+  const ch = [['', '', 'Усі', SKILLS.length], ['mine', '', 'Мої', nMine], ['mat', '', 'Є матеріали', SKILLS.filter(s => s.mat).length], ...shown.map(x => ['', x, x, cnt[x] || 0])];
+  $('#chips').innerHTML = ch.map(([f, sp, l, n]) => `<button type="button" data-f="${f}" data-sp="${esc(sp)}" aria-pressed="${f === F && sp === SP}">${esc(l)}<span class="n">${n}</span></button>`).join('')
+    + (MORE ? '<button type="button" data-more="0">Згорнути ▴</button>' : `<button type="button" data-more="1">Ще ${ord.length - shown.length} ▾</button>`);
+}
+function renderGrid() {
+  const q = $('#q').value.trim().toLowerCase();
+  const list = SKILLS.filter(s => (!SP || s.specs.includes(SP)) && (!q || s.lc.includes(q)) && (F !== 'mine' || MINE[s.id]) && (F !== 'mat' || s.mat))
+    .sort((a, b) => rank(a) - rank(b) || a.n.localeCompare(b.n, 'uk'));
+  const title = F === 'mine' ? 'Мої вмілості' : F === 'mat' ? 'Є матеріали' : SP || 'Усі вмілості';
+  $('#kh').innerHTML = esc(title) + `<small>${list.length} ${plural(list.length, ['вмілість', 'вмілості', 'вмілостей'])}</small>`;
+  const show = q || F ? list : list.slice(0, LIMIT);
+  $('#kgrid').innerHTML = show.map(s => {
+    const st = MINE[s.id] || '';
+    const note = st ? stWord[st] : s.mat ? 'є матеріали' : SP ? '' : s.specs.join(', ');
+    return `<button type="button" class="badge${s.mat ? ' mat' : ''}" data-k="${esc(s.id)}" data-st="${st}">${st ? `<span class="mk" aria-hidden="true">${st === 'maju' ? '✓' : '…'}</span>` : ''}${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
+  }).join('');
+  const em = $('#kempty'); em.hidden = list.length > 0;
+  em.textContent = q ? 'Нічого не знайдено. Спробуй іншу назву.' : F === 'mine' ? 'Ти ще нічого не позначив. Натисни на вмілість — і познач «Маю» або «Готуюсь».' : 'Тут поки порожньо.';
+  const mb = $('#kmore'); mb.hidden = show.length >= list.length; mb.textContent = `Показати всі ${list.length}`;
+}
+function renderYun() { renderMine(); renderMat(); renderChips(); renderGrid(); }
+$('#q').addEventListener('input', renderGrid);
+$('#kmore').addEventListener('click', () => { LIMIT = 9999; renderGrid(); });
+$('#chips').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.more) MORE = b.dataset.more === '1'; else { F = b.dataset.f; SP = b.dataset.sp; }
+  renderChips(); renderGrid();
+});
+$('#kgrid').addEventListener('click', e => { const b = e.target.closest('[data-k]'); if (b) openSkill(b.dataset.k); });
+$('#mat').addEventListener('click', () => {});
+function skillHtml(s) {
+  const st = MINE[s.id] || '';
+  const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
+  return `<div class="skh">${pic(s.img, s.n, 'lg')}<div><h3 id="sh-t">${esc(s.n)}</h3><p class="sub">${esc(specs)}</p></div></div>
+    ${s.mat ? `<div class="matbox"><b>Є матеріали — ${esc(s.n)} ${esc(s.mat.lvl)}</b><div class="btns"><a class="btn" href="${esc(s.mat.vyv)}">Вивчай сам</a><a class="btn ghost" href="${esc(s.mat.test)}">Перевір себе</a></div></div>` : ''}
+    <h4>Моя позначка</h4>
+    <div class="st3" role="group" aria-label="Моя позначка">${[['', 'Ще ні'], ['gotuyus', 'Готуюсь'], ['maju', 'Маю']].map(([v, l]) => `<button type="button" data-st="${v}" aria-pressed="${st === v}">${l}</button>`).join('')}</div>
+    ${ASK && OK == null ? `<div class="consent"><p>Запам’ятати твої позначки на цьому пристрої? Вони нікуди не надсилаються, і стерти їх можна будь-коли.</p>
+      <div class="btns"><button class="btn" type="button" data-ok="1">Так, запам’ятати</button><button class="btn ghost" type="button" data-ok="0">Ні, лише зараз</button></div></div>` : ''}
+    <h4>Рівні й вимоги</h4>
+    <ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`;
+}
+let OPEN_SK = '';
+function openSkill(id) { OPEN_SK = id; sheet(skillHtml(byId[id]), COL.yun); }
+$('#sh-c').addEventListener('click', e => {
+  const b = e.target.closest('.st3 button, [data-ok]'); if (!b || !OPEN_SK) return;
+  if (b.dataset.ok != null) { OK = b.dataset.ok === '1'; store.set(K_OK, OK); if (OK) saveMine(); ASK = false; }
+  else { const v = b.dataset.st; if (v) MINE[OPEN_SK] = v; else delete MINE[OPEN_SK]; if (OK == null) ASK = true; saveMine(); }
+  $('#sh-c').innerHTML = skillHtml(byId[OPEN_SK]);
+  renderMine(); renderChips(); renderGrid();
+});
+
+/* ===================== виховники ===================== */
+const GUT = [
+  { t: 'Кераміка України', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#ffc247',
+    v: [['Повна гутірка', '45–50 хв', '../sait/#povna'], ['Вишкіл', 'до 20 хв', '../sait/#vyshkil']] },
+  { t: 'Будова літальних апаратів І', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
+    v: [['Гутірка', '40–45 хв', '../sait/gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', '../sait/gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', '../sait/gutirky/budova-la-1/#yunakam']] }
+];
+const ALSO = [
+  ['#yun', 'Усе для юнацтва', 'Вмілості, «Вивчай сам», «Перевір себе» — те саме, що бачать юнаки.', 'Відкрити', COL.yun],
+  ['#vsi', 'Для всіх', 'Підказки, співаник, цікаве.', 'Відкрити', COL.vsi],
+  ['skob', 'Гра «Потужний СКОБ!»', 'Вікторина з телефонів юнаків — є наприкінці кожної гутірки.', 'Як це працює', COL.vyh]
+];
+const isIn = () => store.get(K_CODE) === true || UNLOCK;
+let UNLOCK = false;
+function renderVyh() {
+  const inn = isIn();
+  $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn;
+  $('#lk').innerHTML = inn ? OPEN : LOCK;
+  if (!inn) return;
+  $('#gcards').innerHTML = GUT.map(g => `<article class="gcard" style="--g:${g.c}"><span class="kind">${esc(g.k)}</span><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
+    <div class="vars">${g.v.map(([l, d, h]) => `<a class="var" href="${esc(h)}">${esc(l)}<small>${esc(d)}</small></a>`).join('')}</div></article>`).join('') + PH;
+  $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => h.startsWith('#')
+    ? `<a class="tile" href="${h}" style="--a:${c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></a>`
+    : `<button class="tile" type="button" data-also="${h}" style="--a:${c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></button>`).join('');
+}
+$('#lockbox').addEventListener('submit', e => {
+  e.preventDefault();
+  const v = $('#code').value.replace(/\s/g, '');
+  if (v === CODE) { UNLOCK = true; store.set(K_CODE, true); $('#cerr').hidden = true; $('#code').value = ''; renderVyh(); }
+  else { $('#cerr').hidden = false; $('#code').select(); }
+});
+$('#leave').addEventListener('click', () => { UNLOCK = false; store.del(K_CODE); renderVyh(); scrollTo(0, 0); });
+$('#also').addEventListener('click', e => {
+  if (!e.target.closest('[data-also=skob]')) return;
+  sheet(`<h3 id="sh-t">Потужний СКОБ!</h3><p class="sub">Своя гра на зразок Kahoot — без реєстрації й реклами, нічого не збирає.</p>
+    <ol><li>Наприкінці гутірки натисніть «Підключити телефони» — на екрані з’являться QR-код і код гри.</li><li>Юнаки сканують код телефоном і пишуть своє ім’я. Незнайоме ім’я — лише після вашого ✓.</li>
+    <li>Запитання — на великому екрані, відповіді — кнопками С, К, О, Б на телефоні.</li><li>За правильну й швидку відповідь — більше балів. Наприкінці — п’єдестал.</li></ol>
+    <p class="tip"><b>Без телефонів</b> теж можна: група радиться, а відповідь натискають на екрані.</p>`, COL.vyh);
+});
+
+/* ===================== вікно ===================== */
+let lastFocus = null;
+function sheet(html, color) {
+  lastFocus = document.activeElement;
+  $('#sheet').style.setProperty('--a', color || COL.home);
+  $('#sh-c').innerHTML = html; $('#sheet').hidden = false; document.body.style.overflow = 'hidden';
+  $('#sheet .pn').scrollTop = 0; $('#sheet .x').focus();
+}
+function closeSheet() {
+  if ($('#sheet').hidden) return;
+  $('#sheet').hidden = true; document.body.style.overflow = ''; OPEN_SK = ''; ASK = false;
+  if (lastFocus && lastFocus.focus) try { lastFocus.focus(); } catch (e) { /* ok */ }
+}
+$('#sheet').addEventListener('click', e => { if (e.target.closest('[data-close]')) closeSheet(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+/* ===================== перемикання ===================== */
+const VIEWS = ['home', 'vsi', 'yun', 'vyh'];
+function route() {
+  const h = location.hash.slice(1), v = VIEWS.includes(h) ? h : 'home';
+  closeSheet();
+  VIEWS.forEach(x => { $('#v-' + x).hidden = x !== v; });
+  document.documentElement.style.setProperty('--a', COL[v]);
+  $$('.tabs a').forEach(a => { if (a.dataset.r === v) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  if (v === 'vsi') renderVsi(); else if (v === 'yun') renderYun(); else if (v === 'vyh') renderVyh();
+  $('#lk').innerHTML = isIn() ? OPEN : LOCK;
+  scrollTo(0, 0);
+}
+addEventListener('hashchange', route); route();
+})();
+</script>
+</body>
+</html>
