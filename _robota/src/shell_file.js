@@ -24,8 +24,8 @@
     tags: ['авіація', 'літаки', 'летунська', 'гра з телефонів', 'для юнацтва'],
     vars: [   /* href — гутірка на окремій сторінці сайту; yun — матеріал для юнацтва, не окрема версія гутірки */
       { href: 'gutirky/budova-la-1/#hutirka', label: 'Гутірка', who: 'Юнацтво, 12–17 років', dur: '40–45 хв', accent: '#6fb3ff' },
-      { href: 'gutirky/budova-la-1/#vyvchy', label: 'Вивчай сам', who: 'Юнакам — самостійно', dur: '5 точок', accent: '#2fd2c0', yun: true },
-      { href: 'gutirky/budova-la-1/#test', label: 'Перевір себе', who: 'Юнакам — 15 запитань', dur: '≈ 5 хв', accent: '#2fd2c0', yun: true }
+      { href: 'yunakam/budova-la-1/#vyvchy', label: 'Вивчай сам', who: 'Юнакам — самостійно', dur: '5 точок', accent: '#2fd2c0', yun: true },
+      { href: 'yunakam/budova-la-1/#test', label: 'Перевір себе', who: 'Юнакам — 15 запитань', dur: '≈ 5 хв', accent: '#2fd2c0', yun: true }
     ]
   }].filter(b => !b.proba || window.GUTIRKA_PREVIEW);
   const MODE_LABEL = { full: 'ПОВНА ГУТІРКА · 45–50 ХВ', short: 'ВИШКІЛ · ДО 20 ХВ' };

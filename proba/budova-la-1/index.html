@@ -29,7 +29,8 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .req b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
 .req ol{margin:0;padding-left:22px;color:var(--body)}.req li{margin:3px 0}
 .req small{display:block;margin-top:8px;color:var(--mut);font-size:14px}
-.doors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:22px}
+body.yun .for-v,body:not(.yun) .for-y{display:none!important}
 .door{display:flex;flex-direction:column;gap:6px;text-align:left;padding:18px 18px 16px;border-radius:18px;border:1px solid var(--ln);background:var(--card);text-decoration:none;color:var(--ink)}
 .door:hover{border-color:var(--gd)}
 .door i{font:normal 600 13px var(--disp);letter-spacing:.16em;text-transform:uppercase;color:var(--ol)}
@@ -37,7 +38,13 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 .door span{color:var(--mut);font-size:15px}
 .door.main{background:var(--gd);border-color:var(--gd);color:#16130a}.door.main i,.door.main span{color:#4a3b10}
 .kh{margin-top:16px;color:var(--mut);font-size:15px}
-@media (max-width:1000px){.doors{grid-template-columns:1fr 1fr}}@media (max-width:560px){.doors{grid-template-columns:1fr}}
+@media (max-width:560px){.doors{grid-template-columns:1fr}}
+/* для юнаків: посилання й QR (у виховника) */
+.share{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start;margin-top:20px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.share .qr{width:200px;padding:10px;border-radius:14px;background:#fff;line-height:0}.share .qr svg{width:100%;height:auto}
+.share p{margin:0 0 10px;color:var(--body)}.share .url{font:600 17px var(--txt);color:var(--ink);word-break:break-all}
+.share .warn{color:var(--mut);font-size:15px}.share .acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.share .acts .go,.share .acts .back{margin:0}
+@media (max-width:640px){.share{grid-template-columns:1fr}.share .qr{width:180px}}
 /* план для виховника */
 #plan-box .mat{margin:16px 0;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
 #plan-box .mat b{display:block;font:600 14px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--gd);margin-bottom:6px}
@@ -48,7 +55,22 @@ h1{margin:10px 0 4px;font:600 clamp(2.4rem,7vw,4.4rem)/.98 var(--disp);letter-sp
 #plan-box .row .t{font-weight:700;color:var(--ink)}#plan-box .row .t small{display:block;font-weight:600;color:var(--mut);font-size:13px}
 #plan-box .row .s{color:var(--body)}#plan-box .row .s em{color:var(--ac);font-style:normal}
 @media (max-width:640px){#plan-box .row{grid-template-columns:1fr}}
-@media print{body{background:#fff;color:#000}#plan .back{display:none}#plan-box .row,#plan-box .mat{border-color:#ccc;background:none}#plan-box .row .t,#plan-box .row .s,#plan-box .mat ul{color:#000}}
+.go.pr{display:inline-flex;align-items:center;gap:10px;margin:16px 0 4px}.go.pr svg{width:20px;height:20px;flex:none}
+/* друк плану: білий аркуш A4, лише план (у браузері — «Друкувати» або «Зберегти як PDF») */
+@media print{
+  @page{size:A4;margin:14mm 14mm 16mm}
+  :root{color-scheme:light}
+  html,body{height:auto;background:#fff!important;color:#000;font-size:10.5pt;line-height:1.4}
+  body>*:not(#plan){display:none!important}
+  #plan{max-width:none;padding:0}#plan .back,#plan .pr{display:none}
+  #plan .eyebrow{color:#555}#plan h1{margin:4px 0 0;font-size:22pt;color:#000}#plan .hand{color:#333;font-size:15pt}
+  #plan-box .mat{margin:10px 0;padding:8px 12px;border:1px solid #bbb;border-radius:8px;background:none;break-inside:avoid}
+  #plan-box .mat b{color:#000;font-size:10pt}
+  #plan-box h2{margin:16px 0 4px;font-size:14pt;color:#000;break-after:avoid}#plan-box h2 small{color:#444}
+  #plan-box .row{grid-template-columns:11em minmax(0,1fr);padding:6px 0;border-top:1px solid #ccc;break-inside:avoid}
+  #plan-box .row .t,#plan-box .row .s,#plan-box .mat ul,#plan-box p{color:#000!important}#plan-box .row .t small{color:#555}
+  #plan-box .row .s em{color:#000;font-weight:700}
+}
 
 /* ---------- гутірка ---------- */
 #pres{position:fixed;inset:0;background:radial-gradient(70% 60% at 30% 45%,#232a33,var(--bg) 75%);overflow:hidden}
@@ -125,6 +147,10 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .qwrap{max-width:min(1250px,94vw);margin:0 auto;width:100%}
 .kin .sk-logo{font-size:clamp(64px,11vw,150px)}
 .kin blockquote{margin-top:22px}
+.endq{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,4vw,60px);align-items:center}
+.endq figure{margin:0;text-align:center}.endq figure>div{width:clamp(150px,19vw,260px);padding:10px;border-radius:16px;background:#fff;line-height:0}.endq figure svg{width:100%;height:auto}
+.endq figcaption{margin-top:10px;font:600 clamp(.9rem,1.3vw,1.3rem) var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
+@media (orientation:portrait) and (max-width:700px){.endq{grid-template-columns:1fr}.endq figure{justify-self:start}}
 .kbtn{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px;pointer-events:auto}
 .kbtn .go{margin:0}
 .pb{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:42px;height:42px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font-size:15px;font-weight:600}
@@ -164,6 +190,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 
 /* ---------- вивчай сам ---------- */
 .page{max-width:860px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) max(16px,4vw) 60px}
+.page>.eyebrow{display:block;margin-top:14px}
 .back{display:inline-block;margin:8px 0 10px;padding:9px 16px;border-radius:99px;border:1px solid var(--ln);background:none;color:var(--ink);font-weight:700;font-size:15px;text-decoration:none}
 .prog{display:flex;align-items:center;gap:12px;margin:18px 0 6px;color:var(--mut);font-size:15px}
 .prog .tr{flex:1;height:8px;border-radius:99px;background:var(--card2);overflow:hidden}.prog .tr i{display:block;height:100%;background:var(--ac);transition:width .3s}
@@ -208,15 +235,20 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 <main id="start" hidden>
   <span class="eyebrow">Летунська вмілість · проба 1</span>
   <h1>Будова літальних апаратів І</h1>
-  <p class="hand">гутірка, вікторина і матеріали для самостійного вивчення</p>
+  <p class="hand for-v">гутірка, гра і матеріали для юнаків</p>
+  <p class="hand for-y">усе, що треба знати й уміти для вмілості</p>
   <div class="req"><b>Вимоги до вмілості</b><ol id="req"></ol><small>Дослівно з <a id="req-src" target="_blank" rel="noopener">каталогу вмілостей Пласту у Фінляндії</a>.</small></div>
-  <div class="doors">
+  <div class="doors for-v">
     <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>40–45 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
-    <a class="door" href="#vyvchy"><i>Юнакові</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
-    <a class="door" href="#test"><i>Юнакові</i><b>Перевір себе</b><span>15 запитань із поясненнями.</span></a>
-    <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали.</span></a>
+    <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали. Можна роздрукувати.</span></a>
+    <a class="door" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
   </div>
-  <p class="kh">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
+  <p class="kh for-v">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
+  <div class="doors for-y">
+    <a class="door main" href="#vyvchy"><i>Крок 1</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
+    <a class="door" href="#test"><i>Крок 2</i><b>Перевір себе</b><span>15 запитань із поясненнями. Щоразу в іншому порядку.</span></a>
+  </div>
+  <p class="kh for-y">Усе знаєш і тест іде добре — скажи виховникові, що можеш скласти вмілість.</p>
 </main>
 
 <!-- гутірка -->
@@ -257,7 +289,25 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <span class="eyebrow">План для виховника</span>
   <h1>Будова літальних апаратів І</h1>
   <p class="hand">що робити й казати на кожному слайді</p>
+  <button class="go pr" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>Друкувати або зберегти PDF</button>
   <div id="plan-box"></div>
+</main>
+
+<!-- посилання для юнаків (бачить лише виховник) -->
+<main id="yunakam" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">Для юнаків</span>
+  <h1>Будова літальних апаратів І</h1>
+  <p class="hand">дайте після гутірки</p>
+  <div class="share">
+    <div class="qr" id="y-qr"></div>
+    <div>
+      <p>На цій сторінці лише «Вивчай сам» і «Перевір себе». Гутірки, плану й гри там немає — юнаки повторюють матеріал і готуються скласти вмілість.</p>
+      <p class="url" id="y-url"></p>
+      <div class="acts"><button class="go" type="button" id="y-send">Копіювати посилання</button><a class="back" id="y-open" target="_blank" rel="noopener">Подивитися, що побачать юнаки</a></div>
+      <p class="warn" style="margin-top:14px">Не давайте до гутірки: у «Перевір себе» ті самі запитання, що й у грі «Потужний СКОБ!». Цей QR-код є й на останньому слайді гутірки.</p>
+    </div>
+  </div>
 </main>
 
 <main id="test" class="page" hidden>
@@ -274,7 +324,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <div><button class="y" type="button" data-save="1">Так, зберігати</button><button type="button" data-save="0">Ні</button></div>
 </div>
 
-<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL("../skob/", location.href).href;</script>
+<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL("../skob/", location.href).href;window.GUTIRKA_YUN_URL = "../yunakam/budova-la-1/";</script>
 <script>
 /* Мінімальний генератор QR-коду (режим Byte, рівні L/M, версії 1–10, до ~170 байт).
    Без зовнішніх бібліотек. Використання: qrSvg("https://…", 240) → рядок <svg>. */
@@ -1647,7 +1697,7 @@ window.LA.say = [   // видно на телефоні-пульті й на с�
   'Гра на 5 силуетів. Без телефонів: група радиться й називає схему, хтось один натискає відповідь. Правильно — далі само, неправильно — прочитайте пояснення. ≈ 2 хв.',
   '',
   'Фінальна гра: 15 запитань, ≈ 7 хв. Якщо телефони ще не підключені — «Підключити телефони», зачекайте, поки всі ввійдуть. Незнайомі імена пускайте кнопкою ✓, ✕ — попросити справжнє ім’я.',
-  'Підсумок. Скажіть про «Вивчай сам» і «Перевір себе» (бібліотека → картка цієї гутірки). Хто готовий — може складати вмілість: попросіть пояснити 1–2 точки своїми словами.'
+  'Підсумок. На екрані QR-код сторінки для юнаків («Вивчай сам» і «Перевір себе») — нехай відсканують. Те саме посилання — на стартовій сторінці гутірки → «Для юнаків», можна надіслати в групу. Хто готовий — може складати вмілість: попросіть пояснити 1–2 точки своїми словами.'
 ];
 window.LA.slides.forEach((s, i) => { if (window.LA.say[i]) s.say = window.LA.say[i]; });
 window.LA.materialy = ['ноутбук (за можливості — проєктор або великий екран)', 'папір А4 — по аркушу на кожного', 'олівці', 'смужки паперу ≈ 3 × 20 см — по одній на кожного', 'ножиці (для паперових літачків)', 'модель літака або фото (за бажанням)', 'телефони юнаків з інтернетом — для гри «Потужний СКОБ!» (за бажанням)'];
@@ -1658,6 +1708,11 @@ window.LA.materialy = ['ноутбук (за можливості — проєк
 'use strict';
 const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* дві сторінки з одного файла: для виховника (усе) і для юнаків (yunakam/…: лише «Вивчай сам» і «Перевір себе») */
+const YUN = !!window.GUTIRKA_YUN;
+document.body.classList.toggle('yun', YUN);
+const YUN_URL = new URL(window.GUTIRKA_YUN_URL || '#vyvchy', location.href).href.replace(/#$/, '');
+const qrBox = (sel, url, px) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px); el.dataset.for = url; } };
 
 /* ===================== малюнки (maliunky.js) і фото ===================== */
 const art = k => LA_ART.get(k);
@@ -1702,8 +1757,9 @@ function render() {
       hint = 'Далі — почати гру'; break;
     case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
       hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
-    case 'end': wide = true; h = `<div class="big"><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
-      <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>`; break;
+    case 'end': wide = true; h = `<div class="big endq"><div><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
+      <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>
+      <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
@@ -1891,11 +1947,29 @@ function renderPlan() {
   });
   $('#plan-box').innerHTML = h;
 }
+function renderYun() {
+  qrBox('#y-qr', YUN_URL, 200);
+  $('#y-url').textContent = YUN_URL.replace(/^https?:\/\//, '');
+  $('#y-open').href = YUN_URL;
+  const b = $('#y-send'), share = !!navigator.share && matchMedia('(pointer:coarse)').matches;
+  b.textContent = share ? 'Надіслати посилання' : 'Копіювати посилання';
+  b.onclick = async () => {
+    if (share) { try { await navigator.share({ title: 'Будова літальних апаратів І — для юнаків', url: YUN_URL }); } catch (e) {} return; }
+    try { await navigator.clipboard.writeText(YUN_URL); } catch (e) { const r = document.createRange(); r.selectNodeContents($('#y-url')); getSelection().removeAllRanges(); getSelection().addRange(r); try { document.execCommand('copy'); } catch (e2) {} }
+    b.textContent = 'Скопійовано'; setTimeout(() => { b.textContent = 'Копіювати посилання'; }, 1800);
+  };
+}
+/* друк плану: у вікні друку можна вибрати принтер або «Зберегти як PDF»; назва файла — з заголовка */
+const T_DOC = document.title;
+$('#b-print').addEventListener('click', () => { renderPlan(); window.print(); });
+addEventListener('beforeprint', () => { if (!$('#plan').hidden) document.title = 'План гутірки — ' + T_DOC; });
+addEventListener('afterprint', () => { document.title = T_DOC; });
 function route() {
-  const h = location.hash.slice(1);
+  let h = location.hash.slice(1);
+  if (YUN && h && h !== 'vyvchy' && h !== 'test') { history.replaceState(null, '', location.pathname + location.search); h = ''; }
   $('#start').hidden = !!h && h !== 'start';
   const wasG = !P.hidden;
-  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan';
+  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan'; $('#yunakam').hidden = h !== 'yunakam';
   window.GUTIRKA = h === 'hutirka' ? API : null;
   if (h === 'hutirka' && !wasG) peekCorner(2500);
   if (!h || h === 'start') $('#start').hidden = false;
@@ -1904,6 +1978,7 @@ function route() {
   if (h !== 'hutirka') { try { window.GutirkaPult && window.GutirkaPult.close(); } catch (e) {} }
   if (h === 'vyvchy') { renderStudy(); scrollTo(0, 0); }
   if (h === 'plan') { renderPlan(); scrollTo(0, 0); }
+  if (h === 'yunakam') { renderYun(); scrollTo(0, 0); }
   if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
 }
 $('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
