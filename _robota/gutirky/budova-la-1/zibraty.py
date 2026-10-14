@@ -30,7 +30,8 @@ def page(skob_rel):
                       ('<script src="../../src/pult-host-file.js"></script>', host)]:
         src = rep(src, tag, inl(text))
     src = src.replace('{{EMBLEM}}', emblem)
-    src = src.replace('<script>\n', "<script>window.SKOB_URL = new URL(" + json.dumps(skob_rel) + ", location.href).href;</script>\n<script>\n", 1)
+    # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
+    src = src.replace('<script>\n', "<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;</script>\n<script>\n", 1)
     assert 'noindex' in src and '{{' not in src.replace('${{', '')
     return src
 
@@ -42,6 +43,7 @@ def write(path, text):
 if __name__ == '__main__':
     mode = sys.argv[1] if len(sys.argv) > 1 else 'proba'
     gr = (D / 'skob-gravets.html').read_text(encoding='utf-8')
+    write(SITE / 'skob' / 'index.html', gr)   # коротка адреса для телефонів: gutirky-fi.github.io/skob
     if mode == 'proba':
         write(SITE / 'proba' / 'budova-la-1' / 'index.html', page('../skob/'))
         write(SITE / 'proba' / 'skob' / 'index.html', gr)

@@ -72,7 +72,8 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #stage{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:2vw;padding:64px 4vw 40px}
 #art{height:100%;max-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;min-width:0}
 #art svg{width:100%;height:100%;max-height:72vh}
-#panel{min-width:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding:6px 4px 6px 0}
+#panel{min-width:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding:6px 4px 6px 0;scrollbar-width:none}
+#panel::-webkit-scrollbar{display:none}
 #panel>*{animation:up .45s both}
 @keyframes up{from{opacity:0;transform:translateY(12px)}}
 .k{font:500 clamp(1.3rem,1.9vw,2.2rem)/1.1 var(--hand);color:var(--ac)}
@@ -97,9 +98,15 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .big .n small{font-size:.35em;color:var(--mut);margin-left:.2em}
 .big blockquote{margin:14px 0 0;padding:0 0 0 18px;border-left:4px solid var(--gd);font-size:clamp(1.2rem,2.4vw,2.4rem);line-height:1.3;color:var(--ink)}
 .big .vy{display:block;margin-top:6px;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
-.ttl h2{margin:6px 0 0;font:600 clamp(2.6rem,7.5vw,7.5rem)/.95 var(--disp);letter-spacing:.03em;text-transform:uppercase}
-.ttl p{font:500 clamp(1.4rem,2.6vw,2.6rem) var(--hand);color:var(--ac);margin:10px 0 0}
-.ttl svg{width:min(52vw,520px);height:auto;display:block;margin:0 0 -10px auto;opacity:.9}
+.ttl .vy{display:block;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
+.ttl h2{margin:12px 0 0;font:600 clamp(2.4rem,5.6vw,6.4rem)/.94 var(--disp);letter-spacing:.03em;text-transform:uppercase;text-wrap:balance}
+.ttl p{font:500 clamp(1.4rem,2.4vw,2.4rem) var(--hand);color:var(--ac);margin:12px 0 0}
+.ttl .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.ttl .meta span{padding:7px 16px;border-radius:99px;border:1px solid #2f5f8f;background:rgba(11,22,38,.7);color:#dbe9f7;font-weight:600;font-size:clamp(.9rem,1.1vw,1.15rem)}
+.ttl .meta span b{color:var(--gd)}
+#pres.hero #stage{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+#pres.hero #panel{order:1}#pres.hero #art{order:2}
+.exph{max-width:520px}.exph .la-ph{aspect-ratio:16/9;margin-top:4px}
 /* вікторина */
 .qq{margin:6px 0 16px;font:600 clamp(1.5rem,2.8vw,3rem)/1.12 var(--disp);letter-spacing:.01em}
 #pres.quiz #stage{grid-template-columns:1fr}
@@ -112,15 +119,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .pb{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:42px;height:42px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font-size:15px;font-weight:600}
 .pb:hover{border-color:var(--gd)}
 .kbtn .pb{height:52px;padding:0 18px}
-.la-mix{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.la-box{position:relative;width:100%;max-height:100%;aspect-ratio:3/2}
-.la-box .la-ph{position:absolute;inset:0}
-.la-inset{position:absolute;right:8px;top:8px;width:38%;padding:4px;border-radius:12px;background:rgba(22,24,28,.88);border:1px solid #383d44}
-.la-inset svg{display:block;width:100%;height:auto}
-.la-mix.nofoto .la-box{aspect-ratio:auto}.la-mix.nofoto .la-inset{position:static;width:100%;background:none;border:0;padding:0}
 .phrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 12px}.phrow .la-ph{aspect-ratio:3/2}
-.fsw{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font-size:15px}
-.fsw b{color:var(--gd)}.fsw[aria-pressed=false] b{color:var(--mut)}
 .mini{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:2px}
 
 #hint{position:absolute;z-index:4;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--mut);font-size:15px;pointer-events:none}
@@ -143,12 +142,13 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   #panel{align-self:start}
   #pres.wide #stage,#pres.quiz #stage,#pres.noart #stage{grid-template-rows:minmax(0,1fr);align-items:center}
   #pres.wide #panel,#pres.quiz #panel,#pres.noart #panel{align-self:center}
-  .ttl svg{width:80vw;margin:0 auto 10px}
+  #pres.hero #stage{grid-template-columns:1fr}#pres.hero #art{order:0}
+  .ttl h2{font-size:clamp(2.2rem,10vw,3.4rem)}.ttl .meta{margin-top:16px}
 }
 @media (orientation:landscape) and (max-height:520px){
   #stage{padding:50px 3vw 26px}
   .hh{font-size:1.5rem;margin:2px 0 8px}.pts li{font-size:.95rem;margin:6px 0;padding:.35em .7em}.pp,.ask{font-size:1rem}
-  .ttl svg{position:absolute;right:3vw;top:56%;transform:translateY(-50%);width:auto;height:62vh;margin:0}
+  .ttl h2{font-size:2rem}.ttl .meta{margin-top:12px}
 }
 
 /* ---------- вивчай сам ---------- */
@@ -204,7 +204,6 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     <a class="door" href="#vyvchy"><i>Юнакові</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Юнакові</i><b>Перевір себе</b><span>15 запитань із поясненнями.</span></a>
   </div>
-  <button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button>
   <p class="kh">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
 </main>
 
@@ -223,7 +222,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <div id="hint"></div><div id="bar"><i></i></div>
   <div id="tapfx" aria-hidden="true"></div>
 </section>
-<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div><button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button></div></div>
+<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div></div></div>
 
 <!-- вивчай сам -->
 <main id="vyvch" class="page" hidden>
@@ -264,25 +263,21 @@ const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ===================== малюнки (maliunky.js) і фото ===================== */
-const FKEY = 'gutirky:la-foto';
-let foto = true; try { foto = localStorage.getItem(FKEY) !== '0'; } catch (e) {}
 const art = k => LA_ART.get(k);
-/* схема: фото справжнього літака + малюнок-підказка в куті (якщо фото не завантажиться — лишається малюнок) */
-function schemeArt(k) {
-  const svg = art('scheme:' + k);
-  if (!foto || !LA_ART.has(k)) return svg;
-  return `<div class="la-mix"><div class="la-box">${LA_ART.photo(k).replace('onerror="', 'onerror="this.closest(\'.la-mix\').classList.add(\'nofoto\');')}<div class="la-inset">${svg}</div></div></div>`;
-}
-function paintFotoSw() { $$('.fsw').forEach(b => { b.setAttribute('aria-pressed', String(foto)); b.querySelector('b').textContent = foto ? 'увімкнено' : 'вимкнено'; }); }
-document.addEventListener('click', e => {
-  const b = e.target.closest('.fsw'); if (!b) return;
-  foto = !foto; try { localStorage.setItem(FKEY, foto ? '1' : '0'); } catch (err) {}
-  paintFotoSw(); if (!P.hidden) render(); if (!$('#vyvch').hidden) renderStudy();
-});
 
 /* ===================== гутірка ===================== */
 const kviz = D.kviz;
-const SL = D.slides.map(s => s.t === 'gra' ? { t: 'kintro' } : s);
+/* гра «Вгадай схему»: 5 силуетів у випадковому порядку, у кожному — 4 варіанти */
+const GUESS = (() => {
+  const K = [['normal', 'Нормальна', 'Горизонтальне оперення позаду крила — нормальна схема.'], ['canard', '«Качка»', 'Оперення попереду крила — це «качка».'],
+    ['tailless', '«Безхвістка»', 'Горизонтального оперення немає, а кіль є — «безхвістка».'], ['flyingwing', '«Літаюче крило»', 'Ні фюзеляжу, ні хвоста — усе в крилі: «літаюче крило».'],
+    ['tandem', '«Тандем»', 'Два крила приблизно однакового розміру одне за одним — «тандем».']];
+  return SKOB.shuffle(K).map(([k, name, why], i) => {
+    const a = SKOB.shuffle([name, ...SKOB.shuffle(K.filter(x => x[0] !== k)).slice(0, 3).map(x => x[1])]);
+    return { t: 'q', n: 5, guess: i + 1, q: 'Яка це схема?', a, ok: a.indexOf(name), why, img: 'sil:' + k };
+  });
+})();
+const SL = D.slides.flatMap(s => s.t === 'gra' ? [{ t: 'kintro' }] : s.t === 'guess' ? [{ t: 'gintro' }, ...GUESS] : [s]);
 let idx = 0, rev = 0, tot = 0, qctl = null, stop3d = null;
 const P = $('#pres'), panel = $('#panel'), artEl = $('#art');
 function steps(s) { return s.t === 'q' ? 0 : (s.pts ? s.pts.length : 0); }
@@ -294,27 +289,33 @@ function render() {
   const pts = s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
   const note = s.note ? `<p class="note">${s.note}</p>` : '';
   switch (s.t) {
-    case 'title': wide = true; h = `<div class="big ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова<br>літальних апаратів</h2><p>гутірка для юнацтва · ${D.chas}</p>${art('title')}</div>`;
+    case 'title': a = art('title'); h = `<div class="ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова літальних апаратів</h2><p>гутірка для юнацтва</p>
+      <div class="meta"><span><b>5</b> вимог вмілості</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
       hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
     case 'plan': a = art('types'); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
     case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Вимога вмілості</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
     case 'card': case 'prac': a = s.art ? art(s.art) : '';
       h = `${s.t === 'prac' ? `<span class="badge">${s.k}</span>` : `<div class="k">${s.k}</div>`}<h2 class="hh">${s.h}</h2>${s.p ? `<p class="pp">${s.p}</p>` : ''}${pts}${s.ask ? `<p class="ask">${s.ask}</p>` : ''}${note}`; break;
-    case 'scheme': a = schemeArt(s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>`; break;
+    case 'scheme': a = art('scheme:' + s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>${LA_ART.has(s.s) ? `<div class="note exph">${LA_ART.photo(s.s)}</div>` : ''}`; break;
+    case 'gintro': wide = true; h = `<div class="big"><span class="vy">Гра · точка 5</span><div class="n" style="font-size:clamp(2.6rem,7vw,6rem)">Вгадай схему</div>
+      <blockquote>На екрані — силует літака. Яка це схема? Натисніть на відповідь (або відповідайте з телефонів, якщо їх підключено через «Потужний СКОБ!»). Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.</blockquote></div>`;
+      hint = 'Далі — перший силует'; break;
     case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz.length} запитань по всіх п’яти вимогах. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
       <div class="kbtn"><button class="go" type="button" data-skob="game">Почати гру</button><button class="pb" type="button" data-skob="lobby">Підключити телефони</button><button class="pb" type="button" data-skob="skip">Пропустити</button></div></div>`;
       hint = 'Далі — почати гру'; break;
     case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
-      hint = SKOB.count() ? '' : 'Натисніть на відповідь — або «далі», щоб показати правильну'; break;
+      hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
     case 'end': wide = true; h = `<div class="big"><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>`; break;
   }
-  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz);
+  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
+  else if (s.t === 'title') stop3d = LA_ART.mount3D(artEl, { hero: true });
   LA_ART.fit(artEl);
   panel.innerHTML = h; panel.scrollTop = 0;
-  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: `Перевірка · точка ${s.n}`, T: 20, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Вгадай схему · ${s.guess} з 5` : `Перевірка · точка ${s.n}`, T: 20,
+    auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
   showRev(); $('#hint').textContent = hint;
   $('#bar i').style.width = (idx / (SL.length - 1) * 100) + '%';
   if (idx > 0 && !T0) T0 = Date.now();
@@ -354,8 +355,8 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 /* пульт на телефоні (pult-host-file.js) керує гутіркою через window.GUTIRKA */
 let T0 = 0;
 const strip = h => String(h || '').replace(/<[^>]+>/g, '');
-const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
-const noteFor = s => !s ? '' : s.t === 'q' ? `Правильно: ${'СКОБ'[s.ok]} — ${s.a[s.ok]}. ${s.why}` : s.t === 'kintro' ? '«Далі» — почати гру. Телефони юнаків підключаються через «Потужний СКОБ!» у меню.' : [s.ask ? 'Запитання до залу: ' + strip(s.ask) : '', strip(s.note)].filter(Boolean).join(' ');
+const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'gintro' ? 'Гра «Вгадай схему»' : s.t === 'q' ? (s.guess ? 'Вгадай схему ' + s.guess + ' з 5' : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: ${s.a[s.ok]}. ${s.why}` : s.t === 'kintro' ? '«Далі» — почати гру. Телефони юнаків підключаються через «Потужний СКОБ!» у меню.' : [s.ask ? 'Запитання до залу: ' + strip(s.ask) : '', strip(s.note)].filter(Boolean).join(' ');
 const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
 const API = { id: 'budova-la-1', title: 'Будова літальних апаратів І',
@@ -398,8 +399,8 @@ if (!document.documentElement.requestFullscreen) $('#b-fs').hidden = true;
 function fs() { try { const r = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
 $('#b-fs').addEventListener('click', fs);
 $('#b-toc').addEventListener('click', () => {
-  const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title');
-  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
+  const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
+  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Вгадай схему»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
   $('#toc').hidden = false;
 });
 $('#toc').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { go(+b.dataset.go); $('#toc').hidden = true; } });
@@ -429,7 +430,7 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
   $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
-    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 && foto ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
+    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
     <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
   const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
@@ -442,9 +443,11 @@ $('#pv-list').addEventListener('click', e => {
 
 /* ===================== перевір себе ===================== */
 let T = null;
-function newTest() {
-  const order = kviz.map((q, i) => i).sort(() => Math.random() - .5);
-  T = { order, i: 0, right: 0, byPoint: {}, answered: false, pick: -1, mix: order.map(() => [0, 1, 2, 3].sort(() => Math.random() - .5)) };
+let lastOrder = '';
+function newTest() {   // щоразу інший порядок запитань і варіантів — щоб не завчити, куди тиснути
+  let order; do { order = SKOB.shuffle(kviz.map((q, i) => i)); } while (order.join() === lastOrder);
+  lastOrder = order.join();
+  T = { order, i: 0, right: 0, byPoint: {}, answered: false, pick: -1, mix: order.map(() => SKOB.shuffle([0, 1, 2, 3])) };
   renderTest();
 }
 function renderTest() {
@@ -490,7 +493,7 @@ function route() {
 }
 $('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
 $('#req-src').href = D.dzherelo;
-addEventListener('hashchange', route); route(); paintFotoSw();
+addEventListener('hashchange', route); route();
 })();
 </script>
 <script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>

@@ -55,9 +55,10 @@
     return `<g class="la-pill" data-an="${an}" data-x="${f(x)}" data-pad="${f(pad)}"><rect x="${f(rx)}" y="${f(ry)}" width="${f(w)}" height="${f(h)}" rx="${f(Math.min(h / 2, fs * 1.05))}" fill="${N.bg}" fill-opacity=".92" stroke="${bd}" stroke-width="${big ? 2 : 1.6}"/>` +
       `<text font-size="${fs}" fill="${tc}" font-weight="700" text-anchor="middle">${L.map((l, i) => `<tspan x="${f(cx)}" y="${f(y + (i - (L.length - 1) / 2) * lh + fs * .35)}">${l}</tspan>`).join('')}</text></g>`;
   }
-  function LAB(x1, y1, x2, y2, t, an = 'start', col = 'ink', fs = 15) {
-    const bd = (COL[col] || COL.ink)[0];
-    return `<path d="M${x1},${y1} L${x2},${y2}" fill="none" stroke="${bd}" stroke-width="1.5" opacity=".9"/><circle cx="${x1}" cy="${y1}" r="3.6" fill="#ffffff" stroke="${bd}" stroke-width="2"/>` + pill(x2, y2, t, an, col, fs);
+  function LAB(x1, y1, x2, y2, t, an = 'start', col = 'ink', fs = 15) {   // виноска: точка → злам → «таблетка»
+    const bd = (COL[col] || COL.ink)[0], k = an === 'end' ? x2 + 16 : x2 - 16;
+    const d = an === 'middle' ? `M${x1},${y1} L${x2},${y2}` : `M${x1},${y1} L${k},${y2} L${x2},${y2}`;
+    return `<path d="${d}" fill="none" stroke="${bd}" stroke-width="1.5" stroke-linejoin="round" opacity=".9"/><circle cx="${x1}" cy="${y1}" r="3.6" fill="#ffffff" stroke="${bd}" stroke-width="2"/>` + pill(x2, y2, t, an, col, fs);
   }
   /* підігнати ширину «таблеток» під справжню ширину тексту (коли шрифт уже завантажився) */
   function fit(root) {
@@ -80,11 +81,12 @@
   const FPROF = [[-112, 7.5], [-104, 10.5], [-90, 12], [-60, 12.6], [-30, 12.6], [-5, 11.6], [25, 9.2], [55, 6.8], [85, 4.6], [108, 3.2], [117, 0]];
   const FUS = body(FPROF);
   function planeTop(id, o = {}) {
-    const ail = `<path d="M72,-23.6 L113,-26 L113,-18 L72,-15.6 Z" ${GOLD(id)}/>`;
+    const hl = o.hl ? ' class="la-hl"' : '';
+    const ail = `<path${hl} d="M72,-23.6 L113,-26 L113,-18 L72,-15.6 Z" ${GOLD(id)}/>`;
     const flap = `<path d="M16,-20.3 L68,-23.4 L68,-15.4 L16,-12.3 Z" ${TEAL(id)}/>`;
-    const elev = `<path d="M4,95.5 L46,94 L46,99 Q46,102 42,102 L4,104 Z" ${GOLD(id)}/>`;
+    const elev = `<path${hl} d="M4,95.5 L46,94 L46,99 Q46,102 42,102 L4,104 Z" ${GOLD(id)}/>`;
     const wingP = `<path d="${WING}" fill="url(#${id}w)" ${ST()}/><path d="M40,-48.4 L40,-13.6 M80,-46.1 L80,-16 M12,-38 L114,-33.5" fill="none" stroke="${N.panel}" stroke-width=".9"/>`;
-    const rud = `<path d="M-2.3,103 L2.3,103 L0.6,120 L-0.6,120 Z" ${GOLD(id)}>${o.anim === 'yaw' ? spin([-24, 24, -24], 0, 103) : ''}</path>`;
+    const rud = `<path${hl} d="M-2.3,103 L2.3,103 L0.6,120 L-0.6,120 Z" ${GOLD(id)}>${o.anim === 'yaw' ? spin([-24, 24, -24], 0, 103) : ''}</path>`;
     return `<g filter="url(#${id}n)">
       <ellipse cx="0" cy="-117" rx="50" ry="4.5" fill="rgba(92,192,255,.08)" stroke="rgba(168,224,255,.65)" stroke-width="1"/>
       ${wingP}${mir(wingP)}${ail}${mir(ail)}${flap}${mir(flap)}
@@ -169,14 +171,23 @@
     return `<svg viewBox="-286 -146 572 398" role="img" aria-label="Частини літака: вигляд згори і збоку">${defs(id)}
       <text x="-282" y="-128" font-size="12" fill="${N.mut}" letter-spacing="2" font-weight="700">ВИГЛЯД ЗГОРИ</text>
       ${planeTop(id)}
-      ${LAB(28, -117, 140, -132, 'Гвинт')}${LAB(7, -98, 140, -97, 'Двигун\n(під капотом)')}${LAB(6, -56, 140, -58, 'Кабіна', 'start', 'ac')}
-      ${LAB(42, -17, 140, -27, 'Закрилок', 'start', 'ac')}${LAB(8, 32, 140, 26, 'Фюзеляж')}${LAB(0, 113, 140, 104, 'Кіль і\nруль напрямку', 'start', 'gd')}
-      ${LAB(-60, -34, -140, -70, 'Крило', 'end')}${LAB(-94, -22, -140, -26, 'Елерон', 'end', 'gd')}${LAB(-26, 87, -140, 64, 'Стабілізатор', 'end')}${LAB(-26, 99.5, -140, 100, 'Руль висоти', 'end', 'gd')}
+      ${LAB(28, -117, 140, -128, 'Гвинт')}${LAB(7, -98, 140, -84, 'Двигун\n(під капотом)')}${LAB(6, -56, 140, -40, 'Кабіна', 'start', 'ac')}
+      ${LAB(42, -17, 140, 2, 'Закрилок', 'start', 'ac')}${LAB(8, 32, 140, 44, 'Фюзеляж')}${LAB(0.5, 112, 140, 98, 'Кіль і\nруль напрямку', 'start', 'gd')}
+      ${LAB(-60, -34, -140, -60, 'Крило', 'end')}${LAB(-94, -22, -140, -14, 'Елерон', 'end', 'gd')}${LAB(-26, 87, -140, 60, 'Стабілізатор', 'end')}${LAB(-26, 99.5, -140, 104, 'Руль висоти', 'end', 'gd')}
       <line x1="-282" y1="146" x2="282" y2="146" stroke="#1f3b5c" stroke-width="1.2"/>
       <text x="-282" y="168" font-size="12" fill="${N.mut}" letter-spacing="2" font-weight="700">ВИГЛЯД ЗБОКУ</text>
       <g transform="translate(20,204) scale(.78)">${planeSide(id)}</g>
-      <path d="M-55.7,228.2 L-108,214 M-16.7,229.7 L-108,214" fill="none" stroke="#6fb8ff" stroke-width="1.5"/><circle cx="-55.7" cy="228.2" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/><circle cx="-16.7" cy="229.7" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/>${pill(-108, 214, 'Шасі', 'end')}
-      ${LAB(110, 172, 140, 180, 'Кіль', 'start', 'gd')}</svg>`;
+      <path d="M-55.7,228.2 L-124,214 M-16.7,229.7 L-124,214 L-140,214" fill="none" stroke="#6fb8ff" stroke-width="1.5" stroke-linejoin="round"/><circle cx="-55.7" cy="228.2" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/><circle cx="-16.7" cy="229.7" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/>${pill(-140, 214, 'Шасі', 'end')}
+      ${LAB(112, 168, 140, 180, 'Кіль', 'start', 'gd')}</svg>`;
+  };
+
+  /* що чим керує: рулі світяться */
+  ART.controls = () => {
+    const id = uid();
+    return `<svg viewBox="-300 -142 600 290" role="img" aria-label="Рулі літака і що вони роблять">${defs(id)}
+      <g class="la-hl-wrap">${planeTop(id, { hl: true })}</g>
+      ${LAB(92, -22, 140, -30, 'Елерони\n→ крен', 'start', 'gd')}${LAB(26, 99, 140, 60, 'Руль висоти\n→ тангаж', 'start', 'gd')}${LAB(0.5, 113, 140, 112, 'Руль напрямку\n→ рискання', 'start', 'gd')}
+      ${LAB(-92, -22, -140, -64, 'Елерони\n→ крен', 'end', 'gd')}${LAB(-42, -17, -140, 6, 'Закрилки → більше\nпідйомної сили', 'end', 'ac')}${LAB(-26, 87, -140, 84, 'Стабілізатор\nі кіль → стійкість', 'end')}</svg>`;
   };
 
   ART.airfoil = () => {
@@ -184,7 +195,7 @@
     const te = afPoint(L, a, 1, 'up'), top = afPoint(L, a, .33, 'up'), bot = afPoint(L, a, .5, 'lo'), c1 = rot(L, a)([.33, 0]);
     const ar = 210, ex = f(X0 + ar * Math.cos(a * Math.PI / 180)), ey = f(Y0 - ar * Math.sin(a * Math.PI / 180));
     return `<svg viewBox="0 0 480 270" role="img" aria-label="Профіль крила">${defs(id)}
-      ${[118, 156, 194].map(y => `<line x1="8" y1="${y}" x2="58" y2="${y}" stroke="#dbe9f7" stroke-width="2" opacity=".75" marker-end="url(#${id}a)"/>`).join('')}
+      ${[118, 156, 194].map(y => `<line x1="8" y1="${y}" x2="58" y2="${y}" stroke="#dbe9f7" stroke-width="2" opacity=".6" marker-end="url(#${id}a)"/><line class="la-flow" x1="0" y1="${y}" x2="58" y2="${y}" stroke="#ffffff" stroke-width="3"/>`).join('')}
       ${pill(8, 92, 'зустрічний потік', 'start', 'ink', 13)}
       <line x1="${X0}" y1="${Y0}" x2="${X0 + 270}" y2="${Y0}" stroke="#dbe9f7" stroke-width="1.3" stroke-dasharray="4 6" opacity=".45"/>
       <g transform="translate(${X0},${Y0})" filter="url(#${id}n)"><path d="${afPath(L, a)}" fill="url(#${id}w)" ${ST(2.2)}/>${afInside(id, L, a)}
@@ -213,7 +224,9 @@
       <g filter="url(#${id}n)">${[22, 50].map(h => `<path d="${stream(h)}" fill="none" stroke="${N.ac}" stroke-width="3" marker-end="url(#${id}at)"/>`).join('')}
         ${[0, 1].map(k => `<path d="M8,${210 + k * 26} C150,${210 + k * 26} 300,${205 + k * 24} 464,${224 + k * 22}" fill="none" stroke="#cfdcea" stroke-width="2.4" opacity=".75" marker-end="url(#${id}a)"/>`).join('')}
         <g transform="translate(${X0},${Y0})"><path d="${afPath(L, a)}" fill="url(#${id}w)" ${ST(2.2)}/>${afInside(id, L, a)}</g></g>
-      <g filter="url(#${id}n)"><path d="M234,150 L234,64 L218,64 L242,22 L266,64 L250,64 L250,150 Z" fill="url(#${id}gd)" stroke="${N.gdHi}" stroke-width="1.5"/></g>
+      ${[22, 50].map(h => `<path class="la-flow" d="${stream(h)}" fill="none" stroke="#eafffb" stroke-width="3.4"/>`).join('')}
+      ${[0, 1].map(k => `<path class="la-flow slow" d="M8,${210 + k * 26} C150,${210 + k * 26} 300,${205 + k * 24} 464,${224 + k * 22}" fill="none" stroke="#ffffff" stroke-width="3"/>`).join('')}
+      <g filter="url(#${id}n)"><path class="la-pulse" d="M234,150 L234,64 L218,64 L242,22 L266,64 L250,64 L250,150 Z" fill="url(#${id}gd)" stroke="${N.gdHi}" stroke-width="1.5"/></g>
       ${pill(276, 40, 'підйомна сила', 'start', 'gd', 16)}
       ${LAB(120, s1[1] - 46, 120, 54, 'швидше — тиск менший', 'middle', 'ac', 14)}
       ${LAB(140, 236, 140, 272, 'повільніше — тиск більший', 'start', 'ink', 14)}
@@ -221,12 +234,13 @@
   };
 
   ART.strip = () => {
-    const id = uid();
+    const id = uid(), DO = 'M36,92 C120,96 230,150 330,208', PISLIA = 'M36,92 C120,88 230,92 350,106';
+    const T = still ? '' : `dur="4.5s" repeatCount="indefinite" keyTimes="0;.18;.42;.8;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1"`;
     return `<svg viewBox="0 0 450 240" role="img" aria-label="Дослід зі смужкою паперу">${defs(id)}
       <g filter="url(#${id}n)"><path d="M0,26 C14,30 22,44 26,58 L40,70 C38,74 33,75 30,76 C32,80 36,82 36,85 C34,87 31,88 31,89 C34,91 36,94 34,98 C31,105 31,114 27,124 C22,135 12,140 0,142 Z" fill="url(#${id}v)" ${ST(1.8)}/>
-        <path d="M36,92 C120,96 230,150 330,208" fill="none" stroke="#cfdcea" stroke-width="3" stroke-dasharray="7 7" opacity=".45"/>
-        <path d="M36,92 C120,88 230,92 350,106" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-        ${[0, 1, 2].map(k => `<path d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="${N.ac}" stroke-width="2.6" marker-end="url(#${id}at)"/>`).join('')}</g>
+        <path d="${DO}" fill="none" stroke="#cfdcea" stroke-width="3" stroke-dasharray="7 7" opacity=".4"/>
+        <path d="${still ? PISLIA : DO}" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round">${still ? '' : `<animate attributeName="d" values="${DO};${DO};${PISLIA};${PISLIA};${DO}" ${T}/>`}</path>
+        <g>${still ? '' : `<animate attributeName="opacity" values="0;0;1;1;0" ${T}/>`}${[0, 1, 2].map(k => `<path d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="${N.ac}" stroke-width="2.6" marker-end="url(#${id}at)"/><path class="la-flow" d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="#eafffb" stroke-width="3.2"/>`).join('')}</g></g>
       ${pill(62, 22, 'дуємо над смужкою', 'start', 'ac', 14)}${pill(362, 106, 'після', 'start', 'ink', 14)}${pill(338, 214, 'до', 'start', 'ink', 13)}
       <text x="62" y="186" font-size="13" fill="${N.mut}" font-weight="600">смужка паперу ≈ 3 × 20 см</text></svg>`;
   };
@@ -285,7 +299,7 @@
 
   /* аеродинамічні схеми — силуети справжніх літаків (згори, ніс угору) */
   function scheme(k, id) {
-    const W = `fill="url(#${id}w)" ${ST()}`, B = `fill="url(#${id}b)" ${ST()}`, G = GOLD(id), E = `fill="#12325c" ${ST(1.2)}`;
+    const W = `fill="url(#${id}w)" ${ST()}`, B = `fill="url(#${id}b)" ${ST()}`, G = 'class="la-hl" ' + GOLD(id), E = `fill="#12325c" ${ST(1.2)}`;
     const both = s => s + mir(s);
     const glass = d => `<path d="${d}" fill="url(#${id}g)"/>`;
     if (k === 'normal') return `<g filter="url(#${id}n)">${both(`<path d="M10,-22 L106,20 L108,27 L98,27 L10,8 Z" ${W}/><path d="M30,-12 L100,18" stroke="${N.panel}" stroke-width="1"/><rect x="36" y="-18" width="9" height="26" rx="4" ${E}/>`)}
@@ -325,6 +339,10 @@
     const pos = [[78, 70], [228, 70], [378, 70], [153, 230], [303, 230]];
     return `<svg viewBox="0 0 456 318" role="img" aria-label="П’ять аеродинамічних схем">${defs(id)}${L.map(([k, t], i) => `<g transform="translate(${pos[i][0]},${pos[i][1] - 8}) scale(.5)">${scheme(k, id)}</g>${pill(pos[i][0], pos[i][1] + 72, t, 'middle', 'ink', 14)}`).join('')}</svg>`;
   };
+  function silhouette(k) {   // для гри «Вгадай схему» — без підписів
+    const id = uid();
+    return `<svg viewBox="-128 -132 256 262" role="img" aria-label="Силует літака">${defs(id)}${k === 'normal' ? planeTop(id) : scheme(k, id)}</svg>`;
+  }
   function schemeOne(k) {
     const id = uid();
     return `<svg viewBox="-262 -130 524 262" role="img" aria-label="Схема згори">${defs(id)}${scheme(k, id)}${(SCH[k] || []).map(([a, b, c, d, t, an, col]) => LAB(a, b, c, d, t, an || 'end', col || 'ink')).join('')}</svg>`;
@@ -355,14 +373,15 @@
     return threeP;
   }
   function webgl() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch (e) { return false; } }
-  function mount3D(el) {
+  function mount3D(el, opt = {}) {
     let stop = false, cleanup = () => {};
     if (!webgl()) return () => {};
-    loadThree().then(T => { if (stop || !el.isConnected) return; try { cleanup = build3D(T, el); } catch (e) { const w = el.querySelector('.la3d'); if (w) w.remove(); } }).catch(() => {});
+    loadThree().then(T => { if (stop || !el.isConnected) return; try { cleanup = build3D(T, el, opt); } catch (e) { const w = el.querySelector('.la3d'); if (w) w.remove(); } }).catch(() => {});
     return () => { stop = true; cleanup(); };
   }
-  function build3D(T, el) {
-    const wrap = document.createElement('div'); wrap.className = 'la3d';
+  function build3D(T, el, opt = {}) {
+    const hero = !!opt.hero;
+    const wrap = document.createElement('div'); wrap.className = 'la3d' + (hero ? ' hero' : '');
     wrap.innerHTML = `<canvas></canvas><div class="la3d-ui"><b></b><span></span><div class="la3d-btn"><button type="button" data-m="pitch">Тангаж</button><button type="button" data-m="roll">Крен</button><button type="button" data-m="yaw">Рискання</button><button type="button" data-m="all" class="on">По черзі</button></div></div>`;
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
     el.appendChild(wrap);
@@ -426,7 +445,8 @@
     // «креслярська» підлога-сітка
     const grid = new T.GridHelper(16, 32, 0x2f6db0, 0x1a3c62); grid.position.y = -1.05; grid.material.transparent = true; grid.material.opacity = .5; scene.add(grid);
     // вісь обертання
-    const axis = new T.Mesh(new T.CylinderGeometry(.02, .02, 7.8, 8), new T.MeshBasicMaterial({ color: 0xffc247 })); scene.add(axis);
+    const axis = new T.Mesh(new T.CylinderGeometry(.02, .02, 7.8, 8), new T.MeshBasicMaterial({ color: 0xffc247 })); if (!hero) scene.add(axis);
+    if (hero) { cam.position.set(5.4, 2.6, 6.4); cam.lookAt(0, -0.3, 0); }
     const MODES = {
       pitch: { b: 'Тангаж', s: 'ніс угору чи вниз — навколо осі від крила до крила. Керує руль висоти.', ax: [Math.PI / 2, 0, 0] },
       roll: { b: 'Крен', s: 'нахил крил — навколо осі від носа до хвоста. Керують елерони.', ax: [0, 0, Math.PI / 2] },
@@ -448,6 +468,12 @@
       raf = requestAnimationFrame(frame);
       if (!wrap.isConnected) { stopIt(); return; }
       const t = (now - t0) / 1000;
+      if (hero) {   // титульний слайд: літак повільно пролітає по колу, трохи кренячись
+        const a = still ? 0.6 : t * .32;
+        plane.rotation.set(0, 0, 0); plane.rotation.y = a; plane.rotation.x = still ? 0 : Math.sin(t * .9) * .12; plane.rotation.z = still ? 0 : Math.sin(t * .7) * .06;
+        ailL.rotation.z = -(ailR.rotation.z = still ? 0 : Math.sin(t * .9) * .25); elev.rotation.z = rud.rotation.y = 0;
+        plane.position.y = still ? 0 : Math.sin(t * .8) * .08; prop.rotation.x += .9; R.render(scene, cam); return;
+      }
       if (mode === 'all') { const m = ['pitch', 'roll', 'yaw'][Math.floor(t / 5) % 3]; if (m !== cur) setCur(m); }
       const ph = still ? 0.6 : Math.sin(t * 1.25);
       plane.rotation.set(0, 0, 0); ailL.rotation.z = ailR.rotation.z = elev.rotation.z = rud.rotation.y = 0;
@@ -476,12 +502,21 @@
 .la3d-btn{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
 .la3d-btn button{min-height:38px;padding:0 14px;border-radius:99px;border:1px solid #2f5f8f;background:rgba(11,22,38,.88);color:#eef4fa;font:600 14px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
 .la3d-btn button.on{background:#ffc247;border-color:#ffc247;color:#16130a}
+.la-flow{stroke-dasharray:3 26;stroke-linecap:round;animation:laflow 1s linear infinite}
+.la-flow.slow{animation-duration:1.7s;opacity:.6}
+@keyframes laflow{to{stroke-dashoffset:-29}}
+.la-hl{animation:lahl 2.4s ease-in-out infinite}
+@keyframes lahl{50%{opacity:.5}}
+.la-pulse{animation:lapulse 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes lapulse{50%{transform:scaleY(1.06)}}
+@media (prefers-reduced-motion:reduce){.la-flow,.la-hl,.la-pulse{animation:none}}
+.la3d.hero .la3d-ui{display:none}
 .la3d.small .la3d-ui span{display:none}.la3d.small .la3d-ui b{font-size:1.1rem}.la3d.small .la3d-btn button{min-height:32px;padding:0 10px;font-size:13px}`;
   try { const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st); } catch (e) { /* ok */ }
   try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fit(document)); } catch (e) { /* ok */ }
 
   window.LA_ART = {
-    get: k => k && k.startsWith('scheme:') ? schemeOne(k.slice(7)) : (ART[k] ? ART[k]() : ''),
+    get: k => k && k.startsWith('scheme:') ? schemeOne(k.slice(7)) : k && k.startsWith('sil:') ? silhouette(k.slice(4)) : (ART[k] ? ART[k]() : ''),
     photo, has: k => !!PH[k], mount3D, fit, PH
   };
 })();

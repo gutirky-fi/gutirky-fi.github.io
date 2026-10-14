@@ -72,7 +72,8 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #stage{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:center;gap:2vw;padding:64px 4vw 40px}
 #art{height:100%;max-height:calc(100vh - 120px);display:flex;align-items:center;justify-content:center;min-width:0}
 #art svg{width:100%;height:100%;max-height:72vh}
-#panel{min-width:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding:6px 4px 6px 0}
+#panel{min-width:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding:6px 4px 6px 0;scrollbar-width:none}
+#panel::-webkit-scrollbar{display:none}
 #panel>*{animation:up .45s both}
 @keyframes up{from{opacity:0;transform:translateY(12px)}}
 .k{font:500 clamp(1.3rem,1.9vw,2.2rem)/1.1 var(--hand);color:var(--ac)}
@@ -97,9 +98,15 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .big .n small{font-size:.35em;color:var(--mut);margin-left:.2em}
 .big blockquote{margin:14px 0 0;padding:0 0 0 18px;border-left:4px solid var(--gd);font-size:clamp(1.2rem,2.4vw,2.4rem);line-height:1.3;color:var(--ink)}
 .big .vy{display:block;margin-top:6px;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
-.ttl h2{margin:6px 0 0;font:600 clamp(2.6rem,7.5vw,7.5rem)/.95 var(--disp);letter-spacing:.03em;text-transform:uppercase}
-.ttl p{font:500 clamp(1.4rem,2.6vw,2.6rem) var(--hand);color:var(--ac);margin:10px 0 0}
-.ttl svg{width:min(52vw,520px);height:auto;display:block;margin:0 0 -10px auto;opacity:.9}
+.ttl .vy{display:block;font:600 clamp(.9rem,1.2vw,1.2rem) var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--ol)}
+.ttl h2{margin:12px 0 0;font:600 clamp(2.4rem,5.6vw,6.4rem)/.94 var(--disp);letter-spacing:.03em;text-transform:uppercase;text-wrap:balance}
+.ttl p{font:500 clamp(1.4rem,2.4vw,2.4rem) var(--hand);color:var(--ac);margin:12px 0 0}
+.ttl .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.ttl .meta span{padding:7px 16px;border-radius:99px;border:1px solid #2f5f8f;background:rgba(11,22,38,.7);color:#dbe9f7;font-weight:600;font-size:clamp(.9rem,1.1vw,1.15rem)}
+.ttl .meta span b{color:var(--gd)}
+#pres.hero #stage{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+#pres.hero #panel{order:1}#pres.hero #art{order:2}
+.exph{max-width:520px}.exph .la-ph{aspect-ratio:16/9;margin-top:4px}
 /* вікторина */
 .qq{margin:6px 0 16px;font:600 clamp(1.5rem,2.8vw,3rem)/1.12 var(--disp);letter-spacing:.01em}
 #pres.quiz #stage{grid-template-columns:1fr}
@@ -112,15 +119,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .pb{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:42px;height:42px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font-size:15px;font-weight:600}
 .pb:hover{border-color:var(--gd)}
 .kbtn .pb{height:52px;padding:0 18px}
-.la-mix{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
-.la-box{position:relative;width:100%;max-height:100%;aspect-ratio:3/2}
-.la-box .la-ph{position:absolute;inset:0}
-.la-inset{position:absolute;right:8px;top:8px;width:38%;padding:4px;border-radius:12px;background:rgba(22,24,28,.88);border:1px solid #383d44}
-.la-inset svg{display:block;width:100%;height:auto}
-.la-mix.nofoto .la-box{aspect-ratio:auto}.la-mix.nofoto .la-inset{position:static;width:100%;background:none;border:0;padding:0}
 .phrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 12px}.phrow .la-ph{aspect-ratio:3/2}
-.fsw{display:inline-flex;align-items:center;gap:8px;margin-top:12px;padding:8px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font-size:15px}
-.fsw b{color:var(--gd)}.fsw[aria-pressed=false] b{color:var(--mut)}
 .mini{display:inline-block;width:16px;height:16px;vertical-align:-3px;margin-right:2px}
 
 #hint{position:absolute;z-index:4;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center;color:var(--mut);font-size:15px;pointer-events:none}
@@ -143,12 +142,13 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   #panel{align-self:start}
   #pres.wide #stage,#pres.quiz #stage,#pres.noart #stage{grid-template-rows:minmax(0,1fr);align-items:center}
   #pres.wide #panel,#pres.quiz #panel,#pres.noart #panel{align-self:center}
-  .ttl svg{width:80vw;margin:0 auto 10px}
+  #pres.hero #stage{grid-template-columns:1fr}#pres.hero #art{order:0}
+  .ttl h2{font-size:clamp(2.2rem,10vw,3.4rem)}.ttl .meta{margin-top:16px}
 }
 @media (orientation:landscape) and (max-height:520px){
   #stage{padding:50px 3vw 26px}
   .hh{font-size:1.5rem;margin:2px 0 8px}.pts li{font-size:.95rem;margin:6px 0;padding:.35em .7em}.pp,.ask{font-size:1rem}
-  .ttl svg{position:absolute;right:3vw;top:56%;transform:translateY(-50%);width:auto;height:62vh;margin:0}
+  .ttl h2{font-size:2rem}.ttl .meta{margin-top:12px}
 }
 
 /* ---------- вивчай сам ---------- */
@@ -204,7 +204,6 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     <a class="door" href="#vyvchy"><i>Юнакові</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Юнакові</i><b>Перевір себе</b><span>15 запитань із поясненнями.</span></a>
   </div>
-  <button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button>
   <p class="kh">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
 </main>
 
@@ -223,7 +222,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <div id="hint"></div><div id="bar"><i></i></div>
   <div id="tapfx" aria-hidden="true"></div>
 </section>
-<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div><button type="button" class="fsw" aria-pressed="true">Фото справжніх літаків: <b>увімкнено</b></button></div></div>
+<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div></div></div>
 
 <!-- вивчай сам -->
 <main id="vyvch" class="page" hidden>
@@ -253,7 +252,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <div><button class="y" type="button" data-save="1">Так, зберігати</button><button type="button" data-save="0">Ні</button></div>
 </div>
 
-<script>window.SKOB_URL = new URL("../skob/", location.href).href;</script>
+<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL("../skob/", location.href).href;</script>
 <script>
 /* Мінімальний генератор QR-коду (режим Byte, рівні L/M, версії 1–10, до ~170 байт).
    Без зовнішніх бібліотек. Використання: qrSvg("https://…", 240) → рядок <svg>. */
@@ -384,7 +383,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js',
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
     'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
-  const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500;
+  const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500, AUTO_MS = 1800;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -482,6 +481,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
+#skob-lobby .how .url{display:inline-block;margin:4px 0;font:600 clamp(1.3rem,2.6vw,2rem)/1.1 Oswald,sans-serif;color:#fff;letter-spacing:.02em}
 #skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;background:#fff;border-radius:16px;padding:12px;display:grid;place-items:center}
 #skob-lobby .qr svg{width:100%;height:100%}
 #skob-lobby .how{margin:0 0 8px;color:#cfd5dc;font-size:clamp(1rem,1.5vw,1.35rem)}#skob-lobby .how b{color:#fff;word-break:break-all}
@@ -492,7 +492,16 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #skob-lobby .chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
 #skob-lobby .chips .empty{color:#a0a8b2}
 #skob-lobby .chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px;border-radius:99px;border:1px solid #3b4048;background:#272b31;color:#f2f4f6;font:600 16px 'Source Sans 3',sans-serif;cursor:pointer;animation:skup .3s both}
-#skob-lobby .chip.off{opacity:.45}#skob-lobby .chip.kill{border-color:#ff6b5e;color:#ffb3ab}
+#skob-lobby .chip.off{opacity:.45}
+.chip .cx,.chip .cok{display:grid;place-items:center;width:28px;height:28px;margin:0 -8px 0 4px;border-radius:50%;border:0;background:#3b4048;color:#fff;font:700 14px sans-serif;cursor:pointer}
+.chip .cx:hover{background:#ff6b5e}.chip .cok{background:#2e8f55;margin-right:2px}.chip .cok:hover{background:#3ee08f;color:#0f1714}
+#skob-lobby .chip.wait,#skob-req .chip.wait{border-color:#ffc247}
+#skob-lobby .pend h3{color:#ffc247}
+#skob-req{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(560px,calc(100% - 24px));padding:10px 14px;border-radius:16px;background:#1f2328;border:1px solid #ffc247;color:#f2f4f6;font:15px/1.4 'Source Sans 3',system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#skob-req .chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:4px 12px;border-radius:99px;border:1px solid #3b4048;background:#272b31;font-weight:600}
+.sk-img{display:flex;justify-content:center;height:clamp(130px,30vh,340px);margin:2px 0 8px}.sk-img svg{height:100%;width:auto;max-width:100%}
+.sk-auto{display:block;height:4px;margin-top:10px;border-radius:99px;background:#2a2f35;overflow:hidden;max-width:320px}.sk-auto i{display:block;height:100%;background:#3ee08f;transform-origin:left;animation:skauto linear forwards}
+@keyframes skauto{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 #skob-lobby .note{margin:12px 0 0;color:#a0a8b2;font-size:14px}
 #skob-lobby .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 @media (max-width:640px){#skob-lobby .row{grid-template-columns:1fr;justify-items:center;text-align:center}#skob-lobby .sk-logo{font-size:44px}}
@@ -507,9 +516,18 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
   const genCode = () => String(100000 + rnd(900000));
   const genTok = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => (b % 36).toString(36)).join('');
-  const emit = () => { subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); };
+  const emit = () => { subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); paintReq(); };
+  let RQ = null;
+  function paintReq() {   // нові імена, що чекають ✓, — видно й тоді, коли вікно з QR закрите
+    const pend = [...players.values()].filter(P => P.pending), show = pend.length && !(L && !L.hidden);
+    if (!show) { if (RQ) RQ.hidden = true; return; }
+    if (!RQ) { injectCss(); RQ = document.createElement('div'); RQ.id = 'skob-req'; document.body.appendChild(RQ);
+      RQ.addEventListener('click', e => { const b = e.target.closest('[data-x],[data-ok]'); if (!b) return; e.stopPropagation(); if (b.dataset.x) kick(b.dataset.x); else approve(b.dataset.ok); }); }
+    RQ.hidden = false;
+    RQ.innerHTML = '<b>Хочуть приєднатися:</b>' + pend.map(P => `<span class="chip wait">${esc(P.name)}<button type="button" class="cok" data-ok="${P.tok}" aria-label="Пустити">✓</button><button type="button" class="cx" data-x="${P.tok}" aria-label="Не пускати">✕</button></span>`).join('');
+  }
   const send = (P, m) => { try { if (P && P.c && P.c.open) P.c.send(m); } catch (e) { /* ok */ } };
-  const online = () => [...players.values()].filter(P => P.on);
+  const online = () => [...players.values()].filter(P => P.on && !P.pending);
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
   async function getPeer() { if (window.Peer) return window.Peer; for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* далі */ } } throw new Error('lib'); }
   function startNet() {
@@ -545,6 +563,17 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   setInterval(() => { let ch = false; players.forEach(P => { if (P.on && Date.now() - P.last > 15000) { P.on = false; ch = true; } }); if (ch) emit(); }, 5000);
   addEventListener('beforeunload', () => { players.forEach(P => send(P, { t: 'bye', r: 'stopped' })); });
   function cleanName(s) { return String(s || '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 16); }
+  /* ---------- імена: зі списку — одразу в гру; інші — після підтвердження ведучого; лайка й нісенітниці — ні ---------- */
+  const normN = s => String(s).toLowerCase().replace(/[’ʼ`´]/g, "'").replace(/ё/g, 'е').replace(/[ыэъ]/g, '').trim();
+  const NAMES = new Set(`адам адріан адріян олександр олександра саша сашко сашка олесь олеся олексій олекса льоша альоша анатолій толя андрій андрійко андрійка андрюша андрій антон антоша арсен арсеній артем тьома артемко артур богдан богданко бодя богдана борис вадим валентин валентина валя валерій валерія лера василь вася василько віктор вітя вікторія віка віталій віталіна владислав влад владислава влада володимир володя вова вовчик всеволод сева в'ячеслав вячеслав слава гліб григорій гриць гриша давид даниїл данило даня данилко денис дмитро діма дмитрик дмитрій євген женя євгенія захар зіновій іван ваня іванко іванна ігор ілля ілько йосип кирило кирилко костянтин костя лев левко леонід льоня любомир макар максим макс максимко марко марк мартин матвій мирон мирослав мирослава михайло миша михась мишко микита микола коля назар назарко нестор олег орест остап павло паша павлик петро петрик пилип роман рома романа ростислав ростик ростислава руслан руслана святослав свят святослава семен сергій сергійко серафим степан стефан тарас тарасик тимофій тимко тимур тихон федір федя філіп юліан юрій юра юрко ярема ярослав ярик ярослава яким ян лука еміль еліас ілля юхим омелян охрім панас прохор устим харитон аліна алла аліса анастасія настя настуся ангеліна анна аня ганна ганнуся антоніна аріна арина вероніка віра владислава галина галя дарина даринка дар'я дарія дарья даша діана домініка ева єва єлизавета ліза лізонька емілія злата зоряна іра ірина ірися ія каріна катерина катя катруся кіра христина христя лариса леся ліана лілія ліля любов люба людмила маргарита рита марина марія маша марічка маруся мар'яна марьяна меланія мілана мія надія надя наталія наталя наташа ніна оксана олена оленка лена ольга оля олечка поліна роксолана роксана світлана соломія соля софія софійка соня стефанія таїсія тая тамара тетяна таня уляна уляночка устина юлія юля юліана ярина яна ілона інна еліна амелія емма ніка нікол ліна ліка евеліна адріана альбіна ассоль богдана віолета вірослава зорина златослава квітослава лукія любава маргарита мирослава оксана орися орина ореста роксоляна станіслава таміла фросина христина юстина ярослава станіслав всеслав добромир дем'ян демид еміль ерік захарко зенон ісак лаврін лазар лесь любомир нікіта олелько радим радомир родіон савелій сава тимофей устим фрол хома ян янко`.split(/\s+/).filter(Boolean).map(normN));
+  const BAD = /(х[уy][йяюеїі]|п[иі]зд|бля|їба|йоб|ебат|ебан|ебал|сука|суки|мудак|гандон|залуп|шлюх|fuck|shit|bitch|dick|cunt|porn|sex|секс|жоп|срак|дебіл|дебил|ідіот|идиот|nazi|гітлер|гитлер|путін|путин)/i;
+  function nameCheck(raw) {
+    const name = cleanName(raw);
+    if (name.replace(/[^A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії]/g, '').length < 2) return { bad: 1 };
+    if (!/^[A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії'’ʼ\- .]+$/.test(name)) return { bad: 1 };
+    if (BAD.test(name.replace(/[^A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії]/g, ''))) return { bad: 1 };
+    return { name, known: NAMES.has(normN(name.split(/[ .\-]/)[0])) };
+  }
   function onConn(c) {
     let P = null;
     c.on('data', d => {
@@ -567,25 +596,35 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     if (P) { if (P.c && P.c !== c) try { P.c.close(); } catch (e) { /* ok */ } P.c = c; P.on = true; P.last = Date.now(); }
     else {
       if (players.size >= MAXP) return nope('full');
-      let name = cleanName(d.name) || 'Гравець';
+      const ch = nameCheck(d.name);
+      if (ch.bad) return nope('badname');
+      let name = ch.name;
       const taken = new Set([...players.values()].map(x => x.name.toLowerCase()));
       if (taken.has(name.toLowerCase())) { let k = 2; const base = name.slice(0, 13); while (taken.has((base + ' ' + k).toLowerCase())) k++; name = base + ' ' + k; }
-      P = { tok: genTok(), name, score: 0, c, on: true, seq: ++joinSeq, last: Date.now() };
+      P = { tok: genTok(), name, score: 0, c, on: true, seq: ++joinSeq, last: Date.now(), pending: !ch.known };
       players.set(P.tok, P);
     }
+    if (P.pending) { send(P, { t: 'pending', name: P.name, tok: P.tok }); emit(); return P; }
     send(P, { t: 'hi', name: P.name, tok: P.tok, score: P.score });
     send(P, stateFor(P)); emit();
     return P;
   }
-  function kick(tok) {
+  function kick(tok) {   // ✕: гравця прибрано, телефон просить написати справжнє ім’я
     const P = players.get(tok); if (!P) return;
-    banned.add(tok); send(P, { t: 'bye', r: 'kicked' });
+    send(P, { t: 'bye', r: 'name' });
     setTimeout(() => { try { P.c && P.c.close(); } catch (e) { /* ok */ } }, 400);
     players.delete(tok); emit();
   }
-  const ranked = () => [...players.values()].sort((a, b) => b.score - a.score || a.seq - b.seq);
+  function approve(tok) {
+    const P = players.get(tok); if (!P || !P.pending) return;
+    P.pending = false; send(P, { t: 'hi', name: P.name, tok: P.tok, score: P.score }); send(P, stateFor(P)); emit();
+  }
+  const accepted = () => [...players.values()].filter(P => !P.pending);
+  const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const mixQ = q => { const ord = shuf(q.a.map((x, i) => i)); return Object.assign({}, q, { a: ord.map(i => q.a[i]), ok: ord.indexOf(q.ok) }); };
+  const ranked = () => accepted().sort((a, b) => b.score - a.score || a.seq - b.seq);
   const rankOf = P => ranked().indexOf(P) + 1;
-  const bcast = () => players.forEach(P => send(P, stateFor(P)));
+  const bcast = () => players.forEach(P => { if (!P.pending) send(P, stateFor(P)); });
 
   /* ================= одне запитання ================= */
   let R = null, rid = 0, phoneView = { t: 'wait' };
@@ -596,9 +635,9 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       if (R.ans.has(P.tok)) return { t: 'got', id: R.id, o: R.ans.get(P.tok).o };
       return { t: 'ask', id: R.id, lbl: R.lbl, q: R.q.q, a: R.q.a, left: Math.max(0, R.T * 1000 - (Date.now() - R.tA)), T: R.T };
     }
-    if (R && R.ph === 'rev') { const a = R.ans.get(P.tok); return { t: 'res', id: R.id, ok: !!(a && a.o === R.q.ok), got: a ? a.o : -1, pts: a ? a.pts : 0, score: P.score, rank: rankOf(P), of: players.size, right: R.q.ok, rightText: R.q.a[R.q.ok] }; }
-    if (phoneView.t === 'lead') return { t: 'lead', score: P.score, rank: rankOf(P), of: players.size };
-    if (phoneView.t === 'end') { const top = ranked().slice(0, 3).map(x => ({ name: x.name, score: x.score })); return { t: 'end', score: P.score, rank: rankOf(P), of: players.size, top }; }
+    if (R && R.ph === 'rev') { const a = R.ans.get(P.tok); return { t: 'res', id: R.id, ok: !!(a && a.o === R.q.ok), got: a ? a.o : -1, pts: a ? a.pts : 0, score: P.score, rank: rankOf(P), of: accepted().length, right: R.q.ok, rightText: R.q.a[R.q.ok] }; }
+    if (phoneView.t === 'lead') return { t: 'lead', score: P.score, rank: rankOf(P), of: accepted().length };
+    if (phoneView.t === 'end') { const top = ranked().slice(0, 3).map(x => ({ name: x.name, score: x.score })); return { t: 'end', score: P.score, rank: rankOf(P), of: accepted().length, top }; }
     return Object.assign({ t: 'wait' }, base);
   }
   function answer(P, d) {
@@ -615,13 +654,14 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   function ask(el, q, o = {}) {
     injectCss();
     if (R) R.stop();
+    if (o.mix !== false) q = mixQ(q);
     const withPl = o.players !== false && online().length > 0;
     const r = { id: ++rid, q, el, lbl: o.label || '', T: o.T || 20, ph: withPl ? 'read' : 'ans', pl: withPl, ans: new Map(), pick: -1, tA: Date.now(), t0: Date.now(), tick: 0, done: false };
     R = r;
     el.innerHTML = `<div class="sk-round${withPl ? ' pl' : ''}" data-ph="${r.ph}">
       <div class="sk-head"><span class="sk-lbl">${esc(r.lbl)}</span><span class="sp"></span><span class="sk-cnt"></span>
         <div class="sk-ring"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="bg" cx="22" cy="22" r="19"/><circle class="fg" cx="22" cy="22" r="19" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"/></svg><b></b></div></div>
-      <h2 class="sk-qq">${esc(q.q)}</h2><div class="sk-readbar"><i style="animation-duration:${READ_MS}ms"></i></div>
+      ${q.img ? `<div class="sk-img">${q.img}</div>` : ''}<h2 class="sk-qq">${esc(q.q)}</h2><div class="sk-readbar"><i style="animation-duration:${READ_MS}ms"></i></div>
       <div class="sk-tiles">${q.a.map((x, i) => `<button type="button" class="sk-tile c${i}${i === q.ok ? ' ok' : ''}" data-o="${i}"${withPl ? ' tabindex="-1"' : ''}><i>${LET[i]}</i><span>${esc(x)}</span><em></em></button>`).join('')}</div>
       <p class="sk-why"></p></div>`;
     const box = el.firstElementChild, ring = box.querySelector('.sk-ring'), fg = ring.querySelector('.fg'), sec = ring.querySelector('b'), cnt = box.querySelector('.sk-cnt');
@@ -661,12 +701,14 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       if (r.pl) { const right = [...r.ans.values()].filter(a => a.o === q.ok).length; lead = `<b>Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}.</b> Влучили ${right} з ${r.ans.size || 0}. `; }
       else if (r.pick >= 0) lead = r.pick === q.ok ? '<b>Правильно!</b> ' : `<b class="no">Не зовсім.</b> Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}. `;
       else lead = `<b>Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}.</b> `;
-      why.innerHTML = lead + esc(q.why || '');
+      const auto = !r.pl && r.pick >= 0 && r.pick === q.ok && o.auto;
+      why.innerHTML = lead + esc(q.why || '') + (auto ? `<span class="sk-auto"><i style="animation-duration:${AUTO_MS}ms"></i></span>` : '');
+      if (auto) r.autoT = setTimeout(() => { if (R === r) o.auto(); }, AUTO_MS);
       ring.querySelector('b').textContent = '0'; fg.style.strokeDashoffset = '100';
       bcast(); r.paint(); if (o.onPhase) o.onPhase('rev');
     };
     r.next = () => { if (R !== r) return false; if (r.ph === 'read') { r.open(); return true; } if (r.ph === 'ans') { r.reveal(); return true; } return false; };
-    r.stop = () => { clearInterval(r.tick); if (R === r) { R = null; if (!r.keep) bcast(); } };
+    r.stop = () => { clearInterval(r.tick); clearTimeout(r.autoT); if (R === r) { R = null; if (!r.keep) bcast(); } };
     r.paint(); r.draw();
     r.tick = setInterval(r.draw, 100);
     if (withPl) bcast();
@@ -677,7 +719,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   let G = null, gEl = null, lastPT = '';
   function game(list, o = {}) {
     injectCss(); closeGame(true);
-    G = { list, i: -1, ph: 'intro', o, ctl: null, before: new Map() };
+    G = { src: list, list: shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
     gEl.innerHTML = `<div class="sk-top">${LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
@@ -687,7 +729,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
         if (k === 'lobby') lobby(); else if (k === 'x') gEl.querySelector('.sk-sure').classList.toggle('on'); else if (k === 'stay') gEl.querySelector('.sk-sure').classList.remove('on');
-        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
+        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
         return; }
       if (e.target.closest('button,a') || lastPT === 'mouse') return;
       gNext();
@@ -720,9 +762,9 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     G.i = i; G.ph = 'q'; phoneView = { t: 'wait' };
     G.before = new Map([...players.values()].map(P => [P.tok, P.score]));
     const st = gStage(); st.innerHTML = '<div style="width:100%"></div>';
-    G.ctl = ask(st.firstElementChild, G.list[i], { label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
+    G.ctl = ask(st.firstElementChild, G.list[i], { label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, auto: () => { if (G && G.ph === 'q' && G.i === i) gNext(); }, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
     G.pl = R && R.pl;
-    hint(G.pl ? '' : 'Натисніть на відповідь — або «далі», щоб показати правильну');
+    hint(G.pl ? '' : 'Натисніть на відповідь. Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.');
   }
   function gLead() {
     if (G.ctl) G.ctl.stop(true); G.ctl = null;
@@ -752,8 +794,8 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   }
   function paintTop() {
     if (!gEl) return;
-    const b = gEl.querySelector('[data-k=lobby]'), n = online().length;
-    b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}`;
+    const b = gEl.querySelector('[data-k=lobby]'), n = online().length, w = [...players.values()].filter(P => P.pending).length;
+    b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}${w ? ` · чекають: ${w}` : ''}`;
   }
   const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
 
@@ -765,23 +807,25 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
       L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${LOGO()}
-        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона — або відкрийте <b class="url"></b> і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона<br>або відкрийте <b class="url"></b><br>і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="pend" hidden><h3>Чекають підтвердження <span class="np"></span></h3><div class="chips pchips"></div></div>
         <h3>Гравці <span class="n"></span></h3><div class="chips"></div>
-        <p class="note">Досить імені чи прізвиська. Імена й бали ніде не зберігаються — лише на цьому екрані, поки триває гра. Натисніть на ім’я двічі, щоб вилучити гравця.</p>
+        <p class="note">Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p>
         <div class="btns"><button type="button" class="sk-btn main" data-k="close">Готово</button><button type="button" class="sk-btn warn" data-k="off">Вимкнути гру для телефонів</button></div></div>`;
       document.body.appendChild(L);
       L.addEventListener('click', e => {
-        const b = e.target.closest('[data-k],[data-tok]');
+        const b = e.target.closest('[data-k],[data-x],[data-ok]');
         if (!b) { if (e.target === L) closeLobby(); return; }
         if (b.dataset.k === 'close') closeLobby();
         else if (b.dataset.k === 'off') { stopNet(); closeLobby(); }
-        else if (b.dataset.tok) { if (killArm === b.dataset.tok) { killArm = ''; kick(b.dataset.tok); } else { killArm = b.dataset.tok; paintLobby(); } }
+        else if (b.dataset.x) kick(b.dataset.x);
+        else if (b.dataset.ok) approve(b.dataset.ok);
       });
     }
     L.hidden = false; paintLobby();
     setTimeout(() => { try { L.querySelector('[data-k=close].main').focus(); } catch (e) { /* ok */ } }, 50);
   }
-  function closeLobby() { if (L) L.hidden = true; killArm = ''; }
+  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); }
   let qrFor = '';
   function paintLobby() {
     if (!L || L.hidden) return;
@@ -791,9 +835,11 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     L.querySelector('.url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
-    const all = [...players.values()].sort((a, b) => a.seq - b.seq);
+    const all = accepted().sort((a, b) => a.seq - b.seq), pend = [...players.values()].filter(P => P.pending);
     L.querySelector('.n').textContent = all.length ? all.length : '';
-    L.querySelector('.chips').innerHTML = all.length ? all.map(P => `<button type="button" class="chip${P.on ? '' : ' off'}${killArm === P.tok ? ' kill' : ''}" data-tok="${P.tok}">${killArm === P.tok ? 'Вилучити ' : ''}${esc(P.name)}${killArm === P.tok ? '?' : ''}</button>`).join('') : '<span class="empty">Поки нікого. Щойно хтось підключиться, ім’я з’явиться тут.</span>';
+    L.querySelector('.chips:not(.pchips)').innerHTML = all.length ? all.map(P => `<span class="chip${P.on ? '' : ' off'}">${esc(P.name)}<button type="button" class="cx" data-x="${P.tok}" aria-label="Прибрати ${esc(P.name)}">✕</button></span>`).join('') : '<span class="empty">Поки нікого. Щойно хтось підключиться, ім’я з’явиться тут.</span>';
+    L.querySelector('.pend').hidden = !pend.length; L.querySelector('.np').textContent = pend.length || '';
+    L.querySelector('.pchips').innerHTML = pend.map(P => `<span class="chip wait">${esc(P.name)}<button type="button" class="cok" data-ok="${P.tok}" aria-label="Пустити ${esc(P.name)}">✓</button><button type="button" class="cx" data-x="${P.tok}" aria-label="Не пускати ${esc(P.name)}">✕</button></span>`).join('');
   }
 
   /* ================= клавіші ================= */
@@ -810,7 +856,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   document.addEventListener('keydown', e => { if ((L && !L.hidden) || G) { if (!e.defaultPrevented) key(e); e.stopImmediatePropagation(); } }, true);
 
   window.SKOB = {
-    lobby, ask, game, key, logo: LOGO,
+    lobby, ask, game, key, logo: LOGO, shuffle: shuf,
     close: () => { closeGame(true); closeLobby(); },
     count: () => online().length,
     active: () => !!G || !!(L && !L.hidden),
@@ -878,9 +924,10 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     return `<g class="la-pill" data-an="${an}" data-x="${f(x)}" data-pad="${f(pad)}"><rect x="${f(rx)}" y="${f(ry)}" width="${f(w)}" height="${f(h)}" rx="${f(Math.min(h / 2, fs * 1.05))}" fill="${N.bg}" fill-opacity=".92" stroke="${bd}" stroke-width="${big ? 2 : 1.6}"/>` +
       `<text font-size="${fs}" fill="${tc}" font-weight="700" text-anchor="middle">${L.map((l, i) => `<tspan x="${f(cx)}" y="${f(y + (i - (L.length - 1) / 2) * lh + fs * .35)}">${l}</tspan>`).join('')}</text></g>`;
   }
-  function LAB(x1, y1, x2, y2, t, an = 'start', col = 'ink', fs = 15) {
-    const bd = (COL[col] || COL.ink)[0];
-    return `<path d="M${x1},${y1} L${x2},${y2}" fill="none" stroke="${bd}" stroke-width="1.5" opacity=".9"/><circle cx="${x1}" cy="${y1}" r="3.6" fill="#ffffff" stroke="${bd}" stroke-width="2"/>` + pill(x2, y2, t, an, col, fs);
+  function LAB(x1, y1, x2, y2, t, an = 'start', col = 'ink', fs = 15) {   // виноска: точка → злам → «таблетка»
+    const bd = (COL[col] || COL.ink)[0], k = an === 'end' ? x2 + 16 : x2 - 16;
+    const d = an === 'middle' ? `M${x1},${y1} L${x2},${y2}` : `M${x1},${y1} L${k},${y2} L${x2},${y2}`;
+    return `<path d="${d}" fill="none" stroke="${bd}" stroke-width="1.5" stroke-linejoin="round" opacity=".9"/><circle cx="${x1}" cy="${y1}" r="3.6" fill="#ffffff" stroke="${bd}" stroke-width="2"/>` + pill(x2, y2, t, an, col, fs);
   }
   /* підігнати ширину «таблеток» під справжню ширину тексту (коли шрифт уже завантажився) */
   function fit(root) {
@@ -903,11 +950,12 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   const FPROF = [[-112, 7.5], [-104, 10.5], [-90, 12], [-60, 12.6], [-30, 12.6], [-5, 11.6], [25, 9.2], [55, 6.8], [85, 4.6], [108, 3.2], [117, 0]];
   const FUS = body(FPROF);
   function planeTop(id, o = {}) {
-    const ail = `<path d="M72,-23.6 L113,-26 L113,-18 L72,-15.6 Z" ${GOLD(id)}/>`;
+    const hl = o.hl ? ' class="la-hl"' : '';
+    const ail = `<path${hl} d="M72,-23.6 L113,-26 L113,-18 L72,-15.6 Z" ${GOLD(id)}/>`;
     const flap = `<path d="M16,-20.3 L68,-23.4 L68,-15.4 L16,-12.3 Z" ${TEAL(id)}/>`;
-    const elev = `<path d="M4,95.5 L46,94 L46,99 Q46,102 42,102 L4,104 Z" ${GOLD(id)}/>`;
+    const elev = `<path${hl} d="M4,95.5 L46,94 L46,99 Q46,102 42,102 L4,104 Z" ${GOLD(id)}/>`;
     const wingP = `<path d="${WING}" fill="url(#${id}w)" ${ST()}/><path d="M40,-48.4 L40,-13.6 M80,-46.1 L80,-16 M12,-38 L114,-33.5" fill="none" stroke="${N.panel}" stroke-width=".9"/>`;
-    const rud = `<path d="M-2.3,103 L2.3,103 L0.6,120 L-0.6,120 Z" ${GOLD(id)}>${o.anim === 'yaw' ? spin([-24, 24, -24], 0, 103) : ''}</path>`;
+    const rud = `<path${hl} d="M-2.3,103 L2.3,103 L0.6,120 L-0.6,120 Z" ${GOLD(id)}>${o.anim === 'yaw' ? spin([-24, 24, -24], 0, 103) : ''}</path>`;
     return `<g filter="url(#${id}n)">
       <ellipse cx="0" cy="-117" rx="50" ry="4.5" fill="rgba(92,192,255,.08)" stroke="rgba(168,224,255,.65)" stroke-width="1"/>
       ${wingP}${mir(wingP)}${ail}${mir(ail)}${flap}${mir(flap)}
@@ -992,14 +1040,23 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     return `<svg viewBox="-286 -146 572 398" role="img" aria-label="Частини літака: вигляд згори і збоку">${defs(id)}
       <text x="-282" y="-128" font-size="12" fill="${N.mut}" letter-spacing="2" font-weight="700">ВИГЛЯД ЗГОРИ</text>
       ${planeTop(id)}
-      ${LAB(28, -117, 140, -132, 'Гвинт')}${LAB(7, -98, 140, -97, 'Двигун\n(під капотом)')}${LAB(6, -56, 140, -58, 'Кабіна', 'start', 'ac')}
-      ${LAB(42, -17, 140, -27, 'Закрилок', 'start', 'ac')}${LAB(8, 32, 140, 26, 'Фюзеляж')}${LAB(0, 113, 140, 104, 'Кіль і\nруль напрямку', 'start', 'gd')}
-      ${LAB(-60, -34, -140, -70, 'Крило', 'end')}${LAB(-94, -22, -140, -26, 'Елерон', 'end', 'gd')}${LAB(-26, 87, -140, 64, 'Стабілізатор', 'end')}${LAB(-26, 99.5, -140, 100, 'Руль висоти', 'end', 'gd')}
+      ${LAB(28, -117, 140, -128, 'Гвинт')}${LAB(7, -98, 140, -84, 'Двигун\n(під капотом)')}${LAB(6, -56, 140, -40, 'Кабіна', 'start', 'ac')}
+      ${LAB(42, -17, 140, 2, 'Закрилок', 'start', 'ac')}${LAB(8, 32, 140, 44, 'Фюзеляж')}${LAB(0.5, 112, 140, 98, 'Кіль і\nруль напрямку', 'start', 'gd')}
+      ${LAB(-60, -34, -140, -60, 'Крило', 'end')}${LAB(-94, -22, -140, -14, 'Елерон', 'end', 'gd')}${LAB(-26, 87, -140, 60, 'Стабілізатор', 'end')}${LAB(-26, 99.5, -140, 104, 'Руль висоти', 'end', 'gd')}
       <line x1="-282" y1="146" x2="282" y2="146" stroke="#1f3b5c" stroke-width="1.2"/>
       <text x="-282" y="168" font-size="12" fill="${N.mut}" letter-spacing="2" font-weight="700">ВИГЛЯД ЗБОКУ</text>
       <g transform="translate(20,204) scale(.78)">${planeSide(id)}</g>
-      <path d="M-55.7,228.2 L-108,214 M-16.7,229.7 L-108,214" fill="none" stroke="#6fb8ff" stroke-width="1.5"/><circle cx="-55.7" cy="228.2" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/><circle cx="-16.7" cy="229.7" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/>${pill(-108, 214, 'Шасі', 'end')}
-      ${LAB(110, 172, 140, 180, 'Кіль', 'start', 'gd')}</svg>`;
+      <path d="M-55.7,228.2 L-124,214 M-16.7,229.7 L-124,214 L-140,214" fill="none" stroke="#6fb8ff" stroke-width="1.5" stroke-linejoin="round"/><circle cx="-55.7" cy="228.2" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/><circle cx="-16.7" cy="229.7" r="3.6" fill="#fff" stroke="#6fb8ff" stroke-width="2"/>${pill(-140, 214, 'Шасі', 'end')}
+      ${LAB(112, 168, 140, 180, 'Кіль', 'start', 'gd')}</svg>`;
+  };
+
+  /* що чим керує: рулі світяться */
+  ART.controls = () => {
+    const id = uid();
+    return `<svg viewBox="-300 -142 600 290" role="img" aria-label="Рулі літака і що вони роблять">${defs(id)}
+      <g class="la-hl-wrap">${planeTop(id, { hl: true })}</g>
+      ${LAB(92, -22, 140, -30, 'Елерони\n→ крен', 'start', 'gd')}${LAB(26, 99, 140, 60, 'Руль висоти\n→ тангаж', 'start', 'gd')}${LAB(0.5, 113, 140, 112, 'Руль напрямку\n→ рискання', 'start', 'gd')}
+      ${LAB(-92, -22, -140, -64, 'Елерони\n→ крен', 'end', 'gd')}${LAB(-42, -17, -140, 6, 'Закрилки → більше\nпідйомної сили', 'end', 'ac')}${LAB(-26, 87, -140, 84, 'Стабілізатор\nі кіль → стійкість', 'end')}</svg>`;
   };
 
   ART.airfoil = () => {
@@ -1007,7 +1064,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     const te = afPoint(L, a, 1, 'up'), top = afPoint(L, a, .33, 'up'), bot = afPoint(L, a, .5, 'lo'), c1 = rot(L, a)([.33, 0]);
     const ar = 210, ex = f(X0 + ar * Math.cos(a * Math.PI / 180)), ey = f(Y0 - ar * Math.sin(a * Math.PI / 180));
     return `<svg viewBox="0 0 480 270" role="img" aria-label="Профіль крила">${defs(id)}
-      ${[118, 156, 194].map(y => `<line x1="8" y1="${y}" x2="58" y2="${y}" stroke="#dbe9f7" stroke-width="2" opacity=".75" marker-end="url(#${id}a)"/>`).join('')}
+      ${[118, 156, 194].map(y => `<line x1="8" y1="${y}" x2="58" y2="${y}" stroke="#dbe9f7" stroke-width="2" opacity=".6" marker-end="url(#${id}a)"/><line class="la-flow" x1="0" y1="${y}" x2="58" y2="${y}" stroke="#ffffff" stroke-width="3"/>`).join('')}
       ${pill(8, 92, 'зустрічний потік', 'start', 'ink', 13)}
       <line x1="${X0}" y1="${Y0}" x2="${X0 + 270}" y2="${Y0}" stroke="#dbe9f7" stroke-width="1.3" stroke-dasharray="4 6" opacity=".45"/>
       <g transform="translate(${X0},${Y0})" filter="url(#${id}n)"><path d="${afPath(L, a)}" fill="url(#${id}w)" ${ST(2.2)}/>${afInside(id, L, a)}
@@ -1036,7 +1093,9 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       <g filter="url(#${id}n)">${[22, 50].map(h => `<path d="${stream(h)}" fill="none" stroke="${N.ac}" stroke-width="3" marker-end="url(#${id}at)"/>`).join('')}
         ${[0, 1].map(k => `<path d="M8,${210 + k * 26} C150,${210 + k * 26} 300,${205 + k * 24} 464,${224 + k * 22}" fill="none" stroke="#cfdcea" stroke-width="2.4" opacity=".75" marker-end="url(#${id}a)"/>`).join('')}
         <g transform="translate(${X0},${Y0})"><path d="${afPath(L, a)}" fill="url(#${id}w)" ${ST(2.2)}/>${afInside(id, L, a)}</g></g>
-      <g filter="url(#${id}n)"><path d="M234,150 L234,64 L218,64 L242,22 L266,64 L250,64 L250,150 Z" fill="url(#${id}gd)" stroke="${N.gdHi}" stroke-width="1.5"/></g>
+      ${[22, 50].map(h => `<path class="la-flow" d="${stream(h)}" fill="none" stroke="#eafffb" stroke-width="3.4"/>`).join('')}
+      ${[0, 1].map(k => `<path class="la-flow slow" d="M8,${210 + k * 26} C150,${210 + k * 26} 300,${205 + k * 24} 464,${224 + k * 22}" fill="none" stroke="#ffffff" stroke-width="3"/>`).join('')}
+      <g filter="url(#${id}n)"><path class="la-pulse" d="M234,150 L234,64 L218,64 L242,22 L266,64 L250,64 L250,150 Z" fill="url(#${id}gd)" stroke="${N.gdHi}" stroke-width="1.5"/></g>
       ${pill(276, 40, 'підйомна сила', 'start', 'gd', 16)}
       ${LAB(120, s1[1] - 46, 120, 54, 'швидше — тиск менший', 'middle', 'ac', 14)}
       ${LAB(140, 236, 140, 272, 'повільніше — тиск більший', 'start', 'ink', 14)}
@@ -1044,12 +1103,13 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   };
 
   ART.strip = () => {
-    const id = uid();
+    const id = uid(), DO = 'M36,92 C120,96 230,150 330,208', PISLIA = 'M36,92 C120,88 230,92 350,106';
+    const T = still ? '' : `dur="4.5s" repeatCount="indefinite" keyTimes="0;.18;.42;.8;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1;.4 0 .6 1;.4 0 .6 1"`;
     return `<svg viewBox="0 0 450 240" role="img" aria-label="Дослід зі смужкою паперу">${defs(id)}
       <g filter="url(#${id}n)"><path d="M0,26 C14,30 22,44 26,58 L40,70 C38,74 33,75 30,76 C32,80 36,82 36,85 C34,87 31,88 31,89 C34,91 36,94 34,98 C31,105 31,114 27,124 C22,135 12,140 0,142 Z" fill="url(#${id}v)" ${ST(1.8)}/>
-        <path d="M36,92 C120,96 230,150 330,208" fill="none" stroke="#cfdcea" stroke-width="3" stroke-dasharray="7 7" opacity=".45"/>
-        <path d="M36,92 C120,88 230,92 350,106" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-        ${[0, 1, 2].map(k => `<path d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="${N.ac}" stroke-width="2.6" marker-end="url(#${id}at)"/>`).join('')}</g>
+        <path d="${DO}" fill="none" stroke="#cfdcea" stroke-width="3" stroke-dasharray="7 7" opacity=".4"/>
+        <path d="${still ? PISLIA : DO}" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round">${still ? '' : `<animate attributeName="d" values="${DO};${DO};${PISLIA};${PISLIA};${DO}" ${T}/>`}</path>
+        <g>${still ? '' : `<animate attributeName="opacity" values="0;0;1;1;0" ${T}/>`}${[0, 1, 2].map(k => `<path d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="${N.ac}" stroke-width="2.6" marker-end="url(#${id}at)"/><path class="la-flow" d="M48,${74 - k * 13} C110,${72 - k * 13} 170,${74 - k * 11} ${250 - k * 26},${80 - k * 10}" fill="none" stroke="#eafffb" stroke-width="3.2"/>`).join('')}</g></g>
       ${pill(62, 22, 'дуємо над смужкою', 'start', 'ac', 14)}${pill(362, 106, 'після', 'start', 'ink', 14)}${pill(338, 214, 'до', 'start', 'ink', 13)}
       <text x="62" y="186" font-size="13" fill="${N.mut}" font-weight="600">смужка паперу ≈ 3 × 20 см</text></svg>`;
   };
@@ -1108,7 +1168,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 
   /* аеродинамічні схеми — силуети справжніх літаків (згори, ніс угору) */
   function scheme(k, id) {
-    const W = `fill="url(#${id}w)" ${ST()}`, B = `fill="url(#${id}b)" ${ST()}`, G = GOLD(id), E = `fill="#12325c" ${ST(1.2)}`;
+    const W = `fill="url(#${id}w)" ${ST()}`, B = `fill="url(#${id}b)" ${ST()}`, G = 'class="la-hl" ' + GOLD(id), E = `fill="#12325c" ${ST(1.2)}`;
     const both = s => s + mir(s);
     const glass = d => `<path d="${d}" fill="url(#${id}g)"/>`;
     if (k === 'normal') return `<g filter="url(#${id}n)">${both(`<path d="M10,-22 L106,20 L108,27 L98,27 L10,8 Z" ${W}/><path d="M30,-12 L100,18" stroke="${N.panel}" stroke-width="1"/><rect x="36" y="-18" width="9" height="26" rx="4" ${E}/>`)}
@@ -1148,6 +1208,10 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     const pos = [[78, 70], [228, 70], [378, 70], [153, 230], [303, 230]];
     return `<svg viewBox="0 0 456 318" role="img" aria-label="П’ять аеродинамічних схем">${defs(id)}${L.map(([k, t], i) => `<g transform="translate(${pos[i][0]},${pos[i][1] - 8}) scale(.5)">${scheme(k, id)}</g>${pill(pos[i][0], pos[i][1] + 72, t, 'middle', 'ink', 14)}`).join('')}</svg>`;
   };
+  function silhouette(k) {   // для гри «Вгадай схему» — без підписів
+    const id = uid();
+    return `<svg viewBox="-128 -132 256 262" role="img" aria-label="Силует літака">${defs(id)}${k === 'normal' ? planeTop(id) : scheme(k, id)}</svg>`;
+  }
   function schemeOne(k) {
     const id = uid();
     return `<svg viewBox="-262 -130 524 262" role="img" aria-label="Схема згори">${defs(id)}${scheme(k, id)}${(SCH[k] || []).map(([a, b, c, d, t, an, col]) => LAB(a, b, c, d, t, an || 'end', col || 'ink')).join('')}</svg>`;
@@ -1178,14 +1242,15 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     return threeP;
   }
   function webgl() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl') || c.getContext('experimental-webgl')); } catch (e) { return false; } }
-  function mount3D(el) {
+  function mount3D(el, opt = {}) {
     let stop = false, cleanup = () => {};
     if (!webgl()) return () => {};
-    loadThree().then(T => { if (stop || !el.isConnected) return; try { cleanup = build3D(T, el); } catch (e) { const w = el.querySelector('.la3d'); if (w) w.remove(); } }).catch(() => {});
+    loadThree().then(T => { if (stop || !el.isConnected) return; try { cleanup = build3D(T, el, opt); } catch (e) { const w = el.querySelector('.la3d'); if (w) w.remove(); } }).catch(() => {});
     return () => { stop = true; cleanup(); };
   }
-  function build3D(T, el) {
-    const wrap = document.createElement('div'); wrap.className = 'la3d';
+  function build3D(T, el, opt = {}) {
+    const hero = !!opt.hero;
+    const wrap = document.createElement('div'); wrap.className = 'la3d' + (hero ? ' hero' : '');
     wrap.innerHTML = `<canvas></canvas><div class="la3d-ui"><b></b><span></span><div class="la3d-btn"><button type="button" data-m="pitch">Тангаж</button><button type="button" data-m="roll">Крен</button><button type="button" data-m="yaw">Рискання</button><button type="button" data-m="all" class="on">По черзі</button></div></div>`;
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
     el.appendChild(wrap);
@@ -1249,7 +1314,8 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
     // «креслярська» підлога-сітка
     const grid = new T.GridHelper(16, 32, 0x2f6db0, 0x1a3c62); grid.position.y = -1.05; grid.material.transparent = true; grid.material.opacity = .5; scene.add(grid);
     // вісь обертання
-    const axis = new T.Mesh(new T.CylinderGeometry(.02, .02, 7.8, 8), new T.MeshBasicMaterial({ color: 0xffc247 })); scene.add(axis);
+    const axis = new T.Mesh(new T.CylinderGeometry(.02, .02, 7.8, 8), new T.MeshBasicMaterial({ color: 0xffc247 })); if (!hero) scene.add(axis);
+    if (hero) { cam.position.set(5.4, 2.6, 6.4); cam.lookAt(0, -0.3, 0); }
     const MODES = {
       pitch: { b: 'Тангаж', s: 'ніс угору чи вниз — навколо осі від крила до крила. Керує руль висоти.', ax: [Math.PI / 2, 0, 0] },
       roll: { b: 'Крен', s: 'нахил крил — навколо осі від носа до хвоста. Керують елерони.', ax: [0, 0, Math.PI / 2] },
@@ -1271,6 +1337,12 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
       raf = requestAnimationFrame(frame);
       if (!wrap.isConnected) { stopIt(); return; }
       const t = (now - t0) / 1000;
+      if (hero) {   // титульний слайд: літак повільно пролітає по колу, трохи кренячись
+        const a = still ? 0.6 : t * .32;
+        plane.rotation.set(0, 0, 0); plane.rotation.y = a; plane.rotation.x = still ? 0 : Math.sin(t * .9) * .12; plane.rotation.z = still ? 0 : Math.sin(t * .7) * .06;
+        ailL.rotation.z = -(ailR.rotation.z = still ? 0 : Math.sin(t * .9) * .25); elev.rotation.z = rud.rotation.y = 0;
+        plane.position.y = still ? 0 : Math.sin(t * .8) * .08; prop.rotation.x += .9; R.render(scene, cam); return;
+      }
       if (mode === 'all') { const m = ['pitch', 'roll', 'yaw'][Math.floor(t / 5) % 3]; if (m !== cur) setCur(m); }
       const ph = still ? 0.6 : Math.sin(t * 1.25);
       plane.rotation.set(0, 0, 0); ailL.rotation.z = ailR.rotation.z = elev.rotation.z = rud.rotation.y = 0;
@@ -1299,12 +1371,21 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .la3d-btn{display:flex;flex-wrap:wrap;gap:6px;pointer-events:auto}
 .la3d-btn button{min-height:38px;padding:0 14px;border-radius:99px;border:1px solid #2f5f8f;background:rgba(11,22,38,.88);color:#eef4fa;font:600 14px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
 .la3d-btn button.on{background:#ffc247;border-color:#ffc247;color:#16130a}
+.la-flow{stroke-dasharray:3 26;stroke-linecap:round;animation:laflow 1s linear infinite}
+.la-flow.slow{animation-duration:1.7s;opacity:.6}
+@keyframes laflow{to{stroke-dashoffset:-29}}
+.la-hl{animation:lahl 2.4s ease-in-out infinite}
+@keyframes lahl{50%{opacity:.5}}
+.la-pulse{animation:lapulse 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes lapulse{50%{transform:scaleY(1.06)}}
+@media (prefers-reduced-motion:reduce){.la-flow,.la-hl,.la-pulse{animation:none}}
+.la3d.hero .la3d-ui{display:none}
 .la3d.small .la3d-ui span{display:none}.la3d.small .la3d-ui b{font-size:1.1rem}.la3d.small .la3d-btn button{min-height:32px;padding:0 10px;font-size:13px}`;
   try { const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st); } catch (e) { /* ok */ }
   try { if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fit(document)); } catch (e) { /* ok */ }
 
   window.LA_ART = {
-    get: k => k && k.startsWith('scheme:') ? schemeOne(k.slice(7)) : (ART[k] ? ART[k]() : ''),
+    get: k => k && k.startsWith('scheme:') ? schemeOne(k.slice(7)) : k && k.startsWith('sil:') ? silhouette(k.slice(4)) : (ART[k] ? ART[k]() : ''),
     photo, has: k => !!PH[k], mount3D, fit, PH
   };
 })();
@@ -1408,7 +1489,7 @@ window.LA = {
       '<b>Крен</b> — нахил крил ліворуч чи праворуч. Навколо поздовжньої осі (від носа до хвоста).',
       '<b>Рискання</b> — ніс ліворуч чи праворуч. Навколо вертикальної осі.'
     ] },
-    { t: 'card', n: 4, k: 'Точка 4', h: 'Що робить літак керованим', art: 'parts', ask: 'Що буде, якщо лівий елерон піднятий, а правий опущений?', pts: [
+    { t: 'card', n: 4, k: 'Точка 4', h: 'Що робить літак керованим', art: 'controls', ask: 'Що буде, якщо лівий елерон піднятий, а правий опущений?', pts: [
       '<b>Руль висоти</b> на стабілізаторі — тангаж.',
       '<b>Елерони</b> на кінцях крил, відхиляються в різні боки — крен.',
       '<b>Руль напрямку</b> на кілі — рискання.',
@@ -1432,10 +1513,7 @@ window.LA = {
     { t: 'scheme', n: 5, s: 'tailless', h: '«Безхвістка»', pts: ['Горизонтального оперення <b>немає</b>, кіль є.', 'Тангажем керують рулі на задній кромці самого крила.'], ex: 'Concorde, Ту-144' },
     { t: 'scheme', n: 5, s: 'flyingwing', h: '«Літаюче крило»', pts: ['Немає ні фюзеляжу, ні хвоста — усе всередині крила.', 'Мало опору повітря, але таким літаком важче керувати.'], ex: 'Northrop B-2 Spirit, Horten Ho 229' },
     { t: 'scheme', n: 5, s: 'tandem', h: '«Тандем»', pts: ['Два крила <b>приблизно однакового</b> розміру, одне за одним.', 'Обидва крила несуть літак.'], ex: 'Mignet HM.14 «Небесна блоха», Rutan Quickie' },
-    { t: 'prac', n: 5, k: 'Гра', h: 'Вгадай схему', art: 'schemes', pts: [
-      'Показуємо силует — хто перший назве схему?',
-      'А тепер навпаки: один описує схему словами, інші малюють.'
-    ] },
+    { t: 'guess' },        // гра «Вгадай схему»: 5 силуетів у випадковому порядку, відповіді С/К/О/Б (можна й з телефонів)
     { t: 'q', n: 5, q: 'У схемі «качка» горизонтальне оперення…', a: ['Позаду крила', 'Попереду крила', 'Його немає', 'Над кабіною'], ok: 1,
       why: 'У «качки» оперення попереду крила — як у першого літака братів Райт.' },
 
@@ -1511,25 +1589,21 @@ const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ===================== малюнки (maliunky.js) і фото ===================== */
-const FKEY = 'gutirky:la-foto';
-let foto = true; try { foto = localStorage.getItem(FKEY) !== '0'; } catch (e) {}
 const art = k => LA_ART.get(k);
-/* схема: фото справжнього літака + малюнок-підказка в куті (якщо фото не завантажиться — лишається малюнок) */
-function schemeArt(k) {
-  const svg = art('scheme:' + k);
-  if (!foto || !LA_ART.has(k)) return svg;
-  return `<div class="la-mix"><div class="la-box">${LA_ART.photo(k).replace('onerror="', 'onerror="this.closest(\'.la-mix\').classList.add(\'nofoto\');')}<div class="la-inset">${svg}</div></div></div>`;
-}
-function paintFotoSw() { $$('.fsw').forEach(b => { b.setAttribute('aria-pressed', String(foto)); b.querySelector('b').textContent = foto ? 'увімкнено' : 'вимкнено'; }); }
-document.addEventListener('click', e => {
-  const b = e.target.closest('.fsw'); if (!b) return;
-  foto = !foto; try { localStorage.setItem(FKEY, foto ? '1' : '0'); } catch (err) {}
-  paintFotoSw(); if (!P.hidden) render(); if (!$('#vyvch').hidden) renderStudy();
-});
 
 /* ===================== гутірка ===================== */
 const kviz = D.kviz;
-const SL = D.slides.map(s => s.t === 'gra' ? { t: 'kintro' } : s);
+/* гра «Вгадай схему»: 5 силуетів у випадковому порядку, у кожному — 4 варіанти */
+const GUESS = (() => {
+  const K = [['normal', 'Нормальна', 'Горизонтальне оперення позаду крила — нормальна схема.'], ['canard', '«Качка»', 'Оперення попереду крила — це «качка».'],
+    ['tailless', '«Безхвістка»', 'Горизонтального оперення немає, а кіль є — «безхвістка».'], ['flyingwing', '«Літаюче крило»', 'Ні фюзеляжу, ні хвоста — усе в крилі: «літаюче крило».'],
+    ['tandem', '«Тандем»', 'Два крила приблизно однакового розміру одне за одним — «тандем».']];
+  return SKOB.shuffle(K).map(([k, name, why], i) => {
+    const a = SKOB.shuffle([name, ...SKOB.shuffle(K.filter(x => x[0] !== k)).slice(0, 3).map(x => x[1])]);
+    return { t: 'q', n: 5, guess: i + 1, q: 'Яка це схема?', a, ok: a.indexOf(name), why, img: 'sil:' + k };
+  });
+})();
+const SL = D.slides.flatMap(s => s.t === 'gra' ? [{ t: 'kintro' }] : s.t === 'guess' ? [{ t: 'gintro' }, ...GUESS] : [s]);
 let idx = 0, rev = 0, tot = 0, qctl = null, stop3d = null;
 const P = $('#pres'), panel = $('#panel'), artEl = $('#art');
 function steps(s) { return s.t === 'q' ? 0 : (s.pts ? s.pts.length : 0); }
@@ -1541,27 +1615,33 @@ function render() {
   const pts = s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
   const note = s.note ? `<p class="note">${s.note}</p>` : '';
   switch (s.t) {
-    case 'title': wide = true; h = `<div class="big ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова<br>літальних апаратів</h2><p>гутірка для юнацтва · ${D.chas}</p>${art('title')}</div>`;
+    case 'title': a = art('title'); h = `<div class="ttl"><span class="vy">Летунська вмілість · проба 1</span><h2>Будова літальних апаратів</h2><p>гутірка для юнацтва</p>
+      <div class="meta"><span><b>5</b> вимог вмілості</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
       hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
     case 'plan': a = art('types'); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
     case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Вимога вмілості</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
     case 'card': case 'prac': a = s.art ? art(s.art) : '';
       h = `${s.t === 'prac' ? `<span class="badge">${s.k}</span>` : `<div class="k">${s.k}</div>`}<h2 class="hh">${s.h}</h2>${s.p ? `<p class="pp">${s.p}</p>` : ''}${pts}${s.ask ? `<p class="ask">${s.ask}</p>` : ''}${note}`; break;
-    case 'scheme': a = schemeArt(s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>`; break;
+    case 'scheme': a = art('scheme:' + s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>${LA_ART.has(s.s) ? `<div class="note exph">${LA_ART.photo(s.s)}</div>` : ''}`; break;
+    case 'gintro': wide = true; h = `<div class="big"><span class="vy">Гра · точка 5</span><div class="n" style="font-size:clamp(2.6rem,7vw,6rem)">Вгадай схему</div>
+      <blockquote>На екрані — силует літака. Яка це схема? Натисніть на відповідь (або відповідайте з телефонів, якщо їх підключено через «Потужний СКОБ!»). Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.</blockquote></div>`;
+      hint = 'Далі — перший силует'; break;
     case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz.length} запитань по всіх п’яти вимогах. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
       <div class="kbtn"><button class="go" type="button" data-skob="game">Почати гру</button><button class="pb" type="button" data-skob="lobby">Підключити телефони</button><button class="pb" type="button" data-skob="skip">Пропустити</button></div></div>`;
       hint = 'Далі — почати гру'; break;
     case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
-      hint = SKOB.count() ? '' : 'Натисніть на відповідь — або «далі», щоб показати правильну'; break;
+      hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
     case 'end': wide = true; h = `<div class="big"><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>`; break;
   }
-  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz);
+  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
+  else if (s.t === 'title') stop3d = LA_ART.mount3D(artEl, { hero: true });
   LA_ART.fit(artEl);
   panel.innerHTML = h; panel.scrollTop = 0;
-  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: `Перевірка · точка ${s.n}`, T: 20, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Вгадай схему · ${s.guess} з 5` : `Перевірка · точка ${s.n}`, T: 20,
+    auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
   showRev(); $('#hint').textContent = hint;
   $('#bar i').style.width = (idx / (SL.length - 1) * 100) + '%';
   if (idx > 0 && !T0) T0 = Date.now();
@@ -1601,8 +1681,8 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 /* пульт на телефоні (pult-host-file.js) керує гутіркою через window.GUTIRKA */
 let T0 = 0;
 const strip = h => String(h || '').replace(/<[^>]+>/g, '');
-const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
-const noteFor = s => !s ? '' : s.t === 'q' ? `Правильно: ${'СКОБ'[s.ok]} — ${s.a[s.ok]}. ${s.why}` : s.t === 'kintro' ? '«Далі» — почати гру. Телефони юнаків підключаються через «Потужний СКОБ!» у меню.' : [s.ask ? 'Запитання до залу: ' + strip(s.ask) : '', strip(s.note)].filter(Boolean).join(' ');
+const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'gintro' ? 'Гра «Вгадай схему»' : s.t === 'q' ? (s.guess ? 'Вгадай схему ' + s.guess + ' з 5' : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: ${s.a[s.ok]}. ${s.why}` : s.t === 'kintro' ? '«Далі» — почати гру. Телефони юнаків підключаються через «Потужний СКОБ!» у меню.' : [s.ask ? 'Запитання до залу: ' + strip(s.ask) : '', strip(s.note)].filter(Boolean).join(' ');
 const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
 const API = { id: 'budova-la-1', title: 'Будова літальних апаратів І',
@@ -1645,8 +1725,8 @@ if (!document.documentElement.requestFullscreen) $('#b-fs').hidden = true;
 function fs() { try { const r = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
 $('#b-fs').addEventListener('click', fs);
 $('#b-toc').addEventListener('click', () => {
-  const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title');
-  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
+  const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
+  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Вгадай схему»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
   $('#toc').hidden = false;
 });
 $('#toc').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { go(+b.dataset.go); $('#toc').hidden = true; } });
@@ -1676,7 +1756,7 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
   $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
-    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 && foto ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
+    <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
     <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
   const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
@@ -1689,9 +1769,11 @@ $('#pv-list').addEventListener('click', e => {
 
 /* ===================== перевір себе ===================== */
 let T = null;
-function newTest() {
-  const order = kviz.map((q, i) => i).sort(() => Math.random() - .5);
-  T = { order, i: 0, right: 0, byPoint: {}, answered: false, pick: -1, mix: order.map(() => [0, 1, 2, 3].sort(() => Math.random() - .5)) };
+let lastOrder = '';
+function newTest() {   // щоразу інший порядок запитань і варіантів — щоб не завчити, куди тиснути
+  let order; do { order = SKOB.shuffle(kviz.map((q, i) => i)); } while (order.join() === lastOrder);
+  lastOrder = order.join();
+  T = { order, i: 0, right: 0, byPoint: {}, answered: false, pick: -1, mix: order.map(() => SKOB.shuffle([0, 1, 2, 3])) };
   renderTest();
 }
 function renderTest() {
@@ -1737,7 +1819,7 @@ function route() {
 }
 $('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
 $('#req-src').href = D.dzherelo;
-addEventListener('hashchange', route); route(); paintFotoSw();
+addEventListener('hashchange', route); route();
 })();
 </script>
 <script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>

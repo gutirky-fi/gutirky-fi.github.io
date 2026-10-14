@@ -16,7 +16,7 @@
   const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js',
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
     'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
-  const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500;
+  const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500, AUTO_MS = 1800;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -114,6 +114,7 @@
 #skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
+#skob-lobby .how .url{display:inline-block;margin:4px 0;font:600 clamp(1.3rem,2.6vw,2rem)/1.1 Oswald,sans-serif;color:#fff;letter-spacing:.02em}
 #skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;background:#fff;border-radius:16px;padding:12px;display:grid;place-items:center}
 #skob-lobby .qr svg{width:100%;height:100%}
 #skob-lobby .how{margin:0 0 8px;color:#cfd5dc;font-size:clamp(1rem,1.5vw,1.35rem)}#skob-lobby .how b{color:#fff;word-break:break-all}
@@ -124,7 +125,16 @@
 #skob-lobby .chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
 #skob-lobby .chips .empty{color:#a0a8b2}
 #skob-lobby .chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px;border-radius:99px;border:1px solid #3b4048;background:#272b31;color:#f2f4f6;font:600 16px 'Source Sans 3',sans-serif;cursor:pointer;animation:skup .3s both}
-#skob-lobby .chip.off{opacity:.45}#skob-lobby .chip.kill{border-color:#ff6b5e;color:#ffb3ab}
+#skob-lobby .chip.off{opacity:.45}
+.chip .cx,.chip .cok{display:grid;place-items:center;width:28px;height:28px;margin:0 -8px 0 4px;border-radius:50%;border:0;background:#3b4048;color:#fff;font:700 14px sans-serif;cursor:pointer}
+.chip .cx:hover{background:#ff6b5e}.chip .cok{background:#2e8f55;margin-right:2px}.chip .cok:hover{background:#3ee08f;color:#0f1714}
+#skob-lobby .chip.wait,#skob-req .chip.wait{border-color:#ffc247}
+#skob-lobby .pend h3{color:#ffc247}
+#skob-req{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(560px,calc(100% - 24px));padding:10px 14px;border-radius:16px;background:#1f2328;border:1px solid #ffc247;color:#f2f4f6;font:15px/1.4 'Source Sans 3',system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+#skob-req .chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:4px 12px;border-radius:99px;border:1px solid #3b4048;background:#272b31;font-weight:600}
+.sk-img{display:flex;justify-content:center;height:clamp(130px,30vh,340px);margin:2px 0 8px}.sk-img svg{height:100%;width:auto;max-width:100%}
+.sk-auto{display:block;height:4px;margin-top:10px;border-radius:99px;background:#2a2f35;overflow:hidden;max-width:320px}.sk-auto i{display:block;height:100%;background:#3ee08f;transform-origin:left;animation:skauto linear forwards}
+@keyframes skauto{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 #skob-lobby .note{margin:12px 0 0;color:#a0a8b2;font-size:14px}
 #skob-lobby .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 @media (max-width:640px){#skob-lobby .row{grid-template-columns:1fr;justify-items:center;text-align:center}#skob-lobby .sk-logo{font-size:44px}}
@@ -139,9 +149,18 @@
   const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
   const genCode = () => String(100000 + rnd(900000));
   const genTok = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => (b % 36).toString(36)).join('');
-  const emit = () => { subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); };
+  const emit = () => { subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); paintReq(); };
+  let RQ = null;
+  function paintReq() {   // нові імена, що чекають ✓, — видно й тоді, коли вікно з QR закрите
+    const pend = [...players.values()].filter(P => P.pending), show = pend.length && !(L && !L.hidden);
+    if (!show) { if (RQ) RQ.hidden = true; return; }
+    if (!RQ) { injectCss(); RQ = document.createElement('div'); RQ.id = 'skob-req'; document.body.appendChild(RQ);
+      RQ.addEventListener('click', e => { const b = e.target.closest('[data-x],[data-ok]'); if (!b) return; e.stopPropagation(); if (b.dataset.x) kick(b.dataset.x); else approve(b.dataset.ok); }); }
+    RQ.hidden = false;
+    RQ.innerHTML = '<b>Хочуть приєднатися:</b>' + pend.map(P => `<span class="chip wait">${esc(P.name)}<button type="button" class="cok" data-ok="${P.tok}" aria-label="Пустити">✓</button><button type="button" class="cx" data-x="${P.tok}" aria-label="Не пускати">✕</button></span>`).join('');
+  }
   const send = (P, m) => { try { if (P && P.c && P.c.open) P.c.send(m); } catch (e) { /* ok */ } };
-  const online = () => [...players.values()].filter(P => P.on);
+  const online = () => [...players.values()].filter(P => P.on && !P.pending);
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
   async function getPeer() { if (window.Peer) return window.Peer; for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* далі */ } } throw new Error('lib'); }
   function startNet() {
@@ -177,6 +196,17 @@
   setInterval(() => { let ch = false; players.forEach(P => { if (P.on && Date.now() - P.last > 15000) { P.on = false; ch = true; } }); if (ch) emit(); }, 5000);
   addEventListener('beforeunload', () => { players.forEach(P => send(P, { t: 'bye', r: 'stopped' })); });
   function cleanName(s) { return String(s || '').replace(/[\u0000-\u001f\u007f<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 16); }
+  /* ---------- імена: зі списку — одразу в гру; інші — після підтвердження ведучого; лайка й нісенітниці — ні ---------- */
+  const normN = s => String(s).toLowerCase().replace(/[’ʼ`´]/g, "'").replace(/ё/g, 'е').replace(/[ыэъ]/g, '').trim();
+  const NAMES = new Set(`адам адріан адріян олександр олександра саша сашко сашка олесь олеся олексій олекса льоша альоша анатолій толя андрій андрійко андрійка андрюша андрій антон антоша арсен арсеній артем тьома артемко артур богдан богданко бодя богдана борис вадим валентин валентина валя валерій валерія лера василь вася василько віктор вітя вікторія віка віталій віталіна владислав влад владислава влада володимир володя вова вовчик всеволод сева в'ячеслав вячеслав слава гліб григорій гриць гриша давид даниїл данило даня данилко денис дмитро діма дмитрик дмитрій євген женя євгенія захар зіновій іван ваня іванко іванна ігор ілля ілько йосип кирило кирилко костянтин костя лев левко леонід льоня любомир макар максим макс максимко марко марк мартин матвій мирон мирослав мирослава михайло миша михась мишко микита микола коля назар назарко нестор олег орест остап павло паша павлик петро петрик пилип роман рома романа ростислав ростик ростислава руслан руслана святослав свят святослава семен сергій сергійко серафим степан стефан тарас тарасик тимофій тимко тимур тихон федір федя філіп юліан юрій юра юрко ярема ярослав ярик ярослава яким ян лука еміль еліас ілля юхим омелян охрім панас прохор устим харитон аліна алла аліса анастасія настя настуся ангеліна анна аня ганна ганнуся антоніна аріна арина вероніка віра владислава галина галя дарина даринка дар'я дарія дарья даша діана домініка ева єва єлизавета ліза лізонька емілія злата зоряна іра ірина ірися ія каріна катерина катя катруся кіра христина христя лариса леся ліана лілія ліля любов люба людмила маргарита рита марина марія маша марічка маруся мар'яна марьяна меланія мілана мія надія надя наталія наталя наташа ніна оксана олена оленка лена ольга оля олечка поліна роксолана роксана світлана соломія соля софія софійка соня стефанія таїсія тая тамара тетяна таня уляна уляночка устина юлія юля юліана ярина яна ілона інна еліна амелія емма ніка нікол ліна ліка евеліна адріана альбіна ассоль богдана віолета вірослава зорина златослава квітослава лукія любава маргарита мирослава оксана орися орина ореста роксоляна станіслава таміла фросина христина юстина ярослава станіслав всеслав добромир дем'ян демид еміль ерік захарко зенон ісак лаврін лазар лесь любомир нікіта олелько радим радомир родіон савелій сава тимофей устим фрол хома ян янко`.split(/\s+/).filter(Boolean).map(normN));
+  const BAD = /(х[уy][йяюеїі]|п[иі]зд|бля|їба|йоб|ебат|ебан|ебал|сука|суки|мудак|гандон|залуп|шлюх|fuck|shit|bitch|dick|cunt|porn|sex|секс|жоп|срак|дебіл|дебил|ідіот|идиот|nazi|гітлер|гитлер|путін|путин)/i;
+  function nameCheck(raw) {
+    const name = cleanName(raw);
+    if (name.replace(/[^A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії]/g, '').length < 2) return { bad: 1 };
+    if (!/^[A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії'’ʼ\- .]+$/.test(name)) return { bad: 1 };
+    if (BAD.test(name.replace(/[^A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії]/g, ''))) return { bad: 1 };
+    return { name, known: NAMES.has(normN(name.split(/[ .\-]/)[0])) };
+  }
   function onConn(c) {
     let P = null;
     c.on('data', d => {
@@ -199,25 +229,35 @@
     if (P) { if (P.c && P.c !== c) try { P.c.close(); } catch (e) { /* ok */ } P.c = c; P.on = true; P.last = Date.now(); }
     else {
       if (players.size >= MAXP) return nope('full');
-      let name = cleanName(d.name) || 'Гравець';
+      const ch = nameCheck(d.name);
+      if (ch.bad) return nope('badname');
+      let name = ch.name;
       const taken = new Set([...players.values()].map(x => x.name.toLowerCase()));
       if (taken.has(name.toLowerCase())) { let k = 2; const base = name.slice(0, 13); while (taken.has((base + ' ' + k).toLowerCase())) k++; name = base + ' ' + k; }
-      P = { tok: genTok(), name, score: 0, c, on: true, seq: ++joinSeq, last: Date.now() };
+      P = { tok: genTok(), name, score: 0, c, on: true, seq: ++joinSeq, last: Date.now(), pending: !ch.known };
       players.set(P.tok, P);
     }
+    if (P.pending) { send(P, { t: 'pending', name: P.name, tok: P.tok }); emit(); return P; }
     send(P, { t: 'hi', name: P.name, tok: P.tok, score: P.score });
     send(P, stateFor(P)); emit();
     return P;
   }
-  function kick(tok) {
+  function kick(tok) {   // ✕: гравця прибрано, телефон просить написати справжнє ім’я
     const P = players.get(tok); if (!P) return;
-    banned.add(tok); send(P, { t: 'bye', r: 'kicked' });
+    send(P, { t: 'bye', r: 'name' });
     setTimeout(() => { try { P.c && P.c.close(); } catch (e) { /* ok */ } }, 400);
     players.delete(tok); emit();
   }
-  const ranked = () => [...players.values()].sort((a, b) => b.score - a.score || a.seq - b.seq);
+  function approve(tok) {
+    const P = players.get(tok); if (!P || !P.pending) return;
+    P.pending = false; send(P, { t: 'hi', name: P.name, tok: P.tok, score: P.score }); send(P, stateFor(P)); emit();
+  }
+  const accepted = () => [...players.values()].filter(P => !P.pending);
+  const shuf = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const mixQ = q => { const ord = shuf(q.a.map((x, i) => i)); return Object.assign({}, q, { a: ord.map(i => q.a[i]), ok: ord.indexOf(q.ok) }); };
+  const ranked = () => accepted().sort((a, b) => b.score - a.score || a.seq - b.seq);
   const rankOf = P => ranked().indexOf(P) + 1;
-  const bcast = () => players.forEach(P => send(P, stateFor(P)));
+  const bcast = () => players.forEach(P => { if (!P.pending) send(P, stateFor(P)); });
 
   /* ================= одне запитання ================= */
   let R = null, rid = 0, phoneView = { t: 'wait' };
@@ -228,9 +268,9 @@
       if (R.ans.has(P.tok)) return { t: 'got', id: R.id, o: R.ans.get(P.tok).o };
       return { t: 'ask', id: R.id, lbl: R.lbl, q: R.q.q, a: R.q.a, left: Math.max(0, R.T * 1000 - (Date.now() - R.tA)), T: R.T };
     }
-    if (R && R.ph === 'rev') { const a = R.ans.get(P.tok); return { t: 'res', id: R.id, ok: !!(a && a.o === R.q.ok), got: a ? a.o : -1, pts: a ? a.pts : 0, score: P.score, rank: rankOf(P), of: players.size, right: R.q.ok, rightText: R.q.a[R.q.ok] }; }
-    if (phoneView.t === 'lead') return { t: 'lead', score: P.score, rank: rankOf(P), of: players.size };
-    if (phoneView.t === 'end') { const top = ranked().slice(0, 3).map(x => ({ name: x.name, score: x.score })); return { t: 'end', score: P.score, rank: rankOf(P), of: players.size, top }; }
+    if (R && R.ph === 'rev') { const a = R.ans.get(P.tok); return { t: 'res', id: R.id, ok: !!(a && a.o === R.q.ok), got: a ? a.o : -1, pts: a ? a.pts : 0, score: P.score, rank: rankOf(P), of: accepted().length, right: R.q.ok, rightText: R.q.a[R.q.ok] }; }
+    if (phoneView.t === 'lead') return { t: 'lead', score: P.score, rank: rankOf(P), of: accepted().length };
+    if (phoneView.t === 'end') { const top = ranked().slice(0, 3).map(x => ({ name: x.name, score: x.score })); return { t: 'end', score: P.score, rank: rankOf(P), of: accepted().length, top }; }
     return Object.assign({ t: 'wait' }, base);
   }
   function answer(P, d) {
@@ -247,13 +287,14 @@
   function ask(el, q, o = {}) {
     injectCss();
     if (R) R.stop();
+    if (o.mix !== false) q = mixQ(q);
     const withPl = o.players !== false && online().length > 0;
     const r = { id: ++rid, q, el, lbl: o.label || '', T: o.T || 20, ph: withPl ? 'read' : 'ans', pl: withPl, ans: new Map(), pick: -1, tA: Date.now(), t0: Date.now(), tick: 0, done: false };
     R = r;
     el.innerHTML = `<div class="sk-round${withPl ? ' pl' : ''}" data-ph="${r.ph}">
       <div class="sk-head"><span class="sk-lbl">${esc(r.lbl)}</span><span class="sp"></span><span class="sk-cnt"></span>
         <div class="sk-ring"><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="bg" cx="22" cy="22" r="19"/><circle class="fg" cx="22" cy="22" r="19" pathLength="100" stroke-dasharray="100" stroke-dashoffset="0"/></svg><b></b></div></div>
-      <h2 class="sk-qq">${esc(q.q)}</h2><div class="sk-readbar"><i style="animation-duration:${READ_MS}ms"></i></div>
+      ${q.img ? `<div class="sk-img">${q.img}</div>` : ''}<h2 class="sk-qq">${esc(q.q)}</h2><div class="sk-readbar"><i style="animation-duration:${READ_MS}ms"></i></div>
       <div class="sk-tiles">${q.a.map((x, i) => `<button type="button" class="sk-tile c${i}${i === q.ok ? ' ok' : ''}" data-o="${i}"${withPl ? ' tabindex="-1"' : ''}><i>${LET[i]}</i><span>${esc(x)}</span><em></em></button>`).join('')}</div>
       <p class="sk-why"></p></div>`;
     const box = el.firstElementChild, ring = box.querySelector('.sk-ring'), fg = ring.querySelector('.fg'), sec = ring.querySelector('b'), cnt = box.querySelector('.sk-cnt');
@@ -293,12 +334,14 @@
       if (r.pl) { const right = [...r.ans.values()].filter(a => a.o === q.ok).length; lead = `<b>Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}.</b> Влучили ${right} з ${r.ans.size || 0}. `; }
       else if (r.pick >= 0) lead = r.pick === q.ok ? '<b>Правильно!</b> ' : `<b class="no">Не зовсім.</b> Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}. `;
       else lead = `<b>Правильно: ${LET[q.ok]} — ${esc(q.a[q.ok])}.</b> `;
-      why.innerHTML = lead + esc(q.why || '');
+      const auto = !r.pl && r.pick >= 0 && r.pick === q.ok && o.auto;
+      why.innerHTML = lead + esc(q.why || '') + (auto ? `<span class="sk-auto"><i style="animation-duration:${AUTO_MS}ms"></i></span>` : '');
+      if (auto) r.autoT = setTimeout(() => { if (R === r) o.auto(); }, AUTO_MS);
       ring.querySelector('b').textContent = '0'; fg.style.strokeDashoffset = '100';
       bcast(); r.paint(); if (o.onPhase) o.onPhase('rev');
     };
     r.next = () => { if (R !== r) return false; if (r.ph === 'read') { r.open(); return true; } if (r.ph === 'ans') { r.reveal(); return true; } return false; };
-    r.stop = () => { clearInterval(r.tick); if (R === r) { R = null; if (!r.keep) bcast(); } };
+    r.stop = () => { clearInterval(r.tick); clearTimeout(r.autoT); if (R === r) { R = null; if (!r.keep) bcast(); } };
     r.paint(); r.draw();
     r.tick = setInterval(r.draw, 100);
     if (withPl) bcast();
@@ -309,7 +352,7 @@
   let G = null, gEl = null, lastPT = '';
   function game(list, o = {}) {
     injectCss(); closeGame(true);
-    G = { list, i: -1, ph: 'intro', o, ctl: null, before: new Map() };
+    G = { src: list, list: shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
     gEl.innerHTML = `<div class="sk-top">${LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
@@ -319,7 +362,7 @@
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
         if (k === 'lobby') lobby(); else if (k === 'x') gEl.querySelector('.sk-sure').classList.toggle('on'); else if (k === 'stay') gEl.querySelector('.sk-sure').classList.remove('on');
-        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
+        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
         return; }
       if (e.target.closest('button,a') || lastPT === 'mouse') return;
       gNext();
@@ -352,9 +395,9 @@
     G.i = i; G.ph = 'q'; phoneView = { t: 'wait' };
     G.before = new Map([...players.values()].map(P => [P.tok, P.score]));
     const st = gStage(); st.innerHTML = '<div style="width:100%"></div>';
-    G.ctl = ask(st.firstElementChild, G.list[i], { label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
+    G.ctl = ask(st.firstElementChild, G.list[i], { label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, auto: () => { if (G && G.ph === 'q' && G.i === i) gNext(); }, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
     G.pl = R && R.pl;
-    hint(G.pl ? '' : 'Натисніть на відповідь — або «далі», щоб показати правильну');
+    hint(G.pl ? '' : 'Натисніть на відповідь. Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.');
   }
   function gLead() {
     if (G.ctl) G.ctl.stop(true); G.ctl = null;
@@ -384,8 +427,8 @@
   }
   function paintTop() {
     if (!gEl) return;
-    const b = gEl.querySelector('[data-k=lobby]'), n = online().length;
-    b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}`;
+    const b = gEl.querySelector('[data-k=lobby]'), n = online().length, w = [...players.values()].filter(P => P.pending).length;
+    b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}${w ? ` · чекають: ${w}` : ''}`;
   }
   const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
 
@@ -397,23 +440,25 @@
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
       L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${LOGO()}
-        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона — або відкрийте <b class="url"></b> і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="row"><div class="qr"></div><div><p class="how">Скануйте QR-код камерою телефона<br>або відкрийте <b class="url"></b><br>і введіть код:</p><div class="code"></div><div class="st"></div></div></div>
+        <div class="pend" hidden><h3>Чекають підтвердження <span class="np"></span></h3><div class="chips pchips"></div></div>
         <h3>Гравці <span class="n"></span></h3><div class="chips"></div>
-        <p class="note">Досить імені чи прізвиська. Імена й бали ніде не зберігаються — лише на цьому екрані, поки триває гра. Натисніть на ім’я двічі, щоб вилучити гравця.</p>
+        <p class="note">Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p>
         <div class="btns"><button type="button" class="sk-btn main" data-k="close">Готово</button><button type="button" class="sk-btn warn" data-k="off">Вимкнути гру для телефонів</button></div></div>`;
       document.body.appendChild(L);
       L.addEventListener('click', e => {
-        const b = e.target.closest('[data-k],[data-tok]');
+        const b = e.target.closest('[data-k],[data-x],[data-ok]');
         if (!b) { if (e.target === L) closeLobby(); return; }
         if (b.dataset.k === 'close') closeLobby();
         else if (b.dataset.k === 'off') { stopNet(); closeLobby(); }
-        else if (b.dataset.tok) { if (killArm === b.dataset.tok) { killArm = ''; kick(b.dataset.tok); } else { killArm = b.dataset.tok; paintLobby(); } }
+        else if (b.dataset.x) kick(b.dataset.x);
+        else if (b.dataset.ok) approve(b.dataset.ok);
       });
     }
     L.hidden = false; paintLobby();
     setTimeout(() => { try { L.querySelector('[data-k=close].main').focus(); } catch (e) { /* ok */ } }, 50);
   }
-  function closeLobby() { if (L) L.hidden = true; killArm = ''; }
+  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); }
   let qrFor = '';
   function paintLobby() {
     if (!L || L.hidden) return;
@@ -423,9 +468,11 @@
     L.querySelector('.url').textContent = url.replace(/^https?:\/\//, '').replace(/\/$/, '');
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
-    const all = [...players.values()].sort((a, b) => a.seq - b.seq);
+    const all = accepted().sort((a, b) => a.seq - b.seq), pend = [...players.values()].filter(P => P.pending);
     L.querySelector('.n').textContent = all.length ? all.length : '';
-    L.querySelector('.chips').innerHTML = all.length ? all.map(P => `<button type="button" class="chip${P.on ? '' : ' off'}${killArm === P.tok ? ' kill' : ''}" data-tok="${P.tok}">${killArm === P.tok ? 'Вилучити ' : ''}${esc(P.name)}${killArm === P.tok ? '?' : ''}</button>`).join('') : '<span class="empty">Поки нікого. Щойно хтось підключиться, ім’я з’явиться тут.</span>';
+    L.querySelector('.chips:not(.pchips)').innerHTML = all.length ? all.map(P => `<span class="chip${P.on ? '' : ' off'}">${esc(P.name)}<button type="button" class="cx" data-x="${P.tok}" aria-label="Прибрати ${esc(P.name)}">✕</button></span>`).join('') : '<span class="empty">Поки нікого. Щойно хтось підключиться, ім’я з’явиться тут.</span>';
+    L.querySelector('.pend').hidden = !pend.length; L.querySelector('.np').textContent = pend.length || '';
+    L.querySelector('.pchips').innerHTML = pend.map(P => `<span class="chip wait">${esc(P.name)}<button type="button" class="cok" data-ok="${P.tok}" aria-label="Пустити ${esc(P.name)}">✓</button><button type="button" class="cx" data-x="${P.tok}" aria-label="Не пускати ${esc(P.name)}">✕</button></span>`).join('');
   }
 
   /* ================= клавіші ================= */
@@ -442,7 +489,7 @@
   document.addEventListener('keydown', e => { if ((L && !L.hidden) || G) { if (!e.defaultPrevented) key(e); e.stopImmediatePropagation(); } }, true);
 
   window.SKOB = {
-    lobby, ask, game, key, logo: LOGO,
+    lobby, ask, game, key, logo: LOGO, shuffle: shuf,
     close: () => { closeGame(true); closeLobby(); },
     count: () => online().length,
     active: () => !!G || !!(L && !L.hidden),

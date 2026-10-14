@@ -85,10 +85,10 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:10px;mi
       <p>Гра-вікторина: запитання — на великому екрані, відповіді — тут.</p>
       <div id="codebox"><label for="f-code">Код гри з екрана</label><input id="f-code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" placeholder="000 000"></div>
       <div class="codeline" id="codeknown" hidden><span>Код гри:</span><b id="codeval"></b><button type="button" class="btn link" id="codechg">змінити</button></div>
-      <div><label for="f-name">Твоє ім’я в грі</label><input id="f-name" maxlength="16" placeholder="Ім’я чи прізвисько" autocapitalize="words" enterkeyhint="go"></div>
+      <div><label for="f-name">Твоє ім’я</label><input id="f-name" maxlength="16" placeholder="Наприклад, Марко" autocapitalize="words" enterkeyhint="go"></div>
       <p class="err" id="err" role="alert"></p>
       <button class="btn main" type="submit">Увійти в гру</button>
-      <p class="mut">Досить імені чи прізвиська. Нічого не зберігається — ім’я й бали видно лише на екрані ведучого, поки триває гра.</p>
+      <p class="mut">Пиши своє справжнє ім’я — інакше ведучий не пустить у гру. Нічого не зберігається: ім’я й бали видно лише на екрані ведучого, поки триває гра.</p>
     </form>
     <!-- повідомлення -->
     <section class="scr res" id="s-msg" hidden><div class="big" id="m-big"></div><h2 id="m-h"></h2><p id="m-p"></p>
@@ -147,7 +147,8 @@ $('#s-join').addEventListener('submit', e => {
   const code = (ses.code || '').length === 6 ? ses.code : digits($('#f-code').value);
   const name = $('#f-name').value.replace(/\s+/g, ' ').trim();
   if (code.length !== 6) { $('#err').textContent = 'Введи 6 цифр коду з екрана.'; return; }
-  if (!name) { $('#err').textContent = 'Напиши ім’я чи прізвисько.'; $('#f-name').focus(); return; }
+  if (!name) { $('#err').textContent = 'Напиши своє ім’я.'; $('#f-name').focus(); return; }
+  if (!/^[A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії'’ʼ\- .]+$/.test(name) || name.replace(/[^A-Za-zА-ЩЬЮЯҐЄІЇа-щьюяґєії]/g, '').length < 2) { $('#err').textContent = 'Лише своє ім’я — літерами, без цифр і значків.'; $('#f-name').focus(); return; }
   if (code !== ses.code) ses.tok = '';
   ses.code = code; ses.name = name.slice(0, 16); ss.set(ses); tries = 0; connect();
 });
@@ -206,6 +207,12 @@ function onData(d) {
   lastRx = Date.now();
   if (d.t === 'pong') return;
   if (d.t === 'hi') { joined = true; tries = 0; ses.tok = d.tok; ses.name = d.name; ss.set(ses); chip('ok', 'На звʼязку'); cur = { score: d.score }; me(); wake(); return; }
+  if (d.t === 'pending') { joined = true; tries = 0; ses.tok = d.tok; ses.name = d.name; ss.set(ses); chip('wait', 'Чекаємо ведучого'); me(); msg('✋', 'Чекаємо, поки ведучий тебе пустить', 'Ім’я «' + d.name + '» має підтвердити ведучий. Зачекай хвилинку.'); return; }
+  if (d.t === 'bye' && (d.r === 'name' || d.r === 'badname')) {
+    joined = false; ses.tok = ''; ss.set(ses); stop(); me();
+    showJoin(d.r === 'name' ? 'Ведучий просить написати твоє справжнє ім’я.' : 'Таке ім’я не підходить. Напиши своє справжнє ім’я.');
+    $('#f-name').value = ''; return;
+  }
   if (d.t === 'bye') {
     joined = false; const tok = ses.tok; ses.tok = ''; ss.set(ses); stop(); chip('bad', 'Не підключено'); me();
     if (d.r === 'kicked') msg('👋', 'Ведучий вилучив тебе з гри', 'Якщо це помилка — попроси ведучого й увійди знову.', false, true);
