@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#16181c">
+<title>Потужний СКОБ!</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Сторінка гравця «Потужний СКОБ!»: телефон підключається до екрана ведучого за кодом. Нічого не зберігає, крім цієї вкладки. */
+:root{color-scheme:dark;--bg:#16181c;--card:#22262b;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ok:#3ee08f;--no:#ff6b5e;
+  --c0:#d64541;--c1:#2f6fd0;--c2:#e8b02a;--c3:#2e8f55;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt);-webkit-tap-highlight-color:transparent;overscroll-behavior:none}
+button,input{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+#app{min-height:100%;display:flex;flex-direction:column;padding:max(12px,env(safe-area-inset-top)) 16px max(12px,env(safe-area-inset-bottom))}
+.bar{display:flex;align-items:center;gap:10px;min-height:40px}
+.bar .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:14px;color:var(--mut)}
+.chip i{width:9px;height:9px;border-radius:50%;background:#6b7480}
+.chip[data-s=ok] i{background:var(--ok);box-shadow:0 0 8px var(--ok)}.chip[data-s=wait] i{background:var(--gd);animation:pl 1.2s infinite}.chip[data-s=bad] i{background:var(--no)}
+@keyframes pl{50%{opacity:.3}}
+.me{font-weight:700;max-width:45vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me small{color:var(--gd);font:600 14px var(--disp);margin-left:6px}
+main{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
+.scr{display:flex;flex-direction:column;gap:14px;animation:up .35s both}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+.logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-size:64px;font-family:var(--disp)}
+.logo small{font:600 .3em/1 var(--disp);letter-spacing:.32em;text-transform:uppercase;color:var(--gd);margin:0 0 .2em .05em}
+.logo span{display:flex;gap:.08em;align-items:center}
+.logo i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.logo i:nth-child(1){background:var(--c0)}.logo i:nth-child(2){background:var(--c1)}.logo i:nth-child(3){background:var(--c2);color:#1d1606}.logo i:nth-child(4){background:var(--c3)}
+.logo b{font:600 .9em/1 var(--disp);color:var(--gd)}
+h1,h2{margin:0;font:600 30px/1.1 var(--disp);letter-spacing:.02em}
+h2{font-size:26px}
+p{margin:0;color:var(--body)}
+.mut{color:var(--mut);font-size:15px}
+label{display:block;font-weight:700;margin-bottom:6px}
+input{width:100%;min-height:56px;padding:10px 16px;border-radius:14px;border:2px solid var(--ln);background:var(--card);font-size:22px}
+input:focus{border-color:var(--gd);outline:none}
+#f-code{font:600 30px var(--disp);letter-spacing:.2em;text-align:center}
+.btn{min-height:56px;padding:10px 20px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:18px;cursor:pointer}
+.btn.main{background:var(--gd);border-color:var(--gd);color:#16130a}
+.btn.link{min-height:40px;border:0;background:none;color:var(--mut);font-weight:600;font-size:15px;text-decoration:underline;padding:4px 0;align-self:flex-start}
+.err{min-height:1.4em;color:#ffb3ab;font-weight:600}
+.codeline{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.codeline b{font:600 26px var(--disp);letter-spacing:.12em;color:var(--gd)}
+.big{font-size:64px;line-height:1}
+.lbl{font:500 22px/1.1 var(--hand);color:var(--ac)}
+.qq{font:600 22px/1.2 var(--disp)}
+.tbar{height:8px;border-radius:99px;background:#2a2f35;overflow:hidden}
+.tbar i{display:block;height:100%;width:100%;background:var(--gd);transform-origin:left}
+#ans{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:minmax(110px,1fr);gap:10px;min-height:0}
+#ans button{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:6px;padding:12px 14px;border:0;border-radius:18px;color:#fff;text-align:left;font-weight:700;font-size:17px;line-height:1.2;box-shadow:inset 0 -6px 0 rgba(0,0,0,.22);cursor:pointer;touch-action:manipulation}
+#ans button:active{transform:scale(.97)}
+#ans button i{font:600 40px/1 var(--disp);font-style:normal}
+#ans button:nth-child(1){background:var(--c0)}#ans button:nth-child(2){background:var(--c1)}#ans button:nth-child(3){background:var(--c2);color:#1d1606}#ans button:nth-child(4){background:var(--c3)}
+@media (orientation:landscape) and (max-height:500px){#ans{grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(90px,1fr)}.qq{font-size:18px}}
+.tile{display:grid;place-items:center;width:120px;height:120px;border-radius:24px;font:600 64px/1 var(--disp);color:#fff;align-self:center}
+.res{align-items:center;text-align:center}
+.res .mark{display:grid;place-items:center;width:120px;height:120px;border-radius:50%;font:700 70px/1 var(--disp);color:#0f1714}
+.res.ok .mark{background:var(--ok)}.res.no .mark{background:var(--no);color:#fff}.res.late .mark{background:#6b7480;color:#fff}
+.res .pts{font:600 40px var(--disp);color:var(--gd)}
+.stat{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.stat span{padding:8px 14px;border-radius:12px;background:var(--card);border:1px solid var(--ln);font-weight:700}
+.stat span b{color:var(--gd);font-family:var(--disp);font-size:20px;margin-left:4px}
+.place{font:600 96px/1 var(--disp);color:var(--gd)}
+.place small{font-size:.35em;color:var(--mut)}
+ol.top{margin:0;padding-left:28px;text-align:left;font-weight:700}ol.top li{margin:4px 0}ol.top li span{color:var(--mut);font-weight:600}
+footer{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:36px;margin-top:10px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bar"><span class="chip" id="chip" data-s=""><i></i><span id="chiptxt">Не підключено</span></span><span class="sp"></span><span class="me" id="me" hidden></span></div>
+  <main>
+    <!-- вхід -->
+    <form class="scr" id="s-join" autocomplete="off" novalidate>
+      <span class="logo" aria-label="Потужний СКОБ!"><small>Потужний</small><span><i>С</i><i>К</i><i>О</i><i>Б</i><b>!</b></span></span>
+      <p>Гра-вікторина: запитання — на великому екрані, відповіді — тут.</p>
+      <div id="codebox"><label for="f-code">Код гри з екрана</label><input id="f-code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" placeholder="000 000"></div>
+      <div class="codeline" id="codeknown" hidden><span>Код гри:</span><b id="codeval"></b><button type="button" class="btn link" id="codechg">змінити</button></div>
+      <div><label for="f-name">Твоє ім’я в грі</label><input id="f-name" maxlength="16" placeholder="Ім’я чи прізвисько" autocapitalize="words" enterkeyhint="go"></div>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn main" type="submit">Увійти в гру</button>
+      <p class="mut">Досить імені чи прізвиська. Нічого не зберігається — ім’я й бали видно лише на екрані ведучого, поки триває гра.</p>
+    </form>
+    <!-- повідомлення -->
+    <section class="scr res" id="s-msg" hidden><div class="big" id="m-big"></div><h2 id="m-h"></h2><p id="m-p"></p>
+      <button class="btn main" type="button" id="m-retry" hidden>Спробувати ще раз</button><button class="btn" type="button" id="m-new" hidden>Ввести інший код</button></section>
+    <!-- очікування -->
+    <section class="scr res" id="s-wait" hidden><div class="big">👀</div><h2 id="w-h">Ти в грі!</h2><p id="w-p">Дивись на екран — гра скоро почнеться.</p><div class="stat" id="w-stat" hidden><span>Бали<b id="w-score"></b></span></div></section>
+    <!-- читаємо запитання -->
+    <section class="scr" id="s-read" hidden><div class="lbl" id="r-lbl"></div><div class="qq" id="r-q"></div><p class="mut">Читай запитання — варіанти зараз з’являться.</p></section>
+    <!-- відповідь -->
+    <section class="scr" id="s-ask" hidden style="flex:1"><div class="lbl" id="a-lbl"></div><div class="qq" id="a-q"></div><div class="tbar"><i id="a-bar"></i></div>
+      <div id="ans"></div></section>
+    <!-- відповідь прийнято -->
+    <section class="scr res" id="s-got" hidden><div class="tile" id="g-tile"></div><h2>Відповідь прийнято</h2><p>Чекаємо на інших…</p></section>
+    <!-- результат -->
+    <section class="scr res" id="s-res" hidden><div class="mark" id="x-mark"></div><h2 id="x-h"></h2><div class="pts" id="x-pts"></div><p id="x-right"></p><div class="stat"><span>Бали<b id="x-score"></b></span><span>Місце<b id="x-rank"></b></span></div></section>
+    <!-- місце після запитання -->
+    <section class="scr res" id="s-lead" hidden><p>Ти зараз на</p><div class="place" id="l-place"></div><div class="stat"><span>Бали<b id="l-score"></b></span></div></section>
+    <!-- кінець -->
+    <section class="scr res" id="s-end" hidden><h2>Гру завершено!</h2><div class="place" id="e-place"></div><div class="stat"><span>Бали<b id="e-score"></b></span></div><ol class="top" id="e-top"></ol><p class="mut">СКОБ! Сильно, Красно, Обережно, Бистро.</p></section>
+  </main>
+  <footer><span class="mut" id="ft"></span><button class="btn link" type="button" id="leave" hidden>Вийти з гри</button></footer>
+</div>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], KEY = 'skob.ses';
+const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const digits = s => String(s || '').replace(/\D/g, '');
+const fmt = c => c.length > 3 ? c.slice(0, 3) + ' ' + c.slice(3) : c;
+const ss = { get() { try { return JSON.parse(sessionStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }, set(v) { try { sessionStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* ok */ } } };
+let ses = ss.get();
+const urlCode = digits(new URLSearchParams(location.search).get('k'));
+if (urlCode.length === 6 && urlCode !== ses.code) ses = { code: urlCode, name: ses.name || '' };
+let Peer = null, peer = null, conn = null, att = 0, tries = 0, retryT = 0, hbT = 0, lastRx = 0, joined = false, wl = null, cur = null, askT = 0;
+
+const SCR = ['s-join', 's-msg', 's-wait', 's-read', 's-ask', 's-got', 's-res', 's-lead', 's-end'];
+function show(id) { SCR.forEach(s => { $('#' + s).hidden = s !== id; }); $('#leave').hidden = id === 's-join' || !ses.code; }
+const chip = (s, t) => { $('#chip').dataset.s = s; $('#chiptxt').textContent = t; };
+function me() { const m = $('#me'); if (ses.name && joined) { m.hidden = false; m.innerHTML = ''; m.append(ses.name); if (cur && cur.score != null) { const sm = document.createElement('small'); sm.textContent = num(cur.score); m.append(sm); } } else m.hidden = true; }
+function msg(big, h, p, retry, nw) { show('s-msg'); $('#m-big').textContent = big; $('#m-h').textContent = h; $('#m-p').textContent = p || ''; $('#m-retry').hidden = !retry; $('#m-new').hidden = !nw; }
+
+/* ---------- вхід ---------- */
+function showJoin(err) {
+  stop(); joined = false; chip('', 'Не підключено'); show('s-join'); me();
+  const known = (ses.code || '').length === 6;
+  $('#codebox').hidden = known; $('#codeknown').hidden = !known; $('#codeval').textContent = fmt(ses.code || '');
+  $('#f-name').value = ses.name || ''; $('#err').textContent = err || '';
+  setTimeout(() => { try { (known ? $('#f-name') : $('#f-code')).focus(); } catch (e) { /* ok */ } }, 60);
+}
+$('#codechg').addEventListener('click', () => { ses.code = ''; ses.tok = ''; ss.set(ses); showJoin(); });
+$('#f-code').addEventListener('input', e => { const d = digits(e.target.value).slice(0, 6); e.target.value = fmt(d); });
+$('#s-join').addEventListener('submit', e => {
+  e.preventDefault();
+  const code = (ses.code || '').length === 6 ? ses.code : digits($('#f-code').value);
+  const name = $('#f-name').value.replace(/\s+/g, ' ').trim();
+  if (code.length !== 6) { $('#err').textContent = 'Введи 6 цифр коду з екрана.'; return; }
+  if (!name) { $('#err').textContent = 'Напиши ім’я чи прізвисько.'; $('#f-name').focus(); return; }
+  if (code !== ses.code) ses.tok = '';
+  ses.code = code; ses.name = name.slice(0, 16); ss.set(ses); tries = 0; connect();
+});
+$('#m-retry').addEventListener('click', () => { tries = 0; connect(); });
+$('#m-new').addEventListener('click', () => { ses.code = ''; ses.tok = ''; ss.set(ses); showJoin(); });
+$('#leave').addEventListener('click', () => { try { if (conn && conn.open) conn.send({ t: 'leave' }); } catch (e) { /* ok */ } setTimeout(() => { ses = { name: ses.name }; ss.set(ses); showJoin(); }, 200); });
+
+/* ---------- звʼязок ---------- */
+function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
+async function getPeer() { if (window.Peer) return window.Peer; for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* далі */ } } throw new Error('lib'); }
+function stop() { att++; clearTimeout(retryT); clearInterval(hbT); hbT = 0; const c = conn, p = peer; conn = null; peer = null; try { if (c) c.close(); } catch (e) { /* ok */ } try { if (p) p.destroy(); } catch (e) { /* ok */ } }
+function connect() {
+  stop(); const my = att;
+  chip('wait', tries ? 'Відновлюємо звʼязок…' : 'Підключаємось…');
+  if (!joined) msg('📡', 'Підключаємось…', 'Шукаємо гру з кодом ' + fmt(ses.code) + '.');
+  (async () => {
+    try { Peer = await getPeer(); } catch (e) { if (my === att) fail('lib'); return; }
+    if (my !== att) return;
+    let p; try { p = new Peer(undefined, window.GUTIRKA_PEER_OPTS || {}); } catch (e) { msg('⚠️', 'Браузер не підтримується', 'Відкрий цю сторінку в Chrome або Safari.'); return; }
+    peer = p; let opened = false;
+    const tmo = setTimeout(() => { if (my === att && !opened) fail('timeout'); }, 14000);
+    p.on('error', err => { if (my !== att) return; clearTimeout(tmo); fail(err && err.type === 'peer-unavailable' ? 'notfound' : 'net'); });
+    p.on('open', () => {
+      if (my !== att) return;
+      const c = p.connect(PREFIX + ses.code, { reliable: true }); conn = c;
+      c.on('open', () => { if (my !== att) return; opened = true; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'join', name: ses.name, tok: ses.tok || '' }); startHb(); });
+      c.on('data', d => { if (my === att) onData(d); });
+      c.on('close', () => { if (my === att) fail('lost'); });
+      c.on('error', () => { if (my === att) fail('net'); });
+    });
+  })();
+}
+function fail(why) {
+  stop(); tries++;
+  if (why === 'notfound' && (!joined || tries > 4)) { joined = false; chip('bad', 'Не підключено'); msg('🔍', 'Гру з кодом ' + fmt(ses.code) + ' не знайдено', 'Перевір код на екрані ведучого. Можливо, гру ще не ввімкнули або вже вимкнули.', true, true); return; }
+  if (why === 'lib') { chip('bad', 'Немає звʼязку'); msg('📡', 'Немає інтернету', 'Не вдалося завантажити звʼязок. Перевір інтернет і спробуй ще раз.', true, false); return; }
+  chip('wait', 'Відновлюємо звʼязок…');
+  if (!joined && tries > 3) { msg('📡', 'Не виходить підключитись', 'Пробуємо ще… Перевір інтернет або введи код ще раз.', true, true); }
+  retryT = setTimeout(connect, Math.min(8000, 700 * Math.pow(1.6, Math.min(tries, 7))));
+}
+function startHb() {
+  clearInterval(hbT);
+  hbT = setInterval(() => { if (!conn || !conn.open) return; if (Date.now() - lastRx > 12000) { fail('lost'); return; } try { conn.send({ t: 'ping' }); } catch (e) { /* ok */ } }, 4000);
+}
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return; wake();
+  if (joined) { if (!conn || !conn.open || Date.now() - lastRx > 8000) { tries = 0; connect(); } else try { conn.send({ t: 'sync' }); } catch (e) { /* ok */ } }
+});
+addEventListener('online', () => { if (joined) { tries = 0; connect(); } });
+async function wake() { try { if (joined && 'wakeLock' in navigator && !wl) { wl = await navigator.wakeLock.request('screen'); wl.addEventListener('release', () => { wl = null; }); } } catch (e) { wl = null; } }
+const buzz = ms => { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) { /* ok */ } };
+
+/* ---------- повідомлення від екрана ---------- */
+function onData(d) {
+  if (!d || typeof d !== 'object') return;
+  lastRx = Date.now();
+  if (d.t === 'pong') return;
+  if (d.t === 'hi') { joined = true; tries = 0; ses.tok = d.tok; ses.name = d.name; ss.set(ses); chip('ok', 'На звʼязку'); cur = { score: d.score }; me(); wake(); return; }
+  if (d.t === 'bye') {
+    joined = false; const tok = ses.tok; ses.tok = ''; ss.set(ses); stop(); chip('bad', 'Не підключено'); me();
+    if (d.r === 'kicked') msg('👋', 'Ведучий вилучив тебе з гри', 'Якщо це помилка — попроси ведучого й увійди знову.', false, true);
+    else if (d.r === 'full') msg('🙈', 'У грі вже забагато гравців', 'Спробуй разом із кимось з одного телефона.', true, true);
+    else msg('🏁', 'Гру завершено', 'Ведучий вимкнув гру. Дякуємо, що грав!', false, true);
+    void tok; return;
+  }
+  if (d.score != null) { cur = Object.assign(cur || {}, { score: d.score }); me(); }
+  clearInterval(askT);
+  if (d.t === 'wait') { show('s-wait'); $('#w-h').textContent = 'Ти в грі, ' + (ses.name || '') + '!'; $('#w-p').textContent = 'Дивись на екран — запитання з’явиться і тут.'; $('#w-stat').hidden = !d.score; $('#w-score').textContent = num(d.score || 0); }
+  else if (d.t === 'read') { show('s-read'); $('#r-lbl').textContent = d.lbl || ''; $('#r-q').textContent = d.q; }
+  else if (d.t === 'ask') askScreen(d);
+  else if (d.t === 'got') gotScreen(d.o);
+  else if (d.t === 'res') {
+    show('s-res'); const el = $('#s-res');
+    const late = d.got < 0;
+    el.className = 'scr res ' + (d.ok ? 'ok' : late ? 'late' : 'no');
+    $('#x-mark').textContent = d.ok ? '✓' : late ? '⏱' : '✕';
+    $('#x-h').textContent = d.ok ? 'Правильно!' : late ? 'Час вийшов' : 'Не зовсім';
+    $('#x-pts').textContent = d.ok ? '+' + num(d.pts) : '';
+    $('#x-right').textContent = d.ok ? '' : 'Правильна відповідь: ' + LET[d.right] + ' — ' + d.rightText;
+    $('#x-score').textContent = num(d.score); $('#x-rank').textContent = d.rank + ' з ' + d.of;
+    buzz(d.ok ? [30, 60, 30] : 120);
+  }
+  else if (d.t === 'lead') { show('s-lead'); $('#l-place').innerHTML = d.rank + '<small> місці з ' + d.of + '</small>'; $('#l-score').textContent = num(d.score); }
+  else if (d.t === 'end') {
+    show('s-end'); $('#e-place').innerHTML = d.rank + '<small> місце з ' + d.of + '</small>'; $('#e-score').textContent = num(d.score);
+    const ol = $('#e-top'); ol.innerHTML = ''; (d.top || []).forEach(x => { const li = document.createElement('li'); li.append(x.name + ' '); const s = document.createElement('span'); s.textContent = num(x.score); li.append(s); ol.append(li); });
+    buzz([40, 60, 40, 60, 80]);
+  }
+}
+function askScreen(d) {
+  show('s-ask'); $('#a-lbl').textContent = d.lbl || ''; $('#a-q').textContent = d.q;
+  const box = $('#ans'); box.innerHTML = '';
+  d.a.forEach((t, i) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.o = i; const ii = document.createElement('i'); ii.textContent = LET[i]; const sp = document.createElement('span'); sp.textContent = t; b.append(ii, sp); b.setAttribute('aria-label', LET[i] + ': ' + t); box.append(b); });
+  box.onclick = e => { const b = e.target.closest('button'); if (!b) return; const o = +b.dataset.o; try { conn.send({ t: 'ans', id: d.id, o }); } catch (err) { /* ok */ } buzz(25); gotScreen(o); };
+  const end = Date.now() + (d.left || 0), T = (d.T || 20) * 1000, bar = $('#a-bar');
+  const draw = () => { const left = Math.max(0, end - Date.now()); bar.style.transform = 'scaleX(' + (left / T) + ')'; bar.style.background = left < 5000 ? 'var(--no)' : 'var(--gd)'; };
+  draw(); askT = setInterval(draw, 150); buzz(40);
+}
+function gotScreen(o) { clearInterval(askT); show('s-got'); const t = $('#g-tile'); t.textContent = LET[o] || '?'; t.style.background = 'var(--c' + (o >= 0 && o < 4 ? o : 0) + ')'; t.style.color = o === 2 ? '#1d1606' : '#fff'; }
+
+/* ---------- старт ---------- */
+$('#ft').textContent = '';
+if ((ses.code || '').length === 6 && ses.name && ses.tok) { tries = 0; connect(); } else showJoin();
+})();
+</script>
+</body>
+</html>
