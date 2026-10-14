@@ -249,11 +249,11 @@ ${hg(id + 'bf', '#7a5126', '#f2c48e', '#d9a066', '#6a4420')}
       const slab = `<path d="M${X[2] - 120},${by - 10} L${X[2] - 60},${by - 50} L${X[2] + 10},${by - 50} L${X[2] - 50},${by - 10}Z" fill="url(#${id}raw)" stroke="${K.line}" stroke-width="2"/>` +
         `<g transform="rotate(-34 ${X[2] - 52} ${by - 66})"><rect x="${X[2] - 112}" y="${by - 76}" width="120" height="20" rx="10" fill="url(#${id}gd)" stroke="${K.gdHi}" stroke-width="1.4"/></g>` +
         `<path d="M${X[2] + 30},${by - 6} L${X[2] + 30},${by - 76} L${X[2] + 66},${by - 100} L${X[2] + 126},${by - 100} L${X[2] + 126},${by - 30} L${X[2] + 90},${by - 6}Z" fill="url(#${id}raw)" stroke="${K.line}" stroke-width="2"/><path d="M${X[2] + 30},${by - 76} L${X[2] + 90},${by - 76} L${X[2] + 126},${by - 100} M${X[2] + 90},${by - 76} L${X[2] + 90},${by - 6}" fill="none" stroke="${K.hi}" stroke-width="2" stroke-dasharray="5 4"/>`;
-      return svg(840, 360, 'Щипкова техніка, джгути, пласти', id, spot(id, 420, 200, 430, 170) +
+      return svg(840, 360, 'Вільне ліплення, стрічкове ліплення, пласти', id, spot(id, 420, 200, 430, 170) +
         `<circle cx="${X[0] - 92}" cy="${by - 110}" r="24" fill="url(#${id}raw)" stroke="${K.line}" stroke-width="2"/>` + arrow(id, X[0] - 62, by - 106, X[0] - 30, by - 92) +
         vessel(X[0], by, 'bowl', 1.35, `url(#${id}raw)`, { id, deco: (p, x, b) => dots([[x - 40, b - 26], [x - 18, b - 18], [x + 8, b - 20], [x + 32, b - 28], [x - 28, b - 38], [x + 20, b - 40]], 4.5, '#2a1d15') }) +
         coils + `<path d="M${X[1] - 60},${by - 160} C${X[1] - 20},${by - 186} ${X[1] + 40},${by - 186} ${X[1] + 80},${by - 160}" fill="none" stroke="#866850" stroke-width="14" stroke-linecap="round"/>` + arrow(id, X[1] + 92, by - 168, X[1] + 66, by - 146) +
-        slab + pill(X[0], 316, 'Щипкова') + pill(X[1], 316, 'Джгути') + pill(X[2], 316, 'Пласти'));
+        slab + pill(X[0], 316, 'Вільне', 'middle', 'gd') + pill(X[1], 316, 'Стрічкове', 'middle', 'gd') + pill(X[2], 316, 'Пласти'));
     },
     /* гончарний круг */
     wheel() {
@@ -290,15 +290,30 @@ ${hg(id + 'bf', '#7a5126', '#f2c48e', '#d9a066', '#6a4420')}
       return svg(880, 420, 'Шлікерне лиття в гіпсову форму: три кроки', id, spot(id, 440, 210, 440, 190) + p1 + p2 + p3 +
         pill(X[0], 345, '1. Заливаємо шлікер') + pill(X[1], 345, '2. Гіпс вбирає воду —\nросте стінка', 'middle', 'ac') + pill(X[2], 380, '3. Зайве виливаємо'));
     },
-    /* пресування */
+    /* пресування з порошкоподібної маси */
     press() {
-      const id = uid(), cx = 230, by = 300;
-      return svg(760, 400, 'Прес вдавлює глину у форму: кахля з рельєфом', id, spot(id, 380, 220, 380, 170) +
-        `<rect x="${cx - 120}" y="${by - 70}" width="240" height="80" rx="6" fill="#3a2a20" stroke="${K.line}" stroke-width="2"/><rect x="${cx - 100}" y="${by - 66}" width="200" height="40" fill="url(#${id}cl)" stroke="${K.line}" stroke-width="1.5"/>` +
-        `<g class="la-press"><rect x="${cx - 8}" y="${by - 250}" width="16" height="110" fill="url(#${id}gd)" stroke="${K.gdHi}" stroke-width="1.4"/><rect x="${cx - 100}" y="${by - 146}" width="200" height="40" rx="4" fill="url(#${id}gd)" stroke="${K.gdHi}" stroke-width="1.6"/>${zig(cx - 96, by - 106, 192, 10, 12, '#a86d0c', 3)}</g>` +
-        `<path d="M${cx + 150},${by - 180} L${cx + 150},${by - 110}" stroke="${K.gd}" stroke-width="3" marker-end="url(#${id}a)"/>` +
-        arrow(id, cx + 160, by - 40, 450, by - 40) + kahlya(480, by - 160, 160, `url(#${id}cl)`, '#ffe08a', id) +
-        pill(cx, by + 46, 'Прес і форма') + pill(560, by + 46, 'Кахля з рельєфом', 'middle', 'gd'));
+      const id = uid(), cx = 220, by = 300;
+      let powder = ''; for (let k = 0; k < 70; k++) powder += `<circle cx="${f(cx - 96 + (k * 37) % 192)}" cy="${f(by - 62 + (k * 13) % 36)}" r="${k % 3 ? 2.2 : 3}" fill="${k % 4 ? '#e6d3b9' : '#c9b08f'}"/>`;
+      const tile = (x, y, w, c) => `<path d="M${x},${y} L${x + w * .5},${y - w * .26} L${x + w * 1.5},${y - w * .26} L${x + w},${y}Z" fill="${c}" stroke="${K.line}" stroke-width="2"/><path d="M${x},${y} L${x + w},${y} L${x + w},${y + 12} L${x},${y + 12}Z" fill="#6e2c14" stroke="${K.line}" stroke-width="2"/><path d="M${x + w},${y} L${x + w * 1.5},${y - w * .26} L${x + w * 1.5},${y - w * .26 + 12} L${x + w},${y + 12}Z" fill="#4e1d0c" stroke="${K.line}" stroke-width="2"/>`;
+      return svg(780, 400, 'Прес стискає порошкоподібну масу в сталевій формі: плитка', id, spot(id, 390, 220, 390, 170) +
+        `<rect x="${cx - 122}" y="${by - 74}" width="244" height="84" rx="4" fill="url(#${id}gr)" stroke="${K.line}" stroke-width="2"/><rect x="${cx - 100}" y="${by - 66}" width="200" height="44" fill="#2a1d15"/>` + powder +
+        `<g class="la-press"><rect x="${cx - 10}" y="${by - 250}" width="20" height="120" fill="url(#${id}gr)" stroke="${K.hi}" stroke-width="1.4"/><rect x="${cx - 98}" y="${by - 132}" width="196" height="40" rx="3" fill="url(#${id}gr)" stroke="${K.hi}" stroke-width="1.6"/></g>` +
+        `<path d="M${cx + 150},${by - 190} L${cx + 150},${by - 112}" stroke="${K.gd}" stroke-width="4" marker-end="url(#${id}a)"/><path d="M${cx - 150},${by - 190} L${cx - 150},${by - 112}" stroke="${K.gd}" stroke-width="4" marker-end="url(#${id}a)"/>` +
+        arrow(id, cx + 140, by - 40, 450, by - 40) + tile(470, by - 20, 130, `url(#${id}cl)`) + tile(478, by - 60, 130, '#e9875a') + tile(486, by - 100, 130, `url(#${id}tl)`) +
+        pill(cx, by + 46, 'Порошок у сталевій формі') + pill(cx, by - 270, 'Прес', 'middle', 'gd') + pill(590, by + 46, 'Плитка', 'middle', 'gd'));
+    },
+    /* ліплення в гіпсових формах: відтискування */
+    gyps() {
+      const id = uid(), cx = 230, top = 170, W = 300, H = 120;
+      const relief = `M${cx - 110},${top + 30} L${cx - 110},${top + 70} Q${cx - 80},${top + 92} ${cx - 50},${top + 70} Q${cx - 25},${top + 50} ${cx},${top + 74} Q${cx + 25},${top + 50} ${cx + 50},${top + 70} Q${cx + 80},${top + 92} ${cx + 110},${top + 70} L${cx + 110},${top + 30}Z`;
+      return svg(840, 400, 'Глину вдавлюють у гіпсову форму, гіпс вбирає воду, виріб відстає', id, spot(id, 420, 220, 420, 170) +
+        `<rect x="${cx - W / 2}" y="${top}" width="${W}" height="${H}" rx="6" fill="url(#${id}pl)" stroke="${K.line}" stroke-width="2"/><path d="${relief}" fill="#1a0d07" stroke="#8b939c" stroke-width="1.6"/>` +
+        `<clipPath id="${id}cg"><path d="${relief}"/></clipPath><rect x="${cx - 112}" y="${top + 26}" width="224" height="72" fill="url(#${id}cl)" clip-path="url(#${id}cg)" class="la-hl"/>` +
+        `<g class="la-press">${[-60, 0, 60].map(dx => `<path d="M${cx + dx},${top - 70} L${cx + dx},${top + 14}" stroke="${K.gd}" stroke-width="4" marker-end="url(#${id}a)"/>`).join('')}</g>` +
+        [[-150, 60], [150, 60], [-90, 112], [90, 112]].map(([dx, dy]) => arrow(id, cx + dx * .62, top + dy, cx + dx, top + dy, 'at')).join('') +
+        arrow(id, cx + 170, top + 60, 520, top + 60) + kahlya(560, top - 40, 180, `url(#${id}cl)`, '#ffe08a', id) +
+        `<path d="M650,${top + 180} L650,${top + 150}" stroke="${K.ac}" stroke-width="3" marker-end="url(#${id}at)"/>` +
+        pill(cx, top - 96, 'Вдавлюємо глину пальцями', 'middle', 'gd') + pill(cx, top + H + 40, 'Гіпс вбирає воду', 'middle', 'ac') + pill(650, top + 200, 'Виріб відстає від форми'));
     },
     /* п'ять технік разом */
     techs() {
@@ -308,9 +323,10 @@ ${hg(id + 'bf', '#7a5126', '#f2c48e', '#d9a066', '#6a4420')}
         wheelHead(X[1], by, 70, id) + vessel(X[1], by - 2, 'cyl', 1.05, `url(#${id}raw)`, { id, bands: [[24, K.hi, 1.2], [44, K.hi, 1.2], [64, K.hi, 1.2]] }),
         wheelHead(X[2], by, 74, id, false) + `<path d="M${X[2] - 62},${by - 4} C${X[2] - 54},${by - 52} ${X[2] + 54},${by - 52} ${X[2] + 62},${by - 4}Z" fill="url(#${id}pl)" stroke="${K.line}" stroke-width="1.6"/><path d="M${X[2] - 68},${by - 2} C${X[2] - 60},${by - 62} ${X[2] + 60},${by - 62} ${X[2] + 68},${by - 2} L${X[2] + 62},${by - 4} C${X[2] + 54},${by - 52} ${X[2] - 54},${by - 52} ${X[2] - 62},${by - 4}Z" fill="url(#${id}cl)" stroke="${K.line}" stroke-width="1.6"/><path d="M${X[2] - 3},${by - 120} L${X[2] + 3},${by - 120} L${X[2] + 3},${by - 86} L${X[2] + 66},${by - 86} L${X[2] + 70},${by - 2} C${X[2] + 60},${by - 62} ${X[2]},${by - 60} ${X[2] - 3},${by - 58}Z" fill="url(#${id}gd)" stroke="${K.gdHi}" stroke-width="1.2"/>`,
         `<rect x="${X[3] - 56}" y="${by - 120}" width="112" height="120" rx="5" fill="url(#${id}pl)" stroke="${K.line}" stroke-width="1.6"/><path d="M${X[3] - 16},${by - 120} L${X[3] - 16},${by - 110} C${X[3] - 36},${by - 90} ${X[3] - 40},${by - 34} ${X[3] - 26},${by - 16} L${X[3] + 26},${by - 16} C${X[3] + 40},${by - 34} ${X[3] + 36},${by - 90} ${X[3] + 16},${by - 110} L${X[3] + 16},${by - 120}Z" fill="url(#${id}sl)" stroke="#8b939c" stroke-width="1.4"/><path d="M${X[3]},${by - 170} L${X[3]},${by - 116}" stroke="#d8c3a6" stroke-width="8" stroke-linecap="round"/><path d="M${X[3]},${by - 170} L${X[3]},${by - 116}" stroke="#fff3dc" stroke-width="2.4" class="la-flow"/>`,
-        kahlya(X[4] - 50, by - 100, 100, `url(#${id}cl)`, '#ffe08a', id) + `<path d="M${X[4]},${by - 170} L${X[4]},${by - 112}" stroke="${K.gd}" stroke-width="3" marker-end="url(#${id}a)"/>`
+        `<rect x="${X[4] - 58}" y="${by - 60}" width="116" height="60" rx="3" fill="url(#${id}gr)" stroke="${K.line}" stroke-width="1.6"/><rect x="${X[4] - 46}" y="${by - 54}" width="92" height="30" fill="#2a1d15"/>` + [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map(k => `<circle cx="${X[4] - 40 + (k * 23) % 82}" cy="${by - 48 + (k * 7) % 20}" r="2.4" fill="#e6d3b9"/>`).join('') +
+        `<g class="la-press"><rect x="${X[4] - 6}" y="${by - 160}" width="12" height="70" fill="url(#${id}gr)" stroke="${K.hi}" stroke-width="1.2"/><rect x="${X[4] - 44}" y="${by - 96}" width="88" height="22" rx="2" fill="url(#${id}gr)" stroke="${K.hi}" stroke-width="1.4"/></g>`
       ];
-      const L = ['Ліплення', 'Круг', 'Шаблон', 'Лиття', 'Пресування'];
+      const L = ['а · Ліплення', 'б · Точення', 'в · Шаблон', 'г · Гіпс', 'ґ · Пресування'];
       return svg(900, 320, 'П’ять технік формотворення', id, spot(id, 450, 170, 460, 150) + mini.join('') + X.map((x, i) => pill(x, 286, L[i], 'middle', i === 3 ? 'ac' : 'ink')).join(''));
     },
     /* температура випалу */
@@ -346,17 +362,17 @@ ${hg(id + 'bf', '#7a5126', '#f2c48e', '#d9a066', '#6a4420')}
         `<g transform="translate(${x + 130} ${sy - 40})"><circle r="34" fill="#9fdcff" fill-opacity=".14" stroke="${K.gd}" stroke-width="5"/><path d="M24,24 L60,60" stroke="${K.gd}" stroke-width="10" stroke-linecap="round"/></g>` +
         pill(x - 16, y + 50, 'Звідки?', 'end', 'gd', 17) + pill(x - 16, y + 200, 'Як зроблено?', 'end', 'gd', 17) + pill(x + w + 16, y + 50, 'Який вид?', 'start', 'gd', 17) + pill(x + w + 16, y + 200, 'Для чого?', 'start', 'gd', 17));
     },
-    /* три вироби */
+    /* три речі за вимогою: тарілка, миска, глечик або горнятко */
     three() {
-      const id = uid(), by = 260, X = [140, 420, 700];
-      const coilCup = vessel(X[1], by, 'cyl', 1.5, `url(#${id}cl)`, { id, bands: [[18, '#ffb27a', 2], [36, '#ffb27a', 2], [54, '#ffb27a', 2], [72, '#ffb27a', 2]], rim: true }) +
-        [-24, 0, 22].map((dx, i) => `<rect x="${X[1] + dx - 5}" y="${by - 176 - i * 8}" width="10" height="70" rx="3" fill="${['#ffc247', '#2fd2c0', '#ff6b4a'][i]}" transform="rotate(${(i - 1) * 8} ${X[1] + dx} ${by - 120})"/>`).join('');
-      const tile = `<path d="M${X[2] - 100},${by - 30} L${X[2] - 30},${by - 90} L${X[2] + 90},${by - 90} L${X[2] + 20},${by - 30}Z" fill="url(#${id}cl)" stroke="${K.line}" stroke-width="2"/><path d="M${X[2] - 100},${by - 30} L${X[2] + 20},${by - 30} L${X[2] + 20},${by - 14} L${X[2] - 100},${by - 14}Z" fill="#8c3a1c" stroke="${K.line}" stroke-width="2"/><path d="M${X[2] + 20},${by - 30} L${X[2] + 90},${by - 90} L${X[2] + 90},${by - 74} L${X[2] + 20},${by - 14}Z" fill="#6e2c14" stroke="${K.line}" stroke-width="2"/>` +
-        `<g transform="translate(${X[2] - 5} ${by - 60}) scale(1 .5) rotate(-30)"><path d="M-50,0 C-20,-34 30,-34 56,0 C30,34 -20,34 -50,0Z" fill="#7e3418" stroke="#ffd9bd" stroke-width="2"/><path d="M-50,0 L56,0 M-20,0 L-4,-18 M-20,0 L-4,18 M10,0 L24,-16 M10,0 L24,16" stroke="#ffd9bd" stroke-width="2" fill="none"/></g>`;
-      return svg(840, 360, 'Мисочка, стаканчик, кахля', id, spot(id, 420, 210, 430, 170) +
-        vessel(X[0], by, 'bowl', 1.5, `url(#${id}cl)`, { id, deco: (p, x, b) => dots([[x - 44, b - 30], [x - 18, b - 22], [x + 12, b - 24], [x + 38, b - 32]], 4.5, '#5e2410') }) + coilCup + tile +
-        pill(X[0], 318, '1. Мисочка', 'middle', 'gd') + pill(X[1], 318, '2. Стаканчик', 'middle', 'gd') + pill(X[2], 318, '3. Кахля', 'middle', 'gd') +
-        pill(X[0], 350, 'щипкова', 'middle', 'mut', 13) + pill(X[1], 350, 'джгути', 'middle', 'mut', 13) + pill(X[2], 350, 'пласт', 'middle', 'mut', 13));
+      const id = uid(), by = 262, X = [140, 420, 700];
+      return svg(840, 380, 'Тарілка, миска, глечик або горнятко', id, spot(id, 420, 210, 430, 170) + `<path d="M30,${by + 6} L810,${by + 6}" stroke="${K.line}" stroke-width="3" stroke-opacity=".5"/>` +
+        plateSide(X[0], by - 22, 104, `url(#${id}cl)`, id, `<ellipse cx="${X[0]}" cy="${by - 22}" rx="72" ry="20" fill="none" stroke="#3b8a63" stroke-width="5"/>`) +
+        vessel(X[1], by, 'bowl', 1.6, `url(#${id}cl)`, { id, bands: [[24, '#3b8a63', 6]], deco: (p, x, b) => dots([[x - 48, b - 30], [x - 18, b - 22], [x + 14, b - 22], [x + 44, b - 30]], 4.5, '#ffe08a') }) +
+        vessel(X[2] - 46, by, 'jug', 1.3, `url(#${id}cl)`, { id, bands: [[78, '#3b8a63', 6]] }) + handle(X[2] - 46, by, 1.3, 'jug', 1, K.clay) +
+        `<text x="${X[2] + 40}" y="${by - 66}" font-size="22" font-weight="700" fill="${K.mut}" text-anchor="middle">або</text>` +
+        vessel(X[2] + 94, by, 'cup', 1.25, `url(#${id}cl)`, { id, bands: [[44, '#3b8a63', 5]] }) + handle(X[2] + 94, by, 1.25, 'cup', 1, K.clay, .8, .35, 28) +
+        pill(X[0], 318, '1. Тарілка', 'middle', 'gd') + pill(X[1], 318, '2. Миска', 'middle', 'gd') + pill(X[2] + 20, 318, '3. Глечик або горнятко', 'middle', 'gd') +
+        pill(X[0], 352, 'з пласта', 'middle', 'mut', 13) + pill(X[1], 352, 'вільне чи стрічкове', 'middle', 'mut', 13) + pill(X[2] + 20, 352, 'стрічками, ручка — шлікером', 'middle', 'mut', 13));
     }
   };
   /* пара видів: предмет, назва, черепок у розрізі, крапля, ознаки */
