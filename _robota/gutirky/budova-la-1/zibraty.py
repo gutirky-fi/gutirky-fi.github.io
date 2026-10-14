@@ -1,6 +1,7 @@
 """Збирає гутірку «Будова літальних апаратів І» в один файл (з грою «Потужний СКОБ!», малюнками й пультом).
    python3 _robota/gutirky/budova-la-1/zibraty.py proba          -> proba/budova-la-1/ + proba/yunakam/budova-la-1/ + proba/skob/   (перша проба)
    python3 _robota/gutirky/budova-la-1/zibraty.py sait [КОРІНЬ]  -> КОРІНЬ/gutirky/budova-la-1/ + КОРІНЬ/yunakam/budova-la-1/ + КОРІНЬ/skob/
+   python3 _robota/gutirky/budova-la-1/zibraty.py vhody          -> proba/vhody/gutirky/… + proba/vhody/yunakam/… (для макета; «назад» — у макет)
    yunakam/… — сторінка для юнаків (лише «Вивчай сам» і «Перевір себе», без гутірки й плану); посилання на неї — у виховника → «Для юнаків» і QR на останньому слайді
                                                                    (КОРІНЬ: proba/sait — копія для показу; . — справжній сайт)"""
 import pathlib, sys, base64, json
@@ -16,7 +17,7 @@ def rep(s, a, b):
     return s.replace(a, b)
 
 
-def page(skob_rel, yun_rel=None):
+def page(skob_rel, yun_rel=None, home=None):
     """yun_rel — адреса сторінки для юнаків відносно цієї; без нього — сама сторінка для юнаків."""
     src = (TUT / 'index.html').read_text(encoding='utf-8')
     emblem = 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode()
@@ -35,6 +36,8 @@ def page(skob_rel, yun_rel=None):
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
     pre += ('window.GUTIRKA_YUN_URL = ' + json.dumps(yun_rel) + ';') if yun_rel else 'window.GUTIRKA_YUN = true;'
+    if home:   # куди ведуть «назад» і «Бібліотека» (у макеті — розділ сайту)
+        pre += 'window.GUTIRKA_HOME = ' + json.dumps({'href': home[0], 'label': home[1]}, ensure_ascii=False) + ';'
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
     assert 'noindex' in src and '{{' not in src.replace('${{', '')
     return src
@@ -48,7 +51,12 @@ if __name__ == '__main__':
     mode = sys.argv[1] if len(sys.argv) > 1 else 'proba'
     gr = (D / 'skob-gravets.html').read_text(encoding='utf-8')
     write(SITE / 'skob' / 'index.html', gr)   # коротка адреса для телефонів: gutirky-fi.github.io/skob
-    if mode == 'proba':
+    if mode == 'vhody':   # макет «кілька входів»: proba/vhody/ — з гутірки й сторінки юнаків назад у макет
+        root = SITE / 'proba' / 'vhody'
+        write(root / 'gutirky' / 'budova-la-1' / 'index.html', page('../../skob/', '../../yunakam/budova-la-1/', ('../../#vyh', 'Виховники')))
+        write(root / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво')))
+        write(root / 'skob' / 'index.html', gr)
+    elif mode == 'proba':
         write(SITE / 'proba' / 'budova-la-1' / 'index.html', page('../skob/', '../yunakam/budova-la-1/'))
         write(SITE / 'proba' / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/'))
         write(SITE / 'proba' / 'skob' / 'index.html', gr)

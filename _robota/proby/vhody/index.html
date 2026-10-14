@@ -316,7 +316,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
     </form>
     <div id="vyh-in" hidden>
       <section class="sec" aria-labelledby="h-g">
-        <h2 id="h-g">Гутірки<small>відкриваються справжні, з чернетки сайту</small></h2>
+        <h2 id="h-g">Гутірки<small>відкриваються справжні; назад — кнопкою «Виховники» в меню гутірки</small></h2>
         <div class="gcards" id="gcards"></div>
       </section>
       <section class="sec" aria-labelledby="h-also">
@@ -400,9 +400,9 @@ $('#songs').addEventListener('click', e => {
 
 /* ===================== юнацтво ===================== */
 const PF = 'https://plast-finland.com/vmilosti/', IMGB = 'https://plast.global/wp-content/uploads/';
-/* до яких рівнів уже є матеріали для юнацтва (справжні сторінки з чернетки сайту) */
+/* до яких рівнів уже є матеріали для юнацтва (копії справжніх сторінок поруч із макетом: proba/vhody/yunakam/…) */
 const MAT = { 'budova-litalnyh-aparativ-i': { lvl: 'І', d: 'Види літальних апаратів, частини літака, профіль крила, тангаж, крен і рискання, п’ять аеродинамічних схем.',
-  vyv: '../sait/yunakam/budova-la-1/#vyvchy', test: '../sait/yunakam/budova-la-1/#test' } };
+  vyv: 'yunakam/budova-la-1/#vyvchy', test: 'yunakam/budova-la-1/#test' } };
 const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
   const levels = lv.map(([label, slug]) => ({ label, slug, url: PF + slug }));
   const ml = levels.find(l => MAT[l.slug]);
@@ -497,9 +497,9 @@ $('#sh-c').addEventListener('click', e => {
 /* ===================== виховники ===================== */
 const GUT = [
   { t: 'Кераміка України', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#ffc247',
-    v: [['Повна гутірка', '45–50 хв', '../sait/#povna'], ['Вишкіл', 'до 20 хв', '../sait/#vyshkil']] },
+    v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil']] },
   { t: 'Будова літальних апаратів І', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
-    v: [['Гутірка', '40–45 хв', '../sait/gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', '../sait/gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', '../sait/gutirky/budova-la-1/#yunakam']] }
+    v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam']] }
 ];
 const ALSO = [
   ['#yun', 'Усе для юнацтва', 'Вмілості, «Вивчай сам», «Перевір себе» — те саме, що бачать юнаки.', 'Відкрити', COL.yun],

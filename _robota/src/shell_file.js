@@ -36,6 +36,8 @@
   window.__alive = t => t === CUR && VIEW === 'g';
   const slideEvt = () => document.dispatchEvent(new CustomEvent('gutirka:slide'));
   function setView(v) {
+    /* у копії для макета (HOME_URL у build.py) бібліотеки немає: «Бібліотека» веде назад у макет */
+    if (v === 'lib' && window.GUTIRKA_HOME) { location.replace(window.GUTIRKA_HOME.href); return; }
     VIEW = v;
     for (const k in V) V[k].hidden = k !== v;
     document.body.classList.toggle('v-g', v === 'g');

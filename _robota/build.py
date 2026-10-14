@@ -181,6 +181,10 @@ if SHELL_NAME == 'shell_d1':
                   '<link rel="apple-touch-icon" href="' + _png('fav-180.png') + '">\n')
     if os.environ.get('PREVIEW'):
         shell_js = 'window.GUTIRKA_PREVIEW = true;\n' + shell_js
+    if os.environ.get('HOME_URL'):   # копія для макета: «Бібліотека» веде на HOME_URL з підписом HOME_LABEL
+        shell_js = ('window.GUTIRKA_HOME = ' + json.dumps({'href': os.environ['HOME_URL'], 'label': os.environ.get('HOME_LABEL', 'Назад')}, ensure_ascii=False) + ';\n'
+                    "document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('#home-link, .back-home').forEach(a => {"
+                    " const w = document.createTreeWalker(a, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) n.nodeValue = n.nodeValue.replace(/[Бб]ібліотек[аи]( гутірок)?/, window.GUTIRKA_HOME.label); }));\n" + shell_js)
 qr = open(D + 'qr.js', encoding='utf8').read()
 skel_css = ':root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}'
 page = ('<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n'

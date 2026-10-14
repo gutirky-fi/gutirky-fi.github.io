@@ -233,7 +233,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 
 <!-- старт: для перегляду — три входи -->
 <main id="start" hidden>
-  <a class="back for-v" href="../../" style="align-self:flex-start;margin:0 0 18px">← Бібліотека гутірок</a>
+  <a class="back for-v" id="home-back" href="../../" style="align-self:flex-start;margin:0 0 18px">← Бібліотека гутірок</a>
   <span class="eyebrow">Летунська вмілість · проба 1</span>
   <h1>Будова літальних апаратів І</h1>
   <p class="hand for-v">гутірка, гра і матеріали для юнаків</p>
@@ -337,6 +337,12 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 /* дві сторінки з одного файла: для виховника (усе) і для юнаків (yunakam/…: лише «Вивчай сам» і «Перевір себе») */
 const YUN = !!window.GUTIRKA_YUN;
 document.body.classList.toggle('yun', YUN);
+/* куди «назад» з гутірки: за замовчуванням — бібліотека; збирач може задати інше ({ href, label }) */
+const HOME = window.GUTIRKA_HOME;
+if (HOME) {
+  const hb = $('#home-back'); hb.href = HOME.href; hb.textContent = '← ' + HOME.label; hb.classList.remove('for-v');
+  $('#home-link').href = HOME.href; $('#home-link span').textContent = HOME.label;
+}
 const YUN_URL = new URL(window.GUTIRKA_YUN_URL || '#vyvchy', location.href).href.replace(/#$/, '');
 const qrBox = (sel, url, px) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px); el.dataset.for = url; } };
 
