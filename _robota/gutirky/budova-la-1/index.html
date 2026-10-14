@@ -138,7 +138,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 #toc button.j:hover{border-color:var(--gd)}
 /* вертикальний екран: малюнок угорі, текст унизу */
 @media (max-aspect-ratio:1/1){
-  #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,40%) minmax(0,1fr);align-items:stretch;padding:60px 18px 34px}
+  #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,46%) minmax(0,1fr);align-items:stretch;padding:60px 18px 34px}
   #art{max-height:none}#art svg{max-height:100%}
   #panel{align-self:start}
   #pres.wide #stage,#pres.quiz #stage,#pres.noart #stage{grid-template-rows:minmax(0,1fr);align-items:center}
@@ -312,6 +312,7 @@ function render() {
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz);
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
+  LA_ART.fit(artEl);
   panel.innerHTML = h; panel.scrollTop = 0;
   if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: `Перевірка · точка ${s.n}`, T: 20, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
   showRev(); $('#hint').textContent = hint;
@@ -431,7 +432,7 @@ function renderStudy() {
     <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 && foto ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
     <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
-  const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%';
+  const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
 }
 $('#pv-list').addEventListener('click', e => {
   const b = e.target.closest('.know'); if (!b) return; const n = +b.dataset.n;
