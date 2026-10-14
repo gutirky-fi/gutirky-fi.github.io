@@ -3,6 +3,7 @@
   const PARTIAL = false;   // true — якщо в каталозі лише частина вмілостей
   const plural = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
   const POT_W = '<svg viewBox="0 0 100 120" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M38 10h24M40 10c0 8-4 12-10 18-8 8-12 18-12 32 0 28 16 50 32 50s32-22 32-50c0-14-4-24-12-32-6-6-10-10-10-18"/><path d="M22 58h56M24 78h52"/></svg>';
+  BUILTIN.forEach(b => { if (b.key === 'budova-la-1') Object.assign(b, { type: 'vm', skill: 'budova-litalnyh-aparativ-i', added: '2026-10-14', art: '<img src="{{LA_ART}}" alt="Навчальний літак, вигляд згори">', short: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів' }); });
   BUILTIN.forEach(b => { if (b.key === 'keramika') Object.assign(b, { type: 'vm', skill: 'keramika-i', added: '2026-10-13', art: '<img src="{{KERAMIKA_MAP}}" alt="Карта України з регіонами, про які йдеться в гутірці">', badge: POT_W, short: '9 регіонів, вироби, вікторина на карті' }); });
 
   /* Вмілості — з каталогу Пласту у Фінляндії (SKILL_SPECS, SKILL_LIST, SKILL_LEVEL_IMG — у skills_data.js) */
@@ -11,6 +12,12 @@
   const IMGB = 'https://plast.global/wp-content/uploads/';
   /* до яких рівнів є гутірки і що з точок вони покривають */
   const DETAILS = {
+    ...(BUILTIN.some(b => b.key === 'budova-la-1') ? { 'budova-litalnyh-aparativ-i': { pts: 5, g: 'budova-la-1',
+      req: [['Знає що таке ЛА та назве кілька їх видів', 'full', 'є: гутірка, «Вивчай сам», «Перевір себе»'],
+        ['Знає з яких основних частин складається літак, пояснить призначення кожної частини', 'full', 'є: та сама гутірка'],
+        ['Вміє намалювати і знає що таке профіль крила, пояснить виникнення підйомної сили', 'full', 'є: та сама гутірка, дослід зі смужкою паперу'],
+        ['Пояснить що таке кут тангажу, крену і рискання, знає які елементи забезпечують керованість', 'full', 'є: та сама гутірка, 3D-літачок'],
+        ['Знає і пояснить на прикладах 5 аеродинамічних схем літаків', 'full', 'є: та сама гутірка']] } } : {}),
     'keramika-i': { pts: 5, g: 'keramika',
       req: [['Історія виробів з глини, зокрема в Україні', 'full', 'є: гутірка «Кераміка України»'],
         ['Техніки формотворення: ліплення, гончарний круг, шаблон, гіпсові форми, пресування', 'part', 'частково: у тій самій гутірці'],
@@ -54,13 +61,17 @@
     const c = cov(s.gl);
     return `<button class="vm" type="button" data-skill="${s.id}">До вмілості «${esc(lvName(s, s.gl))}» · ${c[0]} з ${c[1]} ${ptsWord(c[1])}</button>`;
   }
+  /* v.mode — гутірка в цьому файлі; v.href — гутірка на окремій сторінці сайту */
+  const openAttr = v => v.href ? `href="${esc(v.href)}"` : `type="button" data-open="${v.mode}"`;
+  const tagOf = v => v.href ? 'a' : 'button';
   function varBtns(b, big) {
     return b.vars.map((v, i) => big
-      ? `<button class="bigvar${i ? '' : ' main'}" type="button" data-open="${v.mode}"><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></button>`
-      : `<button class="var" type="button" data-open="${v.mode}">${esc(v.label)}<small>${esc(v.dur)}</small></button>`).join('');
+      ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
+      : `<${tagOf(v)} class="var" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
   }
+  const nVer = b => b.vars.filter(v => !v.yun).length;
   function renderHome() {
-    const nv = BUILTIN.reduce((a, b) => a + b.vars.length, 0), nk = SKILLS.filter(s => s.g).length;
+    const nv = BUILTIN.reduce((a, b) => a + nVer(b), 0), nk = SKILLS.filter(s => s.g).length;
     stats($('#l-stats'), [[BUILTIN.length, plural(BUILTIN.length, ['гутірка', 'гутірки', 'гутірок'])], [nv, plural(nv, ['версія', 'версії', 'версій'])], [nk, plural(nk, ['вмілість', 'вмілості', 'вмілостей'])]]);
     const last = BUILTIN.slice().sort((a, b) => String(b.added).localeCompare(String(a.added)))[0];
     $('#l-feat').innerHTML = `<div class="art">${last.art || ''}</div><div class="body">
@@ -74,7 +85,7 @@
     const list = BUILTIN.filter(b => (!gf || b.type === gf) &&
       (!q || (b.title + ' ' + b.desc + ' ' + b.tags.join(' ')).toLowerCase().includes(q)));
     let html = list.map(b => `<article class="card" style="--a:${b.accent}">
-        <span class="kind">${b.type === 'vm' ? 'До вмілості' : 'Пізнавальна'} · ${b.vars.length} ${plural(b.vars.length, ['версія', 'версії', 'версій'])}</span>
+        <span class="kind">${b.type === 'vm' ? 'До вмілості' : 'Пізнавальна'} · ${b.vars.some(v => v.yun) ? 'гутірка + для юнацтва' : nVer(b) + ' ' + plural(nVer(b), ['версія', 'версії', 'версій'])}</span>
         <h3>${esc(b.title)}</h3><p>${esc(b.short || b.desc)}</p><div class="vars">${varBtns(b, false)}</div></article>`).join('');
     if (!q && !gf && list.length) for (let i = 0; i < (3 - list.length % 3) % 3; i++) html += '<div class="card ph" aria-hidden="true"><img src="{{EMBLEM}}" alt=""></div>';
     $('#l-grid').innerHTML = html;
