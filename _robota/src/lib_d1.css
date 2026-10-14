@@ -16,10 +16,15 @@
 #lib .tabs button[aria-current=page]{background:var(--l-card2);border-color:var(--l-ln);color:var(--l-ink)}
 #lib .pbtn{display:inline-flex;gap:8px;align-items:center;padding:9px 15px;border-radius:99px;border:1px solid var(--l-ln);background:var(--l-card);color:var(--l-ink);font:700 15px var(--l-body);cursor:pointer}
 #lib .ptop{display:none}
-@media (pointer:coarse){#lib .ptop{display:inline-flex}}
+@media (pointer:coarse){#lib .ptop{display:inline-flex}
+  /* сенсорні екрани: більша зона дотику, а вигляд той самий */
+  #lib .vm{position:relative}
+  #lib .vm::after{content:"";position:absolute;inset:-9px -4px}
+  #lib .legend label{padding:10px 0;margin:-10px 0}
+}
 @media (max-width:640px){
   #lib .top{padding-top:14px}
-  #lib .logo img{height:46px}
+  #lib .logo img{height:46px}   /* ≈ 159 px завширшки — брендбук Пласту у Фінляндії вимагає не менше 120 px */
   #lib .tabs{order:3;flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:99px;background:#14171a;border:1px solid var(--l-ln)}
   #lib .tabs button{padding:9px 6px}
 }
@@ -129,6 +134,8 @@
 #lib .lvl:not(:has(.vb)){padding-left:12px}
 #lib .lvl small{color:var(--l-mut)}
 #lib .lvl:hover,#lib .lvl:focus-visible{border-color:var(--l-gd)}
+/* телефон лежачи: велика нашивка в деталях не займає весь екран */
+@media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
 #lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);border-top:4px solid var(--st);background:var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
@@ -173,3 +180,7 @@
 #lib .skob{margin-top:16px;padding-left:.3em;font:600 28px/1 var(--l-disp);letter-spacing:.3em;color:var(--l-gd)}
 #lib .f-note{margin-top:10px;font-size:14px;line-height:1.4;color:var(--l-mut)}
 @media (prefers-reduced-motion:reduce){#lib *{scroll-behavior:auto!important}}
+
+/* ===== Великі монітори: бібліотека трохи більша, щоб не губилась посередині екрана ===== */
+@media (min-width:2200px){#lib .wrap{zoom:1.3}}
+@media (min-width:3200px){#lib .wrap{zoom:1.7}}

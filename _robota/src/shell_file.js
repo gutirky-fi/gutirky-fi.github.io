@@ -69,6 +69,19 @@
     if (!b.closest('.cm-nav')) { clearTimeout(cornerT); corner.classList.remove('open'); }
     if (e.detail > 0) setTimeout(() => { try { b.blur(); } catch (er) { /* ok */ } }, 0);   // після кліку мишкою меню не «залипає»
   });
+  /* на малих екранах текстова панель гортається: новий слайд — з початку, щойно відкритий пункт — у видиму частину */
+  (() => {
+    const pan = $('#pan'); if (!pan || !window.MutationObserver) return;
+    new MutationObserver(ms => {
+      for (const m of ms) {
+        if (m.type === 'childList' && m.target === pan) { pan.scrollTop = 0; continue; }
+        const el = m.target;
+        if (m.type === 'attributes' && el.classList && el.classList.contains('v') && pan.scrollHeight > pan.clientHeight + 2) {
+          try { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { /* ok */ }
+        }
+      }
+    }).observe(pan, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] });
+  })();
   const fsBtn = $('#fs-btn');
   const fsLabel = () => { fsBtn.textContent = document.fullscreenElement ? '🗗 Вийти з повного екрана' : '⛶ На весь екран'; };
   fsBtn.addEventListener('click', () => {

@@ -8,7 +8,7 @@ body.idle #hot:after,body:not(.touchmode) #corner:hover #hot:after,#corner.open 
 #cmenu .cm-head{display:flex;align-items:center;gap:12px;padding:4px 6px 12px;margin-bottom:6px;border-bottom:1px solid #383d44}
 #cmenu .cm-head img{flex:none;width:30px;height:auto;opacity:.9}
 #cmenu .cm-head b{display:block;font:600 16px/1.15 Oswald,'Arial Narrow',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#f2f4f6}
-#cmenu #mode-label{padding:3px 0 0!important;color:#ffc247!important;font:500 11px/1.3 Oswald,'Arial Narrow',sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase}
+#cmenu #mode-label{padding:3px 0 0!important;color:#ffc247!important;font:500 12px/1.3 Oswald,'Arial Narrow',sans-serif!important;letter-spacing:.16em!important;text-transform:uppercase}
 #cmenu button,#cmenu a{gap:12px!important;padding:10px 12px!important;border-radius:12px!important;border:1px solid transparent!important;background:transparent!important;color:#f2f4f6!important;font:600 15px/1.2 'Source Sans 3',system-ui,sans-serif!important}
 #cmenu button:hover,#cmenu a:hover,#cmenu button:focus-visible,#cmenu a:focus-visible{background:#2a2f35!important;border-color:#383d44!important}
 #cmenu svg{flex:none;width:19px;height:19px;color:#a0a8b2}
@@ -38,3 +38,50 @@ html body #pult-dlg .pd-status{background:#1b1d21;border-color:#383d44}
 html body #pult-dlg .pd-b{border-radius:12px;background:#2a2f35;border-color:#4a515b}
 html body #pult-dlg .pd-b.go{background:#ffc247;border-color:#ffc247;color:#16130a}
 html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
+
+/* ===== Гутірка на будь-якому екрані (телефон, планшет, ноутбук, монітор, проектор) ===== */
+/* текст росте разом з екраном — і на великих моніторах теж, — але не вилазить за висоту */
+#pan h2{font-size:clamp(1.8rem,min(3.3vw,5.9vh),5.2rem)}
+#pan h2.sm{font-size:clamp(1.4rem,min(2.4vw,4.3vh),3.8rem)}
+#pan p,#pan li{font-size:clamp(1.05rem,min(1.6vw,2.85vh),2.5rem)}
+#pan small{font-size:clamp(1.2rem,min(1.8vw,3.2vh),2.8rem)}
+#pan .tech-note{font-size:clamp(.95rem,min(1.3vw,2.3vh),2rem)}
+#pan li{padding:.45em .75em;margin:.45em 0}
+#hint{font-size:clamp(1rem,min(1.5vw,2.7vh),2.2rem)}
+#ttl:not(.big){font-size:clamp(1.05rem,.8vw,1.7rem)}
+#ttl:not(.big) i{font-size:clamp(1.3rem,1vw,2.1rem)}
+#pan{padding-bottom:calc(44px + env(safe-area-inset-bottom,0px))}  /* знизу більше немає кнопок ‹ › — місце не потрібне */
+/* телефон і планшет, тримаючи вертикально: текст унизу, карта згори */
+/* на телефоні й низькому екрані: якщо тексту більше, ніж влазить, панель гортається (а не налазить на карту й заголовок),
+   а щойно відкритий пункт сам прокручується у видиму частину (див. shell_file.js) */
+@media(max-aspect-ratio:1/1),(max-height:520px){
+  #pan{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;justify-content:flex-start}
+  #pan>:first-child{margin-top:auto}
+  #pan>:last-child{margin-bottom:auto}
+}
+@media(max-aspect-ratio:1/1){
+  #pan,#pan.tech-mode{top:auto;height:auto;min-height:48%;max-height:calc(100% - 104px - env(safe-area-inset-top,0px));padding:14px 18px calc(48px + env(safe-area-inset-bottom,0px))}
+  #pan>:last-child{margin-bottom:0}
+  #pan h2{font-size:clamp(1.35rem,4.2vw,2.6rem)}
+  #pan h2.sm{font-size:clamp(1.2rem,3.4vw,2.1rem)}
+  #pan p,#pan li{font-size:clamp(.95rem,2.3vw,1.45rem)}
+  #pan small{font-size:clamp(1.05rem,2.8vw,1.7rem)}
+  #pan .tech-note{font-size:clamp(.85rem,2vw,1.25rem)}
+}
+@media(max-aspect-ratio:1/1) and (max-width:380px){
+  #pan li{padding:.35em .65em;margin:.3em 0}
+  #pan h2{font-size:1.2rem;margin:4px 0 8px}
+  .pic svg{height:14vh}.pic img{max-height:17vh}#pan .tech-photo{max-height:9vh;margin:6px auto}
+}
+/* телефон лежачи (низький екран): менший текст, ширша панель */
+@media(min-aspect-ratio:1/1) and (max-height:520px){
+  #pan{width:50%;padding:calc(40px + env(safe-area-inset-top,0px)) 2.5vw calc(26px + env(safe-area-inset-bottom,0px))}
+  #pan h2{font-size:clamp(1.1rem,6.2vh,1.7rem);margin:4px 0 8px}
+  #pan h2.sm{font-size:clamp(1rem,5vh,1.4rem)}
+  #pan p,#pan li{font-size:clamp(.8rem,3.6vh,1rem)}
+  #pan small{font-size:clamp(.95rem,4.6vh,1.2rem)}
+  #pan .tech-note{font-size:clamp(.8rem,3.5vh,.95rem)}
+  #pan li{padding:.35em .7em;margin:.35em 0}
+  .pic svg{height:24vh}.pic img{max-height:28vh}#pan .tech-photo{max-height:20vh}
+  #ttl:not(.big){font-size:.95rem}#ttl:not(.big) i{font-size:1.15rem}
+}
