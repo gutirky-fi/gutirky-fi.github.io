@@ -69,7 +69,7 @@
       ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
       : `<${tagOf(v)} class="var" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
   }
-  const nVer = b => b.vars.filter(v => !v.yun).length;
+  const nVer = b => b.vars.filter(v => !v.yun && !v.dod).length;
   function renderHome() {
     const nv = BUILTIN.reduce((a, b) => a + nVer(b), 0), nk = SKILLS.filter(s => s.g).length;
     stats($('#l-stats'), [[BUILTIN.length, plural(BUILTIN.length, ['гутірка', 'гутірки', 'гутірок'])], [nv, plural(nv, ['версія', 'версії', 'версій'])], [nk, plural(nk, ['вмілість', 'вмілості', 'вмілостей'])]]);
