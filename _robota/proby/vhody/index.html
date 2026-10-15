@@ -20,6 +20,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 :focus-visible{outline:2px solid var(--gd);outline-offset:2px}
 [hidden]{display:none!important}
 .ribbon{padding:7px 14px;background:#2fd2c0;color:#0c2421;text-align:center;font-weight:700;font-size:14px}
+.ribbon a{color:inherit;margin-left:10px;white-space:nowrap}
 .wrap{max-width:1160px;margin:0 auto;padding-inline:max(16px,4vw)}
 
 /* шапка */
@@ -162,6 +163,20 @@ button{font:inherit;color:inherit;cursor:pointer}
 .lockbox .btn{width:100%;justify-content:center;margin-top:12px;color:#2a2108}
 .lockbox small{display:block;margin-top:12px;color:var(--mut);font-size:14px}
 .lockbox .err{margin:10px 0 0;color:#ff8a7a;font-weight:700;font-size:15px}
+.vtabs{display:inline-flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px;padding:4px;border-radius:99px;border:1px solid var(--ln);background:#14171a}
+.vtabs button{min-height:44px;padding:0 20px;border:0;border-radius:99px;background:none;color:var(--mut);font:700 15px var(--txt);cursor:pointer}
+.vtabs button:hover{color:var(--ink)}
+.vtabs button[aria-selected=true]{background:var(--a);color:#16130a}
+.badge.gut{border-top:4px solid var(--a)}.badge.gut em{color:var(--a)}
+.gbox{margin:14px 0 0;padding:14px 16px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln);border-left:4px solid var(--g)}
+.gbox>b{display:block;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.gbox>b small{margin-left:8px;font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.gbox .cv{margin:2px 0 10px;color:var(--mut);font-size:14px}
+.pts{list-style:none;margin:10px 0 0;padding:0}
+.pts li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin:7px 0;font-size:15px;line-height:1.35;color:var(--body)}
+.pts i{font-style:normal;font-weight:700;text-align:center}
+.pts .full i{color:#3ee08f}.pts .part i{color:#ffc247}.pts .none i{color:#6b7480}.pts .task i{color:#9fc7ea}
+.pts small{display:block;color:var(--mut);font-size:13px}
 .gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 .gcard{display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--g)}
 .gcard .kind{font:500 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
@@ -218,7 +233,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 </style>
 </head>
 <body>
-<div class="ribbon">Макет для перегляду. Справжній сайт не змінено.</div>
+<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>
 <div class="wrap">
   <header class="top">
     <a class="logo" href="#" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
@@ -245,7 +260,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
         <ul><li>Вмілості з нашивками</li><li>«Вивчай сам» і «Перевір себе»</li><li>Мої вмілості: що вже маю, до чого готуюсь</li></ul>
         <span class="enter">Вхід вільний <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
       <a class="door" href="#vyh" style="--d:#ffc247"><h3>Виховники</h3><p class="who">усе, що на сайті, і ще</p>
-        <ul><li>Бібліотека гутірок: на весь екран, пульт з телефона</li><li>Плани гутірок (друк, PDF)</li><li>Гра «Потужний СКОБ!»</li></ul>
+        <ul><li>Бібліотека гутірок: на весь екран, пульт з телефона</li><li>Каталог вмілостей: до чого вже є гутірки</li><li>Плани гутірок (друк, PDF) і гра «Потужний СКОБ!»</li></ul>
         <span class="enter lock">Вхід за кодом <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></a>
       <div class="ph" aria-hidden="true"><img src="{{EMBLEM}}" alt=""></div>
     </div>
@@ -315,9 +330,24 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
       <small>Код запам’ятовується на цьому пристрої — вводити лише раз. <b>У макеті код — 1912.</b></small>
     </form>
     <div id="vyh-in" hidden>
-      <section class="sec" aria-labelledby="h-g">
+      <div class="vtabs" role="tablist" aria-label="Для виховників">
+        <button type="button" role="tab" id="t-g" aria-controls="p-g" aria-selected="true">Гутірки</button>
+        <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог вмілостей</button>
+      </div>
+      <section class="sec" id="p-g" role="tabpanel" aria-labelledby="t-g">
         <h2 id="h-g">Бібліотека гутірок<small>назад з гутірки — меню в куті → «Виховники»</small></h2>
         <div class="gcards" id="gcards"></div>
+      </section>
+      <section class="sec" id="p-k" role="tabpanel" aria-labelledby="t-k" hidden>
+        <h2 id="h-vk">Каталог вмілостей<small>до яких вмілостей є гутірки і що з вимог вони покривають</small></h2>
+        <div class="tools">
+          <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="vq" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
+          <div class="chips" id="vchips" role="group" aria-label="Показати"></div>
+        </div>
+        <h3 class="kh" id="vkh"></h3>
+        <div class="kgrid" id="vkgrid"></div>
+        <p class="empty" id="vkempty" hidden></p>
+        <button class="more" type="button" id="vkmore" hidden></button>
       </section>
       <section class="sec" aria-labelledby="h-also">
         <h2 id="h-also">Також для вас</h2>
@@ -402,7 +432,9 @@ $('#songs').addEventListener('click', e => {
 const PF = 'https://plast-finland.com/vmilosti/', IMGB = 'https://plast.global/wp-content/uploads/';
 /* до яких рівнів уже є матеріали для юнацтва (копії справжніх сторінок поруч із макетом: proba/vhody/yunakam/…) */
 const MAT = { 'budova-litalnyh-aparativ-i': { lvl: 'І', d: 'Види літальних апаратів, частини літака, профіль крила, тангаж, крен і рискання, п’ять аеродинамічних схем.',
-  vyv: 'yunakam/budova-la-1/#vyvchy', test: 'yunakam/budova-la-1/#test' } };
+  vyv: 'yunakam/budova-la-1/#vyvchy', test: 'yunakam/budova-la-1/#test' },
+  'keramika-i': { lvl: 'І', d: 'Історія виробів з глини, техніки формотворення, шість видів кераміки, музей і три вироби власноруч.',
+  vyv: 'yunakam/keramika-1/#vyvchy', test: 'yunakam/keramika-1/#test' } };
 const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
   const levels = lv.map(([label, slug]) => ({ label, slug, url: PF + slug }));
   const ml = levels.find(l => MAT[l.slug]);
@@ -499,8 +531,31 @@ const GUT = [
   { t: 'Кераміка України', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#ffc247',
     v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil']] },
   { t: 'Будова літальних апаратів І', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
-    v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam']] }
+    v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam']] },
+  { t: 'Кераміка І', k: 'До вмілості · гутірка + для юнацтва', p: 'Історія, техніки, шість видів кераміки, 3D-ваза, гра з телефонів.', c: '#e8925b',
+    v: [['Гутірка', '45 хв', 'gutirky/keramika-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/keramika-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/keramika-1/#yunakam']] }
 ];
+/* каталог для виховників: до яких рівнів є гутірки і що з вимог вони покривають (full — є, part — частково, none — немає, task — практичне) */
+const GV = {
+  'budova-litalnyh-aparativ-i': [{ t: 'Будова літальних апаратів І', c: '#6fb3ff', v: GUT[1].v, req: [
+    ['Знає що таке ЛА та назве кілька їх видів', 'full', 'гутірка, «Вивчай сам», «Перевір себе»'],
+    ['Знає з яких основних частин складається літак, пояснить призначення кожної частини', 'full', 'та сама гутірка'],
+    ['Вміє намалювати і знає що таке профіль крила, пояснить виникнення підйомної сили', 'full', 'та сама гутірка, дослід зі смужкою паперу'],
+    ['Пояснить що таке кут тангажу, крену і рискання, знає які елементи забезпечують керованість', 'full', 'та сама гутірка, 3D-літачок'],
+    ['Знає і пояснить на прикладах 5 аеродинамічних схем літаків', 'full', 'та сама гутірка']] }],
+  'keramika-i': [{ t: 'Кераміка І', c: '#e8925b', v: GUT[2].v, req: [
+    ['Історія виробів з глини, зокрема в Україні', 'full', 'гутірка, «Вивчай сам», «Перевір себе»'],
+    ['Техніки формотворення: ліплення, гончарний круг, шаблон, гіпсові форми, пресування', 'full', 'та сама гутірка, усі п’ять технік'],
+    ['Види кераміки: теракота, майоліка, фаянс, порцеляна, кам’яна маса, шамот', 'full', 'та сама гутірка, гра «Вгадай вид»'],
+    ['Відвідати виставку кераміки або музей', 'task', 'у гутірці — як підготуватися'],
+    ['Виконати три вироби власноруч', 'task', 'у гутірці — поради']] },
+    { t: 'Кераміка України', n: 'історична подорож картою', c: '#ffc247', v: GUT[0].v, req: [
+    ['Історія виробів з глини, зокрема в Україні', 'full', 'дев’ять регіонів, вироби, епохи'],
+    ['Техніки формотворення', 'part', 'частково'],
+    ['Види кераміки', 'none', ''],
+    ['Відвідати виставку кераміки або музей', 'task', ''],
+    ['Виконати три вироби власноруч', 'task', '']] }]
+};
 const ALSO = [
   ['#yun', 'Усе для юнацтва', 'Вмілості, «Вивчай сам», «Перевір себе» — те саме, що бачать юнаки.', 'Відкрити', COL.yun],
   ['#vsi', 'Для всіх', 'Підказки, співаник, цікаве.', 'Відкрити', COL.vsi],
@@ -518,7 +573,65 @@ function renderVyh() {
   $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => h.startsWith('#')
     ? `<a class="tile" href="${h}" style="--a:${c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></a>`
     : `<button class="tile" type="button" data-also="${h}" style="--a:${c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></button>`).join('');
+  showTab(VT);
 }
+let VT = 'g';   // відкрита вкладка: g — гутірки, k — каталог
+function showTab(t, focus) {
+  VT = t;
+  [['g', '#t-g', '#p-g'], ['k', '#t-k', '#p-k']].forEach(([k, tb, pn]) => { const on = k === t; $(tb).setAttribute('aria-selected', String(on)); $(tb).tabIndex = on ? 0 : -1; $(pn).hidden = !on; });
+  if (t === 'k') { renderVChips(); renderVGrid(); }
+  if (focus) $(t === 'g' ? '#t-g' : '#t-k').focus();
+}
+$('.vtabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) showTab(b.id === 't-k' ? 'k' : 'g'); });
+$('.vtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); showTab(VT === 'g' ? 'k' : 'g', true); } });
+SKILLS.forEach(s => { const l = s.levels.find(x => GV[x.slug]); s.gv = l ? { lvl: lvName(s, l), list: GV[l.slug] } : null; });
+const covN = g => g.req.filter(r => r[1] === 'full' || r[1] === 'part').length;
+const ICO = { full: ['✓', 'є'], part: ['◐', 'частково'], none: ['○', 'немає'], task: ['✎', 'практичне завдання'] };
+let VF = '', VSP = '', VMORE = false, VLIMIT = 24;
+function renderVChips() {
+  const cnt = {}; SKILLS.forEach(s => s.specs.forEach(x => { cnt[x] = (cnt[x] || 0) + 1; }));
+  const ord = SKILL_SPECS.slice().sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || a.localeCompare(b, 'uk'));
+  let shown = VMORE ? ord : ord.slice(0, 3); if (VSP && !shown.includes(VSP)) shown = shown.concat(VSP);
+  const ch = [['', '', 'Усі', SKILLS.length], ['gut', '', 'Є гутірки', SKILLS.filter(s => s.gv).length], ...shown.map(x => ['', x, x, cnt[x] || 0])];
+  $('#vchips').innerHTML = ch.map(([f, sp, l, n]) => `<button type="button" data-f="${f}" data-sp="${esc(sp)}" aria-pressed="${f === VF && sp === VSP}">${esc(l)}<span class="n">${n}</span></button>`).join('')
+    + (VMORE ? '<button type="button" data-more="0">Згорнути ▴</button>' : `<button type="button" data-more="1">Ще ${ord.length - shown.length} ▾</button>`);
+}
+function renderVGrid() {
+  const q = $('#vq').value.trim().toLowerCase();
+  const list = SKILLS.filter(s => (!VSP || s.specs.includes(VSP)) && (!q || s.lc.includes(q)) && (VF !== 'gut' || s.gv))
+    .sort((a, b) => (b.gv ? 1 : 0) - (a.gv ? 1 : 0) || rank(a) - rank(b) || a.n.localeCompare(b.n, 'uk'));
+  $('#vkh').innerHTML = esc(VF === 'gut' ? 'Є гутірки' : VSP || 'Усі вмілості') + `<small>${list.length} ${plural(list.length, ['вмілість', 'вмілості', 'вмілостей'])}</small>`;
+  const show = q || VF ? list : list.slice(0, VLIMIT);
+  $('#vkgrid').innerHTML = show.map(s => {
+    const g = s.gv && s.gv.list[0];
+    const note = g ? `гутірка · ${covN(g)} з ${g.req.length} точок` : VSP ? '' : s.specs.join(', ');
+    return `<button type="button" class="badge${g ? ' gut' : ''}" data-vk="${esc(s.id)}">${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
+  }).join('');
+  const em = $('#vkempty'); em.hidden = list.length > 0; em.textContent = q ? 'Нічого не знайдено. Спробуйте іншу назву.' : 'Тут поки порожньо.';
+  const mb = $('#vkmore'); mb.hidden = show.length >= list.length; mb.textContent = `Показати всі ${list.length}`;
+}
+function vSkillHtml(s) {
+  const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
+  const box = g => {
+    const tasks = g.req.filter(r => r[1] === 'task').length;
+    return `<div class="gbox" style="--g:${g.c}"><b>${esc(g.t)}${g.n ? `<small>${esc(g.n)}</small>` : ''}</b>
+      <p class="cv">Покриває ${covN(g)} з ${g.req.length} точок${tasks ? `; ще ${tasks} — практичні завдання, юнаки виконують самі` : ''}.</p>
+      <div class="btns">${g.v.map(([l, , h], i) => `<a class="btn${i ? ' ghost' : ''}" href="${esc(h)}">${esc(l)}</a>`).join('')}</div>
+      <ul class="pts">${g.req.map(([t, st, nt]) => `<li class="${st}"><i aria-hidden="true">${ICO[st][0]}</i><span>${esc(t)}<small>${esc(ICO[st][1])}${nt ? ' — ' + esc(nt) : ''}</small></span></li>`).join('')}</ul></div>`;
+  };
+  return `<div class="skh">${pic(s.img, s.n, 'lg')}<div><h3 id="sh-t">${esc(s.n)}</h3><p class="sub">${esc(specs)}</p></div></div>
+    ${s.gv ? `<h4>Гутірки до вмілості «${esc(s.gv.lvl)}»</h4>${s.gv.list.map(box).join('')}` : '<p class="tip">До цієї вмілості гутірки ще немає.</p>'}
+    <h4>Рівні й вимоги</h4>
+    <ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`;
+}
+$('#vq').addEventListener('input', renderVGrid);
+$('#vkmore').addEventListener('click', () => { VLIMIT = 9999; renderVGrid(); });
+$('#vchips').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.more) VMORE = b.dataset.more === '1'; else { VF = b.dataset.f; VSP = b.dataset.sp; }
+  renderVChips(); renderVGrid();
+});
+$('#vkgrid').addEventListener('click', e => { const b = e.target.closest('[data-vk]'); if (b) sheet(vSkillHtml(byId[b.dataset.vk]), COL.vyh); });
 $('#lockbox').addEventListener('submit', e => {
   e.preventDefault();
   const v = $('#code').value.replace(/\s/g, '');

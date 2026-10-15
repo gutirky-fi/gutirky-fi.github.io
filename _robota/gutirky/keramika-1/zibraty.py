@@ -1,5 +1,6 @@
 """Збирає гутірку «Кераміка І» (за вимогами вмілості) в один файл — з грою «Потужний СКОБ!», малюнками й пультом.
    Рушій — копія «Будови літальних апаратів І»; зміст — dani.js, малюнки — maliunky.js.
+   python3 _robota/gutirky/keramika-1/zibraty.py vhody          -> proba/vhody/gutirky|yunakam/keramika-1/ (макет «кілька входів»)
    python3 _robota/gutirky/keramika-1/zibraty.py proba          -> proba/keramika-1/ + proba/yunakam/keramika-1/ (+ skob/)
    python3 _robota/gutirky/keramika-1/zibraty.py sait [КОРІНЬ]  -> КОРІНЬ/gutirky/keramika-1/ + КОРІНЬ/yunakam/keramika-1/ + КОРІНЬ/skob/"""
 import pathlib, sys, base64, json
@@ -49,7 +50,12 @@ if __name__ == '__main__':
     mode = sys.argv[1] if len(sys.argv) > 1 else 'proba'
     gr = (D / 'skob-gravets.html').read_text(encoding='utf-8')
     write(SITE / 'skob' / 'index.html', gr)   # коротка адреса для телефонів: gutirky-fi.github.io/skob
-    if mode == 'proba':
+    if mode == 'vhody':   # макет «кілька входів»: proba/vhody/ — з гутірки й сторінки юнаків назад у макет
+        root = SITE / 'proba' / 'vhody'
+        write(root / 'gutirky' / 'keramika-1' / 'index.html', page('../../skob/', '../../yunakam/keramika-1/', ('../../#vyh', 'Виховники')))
+        write(root / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво')))
+        write(root / 'skob' / 'index.html', gr)
+    elif mode == 'proba':
         write(SITE / 'proba' / 'keramika-1' / 'index.html', page('../skob/', '../yunakam/keramika-1/'))
         write(SITE / 'proba' / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/'))
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
