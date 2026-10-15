@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#16181c">
+<title>Потужний СКОБ!</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* «Потужний СКОБ!» — конструктор: будь-хто складає свою вікторину й грає з телефонами.
+   Ігри — лише на цьому пристрої (localStorage), у файлі або в посиланні. Ні сервера, ні реєстрації. */
+:root{color-scheme:dark;--bg:#16181c;--card:#1f2328;--card2:#272b31;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--no:#ff6b5e;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt)}
+button,input,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.wrap{width:100%;max-width:860px;margin:0 auto;padding:0 16px}
+.sp{flex:1}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* логотип — як у грі */
+.sk-logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-family:var(--disp)}
+.sk-logo small{font:600 .34em/1 var(--disp);letter-spacing:.32em;text-transform:uppercase;color:var(--gd);margin:0 0 .18em .06em}
+.sk-lt{display:flex;gap:.08em;align-items:center}
+.sk-lt i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.sk-lt i.c2{color:#1d1606}.sk-lt b{font:600 .9em/1 var(--disp);color:var(--gd);margin-left:.06em}
+.c0{background:#d64541}.c1{background:#2f6fd0}.c2{background:#e8b02a}.c3{background:#2e8f55}
+
+/* кнопки */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:16px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#5d646e}
+.btn.main{background:var(--gd);border-color:var(--gd);color:#16130a}
+.btn.main:hover{background:#ffd06b;border-color:#ffd06b}
+.btn.ghost{background:none;border-color:transparent;color:var(--body);padding:0 10px}
+.btn.ghost:hover{border-color:var(--ln)}
+.lnk{min-height:40px;background:none;border:0;padding:4px 2px;color:var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-weight:600}
+.lnk:hover{color:var(--ink)}.lnk.warn{color:#ffb3ab}
+
+/* головна */
+.hero{padding-top:44px}
+.hero .sk-logo{font-size:clamp(64px,14vw,108px)}
+.hero h1{margin:22px 0 8px;font:600 clamp(30px,5.4vw,44px)/1.08 var(--disp);letter-spacing:.01em}
+.lede{margin:0;max-width:56ch;color:var(--body);font-size:18px}
+.how{list-style:none;counter-reset:h;margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.how li{counter-increment:h;display:grid;grid-template-columns:34px minmax(0,1fr);gap:0 12px;align-items:start}
+.how li::before{content:counter(h);grid-row:span 2;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;font:600 18px/1 var(--disp);color:#fff;box-shadow:inset 0 -3px 0 rgba(0,0,0,.22)}
+.how li:nth-child(1)::before{background:#d64541}.how li:nth-child(2)::before{background:#2f6fd0}.how li:nth-child(3)::before{background:#e8b02a;color:#1d1606}
+.how b{font-size:17px;line-height:1.25}
+.how span{margin-top:3px;color:var(--mut);font-size:15px;line-height:1.4}
+.mine{margin-top:40px}
+.sh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.sh h2{margin:0 auto 0 0;font:600 28px/1.1 var(--disp);letter-spacing:.02em}
+.cards{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.card{display:flex;align-items:center;gap:14px;padding:14px 14px 14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.mini{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:3px;width:32px;height:32px}.mini i{border-radius:3px}
+.ct{flex:1;min-width:0}
+.ct h3{margin:0;font-size:19px;line-height:1.25;overflow-wrap:anywhere}
+.ct p{margin:2px 0 0;color:var(--mut);font-size:15px}
+.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);font-size:13px;font-weight:600;vertical-align:2px}
+.ca{display:flex;gap:8px;flex:none}
+.empty{margin:0;padding:22px;border:1px dashed var(--ln);border-radius:14px;color:var(--mut);text-align:center}
+.warnbox{margin:0 0 12px;padding:12px 14px;border-radius:12px;border:1px solid #6b4a1e;background:#2a2116;color:#f3d9a6;font-size:15px}
+.dev{margin-top:40px;border-top:1px solid var(--ln);color:var(--body);font-size:16px}
+.dev summary{display:flex;align-items:center;min-height:52px;cursor:pointer;font-weight:700;color:var(--ink)}
+.dev p,.dev ul{margin:0 0 10px}.dev ul{padding-left:1.3em}.dev li{margin:4px 0}
+code{font:14px/1.4 var(--mono);background:#0f1114;padding:2px 6px;border-radius:6px;color:#e9d8a6;overflow-wrap:anywhere}
+.foot{padding-top:28px;padding-bottom:44px;color:var(--mut);font-size:14px}
+.foot p{margin:0 0 4px}
+@media (max-width:700px){.how{grid-template-columns:1fr;gap:14px}}
+@media (max-width:560px){.card{flex-wrap:wrap}.ca{width:100%}.ca .btn{flex:1}.sh .btn{flex:1}.sh h2{width:100%}}
+
+/* редактор */
+.ebar{display:flex;align-items:center;gap:8px;padding-top:12px}
+.ebar .sk-logo{font-size:30px}.ebar .sk-logo small{display:none}
+.edit{padding-bottom:130px}
+.gtitle{display:block;width:100%;margin:14px 0 6px;padding:8px 2px;border:0;border-bottom:2px solid var(--ln);border-radius:0;background:none;font:600 clamp(28px,5.4vw,42px)/1.15 var(--disp);letter-spacing:.01em}
+.gtitle:focus{outline:none;border-color:var(--gd)}
+.gtitle::placeholder{color:#5f6670}
+.opts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin:12px 0 20px;color:var(--body);font-size:15px}
+.seg{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.seg>span{margin-right:4px}
+.seg button{min-height:40px;min-width:56px;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);cursor:pointer;font-weight:700}
+.seg button[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:#16181c}
+.tog{display:inline-flex;align-items:center;gap:10px;min-height:40px;cursor:pointer}
+.tog input{width:22px;height:22px;margin:0;accent-color:var(--gd)}
+.qs{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.qc{padding:12px 14px 14px;border-radius:16px;background:var(--card);border:1px solid var(--ln);scroll-margin:16px 0 110px}
+.qc.bad{border-color:var(--no);box-shadow:0 0 0 1px var(--no)}
+.qh{display:flex;align-items:center;gap:2px;margin-bottom:6px}
+.qn{font:600 21px/1 var(--disp);color:var(--gd)}
+.ib{display:grid;place-items:center;width:42px;height:42px;border-radius:10px;border:0;background:none;color:var(--mut);cursor:pointer;font-size:17px}
+.ib svg{width:20px;height:20px}
+.ib:hover{background:var(--card2);color:var(--ink)}.ib:disabled{opacity:.28;cursor:default;background:none}
+.qq{display:block;width:100%;min-height:62px;padding:10px 12px;border-radius:12px;border:2px solid var(--ln);background:var(--bg);font:600 21px/1.3 var(--disp);letter-spacing:.01em;resize:vertical}
+.qq::placeholder,.why::placeholder{color:#6b7480}
+.qq:focus,.why:focus{outline:none;border-color:var(--gd)}
+.ans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.at{display:flex;align-items:center;gap:8px;min-height:58px;padding:6px 7px 6px 8px;border-radius:12px;color:#fff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.22)}
+.at.c2{color:#1d1606}
+.at>b{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:rgba(0,0,0,.2);font:600 19px/1 var(--disp)}
+.at input{flex:1;min-width:0;min-height:44px;padding:4px 8px;border:0;border-radius:8px;background:transparent;font-weight:700;font-size:17px;color:inherit}
+.at input::placeholder{color:currentColor;opacity:.5;font-weight:400}
+.at input:focus{outline:none;background:rgba(0,0,0,.2)}
+.mk{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:2px solid currentColor;background:transparent;color:inherit;font:700 19px/1 var(--txt);cursor:pointer;opacity:.6}
+.mk:hover{opacity:1}
+.at.ok{box-shadow:0 0 0 3px #fff,inset 0 -4px 0 rgba(0,0,0,.22)}
+.at.ok .mk{opacity:1;background:#fff;border-color:#fff;color:#16181c}
+.why{display:block;width:100%;min-height:44px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);font-size:16px}
+.qerr{margin:8px 0 0;color:#ffb3ab;font-weight:600;font-size:15px}
+.qerr:empty{display:none}
+.hintline{margin:-8px 0 14px;color:var(--mut);font-size:14px}
+.addrow{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+.more{display:flex;align-items:center;gap:2px 16px;flex-wrap:wrap;margin-top:26px;font-size:15px;color:var(--mut)}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding:10px 0 calc(10px + env(safe-area-inset-bottom));background:rgba(22,24,28,.95);border-top:1px solid var(--ln)}
+.dock .wrap{display:flex;align-items:center;gap:10px}
+.st{flex:1;min-width:0;color:var(--mut);font-size:14px;line-height:1.3}
+.dock .btn.main{min-width:124px;font-size:18px}
+@media (max-width:560px){.ans{grid-template-columns:1fr}.seg>span{width:100%}.seg button{flex:1;min-width:0}.dock .btn{padding:0 14px}.dock .btn.main{min-width:0}}
+
+/* гра, яку надіслали */
+.gift{margin:26px 0 18px;padding:24px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.hand{margin:0;font:500 27px/1 var(--hand);color:var(--ac)}
+.gift h1{margin:8px 0 4px;font:600 clamp(30px,5.4vw,46px)/1.08 var(--disp);overflow-wrap:anywhere}
+.gift .meta{margin:0;color:var(--mut)}
+.gift .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.peek summary{display:flex;align-items:center;min-height:48px;cursor:pointer;font-weight:700}
+.peek ol{margin:0 0 30px;padding-left:1.6em;color:var(--body)}.peek li{margin:6px 0}
+
+/* вікна */
+dialog{width:min(660px,calc(100% - 24px));max-height:calc(100% - 24px);padding:0;border:1px solid var(--ln);border-radius:18px;background:var(--card);color:var(--ink);box-shadow:0 24px 90px #000a}
+dialog::backdrop{background:rgba(10,12,15,.82)}
+.dlg{padding:20px}
+.dlg h2{margin:0 0 8px;font:600 27px/1.1 var(--disp)}
+.dlg p{margin:0 0 10px;color:var(--body)}
+.fmt{margin:0 0 12px;padding:10px 12px;border-radius:10px;background:#0f1114;font:14px/1.55 var(--mono);color:#e9d8a6;white-space:pre-wrap}
+.dlg textarea{display:block;width:100%;min-height:190px;padding:10px 12px;border-radius:12px;border:2px solid var(--ln);background:var(--bg);font:15px/1.45 var(--txt);resize:vertical}
+.dlg textarea:focus{outline:none;border-color:var(--gd)}
+.bst{min-height:1.5em;margin:10px 0 0!important;font-weight:600}
+.bst.bad{color:#ffb3ab}.bst.good{color:#8be8b9}
+.berr{margin:6px 0 0;padding-left:1.2em;color:#ffb3ab;font-size:14px}
+.ai{margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--card2)}
+.ai summary{cursor:pointer;font-weight:700;min-height:40px;display:flex;align-items:center}
+.ai p{margin:6px 0 10px;font-size:15px}
+.dlg .row{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+#sh-url{display:block;width:100%;min-height:46px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);font:14px var(--mono)}
+#toast{position:fixed;left:50%;bottom:calc(86px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:14px;width:max-content;max-width:calc(100% - 24px);padding:10px 14px 10px 16px;border-radius:12px;background:var(--ink);color:#16181c;font-weight:600;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#toast button{flex:none;min-height:36px;border:0;background:none;color:#1d5fd0;font-weight:700;text-decoration:underline;cursor:pointer}
+summary{list-style:none}summary::-webkit-details-marker{display:none}
+summary::before{content:"";flex:none;width:0;height:0;margin-right:10px;border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor;transition:transform .15s}
+details[open]>summary::before{transform:rotate(90deg)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<dialog id="dlg-bulk" aria-labelledby="bulk-h"><form class="dlg" method="dialog">
+  <h2 id="bulk-h">Вставити запитання списком</h2>
+  <p>Запитання — окремим рядком, під ним відповіді: <b>+</b> правильна, <b>-</b> неправильна (2–4 відповіді). Між запитаннями — порожній рядок.</p>
+  <pre class="fmt">Скільки літер у слові СКОБ?
++ Чотири
+- Три
+- П’ять
+Пояснення: С, К, О, Б — чотири літери.</pre>
+  <label class="vh" for="bulk-t">Запитання</label>
+  <textarea id="bulk-t" spellcheck="false" placeholder="Вставте сюди свої запитання"></textarea>
+  <p class="bst" id="bulk-st" aria-live="polite"></p><ul class="berr" id="bulk-err"></ul>
+  <details class="ai"><summary>Скласти запитання з матеріалу за допомогою ШІ</summary>
+    <p>Скопіюйте підказку, вставте її в чат-бот (ChatGPT, Claude чи інший), додайте в кінці свій текст — а готові запитання вставте сюди.</p>
+    <button type="button" class="btn" data-k="copyprompt">Копіювати підказку</button></details>
+  <div class="row"><button type="submit" class="btn" value="cancel">Скасувати</button><button type="submit" class="btn main" id="bulk-go" value="ok" disabled>Додати</button></div>
+</form></dialog>
+
+<dialog id="dlg-share" aria-labelledby="sh-h"><div class="dlg">
+  <h2 id="sh-h">Поділитися грою</h2>
+  <p id="sh-p"></p>
+  <label class="vh" for="sh-url">Посилання на гру</label>
+  <input id="sh-url" readonly>
+  <div class="row"><button type="button" class="btn" data-k="shclose">Закрити</button><button type="button" class="btn" data-k="shsend" hidden>Надіслати…</button><button type="button" class="btn main" data-k="shcopy">Копіювати посилання</button></div>
+</div></dialog>
+
+<input type="file" id="file-in" accept=".json,application/json" hidden>
+<div id="toast" role="status" hidden><span></span><button type="button" hidden></button></div>
+
+<script src="../../src/qr.js"></script>
+<script src="../../src/skob.js"></script>
+<script src="pryklad.js"></script>
+<script>
+(() => {
+'use strict';
+const $ = (s, r = document) => r.querySelector(s);
+const app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const LET = ['С', 'К', 'О', 'Б'], TIMES = [10, 20, 30, 60], KEY = 'skob-hra:games';
+const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
+const nQ = n => n + ' ' + plural(n, 'запитання', 'запитання', 'запитань');
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const LOGO = cls => `<span class="sk-logo ${cls || ''}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
+const MINI = '<span class="mini" aria-hidden="true"><i class="c0"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i></span>';
+const IC = {
+  up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>',
+  down: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5.5 12.5 12 19l6.5-6.5"/></svg>',
+  copy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6.5A2.5 2.5 0 0 0 13.5 4h-7A2.5 2.5 0 0 0 4 6.5v7A2.5 2.5 0 0 0 6.5 16H8"/></svg>',
+  del: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12.5A1.6 1.6 0 0 0 8.6 21h6.8a1.6 1.6 0 0 0 1.6-1.5L18 7M9 7V4.5h6V7"/></svg>'
+};
+
+/* ---------- збереження: лише на цьому пристрої ---------- */
+let canStore = true;
+function load() { try { const v = localStorage.getItem(KEY); return v ? JSON.parse(v) : null; } catch (e) { canStore = false; return null; } }
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(games)); canStore = true; return true; } catch (e) { canStore = false; return false; } }
+const blankQ = () => ({ q: '', a: ['', '', '', ''], ok: -1, why: '' });
+function norm(o) {
+  o = o || {};
+  const qs = (Array.isArray(o.qs) ? o.qs : []).slice(0, 100).map(x => {
+    x = x || {};
+    const a = (Array.isArray(x.a) ? x.a : []).slice(0, 4).map(s => String(s ?? '').slice(0, 90));
+    while (a.length < 4) a.push('');
+    const ok = Number.isInteger(x.ok) && x.ok >= 0 && x.ok < 4 ? x.ok : -1;
+    return { q: String(x.q ?? '').slice(0, 160), a, ok, why: String(x.why ?? '').slice(0, 200) };
+  });
+  return { id: String(o.id || uid()), title: String(o.title ?? '').slice(0, 80), T: TIMES.includes(+o.T) ? +o.T : 20, mix: o.mix !== false,
+    qs: qs.length ? qs : [blankQ()], upd: +o.upd || Date.now(), sample: !!o.sample };
+}
+let games = load();
+if (Array.isArray(games)) games = games.map(norm);
+else { games = window.SKOB_PRYKLAD ? [norm(Object.assign({ sample: true }, window.SKOB_PRYKLAD))] : []; persist(); }
+
+const isEmpty = q => !q.q.trim() && q.a.every(x => !x.trim()) && !q.why.trim();
+function problem(q) {
+  if (!q.q.trim()) return 'Напишіть запитання.';
+  if (q.a.filter(x => x.trim()).length < 2) return 'Потрібно щонайменше дві відповіді.';
+  if (q.ok < 0 || !q.a[q.ok].trim()) return 'Позначте правильну відповідь — натисніть ✓ біля неї.';
+  return '';
+}
+function forGame(q) {
+  const kept = q.a.map((x, i) => [x.trim(), i]).filter(x => x[0]);
+  return { q: q.q.trim(), a: kept.map(x => x[0]), ok: kept.findIndex(x => x[1] === q.ok), why: q.why.trim() };
+}
+
+/* ---------- маршрути: #gra-<id> — редактор, #g=<…> — гра з посилання ---------- */
+let shown = null, cur = null, shared = null;
+function go(h, replace) {
+  const url = location.pathname + location.search + (h ? '#' + h : '');
+  if (url !== location.pathname + location.search + location.hash) history[replace ? 'replaceState' : 'pushState'](null, '', url);
+  route(true);
+}
+async function route(force) {
+  const h = location.hash.slice(1);
+  if (!force && h === shown) return;
+  shown = h; cur = null; shared = null;
+  if (h.startsWith('g=')) {
+    try { shared = await decode(h.slice(2)); renderShared(); }
+    catch (e) { toast('Посилання пошкоджене або неповне. Попросіть надіслати його ще раз.'); go('', true); }
+  } else if (h.startsWith('gra-') && games.some(g => g.id === h.slice(4))) { cur = games.find(g => g.id === h.slice(4)); renderEdit(); }
+  else renderList();
+  scrollTo(0, 0);
+}
+addEventListener('popstate', () => route());
+addEventListener('hashchange', () => route());
+
+/* ---------- мої ігри ---------- */
+function renderList() {
+  document.title = 'Потужний СКОБ! — створи свою гру';
+  const list = games.slice().sort((a, b) => b.upd - a.upd);
+  app.innerHTML = `
+  <header class="wrap hero">${LOGO()}<h1>Створи свою гру-вікторину</h1>
+    <p class="lede">Запитання — на великому екрані, відповіді — з телефонів. Без реєстрації: ігри зберігаються лише на цьому пристрої.</p></header>
+  <main class="wrap">
+    <ol class="how">
+      <li><b>Склади запитання</b><span>По одному або цілим списком. До чотирьох відповідей: С, К, О, Б.</span></li>
+      <li><b>Відкрий на великому екрані</b><span>Проєктор, телевізор чи ноутбук — і натисни «Грати».</span></li>
+      <li><b>Гравці заходять з телефонів</b><span>Сканують QR-код і пишуть ім’я. Без телефонів — відповідайте вголос.</span></li>
+    </ol>
+    <section class="mine" aria-labelledby="mine-h">
+      <div class="sh"><h2 id="mine-h">Мої ігри</h2><button type="button" class="btn" data-k="open">Відкрити файл</button><button type="button" class="btn main" data-k="new">Нова гра</button></div>
+      ${canStore ? '' : '<p class="warnbox">Цей браузер не дає зберігати ігри (можливо, це приватне вікно). Щоб не втратити гру, збережіть її файлом або посиланням.</p>'}
+      ${list.length ? `<ul class="cards">${list.map(g => {
+        const n = g.qs.filter(q => !isEmpty(q)).length;
+        return `<li class="card">${MINI}<div class="ct"><h3>${esc(g.title || 'Без назви')}${g.sample ? '<span class="tag">приклад</span>' : ''}</h3><p>${nQ(n)} · по ${g.T} с</p></div>
+          <div class="ca"><button type="button" class="btn" data-k="edit" data-id="${esc(g.id)}">Змінити</button><button type="button" class="btn main" data-k="play" data-id="${esc(g.id)}">Грати</button></div></li>`;
+      }).join('')}</ul>` : '<p class="empty">Ігор поки немає. Натисніть «Нова гра» — і за кілька хвилин вікторина готова.</p>'}
+    </section>
+    <details class="dev"><summary>Для сайтів і розробників</summary>
+      <p>Гра працює без сервера й бази даних. Вона складається з двох частин:</p>
+      <ul><li><b>Екран ведучого</b> — файл <code>skob.js</code> (і <code>qr.js</code> для QR-коду). Запуск: <code>SKOB.game(запитання, { T: 20, title: 'Назва' })</code>.</li>
+        <li><b>Сторінка для телефонів</b> — окрема сторінка, тут це <code>gutirky-fi.github.io/skob</code>.</li></ul>
+      <p>Запитання: <code>{ q: 'Текст', a: ['С', 'К', 'О', 'Б'], ok: 0, why: 'Пояснення' }</code> — від 2 до 4 відповідей, <code>ok</code> — номер правильної з нуля.</p>
+      <p>Телефони з’єднуються з екраном напряму (WebRTC через безкоштовний сервер PeerJS). Імена й бали живуть лише у вкладці ведучого. Для великого порталу краще поставити власний сервер PeerJS (відкритий код); його адресу задає <code>window.GUTIRKA_PEER_OPTS</code>.</p>
+    </details>
+  </main>
+  <footer class="wrap foot"><p>СКОБ! — Сильно, Красно, Обережно, Бистро.</p><p>Зроблено в Пласті у Фінляндії. Без реєстрації, реклами й збирання даних.</p></footer>`;
+}
+
+/* ---------- редактор ---------- */
+function qCard(q, i, n) {
+  return `<li class="qc" data-i="${i}">
+    <div class="qh"><span class="qn">${i + 1}</span><span class="sp"></span>
+      <button type="button" class="ib" data-k="up" aria-label="Вище"${i === 0 ? ' disabled' : ''}>${IC.up}</button>
+      <button type="button" class="ib" data-k="down" aria-label="Нижче"${i === n - 1 ? ' disabled' : ''}>${IC.down}</button>
+      <button type="button" class="ib" data-k="copyq" aria-label="Копія запитання">${IC.copy}</button>
+      <button type="button" class="ib" data-k="rmq" aria-label="Видалити запитання">${IC.del}</button></div>
+    <label class="vh" for="q${i}">Запитання ${i + 1}</label>
+    <textarea class="qq" id="q${i}" data-f="q" rows="2" maxlength="160" placeholder="Запитання">${esc(q.q)}</textarea>
+    <div class="ans">${q.a.map((a, j) => `<div class="at c${j}${q.ok === j ? ' ok' : ''}"><b aria-hidden="true">${LET[j]}</b>
+      <input data-f="a" data-j="${j}" maxlength="90" aria-label="Відповідь ${LET[j]}" placeholder="${j < 2 ? 'Відповідь' : 'Відповідь (необов’язково)'}" value="${esc(a)}">
+      <button type="button" class="mk" data-k="ok" data-j="${j}" aria-pressed="${q.ok === j}" aria-label="Правильна відповідь — ${LET[j]}">✓</button></div>`).join('')}</div>
+    <input class="why" data-f="why" maxlength="200" aria-label="Пояснення до запитання ${i + 1}" placeholder="Пояснення після відповіді (необов’язково)" value="${esc(q.why)}">
+    <p class="qerr" role="alert"></p></li>`;
+}
+function renderEdit() {
+  const g = cur;
+  document.title = (g.title || 'Нова гра') + ' — Потужний СКОБ!';
+  app.innerHTML = `
+  <header class="wrap ebar"><button type="button" class="btn ghost" data-k="home">← Мої ігри</button><span class="sp"></span>${LOGO()}</header>
+  <main class="wrap edit">
+    <label class="vh" for="g-title">Назва гри</label>
+    <input id="g-title" class="gtitle" maxlength="80" placeholder="Назва гри" value="${esc(g.title)}">
+    <div class="opts">
+      <div class="seg" role="radiogroup" aria-label="Час на відповідь"><span>Час на відповідь</span>${TIMES.map(t => `<button type="button" role="radio" aria-checked="${g.T === t}" data-k="time" data-t="${t}">${t} с</button>`).join('')}</div>
+      <label class="tog"><input type="checkbox" id="g-mix"${g.mix ? ' checked' : ''}> Перемішувати запитання й відповіді</label>
+    </div>
+    <p class="hintline">Натисніть ✓ біля правильної відповіді. Порожні відповіді в грі не показуються — можна лишити дві чи три.</p>
+    <ol class="qs" id="qs"></ol>
+    <div class="addrow"><button type="button" class="btn" data-k="addq">+ Додати запитання</button><button type="button" class="btn" data-k="bulk">Вставити списком</button></div>
+    <div class="more"><span>Ще:</span><button type="button" class="lnk" data-k="file">Зберегти файлом</button><button type="button" class="lnk" data-k="dup">Зробити копію</button><button type="button" class="lnk warn" data-k="delgame">Видалити гру</button></div>
+  </main>
+  <div class="dock"><div class="wrap"><span class="st" id="st" aria-live="polite">${canStore ? 'Усе зберігається на цьому пристрої' : 'Цей браузер не зберігає — збережіть файлом'}</span>
+    <button type="button" class="btn" data-k="share">Поділитися</button><button type="button" class="btn main" data-k="play">Грати</button></div></div>`;
+  paintQs();
+}
+function paintQs(focus) {
+  const g = cur, box = $('#qs'); if (!box) return;
+  box.innerHTML = g.qs.map((q, i) => qCard(q, i, g.qs.length)).join('');
+  if (focus) { const [i, sel] = focus, card = box.children[i]; if (card) { const el = $(sel, card) || card; el.focus({ preventScroll: true }); card.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } }
+}
+let saveT = 0;
+function touch() {
+  if (!cur) return; cur.upd = Date.now(); cur.sample = false;
+  clearTimeout(saveT); saveT = setTimeout(() => { const ok = persist(); const st = $('#st'); if (st) st.textContent = ok ? 'Збережено на цьому пристрої' : 'Не вдалося зберегти — збережіть файлом'; }, 300);
+}
+function markErrors(errs) {
+  document.querySelectorAll('.qc').forEach(c => { c.classList.remove('bad'); $('.qerr', c).textContent = ''; });
+  errs.forEach(({ i, m }) => { const c = $(`.qc[data-i="${i}"]`); if (c) { c.classList.add('bad'); $('.qerr', c).textContent = m; } });
+  if (errs.length) { const c = $(`.qc[data-i="${errs[0].i}"]`); if (c) c.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+}
+
+/* ---------- гра ---------- */
+function play(g) {
+  const errs = [], list = [];
+  g.qs.forEach((q, i) => { if (isEmpty(q)) return; const m = problem(q); if (m) errs.push({ i, m }); else list.push(forGame(q)); });
+  if (errs.length) {
+    if (g === cur) markErrors(errs); else { go('gra-' + g.id); setTimeout(() => markErrors(errs), 60); }
+    toast(errs.length === 1 ? `Запитання ${errs[0].i + 1} треба доробити.` : `Треба доробити запитання: ${errs.map(e => e.i + 1).join(', ')}.`);
+    return;
+  }
+  if (!list.length) { toast('Додайте хоча б одне запитання.'); return; }
+  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!' });
+}
+
+/* ---------- гра з посилання ---------- */
+function renderShared() {
+  const g = shared, n = g.qs.filter(q => !isEmpty(q)).length;
+  document.title = (g.title || 'Вікторина') + ' — Потужний СКОБ!';
+  app.innerHTML = `
+  <header class="wrap ebar">${LOGO()}<span class="sp"></span><button type="button" class="btn ghost" data-k="home">Мої ігри</button></header>
+  <main class="wrap">
+    <section class="gift"><p class="hand">Вам надіслали гру</p><h1>${esc(g.title || 'Вікторина')}</h1><p class="meta">${nQ(n)} · по ${g.T} с на відповідь</p>
+      <div class="btns"><button type="button" class="btn main" data-k="playshared">Грати</button><button type="button" class="btn" data-k="keep">Зберегти собі</button></div></section>
+    <details class="peek"><summary>Переглянути запитання</summary><ol>${g.qs.filter(q => !isEmpty(q)).map(q => `<li>${esc(q.q)}</li>`).join('')}</ol></details>
+  </main>`;
+}
+
+/* ---------- посилання: уся гра в адресі, стиснута ---------- */
+const b64u = bytes => { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+const unb64u = s => { s = s.replace(/-/g, '+').replace(/_/g, '/'); while (s.length % 4) s += '='; const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; };
+async function pipe(bytes, stream) { return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
+async function encode(g) {
+  const trim = a => { a = a.slice(); while (a.length && !a[a.length - 1].trim()) a.pop(); return a; };
+  const json = JSON.stringify({ v: 1, t: g.title, T: g.T, m: g.mix ? 1 : 0, q: g.qs.filter(q => !isEmpty(q)).map(q => q.why.trim() ? [q.q, trim(q.a), q.ok, q.why] : [q.q, trim(q.a), q.ok]) });
+  const bytes = new TextEncoder().encode(json);
+  if (window.CompressionStream) { try { return 'z' + b64u(await pipe(bytes, new CompressionStream('deflate-raw'))); } catch (e) { /* далі без стиснення */ } }
+  return 'j' + b64u(bytes);
+}
+async function decode(s) {
+  let bytes = unb64u(decodeURIComponent(s.slice(1)));
+  if (s[0] === 'z') bytes = await pipe(bytes, new DecompressionStream('deflate-raw'));
+  else if (s[0] !== 'j') throw new Error('format');
+  const o = JSON.parse(new TextDecoder().decode(bytes));
+  if (!o || !Array.isArray(o.q)) throw new Error('format');
+  return norm({ title: o.t, T: o.T, mix: !!o.m, qs: o.q.map(x => ({ q: x[0], a: x[1], ok: x[2], why: x[3] || '' })) });
+}
+async function share(g) {
+  const url = location.origin + location.pathname + '#g=' + await encode(g);
+  $('#sh-p').textContent = `Хто відкриє посилання, побачить гру «${g.title || 'Вікторина'}» і зможе зіграти або зберегти собі копію. Уся гра — в самому посиланні, на сервері нічого не зберігається.`;
+  $('#sh-url').value = url; $('[data-k=shsend]').hidden = !navigator.share;
+  $('#dlg-share').showModal(); $('#sh-url').select();
+}
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = t; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.append(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (er) { /* ok */ } ta.remove(); return ok; }
+}
+
+/* ---------- файл ---------- */
+const fname = t => (t || 'gra').trim().replace(/[\\/:*?"<>|]+/g, '').replace(/\s+/g, '-').slice(0, 60) || 'gra';
+function download(g) {
+  const data = { format: 'potuzhnyi-skob', v: 1, title: g.title, T: g.T, mix: g.mix, qs: g.qs.filter(q => !isEmpty(q)) };
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' }));
+  a.download = fname(g.title) + '.skob.json'; document.body.append(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+  toast('Файл гри збережено. Його можна надіслати іншим або відкрити на іншому пристрої.');
+}
+$('#file-in').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  f.text().then(t => {
+    const o = JSON.parse(t), qs = Array.isArray(o) ? o : (o.qs || o.questions);
+    if (!Array.isArray(qs) || !qs.length) throw new Error('format');
+    const g = norm({ title: o.title || f.name.replace(/(\.skob)?\.json$/i, ''), T: o.T, mix: o.mix, qs }); g.id = uid(); g.upd = Date.now();
+    games.push(g); persist(); go('gra-' + g.id); toast('Гру відкрито з файлу.');
+  }).catch(() => toast('Не вдалося прочитати файл. Потрібен файл гри з назвою на .skob.json.'));
+});
+
+/* ---------- список запитань текстом ---------- */
+function parseBulk(text) {
+  const out = []; let q = null;
+  const done = () => { if (q) out.push(q); q = null; };
+  for (const raw of String(text).split(/\r?\n/)) {
+    const l = raw.trim(); let m;
+    if (!l) { done(); continue; }
+    if ((m = l.match(/^(?:пояснення|explanation)\s*[:\-–—]\s*(.*)$/i) || l.match(/^>\s*(.*)$/))) { if (q) q.why = (q.why ? q.why + ' ' : '') + m[1]; continue; }
+    if ((m = l.match(/^[+*✓✔]\s*(.*)$/))) { if (q) q.ans.push([m[1].trim(), true]); continue; }
+    if ((m = l.match(/^[-–—•]\s*(.*)$/))) { if (q) q.ans.push([m[1].trim(), false]); continue; }
+    const t = l.replace(/^\d{1,3}\s*[.)]\s*/, '');
+    if (q && !q.ans.length) q.q += ' ' + t; else { done(); q = { q: t, ans: [], why: '' }; }
+  }
+  done();
+  const good = [], bad = [];
+  out.forEach(x => {
+    const ans = x.ans.filter(a => a[0]), right = ans.filter(a => a[1]).length, name = x.q.length > 50 ? x.q.slice(0, 48) + '…' : x.q;
+    if (ans.length < 2) bad.push(`«${name}» — потрібно щонайменше дві відповіді.`);
+    else if (ans.length > 4) bad.push(`«${name}» — більше чотирьох відповідей.`);
+    else if (right !== 1) bad.push(`«${name}» — має бути рівно одна правильна відповідь із «+».`);
+    else { const a = ans.map(v => v[0]); while (a.length < 4) a.push(''); good.push({ q: x.q.slice(0, 160), a: a.map(v => v.slice(0, 90)), ok: ans.findIndex(v => v[1]), why: x.why.slice(0, 200) }); }
+  });
+  return { good, bad };
+}
+let bulkRes = { good: [], bad: [] };
+function paintBulk() {
+  const t = $('#bulk-t').value; bulkRes = parseBulk(t);
+  const { good, bad } = bulkRes, st = $('#bulk-st'), btn = $('#bulk-go');
+  st.className = 'bst' + (bad.length ? ' bad' : good.length ? ' good' : '');
+  st.textContent = !t.trim() ? '' : good.length || bad.length ? `Розпізнано: ${nQ(good.length)}.${bad.length ? ` Пропущено: ${bad.length} — див. нижче.` : ''}` : 'Поки не видно жодного запитання з відповідями.';
+  $('#bulk-err').innerHTML = bad.slice(0, 8).map(b => `<li>${esc(b)}</li>`).join('');
+  btn.disabled = !good.length; btn.textContent = good.length ? `Додати ${nQ(good.length)}` : 'Додати';
+}
+$('#bulk-t').addEventListener('input', paintBulk);
+$('#dlg-bulk').addEventListener('close', () => {
+  if ($('#dlg-bulk').returnValue !== 'ok' || !cur || !bulkRes.good.length) return;
+  const g = cur, start = g.qs.length === 1 && isEmpty(g.qs[0]) ? 0 : g.qs.length;
+  if (start === 0) g.qs = [];
+  g.qs.push(...bulkRes.good.map(norm1)); touch(); paintQs([start, '.qq']);
+  toast(`Додано ${nQ(bulkRes.good.length)}.`);
+});
+const norm1 = q => norm({ qs: [q] }).qs[0];
+const PROMPT = `Склади 10 запитань для вікторини за матеріалом нижче.
+Вимоги:
+– запитання коротке, до 95 знаків;
+– 4 варіанти відповіді, до 75 знаків кожен, правильний лише один;
+– неправильні варіанти правдоподібні, без жартів;
+– після варіантів — коротке пояснення одним реченням.
+Формат — строго такий, без нумерації, без зірочок і без іншого тексту:
+
+Запитання?
++ правильна відповідь
+- неправильна відповідь
+- неправильна відповідь
+- неправильна відповідь
+Пояснення: одне коротке речення.
+
+Між запитаннями — порожній рядок.
+
+Матеріал:
+`;
+
+/* ---------- повідомлення внизу (з «Повернути») ---------- */
+let toastT = 0;
+function toast(text, undo) {
+  const t = $('#toast'), b = $('button', t);
+  $('span', t).textContent = text; b.hidden = !undo; b.textContent = 'Повернути';
+  b.onclick = () => { t.hidden = true; if (undo) undo(); };
+  t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, undo ? 7000 : 4500);
+}
+
+/* ---------- натискання ---------- */
+document.addEventListener('click', async e => {
+  if (e.target.closest('#skob,#skob-lobby,#skob-req')) return;   // клацання всередині самої гри
+  const b = e.target.closest('[data-k]'); if (!b || b.disabled) return;
+  const k = b.dataset.k, card = b.closest('.qc'), i = card ? +card.dataset.i : -1, g = cur;
+  if (k === 'home') go('');
+  else if (k === 'new') { const n = norm({}); games.push(n); persist(); go('gra-' + n.id); setTimeout(() => { const t = $('#g-title'); if (t) t.focus(); }, 30); }
+  else if (k === 'open') $('#file-in').click();
+  else if (k === 'edit') go('gra-' + b.dataset.id);
+  else if (k === 'play') play(g || games.find(x => x.id === b.dataset.id));
+  else if (k === 'playshared') play(shared);
+  else if (k === 'keep') { const n = norm(shared); n.id = uid(); n.upd = Date.now(); games.push(n); persist(); go('gra-' + n.id, true); toast('Гру збережено у «Мої ігри».'); }
+  else if (k === 'time') { g.T = +b.dataset.t; b.parentElement.querySelectorAll('[data-t]').forEach(x => x.setAttribute('aria-checked', String(x === b))); touch(); }
+  else if (k === 'addq') { g.qs.push(blankQ()); touch(); paintQs([g.qs.length - 1, '.qq']); }
+  else if (k === 'bulk') { $('#bulk-t').value = ''; paintBulk(); $('#dlg-bulk').returnValue = ''; $('#dlg-bulk').showModal(); $('#bulk-t').focus(); }
+  else if (k === 'copyprompt') { const ok = await copyText(PROMPT); b.textContent = ok ? 'Скопійовано ✓ Вставте в чат-бот і допишіть свій матеріал' : 'Не вдалося скопіювати'; setTimeout(() => { b.textContent = 'Копіювати підказку'; }, 3500); }
+  else if (k === 'ok') { const j = +b.dataset.j; g.qs[i].ok = g.qs[i].ok === j ? -1 : j; card.querySelectorAll('.at').forEach((a, x) => { a.classList.toggle('ok', g.qs[i].ok === x); $('.mk', a).setAttribute('aria-pressed', String(g.qs[i].ok === x)); }); clearErr(card); touch(); }
+  else if (k === 'up' || k === 'down') { const j = k === 'up' ? i - 1 : i + 1; [g.qs[i], g.qs[j]] = [g.qs[j], g.qs[i]]; touch(); paintQs([j, `[data-k=${k}]:not(:disabled)`]); }
+  else if (k === 'copyq') { g.qs.splice(i + 1, 0, JSON.parse(JSON.stringify(g.qs[i]))); touch(); paintQs([i + 1, '.qq']); }
+  else if (k === 'rmq') {
+    const was = g.qs[i];
+    if (g.qs.length === 1) g.qs[0] = blankQ(); else g.qs.splice(i, 1);
+    touch(); paintQs([Math.min(i, g.qs.length - 1), '.qq']);
+    if (!isEmpty(was)) toast(`Запитання ${i + 1} видалено.`, () => { if (cur !== g) return; if (g.qs.length === 1 && isEmpty(g.qs[0])) g.qs = []; g.qs.splice(i, 0, was); touch(); paintQs([i, '.qq']); });
+  }
+  else if (k === 'file') download(g);
+  else if (k === 'dup') { const n = norm(JSON.parse(JSON.stringify(g))); n.id = uid(); n.title = (g.title || 'Без назви') + ' (копія)'; n.upd = Date.now(); n.sample = false; games.push(n); persist(); go('gra-' + n.id); toast('Це копія — можна змінювати, оригінал лишився.'); }
+  else if (k === 'delgame') { const at = games.indexOf(g); games.splice(at, 1); persist(); go(''); toast(`Гру «${g.title || 'Без назви'}» видалено.`, () => { games.splice(at, 0, g); persist(); route(true); }); }
+  else if (k === 'share') share(g);
+  else if (k === 'shclose') $('#dlg-share').close();
+  else if (k === 'shcopy') { const ok = await copyText($('#sh-url').value); $('#dlg-share').close(); toast(ok ? 'Посилання скопійовано. Надішліть його в месенджері чи листом.' : 'Не вдалося скопіювати — виділіть посилання вручну.'); }
+  else if (k === 'shsend') { try { await navigator.share({ title: 'Потужний СКОБ! — ' + (g.title || 'Вікторина'), url: $('#sh-url').value }); $('#dlg-share').close(); } catch (er) { /* скасовано */ } }
+});
+const clearErr = card => { card.classList.remove('bad'); $('.qerr', card).textContent = ''; };
+document.addEventListener('input', e => {
+  const t = e.target, g = cur; if (!g) return;
+  if (t.id === 'g-title') { g.title = t.value; document.title = (g.title || 'Нова гра') + ' — Потужний СКОБ!'; touch(); return; }
+  const card = t.closest('.qc'); if (!card || !t.dataset.f) return;
+  const q = g.qs[+card.dataset.i];
+  if (t.dataset.f === 'a') q.a[+t.dataset.j] = t.value; else q[t.dataset.f] = t.value;
+  if (card.classList.contains('bad')) clearErr(card);
+  touch();
+});
+document.addEventListener('change', e => { if (e.target.id === 'g-mix' && cur) { cur.mix = e.target.checked; touch(); } });
+addEventListener('pagehide', () => { if (saveT) persist(); });
+
+route(true);
+})();
+</script>
+</body>
+</html>

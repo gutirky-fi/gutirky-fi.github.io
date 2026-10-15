@@ -6,7 +6,8 @@
      lobby()               — показати QR і гравців (вмикає звʼязок)
      count()               — скільки телефонів зараз на звʼязку
      ask(el, q, o) → ctl   — одне запитання в контейнері el; ctl.next() → true, якщо крок спожито; ctl.stop()
-     game(list, o)         — повна гра поверх сторінки; o.onClose()
+     game(list, o)         — повна гра поверх сторінки; o.onClose(), o.T (секунд), o.title, o.endText,
+                             o.keepOrder (не перемішувати запитання й відповіді)
      active(), key(e)      — чи відкрита гра/лобі; передати натискання клавіші
      on(fn)                — підписка на зміни (гравці, звʼязок)
    q = { q, a:[4 варіанти], ok: індекс правильного, why } */
@@ -83,6 +84,7 @@
 #skob .sk-hint{position:absolute;left:0;right:0;bottom:calc(12px + env(safe-area-inset-bottom));text-align:center;color:#a0a8b2;font-size:15px;pointer-events:none}
 .sk-intro{text-align:center;max-width:900px}
 .sk-intro .sk-logo{font-size:clamp(64px,13vw,170px)}
+.sk-intro .sk-gt{margin:18px 0 0;font:600 clamp(1.6rem,3.4vw,3rem)/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.01em;text-wrap:balance}
 .sk-intro p{font-size:clamp(1.05rem,1.8vw,1.6rem);color:#cfd5dc;margin:18px 0 22px}
 .sk-intro .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .sk-lead{width:min(900px,100%)}
@@ -357,7 +359,7 @@
   let G = null, gEl = null, lastPT = '';
   function game(list, o = {}) {
     injectCss(); closeGame(true);
-    G = { src: list, list: shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
+    G = { src: list, list: o.keepOrder ? list.slice() : shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
     gEl.innerHTML = `<div class="sk-top">${LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
@@ -367,7 +369,7 @@
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
         if (k === 'lobby') lobby(); else if (k === 'x') gEl.querySelector('.sk-sure').classList.toggle('on'); else if (k === 'stay') gEl.querySelector('.sk-sure').classList.remove('on');
-        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
+        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
         return; }
       if (e.target.closest('button,a') || lastPT === 'mouse') return;
       gNext();
@@ -380,7 +382,7 @@
   function gIntro() {
     G.ph = 'intro'; phoneView = { t: 'wait' }; bcast();
     const n = online().length, had = [...players.values()].some(P => P.score > 0);
-    gStage().innerHTML = `<div class="sk-intro">${LOGO()}<p>${G.list.length} запитань · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.<br>${n ? `На звʼязку ${n} ${plural(n, 'телефон', 'телефони', 'телефонів')}.${had ? ' Бали з гутірки теж рахуються.' : ''}` : 'Грати можна з телефонами — або просто на екрані, відповідаючи вголос.'}</p>
+    gStage().innerHTML = `<div class="sk-intro">${LOGO()}${G.o.title ? `<h2 class="sk-gt">${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.<br>${n ? `На звʼязку ${n} ${plural(n, 'телефон', 'телефони', 'телефонів')}.${had ? ' Бали з гутірки теж рахуються.' : ''}` : 'Грати можна з телефонами — або просто на екрані, відповідаючи вголос.'}</p>
       <div class="btns"><button type="button" class="sk-btn main" data-k="start">Почати</button><button type="button" class="sk-btn" data-k="lobby">Запросити гравців</button></div></div>`;
     hint('');
   }
@@ -400,7 +402,7 @@
     G.i = i; G.ph = 'q'; phoneView = { t: 'wait' };
     G.before = new Map([...players.values()].map(P => [P.tok, P.score]));
     const st = gStage(); st.innerHTML = '<div style="width:100%"></div>';
-    G.ctl = ask(st.firstElementChild, G.list[i], { label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, auto: () => { if (G && G.ph === 'q' && G.i === i) gNext(); }, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
+    G.ctl = ask(st.firstElementChild, G.list[i], { mix: !G.o.keepOrder, label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, auto: () => { if (G && G.ph === 'q' && G.i === i) gNext(); }, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
     G.pl = R && R.pl;
     hint(G.pl ? '' : 'Натисніть на відповідь. Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.');
   }
@@ -419,7 +421,7 @@
       const cell = (P, k) => P ? `<div class="p${k}"><span class="nm">${esc(P.name)}</span><span class="sc">${num(P.score)}</span><div class="blk">${k}</div></div>` : `<div class="p${k}"></div>`;
       h = `<h2>Переможці</h2><div class="sk-pod">${cell(top[1], 2)}${cell(top[0], 1)}${cell(top[2], 3)}</div>` +
         (top.length > 3 ? `<p class="rest">${top.slice(3, 12).map((P, k) => `${k + 4}. ${esc(P.name)} — ${num(P.score)}`).join(' · ')}</p>` : '');
-    } else h = `<h2>Вікторину завершено</h2><p class="rest">${G.list.length} запитань позаду. Хто знає все — може йти складати вмілість!</p>`;
+    } else h = `<h2>Вікторину завершено</h2><p class="rest">${esc(G.o.endText || `${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} позаду. Хто знає все — може йти складати вмілість!`)}</p>`;
     gStage().innerHTML = `<div class="sk-end">${h}<div class="btns"><button type="button" class="sk-btn main" data-k="done">Завершити</button><button type="button" class="sk-btn" data-k="again">Зіграти ще раз</button></div></div>`;
     hint('');
   }
