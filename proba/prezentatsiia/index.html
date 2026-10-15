@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#111316">
+<title>Презентація — Бібліотека гутірок</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;700&display=swap">
+<style>
+/* Перегляд презентації: слайди-картинки, гортання стрілками / свайпом, нотатки ведучого, повний екран, PDF. */
+:root{color-scheme:dark;--bg:#111316;--bar:#1b1d21;--ln:#33383f;--ink:#f2f4f6;--mut:#a0a8b2;--gd:#ffc247}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font:16px/1.45 'Source Sans 3',system-ui,sans-serif;overflow:hidden}
+button,a{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.top{display:flex;align-items:center;gap:8px;padding:max(8px,env(safe-area-inset-top)) 12px 8px}
+.top .ttl{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 14px;border-radius:10px;border:1px solid var(--ln);background:var(--bar);font-weight:700;font-size:15px;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:#5d646e}
+.btn[aria-pressed=true]{background:var(--ink);color:#16181c;border-color:var(--ink)}
+.stage{position:relative;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:0 12px;touch-action:pan-y}
+.stage img{display:block;max-width:100%;max-height:100%;aspect-ratio:16/9;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.45);user-select:none;-webkit-user-drag:none}
+.nav{position:absolute;top:0;bottom:0;width:22%;border:0;background:none;cursor:pointer}
+.nav.prev{left:0}.nav.next{right:0}
+.nav span{position:absolute;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:rgba(27,29,33,.85);border:1px solid var(--ln);font-size:24px;opacity:0;transition:opacity .2s}
+.nav.prev span{left:16px}.nav.next span{right:16px}
+.nav:hover span,.nav:focus-visible span{opacity:1}
+.nav:disabled{cursor:default}.nav:disabled span{display:none}
+.bot{display:flex;align-items:center;gap:8px;padding:8px 12px max(10px,env(safe-area-inset-bottom))}
+.bot .sp{flex:1}
+.cnt{min-width:70px;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.notes{max-height:28vh;overflow:auto;margin:0 12px;padding:12px 16px;border-radius:12px;background:var(--bar);border:1px solid var(--ln);color:#cfd5dc;white-space:pre-wrap}
+.notes b{display:block;margin-bottom:4px;color:var(--gd);font-size:13px;letter-spacing:.06em}
+@media (max-width:600px){.bot{gap:6px}.btn{padding:0 11px}.cnt{min-width:56px}.top .ttl{display:none}.top{justify-content:space-between}.btn .lbl{display:none}.nav span{opacity:.9;width:44px;height:44px}}
+:fullscreen .top,:fullscreen .bot,:fullscreen .notes{display:none}
+:fullscreen .stage{padding:0}:fullscreen .stage img{border-radius:0;box-shadow:none}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="btn" href="../">← Вітрина</a>
+  <span class="ttl" id="ttl"></span>
+  <a class="btn" href="prezentatsiia-biblioteka-gutirok.pdf" download>PDF<span class="lbl">&nbsp;— завантажити</span></a>
+</div>
+<div class="stage" id="stage">
+  <img id="sl" alt="" width="1920" height="1080">
+  <button class="nav prev" id="prev" type="button" aria-label="Попередній слайд"><span aria-hidden="true">‹</span></button>
+  <button class="nav next" id="next" type="button" aria-label="Наступний слайд"><span aria-hidden="true">›</span></button>
+</div>
+<div class="notes" id="notes" hidden><b>НОТАТКИ ВЕДУЧОГО</b><span id="ntext"></span></div>
+<div class="bot">
+  <button class="btn" type="button" id="b-prev" aria-label="Попередній слайд">←</button>
+  <span class="cnt" id="cnt" aria-live="polite"></span>
+  <button class="btn" type="button" id="b-next" aria-label="Наступний слайд">→</button>
+  <span class="sp"></span>
+  <button class="btn" type="button" id="b-notes" aria-pressed="false">Нотатки</button>
+  <button class="btn" type="button" id="b-fs" aria-label="На весь екран"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg><span class="lbl">На весь екран</span></button>
+</div>
+<script>
+const DECK = {"title": "Бібліотека гутірок: що вміє і куди росте", "n": 18, "notes": ["Привітайтеся. Скажіть, що покажете три речі: що це за сайт, як ним користуватися вже сьогодні, і куди він може рости далі. Наприкінці — порівняння шляхів і що потрібно, щоб рушити далі.", "Головна думка: гутірка готова до показу одразу. Не треба PowerPoint, флешок чи встановлення програм — лише браузер. На знімку — слайд про підйомну силу: повітря на малюнку справді рухається.", "Карта сайту. Угорі дві вкладки: «Гутірки» і «Каталог вмілостей». Кожна гутірка має три кнопки: показати гутірку, відкрити план для виховника і дати посилання юнакам. У каталозі видно, до яких вмілостей уже є гутірки.", "Так виглядає головна. Темний стиль, логотип Пласту у Фінляндії, жовтий акцент. Нова гутірка завжди зверху, з власною картинкою. Сайт однаково працює на ноутбуці, планшеті й телефоні.", "Дві гутірки вже є. «Кераміка» — на сайті, з повною версією та коротким вишколом. «Будова літальних апаратів І» готова і зроблена точно за вимогами вмілості; лишилося догорнути й виправити дрібниці. Слайди не перевантажені: пункти з’являються по черзі.", "Ведучий може стояти будь-де в кімнаті: телефон стає пультом. На телефоні видно, що казати на цьому слайді, і правильні відповіді на запитання — на спільному екрані їх немає.", "Своя гра на зразок Kahoot, на нашому сайті. Юнаки сканують QR-код і пишуть ім’я; незнайоме ім’я пускає лише ведучий. За правильну й швидку відповідь — більше балів, наприкінці — п’єдестал. Після кожної вимоги в гутірці є ще й коротке запитання: можна відповідати всією групою без телефонів.", "План — шпаргалка для виховника: перед сходинами прочитати, роздрукувати або зберегти в PDF. Ліворуч — як план виглядає на сайті, посередині — той самий план на білому аркуші A4.", "Юнаки отримують окреме посилання після гутірки: повторити матеріал і перевірити себе перед тим, як складати вмілість. Самої гутірки, плану й відповідей до гри там немає — тож гутірка не стане нудною, бо її не бачили наперед. Сайт нічого про дітей не збирає.", "Каталог узято з порталу Пласту у Фінляндії, який бере дані з бібліотеки вмілостей Пласту. Раз на рік, 1 вересня, каталог перевіряється й за потреби оновлюється. Праворуч — приклад: до «Будови літальних апаратів І» покриті всі п’ять точок.", "Підсумок того, що вже працює. Наголосіть на нулі: сайт не збирає жодних даних про дітей — ні імен, ні результатів. Імена в грі живуть лише на екрані ведучого, поки триває гра.", "Три можливі дороги. Вони не виключають одна одну: можна йти простим шляхом зараз, а до входів чи порталу перейти, коли буде потреба. Далі — кожен шлях окремо.", "Цей шлях обрано зараз. Сайт лишається таким, як є, просто наповнюється: нові гутірки, згодом співаник і швидкі підказки. Юнаки отримують матеріали лише через посилання від виховника.", "Макет уже можна поклацати: gutirky-fi.github.io/proba/vhody. Виховник бачить усе, юнак — свою частину і «Для всіх». Нові входи (наприклад, для новацтва) додаються як ще одна картка. Мінус: більше сторінок і рішень, а код на безкоштовному сайті — лише «ширма», не справжній захист.", "Найбільший шлях. Сайт уже зроблений простими файлами без сервера й бази даних, тож його можна перенести на портал. Дані дітей тоді були б лише в захищеній системі порталу. Для цього потрібні згода керівництва і розробник порталу; технічний опис для нього можна підготувати.", "Шляхи можна проходити по черзі: А зараз, Б — коли стане тісно, В — якщо Пласт у Фінляндії захоче мати бібліотеку на своєму порталі.", "Конкретні кроки. Перший — уже майже готовий. Третій потребує рішення керівництва: чи можна використовувати логотип Пласту у Фінляндії і чи робити сайт відкритим для пошуку (зараз він прихований).", "Подякуйте й запросіть до запитань. Адреса бібліотеки: gutirky-fi.github.io — сайт прихований від пошуку, тож адресу даємо виховникам особисто."]};
+(() => {
+  const $ = s => document.querySelector(s);
+  const src = i => 'slaidy/' + String(i + 1).padStart(2, '0') + '.webp';
+  let i = 0;
+  const fromHash = () => { const n = parseInt(location.hash.slice(1), 10); return n >= 1 && n <= DECK.n ? n - 1 : 0; };
+  $('#ttl').textContent = DECK.title;
+  function show(k, push) {
+    i = Math.max(0, Math.min(DECK.n - 1, k));
+    const img = $('#sl'); img.src = src(i); img.alt = 'Слайд ' + (i + 1) + ' з ' + DECK.n;
+    $('#cnt').textContent = (i + 1) + ' / ' + DECK.n;
+    $('#prev').disabled = $('#b-prev').disabled = i === 0;
+    $('#next').disabled = $('#b-next').disabled = i === DECK.n - 1;
+    $('#ntext').textContent = DECK.notes[i] || '—';
+    [i - 1, i + 1].forEach(j => { if (j >= 0 && j < DECK.n) { const p = new Image(); p.src = src(j); } });
+    const h = '#' + (i + 1); if (location.hash !== h) history.replaceState(null, '', h);
+  }
+  let swiped = 0;
+  const go = d => show(i + d);
+  $('#prev').onclick = () => { if (Date.now() - swiped > 400) go(-1); };
+  $('#next').onclick = () => { if (Date.now() - swiped > 400) go(1); };
+  $('#b-prev').onclick = () => go(-1);
+  $('#b-next').onclick = () => go(1);
+  $('#b-notes').onclick = e => { const on = $('#notes').hidden; $('#notes').hidden = !on; e.currentTarget.setAttribute('aria-pressed', String(on)); };
+  $('#b-fs').onclick = () => { try { document.fullscreenElement ? document.exitFullscreen() : $('#stage').parentElement.requestFullscreen(); } catch (e) { /* немає повного екрана */ } };
+  if (!document.documentElement.requestFullscreen) $('#b-fs').hidden = true;
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); }
+    else if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
+    else if (e.key === 'Home') show(0); else if (e.key === 'End') show(DECK.n - 1);
+    else if (e.key === 'f' || e.key === 'F') $('#b-fs').click();
+  });
+  let x0 = null;   // свайп на телефоні
+  $('#stage').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') x0 = e.clientX; });
+  $('#stage').addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) { swiped = Date.now(); go(dx < 0 ? 1 : -1); } });
+  addEventListener('hashchange', () => show(fromHash()));
+  show(fromHash());
+})();
+</script>
+</body>
+</html>
