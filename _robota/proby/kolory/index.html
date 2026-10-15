@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Кольори сайту — пропозиція</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Пропозиція: кожен колір на сайті має одне значення. Лише для показу власникові — на сайті ще нічого не змінено. */
+:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;
+  --gd:#ffc247;--ac:#2fd2c0;--ol:#9fb57a;--ok:#3ee08f;--la:#6fb3ff;--cl:#e8925b;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt)}
+a{color:inherit}
+.wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+.rib{padding:7px 14px;background:var(--ac);color:#0d1f1d;text-align:center;font-weight:700;font-size:14px}.rib a{margin-left:8px}
+header{padding:34px 0 6px}
+h1{margin:0;font:600 clamp(36px,7vw,64px)/1 var(--disp);text-transform:uppercase;letter-spacing:.01em}
+.hand{margin:8px 0 0;font:500 clamp(22px,3vw,28px)/1.1 var(--hand);color:var(--ac)}
+.lede{max-width:62ch;margin:16px 0 0;color:var(--body)}
+h2{margin:44px 0 6px;font:600 26px/1.1 var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.sub{margin:0 0 16px;color:var(--mut)}
+/* таблиця кольорів */
+.rows{display:grid;gap:12px}
+.row{display:grid;grid-template-columns:56px minmax(0,1fr) minmax(0,1fr);gap:14px 18px;align-items:start;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+.sw{width:56px;height:56px;border-radius:14px}
+.row h3{margin:0 0 4px;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.row .lbl{display:block;margin-bottom:4px;font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--mut)}
+.row ul{margin:0;padding-left:1.15em;color:var(--body);font-size:15px}.row li{margin:3px 0}
+.warn{color:#ffb3ab}
+.new{color:#c9f2d8}
+@media (max-width:720px){.row{grid-template-columns:44px minmax(0,1fr)}.sw{width:44px;height:44px;border-radius:12px}.row>div:last-child{grid-column:2}}
+/* порівняння */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cmp>div{padding:16px;border-radius:16px;border:1px dashed var(--ln)}
+.cmp h4{margin:0 0 12px;font:600 15px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.cmp .after{border-style:solid;border-color:#3d5a45}
+.cmp .after h4{color:#8be8b9}
+@media (max-width:720px){.cmp{grid-template-columns:1fr}}
+/* нашивки каталогу */
+.bgs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.bg{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:18px 6px 14px;border-radius:14px;background:var(--card);border:1px solid var(--ln);overflow:hidden;text-align:center}
+.bg .disc{display:grid;place-items:center;width:54px;height:54px;border-radius:50%;background:#2c4f8a;border:4px solid #c8284a;font:600 22px var(--disp)}
+.bg.none .disc{opacity:.45}
+.bg b{font:600 14px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.bg em{font-style:normal;font-size:12px;font-weight:700}
+.bg .bar{position:absolute;left:0;top:0;height:5px;width:100%}
+.bg .trk{position:absolute;left:0;top:0;height:5px;width:100%;background:#383d44}
+.bg .fill{position:absolute;left:0;top:0;height:5px;background:var(--ok)}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:13px;color:var(--mut)}
+.leg i{display:inline-block;width:22px;height:6px;border-radius:3px;margin-right:6px;vertical-align:2px;background:#383d44;overflow:hidden;position:relative}
+.leg i s{position:absolute;inset:0;background:var(--ok)}
+/* картки гутірок */
+.gc{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--a)}
+.gc+.gc{margin-top:10px}
+.gc .k{font:500 11px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.gc b{font:600 19px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.vs{display:flex;flex-wrap:wrap;gap:6px}
+.v{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:9px;border:1px solid #4a515b;font-size:13px;font-weight:700}
+.v small{font-size:12px;font-weight:700}
+.v.main{background:var(--gd);border-color:var(--gd);color:#16130a}
+/* смужка чернетки й посилання */
+.mini{padding:7px 10px;border-radius:9px;font-size:13px;font-weight:700;text-align:center}
+.lnk{margin:10px 0 0;font-size:14px;color:var(--body)}
+.rules{margin:0;padding-left:1.3em;color:var(--body)}.rules li{margin:8px 0}
+.rules b{color:var(--ink)}
+footer{padding:40px 16px 50px;color:var(--mut);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<div class="rib">Пропозиція для обговорення. На сайті ще нічого не змінено. <a href="/proba/">← Усі макети</a></div>
+<div class="wrap">
+<header>
+  <h1>Кольори сайту</h1>
+  <p class="hand">щоб кожен колір означав одне</p>
+  <p class="lede">Зараз деякі кольори мають по два-три значення, тож важко зрозуміти, що саме колір підказує. Нижче — що є зараз, де плутанина, і як можна зробити логічно. Дизайн лишається той самий, міняються лише значення кольорів.</p>
+</header>
+
+<h2>Кожен колір — одне значення</h2>
+<p class="sub">Ліворуч — як зараз, праворуч — пропозиція.</p>
+<div class="rows">
+  <div class="row"><div class="sw" style="background:var(--gd)"></div>
+    <div><h3>Золотий</h3><span class="lbl">ЗАРАЗ</span><ul><li>головна кнопка «Гутірка», вибраний фільтр, цифри, «СКОБ!»</li><li class="warn">«Частково» в каталозі</li><li class="warn">рамка картки «Кераміка України»</li></ul></div>
+    <div><span class="lbl">ПРОПОНУЮ</span><ul class="new"><li><b>Виховник і головна дія:</b> «Гутірка», «План гутірки», гра «Потужний СКОБ!», вибраний фільтр, вхід «Виховники».</li><li>Більше ніде.</li></ul></div></div>
+  <div class="row"><div class="sw" style="background:var(--ac)"></div>
+    <div><h3>Бірюзовий</h3><span class="lbl">ЗАРАЗ</span><ul><li>«Для юнаків», вхід «Юнацтво»</li><li class="warn">смужка «Чернетка» вгорі</li><li class="warn">посилання в тексті</li><li>рукописні підзаголовки</li></ul></div>
+    <div><span class="lbl">ПРОПОНУЮ</span><ul class="new"><li><b>Юнацтво:</b> «Для юнаків», «Вивчай сам», «Перевір себе», QR для юнаків, вхід «Юнацтво».</li><li>Рукописні підзаголовки лишаються бірюзовими — це прикраса, а не кнопка.</li></ul></div></div>
+  <div class="row"><div class="sw" style="background:var(--ok)"></div>
+    <div><h3>Зелений</h3><span class="lbl">ЗАРАЗ</span><ul><li>«Є гутірка» в каталозі</li></ul></div>
+    <div><span class="lbl">ПРОПОНУЮ</span><ul class="new"><li><b>Готовність:</b> смужка над нашивкою заповнюється зеленим — наскільки гутірка покриває вимоги. Повна — усе є, половина — частково, порожня — ще немає.</li></ul></div></div>
+  <div class="row"><div class="sw" style="background:var(--ol)"></div>
+    <div><h3>Оливковий</h3><span class="lbl">ЗАРАЗ</span><ul><li>малі підписи над заголовками («Пластове юнацтво»)</li><li>вхід «Для всіх» у макеті</li></ul></div>
+    <div><span class="lbl">ПРОПОНУЮ</span><ul class="new"><li><b>Для всіх:</b> підписи-рубрики і вхід «Для всіх» — як і зараз.</li></ul></div></div>
+  <div class="row"><div class="sw" style="background:linear-gradient(135deg,var(--la) 50%,var(--cl) 50%)"></div>
+    <div><h3>Колір теми</h3><span class="lbl">ЗАРАЗ</span><ul><li>«Будова ЛА І» — синій, «Кераміка І» — глиняний</li><li class="warn">«Кераміка України» — золотий, хоч тема та сама кераміка</li></ul></div>
+    <div><span class="lbl">ПРОПОНУЮ</span><ul class="new"><li><b>Тема гутірки:</b> лише рамка картки й малюнок. Авіація — синій, кераміка — глиняний (обидві «Кераміки» однаково).</li></ul></div></div>
+</div>
+
+<h2>Каталог вмілостей</h2>
+<p class="sub">Найпомітніша зміна: «частково» більше не золоте, а смужка показує, скільки вимог уже покриває гутірка.</p>
+<div class="cmp">
+  <div><h4>Зараз</h4>
+    <div class="bgs">
+      <div class="bg"><span class="bar" style="background:var(--ok)"></span><span class="disc">Б</span><b>Будова ЛА</b><em style="color:var(--ok)">5 з 5 точок</em></div>
+      <div class="bg"><span class="bar" style="background:var(--gd)"></span><span class="disc">А</span><b>Приклад</b><em style="color:var(--gd)">2 з 5 точок</em></div>
+      <div class="bg none"><span class="disc">А</span><b>Астрономія</b><em style="color:var(--mut)">Загальні</em></div>
+    </div>
+    <div class="leg"><span><i style="background:var(--ok)"></i>Є гутірка</span><span><i style="background:var(--gd)"></i>Частково</span><span><i></i>Ще немає</span></div></div>
+  <div class="after"><h4>Пропоную</h4>
+    <div class="bgs">
+      <div class="bg"><span class="trk"></span><span class="fill" style="width:100%"></span><span class="disc">Б</span><b>Будова ЛА</b><em style="color:var(--ok)">усе є</em></div>
+      <div class="bg"><span class="trk"></span><span class="fill" style="width:40%"></span><span class="disc">А</span><b>Приклад</b><em style="color:#8be8b9">2 з 5 точок</em></div>
+      <div class="bg none"><span class="trk"></span><span class="disc">А</span><b>Астрономія</b><em style="color:var(--mut)">ще немає</em></div>
+    </div>
+    <div class="leg"><span><i><s></s></i>Є гутірка</span><span><i><s style="right:55%"></s></i>Частково</span><span><i></i>Ще немає</span></div></div>
+</div>
+
+<h2>Картки гутірок</h2>
+<p class="sub">Кнопки вже майже логічні: золоте — для виховника, бірюзове — для юнаків. Міняється лише колір теми «Кераміки України».</p>
+<div class="cmp">
+  <div><h4>Зараз</h4>
+    <div class="gc" style="--a:var(--gd)"><span class="k">До вмілості · 2 версії</span><b>Кераміка України</b><div class="vs"><span class="v">Повна <small style="color:var(--gd)">45–50 хв</small></span><span class="v">Вишкіл <small style="color:var(--gd)">до 20 хв</small></span></div></div>
+    <div class="gc" style="--a:var(--cl)"><span class="k">До вмілості · гутірка + для юнацтва</span><b>Кераміка І</b><div class="vs"><span class="v">Гутірка <small style="color:var(--gd)">45 хв</small></span><span class="v">План <small style="color:var(--gd)">PDF</small></span><span class="v">Для юнаків <small style="color:var(--gd)">QR</small></span></div></div></div>
+  <div class="after"><h4>Пропоную</h4>
+    <div class="gc" style="--a:var(--cl)"><span class="k">До вмілості · 2 версії</span><b>Кераміка України</b><div class="vs"><span class="v">Повна <small style="color:var(--gd)">45–50 хв</small></span><span class="v">Вишкіл <small style="color:var(--gd)">до 20 хв</small></span></div></div>
+    <div class="gc" style="--a:var(--cl)"><span class="k">До вмілості · гутірка + для юнацтва</span><b>Кераміка І</b><div class="vs"><span class="v">Гутірка <small style="color:var(--gd)">45 хв</small></span><span class="v">План <small style="color:var(--gd)">PDF</small></span><span class="v" style="border-color:rgba(47,210,192,.6)">Для юнаків <small style="color:var(--ac)">QR</small></span></div></div></div>
+</div>
+
+<h2>Дрібниці</h2>
+<div class="cmp">
+  <div><h4>Зараз</h4>
+    <div class="mini" style="background:var(--ac);color:#0d1f1d">Чернетка: так сайт виглядатиме після «ставимо»</div>
+    <p class="lnk">Посилання: <a href="#" style="color:var(--ac)">каталог вмілостей Пласту</a></p></div>
+  <div class="after"><h4>Пропоную</h4>
+    <div class="mini" style="background:#cfd5dc;color:#16181c">Чернетка: так сайт виглядатиме після «ставимо»</div>
+    <p class="lnk">Посилання: <a href="#">каталог вмілостей Пласту</a> — білі з підкресленням</p></div>
+</div>
+
+<h2>Правило коротко</h2>
+<ol class="rules">
+  <li><b>Золотий</b> — виховник і головна дія.</li>
+  <li><b>Бірюзовий</b> — юнацтво.</li>
+  <li><b>Оливковий</b> — для всіх.</li>
+  <li><b>Зелений</b> — наскільки готово (лише в каталозі).</li>
+  <li><b>Синій, глиняний</b> — тема гутірки (лише рамка й малюнок).</li>
+</ol>
+</div>
+<footer>Бібліотека гутірок · Пласт у Фінляндії · СКОБ!</footer>
+</body>
+</html>
