@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#15171b">
+<title>Бібліотека гутірок — що вже зроблено</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Вітрина: усі макети бібліотеки на одній сторінці — щоб показати іншим. Кожне посилання — у новій вкладці. */
+:root{color-scheme:dark;--bg:#15171b;--card:#1f2328;--ln:#33383f;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--gd);outline-offset:3px}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 16px}
+header{padding-top:28px}
+.logo{display:block;height:44px;width:auto}
+h1{margin:30px 0 0;font:600 clamp(40px,7vw,76px)/.98 var(--disp);letter-spacing:.01em;text-transform:uppercase}
+.hand{margin:8px 0 0;font:500 clamp(24px,3vw,32px)/1.1 var(--hand);color:var(--ac)}
+.lede{max-width:62ch;margin:20px 0 0;color:var(--body);font-size:18px}
+.note{max-width:62ch;margin:10px 0 0;color:var(--mut);font-size:15px}
+section{margin-top:46px}
+h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 16px;font:600 26px/1.1 var(--disp);letter-spacing:.06em;text-transform:uppercase}
+h2 small{font:600 13px var(--txt);letter-spacing:.04em;text-transform:none;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card{display:flex;flex-direction:column;border-radius:16px;background:var(--card);border:1px solid var(--ln);overflow:hidden}
+.card.wide{grid-column:1 / -1;flex-direction:row}
+.shot{display:block;aspect-ratio:16/10;background:#0e1013;border-bottom:1px solid var(--ln);overflow:hidden}
+.card.wide .shot{flex:0 0 52%;border-bottom:0;border-right:1px solid var(--ln)}
+.shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
+.shot:hover img{transform:scale(1.02)}
+.tx{display:flex;flex-direction:column;gap:8px;padding:18px 20px 20px;flex:1}
+.tag{align-self:flex-start;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700}
+.tag.live{background:#173a2a;color:#8be8b9}.tag.prep{background:#3a3220;color:var(--gd)}.tag.idea{background:#24303b;color:#9fc7ea}
+h3{margin:2px 0 0;font:600 25px/1.15 var(--disp);letter-spacing:.01em}
+.tx p{margin:0;color:var(--body)}
+.tx ul{margin:0;padding-left:1.2em;color:var(--body)}.tx li{margin:3px 0}
+.go{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:auto;padding-top:8px;text-decoration:none}
+.go b{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--gd);color:#16130a;font-size:16px}
+.go:hover b{background:#ffd06b}
+.go span{color:var(--mut);font-size:14px;overflow-wrap:anywhere}
+.also{margin:0;color:var(--mut);font-size:15px}.also a{color:var(--body)}
+.how{margin-top:46px;padding:20px 22px;border-radius:16px;border:1px dashed var(--ln);color:var(--body)}
+.how h2{font-size:22px;margin-bottom:10px}
+.how ul{margin:0;padding-left:1.2em}.how li{margin:6px 0}
+footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
+@media (max-width:820px){.grid{grid-template-columns:1fr}.card.wide{flex-direction:column}.card.wide .shot{flex:none;border-right:0;border-bottom:1px solid var(--ln)}}
+@media (prefers-reduced-motion:reduce){.shot img{transition:none}}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <img class="logo" src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії">
+  <h1>Бібліотека гутірок</h1>
+  <p class="hand">що вже зроблено і що готуємо</p>
+  <p class="lede">Інтерактивні гутірки для сходин і таборів. Гутірку ведуть з ноутбука на екран, а гортають з телефона. Тут зібрано все, що вже працює, і макети того, що готуємо. Кожне посилання відкривається в новій вкладці.</p>
+  <p class="note">Сайт поки прихований від пошуковиків, тож посилання — лише для своїх.</p>
+</header>
+
+<main class="wrap">
+  <section aria-labelledby="h-live">
+    <h2 id="h-live">Працює зараз</h2>
+    <div class="grid">
+      <article class="card wide">
+        <a class="shot" href="../" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/zaraz.webp" alt="" width="640" height="400"></a>
+        <div class="tx"><span class="tag live">на сайті</span>
+          <h3>Бібліотека гутірок</h3>
+          <p>Головна сторінка сайту й каталог вмілостей.</p>
+          <ul><li>Гутірка «Кераміка України»: подорож картою України, повна (45–50 хв) і для вишколу (до 20 хв).</li>
+            <li>Пульт: гутірку гортають з телефона, підключившись за QR-кодом.</li></ul>
+          <a class="go" href="../" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io</span></a></div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-prep">
+    <h2 id="h-prep">Готуємо <small>поки лише для показу, на сайті ще немає</small></h2>
+    <div class="grid">
+      <article class="card wide">
+        <a class="shot" href="sait/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/sait.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag prep">макет</span>
+          <h3>Бібліотека після оновлення</h3>
+          <p>Так виглядатиме сайт, коли додамо нові гутірки. У картки гутірки три кнопки: «Гутірка» — для показу на екрані, «План гутірки» — що казати на кожному слайді, «Для юнаків» — матеріали після гутірки.</p>
+          <a class="go" href="sait/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/sait</span></a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="budova-la-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/budova.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag prep">нова гутірка</span>
+          <h3>Будова літальних апаратів І</h3>
+          <p>Точно за вимогами вмілості: малюнки, 3D-літак, запитання після кожної вимоги, гра з телефонів і план для друку.</p>
+          <a class="go" href="budova-la-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/budova-la-1</span></a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="keramika-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/keramika.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag prep">нова гутірка</span>
+          <h3>Кераміка І</h3>
+          <p>Для здачі вмілості: історія виробів з глини, техніки, шість видів кераміки, 3D-ваза на гончарному крузі, гра «Вгадай вид кераміки».</p>
+          <a class="go" href="keramika-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/keramika-1</span></a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="yunakam/keramika-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/yunakam.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag prep">для юнаків</span>
+          <h3>Що бачать юнаки</h3>
+          <p>Після гутірки юнаки отримують посилання чи QR-код: «Вивчай сам» і «Перевір себе». Самої гутірки наперед вони не бачать. Жодних даних про дітей не збираємо.</p>
+          <a class="go" href="yunakam/keramika-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/yunakam/keramika-1</span></a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="skob-hra/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/skob.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag prep">гра</span>
+          <h3>«Потужний СКОБ!»</h3>
+          <p>Гра-вікторина, як Kahoot: запитання на великому екрані, відповіді з телефонів. Тут будь-хто може скласти свою вікторину.</p>
+          <a class="go" href="skob-hra/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/skob-hra</span></a></div>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-idea">
+    <h2 id="h-idea">Ідея на майбутнє</h2>
+    <div class="grid">
+      <article class="card wide">
+        <a class="shot" href="vhody/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/vhody.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag idea">лише ідея</span>
+          <h3>Сайт із кількома входами</h3>
+          <p>Як сайт може рости далі: «Для всіх» (підказки, співаник), «Юнацтво» (вмілості й самоперевірка) і «Виховники» (гутірки, плани, гра). Це клікабельний макет, а не готовий розділ.</p>
+          <p class="also">Код для входу «Виховники» в макеті — <b>1912</b>.</p>
+          <a class="go" href="vhody/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/vhody</span></a></div>
+      </article>
+    </div>
+  </section>
+
+  <aside class="how" aria-labelledby="h-how">
+    <h2 id="h-how">Як дивитися гутірку</h2>
+    <ul>
+      <li>Відкрийте гутірку й натисніть «Гутірка». Гортати можна стрілками ← → або пробілом.</li>
+      <li>Щоб гортати з телефона, натисніть «Пульт» і відскануйте QR-код.</li>
+      <li>Гра «Потужний СКОБ!»: у гутірці натисніть кнопку з чотирма кольоровими квадратиками, а гравці заходять з телефонів за QR-кодом.</li>
+    </ul>
+  </aside>
+</main>
+<footer class="wrap">Бібліотека гутірок · Пласт у Фінляндії · СКОБ!</footer>
+</body>
+</html>
