@@ -7,6 +7,10 @@ SITE = TUT.parent.parent.parent
 src = (TUT / 'index.html').read_text(encoding='utf-8')
 src = src.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode((SITE / '_robota' / 'src' / 'img' / 'logo.png').read_bytes()).decode())
 assert 'noindex' in src and '{{' not in src
+# посилання з вітрини — завжди на свіжу версію (браузер не підсуне стару копію з пам'яті)
+import re, time
+STAMP = time.strftime('%m%d%H%M')
+src = re.sub(r'href="((?:\.\./)?(?:[a-z0-9-]+/)*)"', lambda m: f'href="{m.group(1)}?v={STAMP}"', src)
 (SITE / 'proba').mkdir(exist_ok=True)
 (SITE / 'proba' / 'index.html').write_text(src, encoding='utf-8')
 out = SITE / 'proba' / 'vitryna'; out.mkdir(exist_ok=True)
