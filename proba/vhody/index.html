@@ -167,7 +167,12 @@ button{font:inherit;color:inherit;cursor:pointer}
 .vtabs button{min-height:44px;padding:0 20px;border:0;border-radius:99px;background:none;color:var(--mut);font:700 15px var(--txt);cursor:pointer}
 .vtabs button:hover{color:var(--ink)}
 .vtabs button[aria-selected=true]{background:var(--a);color:#16130a}
-.badge.gut{border-top:4px solid var(--a)}.badge.gut em{color:var(--a)}
+.badge.g-full{border-top:4px solid #3ee08f}.badge.g-full em{color:#3ee08f}.badge.g-part{border-top:4px solid #ffc247}.badge.g-part em{color:#ffc247}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;color:var(--mut);font-size:14px}
+.legend .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:7px;vertical-align:-1px}
+.legend .dot.full{background:#3ee08f}.legend .dot.part{background:#ffc247}.legend .dot.none{border:2px solid #6b7480}
+.legend .only{display:inline-flex;align-items:center;gap:8px;min-height:36px;color:var(--ink);cursor:pointer}
+.legend .only input{width:18px;height:18px;margin:0;accent-color:var(--a)}
 .gbox{margin:14px 0 0;padding:14px 16px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln);border-left:4px solid var(--g)}
 .gbox>b{display:block;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
 .gbox>b small{margin-left:8px;font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
@@ -343,6 +348,8 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
         <div class="tools">
           <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="vq" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
           <div class="chips" id="vchips" role="group" aria-label="Показати"></div>
+          <div class="legend"><span><i class="dot full"></i>Є гутірка</span><span><i class="dot part"></i>Частково</span><span><i class="dot none"></i>Ще немає</span>
+            <label class="only"><input type="checkbox" id="vonly"> Лише з матеріалами</label></div>
         </div>
         <h3 class="kh" id="vkh"></h3>
         <div class="kgrid" id="vkgrid"></div>
@@ -595,25 +602,26 @@ $('.vtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.k
 SKILLS.forEach(s => { const l = s.levels.find(x => GV[x.slug]); s.gv = l ? { lvl: lvName(s, l), list: GV[l.slug] } : null; });
 const covN = g => g.req.filter(r => r[1] === 'full' || r[1] === 'part').length;
 const ICO = { full: ['✓', 'є'], part: ['◐', 'частково'], none: ['○', 'немає'], task: ['✎', 'практичне завдання'] };
-let VF = '', VSP = '', VMORE = false, VLIMIT = 24;
+let VONLY = false, VSP = '', VMORE = false, VLIMIT = 24;
+const stOf = g => g.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part';
 function renderVChips() {
   const cnt = {}; SKILLS.forEach(s => s.specs.forEach(x => { cnt[x] = (cnt[x] || 0) + 1; }));
   const ord = SKILL_SPECS.slice().sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || a.localeCompare(b, 'uk'));
   let shown = VMORE ? ord : ord.slice(0, 3); if (VSP && !shown.includes(VSP)) shown = shown.concat(VSP);
-  const ch = [['', '', 'Усі', SKILLS.length], ['gut', '', 'Є гутірки', SKILLS.filter(s => s.gv).length], ...shown.map(x => ['', x, x, cnt[x] || 0])];
-  $('#vchips').innerHTML = ch.map(([f, sp, l, n]) => `<button type="button" data-f="${f}" data-sp="${esc(sp)}" aria-pressed="${f === VF && sp === VSP}">${esc(l)}<span class="n">${n}</span></button>`).join('')
+  const ch = [['', '', 'Усі', SKILLS.length], ...shown.map(x => ['', x, x, cnt[x] || 0])];
+  $('#vchips').innerHTML = ch.map(([f, sp, l, n]) => `<button type="button" data-f="${f}" data-sp="${esc(sp)}" aria-pressed="${sp === VSP}">${esc(l)}<span class="n">${n}</span></button>`).join('')
     + (VMORE ? '<button type="button" data-more="0">Згорнути ▴</button>' : `<button type="button" data-more="1">Ще ${ord.length - shown.length} ▾</button>`);
 }
 function renderVGrid() {
   const q = $('#vq').value.trim().toLowerCase();
-  const list = SKILLS.filter(s => (!VSP || s.specs.includes(VSP)) && (!q || s.lc.includes(q)) && (VF !== 'gut' || s.gv))
+  const list = SKILLS.filter(s => (!VSP || s.specs.includes(VSP)) && (!q || s.lc.includes(q)) && (!VONLY || s.gv))
     .sort((a, b) => (b.gv ? 1 : 0) - (a.gv ? 1 : 0) || rank(a) - rank(b) || a.n.localeCompare(b.n, 'uk'));
-  $('#vkh').innerHTML = esc(VF === 'gut' ? 'Є гутірки' : VSP || 'Усі вмілості') + `<small>${list.length} ${plural(list.length, ['вмілість', 'вмілості', 'вмілостей'])}</small>`;
-  const show = q || VF ? list : list.slice(0, VLIMIT);
+  $('#vkh').innerHTML = esc(VSP || (VONLY ? 'З матеріалами' : 'Усі вмілості')) + `<small>${list.length} ${plural(list.length, ['вмілість', 'вмілості', 'вмілостей'])}</small>`;
+  const show = q || VONLY ? list : list.slice(0, VLIMIT);
   $('#vkgrid').innerHTML = show.map(s => {
     const g = s.gv && s.gv.list[0];
     const note = g ? `гутірка · ${covN(g)} з ${g.req.length} точок` : VSP ? '' : s.specs.join(', ');
-    return `<button type="button" class="badge${g ? ' gut' : ''}" data-vk="${esc(s.id)}">${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
+    return `<button type="button" class="badge${g ? ' g-' + stOf(g) : ''}" data-vk="${esc(s.id)}">${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
   }).join('');
   const em = $('#vkempty'); em.hidden = list.length > 0; em.textContent = q ? 'Нічого не знайдено. Спробуйте іншу назву.' : 'Тут поки порожньо.';
   const mb = $('#vkmore'); mb.hidden = show.length >= list.length; mb.textContent = `Показати всі ${list.length}`;
@@ -633,10 +641,11 @@ function vSkillHtml(s) {
     <ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`;
 }
 $('#vq').addEventListener('input', renderVGrid);
+$('#vonly').addEventListener('change', e => { VONLY = e.target.checked; renderVGrid(); });
 $('#vkmore').addEventListener('click', () => { VLIMIT = 9999; renderVGrid(); });
 $('#vchips').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.more) VMORE = b.dataset.more === '1'; else { VF = b.dataset.f; VSP = b.dataset.sp; }
+  if (b.dataset.more) VMORE = b.dataset.more === '1'; else VSP = b.dataset.sp;
   renderVChips(); renderVGrid();
 });
 $('#vkgrid').addEventListener('click', e => { const b = e.target.closest('[data-vk]'); if (b) sheet(vSkillHtml(byId[b.dataset.vk]), COL.vyh); });
