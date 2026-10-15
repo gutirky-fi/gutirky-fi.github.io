@@ -165,11 +165,11 @@ if SHELL_NAME == 'shell_d1':
     def data_uri(path, mime='image/png'):
         return 'data:' + mime + ';base64,' + base64.b64encode(open(path, 'rb').read()).decode()
     IMG = {'{{LOGO}}': data_uri(D + 'img/logo.png'), '{{EMBLEM}}': data_uri(D + 'img/emblem.webp', 'image/webp'),
-           '{{KERAMIKA_MAP}}': data_uri(D + 'img/keramika-map.webp', 'image/webp'), '{{LA_ART}}': data_uri(D + 'img/budova-la-1.webp', 'image/webp')}
+           '{{KERAMIKA_MAP}}': data_uri(D + 'img/keramika-map.webp', 'image/webp'), '{{LA_ART}}': data_uri(D + 'img/budova-la-1.webp', 'image/webp'), '{{K1_ART}}': data_uri(D + 'img/keramika-1.webp', 'image/webp')}
     def imgs(t):
         for k, v in IMG.items():
             t = t.replace(k, v)
-        assert '{{LOGO}}' not in t and '{{EMBLEM}}' not in t and '{{KERAMIKA_MAP}}' not in t and '{{LA_ART}}' not in t
+        assert '{{LOGO}}' not in t and '{{EMBLEM}}' not in t and '{{KERAMIKA_MAP}}' not in t and '{{LA_ART}}' not in t and '{{K1_ART}}' not in t
         return t
     shell_html, shell_js, shell_css, body, host_js = map(imgs, (shell_html, shell_js, shell_css, body, host_js))
     font = font.replace('Source+Sans+3:wght@400;600', 'Source+Sans+3:wght@400;600;700')

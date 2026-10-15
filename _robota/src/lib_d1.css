@@ -5,6 +5,7 @@
 #lib a{color:inherit}
 #lib :is(button,a,input,label):focus-visible{outline:2px solid var(--l-gd);outline-offset:2px}
 #lib .prev-ribbon{padding:7px 16px;background:#2fd2c0;color:#0d1f1d;font:700 14px var(--l-body);text-align:center}
+#lib .prev-ribbon a{color:inherit;margin-left:10px;white-space:nowrap}
 
 /* шапка */
 #lib .top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;padding-block:22px 18px;border-bottom:1px solid var(--l-ln)}

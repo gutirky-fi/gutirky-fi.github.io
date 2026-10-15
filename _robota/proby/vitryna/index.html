@@ -29,6 +29,7 @@ h2 small{font:600 13px var(--txt);letter-spacing:.04em;text-transform:none;color
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .card{display:flex;flex-direction:column;border-radius:16px;background:var(--card);border:1px solid var(--ln);overflow:hidden}
 .card.wide{grid-column:1 / -1;flex-direction:row}
+.card.main{border-color:#5a4a22;box-shadow:0 0 0 1px #5a4a22}
 .shot{display:block;aspect-ratio:16/10;background:#0e1013;border-bottom:1px solid var(--ln);overflow:hidden}
 .card.wide .shot{flex:0 0 52%;border-bottom:0;border-right:1px solid var(--ln)}
 .shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
@@ -83,72 +84,41 @@ footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
     </div>
   </section>
 
-  <section aria-labelledby="h-live">
-    <h2 id="h-live">Працює зараз</h2>
+  <section aria-labelledby="h-site">
+    <h2 id="h-site">Сайт <small>усе разом: клацайте, як справжній сайт</small></h2>
     <div class="grid">
-      <article class="card wide">
-        <a class="shot" href="../" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/zaraz.webp" alt="" width="640" height="400"></a>
-        <div class="tx"><span class="tag live">на сайті</span>
-          <h3>Бібліотека гутірок</h3>
-          <p>Головна сторінка сайту й каталог вмілостей.</p>
-          <ul><li>Гутірка «Кераміка України»: подорож картою України, повна (45–50 хв) і для вишколу (до 20 хв).</li>
-            <li>Пульт: гутірку гортають з телефона, підключившись за QR-кодом.</li></ul>
-          <a class="go" href="../" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io</span></a></div>
-      </article>
-    </div>
-  </section>
-
-  <section aria-labelledby="h-prep">
-    <h2 id="h-prep">Готуємо <small>поки лише для показу, на сайті ще немає</small></h2>
-    <div class="grid">
-      <article class="card wide">
-        <a class="shot" href="sait/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/sait.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag prep">макет</span>
-          <h3>Бібліотека після оновлення</h3>
-          <p>Так виглядатиме сайт, коли додамо нові гутірки. У картки гутірки три кнопки: «Гутірка» — для показу на екрані, «План гутірки» — що казати на кожному слайді, «Для юнаків» — матеріали після гутірки.</p>
-          <a class="go" href="sait/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/sait</span></a></div>
-      </article>
-      <article class="card">
-        <a class="shot" href="budova-la-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/budova.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag prep">нова гутірка</span>
-          <h3>Будова літальних апаратів І</h3>
-          <p>Точно за вимогами вмілості: малюнки, 3D-літак, запитання після кожної вимоги, гра з телефонів і план для друку.</p>
-          <a class="go" href="budova-la-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/budova-la-1</span></a></div>
-      </article>
-      <article class="card">
-        <a class="shot" href="keramika-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/keramika.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag prep">нова гутірка</span>
-          <h3>Кераміка І</h3>
-          <p>Для здачі вмілості: історія виробів з глини, техніки, шість видів кераміки, 3D-ваза на гончарному крузі, гра «Вгадай вид кераміки».</p>
-          <a class="go" href="keramika-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/keramika-1</span></a></div>
-      </article>
-      <article class="card">
-        <a class="shot" href="yunakam/keramika-1/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/yunakam.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag prep">для юнаків</span>
-          <h3>Що бачать юнаки</h3>
-          <p>Після гутірки юнаки отримують посилання чи QR-код: «Вивчай сам» і «Перевір себе». Самої гутірки наперед вони не бачать. Жодних даних про дітей не збираємо.</p>
-          <a class="go" href="yunakam/keramika-1/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/yunakam/keramika-1</span></a></div>
-      </article>
-      <article class="card">
-        <a class="shot" href="skob-hra/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/skob.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag prep">гра</span>
-          <h3>«Потужний СКОБ!»</h3>
-          <p>Гра-вікторина, як Kahoot: запитання на великому екрані, відповіді з телефонів. Тут будь-хто може скласти свою вікторину.</p>
-          <a class="go" href="skob-hra/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/skob-hra</span></a></div>
+      <article class="card wide main">
+        <a class="shot" href="sait/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/sait.webp" alt="" width="640" height="400"></a>
+        <div class="tx"><span class="tag prep">після оновлення</span>
+          <h3>Сайт з усіма новими гутірками</h3>
+          <p>Увесь сайт таким, яким він стане після оновлення. Усе можна відкривати й гортати, як на справжньому сайті:</p>
+          <ul><li><b>Будова літальних апаратів І</b> і <b>Кераміка І</b> — нові гутірки за вимогами вмілостей, у кожної три кнопки: «Гутірка», «План гутірки» (друк / PDF), «Для юнаків».</li>
+            <li><b>Кераміка України</b> — подорож картою, повна й для вишколу.</li>
+            <li><b>Каталог вмілостей</b> — видно, до яких вмілостей уже є гутірки.</li>
+            <li>У гутірках — пульт з телефона і гра «Потужний СКОБ!».</li></ul>
+          <p class="also">Повернутися сюди — «← Усі макети» у бірюзовій смужці вгорі сайту. Для порівняння: <a href="../" target="_blank" rel="noopener">як сайт виглядає зараз</a>.</p>
+          <a class="go" href="sait/" target="_blank" rel="noopener"><b>Відкрити сайт</b><span>gutirky-fi.github.io/proba/sait</span></a></div>
       </article>
     </div>
   </section>
 
   <section aria-labelledby="h-idea">
-    <h2 id="h-idea">Ідея на майбутнє</h2>
+    <h2 id="h-idea">Ідеї на майбутнє <small>окремі макети, на сайт поки не плануються</small></h2>
     <div class="grid">
-      <article class="card wide">
+      <article class="card">
         <a class="shot" href="vhody/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/vhody.webp" alt="" width="640" height="400" loading="lazy"></a>
-        <div class="tx"><span class="tag idea">лише ідея</span>
+        <div class="tx"><span class="tag idea">ідея</span>
           <h3>Сайт із кількома входами</h3>
-          <p>Як сайт може рости далі: «Для всіх» (підказки, співаник), «Юнацтво» (вмілості й самоперевірка) і «Виховники» (гутірки, плани, гра). Це клікабельний макет, а не готовий розділ.</p>
+          <p>Як сайт може рости далі: «Для всіх» (підказки, співаник), «Юнацтво» (вмілості й самоперевірка) і «Виховники» (гутірки, плани, гра).</p>
           <p class="also">Код для входу «Виховники» в макеті — <b>1912</b>.</p>
           <a class="go" href="vhody/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/vhody</span></a></div>
+      </article>
+      <article class="card">
+        <a class="shot" href="skob-hra/" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/skob.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <div class="tx"><span class="tag idea">ідея</span>
+          <h3>«Потужний СКОБ!» для всіх</h3>
+          <p>Гра з гутірок окремо: будь-хто складає свою вікторину, а гравці відповідають з телефонів, як у Kahoot.</p>
+          <a class="go" href="skob-hra/" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/skob-hra</span></a></div>
       </article>
     </div>
   </section>
