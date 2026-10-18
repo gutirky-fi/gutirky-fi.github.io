@@ -241,6 +241,52 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
   #sheet{align-items:flex-end;padding:0}
   #sheet .pn{width:100%;max-height:90vh;border-radius:22px 22px 0 0;padding-bottom:max(24px,env(safe-area-inset-bottom))}
 }
+/* виховники: лічильники в заголовку і «Нові гутірки» — велика рамка, як «Остання гутірка» в бібліотеці;
+   останні гутірки гортаються самі (8 с), пауза — коли мишка або фокус на рамці; натиснув сам — більше не гортається */
+.hero.st{grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:20px 32px}
+.hero .h-text{position:relative;display:grid;gap:4px}
+.stats{position:relative;display:flex;gap:28px;margin:0 0 8px}
+.stats div{display:flex;flex-direction:column}
+.stats dd{order:-1;margin:0;font:600 44px/1.05 var(--disp);color:var(--vyh)}
+.stats dt{font-size:14px;color:var(--mut)}
+@media (max-width:760px){.hero.st{grid-template-columns:1fr}.stats{gap:22px}.stats dd{font-size:36px}}
+.feat{margin:20px 0 46px;border-radius:22px;overflow:hidden;border:1px solid var(--ln);border-top:4px solid var(--g,var(--ln));background:var(--card);transition:border-color .4s}
+.fslide{display:grid;touch-action:pan-y}
+.fs{grid-area:1/1;display:grid;grid-template-columns:2fr 3fr;min-height:340px;visibility:hidden;opacity:0;transition:opacity .45s,visibility 0s .45s}
+.fs.on{visibility:visible;opacity:1;transition:opacity .45s}
+.fart{display:flex;align-items:center;justify-content:center;min-width:0;background:radial-gradient(circle at 35% 45%,color-mix(in srgb,var(--g,#3a2f22) 26%,var(--card)) 0%,var(--card) 70%)}
+.fart img{display:block;width:100%;height:100%;max-height:320px;padding:24px;object-fit:contain}
+.fbody{display:flex;flex-direction:column;gap:12px;min-width:0;padding:30px 34px 28px}
+.fmeta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.flbl{font:500 13px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+.fvm{padding:3px 12px;border-radius:99px;border:1px solid rgba(255,125,153,.5);background:none;color:var(--upyu-t);font:700 13px var(--txt);text-align:left;cursor:pointer}
+.fvm:hover{background:rgba(200,40,74,.16)}
+.fbody h3{margin:0;font:600 clamp(2rem,4vw,2.75rem)/1.05 var(--disp);letter-spacing:.04em;text-transform:uppercase;overflow-wrap:break-word}
+.fbody p{margin:0;max-width:560px;color:var(--body)}
+.bvars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:6px}
+.bvar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:13px 16px;border-radius:14px;border:1px solid #4a515b;background:var(--card2);color:var(--ink);font:700 17px/1.25 var(--txt);text-decoration:none}
+.bvar:hover{border-color:var(--vyh)}
+.bvar .who{display:block;font-weight:400;font-size:13px;color:var(--mut)}
+.bvar small{font-weight:600;font-size:15px;color:var(--mut);white-space:nowrap}
+.bvar.main{background:var(--vyh);border-color:var(--vyh);color:var(--vyh-on)}.bvar.main .who,.bvar.main small{color:#16432a}.bvar.main:hover{filter:brightness(1.07)}
+.bvar.yun{border-color:rgba(200,40,74,.8)}.bvar.yun small{color:var(--upyu-t)}.bvar.yun:hover{border-color:var(--upyu-t)}
+.fpills{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));border-top:1px solid var(--ln)}
+.fpill{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:54px;padding:12px 18px;border:0;border-left:1px solid var(--ln);background:none;color:var(--mut);font:700 15px var(--txt);text-align:left}
+.fpill:first-child{border-left:0}
+.fpill i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c)}
+.fpill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fpill:hover{color:var(--ink);background:#262a30}
+.fpill[aria-current=true]{color:var(--ink);background:var(--card2)}
+.fpill::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--c)}
+.fpill[aria-current=true]::after{width:100%}
+.feat.auto .fpill[aria-current=true]::after{width:0;animation:fprog 8s linear forwards}
+.feat.auto:hover .fpill::after,.feat.auto:focus-within .fpill::after,.feat.auto.off .fpill::after{animation-play-state:paused}
+@keyframes fprog{to{width:100%}}
+/* телефон: гутірки не одна на одній (щоб не було порожнечі), короткий опис */
+.fbody .ds{display:none}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+@media (max-width:760px){.fs{display:none;grid-template-columns:1fr;min-height:0;visibility:visible;opacity:1}.fs.on{display:grid;animation:fin .35s ease-out}.fbody .dl{display:none}.fbody .ds{display:block}.fart{min-height:190px}.fart img{max-height:210px;padding:18px}.fbody{padding:20px 18px 22px}.fpill{gap:8px;padding:10px 12px;font-size:14px}}
+@media (prefers-reduced-motion:reduce){.fs.on{animation:none}.feat.auto .fpill[aria-current=true]::after{animation:none;width:100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -330,10 +376,11 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 
   <!-- виховники -->
   <main id="v-vyh" hidden>
-    <section class="hero in">
+    <section class="hero in st">
       <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
-      <h1>Виховники</h1>
-      <p class="hand">гутірки, плани й ігри — і все, що бачать юнаки</p>
+      <div class="h-text"><h1>Виховники</h1>
+        <p class="hand">гутірки, плани й ігри — і все, що бачать юнаки</p></div>
+      <dl class="stats" id="vstats" hidden></dl>
     </section>
     <form class="lockbox" id="lockbox" autocomplete="off">
       <h2>Вхід для виховників</h2>
@@ -349,7 +396,11 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
         <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог вмілостей</button>
       </div>
       <section class="sec" id="p-g" role="tabpanel" aria-labelledby="t-g">
-        <h2 id="h-g">Бібліотека гутірок<small>назад з гутірки — меню в куті → «Виховники»</small></h2>
+        <section class="feat auto" id="feat" aria-roledescription="карусель" aria-label="Нові гутірки">
+          <div class="fslide" id="fslide" aria-live="off"></div>
+          <div class="fpills" id="fpills" role="group" aria-label="Вибрати гутірку"></div>
+        </section>
+        <h2 id="h-g">Усі гутірки<small>назад з гутірки — меню в куті → «Виховники»</small></h2>
         <div class="gcards" id="gcards"></div>
       </section>
       <section class="sec" id="p-k" role="tabpanel" aria-labelledby="t-k" hidden>
@@ -544,13 +595,19 @@ $('#sh-c').addEventListener('click', e => {
 });
 
 /* ===================== виховники ===================== */
-const GUT = [
-  { t: 'Кераміка України', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#e8925b',
-    v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil']] },
-  { t: 'Будова літальних апаратів І', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
-    v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam']] },
-  { t: 'Кераміка І', k: 'До вмілості · гутірка + для юнацтва', p: 'Історія, техніки, шість видів кераміки, 3D-ваза, гра з телефонів.', c: '#e8925b',
-    v: [['Гутірка', '45 хв', 'gutirky/keramika-1/#hutirka'], ['План гутірки', 'друк / PDF', 'gutirky/keramika-1/#plan'], ['Для юнаків', 'QR-код', 'gutirky/keramika-1/#yunakam']] }
+const GUT = [   /* a — коли додано (новіші — першими в «Нових гутірках»); v: [назва, тривалість, посилання, для кого] */
+  { t: 'Кераміка України', a: '2026-10-13', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#e8925b',
+    art: '{{KERAMIKA_MAP}}', alt: 'Карта України з регіонами, про які йдеться в гутірці',
+    d: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання до залу та вікторина на карті.',
+    v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna', 'Юнацтво, 12–17 років'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil', 'Виховники, малі групи']] },
+  { t: 'Будова літальних апаратів І', a: '2026-10-14 06:00', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
+    art: '{{LA_ART}}', alt: 'Навчальний літак, вигляд згори',
+    d: 'Гутірка точно за вимогами вмілості (Летунська, проба 1): види ЛА, частини літака, профіль крила й підйомна сила, тангаж, крен і рискання на 3D-літачку, пʼять аеродинамічних схем. Наприкінці — гра «Потужний СКОБ!» з телефонів.',
+    v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka', 'Юнацтво, 12–17 років'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan', 'Що казати на кожному слайді'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam', 'Вивчай сам і Перевір себе']] },
+  { t: 'Кераміка І', a: '2026-10-14 11:30', k: 'До вмілості · гутірка + для юнацтва', p: 'Історія, техніки, шість видів кераміки, 3D-ваза, гра з телефонів.', c: '#e8925b',
+    art: '{{K1_ART}}', alt: 'Ваза на гончарному крузі',
+    d: 'Гутірка точно за вимогами вмілості «Кераміка І» (Мистецька, проба 1): історія виробів з глини, техніки формотворення від ліплення до пресування, шість видів кераміки з грою «Вгадай вид», музей і три вироби власноруч. 3D-ваза на гончарному крузі, гра «Потужний СКОБ!» з телефонів.',
+    v: [['Гутірка', '45 хв', 'gutirky/keramika-1/#hutirka', 'Юнацтво, 12–17 років'], ['План гутірки', 'друк / PDF', 'gutirky/keramika-1/#plan', 'Що казати на кожному слайді'], ['Для юнаків', 'QR-код', 'gutirky/keramika-1/#yunakam', 'Вивчай сам і Перевір себе']] }
 ];
 /* каталог для виховників: до яких рівнів є гутірки і що з вимог вони покривають (full — є, part — частково, none — немає, task — практичне) */
 const GV = {
@@ -582,15 +639,62 @@ const isIn = () => store.get(K_CODE) === true || UNLOCK;
 let UNLOCK = false;
 function renderVyh() {
   const inn = isIn();
-  $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn;
+  $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn; $('#vstats').hidden = !inn;
   $('#lk').innerHTML = inn ? OPEN : LOCK;
   if (!inn) return;
+  renderFeatAll();
   $('#gcards').innerHTML = GUT.map(g => `<article class="gcard" style="--g:${g.c}"><span class="kind">${esc(g.k)}</span><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
     <div class="vars">${g.v.map(([l, d, h]) => `<a class="var${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}">${esc(l)}<small>${esc(d)}</small></a>`).join('')}</div></article>`).join('') + PH;
   $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => h.startsWith('#')
     ? `<a class="tile${h === '#vsi' ? ' all' : ''}" href="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></a>`
     : `<button class="tile${h === '#vsi' ? ' all' : ''}" type="button" data-also="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></button>`).join('');
   showTab(VT);
+}
+/* «Нові гутірки»: найновіша — у великій рамці, кілька останніх гортаються самі */
+const FEAT = GUT.slice().sort((x, y) => String(y.a).localeCompare(String(x.a))).slice(0, 4);
+let FI = 0;
+function vmOf(g) {
+  const s = SKILLS.find(x => x.gv && x.gv.list.some(e => e.v === g.v)); if (!s) return null;
+  const e = s.gv.list.find(e => e.v === g.v);
+  return { id: s.id, txt: `До вмілості «${s.gv.lvl}» · ${covN(e)} з ${e.req.length} точок` };
+}
+function slideHtml(g, k) {
+  const vm = vmOf(g);
+  return `<div class="fs" style="--g:${g.c}" data-k="${k}"><div class="fart"><img src="${g.art}" alt="${esc(g.alt)}"></div><div class="fbody">
+    <div class="fmeta"><span class="flbl">${k ? 'Нещодавно додана' : 'Остання гутірка'}</span>${vm ? `<button class="fvm" type="button" data-fvm="${esc(vm.id)}">${esc(vm.txt)}</button>` : ''}</div>
+    <h3>${esc(g.t)}</h3><p class="dl">${esc(g.d)}</p><p class="ds">${esc(g.p)}</p>
+    <div class="bvars">${g.v.map(([l, d, h, w], i) => `<a class="bvar${i ? '' : ' main'}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}"><span>${esc(l)}<span class="who">${esc(w || '')}</span></span><small>${esc(d)} →</small></a>`).join('')}</div></div></div>`;
+}
+function renderFeat() {   // показати гутірку FI (інші лишаються під нею невидимі — висота рамки не стрибає)
+  $('#feat').style.setProperty('--g', FEAT[FI].c);
+  $$('#fslide .fs').forEach((el, k) => { const on = k === FI; el.classList.toggle('on', on); el.inert = !on; el.setAttribute('aria-hidden', String(!on)); });
+  $$('#fpills .fpill').forEach((b, k) => b.setAttribute('aria-current', String(k === FI)));
+}
+function featManual(k) {   // виховник сам вибрав — далі не гортаємо
+  $('#feat').classList.remove('auto'); $('#fslide').setAttribute('aria-live', 'polite');
+  FI = (k + FEAT.length) % FEAT.length; renderFeat();
+}
+$('#fpills').addEventListener('click', e => { const b = e.target.closest('[data-fi]'); if (b) featManual(+b.dataset.fi); });
+$('#fpills').addEventListener('animationend', e => {
+  if (e.animationName !== 'fprog' || !$('#feat').classList.contains('auto')) return;
+  FI = (FI + 1) % FEAT.length; renderFeat();
+});
+$('#fslide').addEventListener('click', e => { const b = e.target.closest('[data-fvm]'); if (!b) return; featManual(FI); sheet(vSkillHtml(byId[b.dataset.fvm]), COL.vyh); });
+/* гортаємо лише тоді, коли рамку видно на екрані */
+if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => $('#feat').classList.toggle('off', !e.isIntersecting)), { threshold: .35 }).observe($('#feat'));
+let fx0 = null;   // свайп на телефоні
+$('#fslide').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') fx0 = e.clientX; });
+$('#fslide').addEventListener('pointerup', e => { if (fx0 === null) return; const dx = e.clientX - fx0; fx0 = null; if (Math.abs(dx) > 50 && FEAT.length > 1) featManual(FI + (dx < 0 ? 1 : -1)); });
+function renderFeatAll() {
+  const nv = GUT.reduce((n, g) => n + g.v.filter(([, , h]) => !/#plan|yunakam/.test(h)).length, 0), nk = SKILLS.filter(x => x.gv).length;
+  $('#vstats').innerHTML = [[GUT.length, plural(GUT.length, ['гутірка', 'гутірки', 'гутірок'])], [nv, plural(nv, ['версія', 'версії', 'версій'])], [nk, plural(nk, ['вмілість', 'вмілості', 'вмілостей'])]]
+    .map(([n, l]) => `<div><dt>${esc(l)}</dt><dd>${n}</dd></div>`).join('');
+  const multi = FEAT.length > 1;
+  $('#fpills').hidden = !multi; if (!multi) $('#feat').classList.remove('auto');
+  $('#fpills').style.setProperty('--n', FEAT.length);
+  $('#fpills').innerHTML = FEAT.map((g, k) => `<button class="fpill" type="button" data-fi="${k}" style="--c:${g.c}" aria-current="${k === FI}"><i aria-hidden="true"></i><span>${esc(g.t)}</span></button>`).join('');
+  $('#fslide').innerHTML = FEAT.map(slideHtml).join('');
+  renderFeat();
 }
 let VT = 'g';   // відкрита вкладка: g — гутірки, k — каталог
 function showTab(t, focus) {

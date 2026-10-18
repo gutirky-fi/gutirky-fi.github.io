@@ -22,6 +22,10 @@ def rep(s, a, b):
 src = (TUT / 'index.html').read_text(encoding='utf-8')
 src = rep(src, '<script src="../../src/skills_data.js"></script>', '<script>\n' + (D / 'skills_data.js').read_text(encoding='utf-8') + '\n</script>')
 src = src.replace('{{LOGO}}', uri(D / 'img' / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(D / 'img' / 'emblem.webp', 'image/webp'))
+# малюнки гутірок для «Нових гутірок» у виховників
+for k, f in [('{{LA_ART}}', 'budova-la-1.webp'), ('{{K1_ART}}', 'keramika-1.webp'), ('{{KERAMIKA_MAP}}', 'keramika-map.webp')]:
+    assert k in src, k
+    src = src.replace(k, uri(D / 'img' / f, 'image/webp'))
 assert 'noindex' in src and '{{' not in src.replace('${{', '')
 out = SITE / 'proba' / 'vhody' / 'index.html'
 out.parent.mkdir(parents=True, exist_ok=True)
