@@ -16,7 +16,7 @@
     tags: ['кераміка', 'народні ремесла', 'історія', 'карта', 'вишкіл'],
     vars: [
       { mode: 'full', label: 'Повна гутірка', who: 'Юнацтво, 12–17 років', dur: '45–50 хв', accent: '#e8925b' },
-      { mode: 'short', label: 'Вишкіл', who: 'Виховники, малі групи', dur: 'до 20 хв', accent: '#ffc247' }
+      { mode: 'short', label: 'Вишкіл', who: 'Виховники, малі групи', dur: 'до 20 хв', accent: '#3daf6e' }
     ]
   }, {
     key: 'budova-la-1', proba: true, title: 'Будова літальних апаратів І', icon: '✈️', accent: '#6fb3ff',   // proba — лише в копії для показу (PREVIEW=1), доки власник не погодить
@@ -24,7 +24,7 @@
     tags: ['авіація', 'літаки', 'летунська', 'гра з телефонів', 'для юнацтва'],
     vars: [   /* href — гутірка на окремій сторінці сайту; dod — додаток для виховника (план), yun — посилання для юнаків; обидва не рахуються як версії */
       { href: 'gutirky/budova-la-1/#hutirka', label: 'Гутірка', who: 'Юнацтво, 12–17 років', dur: '40–45 хв', accent: '#6fb3ff' },
-      { href: 'gutirky/budova-la-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#ffc247', dod: true },
+      { href: 'gutirky/budova-la-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#3daf6e', dod: true },
       { href: 'gutirky/budova-la-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#c8284a', yun: true }
     ]
   }, {
@@ -33,7 +33,7 @@
     tags: ['кераміка', 'мистецька', 'гончарство', 'гра з телефонів', 'для юнацтва'],
     vars: [
       { href: 'gutirky/keramika-1/#hutirka', label: 'Гутірка', who: 'Юнацтво, 12–17 років', dur: '45 хв', accent: '#e8925b' },
-      { href: 'gutirky/keramika-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#ffc247', dod: true },
+      { href: 'gutirky/keramika-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#3daf6e', dod: true },
       { href: 'gutirky/keramika-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#c8284a', yun: true }
     ]
   }].filter(b => !b.proba || window.GUTIRKA_PREVIEW);

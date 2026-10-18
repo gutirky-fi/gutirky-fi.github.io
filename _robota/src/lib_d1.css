@@ -34,7 +34,7 @@
 #lib .hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px 32px;align-items:center;padding-block:52px 44px}
 #lib .hero .wm{position:absolute;right:20px;top:14px;height:340px;width:auto;opacity:.07;pointer-events:none}
 #lib .h-text{position:relative;display:flex;flex-direction:column;gap:12px}
-#lib .eyebrow{font:500 14px var(--l-disp);letter-spacing:.3em;text-transform:uppercase;color:#9fb57a}
+#lib .eyebrow{font:500 14px var(--l-disp);letter-spacing:.3em;text-transform:uppercase;color:var(--l-upyu-t)}
 #lib h1{margin:0;font:600 clamp(3rem,8vw,5.25rem)/.95 var(--l-disp);letter-spacing:.04em;text-transform:uppercase}
 #lib .hand{margin:2px 0 0;font:500 clamp(1.5rem,3vw,1.9rem)/1.15 var(--l-hand);color:var(--l-ac)}
 #lib .stats{position:relative;display:flex;gap:28px;margin:0}
@@ -56,8 +56,8 @@
 #lib .feat .body{padding:30px 34px;display:flex;flex-direction:column;gap:12px}
 #lib .meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 #lib .lbl{font:500 13px var(--l-disp);letter-spacing:.22em;text-transform:uppercase;color:var(--l-mut)}
-#lib .vm{padding:3px 12px;border-radius:99px;border:1px solid rgba(255,194,71,.5);background:none;color:var(--l-gd);font:700 13px var(--l-body);cursor:pointer}
-#lib .vm:hover{background:rgba(255,194,71,.12)}
+#lib .vm{padding:3px 12px;border-radius:99px;border:1px solid rgba(255,125,153,.5);background:none;color:var(--l-upyu-t);font:700 13px var(--l-body);cursor:pointer}
+#lib .vm:hover{background:rgba(200,40,74,.16)}
 #lib .feat h2{margin:0;font:600 clamp(2rem,4vw,2.75rem)/1.05 var(--l-disp);letter-spacing:.04em;text-transform:uppercase}
 #lib .feat p{margin:0;max-width:560px;color:#cfd5dc}
 #lib .vars2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px;margin-top:6px}
@@ -65,8 +65,8 @@
 #lib .bigvar:hover{border-color:var(--l-gd)}
 #lib .bigvar .who{display:block;font-weight:400;font-size:13px;color:var(--l-mut)}
 #lib .bigvar small{font-weight:600;font-size:15px;color:var(--l-mut);white-space:nowrap}
-#lib .bigvar.main{background:var(--l-gd);border-color:var(--l-gd);color:#16130a}
-#lib .bigvar.main .who,#lib .bigvar.main small{color:#3d3214}
+#lib .bigvar.main{background:var(--l-gd);border-color:var(--l-gd);color:var(--l-gd-on)}
+#lib .bigvar.main .who,#lib .bigvar.main small{color:#16432a}
 #lib .bigvar.main:hover{filter:brightness(1.07)}
 /* усе для юнацтва — малиновий УПЮ (пластова кольористика уладів) */
 #lib .bigvar.yun{border-color:rgba(200,40,74,.8)}
@@ -91,7 +91,7 @@
 #lib .chips{display:flex;flex-wrap:wrap;gap:8px}
 #lib .chips button{padding:7px 14px;border-radius:99px;border:1px solid var(--l-ln);background:var(--l-card);color:var(--l-mut);font:700 14px var(--l-body);cursor:pointer}
 #lib .chips button:hover{color:var(--l-ink)}
-#lib .chips button[aria-pressed=true]{background:var(--l-gd);border-color:var(--l-gd);color:#16130a}
+#lib .chips button[aria-pressed=true]{background:var(--l-gd);border-color:var(--l-gd);color:var(--l-gd-on)}
 #lib .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
 #lib .card{display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px;border-radius:18px;background:var(--l-card);border:1px solid var(--l-ln);border-top:4px solid var(--a,var(--l-gd))}
 #lib .card .kind{font:500 12px var(--l-disp);letter-spacing:.2em;text-transform:uppercase;color:var(--l-mut)}
@@ -119,7 +119,7 @@
 #lib .k-row .search{width:300px}
 #lib .legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:14px;color:var(--l-mut)}
 #lib .legend i{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px;box-sizing:border-box}
-#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#3a4048 0)}
+#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#3a4048 0)}
 #lib .legend label{display:flex;align-items:center;gap:8px;color:#cfd5dc;cursor:pointer}
 #lib .legend input{width:18px;height:18px;margin:0;accent-color:var(--l-gd)}
 #lib .k-h{margin-bottom:18px}
@@ -148,9 +148,9 @@
 @media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
-#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
+#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
 #lib .badge:hover{border-color:#5a6573}
-#lib .badge[aria-expanded=true]{border-color:var(--l-gd);box-shadow:0 0 0 1px var(--l-gd)}
+#lib .badge[aria-expanded=true]{border-color:var(--l-upyu-t);box-shadow:0 0 0 1px var(--l-upyu-t)}
 #lib .disc{display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px var(--l-card),0 0 0 8px var(--st)}
 #lib .badge.none .disc{opacity:.45}
 #lib .disc span{display:flex;align-items:center;justify-content:center;width:86px;height:86px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);font:600 32px var(--l-disp);color:#fff}
@@ -163,8 +163,8 @@
   #lib .disc span{width:70px;height:70px;font-size:26px}
   #lib .badge b{font-size:14px;letter-spacing:.03em}
 }
-#lib .kdet{grid-column:1/-1;position:relative;display:grid;grid-template-columns:2fr 3fr;border-radius:22px;overflow:hidden;border:1px solid var(--l-gd);background:var(--l-card);scroll-margin:20px}
-#lib .kd-l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;background:radial-gradient(circle at 50% 40%,#3a2f22 0%,var(--l-card) 72%)}
+#lib .kdet{grid-column:1/-1;position:relative;display:grid;grid-template-columns:2fr 3fr;border-radius:22px;overflow:hidden;border:1px solid var(--l-upyu);background:var(--l-card);scroll-margin:20px}
+#lib .kd-l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:30px;text-align:center;background:radial-gradient(circle at 50% 40%,#3a2129 0%,var(--l-card) 72%)}
 #lib .kd-l .disc{width:124px;height:124px;box-shadow:0 0 0 5px #2a2620,0 0 0 9px var(--st)}
 #lib .kd-l .disc span{width:104px;height:104px;font-size:38px}
 #lib .kd-l,#lib .kd-r{min-width:0}
@@ -188,6 +188,11 @@
 #lib footer{display:flex;flex-direction:column;align-items:center;margin-top:64px;padding-block:36px 40px;border-top:1px solid var(--l-ln);text-align:center}
 #lib footer img{display:block;height:64px;width:auto;opacity:.85}
 #lib .skob{margin-top:16px;padding-left:.3em;font:600 28px/1 var(--l-disp);letter-spacing:.3em;color:var(--l-gd)}
+/* кольори уладів — як у Пласті (Правильник про однострій і відзнаки, ч. 2) */
+#lib .ulady{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin:18px 0 0;padding:0 8px;font-size:14px;color:var(--l-mut)}
+#lib .ulady span{display:inline-flex;align-items:center;gap:7px}
+#lib .ulady i{width:12px;height:12px;border-radius:50%;background:var(--u)}
+#lib .ulady b{font-weight:600;color:#cfd5dc}
 #lib .f-note{margin-top:10px;font-size:14px;line-height:1.4;color:var(--l-mut)}
 @media (prefers-reduced-motion:reduce){#lib *{scroll-behavior:auto!important}}
 

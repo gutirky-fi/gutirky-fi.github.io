@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
 /* Вітрина: усі макети бібліотеки на одній сторінці — щоб показати іншим. Кожне посилання — у новій вкладці. */
-:root{color-scheme:dark;--bg:#15171b;--card:#1f2328;--ln:#33383f;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;
+:root{color-scheme:dark;--bg:#15171b;--card:#1f2328;--ln:#33383f;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#3daf6e;--ac:#2fd2c0;
   --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -29,20 +29,20 @@ h2 small{font:600 13px var(--txt);letter-spacing:.04em;text-transform:none;color
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .card{display:flex;flex-direction:column;border-radius:16px;background:var(--card);border:1px solid var(--ln);overflow:hidden}
 .card.wide{grid-column:1 / -1;flex-direction:row}
-.card.main{border-color:#5a4a22;box-shadow:0 0 0 1px #5a4a22}
+.card.main{border-color:#24513a;box-shadow:0 0 0 1px #24513a}
 .shot{display:block;aspect-ratio:16/10;background:#0e1013;border-bottom:1px solid var(--ln);overflow:hidden}
 .card.wide .shot{flex:0 0 52%;border-bottom:0;border-right:1px solid var(--ln)}
 .shot img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .3s}
 .shot:hover img{transform:scale(1.02)}
 .tx{display:flex;flex-direction:column;gap:8px;padding:18px 20px 20px;flex:1}
 .tag{align-self:flex-start;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700}
-.tag.live{background:#173a2a;color:#8be8b9}.tag.prep{background:#3a3220;color:var(--gd)}.tag.idea{background:#24303b;color:#9fc7ea}
+.tag.live{background:#2c3138;color:#e6e9ed}.tag.prep{background:#3a3220;color:#f0c25e}.tag.idea{background:#24303b;color:#9fc7ea}
 h3{margin:2px 0 0;font:600 25px/1.15 var(--disp);letter-spacing:.01em}
 .tx p{margin:0;color:var(--body)}
 .tx ul{margin:0;padding-left:1.2em;color:var(--body)}.tx li{margin:3px 0}
 .go{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:auto;padding-top:8px;text-decoration:none}
-.go b{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--gd);color:#16130a;font-size:16px}
-.go:hover b{background:#ffd06b}
+.go b{display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:12px;background:var(--gd);color:#0e1f15;font-size:16px}
+.go:hover b{background:#55c283}
 .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:auto;padding-top:8px}.acts .go{margin-top:0;padding-top:0}
 .go.sec b{background:none;border:1px solid #5d646e;color:var(--ink)}.go.sec:hover b{background:#272b31}
 .go span{color:var(--mut);font-size:14px;overflow-wrap:anywhere}
@@ -69,19 +69,19 @@ footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
     <h2 id="h-about">Розповідь про проєкт</h2>
     <div class="grid">
       <article class="card">
-        <a class="shot" href="prezentatsiia/?v=10190022" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/prezentatsiia.webp" alt="" width="640" height="360"></a>
+        <a class="shot" href="prezentatsiia/?v=10190042" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/prezentatsiia.webp" alt="" width="640" height="360"></a>
         <div class="tx"><span class="tag live">18 слайдів</span>
           <h3>Презентація сайту</h3>
           <p>Що вміє бібліотека сьогодні і куди може рости: гутірки, пульт, гра, план для виховника, сторінка для юнаків і три шляхи розвитку.</p>
           <p class="also">Гортати стрілками або свайпом; є нотатки ведучого, повний екран і PDF для завантаження.</p>
-          <a class="go" href="prezentatsiia/?v=10190022" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/prezentatsiia</span></a></div>
+          <a class="go" href="prezentatsiia/?v=10190042" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/prezentatsiia</span></a></div>
       </article>
       <article class="card">
-        <a class="shot" href="../istoriya/?v=10190022" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/istoriya.webp" alt="" width="640" height="400"></a>
+        <a class="shot" href="../istoriya/?v=10190042" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/istoriya.webp" alt="" width="640" height="400"></a>
         <div class="tx"><span class="tag live">день за днем</span>
           <h3>Історія створення</h3>
           <p>Як усе почалося і як сайт ріс: від першої спроби 13 жовтня до бібліотеки з каталогом вмілостей. Події по днях, ранні версії й усі публікації.</p>
-          <a class="go" href="../istoriya/?v=10190022" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/istoriya</span></a></div>
+          <a class="go" href="../istoriya/?v=10190042" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/istoriya</span></a></div>
       </article>
     </div>
   </section>
@@ -90,7 +90,7 @@ footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
     <h2 id="h-site">Сайт <small>усе разом: клацайте, як справжній сайт</small></h2>
     <div class="grid">
       <article class="card wide main">
-        <a class="shot" href="sait/?v=10190022" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/sait.webp" alt="" width="640" height="400"></a>
+        <a class="shot" href="sait/?v=10190042" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/sait.webp" alt="" width="640" height="400"></a>
         <div class="tx"><span class="tag prep">після оновлення</span>
           <h3>Сайт з усіма новими гутірками</h3>
           <p>Увесь сайт таким, яким він стане після оновлення. Усе можна відкривати й гортати, як на справжньому сайті:</p>
@@ -99,7 +99,7 @@ footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
             <li><b>Каталог вмілостей</b> — видно, до яких вмілостей уже є гутірки.</li>
             <li>У гутірках — пульт з телефона і гра «Потужний СКОБ!».</li></ul>
           <p class="also">Повернутися сюди — «← Усі макети» у світлій смужці вгорі сайту.</p>
-          <div class="acts"><a class="go" href="sait/?v=10190022" target="_blank" rel="noopener"><b>Сайт після оновлення</b></a><a class="go sec" href="../?v=10190022" target="_blank" rel="noopener"><b>Сайт зараз</b></a></div></div>
+          <div class="acts"><a class="go" href="sait/?v=10190042" target="_blank" rel="noopener"><b>Сайт після оновлення</b></a><a class="go sec" href="../?v=10190042" target="_blank" rel="noopener"><b>Сайт зараз</b></a></div></div>
       </article>
     </div>
   </section>
@@ -108,19 +108,19 @@ footer{padding:30px 16px 44px;color:var(--mut);font-size:14px}
     <h2 id="h-idea">Ідеї на майбутнє <small>окремі макети, на сайт поки не плануються</small></h2>
     <div class="grid">
       <article class="card">
-        <a class="shot" href="vhody/?v=10190022" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/vhody.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <a class="shot" href="vhody/?v=10190042" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/vhody.webp" alt="" width="640" height="400" loading="lazy"></a>
         <div class="tx"><span class="tag idea">ідея</span>
           <h3>Сайт із кількома входами</h3>
           <p>Як сайт може рости далі: «Для всіх» (підказки, співаник), «Юнацтво» (вмілості й самоперевірка) і «Виховники» — дві вкладки: «Гутірки» і «Каталог вмілостей» з позначками, до чого вже є гутірки.</p>
           <p class="also">Код для входу «Виховники» в макеті — <b>1912</b>.</p>
-          <a class="go" href="vhody/?v=10190022" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/vhody</span></a></div>
+          <a class="go" href="vhody/?v=10190042" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/vhody</span></a></div>
       </article>
       <article class="card">
-        <a class="shot" href="skob-hra/?v=10190022" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/skob.webp" alt="" width="640" height="400" loading="lazy"></a>
+        <a class="shot" href="skob-hra/?v=10190042" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="vitryna/skob.webp" alt="" width="640" height="400" loading="lazy"></a>
         <div class="tx"><span class="tag idea">ідея</span>
           <h3>«Потужний СКОБ!» для всіх</h3>
           <p>Гра з гутірок окремо: будь-хто складає свою вікторину, а гравці відповідають з телефонів, як у Kahoot.</p>
-          <a class="go" href="skob-hra/?v=10190022" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/skob-hra</span></a></div>
+          <a class="go" href="skob-hra/?v=10190042" target="_blank" rel="noopener"><b>Відкрити</b><span>gutirky-fi.github.io/proba/skob-hra</span></a></div>
       </article>
     </div>
   </section>

@@ -125,21 +125,21 @@
 #pult-dlg .pd-qr:empty{display:none}
 #pult-dlg .pd-or{font-size:14px;color:#b7bfc9;margin:10px 0 2px}
 #pult-dlg .pd-or b{color:#f2f4f6;word-break:break-all}
-#pult-dlg .pd-code{font:600 44px/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.14em;color:#ffc247}
+#pult-dlg .pd-code{font:600 44px/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.14em;color:#62cf93}
 #pult-dlg .pd-link{display:block;margin:8px auto 0;background:none;border:0;color:#98a1ac;text-decoration:underline;font:14px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
 #pult-dlg .pd-site{margin:12px 0;font-size:14px;color:#b7bfc9}
 #pult-dlg .pd-site input{display:block;width:100%;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid #4a515b;background:#14171a;color:#fff;font-size:15px}
 #pult-dlg .pd-who{margin:14px 0 4px;padding:12px 14px;border-radius:12px;background:#1d3a35;border:1px solid #2c6a5e}
 #pult-dlg .pd-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 #pult-dlg .pd-b{padding:10px 14px;border-radius:12px;border:1px solid #4a515b;background:#2b3037;color:#fff;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
-#pult-dlg .pd-b.go{background:#ffc247;border-color:#ffc247;color:#16130a}
+#pult-dlg .pd-b.go{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}
 #pult-dlg .pd-b:hover{filter:brightness(1.15)}
 #pult-dlg .pd-tip{font-size:13px;color:#98a1ac;margin:12px 0 0}
-#pult-ask{position:fixed;z-index:70;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(520px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#1f2328;border:1px solid #ffc247;box-shadow:0 12px 50px #000c;color:#f2f4f6;font:16px/1.45 'Source Sans 3',system-ui,sans-serif}
+#pult-ask{position:fixed;z-index:70;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(520px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#1f2328;border:1px solid #3daf6e;box-shadow:0 12px 50px #000c;color:#f2f4f6;font:16px/1.45 'Source Sans 3',system-ui,sans-serif}
 #pult-ask[hidden]{display:none}
 #pult-ask div{display:flex;gap:8px;margin-top:10px}
 #pult-ask button{flex:1;padding:11px;border-radius:12px;border:1px solid #4a515b;background:#2b3037;color:#fff;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
-#pult-ask button.ok{background:#ffc247;border-color:#ffc247;color:#16130a}`;
+#pult-ask button.ok{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}`;
 
   function buildUi() {
     const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);

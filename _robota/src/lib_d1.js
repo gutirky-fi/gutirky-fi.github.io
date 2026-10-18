@@ -40,7 +40,7 @@
   const lvName = (s, l) => l.label === 'Опис' ? s.n : l.label.startsWith('Опис') ? s.n + ' (' + l.label.replace(/^Опис\s*\(|\)$/g, '') + ')' : s.n + ' ' + l.label;
   const cov = l => [l.d.req.filter(r => r[1] === 'full' || r[1] === 'part').length, l.d.pts];
   const stOf = s => { if (!s.gl) return 'none'; return s.gl.d.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part'; };
-  const ST = { full: ['#3ee08f', '#3ee08f'], part: ['#3ee08f', '#8be8b9'], none: ['#383d44', '#8a929c'] };   // зелений — лише «готовність» у каталозі
+  const ST = { full: ['#c8284a', '#ff7d99'], part: ['#c8284a', '#ff9fb4'], none: ['#383d44', '#8a929c'] };   // вмілості юнацтва — малиновий УПЮ; довжина смужки — скільки вимог покриває гутірка
   /* скільки вимог покриває гутірка, % (для смужки над нашивкою); вимоги-«завдання» (task) робить сам юнак — їх не рахуємо */
   const pcOf = s => { if (!s.gl) return 0; const r = s.gl.d.req.filter(x => x[1] !== 'task'); return r.length ? Math.min(100, Math.round(100 * r.reduce((a, x) => a + (x[1] === 'full' ? 1 : x[1] === 'part' ? .5 : 0), 0) / r.length)) : 100; };
   const ptsWord = n => plural(n, ['точка', 'точки', 'точок']);
@@ -140,7 +140,7 @@
   function detHtml(s) {
     const st = stOf(s), g = s.g && gById(s.g);
     const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
-    const pc = { full: '#3ee08f', part: '#8be8b9', none: '#8a929c', task: '#8a929c' };
+    const pc = { full: '#ff7d99', part: '#ffb3c4', none: '#8a929c', task: '#8a929c' };
     const pts = s.gl
       ? `<span class="lbl">Точки вмілості «${esc(lvName(s, s.gl))}»</span><ol>${s.gl.d.req.map((r, k) => `<li style="--c2:${pc[r[1]]}"><span>${k + 1}</span><span><b>${esc(r[0])}</b><small>${esc(r[2])}</small></span></li>`).join('')}</ol>`
       : `<p>Гутірки до цієї вмілості ще немає. Вимоги кожного рівня є на порталі Пласту у Фінляндії.</p>`;

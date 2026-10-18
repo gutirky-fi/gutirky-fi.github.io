@@ -16,12 +16,13 @@
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt)}
 a{color:inherit}
 .wrap{max-width:1040px;margin:0 auto;padding:0 16px}
-.rib{padding:7px 14px;background:var(--ac);color:#0d1f1d;text-align:center;font-weight:700;font-size:14px}.rib a{margin-left:8px}
+.rib{padding:7px 14px;background:#cfd5dc;color:#16181c;text-align:center;font-weight:700;font-size:14px}.rib a{margin-left:8px}
 header{padding:34px 0 6px}
 h1{margin:0;font:600 clamp(36px,7vw,64px)/1 var(--disp);text-transform:uppercase;letter-spacing:.01em}
 .hand{margin:8px 0 0;font:500 clamp(22px,3vw,28px)/1.1 var(--hand);color:var(--ac)}
 .lede{max-width:62ch;margin:16px 0 0;color:var(--body)}
-.chosen{max-width:62ch;margin:14px 0 0;padding:12px 16px;border-radius:12px;background:rgba(62,224,143,.1);border:1px solid rgba(62,224,143,.45);color:var(--ink)}.chosen a{color:var(--ink)}
+.chosen{max-width:72ch;margin:16px 0 0;padding:14px 18px;border-radius:14px;background:var(--card);border:1px solid var(--ln);color:var(--ink)}.chosen p{margin:0}.chosen p+ul,.chosen ul+p{margin-top:10px}.chosen a{color:var(--ink)}
+.chosen ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;color:var(--body)}.chosen li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:10px;align-items:start}.chosen li i{width:18px;height:18px;border-radius:50%;margin-top:3px}.chosen li b{color:var(--ink)}
 h2{margin:44px 0 6px;font:600 26px/1.1 var(--disp);letter-spacing:.06em;text-transform:uppercase}
 .sub{margin:0 0 16px;color:var(--mut)}
 /* таблиця кольорів */
@@ -86,13 +87,19 @@ footer{padding:40px 16px 50px;color:var(--mut);font-size:14px;text-align:center}
 </style>
 </head>
 <body>
-<div class="rib">Пропозиція для обговорення. На сайті ще нічого не змінено. <a href="/proba/">← Усі макети</a></div>
+<div class="rib">Кольори обрано, їх видно в макетах. Справжній сайт зміниться після «ставимо». <a href="/proba/">← Усі макети</a></div>
 <div class="wrap">
 <header>
   <h1>Кольори сайту</h1>
   <p class="hand">щоб кожен колір означав одне</p>
   <p class="lede">Зараз деякі кольори мають по два-три значення, тож важко зрозуміти, що саме колір підказує. Нижче — що є зараз, де плутанина, і як можна зробити логічно. Дизайн лишається той самий, міняються лише значення кольорів.</p>
-  <p class="chosen">Обрано <b>варіант Б</b>. Його вже видно на <a href="../sait/">макеті сайту після оновлення</a> і в макеті <a href="../vhody/">«Сайт із кількома входами»</a>. Справжній сайт зміниться після «ставимо».</p>
+  <div class="chosen"><p><b>Обрано: кольори всіх уладів, як у Пласті.</b> Кожен колір означає, для кого це:</p>
+  <ul><li><i style="background:#ffd23f"></i><span><b>Новацтво</b> — жовтий (вхід «Новацтво», згодом)</span></li>
+    <li><i style="background:#c8284a"></i><span><b>Юнацтво</b> — малиновий: «Для юнаків», «Вивчай сам», «Перевір себе», каталог вмілостей юнацтва (смужка — скільки вимог уже покриває гутірка)</span></li>
+    <li><i style="background:#3daf6e"></i><span><b>Старші пластуни й виховники</b> — зелений: усе, що робить виховник («Гутірка», «План», пульт, вхід «Виховники»). Виховники — дорослі, переважно старші пластуни</span></li>
+    <li><i style="background:#b0773a"></i><span><b>Сеньйори</b> — бронзовий</span></li>
+    <li><i style="background:linear-gradient(90deg,#ffd23f 25%,#c8284a 0 50%,#3daf6e 0 75%,#b0773a 0)"></i><span><b>Для всіх</b> — усі кольори разом</span></li></ul>
+  <p>Колір теми (кераміка — глиняний, авіація — синій) — лише рамка картки. Слайди гутірок і гра «Потужний СКОБ!» мають власні кольори. Подивитися: <a href="../sait/">сайт після оновлення</a>, <a href="../vhody/">сайт із кількома входами</a>. Нижче — попередні варіанти А і Б.</p></div>
 </header>
 
 <h2>Варіант Б: пластова кольористика</h2>
