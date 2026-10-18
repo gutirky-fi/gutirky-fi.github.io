@@ -258,12 +258,20 @@ html body #pult-ask{border-color:var(--vyh)}
 #vyvch .go,#test .go{background:var(--upyu);color:#fff}
 .prog .tr i{background:var(--upyu)}
 .sec .num{color:var(--upyu-t)}
-.sec .num .pr{display:inline-block;margin-left:10px;padding:0 8px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 11px/18px var(--txt);letter-spacing:.06em;vertical-align:1px}
 .sec .zn{background:rgba(200,40,74,.1);border-color:rgba(255,125,153,.35);color:#ffe3e9}.sec .zn b{color:var(--upyu-t)}
 .know.on{border-color:var(--upyu-t);color:var(--upyu-t)}.know.on i{border-color:var(--upyu);background:var(--upyu);color:#fff}
 #ask-save{border-color:var(--upyu)}#ask-save button.y{background:var(--upyu);border-color:var(--upyu);color:#fff}
 .fb b{color:#7fe0a6}
 .res .sc{color:var(--upyu-t)}
+/* практичні точки (konspekt[].pr): юнак робить сам — у рисочку, поки не зробив */
+.req .pr,.sec .num .pr{display:inline-block;margin-left:10px;padding:0 8px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 11px/18px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:var(--upyu-t);vertical-align:1px}
+.req-sum{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px;color:var(--body);font-size:15px}
+.mseg{display:inline-flex;gap:3px}.mseg i{width:16px;height:6px;border-radius:3px;background:var(--upyu)}.mseg i.pr{background:repeating-linear-gradient(-45deg,var(--upyu-t) 0 2px,#2e3339 2px 5px)}
+.prog .tr.sg{display:flex;gap:4px;height:10px;background:none;border-radius:0;overflow:visible}
+.prog .tr.sg i{flex:1;height:100%;border-radius:99px;background:var(--card2);transition:background .3s}
+.prog .tr.sg i.pr{background:repeating-linear-gradient(-45deg,rgba(255,125,153,.6) 0 3px,var(--card2) 3px 7px)}
+.prog .tr.sg i.on{background:var(--upyu)}
+.pnote{margin:4px 0 0;color:var(--mut);font-size:14px}.pnote b{color:var(--upyu-t)}
 </style>
 </head>
 <body>
@@ -275,7 +283,7 @@ html body #pult-ask{border-color:var(--vyh)}
   <h1>Будова літальних апаратів І</h1>
   <p class="hand for-v">гутірка, гра і матеріали для юнаків</p>
   <p class="hand for-y">усе, що треба знати й уміти для вмілості</p>
-  <div class="req"><b>Вимоги до вмілості</b><ol id="req"></ol><small>Дослівно з <a id="req-src" target="_blank" rel="noopener">каталогу вмілостей Пласту у Фінляндії</a>.</small></div>
+  <div class="req"><b>Вимоги до вмілості</b><p class="req-sum" id="req-sum" hidden></p><ol id="req"></ol><small>Дослівно з <a id="req-src" target="_blank" rel="noopener">каталогу вмілостей Пласту у Фінляндії</a>.</small></div>
   <div class="doors for-v">
     <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>40–45 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
     <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали. Можна роздрукувати.</span></a>
@@ -285,6 +293,7 @@ html body #pult-ask{border-color:var(--vyh)}
   <div class="doors for-y">
     <a class="door main" href="#vyvchy"><i>Крок 1</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Крок 2</i><b>Перевір себе</b><span>15 запитань із поясненнями. Щоразу в іншому порядку.</span></a>
+    <a class="door" href="#praktyka" id="d-pr" hidden><i>Крок 3</i><b>Зроби сам</b><span id="d-pr-t"></span></a>
   </div>
   <p class="kh for-y">Усе знаєш і тест іде добре — скажи виховникові, що можеш скласти вмілість.</p>
 </main>
@@ -312,7 +321,8 @@ html body #pult-ask{border-color:var(--vyh)}
   <span class="eyebrow">Вивчай сам</span>
   <h1>Будова літальних апаратів І</h1>
   <p class="hand">усе, що треба знати й уміти для вмілості</p>
-  <div class="prog"><span id="pv-t">Вивчено 0 з 5</span><span class="tr"><i id="pv-bar" style="width:0"></i></span></div>
+  <div class="prog"><span id="pv-t">Вивчено 0 з 5</span><span class="tr sg" id="pv-seg"></span></div>
+  <p class="pnote" id="pv-note" hidden></p>
   <div id="pv-list"></div>
   <a class="go" href="#test">Перевір себе →</a>
   <div class="priv">Цей сайт нічого не збирає й нікуди не надсилає. Прогрес зберігається лише на цьому пристрої — і лише якщо ти погодишся.
@@ -352,6 +362,7 @@ html body #pult-ask{border-color:var(--vyh)}
   <a class="back" href="#">← На початок</a>
   <span class="eyebrow">Перевір себе</span>
   <h1>Будова літальних апаратів І</h1>
+  <p class="pnote" id="t-note" hidden></p>
   <div id="t-box"></div>
   <div class="priv">Відповіді нікуди не надсилаються. Найкращий результат зберігається лише на цьому пристрої — якщо ти погодишся.
     <br><button type="button" class="wipe">Стерти мій прогрес</button></div>
@@ -370,6 +381,10 @@ html body #pult-ask{border-color:var(--vyh)}
 (() => {
 'use strict';
 const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+/* практичні точки — ті, що юнак виконує сам (konspekt[].pr); решту вивчає тут */
+const PRN = D.konspekt.filter(k => k.pr).map(k => k.n), THN = D.konspekt.filter(k => !k.pr).map(k => k.n);
+const nList = a => (a.length === 1 ? 'точка ' : 'точки ') + (a.length === 1 ? a[0] : a.slice(0, -1).join(', ') + ' і ' + a[a.length - 1]);
+const ptW = n => n % 10 === 1 && n % 100 !== 11 ? 'точка' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'точки' : 'точок';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 /* дві сторінки з одного файла: для виховника (усе) і для юнаків (yunakam/…: лише «Вивчай сам» і «Перевір себе») */
 const YUN = !!window.GUTIRKA_YUN;
@@ -553,11 +568,11 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
-  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5${k.pr ? '<span class="pr">практика — зробиш сам</span>' : ''}</div><h2>${k.h}</h2>
+  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec${k.pr ? ' pr' : ''}"><div class="num">Точка ${k.n} з 5${k.pr ? '<span class="pr">практика — зробиш сам</span>' : ''}</div><h2>${k.h}</h2>
     <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
     <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>${k.pr ? 'Я це вже зробив' : 'Я це вже знаю'}</button></section>`).join('');
-  const n = prog.znau.length; $('#pv-t').textContent = `${D.konspekt.some(x => x.pr) ? 'Готово' : 'Вивчено'} ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
+  const n = prog.znau.length; $('#pv-t').textContent = `${D.konspekt.some(x => x.pr) ? 'Готово' : 'Вивчено'} ${n} з 5`; $('#pv-seg').innerHTML = D.konspekt.map(k => `<i class="${k.pr ? 'pr' : ''}${prog.znau.includes(k.n) ? ' on' : ''}"></i>`).join(''); LA_ART.fit($('#pv-list'));
 }
 $('#pv-list').addEventListener('click', e => {
   const b = e.target.closest('.know'); if (!b) return; const n = +b.dataset.n;
@@ -580,7 +595,7 @@ function renderTest() {
     const n = kviz.length, r = T.right;
     if (prog.best == null || r > prog.best) { prog.best = r; save(); }
     const weak = [1, 2, 3, 4, 5].filter(p => T.byPoint[p] && T.byPoint[p].r < T.byPoint[p].n);
-    box.innerHTML = `<div class="res"><div class="sc">${r} / ${n}</div><p>${r === n ? 'Бездоганно! Можна йти складати вмілість.' : r >= n * .8 ? 'Дуже добре! Ще трохи — і готово.' : 'Непогано для початку. Повтори точки нижче й спробуй ще раз.'}</p>
+    box.innerHTML = `<div class="res"><div class="sc">${r} / ${n}</div><p>${r === n ? (PRN.length ? `Бездоганно! Ще практика (${nList(PRN)}) — і можна йти складати вмілість.` : 'Бездоганно! Можна йти складати вмілість.') : r >= n * .8 ? 'Дуже добре! Ще трохи — і готово.' : 'Непогано для початку. Повтори точки нижче й спробуй ще раз.'}</p>
       ${weak.length ? `<p>Варто повторити:</p><ul>${weak.map(p => `<li>Точка ${p}: ${esc(D.konspekt[p - 1].h)} — ${T.byPoint[p].r} з ${T.byPoint[p].n}</li>`).join('')}</ul>` : ''}
       ${prog.best != null ? `<p style="color:var(--mut)">Найкращий результат: ${prog.best} / ${n}</p>` : ''}
       <button class="go" type="button" id="t-again">Ще раз</button> <a class="back" href="#vyvchy">Повторити матеріал</a></div>`;
@@ -635,22 +650,32 @@ addEventListener('beforeprint', () => { if (!$('#plan').hidden) document.title =
 addEventListener('afterprint', () => { document.title = T_DOC; });
 function route() {
   let h = location.hash.slice(1);
-  if (YUN && h && h !== 'vyvchy' && h !== 'test') { history.replaceState(null, '', location.pathname + location.search); h = ''; }
+  if (YUN && h && h !== 'vyvchy' && h !== 'test' && h !== 'praktyka') { history.replaceState(null, '', location.pathname + location.search); h = ''; }
   $('#start').hidden = !!h && h !== 'start';
   const wasG = !P.hidden;
-  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan'; $('#yunakam').hidden = h !== 'yunakam';
+  P.hidden = h !== 'hutirka'; $('#vyvch').hidden = h !== 'vyvchy' && h !== 'praktyka'; $('#test').hidden = h !== 'test'; $('#plan').hidden = h !== 'plan'; $('#yunakam').hidden = h !== 'yunakam';
   window.GUTIRKA = h === 'hutirka' ? API : null;
   if (h === 'hutirka' && !wasG) peekCorner(2500);
   if (!h || h === 'start') $('#start').hidden = false;
   if (h !== 'hutirka') { SKOB.close(); if (qctl) { qctl.stop(); qctl = null; } if (stop3d) { stop3d(); stop3d = null; } $('#toc').hidden = true; if (document.fullscreenElement) try { document.exitFullscreen().catch(() => {}); } catch (e) {} }
   if (h === 'hutirka') render(); else slideEvt();
   if (h !== 'hutirka') { try { window.GutirkaPult && window.GutirkaPult.close(); } catch (e) {} }
-  if (h === 'vyvchy') { renderStudy(); scrollTo(0, 0); }
+  if (h === 'vyvchy' || h === 'praktyka') { renderStudy(); scrollTo(0, 0); const ps = h === 'praktyka' && $('#pv-list .sec.pr'); if (ps) ps.scrollIntoView(); }
   if (h === 'plan') { renderPlan(); scrollTo(0, 0); }
   if (h === 'yunakam') { renderYun(); scrollTo(0, 0); }
   if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
 }
-$('#req').innerHTML = D.vymogy.map(v => `<li>${esc(v)}</li>`).join('');
+$('#req').innerHTML = D.vymogy.map((v, i) => `<li>${esc(v)}${PRN.includes(i + 1) ? `<span class="pr">${YUN ? 'практика — зроби сам' : 'практика — юнак робить сам'}</span>` : ''}</li>`).join('');
+if (PRN.length) {
+  const seg = `<span class="mseg" aria-hidden="true">${D.konspekt.map(k => `<i class="${k.pr ? 'pr' : ''}"></i>`).join('')}</span>`;
+  $('#req-sum').innerHTML = seg + (YUN ? `<span>${THN.length} ${ptW(THN.length)} вивчиш тут, ${PRN.length} — зробиш власноруч (${nList(PRN)})</span>`
+    : `<span>Матеріал повний: ${THN.length} ${ptW(THN.length)} — у гутірці, ${PRN.length} — практика, юнак робить сам (${nList(PRN)})</span>`);
+  $('#req-sum').hidden = false;
+  $('#d-pr').hidden = false;
+  $('#d-pr-t').textContent = `${nList(PRN).replace(/^т/, 'Т')}: ${D.konspekt.filter(k => k.pr).map(k => k.h.charAt(0).toLowerCase() + k.h.slice(1)).join(', ')}. Покажи виховникові.`;
+  $('#pv-note').innerHTML = `<b>${nList(PRN).replace(/^т/, 'Т')} — практика:</b> зроби сам, тоді натисни «Я це вже зробив».`; $('#pv-note').hidden = false;
+  $('#t-note').innerHTML = `Тест — про ${nList(THN)}. <b>${nList(PRN).replace(/^т/, 'Т')} — практика:</b> тестом не перевіриш — зроби сам і покажи виховникові.`; $('#t-note').hidden = false;
+}
 $('#req-src').href = D.dzherelo;
 addEventListener('hashchange', route); route();
 })();

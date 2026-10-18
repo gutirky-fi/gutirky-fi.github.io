@@ -118,6 +118,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .featv{display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px 26px;align-items:center;padding:22px 24px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--ab,var(--a))}
 .featv h3{margin:0 0 4px;font:600 30px/1.05 var(--disp);letter-spacing:.03em;text-transform:uppercase}
 .featv p{margin:0 0 14px;color:var(--body);font-size:16px}
+.yseg{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:15px!important}
+.mseg{display:inline-flex;gap:3px}.mseg i{width:16px;height:6px;border-radius:3px;background:var(--upyu)}.mseg i.pr{background:repeating-linear-gradient(-45deg,var(--upyu-t) 0 2px,#2e3339 2px 5px)}
 .btns{display:flex;flex-wrap:wrap;gap:10px}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;border:0;background:var(--ab,var(--a));color:var(--ai,#0f1a19);font-weight:700;font-size:16px;text-decoration:none}
 .btn.ghost{background:none;border:1px solid var(--ln);color:var(--ink)}
@@ -277,6 +279,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 .consent p{margin:0 0 10px;font-size:15px;color:var(--body)}
 .consent .btns .btn{padding:9px 14px;font-size:15px}
 .matbox{margin:14px 0 18px;padding:14px 16px;border-radius:14px;background:var(--card2)}
+.matbox .yseg{margin:0 0 12px;color:var(--body)}
 .matbox b{display:block;margin-bottom:10px;font:600 15px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--a)}
 @media (max-width:640px){
   #sheet{align-items:flex-end;padding:0}
@@ -576,7 +579,18 @@ $('#mine').addEventListener('click', e => {
 function renderMat() {
   const list = SKILLS.filter(s => s.mat);
   $('#mat').innerHTML = list.map(s => `<div class="featv">${pic(s.img, s.n, 'lg')}<div><h3>${esc(s.n)} ${esc(s.mat.lvl)}</h3><p>${esc(s.mat.d)}</p>
-    <div class="btns"><a class="btn" href="${esc(s.mat.vyv)}">Вивчай сам</a><a class="btn ghost" href="${esc(s.mat.test)}">Перевір себе</a></div></div></div>`).join('');
+    ${ySeg(s)}<div class="btns">${yBtns(s)}</div></div></div>`).join('');
+}
+/* для юнака: скільки точок вивчити, а скільки зробити власноруч (практика) */
+function yReq(s) { return s.gv && s.gv.list[0] ? s.gv.list[0].req : null; }
+function ySeg(s) {
+  const req = yReq(s); if (!req) return '';
+  const pr = req.filter(r => r[1] === 'task').length, th = req.length - pr;
+  return `<p class="yseg"><span class="mseg" aria-hidden="true">${req.map(r => `<i class="${r[1] === 'task' ? 'pr' : ''}"></i>`).join('')}</span><span>${pr ? `${th} ${ptsWord(th)} вивчиш, ${pr} — зробиш власноруч` : `${th} ${ptsWord(th)} — усе вивчиш тут`}</span></p>`;
+}
+function yBtns(s) {
+  const req = yReq(s), pr = req && req.some(r => r[1] === 'task');
+  return `<a class="btn" href="${esc(s.mat.vyv)}">Вивчай сам</a><a class="btn ghost" href="${esc(s.mat.test)}">Перевір себе</a>${pr ? `<a class="btn ghost yun" href="${esc(s.mat.vyv.replace('#vyvchy', '#praktyka'))}">Зроби сам</a>` : ''}`;
 }
 function renderChips() {
   const cnt = {}; SKILLS.forEach(s => s.specs.forEach(x => { cnt[x] = (cnt[x] || 0) + 1; }));
@@ -617,7 +631,7 @@ function skillHtml(s) {
   const st = MINE[s.id] || '';
   const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
   return `<div class="skh">${pic(s.img, s.n, 'lg')}<div><h3 id="sh-t">${esc(s.n)}</h3><p class="sub">${esc(specs)}</p></div></div>
-    ${s.mat ? `<div class="matbox"><b>Є матеріали — ${esc(s.n)} ${esc(s.mat.lvl)}</b><div class="btns"><a class="btn" href="${esc(s.mat.vyv)}">Вивчай сам</a><a class="btn ghost" href="${esc(s.mat.test)}">Перевір себе</a></div></div>` : ''}
+    ${s.mat ? `<div class="matbox"><b>Є матеріали — ${esc(s.n)} ${esc(s.mat.lvl)}</b>${ySeg(s)}<div class="btns">${yBtns(s)}</div></div>` : ''}
     <h4>Моя позначка</h4>
     <div class="st3" role="group" aria-label="Моя позначка">${[['', 'Ще ні'], ['gotuyus', 'Готуюсь'], ['maju', 'Маю']].map(([v, l]) => `<button type="button" data-st="${v}" aria-pressed="${st === v}">${l}</button>`).join('')}</div>
     ${ASK && OK == null ? `<div class="consent"><p>Запам’ятати твої позначки на цьому пристрої? Вони нікуди не надсилаються, і стерти їх можна будь-коли.</p>
