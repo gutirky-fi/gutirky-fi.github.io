@@ -172,8 +172,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .lockbox .btn{width:100%;justify-content:center;margin-top:12px}
 .lockbox small{display:block;margin-top:12px;color:var(--mut);font-size:14px}
 .lockbox .err{margin:10px 0 0;color:#ff8a7a;font-weight:700;font-size:15px}
-.vtabs{display:inline-flex;flex-wrap:wrap;gap:4px;margin:4px 0 2px;padding:4px;border-radius:99px;border:1px solid var(--ln);background:#14171a}
-.vtabs button{min-height:44px;padding:0 20px;border:0;border-radius:99px;background:none;color:var(--mut);font:700 15px var(--txt);cursor:pointer}
+.vbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 6px}
+.vtabs{display:inline-flex;flex-wrap:wrap;gap:4px;padding:5px;border-radius:99px;border:1px solid var(--ln);background:#14171a}
+.vtabs button{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 22px;border:0;border-radius:99px;background:none;color:var(--mut);font:700 16px var(--txt);cursor:pointer}
+.vtabs .n{padding:1px 8px;border-radius:99px;background:#2a2f35;font-size:13px;color:var(--body)}
+.vtabs button[aria-selected=true] .n{background:rgba(14,31,21,.22);color:inherit}
 .vtabs button:hover{color:var(--ink)}
 .vtabs button[aria-selected=true]{background:var(--ab,var(--a));color:var(--ai,#16130a)}
 .badge.g-full,.badge.g-part{overflow:hidden}
@@ -198,52 +201,48 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pts .full i{color:var(--upyu-t)}.pts .part i{color:#ffb3c4}.pts .none i{color:#6b7480}.pts .task i{color:var(--upyu-t)}
 .pts .pr{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 10px/16px var(--txt);letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:var(--upyu-t);vertical-align:1px}
 .pts small{display:block;color:var(--mut);font-size:13px}
-.gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
-.gcard{display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--g)}
-.gcard .kind{font:500 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
-.gcard h3{margin:0;font:600 26px/1.1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
-.gcard p{margin:0;font-size:15px;color:var(--body)}
-.gcard .vars{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
 .var{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:14px;text-decoration:none}
 .var small{color:var(--vyh-t);font-weight:700;font-size:13px}
 .var:hover{border-color:var(--g)}
-.gcards .ph{min-height:200px;border-radius:18px}
-/* «Усі гутірки»: натиснув картку — під її рядком відкривається «детальніше»; ще раз, × або Esc — сховалось */
-.gcard{cursor:pointer}
-.gcard:hover{border-color:#5a6573;border-top-color:var(--g)}
-.gcard.open{border-color:var(--g);box-shadow:0 0 0 1px var(--g)}
-.gmore{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:6px -20px -20px;padding:12px 20px;border:0;border-top:1px solid var(--ln);border-radius:0 0 17px 17px;background:none;color:var(--mut);font:700 14px var(--txt);text-align:left;cursor:pointer}
-.gmore:hover,.gcard.open .gmore{color:var(--ink);background:#262a30}
+/* «Усі гутірки» — список: рядок = гутірка (малюнок, назва, вмілість, кнопки); натиснув рядок — розкрилось «що всередині», ще раз або Esc — сховалось */
+.glist{display:grid;gap:12px}
+.grow{border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--g);overflow:hidden;cursor:pointer}
+.grow:hover{border-color:#5a6573;border-left-color:var(--g)}
+.grow.open{border-color:var(--g)}
+.gr-main{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:12px 20px;align-items:center;padding:16px 20px 16px 16px}
+.gr-art{display:block;width:84px;height:84px;padding:6px;border-radius:14px;object-fit:contain;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--g) 26%,var(--card2)) 0%,var(--card2) 75%)}
+.gr-txt{min-width:0}
+.gr-txt h3{margin:0;font:600 24px/1.1 var(--disp);letter-spacing:.04em;text-transform:uppercase;overflow-wrap:break-word}
+.gr-txt p{margin:4px 0 0;color:var(--body);font-size:15px}
+.gr-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin-top:8px;font-size:14px;color:var(--mut)}
+.gr-meta .fvm{font-size:12px;padding:2px 10px}
+.gr-acts{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;max-width:380px}
+.var.main{background:var(--vyh);border-color:var(--vyh);color:var(--vyh-on)}.var.main small{color:#16432a}.var.main:hover{filter:brightness(1.07)}
+.gmore{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:11px 20px;border:0;border-top:1px solid var(--ln);background:none;color:var(--mut);font:700 14px var(--txt);text-align:left;cursor:pointer}
+.gmore:hover,.grow.open .gmore{color:var(--ink);background:#262a30}
 .gmore svg{width:16px;height:16px;flex:none;transition:transform .2s}
-.gcard.open .gmore svg{transform:rotate(180deg)}
-.gdet{grid-column:1/-1;position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);border-radius:22px;overflow:hidden;border:1px solid var(--ln);border-top:4px solid var(--g);background:var(--card);animation:gdin .25s ease-out;scroll-margin:16px}
+.grow.open .gmore svg{transform:rotate(180deg)}
+.gr-det{display:flex;flex-direction:column;gap:20px;padding:20px 22px 22px;border-top:1px solid var(--ln);cursor:default;animation:gdin .25s ease-out}
 @keyframes gdin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-.gd-l{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px 22px;text-align:center;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--g) 24%,var(--card)) 0%,var(--card) 72%)}
-.gd-l img{display:block;width:100%;max-width:260px;height:auto;max-height:220px;object-fit:contain}
-.gd-l h3{margin:4px 0 0;font:600 clamp(24px,3vw,32px)/1.05 var(--disp);letter-spacing:.04em;text-transform:uppercase;overflow-wrap:break-word}
-.gd-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
-.gd-tags span{padding:3px 10px;border-radius:99px;background:#14171a;border:1px solid var(--ln);font-size:13px;font-weight:600;color:var(--body)}
-.gd-r{display:flex;flex-direction:column;gap:20px;min-width:0;padding:26px 30px 28px}
-.gd-r>.fmeta{padding-right:44px}
 .gd-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 30px}
-.gd-r h4{margin:0 0 10px;font:500 13px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
-.gd-r ol{margin:0;padding:0;list-style:none;counter-reset:g;display:grid;gap:8px}
-.gd-r ol li{counter-increment:g;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;color:var(--body);font-size:15px;line-height:1.35}
-.gd-r ol li::before{content:counter(g);font:600 18px/1.15 var(--disp);color:var(--g)}
+.gr-det h4{margin:0 0 10px;font:500 13px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
+.gr-det ol{margin:0;padding:0;list-style:none;counter-reset:g;display:grid;gap:8px}
+.gr-det ol li{counter-increment:g;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;color:var(--body);font-size:15px;line-height:1.35}
+.gr-det ol li::before{content:counter(g);font:600 18px/1.15 var(--disp);color:var(--g)}
 .gd-mat{margin:0;padding-left:18px;color:var(--body);font-size:15px;line-height:1.35}.gd-mat li{margin:0 0 6px}
 .gd-in{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px}
 .gd-in li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:baseline;color:var(--body);font-size:15px;line-height:1.35}
 .gd-in b{font:600 22px/1 var(--disp);color:var(--ink)}
 .gd-ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 .gd-ex span{padding:5px 12px;border-radius:99px;background:var(--card2);border:1px solid var(--ln);font-size:14px;color:var(--body)}
-.gd-close{display:none;align-self:stretch;min-height:46px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--ink);font:700 15px var(--txt);cursor:pointer}
-.gcards .gdet~.ph{display:none}
-.gd-x{position:absolute;top:12px;right:12px;z-index:1;width:40px;height:40px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
-.gd-x:hover{border-color:var(--vyh)}
-@media (max-width:860px){.gd-close{display:block}.gdet{grid-template-columns:1fr}.gd-l{padding:22px 18px 6px}.gd-l img{max-height:150px}.gd-r{padding:18px 18px 22px}.gd-cols,.gd-in{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.gdet{animation:none}}
-@media (max-width:700px){.gcards .ph{display:none}}
-.leave{display:inline-block;margin-top:-26px;margin-bottom:40px;padding:9px 14px;border-radius:10px;border:1px solid var(--ln);background:none;font-size:14px;font-weight:700;color:var(--mut)}
+.gd-close{display:none;min-height:46px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--ink);font:700 15px var(--txt);cursor:pointer}
+.ghint{margin:14px 0 0;color:var(--mut);font-size:14px}
+@media (max-width:760px){.gd-close{display:block}.gr-main{grid-template-columns:64px minmax(0,1fr);padding:14px 14px 14px 12px}.gr-art{width:64px;height:64px}.gr-txt h3{font-size:21px}.gr-acts{grid-column:1/-1;justify-content:flex-start;max-width:none}.gd-cols,.gd-in{grid-template-columns:1fr}.gr-det{padding:16px 16px 18px}}
+@media (prefers-reduced-motion:reduce){.gr-det{animation:none}}
+.leave{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:none;font-size:14px;font-weight:700;color:var(--mut)}
+.leave svg{width:15px;height:15px}.leave:hover{color:var(--ink);border-color:#5a6573}
+.vtabs .wd{margin-left:-4px}
+@media (max-width:560px){.vbar{flex-direction:column;align-items:stretch}.vtabs{display:grid;grid-template-columns:1fr 1fr}.vtabs button{justify-content:center;padding:0 10px;font-size:15px}.vtabs .wd{display:none}.leave{align-self:flex-end}}
 
 /* підвал */
 footer{display:flex;flex-direction:column;align-items:center;margin-top:30px;padding-block:36px 40px;border-top:1px solid var(--ln);text-align:center}
@@ -314,14 +313,17 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 .bvar small{font-weight:600;font-size:15px;color:var(--mut);white-space:nowrap}
 .bvar.main{background:var(--vyh);border-color:var(--vyh);color:var(--vyh-on)}.bvar.main .who,.bvar.main small{color:#16432a}.bvar.main:hover{filter:brightness(1.07)}
 .bvar.yun{border-color:rgba(200,40,74,.8)}.bvar.yun small{color:var(--upyu-t)}.bvar.yun:hover{border-color:var(--upyu-t)}
-.fpills{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));border-top:1px solid var(--ln)}
-.fpill{position:relative;display:flex;align-items:center;gap:10px;min-width:0;min-height:54px;padding:12px 18px;border:0;border-left:1px solid var(--ln);background:none;color:var(--mut);font:700 15px var(--txt);text-align:left}
-.fpill:first-child{border-left:0}
-.fpill i{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c)}
-.fpill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fpill:hover{color:var(--ink);background:#262a30}
-.fpill[aria-current=true]{color:var(--ink);background:var(--card2)}
-.fpill::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--c)}
+.fctl{display:flex;align-items:center;gap:10px;padding:10px 16px 10px 22px;border-top:1px solid var(--ln)}
+.fcount{margin-right:auto;color:var(--mut);font-size:14px}.fcount b{color:var(--ink)}
+.farr{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid var(--ln);background:none;color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+.farr:hover{border-color:#5a6573;background:#262a30}
+.fpills{display:flex;align-items:center;gap:8px}
+.fpill{position:relative;width:10px;height:10px;padding:0;border:0;border-radius:99px;background:#3a4048;overflow:hidden;cursor:pointer;transition:width .3s}
+.fpill:hover{background:#5a6573}
+.fpill span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.fpill i{display:none}
+.fpill[aria-current=true]{width:34px;background:#3a4048}
+.fpill::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--c)}
 .fpill[aria-current=true]::after{width:100%}
 .feat.auto .fpill[aria-current=true]::after{width:0;animation:fprog 8s linear forwards}
 .feat.auto:hover .fpill::after,.feat.auto:focus-within .fpill::after,.feat.auto.off .fpill::after{animation-play-state:paused}
@@ -329,7 +331,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 /* телефон: гутірки не одна на одній (щоб не було порожнечі), короткий опис */
 .fbody .ds{display:none}
 @keyframes fin{from{opacity:0}to{opacity:1}}
-@media (max-width:760px){.fs{display:none;grid-template-columns:1fr;min-height:0;visibility:visible;opacity:1}.fs.on{display:grid;animation:fin .35s ease-out}.fbody .dl{display:none}.fbody .ds{display:block}.fart{min-height:190px}.fart img{max-height:210px;padding:18px}.fbody{padding:20px 18px 22px}.fpill{gap:8px;padding:10px 12px;font-size:14px}}
+@media (max-width:760px){.fctl{padding-left:16px}.fcount{font-size:13px}.fs{display:none;grid-template-columns:1fr;min-height:0;visibility:visible;opacity:1}.fs.on{display:grid;animation:fin .35s ease-out}.fbody .dl{display:none}.fbody .ds{display:block}.fart{min-height:190px}.fart img{max-height:210px;padding:18px}.fbody{padding:20px 18px 22px}}
 @media (prefers-reduced-motion:reduce){.fs.on{animation:none}.feat.auto .fpill[aria-current=true]::after{animation:none;width:100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -435,17 +437,24 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
       <small>Код запам’ятовується на цьому пристрої — вводити лише раз. <b>У макеті код — 1912.</b></small>
     </form>
     <div id="vyh-in" hidden>
-      <div class="vtabs" role="tablist" aria-label="Для виховників">
-        <button type="button" role="tab" id="t-g" aria-controls="p-g" aria-selected="true">Гутірки</button>
-        <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог вмілостей</button>
+      <div class="vbar">
+        <div class="vtabs" role="tablist" aria-label="Для виховників">
+          <button type="button" role="tab" id="t-g" aria-controls="p-g" aria-selected="true">Гутірки<span class="n" id="t-g-n"></span></button>
+          <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог<span class="wd"> вмілостей</span><span class="n" id="t-k-n"></span></button>
+        </div>
+        <button class="leave" type="button" id="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button>
       </div>
       <section class="sec" id="p-g" role="tabpanel" aria-labelledby="t-g">
         <section class="feat auto" id="feat" aria-roledescription="карусель" aria-label="Нові гутірки">
           <div class="fslide" id="fslide" aria-live="off"></div>
-          <div class="fpills" id="fpills" role="group" aria-label="Вибрати гутірку"></div>
+          <div class="fctl" id="fctl"><span class="fcount">Нові гутірки · <b id="fcnt">1</b> з <span id="fall"></span></span>
+            <button class="farr" type="button" data-fstep="-1" aria-label="Попередня гутірка">‹</button>
+            <div class="fpills" id="fpills" role="group" aria-label="Вибрати гутірку"></div>
+            <button class="farr" type="button" data-fstep="1" aria-label="Наступна гутірка">›</button></div>
         </section>
-        <h2 id="h-g">Усі гутірки<small>назад з гутірки — меню в куті → «Виховники»</small></h2>
-        <div class="gcards" id="gcards"></div>
+        <h2 id="h-g">Усі гутірки<small id="g-cnt"></small></h2>
+        <div class="glist" id="gcards"></div>
+        <p class="ghint">З гутірки назад сюди — меню в правому верхньому куті → «Виховники».</p>
       </section>
       <section class="sec" id="p-k" role="tabpanel" aria-labelledby="t-k" hidden>
         <h2 id="h-vk">Каталог вмілостей<small>до яких вмілостей є гутірки і що з вимог вони покривають</small></h2>
@@ -464,7 +473,6 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
         <h2 id="h-also">Також для вас</h2>
         <div class="tiles" id="also"></div>
       </section>
-      <button class="leave" type="button" id="leave">Вийти з частини для виховників</button>
     </div>
   </main>
 
@@ -707,6 +715,7 @@ let UNLOCK = false;
 function renderVyh() {
   const inn = isIn();
   $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn; $('#vstats').hidden = !inn;
+  if (inn) { $('#t-g-n').textContent = GUT.length; $('#t-k-n').textContent = SKILLS.length; }
   $('#lk').innerHTML = inn ? OPEN : LOCK;
   if (!inn) return;
   renderFeatAll();
@@ -735,12 +744,13 @@ function renderFeat() {   // показати гутірку FI (інші лиш
   $('#feat').style.setProperty('--g', FEAT[FI].c);
   $$('#fslide .fs').forEach((el, k) => { const on = k === FI; el.classList.toggle('on', on); el.inert = !on; el.setAttribute('aria-hidden', String(!on)); });
   $$('#fpills .fpill').forEach((b, k) => b.setAttribute('aria-current', String(k === FI)));
+  $('#fcnt').textContent = FI + 1;
 }
 function featManual(k) {   // виховник сам вибрав — далі не гортаємо
   $('#feat').classList.remove('auto'); $('#fslide').setAttribute('aria-live', 'polite');
   FI = (k + FEAT.length) % FEAT.length; renderFeat();
 }
-$('#fpills').addEventListener('click', e => { const b = e.target.closest('[data-fi]'); if (b) featManual(+b.dataset.fi); });
+$('#fctl').addEventListener('click', e => { const b = e.target.closest('[data-fi]'), a = e.target.closest('[data-fstep]'); if (b) featManual(+b.dataset.fi); else if (a) featManual(FI + +a.dataset.fstep); });
 $('#fpills').addEventListener('animationend', e => {
   if (e.animationName !== 'fprog' || !$('#feat').classList.contains('auto')) return;
   FI = (FI + 1) % FEAT.length; renderFeat();
@@ -756,58 +766,52 @@ function renderFeatAll() {
   $('#vstats').innerHTML = [[GUT.length, plural(GUT.length, ['гутірка', 'гутірки', 'гутірок'])], [nv, plural(nv, ['версія', 'версії', 'версій'])], [nk, plural(nk, ['вмілість', 'вмілості', 'вмілостей'])]]
     .map(([n, l]) => `<div><dt>${esc(l)}</dt><dd>${n}</dd></div>`).join('');
   const multi = FEAT.length > 1;
-  $('#fpills').hidden = !multi; if (!multi) $('#feat').classList.remove('auto');
-  $('#fpills').style.setProperty('--n', FEAT.length);
-  $('#fpills').innerHTML = FEAT.map((g, k) => `<button class="fpill" type="button" data-fi="${k}" style="--c:${g.c}" aria-current="${k === FI}"><i aria-hidden="true"></i><span>${esc(g.t)}</span></button>`).join('');
+  $('#fctl').hidden = !multi; if (!multi) $('#feat').classList.remove('auto');
+  $('#fall').textContent = FEAT.length;
+  $('#fpills').innerHTML = FEAT.map((g, k) => `<button class="fpill" type="button" data-fi="${k}" style="--c:${g.c}" aria-current="${k === FI}" aria-label="${esc(g.t)}"><span>${esc(g.t)}</span></button>`).join('');
   $('#fslide').innerHTML = FEAT.map(slideHtml).join('');
   renderFeat();
 }
-/* «Усі гутірки»: натиснув картку — під її рядком відкривається «детальніше» (як нашивка в каталозі бібліотеки);
-   ще раз на картку, × або Esc — сховалось; інша картка — відкривається вона */
+/* «Усі гутірки» — список (нові зверху). Рядок: малюнок, назва, вмілість, кнопки. Натиснув рядок — під ним «що всередині»;
+   ще раз, «Згорнути» або Esc — сховалось; інший рядок — відкривається він */
 let GOPEN = -1;
 const CHEV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 function gDetHtml(g) {
-  const vm = vmOf(g), x = g.x;
-  return `<section class="gdet" id="gdet" style="--g:${g.c}" aria-label="${esc(g.t)} — детальніше">
-    <button class="gd-x" type="button" data-gclose aria-label="Закрити">×</button>
-    <div class="gd-l"><img src="${g.art}" alt="${esc(g.alt)}"><h3>${esc(g.t)}</h3><div class="gd-tags">${x.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div></div>
-    <div class="gd-r">
-      ${vm ? `<div class="fmeta"><button class="fvm" type="button" data-fvm="${esc(vm.id)}">${esc(vm.txt)}</button></div>` : ''}
+  const x = g.x;
+  return `<div class="gr-det" id="gdet">
       <div class="gd-cols"><div><h4>Про що гутірка</h4><ol>${x.plan.map(t => `<li>${esc(t)}</li>`).join('')}</ol></div>
         <div><h4>Що підготувати</h4><ul class="gd-mat">${x.mat.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div></div>
       <div><h4>У гутірці</h4><ul class="gd-in">${x.inside.map(([n, t]) => `<li><b>${n}</b><span>${esc(t)}</span></li>`).join('')}</ul>
         ${x.extra ? `<div class="gd-ex">${x.extra.map(t => `<span>${esc(t)}</span>`).join('')}</div>` : ''}</div>
-      <div class="bvars">${g.v.map(([l, d, h, w], i) => `<a class="bvar${i ? '' : ' main'}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}"><span>${esc(l)}<span class="who">${esc(w || '')}</span></span><small>${esc(d)} →</small></a>`).join('')}</div>
-      <button class="gd-close" type="button" data-gclose>Згорнути</button>
-    </div></section>`;
+      <button class="gd-close" type="button" data-gclose>Згорнути</button></div>`;
 }
 function renderGCards() {
-  const grid = $('#gcards');
-  grid.innerHTML = GUT.map((g, i) => `<article class="gcard${i === GOPEN ? ' open' : ''}" style="--g:${g.c}" data-gi="${i}"><span class="kind">${esc(g.k)}</span><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
-    <div class="vars">${g.v.map(([l, d, h]) => `<a class="var${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}">${esc(l)}<small>${esc(d)}</small></a>`).join('')}</div>
-    <button class="gmore" type="button" aria-expanded="${i === GOPEN}" aria-controls="gdet">${i === GOPEN ? 'Згорнути' : 'Детальніше: що всередині'}${CHEV}</button></article>`).join('') + PH;
-  if (GOPEN < 0) return;
-  const cols = Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(' ').filter(Boolean).length);
-  const after = Math.min(GUT.length - 1, (Math.floor(GOPEN / cols) + 1) * cols - 1);   // після останньої картки того самого рядка
-  grid.querySelector(`[data-gi="${after}"]`).insertAdjacentHTML('afterend', gDetHtml(GUT[GOPEN]));
+  $('#g-cnt').textContent = `${GUT.length} ${plural(GUT.length, ['гутірка', 'гутірки', 'гутірок'])} · нові — зверху`;
+  $('#gcards').innerHTML = FEAT.concat(GUT.filter(g => !FEAT.includes(g))).map(g => {
+    const i = GUT.indexOf(g), on = i === GOPEN, vm = vmOf(g);
+    return `<article class="grow${on ? ' open' : ''}" style="--g:${g.c}" data-gi="${i}">
+    <div class="gr-main"><img class="gr-art" src="${g.art}" alt="">
+      <div class="gr-txt"><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
+        <div class="gr-meta"><span>${esc(g.x.tags[0])}</span>${vm ? `<button class="fvm" type="button" data-fvm="${esc(vm.id)}">${esc(vm.txt)}</button>` : ''}</div></div>
+      <div class="gr-acts">${g.v.map(([l, d, h], k) => `<a class="var${k ? '' : ' main'}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}">${esc(l)}<small>${esc(d)}</small></a>`).join('')}</div></div>
+    <button class="gmore" type="button" aria-expanded="${on}" aria-controls="gdet">${on ? 'Згорнути' : 'Що всередині: про що, що підготувати'}${CHEV}</button>
+    ${on ? gDetHtml(g) : ''}</article>`;
+  }).join('');
 }
 function toggleG(i) {
   GOPEN = GOPEN === i ? -1 : i;
   renderGCards();
-  if (GOPEN >= 0) {
-    const d = $('#gdet'), r = d.getBoundingClientRect();
-    if (r.bottom > innerHeight || r.top < 0) d.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-  }
-  const b = $(`[data-gi="${i}"] .gmore`); if (b) b.focus({ preventScroll: true });
-  if (GOPEN < 0) { const c = $(`[data-gi="${i}"]`); if (c && c.getBoundingClientRect().top < 0) c.scrollIntoView({ block: 'start' }); }   // закрили знизу довгої панелі — повертаємось до картки   // фокус лишається на картці (після перемальовування)
+  const row = $(`[data-gi="${i}"]`);
+  if (GOPEN >= 0) { const r = row.getBoundingClientRect(); if (r.bottom > innerHeight || r.top < 0) row.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+  else if (row && row.getBoundingClientRect().top < 0) row.scrollIntoView({ block: 'start' });   // закрили знизу довгого рядка — повертаємось до нього
+  const b = row && row.querySelector('.gmore'); if (b) b.focus({ preventScroll: true });
 }
 $('#gcards').addEventListener('click', e => {
   if (e.target.closest('[data-gclose]')) { toggleG(GOPEN); return; }
   const vmb = e.target.closest('[data-fvm]'); if (vmb) { sheet(vSkillHtml(byId[vmb.dataset.fvm]), COL.vyh); return; }
-  if (e.target.closest('a, .gdet')) return;            // посилання й сама панель — не перемикають
-  const c = e.target.closest('.gcard'); if (c) toggleG(+c.dataset.gi);
+  if (e.target.closest('a, .gr-det')) return;            // посилання й розкритий вміст — не перемикають
+  const c = e.target.closest('.grow'); if (c) toggleG(+c.dataset.gi);
 });
-let gRz = 0; addEventListener('resize', () => { if (GOPEN < 0) return; clearTimeout(gRz); gRz = setTimeout(renderGCards, 150); });
 let VT = 'g';   // відкрита вкладка: g — гутірки, k — каталог
 function showTab(t, focus) {
   VT = t;
