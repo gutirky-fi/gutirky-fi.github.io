@@ -241,7 +241,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 @media (max-width:760px){.gd-close{display:block}.gr-main{grid-template-columns:64px minmax(0,1fr);padding:14px 14px 14px 12px}.gr-art{width:64px;height:64px}.gr-txt h3{font-size:21px}.gr-acts{grid-column:1/-1;justify-content:flex-start;max-width:none}.gd-cols,.gd-in{grid-template-columns:1fr}.gr-det{padding:16px 16px 18px}}
 @media (prefers-reduced-motion:reduce){.gr-det{animation:none}}
 .leave{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:none;font-size:14px;font-weight:700;color:var(--mut)}
-.leave svg{width:15px;height:15px}.leave:hover{color:var(--ink);border-color:#5a6573}
+.leave svg{width:15px;height:15px}
+/* «Вийти» спокійна; при наведенні (на телефоні — при натисканні) — напівпрозорий зелений, як інші кнопки виховника */
+.leave{cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+.leave:hover,.leave:focus-visible{color:var(--vyh-t);border-color:var(--vyh);background:rgba(61,175,110,.14)}
+.leave:active{background:rgba(61,175,110,.26)}
 .vtabs .wd{margin-left:-4px}
 @media (max-width:560px){.vbar{flex-direction:column;align-items:stretch}.vtabs{display:grid;grid-template-columns:1fr 1fr}.vtabs button{justify-content:center;padding:0 10px;font-size:15px}.vtabs .wd{display:none}.leave{align-self:flex-end}}
 
