@@ -119,7 +119,7 @@
 #lib .k-row .search{width:300px}
 #lib .legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:14px;color:var(--l-mut)}
 #lib .legend i{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px;box-sizing:border-box}
-#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#3a4048 0)}
+#lib .legend i.lg{display:inline-flex;width:26px;height:6px;border-radius:3px;overflow:hidden;vertical-align:2px}
 #lib .legend label{display:flex;align-items:center;gap:8px;color:#cfd5dc;cursor:pointer}
 #lib .legend input{width:18px;height:18px;margin:0;accent-color:var(--l-gd)}
 #lib .k-h{margin-bottom:18px}
@@ -148,7 +148,13 @@
 @media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
-#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
+#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer;position:relative;overflow:hidden}
+/* смужка над нашивкою — по відрізку на точку: суцільний — є в гутірці, половина — частково, у рисочку — практика (юнак робить сам), сірий — ще немає */
+#lib .seg{position:absolute;left:0;right:0;top:0;display:flex;gap:3px;height:6px}
+#lib .seg i,#lib .legend .lg s{flex:1;background:#2e3339}
+#lib .seg i.full,#lib .legend .lg s.full{background:var(--l-upyu)}
+#lib .seg i.part,#lib .legend .lg s.part{background:linear-gradient(90deg,var(--l-upyu) 50%,#2e3339 0)}
+#lib .seg i.task,#lib .legend .lg s.task{background:repeating-linear-gradient(-45deg,var(--l-upyu-t) 0 2px,#2e3339 2px 5px)}
 #lib .badge:hover{border-color:#5a6573}
 #lib .badge[aria-expanded=true]{border-color:var(--l-upyu-t);box-shadow:0 0 0 1px var(--l-upyu-t)}
 #lib .disc{display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px var(--l-card),0 0 0 8px var(--st)}
@@ -176,6 +182,8 @@
 #lib .kd-r li>span:first-child{font:600 24px/1.1 var(--l-disp);color:var(--c2)}
 #lib .kd-r li small{display:block;font-size:15px;font-weight:600;color:var(--c2)}
 #lib .kd-r p{margin:0;color:#cfd5dc}
+#lib .kd-r .kd-sum{margin:-6px 0 2px;font-size:15px}
+#lib .kd-r .pr{display:inline-block;margin-left:8px;padding:0 8px;border-radius:99px;border:1px dashed var(--l-upyu-t);font:700 11px/18px var(--l-body);letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:var(--l-upyu-t);vertical-align:2px}
 #lib .kd-x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--l-ln);background:var(--l-card2);color:var(--l-ink);font:400 24px/1 var(--l-body);cursor:pointer}
 #lib .kd-x:hover{border-color:var(--l-gd)}
 @media (max-width:760px){

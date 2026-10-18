@@ -258,6 +258,7 @@ html body #pult-ask{border-color:var(--vyh)}
 #vyvch .go,#test .go{background:var(--upyu);color:#fff}
 .prog .tr i{background:var(--upyu)}
 .sec .num{color:var(--upyu-t)}
+.sec .num .pr{display:inline-block;margin-left:10px;padding:0 8px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 11px/18px var(--txt);letter-spacing:.06em;vertical-align:1px}
 .sec .zn{background:rgba(200,40,74,.1);border-color:rgba(255,125,153,.35);color:#ffe3e9}.sec .zn b{color:var(--upyu-t)}
 .know.on{border-color:var(--upyu-t);color:var(--upyu-t)}.know.on i{border-color:var(--upyu);background:var(--upyu);color:#fff}
 #ask-save{border-color:var(--upyu)}#ask-save button.y{background:var(--upyu);border-color:var(--upyu);color:#fff}
@@ -285,7 +286,7 @@ html body #pult-ask{border-color:var(--vyh)}
     <a class="door main" href="#vyvchy"><i>Крок 1</i><b>Вивчай сам</b><span>Усе, що треба знати для вмілості, — по точках.</span></a>
     <a class="door" href="#test"><i>Крок 2</i><b>Перевір себе</b><span>15 запитань із поясненнями. Щоразу в іншому порядку.</span></a>
   </div>
-  <p class="kh for-y">Усе знаєш і тест іде добре — скажи виховникові, що можеш скласти вмілість.</p>
+  <p class="kh for-y">Усе знаєш, тест іде добре, а практику зробив (музей і три вироби) — скажи виховникові, що можеш скласти вмілість.</p>
 </main>
 
 <!-- гутірка -->
@@ -1683,13 +1684,13 @@ window.LA = {
       '<b>Майоліка</b> — кольоровий черепок під непрозорою білою глазур’ю з розписом. <b>Фаянс</b> — білий пористий черепок під прозорою глазур’ю.',
       '<b>Кам’яна маса</b> — щільна, не пропускає воду (≈ 1200–1300 °C). <b>Порцеляна</b> — з каоліну, біла, тонка, просвічує (≈ 1300–1400 °C).'
     ], znaty: 'Назви 6 видів і скажи, як їх розрізнити: колір черепка, глазур, чи пропускає воду.' },
-    { n: 4, h: 'Виставка або музей', art: 'museum', t: [
+    { n: 4, pr: true, h: 'Виставка або музей', art: 'museum', t: [
       'Відвідай виставку кераміки або музей — можна гуртком.',
       'Біля виробу запитай: звідки він? як зроблено? який це вид? для чого служив?',
       'Фотографуй лише там, де дозволено, або замалюй виріб і запиши назву.',
       'Обери один виріб і розкажи про нього гуртку.'
     ], znaty: 'Відвідай виставку чи музей і розкажи гуртку про один виріб.' },
-    { n: 5, h: 'Три речі власноруч', art: 'three', t: [
+    { n: 5, pr: true, h: 'Три речі власноруч', art: 'three', t: [
       '<b>Тарілка</b> — з пласта ≈ 7 мм: виріж коло й підніми краї або сформуй на опуклій формі.',
       '<b>Миска</b> — вільним ліпленням із кулі глини або стрічками.',
       '<b>Глечик або горнятко</b> — стрічками чи джгутами; ручку приліпи шлікером, надряпавши обидва місця.',
@@ -1923,11 +1924,11 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
-  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
+  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5${k.pr ? '<span class="pr">практика — зробиш сам</span>' : ''}</div><h2>${k.h}</h2>
     <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
-    <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
-  const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
+    <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>${k.pr ? 'Я це вже зробив' : 'Я це вже знаю'}</button></section>`).join('');
+  const n = prog.znau.length; $('#pv-t').textContent = `${D.konspekt.some(x => x.pr) ? 'Готово' : 'Вивчено'} ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
 }
 $('#pv-list').addEventListener('click', e => {
   const b = e.target.closest('.know'); if (!b) return; const n = +b.dataset.n;

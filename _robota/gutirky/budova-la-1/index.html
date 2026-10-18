@@ -258,6 +258,7 @@ html body #pult-ask{border-color:var(--vyh)}
 #vyvch .go,#test .go{background:var(--upyu);color:#fff}
 .prog .tr i{background:var(--upyu)}
 .sec .num{color:var(--upyu-t)}
+.sec .num .pr{display:inline-block;margin-left:10px;padding:0 8px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 11px/18px var(--txt);letter-spacing:.06em;vertical-align:1px}
 .sec .zn{background:rgba(200,40,74,.1);border-color:rgba(255,125,153,.35);color:#ffe3e9}.sec .zn b{color:var(--upyu-t)}
 .know.on{border-color:var(--upyu-t);color:var(--upyu-t)}.know.on i{border-color:var(--upyu);background:var(--upyu);color:#fff}
 #ask-save{border-color:var(--upyu)}#ask-save button.y{background:var(--upyu);border-color:var(--upyu);color:#fff}
@@ -552,11 +553,11 @@ $$('.wipe').forEach(b => b.addEventListener('click', () => {
 
 /* ===================== вивчай сам ===================== */
 function renderStudy() {
-  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5</div><h2>${k.h}</h2>
+  $('#pv-list').innerHTML = D.konspekt.map(k => `<section class="sec"><div class="num">Точка ${k.n} з 5${k.pr ? '<span class="pr">практика — зробиш сам</span>' : ''}</div><h2>${k.h}</h2>
     <p style="margin:0 0 8px;color:var(--mut);font-size:15px">Вимога: ${esc(D.vymogy[k.n - 1])}</p>${art(k.art)}${k.n === 5 ? `<div class="phrow">${['normal', 'canard', 'tailless', 'flyingwing'].map(x => LA_ART.photo(x)).join('')}</div>` : ''}
     <ul>${k.t.map(x => `<li>${x}</li>`).join('')}</ul><p class="zn"><b>Щоб скласти:</b> ${k.znaty}</p>
-    <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>Я це вже знаю</button></section>`).join('');
-  const n = prog.znau.length; $('#pv-t').textContent = `Вивчено ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
+    <button type="button" class="know${prog.znau.includes(k.n) ? ' on' : ''}" data-n="${k.n}" aria-pressed="${prog.znau.includes(k.n)}"><i></i>${k.pr ? 'Я це вже зробив' : 'Я це вже знаю'}</button></section>`).join('');
+  const n = prog.znau.length; $('#pv-t').textContent = `${D.konspekt.some(x => x.pr) ? 'Готово' : 'Вивчено'} ${n} з 5`; $('#pv-bar').style.width = n * 20 + '%'; LA_ART.fit($('#pv-list'));
 }
 $('#pv-list').addEventListener('click', e => {
   const b = e.target.closest('.know'); if (!b) return; const n = +b.dataset.n;

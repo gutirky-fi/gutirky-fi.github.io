@@ -321,7 +321,7 @@ body.v-g.idle{cursor:none}
 #lib .k-row .search{width:300px}
 #lib .legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:14px;color:var(--l-mut)}
 #lib .legend i{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px;box-sizing:border-box}
-#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#3a4048 0)}
+#lib .legend i.lg{display:inline-flex;width:26px;height:6px;border-radius:3px;overflow:hidden;vertical-align:2px}
 #lib .legend label{display:flex;align-items:center;gap:8px;color:#cfd5dc;cursor:pointer}
 #lib .legend input{width:18px;height:18px;margin:0;accent-color:var(--l-gd)}
 #lib .k-h{margin-bottom:18px}
@@ -350,7 +350,13 @@ body.v-g.idle{cursor:none}
 @media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
-#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-upyu) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
+#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer;position:relative;overflow:hidden}
+/* смужка над нашивкою — по відрізку на точку: суцільний — є в гутірці, половина — частково, у рисочку — практика (юнак робить сам), сірий — ще немає */
+#lib .seg{position:absolute;left:0;right:0;top:0;display:flex;gap:3px;height:6px}
+#lib .seg i,#lib .legend .lg s{flex:1;background:#2e3339}
+#lib .seg i.full,#lib .legend .lg s.full{background:var(--l-upyu)}
+#lib .seg i.part,#lib .legend .lg s.part{background:linear-gradient(90deg,var(--l-upyu) 50%,#2e3339 0)}
+#lib .seg i.task,#lib .legend .lg s.task{background:repeating-linear-gradient(-45deg,var(--l-upyu-t) 0 2px,#2e3339 2px 5px)}
 #lib .badge:hover{border-color:#5a6573}
 #lib .badge[aria-expanded=true]{border-color:var(--l-upyu-t);box-shadow:0 0 0 1px var(--l-upyu-t)}
 #lib .disc{display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px var(--l-card),0 0 0 8px var(--st)}
@@ -378,6 +384,8 @@ body.v-g.idle{cursor:none}
 #lib .kd-r li>span:first-child{font:600 24px/1.1 var(--l-disp);color:var(--c2)}
 #lib .kd-r li small{display:block;font-size:15px;font-weight:600;color:var(--c2)}
 #lib .kd-r p{margin:0;color:#cfd5dc}
+#lib .kd-r .kd-sum{margin:-6px 0 2px;font-size:15px}
+#lib .kd-r .pr{display:inline-block;margin-left:8px;padding:0 8px;border-radius:99px;border:1px dashed var(--l-upyu-t);font:700 11px/18px var(--l-body);letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:var(--l-upyu-t);vertical-align:2px}
 #lib .kd-x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--l-ln);background:var(--l-card2);color:var(--l-ink);font:400 24px/1 var(--l-body);cursor:pointer}
 #lib .kd-x:hover{border-color:var(--l-gd)}
 @media (max-width:760px){
@@ -563,9 +571,10 @@ html body #pult-ask{background:#22262b;border-color:#3daf6e;border-radius:18px}
           <div class="chips" id="k-specs" role="group" aria-label="Спеціалізація"></div>
         </div>
         <div class="legend">
-          <span><i class="lg" style="--pc:100%"></i>Є гутірка</span>
-          <span><i class="lg" style="--pc:50%"></i>Частково</span>
-          <span><i class="lg"></i>Ще немає</span>
+          <span><i class="lg"><s class="full"></s></i>Є в гутірці</span>
+          <span><i class="lg"><s class="part"></s></i>Частково</span>
+          <span><i class="lg"><s class="task"></s></i>Практика — юнак робить сам</span>
+          <span><i class="lg"><s></s></i>Ще немає</span>
           <label><input type="checkbox" id="k-only"> Лише з матеріалами</label>
         </div>
       </section>
@@ -1453,13 +1462,13 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       req: [['Історія виробів з глини, зокрема в Україні', 'full', 'є: гутірка «Кераміка І», «Вивчай сам», «Перевір себе»'],
         ['Техніки формотворення: ліплення, гончарний круг, шаблон, гіпсові форми, пресування', 'full', 'є: та сама гутірка, усі п’ять технік'],
         ['Види кераміки: теракота, майоліка, фаянс, порцеляна, камʼяна маса, шамот', 'full', 'є: та сама гутірка, гра «Вгадай вид»'],
-        ['Відвідати виставку кераміки або музей', 'task', 'практичне завдання; у гутірці — як підготуватися'],
-        ['Виконати три вироби власноруч', 'task', 'практичне завдання; у гутірці — поради']] } : { pts: 5, g: 'keramika',
+        ['Відвідати виставку кераміки або музей', 'task', 'у гутірці — як підготуватися'],
+        ['Виконати три вироби власноруч', 'task', 'у гутірці — поради']] } : { pts: 5, g: 'keramika',
       req: [['Історія виробів з глини, зокрема в Україні', 'full', 'є: гутірка «Кераміка України»'],
         ['Техніки формотворення: ліплення, гончарний круг, шаблон, гіпсові форми, пресування', 'part', 'частково: у тій самій гутірці'],
         ['Види кераміки: теракота, майоліка, фаянс, порцеляна, камʼяна маса, шамот', 'none', 'матеріалу ще немає'],
-        ['Відвідати виставку кераміки або музей', 'task', 'практичне завдання'],
-        ['Виконати три вироби власноруч', 'task', 'практичне завдання']] }
+        ['Відвідати виставку кераміки або музей', 'task', ''],
+        ['Виконати три вироби власноруч', 'task', '']] }
   };
   const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
     const levels = lv.map(([label, slug]) => ({ label, slug, url: PF + slug, img: SKILL_LEVEL_IMG[slug] ? IMGB + SKILL_LEVEL_IMG[slug] : '', d: DETAILS[slug] }));
@@ -1468,12 +1477,25 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   });
   const bySlug = {}; SKILLS.forEach(s => s.levels.forEach(l => { bySlug[l.slug] = s; }));
   const lvName = (s, l) => l.label === 'Опис' ? s.n : l.label.startsWith('Опис') ? s.n + ' (' + l.label.replace(/^Опис\s*\(|\)$/g, '') + ')' : s.n + ' ' + l.label;
-  const cov = l => [l.d.req.filter(r => r[1] === 'full' || r[1] === 'part').length, l.d.pts];
   const stOf = s => { if (!s.gl) return 'none'; return s.gl.d.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part'; };
   const ST = { full: ['#c8284a', '#ff7d99'], part: ['#c8284a', '#ff9fb4'], none: ['#383d44', '#8a929c'] };   // вмілості юнацтва — малиновий УПЮ; довжина смужки — скільки вимог покриває гутірка
-  /* скільки вимог покриває гутірка, % (для смужки над нашивкою); вимоги-«завдання» (task) робить сам юнак — їх не рахуємо */
-  const pcOf = s => { if (!s.gl) return 0; const r = s.gl.d.req.filter(x => x[1] !== 'task'); return r.length ? Math.min(100, Math.round(100 * r.reduce((a, x) => a + (x[1] === 'full' ? 1 : x[1] === 'part' ? .5 : 0), 0) / r.length)) : 100; };
   const ptsWord = n => plural(n, ['точка', 'точки', 'точок']);
+  /* Покриття вмілості. Точки бувають двох родів: те, що можна розповісти (гутірка дає повністю, частково або ще ні),
+     і практика (task) — її юнак виконує сам, гутірка лише готує. Тому «повний матеріал + 2 практики», а не «3 з 5 точок». */
+  const prWord = n => plural(n, ['практика', 'практики', 'практик']);
+  const covTxt = req => {
+    const t = req.filter(r => r[1] === 'task').length, th = req.length - t, c = req.filter(r => r[1] === 'full' || r[1] === 'part').length;
+    return (req.every(r => r[1] === 'full' || r[1] === 'task') ? 'повний матеріал' : `частково: ${c} з ${th} ${ptsWord(th)}`) + (t ? ` + ${t} ${prWord(t)}` : '');
+  };
+  const covSum = req => {
+    const ti = req.map((r, k) => r[1] === 'task' ? k + 1 : 0).filter(Boolean), th = req.length - ti.length, c = req.filter(r => r[1] === 'full' || r[1] === 'part').length;
+    const head = req.every(r => r[1] === 'full' || r[1] === 'task') ? (ti.length ? 'Матеріал повний: усе, що можна розповісти, є в гутірці.' : 'Матеріал повний: усі точки є в гутірці.')
+      : `Матеріал частковий: є ${c} з ${th} ${ptsWord(th)}, які можна розповісти.`;
+    const tl = ti.length === 1 ? 'Точка ' + ti[0] : 'Точки ' + ti.slice(0, -1).join(', ') + ' і ' + ti[ti.length - 1];
+    return head + (ti.length ? ` ${tl} — практика: юнак виконує сам, гутірка підказує, як.` : '');
+  };
+  /* смужка над нашивкою: по відрізку на кожну точку */
+  const segHtml = req => `<span class="seg" aria-hidden="true">${(req || [['', 'none']]).map(r => `<i class="${r[1]}"></i>`).join('')}</span>`;
   const gById = k => BUILTIN.find(b => b.key === k);
   /* нашивка: картинка з plast.global; якщо не завантажиться (немає інтернету) — кружечок з першою літерою */
   /* чорно-білі нашивки (є лише такі) — на світлій круглій підкладці; картинка з білим квадратом — обрізана по колу */
@@ -1496,8 +1518,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   /* ---- головна ---- */
   function vmTag(b) {
     const s = bySlug[b.skill]; if (!s || !s.gl) return '';
-    const c = cov(s.gl);
-    return `<button class="vm" type="button" data-skill="${s.id}">До вмілості «${esc(lvName(s, s.gl))}» · ${c[0]} з ${c[1]} ${ptsWord(c[1])}</button>`;
+    return `<button class="vm" type="button" data-skill="${s.id}">До вмілості «${esc(lvName(s, s.gl))}» · ${esc(covTxt(s.gl.d.req))}</button>`;
   }
   /* v.mode — гутірка в цьому файлі; v.href — гутірка на окремій сторінці сайту */
   const openAttr = v => v.href ? `href="${esc(v.href)}"` : `type="button" data-open="${v.mode}"`;
@@ -1555,9 +1576,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     const grid = $('#k-grid');
     grid.innerHTML = list.map(s => {
       const st = stOf(s);
-      const note = s.gl ? `${lvName(s, s.gl)}: ${cov(s.gl)[0]} з ${cov(s.gl)[1]} ${ptsWord(cov(s.gl)[1])}` : kSpec ? '' : s.specs.join(', ');
-      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]};--pc:${pcOf(s)}%">
-        ${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
+      const note = s.gl ? `${lvName(s, s.gl)} · ${covTxt(s.gl.d.req)}` : kSpec ? '' : s.specs.join(', ');
+      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]}">
+        ${segHtml(s.gl && s.gl.d.req)}${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
     }).join('');
     const em = $('#k-empty'); em.hidden = list.length > 0;
     em.textContent = q ? 'Нічого не знайдено. Спробуйте іншу назву.' : only ? 'Тут ще немає вмілостей з гутірками.' : 'У цій спеціалізації вмілостей не знайдено.';
@@ -1570,9 +1591,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function detHtml(s) {
     const st = stOf(s), g = s.g && gById(s.g);
     const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
-    const pc = { full: '#ff7d99', part: '#ffb3c4', none: '#8a929c', task: '#8a929c' };
+    const pc = { full: '#ff7d99', part: '#ffb3c4', none: '#8a929c', task: '#ff7d99' };
     const pts = s.gl
-      ? `<span class="lbl">Точки вмілості «${esc(lvName(s, s.gl))}»</span><ol>${s.gl.d.req.map((r, k) => `<li style="--c2:${pc[r[1]]}"><span>${k + 1}</span><span><b>${esc(r[0])}</b><small>${esc(r[2])}</small></span></li>`).join('')}</ol>`
+      ? `<span class="lbl">Точки вмілості «${esc(lvName(s, s.gl))}»</span><p class="kd-sum">${esc(covSum(s.gl.d.req))}</p><ol>${s.gl.d.req.map((r, k) => `<li class="${r[1]}" style="--c2:${pc[r[1]]}"><span>${k + 1}</span><span><b>${esc(r[0])}</b>${r[1] === 'task' ? '<em class="pr">практика</em>' : ''}<small>${esc(r[1] === 'task' ? 'юнак виконує сам' + (r[2] ? ' · ' + r[2] : '') : r[2])}</small></span></li>`).join('')}</ol>`
       : `<p>Гутірки до цієї вмілості ще немає. Вимоги кожного рівня є на порталі Пласту у Фінляндії.</p>`;
     const lv = `<span class="lbl">Рівні й проби</span><div class="lvls">${s.levels.map(l => `<a class="lvl" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${l.img ? pic(l.img, s.n, 'sm') : ''}<span>${esc(lvName(s, l))}</span><small>↗</small></a>`).join('')}</div>`;
     return `<section class="kdet" id="k-det" aria-label="${esc(s.n)}" style="--st:${ST[st][0] === '#383d44' ? '#5a6573' : ST[st][0]}">

@@ -174,10 +174,16 @@ button{font:inherit;color:inherit;cursor:pointer}
 .vtabs button{min-height:44px;padding:0 20px;border:0;border-radius:99px;background:none;color:var(--mut);font:700 15px var(--txt);cursor:pointer}
 .vtabs button:hover{color:var(--ink)}
 .vtabs button[aria-selected=true]{background:var(--ab,var(--a));color:var(--ai,#16130a)}
-.badge.g-full,.badge.g-part{background:linear-gradient(90deg,var(--upyu) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--card)}.badge.g-full em{color:var(--upyu-t)}.badge.g-part em{color:#ff9fb4}
+.badge.g-full,.badge.g-part{overflow:hidden}
+/* смужка над нашивкою — по відрізку на точку: суцільний — є в гутірці, половина — частково, у рисочку — практика (юнак робить сам), сірий — ще немає */
+.seg{position:absolute;left:0;right:0;top:0;display:flex;gap:3px;height:6px}
+.seg i,.legend .lg s{flex:1;background:#2e3339}
+.seg i.full,.legend .lg s.full{background:var(--upyu)}
+.seg i.part,.legend .lg s.part{background:linear-gradient(90deg,var(--upyu) 50%,#2e3339 0)}
+.seg i.task,.legend .lg s.task{background:repeating-linear-gradient(-45deg,var(--upyu-t) 0 2px,#2e3339 2px 5px)}
+.legend .lg{display:inline-flex;width:26px;height:6px;border-radius:3px;overflow:hidden;margin-right:7px;vertical-align:2px}.badge.g-full em{color:var(--upyu-t)}.badge.g-part em{color:#ff9fb4}
 .legend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;color:var(--mut);font-size:14px}
 .legend .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:7px;vertical-align:-1px}
-.legend .dot{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--upyu) var(--pc,0%),#3a4048 0)}.legend .dot.full{--pc:100%}.legend .dot.part{--pc:50%}
 .legend .only{display:inline-flex;align-items:center;gap:8px;min-height:36px;color:var(--ink);cursor:pointer}
 .legend .only input{width:18px;height:18px;margin:0;accent-color:var(--a)}
 .gbox{margin:14px 0 0;padding:14px 16px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln);border-left:4px solid var(--g)}
@@ -187,7 +193,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pts{list-style:none;margin:10px 0 0;padding:0}
 .pts li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin:7px 0;font-size:15px;line-height:1.35;color:var(--body)}
 .pts i{font-style:normal;font-weight:700;text-align:center}
-.pts .full i{color:var(--upyu-t)}.pts .part i{color:#ffb3c4}.pts .none i{color:#6b7480}.pts .task i{color:#9fc7ea}
+.pts .full i{color:var(--upyu-t)}.pts .part i{color:#ffb3c4}.pts .none i{color:#6b7480}.pts .task i{color:var(--upyu-t)}
+.pts .pr{display:inline-block;margin-left:6px;padding:0 7px;border-radius:99px;border:1px dashed var(--upyu-t);font:700 10px/16px var(--txt);letter-spacing:.06em;text-transform:uppercase;font-style:normal;color:var(--upyu-t);vertical-align:1px}
 .pts small{display:block;color:var(--mut);font-size:13px}
 .gcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,320px),1fr));gap:18px}
 .gcard{display:flex;flex-direction:column;gap:10px;min-width:0;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--g)}
@@ -442,7 +449,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
         <div class="tools">
           <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="vq" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
           <div class="chips" id="vchips" role="group" aria-label="Показати"></div>
-          <div class="legend"><span><i class="dot full"></i>Є гутірка</span><span><i class="dot part"></i>Частково</span><span><i class="dot none"></i>Ще немає</span>
+          <div class="legend"><span><i class="lg"><s class="full"></s></i>Є в гутірці</span><span><i class="lg"><s class="part"></s></i>Частково</span><span><i class="lg"><s class="task"></s></i>Практика — юнак робить сам</span><span><i class="lg"><s></s></i>Ще немає</span>
             <label class="only"><input type="checkbox" id="vonly"> Лише з матеріалами</label></div>
         </div>
         <h3 class="kh" id="vkh"></h3>
@@ -709,7 +716,7 @@ let FI = 0;
 function vmOf(g) {
   const s = SKILLS.find(x => x.gv && x.gv.list.some(e => e.v === g.v)); if (!s) return null;
   const e = s.gv.list.find(e => e.v === g.v);
-  return { id: s.id, txt: `До вмілості «${s.gv.lvl}» · ${covN(e)} з ${e.req.length} точок` };
+  return { id: s.id, txt: `До вмілості «${s.gv.lvl}» · ${covTxt(e.req)}` };
 }
 function slideHtml(g, k) {
   const vm = vmOf(g);
@@ -806,10 +813,24 @@ $('.vtabs').addEventListener('click', e => { const b = e.target.closest('[role=t
 $('.vtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); showTab(VT === 'g' ? 'k' : 'g', true); } });
 SKILLS.forEach(s => { const l = s.levels.find(x => GV[x.slug]); s.gv = l ? { lvl: lvName(s, l), list: GV[l.slug] } : null; });
 const covN = g => g.req.filter(r => r[1] === 'full' || r[1] === 'part').length;
-const ICO = { full: ['✓', 'є'], part: ['◐', 'частково'], none: ['○', 'немає'], task: ['✎', 'практичне завдання'] };
+const ICO = { full: ['✓', 'є'], part: ['◐', 'частково'], none: ['○', 'немає'], task: ['✎', 'юнак виконує сам'] };
+/* Покриття вмілості: те, що можна розповісти (є / частково / немає), і практика (task) — її юнак виконує сам, гутірка лише готує.
+   Тому «повний матеріал + 2 практики», а не «3 з 5 точок». */
+const ptsWord = n => plural(n, ['точка', 'точки', 'точок']), prWord = n => plural(n, ['практика', 'практики', 'практик']);
+const covTxt = req => {
+  const t = req.filter(r => r[1] === 'task').length, th = req.length - t, c = req.filter(r => r[1] === 'full' || r[1] === 'part').length;
+  return (req.every(r => r[1] === 'full' || r[1] === 'task') ? 'повний матеріал' : `частково: ${c} з ${th} ${ptsWord(th)}`) + (t ? ` + ${t} ${prWord(t)}` : '');
+};
+const covSum = req => {
+  const ti = req.map((r, k) => r[1] === 'task' ? k + 1 : 0).filter(Boolean), th = req.length - ti.length, c = req.filter(r => r[1] === 'full' || r[1] === 'part').length;
+  const head = req.every(r => r[1] === 'full' || r[1] === 'task') ? (ti.length ? 'Матеріал повний: усе, що можна розповісти, є в гутірці.' : 'Матеріал повний: усі точки є в гутірці.')
+    : `Матеріал частковий: є ${c} з ${th} ${ptsWord(th)}, які можна розповісти.`;
+  const tl = ti.length === 1 ? 'Точка ' + ti[0] : 'Точки ' + ti.slice(0, -1).join(', ') + ' і ' + ti[ti.length - 1];
+  return head + (ti.length ? ` ${tl} — практика: юнак виконує сам, гутірка підказує, як.` : '');
+};
+const segHtml = req => `<span class="seg" aria-hidden="true">${req.map(r => `<i class="${r[1]}"></i>`).join('')}</span>`;
 let VONLY = false, VSP = '', VMORE = false, VLIMIT = 24;
 const stOf = g => g.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part';
-const pcOf = g => { const r = g.req.filter(x => x[1] !== 'task'); return r.length ? Math.min(100, Math.round(100 * r.reduce((a, x) => a + (x[1] === 'full' ? 1 : x[1] === 'part' ? .5 : 0), 0) / r.length)) : 100; };
 function renderVChips() {
   const cnt = {}; SKILLS.forEach(s => s.specs.forEach(x => { cnt[x] = (cnt[x] || 0) + 1; }));
   const ord = SKILL_SPECS.slice().sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || a.localeCompare(b, 'uk'));
@@ -826,8 +847,8 @@ function renderVGrid() {
   const show = q || VONLY ? list : list.slice(0, VLIMIT);
   $('#vkgrid').innerHTML = show.map(s => {
     const g = s.gv && s.gv.list[0];
-    const note = g ? `гутірка · ${covN(g)} з ${g.req.length} точок` : VSP ? '' : s.specs.join(', ');
-    return `<button type="button" class="badge${g ? ' g-' + stOf(g) : ''}" data-vk="${esc(s.id)}"${g ? ` style="--pc:${pcOf(g)}%"` : ''}>${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
+    const note = g ? covTxt(g.req) : VSP ? '' : s.specs.join(', ');
+    return `<button type="button" class="badge${g ? ' g-' + stOf(g) : ''}" data-vk="${esc(s.id)}">${g ? segHtml(g.req) : ''}${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
   }).join('');
   const em = $('#vkempty'); em.hidden = list.length > 0; em.textContent = q ? 'Нічого не знайдено. Спробуйте іншу назву.' : 'Тут поки порожньо.';
   const mb = $('#vkmore'); mb.hidden = show.length >= list.length; mb.textContent = `Показати всі ${list.length}`;
@@ -835,11 +856,10 @@ function renderVGrid() {
 function vSkillHtml(s) {
   const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
   const box = g => {
-    const tasks = g.req.filter(r => r[1] === 'task').length;
     return `<div class="gbox" style="--g:${g.c}"><b>${esc(g.t)}${g.n ? `<small>${esc(g.n)}</small>` : ''}</b>
-      <p class="cv">Покриває ${covN(g)} з ${g.req.length} точок${tasks ? `; ще ${tasks} — практичні завдання, юнаки виконують самі` : ''}.</p>
+      <p class="cv">${esc(covSum(g.req))}</p>
       <div class="btns">${g.v.map(([l, , h], i) => `<a class="btn${i ? ' ghost' : ''}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}">${esc(l)}</a>`).join('')}</div>
-      <ul class="pts">${g.req.map(([t, st, nt]) => `<li class="${st}"><i aria-hidden="true">${ICO[st][0]}</i><span>${esc(t)}<small>${esc(ICO[st][1])}${nt ? ' — ' + esc(nt) : ''}</small></span></li>`).join('')}</ul></div>`;
+      <ul class="pts">${g.req.map(([t, st, nt]) => `<li class="${st}"><i aria-hidden="true">${ICO[st][0]}</i><span>${esc(t)}${st === 'task' ? '<em class="pr">практика</em>' : ''}<small>${esc(ICO[st][1])}${nt ? ' — ' + esc(nt) : ''}</small></span></li>`).join('')}</ul></div>`;
   };
   return `<div class="skh">${pic(s.img, s.n, 'lg')}<div><h3 id="sh-t">${esc(s.n)}</h3><p class="sub">${esc(specs)}</p></div></div>
     ${s.gv ? `<h4>Гутірки до вмілості «${esc(s.gv.lvl)}»</h4>${s.gv.list.map(box).join('')}` : '<p class="tip">До цієї вмілості гутірки ще немає.</p>'}
