@@ -191,7 +191,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .legend .dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:7px;vertical-align:-1px}
 .legend .only{display:inline-flex;align-items:center;gap:8px;min-height:36px;color:var(--ink);cursor:pointer}
 .legend .only input{width:18px;height:18px;margin:0;accent-color:var(--a)}
-.gbox{margin:14px 0 0;padding:14px 16px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln);border-left:4px solid var(--g)}
+.gbox{margin:14px 0 0;padding:14px 16px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
 .gbox>b{display:block;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
 .gbox>b small{margin-left:8px;font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
 .gbox .cv{margin:2px 0 10px;color:var(--mut);font-size:14px}
@@ -203,12 +203,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pts small{display:block;color:var(--mut);font-size:13px}
 .var{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:14px;text-decoration:none}
 .var small{color:var(--vyh-t);font-weight:700;font-size:13px}
-.var:hover{border-color:var(--g)}
+.var:hover{border-color:#6b7480}
 /* «Усі гутірки» — список: рядок = гутірка (малюнок, назва, вмілість, кнопки); натиснув рядок — розкрилось «що всередині», ще раз або Esc — сховалось */
 .glist{display:grid;gap:12px}
-.grow{border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--g);overflow:hidden;cursor:pointer}
-.grow:hover{border-color:#5a6573;border-left-color:var(--g)}
-.grow.open{border-color:var(--g)}
+.grow{border-radius:18px;background:var(--card);border:1px solid var(--ln);overflow:hidden;cursor:pointer}
+.grow:hover{border-color:#5a6573}
+.grow.open{border-color:#6b7480;box-shadow:0 0 0 1px #6b7480}
+.gr-sp{display:block;margin-bottom:3px;font:500 12px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
 .gr-main{display:grid;grid-template-columns:84px minmax(0,1fr) auto;gap:12px 20px;align-items:center;padding:16px 20px 16px 16px}
 .gr-art{display:block;width:84px;height:84px;padding:6px;border-radius:14px;object-fit:contain;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--g) 26%,var(--card2)) 0%,var(--card2) 75%)}
 .gr-txt{min-width:0}
@@ -228,7 +229,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .gr-det h4{margin:0 0 10px;font:500 13px var(--disp);letter-spacing:.22em;text-transform:uppercase;color:var(--mut)}
 .gr-det ol{margin:0;padding:0;list-style:none;counter-reset:g;display:grid;gap:8px}
 .gr-det ol li{counter-increment:g;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;color:var(--body);font-size:15px;line-height:1.35}
-.gr-det ol li::before{content:counter(g);font:600 18px/1.15 var(--disp);color:var(--g)}
+.gr-det ol li::before{content:counter(g);font:600 18px/1.15 var(--disp);color:var(--ink)}
 .gd-mat{margin:0;padding-left:18px;color:var(--body);font-size:15px;line-height:1.35}.gd-mat li{margin:0 0 6px}
 .gd-in{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px}
 .gd-in li{display:grid;grid-template-columns:34px minmax(0,1fr);gap:8px;align-items:baseline;color:var(--body);font-size:15px;line-height:1.35}
@@ -293,7 +294,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 .stats dd{order:-1;margin:0;font:600 44px/1.05 var(--disp);color:var(--vyh)}
 .stats dt{font-size:14px;color:var(--mut)}
 @media (max-width:760px){.hero.st{grid-template-columns:1fr}.stats{gap:22px}.stats dd{font-size:36px}}
-.feat{margin:20px 0 46px;border-radius:22px;overflow:hidden;border:1px solid var(--ln);border-top:4px solid var(--g,var(--ln));background:var(--card);transition:border-color .4s}
+.feat{margin:20px 0 46px;border-radius:22px;overflow:hidden;border:1px solid var(--ln);background:var(--card)}
 .fslide{display:grid;touch-action:pan-y}
 .fs{grid-area:1/1;display:grid;grid-template-columns:2fr 3fr;min-height:340px;visibility:hidden;opacity:0;transition:opacity .45s,visibility 0s .45s}
 .fs.on{visibility:visible;opacity:1;transition:opacity .45s}
@@ -323,7 +324,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 .fpill span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .fpill i{display:none}
 .fpill[aria-current=true]{width:34px;background:#3a4048}
-.fpill::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--c)}
+.fpill::after{content:"";position:absolute;left:0;top:0;bottom:0;width:0;background:var(--ink)}
 .fpill[aria-current=true]::after{width:100%}
 .feat.auto .fpill[aria-current=true]::after{width:0;animation:fprog 8s linear forwards}
 .feat.auto:hover .fpill::after,.feat.auto:focus-within .fpill::after,.feat.auto.off .fpill::after{animation-play-state:paused}
@@ -659,7 +660,7 @@ $('#sh-c').addEventListener('click', e => {
 
 /* ===================== виховники ===================== */
 const GUT = [   /* a — коли додано (новіші — першими в «Нових гутірках»); v: [назва, тривалість, посилання, для кого] */
-  { t: 'Кераміка України', a: '2026-10-13', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#e8925b',
+  { t: 'Кераміка України', sp: 'Мистецька · історична подорож', a: '2026-10-13', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#e8925b',
     art: '{{KERAMIKA_MAP}}', alt: 'Карта України з регіонами, про які йдеться в гутірці',
     d: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання до залу та вікторина на карті.',
     v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna', 'Юнацтво, 12–17 років'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil', 'Виховники, малі групи']],
@@ -667,7 +668,7 @@ const GUT = [   /* a — коли додано (новіші — першими 
       plan: ['Що таке кераміка і як її роблять', 'Історія по епохах — від Трипілля до сьогодні', 'Девʼять регіонів України і їхні вироби', 'Запитання до залу', 'Вікторина на карті'],
       mat: ['ноутбук (за можливості — проєктор або великий екран)'],
       inside: [[9, 'регіонів на карті — з виробами й особливостями'], [2, 'версії: повна і для вишколу']], extra: ['стрічка часу: від Трипілля до сьогодні', 'запитання до залу', 'вікторина на карті'] } },
-  { t: 'Будова літальних апаратів І', a: '2026-10-14 06:00', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
+  { t: 'Будова літальних апаратів І', sp: 'Летунська · проба 1', a: '2026-10-14 06:00', k: 'До вмілості · гутірка + для юнацтва', p: 'Частини літака, профіль крила, 3D-літачок, гра з телефонів.', c: '#6fb3ff',
     art: '{{LA_ART}}', alt: 'Навчальний літак, вигляд згори',
     d: 'Гутірка точно за вимогами вмілості (Летунська, проба 1): види ЛА, частини літака, профіль крила й підйомна сила, тангаж, крен і рискання на 3D-літачку, пʼять аеродинамічних схем. Наприкінці — гра «Потужний СКОБ!» з телефонів.',
     v: [['Гутірка', '40–45 хв', 'gutirky/budova-la-1/#hutirka', 'Юнацтво, 12–17 років'], ['План гутірки', 'друк / PDF', 'gutirky/budova-la-1/#plan', 'Що казати на кожному слайді'], ['Для юнаків', 'QR-код', 'gutirky/budova-la-1/#yunakam', 'Вивчай сам і Перевір себе']],
@@ -675,7 +676,7 @@ const GUT = [   /* a — коли додано (новіші — першими 
       plan: ['Що таке літальний апарат і які вони бувають', 'З чого складається літак', 'Профіль крила і звідки береться підйомна сила', 'Тангаж, крен і рискання: як літаком керують', 'Пʼять аеродинамічних схем літаків'],
       mat: ['ноутбук (за можливості — проєктор або великий екран)', 'папір А4 — по аркушу на кожного', 'олівці', 'смужки паперу ≈ 3 × 20 см — по одній на кожного', 'ножиці (для паперових літачків)', 'модель літака або фото (за бажанням)', 'телефони юнаків з інтернетом — для гри «Потужний СКОБ!» (за бажанням)'],
       inside: [[5, 'розділів — по одному на кожну точку вимог'], [3, 'запитання до залу'], [4, 'практики: «Знайди частини», профіль крила, дослід зі смужкою паперу, паперовий літачок з рулями'], [15, 'запитань у грі «Потужний СКОБ!» з телефонів']], extra: ['3D-літачок: тангаж, крен і рискання', 'гра «Вгадай схему»'] } },
-  { t: 'Кераміка І', a: '2026-10-14 11:30', k: 'До вмілості · гутірка + для юнацтва', p: 'Історія, техніки, шість видів кераміки, 3D-ваза, гра з телефонів.', c: '#e8925b',
+  { t: 'Кераміка І', sp: 'Мистецька · проба 1', a: '2026-10-14 11:30', k: 'До вмілості · гутірка + для юнацтва', p: 'Історія, техніки, шість видів кераміки, 3D-ваза, гра з телефонів.', c: '#e8925b',
     art: '{{K1_ART}}', alt: 'Ваза на гончарному крузі',
     d: 'Гутірка точно за вимогами вмілості «Кераміка І» (Мистецька, проба 1): історія виробів з глини, техніки формотворення від ліплення до пресування, шість видів кераміки з грою «Вгадай вид», музей і три вироби власноруч. 3D-ваза на гончарному крузі, гра «Потужний СКОБ!» з телефонів.',
     v: [['Гутірка', '45 хв', 'gutirky/keramika-1/#hutirka', 'Юнацтво, 12–17 років'], ['План гутірки', 'друк / PDF', 'gutirky/keramika-1/#plan', 'Що казати на кожному слайді'], ['Для юнаків', 'QR-код', 'gutirky/keramika-1/#yunakam', 'Вивчай сам і Перевір себе']],
@@ -741,7 +742,6 @@ function slideHtml(g, k) {
     <div class="bvars">${g.v.map(([l, d, h, w], i) => `<a class="bvar${i ? '' : ' main'}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}"><span>${esc(l)}<span class="who">${esc(w || '')}</span></span><small>${esc(d)} →</small></a>`).join('')}</div></div></div>`;
 }
 function renderFeat() {   // показати гутірку FI (інші лишаються під нею невидимі — висота рамки не стрибає)
-  $('#feat').style.setProperty('--g', FEAT[FI].c);
   $$('#fslide .fs').forEach((el, k) => { const on = k === FI; el.classList.toggle('on', on); el.inert = !on; el.setAttribute('aria-hidden', String(!on)); });
   $$('#fpills .fpill').forEach((b, k) => b.setAttribute('aria-current', String(k === FI)));
   $('#fcnt').textContent = FI + 1;
@@ -791,7 +791,7 @@ function renderGCards() {
     const i = GUT.indexOf(g), on = i === GOPEN, vm = vmOf(g);
     return `<article class="grow${on ? ' open' : ''}" style="--g:${g.c}" data-gi="${i}">
     <div class="gr-main"><img class="gr-art" src="${g.art}" alt="">
-      <div class="gr-txt"><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
+      <div class="gr-txt"><span class="gr-sp">${esc(g.sp)}</span><h3>${esc(g.t)}</h3><p>${esc(g.p)}</p>
         <div class="gr-meta"><span>${esc(g.x.tags[0])}</span>${vm ? `<button class="fvm" type="button" data-fvm="${esc(vm.id)}">${esc(vm.txt)}</button>` : ''}</div></div>
       <div class="gr-acts">${g.v.map(([l, d, h], k) => `<a class="var${k ? '' : ' main'}${/yunakam/.test(h) ? ' yun' : ''}" href="${esc(h)}">${esc(l)}<small>${esc(d)}</small></a>`).join('')}</div></div>
     <button class="gmore" type="button" aria-expanded="${on}" aria-controls="gdet">${on ? 'Згорнути' : 'Що всередині: про що, що підготувати'}${CHEV}</button>
