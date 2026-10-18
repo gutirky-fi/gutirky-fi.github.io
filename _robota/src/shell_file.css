@@ -1,5 +1,5 @@
 /* ===== Оболонка: бібліотека, пульт, діалог пульта. Темний вигляд навмисно єдиний. ===== */
-:root{--l-bg:#181a1d;--l-card:#22262b;--l-card2:#2a2f35;--l-ln:#383d44;--l-ink:#f2f4f6;--l-mut:#a0a8b2;--l-gd:#ffc247;--l-ac:#2fd2c0;--l-ol:#8fae63;--l-ok:#3ee08f;--l-bad:#ff6a6a;--l-disp:Oswald,'Arial Narrow',sans-serif;--l-hand:Caveat,'Segoe Print',cursive;--l-body:'Source Sans 3',system-ui,sans-serif}
+:root{--l-bg:#181a1d;--l-card:#22262b;--l-card2:#2a2f35;--l-ln:#383d44;--l-ink:#f2f4f6;--l-mut:#a0a8b2;--l-gd:#ffc247;--l-ac:#2fd2c0;--l-ol:#8fae63;--l-ok:#3ee08f;--l-upyu:#c8284a;--l-upyu-t:#ff7d99;--l-upn:#ffd23f;--l-bad:#ff6a6a;--l-disp:Oswald,'Arial Narrow',sans-serif;--l-hand:Caveat,'Segoe Print',cursive;--l-body:'Source Sans 3',system-ui,sans-serif}
 body.v-g.idle{cursor:none}
 #lib,#pv{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:30;color:var(--l-ink);font:17px/1.5 var(--l-body);background:radial-gradient(70% 50% at 15% 0%,#2a2f27 0%,transparent 70%),radial-gradient(60% 40% at 100% 8%,#1f2d2c 0%,transparent 70%),var(--l-bg);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 #lib *,#pv *{box-sizing:border-box}

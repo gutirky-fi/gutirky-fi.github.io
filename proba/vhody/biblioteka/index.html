@@ -130,7 +130,7 @@ body.idle #hot:after,body:not(.touchmode) #corner:hover #hot:after,#corner.open 
 @media(prefers-reduced-motion:reduce){.edge span{transition:none}}
 
 /* ===== Оболонка: бібліотека, пульт, діалог пульта. Темний вигляд навмисно єдиний. ===== */
-:root{--l-bg:#181a1d;--l-card:#22262b;--l-card2:#2a2f35;--l-ln:#383d44;--l-ink:#f2f4f6;--l-mut:#a0a8b2;--l-gd:#ffc247;--l-ac:#2fd2c0;--l-ol:#8fae63;--l-ok:#3ee08f;--l-bad:#ff6a6a;--l-disp:Oswald,'Arial Narrow',sans-serif;--l-hand:Caveat,'Segoe Print',cursive;--l-body:'Source Sans 3',system-ui,sans-serif}
+:root{--l-bg:#181a1d;--l-card:#22262b;--l-card2:#2a2f35;--l-ln:#383d44;--l-ink:#f2f4f6;--l-mut:#a0a8b2;--l-gd:#ffc247;--l-ac:#2fd2c0;--l-ol:#8fae63;--l-ok:#3ee08f;--l-upyu:#c8284a;--l-upyu-t:#ff7d99;--l-upn:#ffd23f;--l-bad:#ff6a6a;--l-disp:Oswald,'Arial Narrow',sans-serif;--l-hand:Caveat,'Segoe Print',cursive;--l-body:'Source Sans 3',system-ui,sans-serif}
 body.v-g.idle{cursor:none}
 #lib,#pv{position:fixed;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;z-index:30;color:var(--l-ink);font:17px/1.5 var(--l-body);background:radial-gradient(70% 50% at 15% 0%,#2a2f27 0%,transparent 70%),radial-gradient(60% 40% at 100% 8%,#1f2d2c 0%,transparent 70%),var(--l-bg);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 #lib button:focus-visible,#lib input:focus-visible,#pv button:focus-visible{outline:2px solid var(--l-gd);outline-offset:2px}
@@ -206,7 +206,7 @@ body.v-g.idle{cursor:none}
 #lib .wrap{max-width:1160px;margin:0 auto;padding-inline:max(16px,4vw)}
 #lib a{color:inherit}
 #lib :is(button,a,input,label):focus-visible{outline:2px solid var(--l-gd);outline-offset:2px}
-#lib .prev-ribbon{padding:7px 16px;background:#2fd2c0;color:#0d1f1d;font:700 14px var(--l-body);text-align:center}
+#lib .prev-ribbon{padding:7px 16px;background:#cfd5dc;color:#16181c;font:700 14px var(--l-body);text-align:center}
 #lib .prev-ribbon a{color:inherit;margin-left:10px;white-space:nowrap}
 
 /* шапка */
@@ -270,6 +270,10 @@ body.v-g.idle{cursor:none}
 #lib .bigvar.main{background:var(--l-gd);border-color:var(--l-gd);color:#16130a}
 #lib .bigvar.main .who,#lib .bigvar.main small{color:#3d3214}
 #lib .bigvar.main:hover{filter:brightness(1.07)}
+/* усе для юнацтва — малиновий УПЮ (пластова кольористика уладів) */
+#lib .bigvar.yun{border-color:rgba(200,40,74,.8)}
+#lib .bigvar.yun small{color:var(--l-upyu-t)}
+#lib .bigvar.yun:hover{border-color:var(--l-upyu-t)}
 @media (max-width:760px){
   #lib .feat{grid-template-columns:1fr}
   #lib .feat .art{min-height:150px}
@@ -300,6 +304,9 @@ body.v-g.idle{cursor:none}
 #lib .var small{margin-left:6px;font-size:14px;font-weight:700;color:var(--l-gd)}
 #lib .var:hover{border-color:var(--l-gd)}
 #lib a.var{display:inline-block;text-decoration:none}
+#lib .var.yun{border-color:rgba(200,40,74,.8)}
+#lib .var.yun small{color:var(--l-upyu-t)}
+#lib .var.yun:hover{border-color:var(--l-upyu-t)}
 #lib .card.ph{align-items:center;justify-content:center;min-height:180px;border:2px dashed var(--l-ln);background:none}
 #lib .card.ph img{width:auto;height:70px;opacity:.08}
 @media (max-width:700px){#lib .card.ph{display:none}}
@@ -308,19 +315,20 @@ body.v-g.idle{cursor:none}
 /* каталог вмілостей */
 #lib .demo{margin:0 0 20px;padding:10px 14px;border-radius:12px;border:1px dashed #4a515b;color:var(--l-mut);font-size:14px}
 #lib .src{margin:-6px 0 22px;font-size:14px;color:var(--l-mut)}
-#lib .src a{color:var(--l-ac);text-decoration:underline}
-#lib .demo a{color:var(--l-ac);text-decoration:underline}
+#lib .src a{color:var(--l-ink);text-decoration:underline}
+#lib .demo a{color:var(--l-ink);text-decoration:underline}
 #lib .k-tools{display:flex;flex-direction:column;gap:14px;margin-bottom:30px}
 #lib .k-row .search{width:300px}
 #lib .legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:14px;color:var(--l-mut)}
 #lib .legend i{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px;box-sizing:border-box}
+#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#3a4048 0)}
 #lib .legend label{display:flex;align-items:center;gap:8px;color:#cfd5dc;cursor:pointer}
 #lib .legend input{width:18px;height:18px;margin:0;accent-color:var(--l-gd)}
 #lib .k-h{margin-bottom:18px}
 #lib .k-h small{margin-left:10px;font:400 15px var(--l-body);letter-spacing:0;text-transform:none;color:var(--l-mut)}
 #lib .chips .n{margin-left:4px;font-weight:600;opacity:.65}
 #lib .kd-r .more{font-size:15px;color:var(--l-mut)}
-#lib .kd-r .more a{color:var(--l-ac);text-decoration:underline}
+#lib .kd-r .more a{color:var(--l-ink);text-decoration:underline}
 /* нашивки (картинки з plast.global) */
 #lib .vb{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px}
 #lib .vb img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
@@ -342,8 +350,8 @@ body.v-g.idle{cursor:none}
 @media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
-#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);border-top:4px solid var(--st);background:var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
-#lib .badge:hover{border-color:#5a6573;border-top-color:var(--st)}
+#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
+#lib .badge:hover{border-color:#5a6573}
 #lib .badge[aria-expanded=true]{border-color:var(--l-gd);box-shadow:0 0 0 1px var(--l-gd)}
 #lib .disc{display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px var(--l-card),0 0 0 8px var(--st)}
 #lib .badge.none .disc{opacity:.45}
@@ -550,9 +558,9 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
           <div class="chips" id="k-specs" role="group" aria-label="Спеціалізація"></div>
         </div>
         <div class="legend">
-          <span><i style="background:#3ee08f"></i>Є гутірка</span>
-          <span><i style="background:#ffc247"></i>Частково</span>
-          <span><i style="border:2px solid #4a515b"></i>Ще немає</span>
+          <span><i class="lg" style="--pc:100%"></i>Є гутірка</span>
+          <span><i class="lg" style="--pc:50%"></i>Частково</span>
+          <span><i class="lg"></i>Ще немає</span>
           <label><input type="checkbox" id="k-only"> Лише з матеріалами</label>
         </div>
       </section>
@@ -1272,12 +1280,12 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
 
   /* ---------------- вбудовані гутірки ---------------- */
   const BUILTIN = [{
-    key: 'keramika', title: 'Кераміка України', icon: '🏺', accent: '#ffc247',
+    key: 'keramika', title: 'Кераміка України', icon: '🏺', accent: '#e8925b',
     desc: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання до залу та вікторина на карті.',
     tags: ['кераміка', 'народні ремесла', 'історія', 'карта', 'вишкіл'],
     vars: [
-      { mode: 'full', label: 'Повна гутірка', who: 'Юнацтво, 12–17 років', dur: '45–50 хв', accent: '#ffc247' },
-      { mode: 'short', label: 'Вишкіл', who: 'Виховники, малі групи', dur: 'до 20 хв', accent: '#2fd2c0' }
+      { mode: 'full', label: 'Повна гутірка', who: 'Юнацтво, 12–17 років', dur: '45–50 хв', accent: '#e8925b' },
+      { mode: 'short', label: 'Вишкіл', who: 'Виховники, малі групи', dur: 'до 20 хв', accent: '#ffc247' }
     ]
   }, {
     key: 'budova-la-1', proba: true, title: 'Будова літальних апаратів І', icon: '✈️', accent: '#6fb3ff',   // proba — лише в копії для показу (PREVIEW=1), доки власник не погодить
@@ -1286,7 +1294,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     vars: [   /* href — гутірка на окремій сторінці сайту; dod — додаток для виховника (план), yun — посилання для юнаків; обидва не рахуються як версії */
       { href: 'gutirky/budova-la-1/#hutirka', label: 'Гутірка', who: 'Юнацтво, 12–17 років', dur: '40–45 хв', accent: '#6fb3ff' },
       { href: 'gutirky/budova-la-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#ffc247', dod: true },
-      { href: 'gutirky/budova-la-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#2fd2c0', yun: true }
+      { href: 'gutirky/budova-la-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#c8284a', yun: true }
     ]
   }, {
     key: 'keramika-1', proba: true, title: 'Кераміка І', icon: '🏺', accent: '#e8925b',   // proba — лише в копії для показу (PREVIEW=1), доки власник не погодить
@@ -1295,7 +1303,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     vars: [
       { href: 'gutirky/keramika-1/#hutirka', label: 'Гутірка', who: 'Юнацтво, 12–17 років', dur: '45 хв', accent: '#e8925b' },
       { href: 'gutirky/keramika-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#ffc247', dod: true },
-      { href: 'gutirky/keramika-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#2fd2c0', yun: true }
+      { href: 'gutirky/keramika-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#c8284a', yun: true }
     ]
   }].filter(b => !b.proba || window.GUTIRKA_PREVIEW);
   const MODE_LABEL = { full: 'ПОВНА ГУТІРКА · 45–50 ХВ', short: 'ВИШКІЛ · ДО 20 ХВ' };
@@ -1457,7 +1465,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const lvName = (s, l) => l.label === 'Опис' ? s.n : l.label.startsWith('Опис') ? s.n + ' (' + l.label.replace(/^Опис\s*\(|\)$/g, '') + ')' : s.n + ' ' + l.label;
   const cov = l => [l.d.req.filter(r => r[1] === 'full' || r[1] === 'part').length, l.d.pts];
   const stOf = s => { if (!s.gl) return 'none'; return s.gl.d.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part'; };
-  const ST = { full: ['#3ee08f', '#3ee08f'], part: ['#ffc247', '#ffc247'], none: ['#383d44', '#8a929c'] };
+  const ST = { full: ['#3ee08f', '#3ee08f'], part: ['#3ee08f', '#8be8b9'], none: ['#383d44', '#8a929c'] };   // зелений — лише «готовність» у каталозі
+  /* скільки вимог покриває гутірка, % (для смужки над нашивкою); вимоги-«завдання» (task) робить сам юнак — їх не рахуємо */
+  const pcOf = s => { if (!s.gl) return 0; const r = s.gl.d.req.filter(x => x[1] !== 'task'); return r.length ? Math.min(100, Math.round(100 * r.reduce((a, x) => a + (x[1] === 'full' ? 1 : x[1] === 'part' ? .5 : 0), 0) / r.length)) : 100; };
   const ptsWord = n => plural(n, ['точка', 'точки', 'точок']);
   const gById = k => BUILTIN.find(b => b.key === k);
   /* нашивка: картинка з plast.global; якщо не завантажиться (немає інтернету) — кружечок з першою літерою */
@@ -1489,8 +1499,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const tagOf = v => v.href ? 'a' : 'button';
   function varBtns(b, big) {
     return b.vars.map((v, i) => big
-      ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
-      : `<${tagOf(v)} class="var" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
+      ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}${v.yun ? ' yun' : ''}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
+      : `<${tagOf(v)} class="var${v.yun ? ' yun' : ''}" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
   }
   const nVer = b => b.vars.filter(v => !v.yun && !v.dod).length;
   function renderHome() {
@@ -1541,7 +1551,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     grid.innerHTML = list.map(s => {
       const st = stOf(s);
       const note = s.gl ? `${lvName(s, s.gl)}: ${cov(s.gl)[0]} з ${cov(s.gl)[1]} ${ptsWord(cov(s.gl)[1])}` : kSpec ? '' : s.specs.join(', ');
-      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]}">
+      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]};--pc:${pcOf(s)}%">
         ${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
     }).join('');
     const em = $('#k-empty'); em.hidden = list.length > 0;
@@ -1555,7 +1565,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function detHtml(s) {
     const st = stOf(s), g = s.g && gById(s.g);
     const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
-    const pc = { full: '#3ee08f', part: '#ffc247', none: '#8a929c', task: '#8a929c' };
+    const pc = { full: '#3ee08f', part: '#8be8b9', none: '#8a929c', task: '#8a929c' };
     const pts = s.gl
       ? `<span class="lbl">Точки вмілості «${esc(lvName(s, s.gl))}»</span><ol>${s.gl.d.req.map((r, k) => `<li style="--c2:${pc[r[1]]}"><span>${k + 1}</span><span><b>${esc(r[0])}</b><small>${esc(r[2])}</small></span></li>`).join('')}</ol>`
       : `<p>Гутірки до цієї вмілості ще немає. Вимоги кожного рівня є на порталі Пласту у Фінляндії.</p>`;

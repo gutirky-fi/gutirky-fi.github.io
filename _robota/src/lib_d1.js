@@ -40,7 +40,9 @@
   const lvName = (s, l) => l.label === 'Опис' ? s.n : l.label.startsWith('Опис') ? s.n + ' (' + l.label.replace(/^Опис\s*\(|\)$/g, '') + ')' : s.n + ' ' + l.label;
   const cov = l => [l.d.req.filter(r => r[1] === 'full' || r[1] === 'part').length, l.d.pts];
   const stOf = s => { if (!s.gl) return 'none'; return s.gl.d.req.every(r => r[1] === 'full' || r[1] === 'task') ? 'full' : 'part'; };
-  const ST = { full: ['#3ee08f', '#3ee08f'], part: ['#ffc247', '#ffc247'], none: ['#383d44', '#8a929c'] };
+  const ST = { full: ['#3ee08f', '#3ee08f'], part: ['#3ee08f', '#8be8b9'], none: ['#383d44', '#8a929c'] };   // зелений — лише «готовність» у каталозі
+  /* скільки вимог покриває гутірка, % (для смужки над нашивкою); вимоги-«завдання» (task) робить сам юнак — їх не рахуємо */
+  const pcOf = s => { if (!s.gl) return 0; const r = s.gl.d.req.filter(x => x[1] !== 'task'); return r.length ? Math.min(100, Math.round(100 * r.reduce((a, x) => a + (x[1] === 'full' ? 1 : x[1] === 'part' ? .5 : 0), 0) / r.length)) : 100; };
   const ptsWord = n => plural(n, ['точка', 'точки', 'точок']);
   const gById = k => BUILTIN.find(b => b.key === k);
   /* нашивка: картинка з plast.global; якщо не завантажиться (немає інтернету) — кружечок з першою літерою */
@@ -72,8 +74,8 @@
   const tagOf = v => v.href ? 'a' : 'button';
   function varBtns(b, big) {
     return b.vars.map((v, i) => big
-      ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
-      : `<${tagOf(v)} class="var" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
+      ? `<${tagOf(v)} class="bigvar${i ? '' : ' main'}${v.yun ? ' yun' : ''}" ${openAttr(v)}><span>${esc(v.label)}<span class="who">${esc(v.who)}</span></span><small>${esc(v.dur)} →</small></${tagOf(v)}>`
+      : `<${tagOf(v)} class="var${v.yun ? ' yun' : ''}" ${openAttr(v)}>${esc(v.label)}<small>${esc(v.dur)}</small></${tagOf(v)}>`).join('');
   }
   const nVer = b => b.vars.filter(v => !v.yun && !v.dod).length;
   function renderHome() {
@@ -124,7 +126,7 @@
     grid.innerHTML = list.map(s => {
       const st = stOf(s);
       const note = s.gl ? `${lvName(s, s.gl)}: ${cov(s.gl)[0]} з ${cov(s.gl)[1]} ${ptsWord(cov(s.gl)[1])}` : kSpec ? '' : s.specs.join(', ');
-      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]}">
+      return `<button type="button" class="badge ${st}" data-k="${s.id}" aria-expanded="${s.id === kOpen}" aria-controls="k-det" style="--st:${ST[st][0]};--stc:${ST[st][1]};--pc:${pcOf(s)}%">
         ${pic(s.img, s.n)}<b>${esc(s.n)}</b>${note ? `<em>${esc(note)}</em>` : ''}</button>`;
     }).join('');
     const em = $('#k-empty'); em.hidden = list.length > 0;
@@ -138,7 +140,7 @@
   function detHtml(s) {
     const st = stOf(s), g = s.g && gById(s.g);
     const specs = s.specs.map(x => x.charAt(0).toLowerCase() + x.slice(1)).join(', ');
-    const pc = { full: '#3ee08f', part: '#ffc247', none: '#8a929c', task: '#8a929c' };
+    const pc = { full: '#3ee08f', part: '#8be8b9', none: '#8a929c', task: '#8a929c' };
     const pts = s.gl
       ? `<span class="lbl">Точки вмілості «${esc(lvName(s, s.gl))}»</span><ol>${s.gl.d.req.map((r, k) => `<li style="--c2:${pc[r[1]]}"><span>${k + 1}</span><span><b>${esc(r[0])}</b><small>${esc(r[2])}</small></span></li>`).join('')}</ol>`
       : `<p>Гутірки до цієї вмілості ще немає. Вимоги кожного рівня є на порталі Пласту у Фінляндії.</p>`;

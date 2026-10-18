@@ -8,7 +8,7 @@
 <title>Кераміка І</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--ol:#9fb57a;--sky:#6fb3ff;
+:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--upyu:#c8284a;--upyu-t:#ff7d99;--ol:#9fb57a;--sky:#6fb3ff;
   --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;
   --qa:#e2574c;--qb:#3f7fd9;--qc:#e0a526;--qd:#3aa565}
 *{box-sizing:border-box}
@@ -227,6 +227,21 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .res .sc{font:600 56px/1 var(--disp);color:var(--gd)}
 .res ul{padding-left:20px;color:var(--body)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+/* ---------- пластова кольористика: малиновий УПЮ — усе для юнацтва; золотий — дії виховника; бірюзовий — лише рукописні підписи ---------- */
+@media screen{a{color:var(--ink)}#plan-box .row .s em{color:var(--ink);font-weight:700}}
+.door.yun{box-shadow:inset 0 4px 0 var(--upyu)}body.yun .req b{color:var(--upyu-t)}.door.yun i{color:var(--upyu-t)}.door.yun:hover{border-color:var(--upyu-t)}
+.doors.for-y .door i{color:var(--upyu-t)}.doors.for-y .door:hover{border-color:var(--upyu-t)}
+.doors.for-y .door.main{background:var(--upyu);border-color:var(--upyu);color:#fff}.doors.for-y .door.main i,.doors.for-y .door.main span{color:#ffdbe3}
+.endq figcaption{color:var(--upyu-t)}.endq blockquote{border-left-color:var(--upyu)}
+#yunakam .eyebrow,#vyvch .eyebrow,#test .eyebrow{color:var(--upyu-t)}
+#vyvch .go,#test .go{background:var(--upyu);color:#fff}
+.prog .tr i{background:var(--upyu)}
+.sec .num{color:var(--upyu-t)}
+.sec .zn{background:rgba(200,40,74,.1);border-color:rgba(255,125,153,.35);color:#ffe3e9}.sec .zn b{color:var(--upyu-t)}
+.know.on{border-color:var(--upyu-t);color:var(--upyu-t)}.know.on i{border-color:var(--upyu);background:var(--upyu);color:#fff}
+#ask-save{border-color:var(--upyu)}#ask-save button.y{background:var(--upyu);border-color:var(--upyu);color:#fff}
+.fb b{color:#5fd68f}
+.res .sc{color:var(--upyu-t)}
 </style>
 </head>
 <body>
@@ -242,7 +257,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
   <div class="doors for-v">
     <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>45 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
     <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали. Можна роздрукувати.</span></a>
-    <a class="door" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
+    <a class="door yun" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
   </div>
   <p class="kh for-v">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
   <div class="doors for-y">

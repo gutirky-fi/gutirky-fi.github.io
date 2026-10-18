@@ -4,7 +4,7 @@
 #lib .wrap{max-width:1160px;margin:0 auto;padding-inline:max(16px,4vw)}
 #lib a{color:inherit}
 #lib :is(button,a,input,label):focus-visible{outline:2px solid var(--l-gd);outline-offset:2px}
-#lib .prev-ribbon{padding:7px 16px;background:#2fd2c0;color:#0d1f1d;font:700 14px var(--l-body);text-align:center}
+#lib .prev-ribbon{padding:7px 16px;background:#cfd5dc;color:#16181c;font:700 14px var(--l-body);text-align:center}
 #lib .prev-ribbon a{color:inherit;margin-left:10px;white-space:nowrap}
 
 /* шапка */
@@ -68,6 +68,10 @@
 #lib .bigvar.main{background:var(--l-gd);border-color:var(--l-gd);color:#16130a}
 #lib .bigvar.main .who,#lib .bigvar.main small{color:#3d3214}
 #lib .bigvar.main:hover{filter:brightness(1.07)}
+/* усе для юнацтва — малиновий УПЮ (пластова кольористика уладів) */
+#lib .bigvar.yun{border-color:rgba(200,40,74,.8)}
+#lib .bigvar.yun small{color:var(--l-upyu-t)}
+#lib .bigvar.yun:hover{border-color:var(--l-upyu-t)}
 @media (max-width:760px){
   #lib .feat{grid-template-columns:1fr}
   #lib .feat .art{min-height:150px}
@@ -98,6 +102,9 @@
 #lib .var small{margin-left:6px;font-size:14px;font-weight:700;color:var(--l-gd)}
 #lib .var:hover{border-color:var(--l-gd)}
 #lib a.var{display:inline-block;text-decoration:none}
+#lib .var.yun{border-color:rgba(200,40,74,.8)}
+#lib .var.yun small{color:var(--l-upyu-t)}
+#lib .var.yun:hover{border-color:var(--l-upyu-t)}
 #lib .card.ph{align-items:center;justify-content:center;min-height:180px;border:2px dashed var(--l-ln);background:none}
 #lib .card.ph img{width:auto;height:70px;opacity:.08}
 @media (max-width:700px){#lib .card.ph{display:none}}
@@ -106,19 +113,20 @@
 /* каталог вмілостей */
 #lib .demo{margin:0 0 20px;padding:10px 14px;border-radius:12px;border:1px dashed #4a515b;color:var(--l-mut);font-size:14px}
 #lib .src{margin:-6px 0 22px;font-size:14px;color:var(--l-mut)}
-#lib .src a{color:var(--l-ac);text-decoration:underline}
-#lib .demo a{color:var(--l-ac);text-decoration:underline}
+#lib .src a{color:var(--l-ink);text-decoration:underline}
+#lib .demo a{color:var(--l-ink);text-decoration:underline}
 #lib .k-tools{display:flex;flex-direction:column;gap:14px;margin-bottom:30px}
 #lib .k-row .search{width:300px}
 #lib .legend{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;font-size:14px;color:var(--l-mut)}
 #lib .legend i{display:inline-block;width:14px;height:14px;margin-right:8px;border-radius:50%;vertical-align:-2px;box-sizing:border-box}
+#lib .legend i.lg{width:26px;height:6px;border-radius:3px;vertical-align:2px;background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#3a4048 0)}
 #lib .legend label{display:flex;align-items:center;gap:8px;color:#cfd5dc;cursor:pointer}
 #lib .legend input{width:18px;height:18px;margin:0;accent-color:var(--l-gd)}
 #lib .k-h{margin-bottom:18px}
 #lib .k-h small{margin-left:10px;font:400 15px var(--l-body);letter-spacing:0;text-transform:none;color:var(--l-mut)}
 #lib .chips .n{margin-left:4px;font-weight:600;opacity:.65}
 #lib .kd-r .more{font-size:15px;color:var(--l-mut)}
-#lib .kd-r .more a{color:var(--l-ac);text-decoration:underline}
+#lib .kd-r .more a{color:var(--l-ink);text-decoration:underline}
 /* нашивки (картинки з plast.global) */
 #lib .vb{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px}
 #lib .vb img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
@@ -140,8 +148,8 @@
 @media (orientation:landscape) and (max-height:520px){#lib .vb.lg{width:96px;height:96px}#lib .vb.lg .fb{width:84px;height:84px;font-size:32px}}
 @media (max-width:520px){#lib .vb{width:84px;height:84px}#lib .vb .fb{width:74px;height:74px;font-size:28px}#lib .vb.lg{width:120px;height:120px}}
 #lib .kgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:18px}
-#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);border-top:4px solid var(--st);background:var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
-#lib .badge:hover{border-color:#5a6573;border-top-color:var(--st)}
+#lib .badge{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0;padding:20px 8px 18px;border-radius:18px;border:1px solid var(--l-ln);background:linear-gradient(90deg,var(--l-ok) var(--pc,0%),#2e3339 0) top/100% 5px no-repeat,var(--l-card);color:var(--l-ink);font:inherit;text-align:center;cursor:pointer}
+#lib .badge:hover{border-color:#5a6573}
 #lib .badge[aria-expanded=true]{border-color:var(--l-gd);box-shadow:0 0 0 1px var(--l-gd)}
 #lib .disc{display:flex;align-items:center;justify-content:center;flex:none;width:104px;height:104px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px var(--l-card),0 0 0 8px var(--st)}
 #lib .badge.none .disc{opacity:.45}
