@@ -1,0 +1,15 @@
+{
+  "_": "Стиль «Експозиція» (19.10.2026): кольори регіонів — кольори керамічних полив; шрифти Literata + Golos Text",
+  "zamina": [
+    ["col:\"#ff6b4a\"", "col:\"#c9603f\""],
+    ["col:\"#4d8dff\"", "col:\"#5fa67a\""],
+    ["col:\"#2fd08a\"", "col:\"#4f80c6\""],
+    ["col:\"#e0914f\"", "col:\"#d49a4e\""],
+    ["col:\"#b06bd6\"", "col:\"#9c6ca6\""],
+    ["col:\"#27c4c9\"", "col:\"#7a9fb0\""],
+    ["col:\"#ffc247\"", "col:\"#e3bf5a\""],
+    ["col:\"#a8d44a\"", "col:\"#a2ab4c\""],
+    ["col:\"#ff7ab0\"", "col:\"#41a7a0\""]
+  ],
+  "shryfty": "family=Literata:ital,opsz,wght@0,7..72,300..700;1,7..72,300..700&family=Golos+Text:wght@400..700"
+}

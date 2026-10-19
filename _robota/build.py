@@ -196,10 +196,17 @@ if SHELL_NAME == 'shell_d1':
                     " const w = document.createTreeWalker(a, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) n.nodeValue = n.nodeValue.replace(/[Бб]ібліотек[аи]( гутірок)?/, window.GUTIRKA_HOME.label); }));\n" + shell_js)
 qr = open(D + 'qr.js', encoding='utf8').read()
 tema_css = tema_js = ''
-if os.environ.get('TEMA'):   # варіант стилю для порівняння: _robota/gutirky/keramika/tema-<TEMA>.css/.js
-    _t = os.path.join(HERE, 'gutirky', 'keramika', 'tema-' + os.environ['TEMA'])
-    tema_css = open(_t + '.css', encoding='utf8').read()
-    tema_js = '<script>\n' + open(_t + '.js', encoding='utf8').read() + '</script>\n'
+for _n in filter(None, os.environ.get('TEMA', '').split('+')):   # стилі для порівняння: TEMA=mandrivka або mandrivka+dyzain
+    _t = os.path.join(HERE, 'gutirky', 'keramika', 'tema-' + _n)
+    if os.path.exists(_t + '.css'): tema_css += open(_t + '.css', encoding='utf8').read() + '\n'
+    if os.path.exists(_t + '.js'): tema_js += '<script>\n' + re.sub(r'\{\{K:([a-z0-9]+)\}\}', lambda m: 'data:image/webp;base64,' + _b64.b64encode(open(os.path.join(HERE, 'gutirky', 'keramika-1', 'kartynky', m.group(1) + '.webp'), 'rb').read()).decode(), open(_t + '.js', encoding='utf8').read()) + '</script>\n'
+    if os.path.exists(_t + '.json'):   # {"zamina": [[старе, нове], ...] у коді гутірки, "shryfty": "family=...&family=..."}
+        _j = json.load(open(_t + '.json', encoding='utf8'))
+        for _a, _b in _j.get('zamina', []):
+            assert _a in gscript, _a
+            gscript = gscript.replace(_a, _b)
+        if _j.get('shryfty'):
+            font = font.replace('family=', _j['shryfty'] + '&family=', 1)
 skel_css = ':root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}'
 page = ('<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'

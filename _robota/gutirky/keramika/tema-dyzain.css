@@ -1,0 +1,82 @@
+/* Стиль «Експозиція» (19.10.2026, проба). Карта — зала музею, панель — музейна етикетка.
+   Кольори: кіптява горна, кістяна глазур, вохра; регіони — кольори полив (tema-dyzain.json). */
+html.t-dz{--dz-bg:#15100d;--dz-pan:#1d1713;--dz-bone:#efe5d4;--dz-mut:#ab9d8c;--dz-och:#d9ac62;--dz-ln:rgba(239,229,212,.15);
+  --dz-serif:Literata,Georgia,'Times New Roman',serif;--dz-sans:'Golos Text','Source Sans 3',system-ui,sans-serif;
+  --bg:var(--dz-bg);--ink:var(--dz-bone);--mut:var(--dz-mut);--card:#251e19;--ln:#3a312a;--ac:var(--dz-och);--gd:var(--dz-och)}
+html.t-dz body{background:radial-gradient(60% 70% at 38% 52%,#2a1f17 0%,#1a1410 55%,var(--dz-bg) 100%);color:var(--dz-bone);font-family:var(--dz-sans)}
+html.t-dz #app::after{opacity:.35}
+/* карта */
+html.t-dz .rg path{fill-opacity:.34;stroke:var(--dz-bone);stroke-opacity:.28;stroke-width:.4}
+html.t-dz .rg.on path{fill-opacity:.82;stroke-opacity:.9;stroke-width:.6}
+html.t-dz svg[data-a] .rg.on{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--c) 55%,transparent))}
+html.t-dz svg[data-a] .rg{opacity:.32}html.t-dz svg[data-a] .rg.on{opacity:1}
+html.t-dz text{font-family:var(--dz-sans);fill:var(--dz-bone)}
+html.t-dz .mk text{font-family:var(--dz-sans)}
+html.t-dz .mk circle{fill:var(--dz-bone)}
+/* назва вгорі ліворуч (на всіх слайдах, крім титулки) */
+html.t-dz #ttl{left:28px;font:500 1.15rem/1.1 var(--dz-serif);letter-spacing:0;text-transform:none}
+html.t-dz #ttl i{font:italic 400 .95rem/1.2 var(--dz-serif);color:var(--dz-och);letter-spacing:.01em;margin-bottom:2px}
+html.t-dz #ttl .dz-name{display:block}
+/* титулка — обкладинка каталогу */
+html.t-dz #ttl.big{left:7vw;right:auto;top:47%;max-width:none;font-size:clamp(3.4rem,10.5vw,10.5rem);line-height:.92;letter-spacing:-.02em;font-weight:400;font-variation-settings:'opsz' 72}
+html.t-dz #ttl.big i{font-size:clamp(1.1rem,1.7vw,1.6rem);letter-spacing:.02em;margin-bottom:.9em}
+html.t-dz #ttl.big .dz-name .l1,html.t-dz #ttl.big .dz-name .l2{display:block}
+html.t-dz #ttl.big .dz-name .l2{font-style:italic;font-weight:300;padding-left:.9em;color:#e6cfa9}
+html.t-dz #ttl.big .tsub{margin-top:1.6em;padding-top:1.1em;border-top:1px solid var(--dz-ln);max-width:30em;font:400 clamp(.95rem,1.25vw,1.2rem)/1.45 var(--dz-sans);letter-spacing:0;color:var(--dz-mut)}
+#dzhero{position:absolute;z-index:1;right:4vw;bottom:13vh;width:min(46vw,780px);margin:0;pointer-events:none;opacity:0;transform:translateY(18px);transition:opacity .9s .15s,transform .9s .15s}
+#dzhero::before{content:"";position:absolute;left:8%;right:8%;bottom:-6%;height:34%;background:radial-gradient(50% 50% at 50% 50%,rgba(0,0,0,.55),transparent 70%)}
+#dzhero::after{content:"";position:absolute;inset:-30% -10% 10%;z-index:-1;background:radial-gradient(45% 50% at 50% 60%,rgba(255,214,160,.13),transparent 70%)}
+#dzhero img{position:relative;display:block;width:100%;height:auto}
+body.t0 #dzhero{opacity:1;transform:none}
+html.t-dz body.t0 #sv{opacity:.09}
+/* панель — етикетка */
+html.t-dz #pan{width:36%;padding-left:3.4vw;padding-right:4vw;background:linear-gradient(90deg,transparent,rgba(21,16,13,.95) 14%,rgba(21,16,13,.97))}
+html.t-dz #pan .dz-n{display:flex;align-items:center;gap:12px;font:400 clamp(1rem,1.3vw,1.3rem)/1 var(--dz-serif);font-variant-numeric:lining-nums;color:var(--c);margin-bottom:18px}
+html.t-dz #pan .dz-n i{display:block;width:44px;height:1px;background:currentColor;opacity:.6}
+html.t-dz #pan small{font:italic 400 clamp(1.05rem,1.45vw,1.45rem)/1.3 var(--dz-serif);color:var(--c,var(--dz-och));letter-spacing:0}
+html.t-dz #pan h2{font:500 clamp(2.1rem,3.9vw,4.2rem)/1.02 var(--dz-serif);font-variation-settings:'opsz' 72;letter-spacing:-.015em;text-transform:none;margin:8px 0 18px;text-wrap:balance}
+html.t-dz #pan h2.sm{font-size:clamp(1.55rem,2.5vw,2.6rem);font-weight:400;line-height:1.1}
+html.t-dz #pan p{font:400 clamp(1.02rem,1.35vw,1.4rem)/1.5 var(--dz-sans);color:#ddd2c1;max-width:34em;text-wrap:pretty}
+html.t-dz #pan .adm,html.t-dz #pan .sch{font-size:clamp(.85rem,1vw,1rem);color:var(--dz-mut)}
+html.t-dz #pan ul{margin-top:10px}
+html.t-dz #pan li{background:none;border:0;border-top:1px solid var(--dz-ln);border-radius:0;margin:0;padding:14px 0 12px;gap:1em;font:400 clamp(1.02rem,1.35vw,1.4rem)/1.45 var(--dz-sans);color:var(--dz-bone)}
+html.t-dz #pan li:last-child{border-bottom:1px solid var(--dz-ln)}
+html.t-dz #pan li:before{font:italic 400 1.05em/1.3 var(--dz-serif);color:var(--c);min-width:1.6em}
+html.t-dz #pan .ask{background:none;border:0;border-left:2px solid var(--dz-och);border-radius:0;padding:4px 0 4px 16px;margin-top:20px;font:italic 400 clamp(1.05rem,1.45vw,1.5rem)/1.4 var(--dz-serif);color:#e6cfa9}
+html.t-dz #pan .ask b{font-weight:500;color:var(--dz-bone)}
+html.t-dz #pan .w span{background:none;border:1px solid var(--c);color:var(--dz-bone);font-weight:500}
+/* виріб регіону — на постаменті під світлом */
+html.t-dz .pic{border-radius:4px;padding:22px;background:radial-gradient(55% 60% at 50% 40%,rgba(255,226,182,.14),transparent 72%),linear-gradient(180deg,#221b16,#1a1411);border:1px solid var(--dz-ln)}
+html.t-dz .pic img{border-radius:3px;box-shadow:0 22px 40px -18px rgba(0,0,0,.8)}
+html.t-dz .pic svg{filter:drop-shadow(0 16px 18px rgba(0,0,0,.5))}
+/* картинки вступу й технології */
+html.t-dz #kart::before{content:"";position:absolute;inset:8% 6% 14%;z-index:-1;background:radial-gradient(48% 46% at 50% 52%,rgba(255,220,170,.12),transparent 72%)}
+html.t-dz #kart figcaption{font:italic 400 clamp(1rem,1.35vw,1.35rem)/1.4 var(--dz-serif);color:var(--dz-mut)}
+html.t-dz #kart img.ph{border-radius:4px;border:0;box-shadow:0 30px 60px -20px rgba(0,0,0,.85)}
+/* підказка, кнопки, смуга прогресу */
+html.t-dz #hint{font:400 clamp(.95rem,1.2vw,1.2rem) var(--dz-sans);color:var(--dz-mut);letter-spacing:.01em}
+html.t-dz #ctl button,html.t-dz #menu,html.t-dz #phone-mode,html.t-dz #home-link{background:rgba(29,23,19,.75);border:1px solid var(--dz-ln);color:var(--dz-bone)}
+html.t-dz #bar{height:2px;background:rgba(239,229,212,.08)}html.t-dz #bar i{background:var(--dz-och)}
+/* «Маршрут N з 9» — тонко, без плашки */
+html.t-dz #mchip{background:none;border:0;padding:0;gap:14px;font:400 17px/1 var(--dz-serif);color:var(--dz-bone)}
+html.t-dz #mchip b{font:italic 400 16px var(--dz-serif);letter-spacing:0;text-transform:none;color:var(--dz-och)}
+html.t-dz #mchip i{height:1px;width:140px;background:linear-gradient(90deg,var(--dz-och) calc(var(--p) * 100%),rgba(239,229,212,.22) 0)}
+html.t-dz #mroute .mr-done{stroke:var(--dz-och);filter:none}
+html.t-dz #mroute .mr-all{stroke:var(--dz-bone);opacity:.35}
+html.t-dz #mroute .mst .here{stroke:var(--dz-och)}
+html.t-dz #mroute .stamp circle{fill:rgba(21,16,13,.7);stroke:var(--dz-och)}
+html.t-dz #mroute .stamp path{stroke:var(--dz-och)}
+html.t-dz #mcomp{opacity:.4}
+html.t-dz #mcomp .n,html.t-dz #mcomp text{fill:var(--dz-och)}
+/* телефон і вертикальний екран */
+@media(max-aspect-ratio:1/1){
+  html.t-dz #pan{width:auto;padding:14px 20px 84px;background:linear-gradient(0deg,rgba(21,16,13,.97) 74%,transparent)}
+  html.t-dz #pan h2{font-size:2rem}html.t-dz #pan h2.sm{font-size:1.5rem}
+  html.t-dz #pan p,html.t-dz #pan li{font-size:1.02rem}
+  html.t-dz #pan .dz-n{margin-bottom:10px}
+  html.t-dz #ttl.big{left:22px;right:22px;top:30%;font-size:clamp(3rem,16vw,6rem)}
+  #dzhero{left:6vw;right:6vw;width:auto;bottom:16vh}
+  html.t-dz #mchip{font-size:14px;gap:8px}html.t-dz #mchip b{font-size:13px}html.t-dz #mchip i{width:56px}
+}
+@media(max-width:530px){html.t-dz #ttl:not(.big){left:12px;top:58px;font-size:1rem}}
+@media(prefers-reduced-motion:reduce){#dzhero{transition:none}}
