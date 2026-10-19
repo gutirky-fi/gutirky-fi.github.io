@@ -2,7 +2,9 @@
 """Збирає сайт «Бібліотека гутірок» в один файл: бібліотека + каталог вмілостей + гутірка «Кераміка України» (2 версії) + пульт.
 
 Запуск (з будь-якої папки):
-    python3 _robota/build.py                 -> записує ../index.html (готовий сайт, з noindex)
+    python3 _robota/build.py                 -> записує ../biblioteka/index.html (бібліотека на сайті, з noindex)
+    З 19.10.2026 головна сторінка сайту — «кілька входів» (python3 _robota/proby/vhody/zibraty.py sait);
+    бібліотека переїхала на /biblioteka/, її «Бібліотека» в меню веде назад у «Виховники» (../#vyh).
 Змінні середовища (необовʼязково):
     OUT=шлях          куди записати результат
     SHELL_NAME=shell_file   стара оболонка (дизайн до Д1); за замовчуванням shell_d1 (поточний дизайн Д1)
@@ -15,7 +17,10 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PULT_URL = os.environ.get('PULT_URL', 'https://gutirky-fi.github.io/pult/')
 
 SRC = os.path.join(HERE, 'gutirky', 'keramika', 'index.html')   # гутірка «Кераміка України» (повна; вишкіл — той самий код з MODE="short")
-OUT = os.environ.get('OUT', os.path.join(HERE, '..', 'index.html'))
+if 'OUT' not in os.environ:   # справжній сайт: бібліотека на /biblioteka/, «назад» — у «Виховники»
+    os.makedirs(os.path.join(HERE, '..', 'biblioteka'), exist_ok=True)
+    os.environ.setdefault('HOME_URL', '../#vyh'); os.environ.setdefault('HOME_LABEL', 'Виховники')
+OUT = os.environ.get('OUT', os.path.join(HERE, '..', 'biblioteka', 'index.html'))
 D = os.path.join(HERE, 'src') + os.sep
 
 

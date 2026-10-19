@@ -568,6 +568,9 @@ const MAT = { 'budova-litalnyh-aparativ-i': { lvl: 'І', d: 'Види літал
   vyv: 'yunakam/budova-la-1/#vyvchy', test: 'yunakam/budova-la-1/#test' },
   'keramika-i': { lvl: 'І', d: 'Історія виробів з глини, техніки формотворення, шість видів кераміки, музей і три вироби власноруч.',
   vyv: 'yunakam/keramika-1/#vyvchy', test: 'yunakam/keramika-1/#test' } };
+/* справжній сайт: збирач передає window.SAIT_HIDE = { mat: [рівні], gut: [назви] } — чого там ще немає (нові гутірки — після перевірки) */
+const HIDE = window.SAIT_HIDE || { mat: [], gut: [] };
+HIDE.mat.forEach(k => { delete MAT[k]; });
 const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
   const levels = lv.map(([label, slug]) => ({ label, slug, url: PF + slug }));
   const ml = levels.find(l => MAT[l.slug]);
@@ -599,6 +602,7 @@ $('#mine').addEventListener('click', e => {
 });
 function renderMat() {
   const list = SKILLS.filter(s => s.mat);
+  $('#mat').closest('section').hidden = !list.length;   /* порожньо — розділ не показуємо */
   $('#mat').innerHTML = list.map(s => `<div class="featv">${pic(s.img, s.n, 'lg')}<div><h3>${esc(s.n)} ${esc(s.mat.lvl)}</h3><p>${esc(s.mat.d)}</p>
     ${ySeg(s)}<div class="btns">${yBtns(s)}</div></div></div>`).join('');
 }
@@ -618,7 +622,7 @@ function renderChips() {
   const ord = SKILL_SPECS.slice().sort((a, b) => (cnt[b] || 0) - (cnt[a] || 0) || a.localeCompare(b, 'uk'));
   let shown = MORE ? ord : ord.slice(0, 3); if (SP && !shown.includes(SP)) shown = shown.concat(SP);
   const nMine = Object.keys(MINE).length;
-  const ch = [['', '', 'Усі', SKILLS.length], ['mine', '', 'Мої', nMine], ['mat', '', 'Є матеріали', SKILLS.filter(s => s.mat).length], ...shown.map(x => ['', x, x, cnt[x] || 0])];
+  const ch = [['', '', 'Усі', SKILLS.length], ['mine', '', 'Мої', nMine], ...(SKILLS.some(s => s.mat) ? [['mat', '', 'Є матеріали', SKILLS.filter(s => s.mat).length]] : []), ...shown.map(x => ['', x, x, cnt[x] || 0])];
   $('#chips').innerHTML = ch.map(([f, sp, l, n]) => `<button type="button" data-f="${f}" data-sp="${esc(sp)}" aria-pressed="${f === F && sp === SP}">${esc(l)}<span class="n">${n}</span></button>`).join('')
     + (MORE ? '<button type="button" data-more="0">Згорнути ▴</button>' : `<button type="button" data-more="1">Ще ${ord.length - shown.length} ▾</button>`);
 }
@@ -718,6 +722,10 @@ const GV = {
     ['Відвідати виставку кераміки або музей', 'task', ''],
     ['Виконати три вироби власноруч', 'task', '']] }]
 };
+HIDE.gut.forEach(t => {
+  const i = GUT.findIndex(g => g.t === t); if (i >= 0) GUT.splice(i, 1);
+  Object.keys(GV).forEach(k => { GV[k] = GV[k].filter(x => x.t !== t); if (!GV[k].length) delete GV[k]; });
+});
 const ALSO = [
   ['#yun', 'Усе для юнацтва', 'Вмілості, «Вивчай сам», «Перевір себе» — те саме, що бачать юнаки.', 'Відкрити', COL.yun],
   ['#vsi', 'Для всіх', 'Підказки, співаник, цікаве.', 'Відкрити', COL.vsi],
@@ -933,6 +941,7 @@ addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!$('#shee
 const VIEWS = ['home', 'vsi', 'yun', 'vyh'];
 function route() {
   const h = location.hash.slice(1), v = VIEWS.includes(h) ? h : 'home';
+  if (window.SAIT_OLD && ((h && v === 'home') || /[?&]c=\d/.test(location.search))) { location.replace(window.SAIT_OLD + location.search + location.hash); return; }   /* старі посилання бібліотеки */
   closeSheet();
   VIEWS.forEach(x => { $('#v-' + x).hidden = x !== v; });
   document.documentElement.style.setProperty('--a', COL[v]);

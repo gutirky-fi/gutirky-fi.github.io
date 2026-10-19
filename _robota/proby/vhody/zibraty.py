@@ -1,9 +1,10 @@
-"""Макет «Один сайт — кілька входів» (для перегляду власником, 14.10.2026).
-   python3 _robota/proby/vhody/zibraty.py   ->  proba/vhody/index.html  (усе в одному файлі)
+"""Сайт «Один сайт — кілька входів» (макет з 14.10.2026; на справжньому сайті — з 19.10.2026).
+   python3 _robota/proby/vhody/zibraty.py sait  ->  СПРАВЖНІЙ САЙТ: index.html (входи) + biblioteka/index.html (бібліотека з «Керамікою України»)
+   python3 _robota/proby/vhody/zibraty.py       ->  макет proba/vhody/index.html  (усе в одному файлі)
    Поруч збирає копії справжніх сторінок, з яких «назад» веде в макет:
      proba/vhody/gutirky/budova-la-1/, proba/vhody/yunakam/budova-la-1/, proba/vhody/skob/  (zibraty.py гутірки, режим vhody)
      proba/vhody/biblioteka/  — «Кераміка» (build.py з HOME_URL=../#vyh: замість бібліотеки — назад у макет)"""
-import pathlib, base64, os, subprocess, sys
+import pathlib, base64, os, subprocess, sys, json
 TUT = pathlib.Path(__file__).parent
 ROB = TUT.parent.parent
 SITE = ROB.parent
@@ -27,6 +28,21 @@ for k, f in [('{{LA_ART}}', 'budova-la-1.webp'), ('{{K1_ART}}', 'keramika-1.webp
     assert k in src, k
     src = src.replace(k, uri(D / 'img' / f, 'image/webp'))
 assert 'noindex' in src and '{{' not in src.replace('${{', '')
+if len(sys.argv) > 1 and sys.argv[1] == 'sait':
+    # справжній сайт: без смужки «макет»; нові гутірки й матеріали до них — поки сховані (додамо після перевірки)
+    src = rep(src, '<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>', '')
+    src = rep(src, '<title>Пластова бібліотека — макет</title>', '<title>Пластова бібліотека</title>')
+    src = rep(src, ' <b>У макеті код — 1912.</b>', '')
+    src = src.replace("'proba-vhody:", "'gutirky:")
+    hide = {'mat': ['budova-litalnyh-aparativ-i', 'keramika-i'], 'gut': ['Будова літальних апаратів І', 'Кераміка І']}
+    pre = '<script>window.SAIT_HIDE = ' + json.dumps(hide, ensure_ascii=False) + "; window.SAIT_OLD = 'biblioteka/';</script>\n"
+    i = src.index('<script'); src = src[:i] + pre + src[i:]
+    assert 'proba-vhody' not in src and 'ribbon">Макет' not in src
+    (SITE / 'index.html').write_text(src, encoding='utf-8')
+    print('   index.html', len(src) // 1024, 'КБ')
+    env = dict(os.environ); [env.pop(k, None) for k in ('OUT', 'PREVIEW', 'HOME_URL', 'HOME_LABEL')]
+    subprocess.run([sys.executable, str(ROB / 'build.py')], check=True, env=env)   # -> biblioteka/index.html
+    sys.exit(0)
 out = SITE / 'proba' / 'vhody' / 'index.html'
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(src, encoding='utf-8')

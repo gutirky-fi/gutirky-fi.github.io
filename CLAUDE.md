@@ -4,7 +4,7 @@
 
 Коротко:
 - Власник — пластовий виховник (Пласт у Фінляндії), не програміст. Відповідати українською, просто, покроково, з готовими посиланнями.
-- `index.html` не правити руками: він збирається з `_robota/` командою `python3 _robota/build.py`. Перевірка: `python3 _robota/perevirka/perevirka.py`.
+- `index.html` і `biblioteka/index.html` не правити руками. З 19.10.2026 сайт — «кілька входів»: `python3 _robota/proby/vhody/zibraty.py sait` збирає головну `index.html` і (через `_robota/build.py`) бібліотеку `biblioteka/index.html`. Перевірка: `python3 _robota/perevirka/perevirka.py`. Стара версія сайту — гілка `stara-versiya-19-10` (як повернути — у `_robota/PROEKT.md`, журнал 19.10).
 - Публікація: commit + `git push origin HEAD:main`, дочекатися GitHub Pages (`gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs`).
 - Зміни дизайну — спершу показати (знімки або копія), ставити на сайт лише після згоди власника.
 - Сайт прихований (noindex + robots.txt) — не прибирати.

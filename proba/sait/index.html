@@ -1080,8 +1080,8 @@ next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:
         <div class="pd-code"></div>
       </div>
       <button class="pd-link" id="pd-site-edit" type="button" hidden>Змінити адресу пульта</button>
-      <div class="pd-site" hidden>Щоб зʼявився QR-код, один раз вставте адресу свого пульта — сайту на Netlify, куди ви закинули <b>pult-dlya-netlify.zip</b>:
-        <input type="url" id="pd-site" placeholder="https://назва.netlify.app" autocomplete="off" spellcheck="false">
+      <div class="pd-site" hidden>Щоб зʼявився QR-код, вставте адресу сторінки пульта (зазвичай <b>https://gutirky-fi.github.io/pult/</b>):
+        <input type="url" id="pd-site" placeholder="https://gutirky-fi.github.io/pult/" autocomplete="off" spellcheck="false">
         <button class="pd-b" id="pd-site-save" type="button">Зберегти адресу</button></div>
       <div class="pd-row">
         <button class="pd-b go" id="pd-go" type="button">Створити підключення</button>
@@ -1295,7 +1295,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   /* ---------------- вбудовані гутірки ---------------- */
   const BUILTIN = [{
     key: 'keramika', title: 'Кераміка України', icon: '🏺', accent: '#e8925b',
-    desc: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання до залу та вікторина на карті.',
+    desc: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання та вікторина на карті.',
     tags: ['кераміка', 'народні ремесла', 'історія', 'карта', 'вишкіл'],
     vars: [
       { mode: 'full', label: 'Повна гутірка', who: 'Юнацтво, 12–17 років', dur: '45–50 хв', accent: '#e8925b' },
