@@ -32,9 +32,11 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tabs a:hover{color:var(--ink)}
 .tabs a[aria-current=page]{background:var(--card2);border-color:var(--ln);color:var(--ink);box-shadow:inset 0 -3px 0 var(--t)}
 .tabs svg{width:14px;height:14px;flex:none}
+.tabs a.hm svg{width:17px;height:17px}
 @media (max-width:700px){
   .top{padding-top:14px}.logo img{height:46px}
-  .tabs{order:3;flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:99px;background:#14171a;border:1px solid var(--ln)}
+  .tabs{order:3;flex:1 1 100%;display:grid;grid-template-columns:44px repeat(3,1fr);gap:4px;padding:4px;border-radius:99px;background:#14171a;border:1px solid var(--ln)}
+  .tabs a.hm span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .tabs a{padding:9px 4px;font-size:14px}
 }
 
@@ -347,6 +349,7 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
   <header class="top">
     <a class="logo" href="#" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
     <nav class="tabs" aria-label="Входи">
+      <a href="#" data-r="home" class="hm" style="--t:#f2f4f6" aria-label="Головна"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>Головна</span></a>
       <a href="#vsi" data-r="vsi" style="--t:#c9cfd6">Для всіх</a>
       <a href="#yun" data-r="yun" style="--t:#c8284a">Юнацтво</a>
       <a href="#vyh" data-r="vyh" style="--t:#3daf6e">Виховники<span id="lk"></span></a>
@@ -916,7 +919,7 @@ $('#lockbox').addEventListener('submit', e => {
   if (v === CODE) { UNLOCK = true; store.set(K_CODE, true); $('#cerr').hidden = true; $('#code').value = ''; renderVyh(); }
   else { $('#cerr').hidden = false; $('#code').select(); }
 });
-$('#leave').addEventListener('click', () => { UNLOCK = false; store.del(K_CODE); renderVyh(); scrollTo(0, 0); });
+$('#leave').addEventListener('click', () => { UNLOCK = false; store.del(K_CODE); try { history.pushState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; } route(); });   /* вийшов — на головну, не на екран з кодом */
 $('#also').addEventListener('click', e => {
   if (!e.target.closest('[data-also=skob]')) return;
   sheet(`<h3 id="sh-t">Потужний СКОБ!</h3><p class="sub">Своя гра на зразок Kahoot — без реєстрації й реклами, нічого не збирає.</p>
