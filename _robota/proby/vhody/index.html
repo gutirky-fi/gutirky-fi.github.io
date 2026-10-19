@@ -362,10 +362,26 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 /* підкреслення поточної вкладки — однакова рівна риска для всіх */
 .tabs a[aria-current=page]{box-shadow:none;background:linear-gradient(var(--t),var(--t)) center calc(100% - 1px)/calc(100% - 28px) 3px no-repeat,var(--card2)}
 .tabs a[data-r=vsi][aria-current=page]{background:var(--all4) center calc(100% - 1px)/calc(100% - 28px) 3px no-repeat,var(--card2)}
+
+/* ---- варіант для порівняння (лише в макеті): «заокруглені» смужки — товста верхня межа, що загинається по кутах; чотирикольорова — так само ---- */
+html.r-old .door,html.r-old .tile,html.r-old .featv,html.r-old .lockbox,html.r-old #sheet .pn,html.r-old .badge.mat{border:1px solid transparent;border-top-width:5px;
+  background:linear-gradient(var(--card),var(--card)) padding-box,var(--sbg) top/100% 5px no-repeat border-box,linear-gradient(var(--ln),var(--ln)) border-box}
+html.r-old .tile,html.r-old .badge.mat{border-top-width:4px;background:linear-gradient(var(--card),var(--card)) padding-box,var(--sbg) top/100% 4px no-repeat border-box,linear-gradient(var(--ln),var(--ln)) border-box}
+html.r-old .door{padding-top:24px}html.r-old .tile{padding-top:20px}html.r-old .badge.mat{padding-top:20px}html.r-old .featv{padding-top:22px}html.r-old #sheet .pn,html.r-old .lockbox{padding-top:26px}
+html.r-old .door:hover,html.r-old .tile:hover{border-color:transparent}
+html.r-old .tabs a[aria-current=page]{background:linear-gradient(var(--card2),var(--card2)) padding-box,linear-gradient(var(--t),var(--t)) bottom/100% 3px no-repeat border-box,linear-gradient(var(--ln),var(--ln)) border-box;border:1px solid transparent;border-bottom-width:3px}
+html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var(--card2),var(--card2)) padding-box,var(--all4) bottom/100% 3px no-repeat border-box,linear-gradient(var(--ln),var(--ln)) border-box}
+#cmpk{position:fixed;z-index:60;right:14px;bottom:14px;display:flex;gap:4px;padding:4px;border-radius:99px;background:#101214;border:1px solid var(--ln);box-shadow:0 8px 30px rgba(0,0,0,.5)}
+#cmpk b{align-self:center;padding:0 8px 0 10px;font:600 13px var(--txt);color:var(--mut)}
+#cmpk button{padding:8px 14px;border-radius:99px;border:0;background:none;color:var(--mut);font:700 14px var(--txt);cursor:pointer}
+#cmpk button[aria-pressed=true]{background:var(--card2);color:var(--ink)}
 </style>
 </head>
 <body>
 <div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>
+<div id="cmpk" role="group" aria-label="Порівняти смужки"><b>Смужки:</b><button type="button" data-k="">рівні</button><button type="button" data-k="r-old">заокруглені</button></div>
+<script>(function () { const set = k => { document.documentElement.classList.toggle('r-old', k === 'r-old'); document.querySelectorAll('#cmpk button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k))); };
+  set(/kuty=zaokr/.test(location.search) ? 'r-old' : ''); document.getElementById('cmpk').addEventListener('click', e => { const b = e.target.closest('button'); if (b) set(b.dataset.k); }); })();</script>
 <div class="wrap">
   <header class="top">
     <a class="logo" href="#" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>

@@ -31,6 +31,7 @@ assert 'noindex' in src and '{{' not in src.replace('${{', '')
 if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     # справжній сайт: без смужки «макет»; нові гутірки й матеріали до них — поки сховані (додамо після перевірки)
     src = rep(src, '<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>', '')
+    i = src.index('<div id="cmpk"'); j = src.index('</script>', i) + len('</script>'); src = src[:i] + src[j:]   # перемикач порівняння смужок — лише в макеті
     src = rep(src, '<title>Пластова бібліотека — макет</title>', '<title>Пластова бібліотека</title>')
     src = rep(src, ' <b>У макеті код — 1912.</b>', '')
     src = src.replace("'proba-vhody:", "'gutirky:")
