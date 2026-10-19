@@ -49,7 +49,7 @@
 #pres.t-gn .tl span{font:700 clamp(1.1rem,1.7vw,2rem)/1 var(--hand);color:var(--mut)}
 #pres.t-gn .tl.cur span{color:var(--sacT);font-size:clamp(1.3rem,2.1vw,2.4rem)}
 #pres.t-gn .tl small{margin-top:-.3em;font:700 clamp(.6rem,.85vw,.95rem)/1 var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--sacT)}
-#pres.t-gn .gsec blockquote{margin:0;max-width:38ch;font-size:clamp(1.25rem,2.5vw,2.6rem);line-height:1.3;color:var(--ink);text-wrap:balance}
+#pres.t-gn .gsec blockquote{margin:0;max-width:44ch;font-size:clamp(1.15rem,min(2.2vw,3.6vh),2.4rem);line-height:1.3;color:var(--ink);text-wrap:balance}
 @media (max-width:760px){#pres.t-gn .tiles{gap:8px}#pres.t-gn .tl i{width:14vw;height:14vw;font-size:6vw}#pres.t-gn .tl.cur i{width:19vw;height:19vw;font-size:10vw}#pres.t-gn .tl span{font-size:1rem}#pres.t-gn .tl small{display:none}}
 /* ---------- 19.10.2026, правки власника ---------- */
 /* титулка: полиця з виробами замість 3D-вази */
@@ -105,3 +105,30 @@ html[data-dir=back]::view-transition-new(root){animation-name:gvInB}
 #toc.t-gn .ti.gm{border-style:dashed}
 #toc.t-gn .ti.on{background:#e07a45;border-color:#e07a45;color:#fff}
 @media (max-width:560px){#toc.t-gn .tis{padding-left:10px}}
+/* ---------- полиця з виробами замість плиток (19.10.2026) ---------- */
+#pres.t-gn .gshelf{width:min(100%,calc(44vh * 1000 / 320));height:auto;display:block;margin:0 auto;overflow:visible}
+#pres.t-gn .gplan .gshelf{width:100%}
+#pres.t-gn .gshelf .mo{fill:#2a1a10;opacity:.85}
+#pres.t-gn .gshelf .ves.raw .mo{fill:#7d6a52;opacity:.7}
+#pres.t-gn .gshelf .ear{fill:none;stroke-width:9;stroke-linecap:round}
+#pres.t-gn .gshelf .raw .ear{stroke:#c8b292}#pres.t-gn .gshelf .cur .ear{stroke:#c9643a}#pres.t-gn .gshelf .done .ear{stroke:#3f9a70}
+#pres.t-gn .gshelf .over .ear{stroke:#c9643a}
+#pres.t-gn .gshelf .ves.raw{opacity:.62}
+#pres.t-gn .gshelf .shine{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;opacity:.55}
+#pres.t-gn .gshelf text{text-anchor:middle}
+#pres.t-gn .gshelf .nm{font:850 30px Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;fill:var(--mut)}
+#pres.t-gn .gshelf .nm.on{fill:var(--sacT);font-size:36px}
+#pres.t-gn .gshelf .lb{font:700 26px var(--hand);fill:var(--mut)}
+#pres.t-gn .gshelf .lb.on{fill:var(--sacT);font-size:30px}
+#pres.t-gn .gshelf .pt{font:700 13px var(--txt);letter-spacing:.12em;text-transform:uppercase;fill:var(--sacT);opacity:.85}
+/* поява: вироби встають по черзі, поточний «виростає» на крузі, круг крутиться, щойно пройдений вкривається глазур'ю */
+#pres.t-gn .gshelf .ves{transform-box:fill-box;transform-origin:50% 100%;animation:gsIn .55s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:calc(var(--i) * 80ms + 60ms)}
+#pres.t-gn .gshelf .ves.cur{animation:gsGrow 1.3s .35s cubic-bezier(.25,.9,.25,1) both}
+#pres.t-gn .gshelf .spin{stroke-dasharray:14 22;animation:gsSpin 1.1s linear infinite}
+#pres.t-gn .gshelf .over{animation:gsGlaze 1.3s .5s ease both}
+@keyframes gsIn{from{opacity:0;transform:translateY(16px)}}
+@keyframes gsGrow{0%{transform:scale(1.35,.18)}55%{transform:scale(.94,1.06)}100%{transform:none}}
+@keyframes gsSpin{to{stroke-dashoffset:-72}}
+@keyframes gsGlaze{to{opacity:0}}
+#toc.t-gn .th i{border-radius:50%}
+@media (max-height:520px){#pres.t-gn .gshelf{width:min(100%,calc(30vh * 1000 / 320))}#pres.t-gn .gsec{gap:8px}#pres.t-gn .gsec blockquote{font-size:clamp(.95rem,4.2vh,1.3rem)}#pres.t-gn .gsec .gtag{display:none}}

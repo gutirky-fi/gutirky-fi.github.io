@@ -19,6 +19,49 @@
       return `<div class="tl${c}${isPr(D, k) ? ' pr' : ''}" style="--i:${i}"><i>${k}</i><span>${KR[k] || ''}</span>${isPr(D, k) ? '<small>практика</small>' : ''}</div>`;
     }).join('');
   }
+  /* полиця з п'ятьма виробами — по одному на точку вимог: сира глина → на крузі (поточна, «виростає») → у глазурі (пройдена) */
+  const VES = [   // профіль [висота 0..1, радіус], висота виробу, вушко
+    { p: [[0, 24], [.08, 36], [.3, 48], [.52, 50], [.74, 40], [.86, 30], [.92, 31], [.97, 34], [1, 33]], h: 104 },          // горщик
+    { p: [[0, 20], [.1, 30], [.35, 38], [.55, 34], [.72, 20], [.85, 15], [.95, 18], [1, 21]], h: 150, ear: 1 },           // глечик
+    { p: [[0, 18], [.08, 24], [.45, 31], [.85, 34], [1, 35]], h: 82, ear: 2 },                                              // чашка
+    { p: [[0, 15], [.07, 18], [.3, 30], [.5, 32], [.7, 21], [.86, 14], [1, 19]], h: 160 },                                  // ваза
+    { p: [[0, 18], [.15, 34], [.45, 46], [.8, 52], [1, 54]], h: 58 }                                                        // миска
+  ];
+  const f1 = n => Math.round(n * 10) / 10;
+  function cr(pts) { let d = ''; for (let i = 0; i < pts.length - 1; i++) { const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    d += ` C${f1(p1[0] + (p2[0] - p0[0]) / 6)},${f1(p1[1] + (p2[1] - p0[1]) / 6)} ${f1(p2[0] - (p3[0] - p1[0]) / 6)},${f1(p2[1] - (p3[1] - p1[1]) / 6)} ${f1(p2[0])},${f1(p2[1])}`; } return d; }
+  function vessel(v, cx, by) {
+    const L = v.p.map(([t, r]) => [cx - r, by - t * v.h]), R = v.p.map(([t, r]) => [cx + r, by - t * v.h]).reverse();
+    let d = `M${f1(L[0][0])},${f1(L[0][1])}${cr(L)} L${f1(R[0][0])},${f1(R[0][1])}${cr(R)} Z`;
+    const top = v.p[v.p.length - 1], ty = by - v.h, mouth = `<ellipse cx="${cx}" cy="${f1(ty)}" rx="${top[1]}" ry="${f1(top[1] * .22)}" class="mo"/>`;
+    let ear = '';
+    if (v.ear) { const a = v.p[v.ear === 1 ? 6 : 3], b = v.p[v.ear === 1 ? 3 : 1], ya = by - a[0] * v.h, yb = by - b[0] * v.h, xa = cx + a[1], xb = cx + b[1];
+      ear = `<path d="M${xa},${f1(ya)} C${xa + 30},${f1(ya - 4)} ${xb + 30},${f1(yb - 2)} ${xb},${f1(yb)}" class="ear"/>`; }
+    return { body: `<path d="${d}"/>`, mouth, ear };
+  }
+  function shelf(D, n, mode) {
+    const X = [110, 305, 500, 695, 890], BY = 196;
+    let g = `<defs><linearGradient id="gs-raw" x1="0" x2="1"><stop offset="0" stop-color="#b9a283"/><stop offset=".45" stop-color="#e4d2b8"/><stop offset="1" stop-color="#a48c6c"/></linearGradient>` +
+      `<linearGradient id="gs-cl" x1="0" x2="1"><stop offset="0" stop-color="#9c4220"/><stop offset=".4" stop-color="#f08c52"/><stop offset="1" stop-color="#8a3a1c"/></linearGradient>` +
+      `<linearGradient id="gs-gl" x1="0" x2="1"><stop offset="0" stop-color="#1f6b4b"/><stop offset=".4" stop-color="#6cc49a"/><stop offset="1" stop-color="#1c5a40"/></linearGradient>` +
+      `<linearGradient id="gs-wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a5a37"/><stop offset="1" stop-color="#4a2c18"/></linearGradient>` +
+      `<radialGradient id="gs-glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#f08c52" stop-opacity=".55"/><stop offset="1" stop-color="#f08c52" stop-opacity="0"/></radialGradient></defs>` +
+      `<rect x="10" y="${BY + 6}" width="980" height="16" rx="4" fill="url(#gs-wood)"/><rect x="10" y="${BY + 22}" width="980" height="6" fill="#000" opacity=".25"/>`;
+    X.forEach((x, k) => {
+      const num = k + 1, pr = isPr(D, num), st = mode === 'plan' ? 'raw' : num === n ? 'cur' : num < n ? 'done' : 'raw', was = mode !== 'plan' && num === n - 1;
+      const v = vessel(VES[k], x, BY + (st === 'cur' ? -10 : 0)), fill = st === 'done' ? 'url(#gs-gl)' : st === 'cur' ? 'url(#gs-cl)' : 'url(#gs-raw)';
+      let it = '';
+      if (st === 'cur') it += `<ellipse cx="${x}" cy="${BY - 40}" rx="120" ry="95" fill="url(#gs-glow)"/>` +
+        `<ellipse cx="${x}" cy="${BY - 4}" rx="74" ry="13" fill="#15100c" stroke="#ffc247" stroke-width="2"/><ellipse cx="${x}" cy="${BY - 4}" rx="58" ry="9" fill="none" stroke="#ffe08a" stroke-width="2" class="spin"/>`;
+      it += `<g class="ves ${st}${was ? ' was' : ''}${pr ? ' pr' : ''}" style="--i:${k}"><g fill="${fill}">${v.ear}${v.body}</g>` +
+        (was ? `<g class="over" fill="url(#gs-cl)">${v.ear}${v.body}</g>` : '') + v.mouth +
+        (st === 'done' ? `<path d="M${x - VES[k].p[2][1] * .55},${BY - VES[k].h * .7} q-4,${VES[k].h * .25} 2,${VES[k].h * .45}" class="shine"/>` : '') + '</g>';
+      it += `<text x="${x}" y="${BY + 62}" class="nm${st === 'cur' ? ' on' : ''}">${num}</text><text x="${x}" y="${BY + 92}" class="lb${st === 'cur' ? ' on' : ''}">${KR[num]}</text>` +
+        (pr ? `<text x="${x}" y="${BY + 114}" class="pt">практика</text>` : '');
+      g += it;
+    });
+    return `<svg class="gshelf" viewBox="0 0 1000 320" aria-hidden="true">${g}</svg>`;
+  }
   const ptsHtml = s => s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
   window.GUT_TEMA = {
     no3d: true, vt: true,
@@ -30,9 +73,9 @@
           `<div class="meta"><span><b>5</b> вимог вмілості</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>` };
     },
     /* «Про що гутірка»: замість малюнка — ті самі п’ять плиток, що далі світитимуться по черзі */
-    plan(s, D) { return { a: `<div class="gplan"><div class="tiles">${tiles(D, 0, 'plan')}</div><p>п’ять точок — п’ять плиток: пройдені вкриваються глазур’ю</p></div>` }; },
+    plan(s, D) { return { a: `<div class="gplan">${shelf(D, 0, 'plan')}<p>пʼять точок — пʼять виробів на полиці: пройдені вкриваються глазурʼю</p></div>` }; },
     sec(s, D) {
-      return `<div class="gsec"><span class="gtag">Вимога вмілості · точка ${s.n} з 5</span><div class="tiles" aria-hidden="true">${tiles(D, s.n)}</div><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`;
+      return `<div class="gsec"><span class="gtag">Вимога вмілості · точка ${s.n} з 5</span>${shelf(D, s.n)}<blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`;
     },
     /* «великий факт»: величезне число, рукописний підпис, далі — звичайні пункти */
     card(s) {
