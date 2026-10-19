@@ -394,6 +394,8 @@ const HOME = window.GUTIRKA_HOME;
 if (HOME) {
   const hb = $('#home-back'); hb.href = HOME.href; hb.textContent = '← ' + HOME.label; hb.classList.remove('for-v');
   $('#home-link').href = HOME.href; $('#home-link span').textContent = HOME.label;
+  /* план і «Для юнаків» відкривають з віконця гутірки на сайті — туди й повертаємось, а не на стартову сторінку гутірки */
+  ['#plan', '#yunakam'].forEach(id => { const b = document.querySelector(id + ' > .back'); if (b) { b.href = HOME.href; b.textContent = '← ' + HOME.label; } });
 }
 const YUN_URL = new URL(window.GUTIRKA_YUN_URL || '#vyvchy', location.href).href.replace(/#$/, '');
 const qrBox = (sel, url, px) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px); el.dataset.for = url; } };
