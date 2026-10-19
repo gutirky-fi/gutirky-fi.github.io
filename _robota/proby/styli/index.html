@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#15171b">
+<title>Стилі гутірок</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Commissioner:wght,FLAR,VOLM@100..900,0..100,0..100&family=Fira+Sans+Condensed:wght@500;600&family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=Unbounded:wght@500;700;900&display=swap">
+<style>
+/* Показ «Стилі гутірок»: та сама гутірка — у своєму стилі (родина однакова, характер свій).
+   Слайди — живий HTML 16:9, усі розміри в cqw (частки ширини слайда), тож вони однаково виглядають і в мініатюрі, і на весь екран. */
+:root{color-scheme:dark;--bg:#15171b;--card:#1f2328;--ln:#33383f;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--vyh:#3daf6e;--ac:#2fd2c0;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt)}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #e6e9ed;outline-offset:3px}
+.rib{padding:7px 14px;background:#cfd5dc;color:#16181c;text-align:center;font-weight:700;font-size:14px}.rib a{margin-left:10px;white-space:nowrap}
+.wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 16px}
+header.wrap{padding-top:34px}
+h1.pg{margin:0;font:600 clamp(40px,7vw,72px)/.98 var(--disp);letter-spacing:.01em;text-transform:uppercase}
+.hand{margin:8px 0 0;font:500 clamp(24px,3vw,32px)/1.1 var(--hand);color:var(--ac)}
+.lede{max-width:66ch;margin:18px 0 0;color:var(--body);font-size:18px}
+.same{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:26px}
+.same>div{padding:18px 20px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+.same h2{margin:0 0 8px;font:600 20px/1.1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.same ul{margin:0;padding-left:1.15em;color:var(--body)}.same li{margin:4px 0}
+section.st{margin-top:56px}
+.st-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0 0 6px}
+.st-h h2{margin:0;font:600 clamp(26px,3.4vw,36px)/1.05 var(--disp);letter-spacing:.02em;text-transform:uppercase}
+.st-h .nm{padding:3px 12px;border-radius:99px;border:1px solid var(--ln);font-weight:700;font-size:15px;color:var(--body)}
+.idea{max-width:70ch;margin:0 0 18px;color:var(--body)}
+.row-l{margin:22px 0 10px;font:600 14px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.now{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.now img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--ln);opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+figure{margin:0}
+figcaption{margin-top:8px;color:var(--mut);font-size:15px}figcaption b{color:var(--body)}
+.how{margin:56px 0 0;padding:18px 20px;border-radius:16px;border:1px dashed var(--ln);color:var(--body)}
+.how b{color:var(--ink)}
+footer{padding:36px 16px 48px;color:var(--mut);font-size:14px}
+@media (max-width:760px){.same,.grid{grid-template-columns:1fr}.now{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}}
+
+/* ================= слайд: спільне для всієї родини ================= */
+.sl{position:relative;display:block;width:100%;aspect-ratio:16/9;container-type:inline-size;overflow:hidden;border-radius:10px;border:0;padding:0;text-align:left;cursor:zoom-in;font-family:var(--txt);color:var(--ink);isolation:isolate}
+.sl *{box-sizing:border-box}
+.sl .emb{position:absolute;z-index:3;top:2.3cqw;right:2.5cqw;width:2.1cqw;height:auto;opacity:.3}
+.sl .bar{position:absolute;z-index:3;left:0;bottom:0;height:.45cqw;width:var(--p,10%);background:var(--sac)}
+.sl .art svg{display:block;width:100%;height:100%}
+.sl p{margin:0}
+
+/* ================= стиль «Креслення» (Будова ЛА І) =================
+   аркуш технічного креслення: синя калька з сіткою, рамка, штамп у кутку; прогрес по точках — маршрут польоту */
+.bp{--ink:#eaf2ff;--mut:#93b1d1;--sac:#5cc8ff;--am:#ffb547;--lnb:rgba(140,200,255,.36);
+  background:
+    linear-gradient(rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5cqw 2.5cqw,
+    linear-gradient(90deg,rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5cqw 2.5cqw,
+    linear-gradient(rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5cqw 12.5cqw,
+    linear-gradient(90deg,rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5cqw 12.5cqw,
+    radial-gradient(120% 95% at 32% 38%,#16386a 0%,#0d2142 50%,#081529 100%)}
+.bp .frm{position:absolute;z-index:1;inset:1.7cqw;border:1px solid var(--lnb);pointer-events:none}
+.bp .frm::before{content:"";position:absolute;inset:.45cqw;border:1px solid rgba(140,200,255,.13)}
+.bp .stamp{position:absolute;z-index:2;right:1.7cqw;bottom:1.7cqw;display:flex;border-top:1px solid var(--lnb);border-left:1px solid var(--lnb);background:rgba(8,21,41,.82);font:600 .82cqw/1 'Fira Sans Condensed',var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.bp .stamp span{padding:.6cqw 1cqw;border-right:1px solid var(--lnb)}.bp .stamp span:last-child{border-right:0}
+.bp .stamp b{color:var(--ink);font-weight:600}
+.bp .ey{font:600 1.12cqw/1.2 'Fira Sans Condensed',var(--txt);letter-spacing:.22em;text-transform:uppercase;color:var(--sac)}
+.bp .hd{margin:0;font-family:Unbounded,var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:.01em}
+.bp .tags{display:flex;flex-wrap:wrap;gap:.8cqw}
+.bp .tags span{padding:.45cqw 1cqw;border:1px solid var(--lnb);font:600 1.05cqw/1 'Fira Sans Condensed',var(--txt);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.bp .ask{border:1px dashed rgba(255,181,71,.7);padding:1cqw 1.3cqw;background:rgba(255,181,71,.06);font-size:1.45cqw;line-height:1.35}
+.bp .ask b{display:block;margin-bottom:.3cqw;font:600 .95cqw 'Fira Sans Condensed',var(--txt);letter-spacing:.16em;text-transform:uppercase;color:var(--am)}
+/* титул */
+.a1-t{position:absolute;z-index:2;left:6cqw;top:50%;transform:translateY(-52%);width:47cqw;display:flex;flex-direction:column;gap:1.6cqw}
+.a1-t .hd{font-size:4.5cqw;line-height:1.02}
+.a1-t .hd em{font-style:normal;color:var(--sac)}
+.a1-t .sub{font-size:1.9cqw;color:var(--mut)}
+.a1-a{position:absolute;z-index:2;right:5cqw;top:7.5cqw;width:41cqw;height:41cqw}
+/* розділ: точка N з 5 — маршрут польоту */
+.a2-t{position:absolute;z-index:2;left:6cqw;top:6.5cqw;width:62cqw}
+.a2-n{display:flex;align-items:baseline;gap:1.2cqw;margin:.6cqw 0 1.4cqw}
+.a2-n b{font:900 13cqw/.9 Unbounded,var(--disp);color:transparent;-webkit-text-stroke:.22cqw var(--sac)}
+.a2-n span{font:700 3.6cqw Unbounded,var(--disp);color:var(--mut)}
+.a2-t p{font-size:2.45cqw;line-height:1.3;max-width:58cqw}
+.route{position:absolute;z-index:2;left:4.5cqw;right:4.5cqw;bottom:6.3cqw;height:15cqw}
+.route svg{width:100%;height:100%;overflow:visible}
+/* звичайний слайд: аркуш з малюнком і виносками */
+.a3-a{position:absolute;z-index:2;left:3.5cqw;top:6.5cqw;width:54cqw;height:38cqw}
+.a3-t{position:absolute;z-index:2;left:60cqw;top:6.4cqw;width:35.5cqw;display:flex;flex-direction:column;gap:1.1cqw}
+.a3-t .hd{font-size:2.55cqw;line-height:1.08}
+.a3-t ol{margin:.4cqw 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:.95cqw}
+.a3-t li{display:grid;grid-template-columns:2.4cqw minmax(0,1fr);gap:.9cqw;align-items:start;font-size:1.5cqw;line-height:1.28;color:#c9daf0}
+.a3-t li i{display:grid;place-items:center;width:2.4cqw;height:2.4cqw;border:1px solid var(--sac);border-radius:50%;font:600 1.2cqw 'Fira Sans Condensed',var(--txt);font-style:normal;color:var(--sac)}
+.a3-t li b{display:block;color:var(--ink);font-weight:700}
+.a3-ask{position:absolute;z-index:2;left:60cqw;bottom:7.6cqw;width:35.5cqw}
+/* великий факт */
+.a4-t{position:absolute;z-index:2;left:6cqw;top:7cqw;width:50cqw}
+.a4-t .d{font:600 2.1cqw 'Fira Sans Condensed',var(--txt);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.a4-t .big{display:block;margin:.2cqw 0 1.2cqw;font:900 15cqw/.86 Unbounded,var(--disp);color:var(--sac);letter-spacing:-.01em}
+.a4-t p{font-size:2.5cqw;line-height:1.3;max-width:48cqw}
+.a4-ph{position:absolute;z-index:2;right:5cqw;top:8cqw;width:36cqw;margin:0;padding:.6cqw;border:1px solid var(--lnb);background:rgba(8,21,41,.7)}
+.a4-ph img{display:block;width:100%;height:auto;filter:grayscale(1) contrast(1.05)}
+.a4-ph span{display:block;margin-top:.6cqw;font:600 .85cqw/1.3 'Fira Sans Condensed',var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.a4-dim{position:absolute;z-index:2;left:6cqw;right:6cqw;bottom:9.5cqw;height:5cqw}
+.a4-dim svg{width:100%;height:100%;overflow:visible}
+
+/* ================= стиль «Гончарня» (Кераміка І) =================
+   тепла майстерня ввечері: фактура глини, світло печі, ярлики й клеймо; прогрес по точках — плитки-проби, що вкриваються глазур’ю */
+.gn{--ink:#f7ecdf;--mut:#c9ad92;--sac:#e07a45;--gl:#5aa985;--bis:#e9d3b8;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .86 0 0 0 0 .72 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(70% 60% at 50% 112%,rgba(236,124,62,.30),transparent 62%),
+    radial-gradient(130% 100% at 45% 0%,#3a281d 0%,#261911 52%,#1a100a 100%)}
+.gn .hd{margin:0;font-family:Commissioner,var(--txt);font-weight:850;font-variation-settings:"FLAR" 100,"VOLM" 70;letter-spacing:-.005em;color:var(--ink)}
+.gn .tag{display:inline-flex;align-items:center;gap:.7cqw;align-self:flex-start;padding:.35cqw 1.1cqw .35cqw .7cqw;border-radius:.35cqw .35cqw .35cqw .35cqw;background:var(--bis);color:#3b2416;font:700 1.12cqw/1.25 var(--txt);box-shadow:0 .25cqw .6cqw rgba(0,0,0,.35)}
+.gn .tag::before{content:"";width:.75cqw;height:.75cqw;border-radius:50%;background:#2a1a10;box-shadow:inset 0 0 0 .12cqw rgba(0,0,0,.4)}
+.gn .hw{font:700 2.3cqw/1.1 var(--hand);color:#f0a173}
+.gn .chips{display:flex;flex-wrap:wrap;gap:.8cqw}
+.gn .chips span{padding:.45cqw 1.1cqw;border-radius:99px;background:rgba(247,236,223,.08);border:1px solid rgba(247,236,223,.18);font:600 1.15cqw/1 var(--txt);color:var(--ink)}
+.gn .ask{padding:1cqw 1.4cqw;border-radius:1cqw;background:rgba(247,236,223,.06);border:1px solid rgba(240,161,115,.45);font-size:1.5cqw;line-height:1.35}
+.gn .ask b{color:#f0a173}
+/* титул */
+.b1-t{position:absolute;z-index:2;left:6cqw;top:50%;transform:translateY(-54%);width:50cqw;display:flex;flex-direction:column;gap:1.5cqw}
+.b1-hd{font-size:9.6cqw;line-height:.9;text-transform:uppercase}
+.b1-h{display:flex;align-items:center;gap:1.6cqw}
+.stmp{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:7.4cqw;height:7.4cqw;border-radius:50%;border:.28cqw solid var(--sac);box-shadow:inset 0 0 0 .45cqw rgba(224,122,69,.16);color:var(--sac);font:800 3.6cqw/.9 Unbounded,var(--disp)}
+.stmp small{font:700 .85cqw/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.25cqw}
+.b1-a{position:absolute;z-index:2;right:3cqw;top:6cqw;width:44cqw;height:42cqw}
+/* розділ: точка N з 5 — плитки-проби */
+.b2-t{position:absolute;z-index:2;left:6cqw;top:6cqw}
+.tiles{position:absolute;z-index:2;left:6cqw;right:6cqw;top:13cqw;display:flex;align-items:flex-end;justify-content:center;gap:2cqw}
+.tl{display:flex;flex-direction:column;align-items:center;gap:1.1cqw}
+.tl i{position:relative;display:grid;place-items:center;width:10cqw;height:10cqw;border-radius:1.2cqw;font:850 4.2cqw/1 Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;font-style:normal;color:rgba(59,36,22,.55);
+  background:linear-gradient(145deg,#efdcc4,#d8bc9c);box-shadow:inset 0 -.35cqw .6cqw rgba(0,0,0,.18),inset 0 .25cqw .4cqw rgba(255,255,255,.35),0 .8cqw 1.6cqw rgba(0,0,0,.35)}
+.tl.pr i{background:linear-gradient(145deg,#e7d2b8,#cdb193);outline:.2cqw dashed rgba(240,161,115,.9);outline-offset:.5cqw}
+.tl.done i{background:radial-gradient(70% 60% at 30% 25%,rgba(255,255,255,.55),transparent 55%),linear-gradient(145deg,#6cc49a,#2f7e5a);color:rgba(255,255,255,.9)}
+.tl.cur i{width:14cqw;height:14cqw;border-radius:1.5cqw;font-size:7cqw;color:#fff4ea;
+  background:radial-gradient(60% 50% at 28% 22%,rgba(255,255,255,.6),transparent 55%),linear-gradient(145deg,#f08c52,#b9502a);box-shadow:0 0 0 .35cqw rgba(240,140,82,.25),0 0 5cqw rgba(240,120,60,.45),0 1cqw 2cqw rgba(0,0,0,.4)}
+.tl span{font:700 1.9cqw/1 var(--hand);color:var(--mut)}
+.tl.cur span{color:#f0a173;font-size:2.3cqw}
+.tl small{margin-top:-.5cqw;font:700 .95cqw/1 var(--txt);letter-spacing:.08em;text-transform:uppercase;color:#f0a173}
+.b2-r{position:absolute;z-index:2;left:10cqw;right:10cqw;bottom:6.5cqw;text-align:center}
+.b2-r p{font-size:2.7cqw;line-height:1.3}
+/* звичайний слайд: полиця з виробами на всю ширину */
+.b3-t{position:absolute;z-index:2;left:6cqw;top:5.6cqw;display:flex;flex-direction:column;gap:1cqw}
+.b3-t .hd{font-size:4.2cqw;line-height:1}
+.b3-a{position:absolute;z-index:2;left:9cqw;right:9cqw;top:13.5cqw;height:27cqw}
+.b3-b{position:absolute;z-index:2;left:6cqw;right:6cqw;bottom:5.6cqw;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:3cqw;align-items:end}
+.b3-b p{font-size:1.95cqw;line-height:1.35}
+/* великий факт */
+.b4-t{position:absolute;z-index:2;left:6cqw;top:6.5cqw;width:46cqw;display:flex;flex-direction:column;gap:1cqw}
+.b4-t .big{display:block;white-space:nowrap;margin-top:1cqw;font:900 12.5cqw/.84 Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 100;color:var(--sac);letter-spacing:-.02em}
+.b4-t .hw{font-size:4.4cqw;margin-top:-.4cqw}
+.b4-t p{font-size:2.35cqw;line-height:1.32}
+.b4-a{position:absolute;z-index:2;right:3cqw;bottom:8cqw;width:46cqw;height:22cqw}
+
+/* ================= перегляд на весь екран ================= */
+#vw{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(6,7,9,.94)}
+#vw[hidden]{display:none}
+#vw .hold{width:min(96vw,calc(92vh * 16 / 9))}
+#vw .hold .sl{cursor:default;border-radius:6px}
+#vw .bt{position:fixed;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1px solid #3a4048;background:rgba(27,29,33,.9);font-size:26px;line-height:1;cursor:pointer}
+#vw .bt:hover{border-color:#6b7480}
+#vw .x{top:14px;right:14px}#vw .pv{left:14px;top:50%;transform:translateY(-50%)}#vw .nx{right:14px;top:50%;transform:translateY(-50%)}
+#vw .cnt{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);padding:6px 14px;border-radius:99px;background:rgba(27,29,33,.9);color:#cfd5dc;font-size:14px;font-weight:700}
+@media (max-width:760px){#vw .pv,#vw .nx{top:auto;bottom:10px;transform:none}#vw .bt{width:46px;height:46px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="rib">Макет для перегляду. Справжні гутірки не змінено. <a href="/proba/">← Усі макети</a></div>
+<header class="wrap">
+  <h1 class="pg">Стилі гутірок</h1>
+  <p class="hand">одна родина — різний характер</p>
+  <p class="lede">Ті самі гутірки, але кожна у своєму стилі, який іде від її теми. Порядок слайдів, керування і гра — однакові для всіх, тож виховник і юнаки в будь-якій гутірці одразу знають, де що. Натисніть слайд, щоб побачити його на весь екран.</p>
+  <div class="same">
+    <div><h2>Однакове для всіх</h2><ul>
+      <li>порядок: титул → «П’ять кроків» → точки → запитання → практика → гра → QR</li>
+      <li>меню в куті, пульт з телефона, смужка внизу</li>
+      <li>гра «Потужний СКОБ!» з кольорами С, К, О, Б</li>
+      <li>пластова емблема в куті і шрифт основного тексту</li></ul></div>
+    <div><h2>Своє в кожної</h2><ul>
+      <li>кольори й фон — від теми гутірки</li>
+      <li>шрифт великих заголовків</li>
+      <li>стиль малюнків</li>
+      <li>своя «фішка»: як виглядає розділ «Точка 2 з 5»</li></ul></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="st" aria-labelledby="h-la">
+    <div class="st-h"><h2 id="h-la">Будова літальних апаратів І</h2><span class="nm">стиль «Креслення»</span></div>
+    <p class="idea">Кожен слайд — аркуш технічного креслення: синя калька з сіткою, рамка і штамп у кутку з номером аркуша. Розділ «Точка 2 з 5» — маршрут польоту, де літачок уже пролетів першу точку. Неонові малюнки лишаються, на титулці — так само 3D-літак.</p>
+    <p class="row-l">Зараз</p>
+    <div class="now"><img src="img/zaraz-la-1.webp" alt="Титул зараз" loading="lazy"><img src="img/zaraz-la-2.webp" alt="Розділ «Точка 2 з 5» зараз" loading="lazy"><img src="img/zaraz-la-3.webp" alt="Слайд «З чого складається літак» зараз" loading="lazy"></div>
+    <p class="row-l">Новий стиль</p>
+    <div class="grid" data-set="Креслення">
+
+      <figure><button class="sl bp" type="button" aria-label="Титул — відкрити на весь екран">
+        <span class="frm"></span>
+        <div class="a1-t"><span class="ey">Летунська вмілість · проба 1</span>
+          <h3 class="hd">Будова<br>літальних<br>апаратів <em>І</em></h3>
+          <p class="sub">гутірка для юнацтва</p>
+          <div class="tags"><span>5 вимог</span><span>40–45 хв</span><span>гра з телефонів</span></div></div>
+        <div class="art a1-a">{{ART:budova-la-1-title}}</div>
+        <span class="stamp"><span>Будова ЛА І</span><span>Титул</span><span>Аркуш <b>01</b>/37</span></span>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:2.7%"></i>
+      </button><figcaption><b>Титул.</b> Назва — широким «технічним» шрифтом; аркуш у рамці, у кутку — штамп із номером аркуша. У гутірці тут лишається 3D-літак.</figcaption></figure>
+
+      <figure><button class="sl bp" type="button" aria-label="Розділ «Точка 2 з 5» — відкрити на весь екран">
+        <span class="frm"></span>
+        <div class="a2-t"><span class="ey">Вимога вмілості</span>
+          <div class="a2-n"><b>02</b><span>/05</span></div>
+          <p>Знає з яких основних частин складається літак. Пояснить призначення кожної частини.</p></div>
+        <div class="route"><svg viewBox="0 0 1000 170" aria-hidden="true">
+          <path d="M60,118 C200,70 290,56 360,56" stroke="#5cc8ff" stroke-width="3" fill="none"/>
+          <path d="M360,56 C470,56 560,40 650,48 C760,58 850,96 940,110" stroke="#93b1d1" stroke-width="2.5" fill="none" stroke-dasharray="3 9" stroke-linecap="round" opacity=".8"/>
+          <circle cx="60" cy="118" r="10" fill="#5cc8ff"/><path d="M54,118 l4,4 l8,-9" stroke="#081529" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="360" cy="56" r="20" fill="none" stroke="#5cc8ff" stroke-width="2" opacity=".45"/><circle cx="360" cy="56" r="11" fill="#081529" stroke="#5cc8ff" stroke-width="3"/>
+          <g transform="translate(372,20) rotate(-4)"><path d="M22 0 L8 -2.4 L-1 -17 L-6 -17 L-2 -2.4 L-14 -2.4 L-19 -9 L-22 -9 L-19.5 0 L-22 9 L-19 9 L-14 2.4 L-2 2.4 L-6 17 L-1 17 L8 2.4 Z" fill="#eaf2ff"/></g>
+          <circle cx="650" cy="48" r="9" fill="#0d2142" stroke="#93b1d1" stroke-width="2"/>
+          <circle cx="800" cy="70" r="9" fill="#0d2142" stroke="#93b1d1" stroke-width="2"/>
+          <circle cx="940" cy="110" r="9" fill="#0d2142" stroke="#93b1d1" stroke-width="2"/>
+          <g font-family="Fira Sans Condensed" font-weight="600" font-size="19" letter-spacing="1.5" text-anchor="middle">
+            <text x="60" y="160" fill="#93b1d1">1 · ВИДИ ЛА</text><text x="360" y="104" fill="#eaf2ff">2 · ЧАСТИНИ ЛІТАКА</text>
+            <text x="650" y="90" fill="#93b1d1">3 · КРИЛО</text><text x="800" y="112" fill="#93b1d1">4 · КЕРУВАННЯ</text><text x="940" y="152" fill="#93b1d1">5 · СХЕМИ</text></g>
+        </svg></div>
+        <span class="stamp"><span>Будова ЛА І</span><span>Точка 2</span><span>Аркуш <b>07</b>/37</span></span>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:18.9%"></i>
+      </button><figcaption><b>Розділ «Точка 2 з 5».</b> Маршрут польоту: першу точку пролетіли, літачок — на другій, далі пунктир.</figcaption></figure>
+
+      <figure><button class="sl bp" type="button" aria-label="Слайд «З чого складається літак» — відкрити на весь екран">
+        <span class="frm"></span>
+        <div class="art a3-a">{{ART:budova-la-1-parts}}</div>
+        <div class="a3-t"><span class="ey">Точка 2</span><h3 class="hd">З чого складається літак</h3>
+          <ol><li><i>1</i><span><b>Фюзеляж</b>«тіло»: кабіна, салон, вантаж</span></li>
+            <li><i>2</i><span><b>Крило</b>створює підйомну силу</span></li>
+            <li><i>3</i><span><b>Хвостове оперення</b>стійкість і керування</span></li>
+            <li><i>4</i><span><b>Силова установка</b>тягне літак уперед</span></li>
+            <li><i>5</i><span><b>Шасі</b>зліт, посадка, рух по землі</span></li></ol></div>
+        <div class="ask a3-ask"><b>Запитання до залу</b>Хто знає, як називається «тіло» літака?</div>
+        <span class="stamp"><span>Будова ЛА І</span><span>Точка 2</span><span>Аркуш <b>08</b>/37</span></span>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:21.6%"></i>
+      </button><figcaption><b>Звичайний слайд.</b> Малюнок — як креслення, справа коротко 5 частин (подробиці — у нотатках на пульті).</figcaption></figure>
+
+      <figure><button class="sl bp" type="button" aria-label="Великий факт — відкрити на весь екран">
+        <span class="frm"></span>
+        <div class="a4-t"><span class="d">17 грудня</span><b class="big">1903</b>
+          <p>Брати Райт уперше полетіли на літаку з двигуном. Політ тривав 12 секунд.</p></div>
+        <span class="a4-ph"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/First_flight2.jpg?width=960" alt="Перший політ братів Райт" referrerpolicy="no-referrer" loading="lazy" onerror="this.parentNode.remove()"><span>Кітті-Гок, 17.12.1903 · Фото: Бібліотека Конгресу США, суспільне надбання</span></span>
+        <div class="a4-dim"><svg viewBox="0 0 1000 50" aria-hidden="true"><g stroke="#5cc8ff" stroke-width="1.5" fill="none"><path d="M10,25 H990"/><path d="M10,10 V40 M990,10 V40"/><path d="M10,25 l16,-6 v12 z M990,25 l-16,-6 v12 z" fill="#5cc8ff"/></g><rect x="300" y="8" width="400" height="34" fill="#0b1b36"/><text x="500" y="33" text-anchor="middle" font-family="Unbounded" font-weight="700" font-size="24" fill="#eaf2ff">37 М — УВЕСЬ ПОЛІТ</text></svg></div>
+        <span class="stamp"><span>Будова ЛА І</span><span>Точка 1</span><span>Аркуш <b>05</b>/37</span></span>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:13.5%"></i>
+      </button><figcaption><b>Великий факт.</b> Один факт на весь слайд — для ритму між слайдами з текстом. Справжнє фото того польоту (воно вже є в гутірці), а розмірна лінія показує, які це «лише 37 метрів».</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="st" aria-labelledby="h-k1">
+    <div class="st-h"><h2 id="h-k1">Кераміка І</h2><span class="nm">стиль «Гончарня»</span></div>
+    <p class="idea">Тепла майстерня ввечері: фактура глини, світло печі, паперові ярлики і клеймо майстра на титулці. Розділ «Точка 1 з 5» — п’ять плиток-проб: поточна світиться, практичні — з пунктиром («зробиш сам»), виконані — вкриті зеленою глазур’ю. Гончарні малюнки лишаються, на титулці — так само 3D-ваза.</p>
+    <p class="row-l">Зараз</p>
+    <div class="now"><img src="img/zaraz-k1-1.webp" alt="Титул зараз" loading="lazy"><img src="img/zaraz-k1-2.webp" alt="Розділ «Точка 1 з 5» зараз" loading="lazy"><img src="img/zaraz-k1-3.webp" alt="Слайд «Кераміка в Україні» зараз" loading="lazy"></div>
+    <p class="row-l">Новий стиль</p>
+    <div class="grid" data-set="Гончарня">
+
+      <figure><button class="sl gn" type="button" aria-label="Титул — відкрити на весь екран">
+        <div class="b1-t"><span class="tag">Мистецька вмілість · проба 1</span>
+          <h3 class="hd b1-hd">Кераміка</h3>
+          <div class="b1-h"><span class="stmp" aria-label="рівень І"><small>рівень</small>І</span><p class="hw">гутірка для юнацтва</p></div>
+          <div class="chips"><span>5 вимог</span><span>45 хв</span><span>гра з телефонів</span></div></div>
+        <div class="art b1-a">{{ART:keramika-1-title}}</div>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:2.7%"></i>
+      </button><figcaption><b>Титул.</b> М’який «ручний» шрифт, рівень «І» — як клеймо майстра на дні виробу. У гутірці тут лишається 3D-ваза на крузі.</figcaption></figure>
+
+      <figure><button class="sl gn" type="button" aria-label="Розділ «Точка 1 з 5» — відкрити на весь екран">
+        <div class="b2-t"><span class="tag">Вимога вмілості</span></div>
+        <div class="tiles">
+          <div class="tl cur"><i>1</i><span>історія</span></div>
+          <div class="tl"><i>2</i><span>техніки</span></div>
+          <div class="tl"><i>3</i><span>види</span></div>
+          <div class="tl pr"><i>4</i><span>виставка</span><small>практика</small></div>
+          <div class="tl pr"><i>5</i><span>власноруч</span><small>практика</small></div></div>
+        <div class="b2-r"><p>Знати в загальному історію розвитку виробів з глини, зокрема в Україні.</p></div>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:8.1%"></i>
+      </button><figcaption><b>Розділ «Точка 1 з 5».</b> Плитки-проби: поточна світиться, точки 4 і 5 — з пунктиром (практика), а виконані згодом стануть зеленими.</figcaption></figure>
+
+      <figure><button class="sl gn" type="button" aria-label="Слайд «Кераміка в Україні» — відкрити на весь екран">
+        <div class="b3-t"><span class="tag">Точка 1</span><h3 class="hd">Кераміка в Україні</h3></div>
+        <div class="art b3-a">{{ART:keramika-1-timeline}}</div>
+        <div class="b3-b"><p>Від трипільських горщиків зі спіралями до майстрів Опішні й Косова — в Україні з глини творять уже тисячі років.</p>
+          <div class="ask"><b>Запитання до залу:</b> що у вас удома зроблено з глини? Назвіть якомога більше за 30 секунд!</div></div>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:16.2%"></i>
+      </button><figcaption><b>Звичайний слайд.</b> Інший розклад: вироби на всю ширину, ніби на полиці, під ними — одне речення і запитання до залу.</figcaption></figure>
+
+      <figure><button class="sl gn" type="button" aria-label="Великий факт — відкрити на весь екран">
+        <div class="b4-t"><span class="tag">Точка 1</span><b class="big">26&#8239;000</b><span class="hw">років</span>
+          <p>Стільки найдавнішим глиняним фігуркам. Посуд люди почали ліпити близько 20 тисяч років тому.</p></div>
+        <div class="art b4-a">{{ART:keramika-1-deep}}</div>
+        <img class="emb" src="{{EMBLEM}}" alt=""><i class="bar" style="--p:10.8%"></i>
+      </button><figcaption><b>Великий факт.</b> Одне велике число і коротке пояснення, поруч — стрічка «від фігурки до гончарного круга».</figcaption></figure>
+    </div>
+  </section>
+
+  <aside class="how"><b>Як це виглядатиме в гутірці.</b> Зміст, нотатки, пульт і гра лишаються ті самі — міняється лише вигляд. Якщо стиль сподобається, наступна гутірка (наприклад, «Вивіски та логотипи») отримає свій — від своєї теми, наприклад «Майстерня».</aside>
+</main>
+<footer class="wrap">Бібліотека гутірок · Пласт у Фінляндії</footer>
+
+<div id="vw" hidden role="dialog" aria-modal="true" aria-label="Слайд на весь екран">
+  <div class="hold" id="vw-h"></div>
+  <button class="bt x" type="button" id="vw-x" aria-label="Закрити">×</button>
+  <button class="bt pv" type="button" id="vw-p" aria-label="Попередній слайд">‹</button>
+  <button class="bt nx" type="button" id="vw-n" aria-label="Наступний слайд">›</button>
+  <span class="cnt" id="vw-c"></span>
+</div>
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const all = [...document.querySelectorAll('.grid .sl')];
+  let cur = -1, opener = null, x0 = null;
+  function show(i) {
+    cur = (i + all.length) % all.length;
+    const src = all[cur], set = src.closest('.grid').dataset.set, list = [...src.closest('.grid').querySelectorAll('.sl')];
+    const c = src.cloneNode(true); c.removeAttribute('aria-label'); c.tabIndex = -1; c.setAttribute('type', 'button');
+    $('#vw-h').replaceChildren(c);
+    $('#vw-c').textContent = `«${set}» · ${list.indexOf(src) + 1} з ${list.length}`;
+  }
+  function open(i) { opener = document.activeElement; $('#vw').hidden = false; document.body.style.overflow = 'hidden'; show(i); $('#vw-x').focus(); }
+  function close() { $('#vw').hidden = true; $('#vw-h').replaceChildren(); document.body.style.overflow = ''; if (opener) opener.focus(); }
+  all.forEach((s, i) => s.addEventListener('click', () => open(i)));
+  $('#vw-x').onclick = close; $('#vw-p').onclick = () => show(cur - 1); $('#vw-n').onclick = () => show(cur + 1);
+  $('#vw').addEventListener('click', e => { if (e.target.id === 'vw') close(); });
+  addEventListener('keydown', e => {
+    if ($('#vw').hidden) return;
+    if (e.key === 'Escape') close(); else if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(cur + 1); } else if (e.key === 'ArrowLeft') show(cur - 1);
+  });
+  $('#vw').addEventListener('pointerdown', e => { x0 = e.clientX; });
+  $('#vw').addEventListener('pointerup', e => { if (x0 === null) return; const d = e.clientX - x0; x0 = null; if (Math.abs(d) > 50) show(cur + (d < 0 ? 1 : -1)); });
+})();
+</script>
+</body>
+</html>
