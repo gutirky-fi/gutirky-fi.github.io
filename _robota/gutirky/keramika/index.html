@@ -92,9 +92,18 @@ body.t0 #sv{opacity:.15}#sv{transition:opacity .8s}
 #menu,#phone-mode,#home-link,#ctl,#mode-label{transition:opacity .5s}
 body.idle{cursor:none}
 body.idle #menu,body.idle #phone-mode,body.idle #home-link,body.idle #ctl,body.idle #mode-label{opacity:0;pointer-events:none}
+
+/* 19.10.2026: картинка ліворуч на слайдах вступу й технології; підзаголовок титулки */
+#kart{position:absolute;z-index:1;left:0;top:0;bottom:0;width:62%;margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:calc(70px + env(safe-area-inset-top,0px)) 4vw 90px;opacity:0;pointer-events:none;transition:opacity .5s}
+body.has-art #kart{opacity:1}body.has-art #sv{opacity:.1}
+#kart img{display:block;max-width:100%;max-height:60vh;object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.45))}
+#kart img.ph{max-height:56vh;border-radius:18px;border:1px solid rgba(255,255,255,.12)}
+#kart figcaption{max-width:60ch;text-align:center;font:600 clamp(.95rem,1.35vw,1.35rem)/1.35 'Source Sans 3',system-ui,sans-serif;color:#cfd5dc}
+@media(max-aspect-ratio:1/1){#kart{width:100%;bottom:auto;height:50%;padding:70px 16px 10px}#kart img{max-height:30vh}#kart figcaption{font-size:.9rem}}
+#ttl .tsub{display:none}#ttl.big .tsub{display:block;margin-top:.5em;font:600 clamp(1rem,1.5vw,1.45rem)/1.3 'Source Sans 3',system-ui,sans-serif;letter-spacing:.02em;text-transform:none;color:#cfd5dc}
 </style></head><body>
-<div id="app"><div id="map"></div>
-<h1 id="ttl"><i>подорож Україною</i>Кераміка України</h1><div id="mode-label">ПОВНА ГУТІРКА · 45–50 ХВ</div>
+<div id="app"><div id="map"></div><figure id="kart" aria-hidden="true"></figure>
+<h1 id="ttl"><i>подорож Україною</i>Кераміка України<b class="tsub"></b></h1><div id="mode-label">ПОВНА ГУТІРКА · 45–50 ХВ</div>
 <button id="menu">☰ Зміст</button><a id="home-link" href="../../">← Бібліотека</a><button id="phone-mode" type="button" aria-label="Керування презентацією з телефона">📱 Пульт</button>
 <aside id="pan"></aside>
 <div id="hint"></div>
@@ -113,10 +122,10 @@ f:["Розпис рослинними й геометричними мотива
 t:"Міська кахлярська й майолікова традиція та сільське полив'яне гончарство.",
 f:["Рельєфні поливані кахлі для печей: ренесанс і бароко","Майолікові вироби","Поливи: зелена, біла, жовта"],w:["Кахлі","Миски","Глеки","Кухлі"]},
 {n:"Поділля",c:"Бубнівка, Вінниччина",col:"#e0914f",m:"zz",
-t:"Бубнівка на Вінниччині — давній осередок гончарства: червонуватий черепок із білим чи брунатним розписом.",
-f:["Горщики, баньки й гладущики без поливи, розписані білими або брунатними смужками, кривульками, крапками","Кахлі з геометричним і рослинним орнаментом","Глиняні іграшки: баранчики, коники, півники"],w:["Горщики","Баньки","Кахлі","Іграшки"]},
+t:"Бубнівка на Вінниччині — давній осередок гончарства: червонуватий черепок, розписаний ангобами — білим, чорним і зеленим.",
+f:["Горщики, глечики й миски, розписані ангобами (білим, чорним, зеленим) під прозорою поливою: смужки, кривульки, крапки, квіти","Кахлі з геометричним і рослинним орнаментом","Глиняні іграшки: баранчики, коники, півники"],w:["Горщики","Баньки","Кахлі","Іграшки"]},
 {n:"Київщина і Центр",c:"Трипілля",col:"#b06bd6",m:"sp",
-t:"Тут виникла кераміка віком понад 5000 років — Трипільська культура.",
+t:"Тут жила Трипільська культура (V–III тис. до н. е.): її розписному посуду понад 5000 років.",
 f:["Розписний посуд зі спіральним орнаментом","Колір: червоний, чорний, білий","У княжу добу — поливні плитки й посуд"],w:["Горщики","Фігурки","Миски","Плитки"]},
 {n:"Полісся і Чернігівщина",c:"Ічня, Чернігів",col:"#27c4c9",m:"bd",
 t:"Північ України: побутове гончарство, димлена та лощена кераміка.",
@@ -189,6 +198,7 @@ if(!SH_)S.push({t:"card",x:CMP});
 sec.q=S.length;(SH_?[QZ[0],QZ[3]]:QZ).forEach((q,k)=>S.push({t:"q",a:q[0],q:q[1],k}));
 sec.e=S.length;S.push({t:"card",x:SUM});S.push({t:"end"});
 let T0=0;const TARGET=SH_?20:48;
+$("#ttl .tsub").textContent=SH_?"гутірка для юнацтва 12–17 років · вишкіл · до 20 хв":"гутірка для юнацтва 12–17 років · 45–50 хв";
 const noteFor=s=>s.t==="ask"?"Дай 20–30 секунд. Клікай область, яку назвуть: покажемо один виріб; ще раз на неї — повернутись до запитання.":s.t==="overview"?"Коротко: ми мандруємо Україною за керамікою.":s.t==="tech"?s.e.note:s.t==="ri"?"Покажи область на карті. Запитай: що відомо про кераміку цього краю?":s.t==="rp"?"Передай слово учаснику: що ви бачите на виробі?":s.t==="q"?"Дай 15 секунд подумати; відповідь клікає учасник.":s.t==="home"?"Підсумуй регіон і назви наступний.":"";
 let idx=0,vb=[0,0,612.5,408],raf,lg=-1,lf=1;
 const im=(i,k,p,c)=>PH[i+"-"+k]?`<img src="${PH[i+"-"+k]}" alt="${p[2]}">`:pc(p,c);
@@ -206,7 +216,9 @@ sv.querySelectorAll("text,.mk").forEach(t=>t.classList.toggle("on",+t.dataset.g=
 fly(g<0?fit([0,0,612.5,408],6,f):fit(BB[g],14,f))}
 const lightMk=n=>sv.querySelectorAll(".mk").forEach(m=>m.classList.toggle("on",n.includes(m.textContent)));let rev=0,tot=0,pk=-1,qd=false;
 const li=(x,k)=>`<li style="--k:${k}">${x}</li>`;
-function render(){const s=S[idx],r=R[s.i]||null;let h="",g=-1,hint="",big=0,f=F(),c=r?r.col:"#ffc247";
+const KART={"Що таке кераміка":["{{K:process}}","глина → форма → сушіння → випал → кераміка"],"Від шлікеру до гіпсової форми":["{{K:mold}}","заливаємо шлікер → гіпс вбирає воду → зайве виливаємо"],"Три піали — три різні результати":["{{K:piala3}}","1-й випал (бісквіт) · 2-й випал без глазурі · розпис і глазур"],"Фарба, глазур і другий випал":["FINAL","готова піала: розпис керамічною аквареллю під прозорою глазур’ю"],"Один матеріал — різні способи":["{{K:techs}}","ліплення · гончарний круг · шаблон · гіпсова форма · пресування"]};
+const kartOf=s=>s.t==="card"?KART[s.x[1]]:s.t==="tech"?KART[s.e.t]:null;
+function render(){const s=S[idx],r=R[s.i]||null;{const k=pk<0&&kartOf(s);document.body.classList.toggle("has-art",!!k);if(k)$("#kart").innerHTML=`<img src="${k[0]==="FINAL"?FINAL_PIALA:k[0]}" alt=""${k[0]==="FINAL"?' class="ph"':""}><figcaption>${k[1]}</figcaption>`}let h="",g=-1,hint="",big=0,f=F(),c=r?r.col:"#ffc247";
 switch(s.t){
 case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкніться праворуч, щоб почати":"Натисніть пропуск, щоб почати";break;
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2><ul>${s.x[2].map(li).join("")}</ul>`;break;
@@ -214,13 +226,13 @@ case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2><ul>${s.e.items.map(li).
 case"hist":h=`<small>${s.e[0]}</small><h2>${s.e[1]}</h2><div class="pic">${pc([s.e[3],s.e[4],"",AC],AC)}</div><p>${s.e[2]}</p>`;g=s.g;break;
 case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2><p>${r.t}</p><p class="adm">Адмінобласті: ${ADM[s.i]}</p>${SH_?`<ul>${li(r.f[0],0)}</ul>`:""}`;g=s.i;break;
 case"rf":h=`<small>${r.n}</small><h2>Особливості</h2><ul>${r.f.map(li).join("")}</ul><div class="w">${r.w.map(x=>`<span>${x}</span>`).join("")}</div>`;g=s.i;break;
-case"rp":{const p=P[s.i][s.j];h=`<small>${r.n}: виріб ${s.j+1} з ${Math.min(3,P[s.i].length)}</small><div class="pic">${im(s.i,s.j,p,r.col)}</div><h2 class="sm">${p[2]}</h2>${PH[s.i+"-"+s.j]?"":`<p class="sch">Схематичний малюнок · фото буде додано</p>`}`;g=s.i}break;
+case"rp":{const p=P[s.i][s.j];h=`<small>${r.n}: виріб ${s.j+1} з ${Math.min(3,P[s.i].length)}</small><div class="pic">${im(s.i,s.j,p,r.col)}</div><h2 class="sm">${p[2]}</h2>${PH[s.i+"-"+s.j]?"":`<p class="sch">Схематичний малюнок</p>`}`;g=s.i}break;
 case"home":f=1;hint="Далі: "+(R[s.i+1]?R[s.i+1].n:"вікторина");break;
-case"q":h=`<small>Вікторина ${s.k+1} з ${QZ.length}</small><h2 class="sm">${s.q}</h2><div id="qa"></div>`;hint="Клікніть на карті область-відповідь";break;
+case"q":h=`<small>Вікторина ${s.k+1} з ${SH_?2:QZ.length}</small><h2 class="sm">${s.q}</h2><div id="qa"></div>`;hint="Клікніть на карті область-відповідь";break;
 case"overview":f=1;hint="Дев'ять керамічних регіонів. Оберіть будь-який на карті або йдіть далі";break;
 case"ask":h=`<small>Запитання</small><h2>${s.q}</h2>`;hint="Торкніться області на карті: покажемо один виріб";break;
 case"end":h=`<h2>Дякуємо за увагу!</h2><p>Є запитання? Торкніться будь-якої області на карті, щоб побачити її кераміку; ще раз на ту саму область — повернутися сюди.</p><p><a class="back-home" href="../../">← До бібліотеки гутірок</a></p>`;break}
-if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p><div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2>${PH[pk+"-0"]?"":`<p class="sch">Схематичний малюнок · фото буде додано</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
+if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p><div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2>${PH[pk+"-0"]?"":`<p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");
 $("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
 lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();document.dispatchEvent(new CustomEvent("gutirka:slide"))}

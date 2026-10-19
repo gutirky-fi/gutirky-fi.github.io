@@ -31,6 +31,10 @@ def rep(s, a, b, n=1):
 
 
 h = open(SRC, encoding='utf8').read()
+# картинки з «Кераміки І» для слайдів вступу й технології (19.10.2026): {{K:назва}} -> data:image/webp
+import base64 as _b64
+h = re.sub(r'\{\{K:([a-z0-9]+)\}\}', lambda m: 'data:image/webp;base64,' + _b64.b64encode(open(os.path.join(HERE, 'gutirky', 'keramika-1', 'kartynky', m.group(1) + '.webp'), 'rb').read()).decode(), h)
+assert '{{K:' not in h
 font = re.search(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^>]*>', h).group(0)
 css = h[h.index('<style>') + 7:h.index('</style>')]
 body = h[h.index('<body>') + 6:h.index('<script>')]
