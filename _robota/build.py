@@ -195,13 +195,18 @@ if SHELL_NAME == 'shell_d1':
                     "document.addEventListener('DOMContentLoaded', () => document.querySelectorAll('#home-link, .back-home').forEach(a => {"
                     " const w = document.createTreeWalker(a, NodeFilter.SHOW_TEXT); let n; while ((n = w.nextNode())) n.nodeValue = n.nodeValue.replace(/[Бб]ібліотек[аи]( гутірок)?/, window.GUTIRKA_HOME.label); }));\n" + shell_js)
 qr = open(D + 'qr.js', encoding='utf8').read()
+tema_css = tema_js = ''
+if os.environ.get('TEMA'):   # варіант стилю для порівняння: _robota/gutirky/keramika/tema-<TEMA>.css/.js
+    _t = os.path.join(HERE, 'gutirky', 'keramika', 'tema-' + os.environ['TEMA'])
+    tema_css = open(_t + '.css', encoding='utf8').read()
+    tema_js = '<script>\n' + open(_t + '.js', encoding='utf8').read() + '</script>\n'
 skel_css = ':root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}'
 page = ('<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
         '<meta name="theme-color" content="#181a1d">\n<title>Бібліотека гутірок</title>\n'
-        + head_extra + font + '\n<style>\n' + skel_css + '\n' + css + '\n' + shell_css + '\n</style>\n</head>\n<body>\n'
+        + head_extra + font + '\n<style>\n' + skel_css + '\n' + css + '\n' + shell_css + '\n' + tema_css + '\n</style>\n</head>\n<body>\n'
         + shell_html + '\n<div id="gv" hidden>' + body + '</div>\n'
-        + '<script>\n' + gscript + '</script>\n'
+        + '<script>\n' + gscript + '</script>\n' + tema_js
         + '<script>\n' + qr + '\n</script>\n'
         + '<script>window.GUTIRKA_PULT_URL = ' + json.dumps(PULT_URL) + ';</script>\n'
         + '<script>\n' + host_js + '\n</script>\n'
