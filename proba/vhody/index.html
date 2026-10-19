@@ -70,7 +70,13 @@ button{font:inherit;color:inherit;cursor:pointer}
 .door .enter.lock{background:var(--d);color:#0e1f15}
 /* «Для всіх» — усі улади разом: новацтво, юнацтво, старші пластуни, сеньйори */
 .door.all,.tile.all{border-top-width:1px;border-top-color:var(--ln);background:linear-gradient(90deg,var(--upn) 0 25%,var(--upyu) 0 50%,var(--vyh) 0 75%,var(--ups) 0) top/100% 5px no-repeat,var(--card)}
-.door.all{padding-top:28px}.tile.all{padding-top:23px}.door.all:hover,.tile.all:hover{border-top-color:#5a6573}
+.door.all{padding-top:28px}
+/* «Для всіх» — колір розділу = смужка з чотирьох кольорів уладів (текст лишається білим) */
+:root{--all4:linear-gradient(90deg,var(--upn) 0 25%,var(--upyu) 0 50%,var(--vyh) 0 75%,var(--ups) 0)}
+.tabs a[data-r=vsi][aria-current=page]{box-shadow:none;background:var(--all4) left calc(100% - 1px)/calc(100% - 28px) 3px no-repeat,var(--card2);background-origin:padding-box;background-position:center calc(100% - 1px)}
+html[data-v=vsi] .hero.in h1::after{content:"";display:block;width:min(240px,46%);height:6px;margin-top:14px;border-radius:3px;background:var(--all4)}
+#v-vsi .tile{border-top-width:1px;border-top-color:var(--ln);background:var(--all4) top/100% 4px no-repeat,var(--card);padding-top:23px}
+#v-vsi .tile:hover{border-top-color:#5a6573}.tile.all{padding-top:23px}.door.all:hover,.tile.all:hover{border-top-color:#5a6573}
 .var.yun{border-color:rgba(200,40,74,.8)}.var.yun small{color:var(--upyu-t)}.var.yun:hover{border-color:var(--upyu-t)}
 .door.soon{border-style:dashed;border-top-style:solid;cursor:default}.door.soon:hover{border-color:var(--ln);border-top-color:var(--d);transform:none}
 .door.soon li{color:var(--mut)}.door.soon .enter{background:none;border:1px dashed var(--ln);color:var(--mut)}
@@ -960,6 +966,7 @@ function route() {
   if (window.SAIT_OLD && ((h && v === 'home') || /[?&]c=\d/.test(location.search))) { location.replace(window.SAIT_OLD + location.search + location.hash); return; }   /* старі посилання бібліотеки */
   closeSheet();
   VIEWS.forEach(x => { $('#v-' + x).hidden = x !== v; });
+  document.documentElement.dataset.v = v;
   document.documentElement.style.setProperty('--a', COL[v]);
   document.documentElement.style.setProperty('--ab', (COLB[v] || [COL[v]])[0]);
   document.documentElement.style.setProperty('--ai', (COLB[v] || [0, '#0f1a19'])[1]);
