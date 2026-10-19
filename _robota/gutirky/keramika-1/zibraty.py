@@ -35,6 +35,10 @@ def page(skob_rel, yun_rel=None, home=None, kart=False):
         k = (TUT / 'kartynky.js').read_text(encoding='utf-8')
         k = rep(k, '/*{{KART}}*/', ','.join(json.dumps(f.stem) + ":'data:image/webp;base64," + base64.b64encode(f.read_bytes()).decode() + "'" for f in sorted((TUT / 'kartynky').glob('*.webp'))))
         src = src.replace(inl((TUT / 'maliunky.js').read_text(encoding='utf-8')), inl((TUT / 'maliunky.js').read_text(encoding='utf-8')) + '\n' + inl(k), 1)
+        # стиль «Гончарня» (19.10.2026) — разом з картинками, поки лише в макетах
+        src = rep(src, '</style>', (TUT / 'tema-gonch.css').read_text(encoding='utf-8') + '\n</style>')
+        src = src.replace(inl(k), inl(k) + '\n' + inl((TUT / 'tema-gonch.js').read_text(encoding='utf-8')), 1)
+        src = rep(src, 'family=Source+Sans+3:wght@400;600;700&display=swap', 'family=Source+Sans+3:wght@400;600;700&family=Commissioner:wght,FLAR,VOLM@100..900,0..100,0..100&family=Unbounded:wght@800&display=swap')
     src = src.replace('{{EMBLEM}}', emblem).replace('{{KMAP}}', 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'keramika-map.webp').read_bytes()).decode())
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"

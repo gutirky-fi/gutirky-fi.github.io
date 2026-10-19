@@ -1,0 +1,53 @@
+/* Стиль «Гончарня» для «Кераміки І» (19.10.2026) — з показу «Стилі гутірок» (_robota/proby/styli).
+   Лише вигляд гутірки (#pres.t-gn): фон-майстерня, шрифт заголовків Commissioner, ярлики, плитки-проби, клеймо «рівень І».
+   Порядок слайдів, пульт, гра, «Вивчай сам» — без змін. Поки що лише в макетах (zibraty.py proba|vhody). */
+#pres.t-gn{--ink:#f7ecdf;--mut:#c9ad92;--sac:#e07a45;--sacT:#f0a173;--gl:#5aa985;--bis:#e9d3b8;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .86 0 0 0 0 .72 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(70% 60% at 50% 112%,rgba(236,124,62,.26),transparent 62%),
+    radial-gradient(130% 100% at 45% 0%,#3a281d 0%,#261911 52%,#1a100a 100%);color:var(--ink)}
+/* паперовий ярлик (замість «Точка 1» рукописом) */
+#pres.t-gn .k,#pres.t-gn .gtag,#pres.t-gn .badge{display:inline-flex;align-items:center;gap:.55em;padding:.32em .95em .32em .65em;border-radius:4px;background:var(--bis);color:#3b2416;
+  font:700 clamp(.85rem,1.08vw,1.2rem)/1.25 var(--txt);letter-spacing:.01em;text-transform:none;box-shadow:0 .2vw .5vw rgba(0,0,0,.35)}
+#pres.t-gn .k::before,#pres.t-gn .gtag::before,#pres.t-gn .badge::before{content:"";flex:none;width:.6em;height:.6em;border-radius:50%;background:#2a1a10;box-shadow:inset 0 0 0 .1em rgba(0,0,0,.4)}
+#pres.t-gn .badge{margin-bottom:4px}
+#pres.t-gn .hh{margin:12px 0 14px;font-family:Commissioner,var(--txt);font-weight:850;font-variation-settings:"FLAR" 100,"VOLM" 70;font-size:clamp(1.8rem,3.5vw,3.9rem);line-height:1.02;
+  letter-spacing:-.005em;text-transform:none;color:var(--ink);text-wrap:balance}
+#pres.t-gn .pp{color:#f1e4d6}
+#pres.t-gn .pts li{border-left-color:var(--sac);background:rgba(247,236,223,.06);color:#f1e4d6}
+#pres.t-gn .pts li b{color:#ffd9b8}
+#pres.t-gn .ask{border:1px solid rgba(240,161,115,.55);background:rgba(247,236,223,.06);color:var(--ink)}
+#pres.t-gn .ask::before{color:var(--sacT)}
+#pres.t-gn .note{color:var(--mut)}
+#pres.t-gn #hint{color:var(--mut)}
+#pres.t-gn #bar{background:#2c1d14}#pres.t-gn #bar i{background:var(--sac)}
+/* великі слайди (гра, «Що далі») */
+#pres.t-gn .big .n{font-family:Commissioner,var(--txt);font-weight:900;font-variation-settings:"FLAR" 100,"VOLM" 100;color:var(--sac)}
+#pres.t-gn .big .vy{color:var(--sacT);font-family:var(--txt);letter-spacing:.12em}
+#pres.t-gn .big blockquote{border-left-color:var(--sac)}
+/* титул: ярлик, назва, клеймо «рівень І», рукописний підпис, «таблетки» */
+#pres.t-gn .ttl .gtag{margin-bottom:6px}
+#pres.t-gn .ttl h2{margin:14px 0 0;font-family:Commissioner,var(--txt);font-weight:850;font-variation-settings:"FLAR" 100,"VOLM" 70;font-size:clamp(2.8rem,7.6vw,8.4rem);line-height:.9;letter-spacing:-.005em;color:var(--ink)}
+#pres.t-gn .gh{display:flex;align-items:center;gap:1.2vw;margin-top:1.6vw}
+#pres.t-gn .ttl p{margin:0;font:700 clamp(1.5rem,2.4vw,2.6rem)/1.1 var(--hand);color:var(--sacT)}
+#pres.t-gn .stmp{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:clamp(64px,6.4vw,118px);height:clamp(64px,6.4vw,118px);border-radius:50%;
+  border:clamp(3px,.26vw,5px) solid var(--sac);box-shadow:inset 0 0 0 clamp(4px,.4vw,8px) rgba(224,122,69,.16);color:var(--sac);font:800 clamp(1.9rem,3.1vw,3.6rem)/.9 Unbounded,var(--disp)}
+#pres.t-gn .stmp small{font:700 clamp(.55rem,.75vw,.85rem)/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3em}
+#pres.t-gn .ttl .meta span{border-color:rgba(247,236,223,.2);background:rgba(247,236,223,.08);color:var(--ink)}
+#pres.t-gn .ttl .meta span b{color:var(--sacT)}
+/* розділ «Точка N з 5»: п’ять плиток-проб; поточна світиться, практичні — з пунктиром, пройдені — у зеленій глазурі */
+#pres.t-gn .gsec{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3vh,40px);width:100%;max-width:min(1300px,94vw);margin:0 auto;text-align:center}
+#pres.t-gn .gsec .gtag{align-self:flex-start}
+#pres.t-gn .tiles{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,1.8vw,34px)}
+#pres.t-gn .tl{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1vw,16px)}
+#pres.t-gn .tl i{display:grid;place-items:center;width:min(8.4vw,15vh);height:min(8.4vw,15vh);border-radius:min(1vw,1.8vh);font:850 min(3.6vw,6.4vh)/1 Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;font-style:normal;
+  color:rgba(59,36,22,.55);background:linear-gradient(145deg,#efdcc4,#d8bc9c);box-shadow:inset 0 -.3vw .5vw rgba(0,0,0,.18),inset 0 .2vw .35vw rgba(255,255,255,.35),0 .7vw 1.4vw rgba(0,0,0,.35)}
+#pres.t-gn .tl.pr i{background:linear-gradient(145deg,#e7d2b8,#cdb193);outline:2px dashed rgba(240,161,115,.9);outline-offset:5px}
+#pres.t-gn .tl.done i{background:radial-gradient(70% 60% at 30% 25%,rgba(255,255,255,.55),transparent 55%),linear-gradient(145deg,#6cc49a,#2f7e5a);color:rgba(255,255,255,.9)}
+#pres.t-gn .tl.cur i{width:min(11.8vw,21vh);height:min(11.8vw,21vh);border-radius:min(1.3vw,2.3vh);font-size:min(6vw,10.6vh);color:#fff4ea;
+  background:radial-gradient(60% 50% at 28% 22%,rgba(255,255,255,.6),transparent 55%),linear-gradient(145deg,#f08c52,#b9502a);box-shadow:0 0 0 .3vw rgba(240,140,82,.25),0 0 4vw rgba(240,120,60,.45),0 .9vw 1.8vw rgba(0,0,0,.4)}
+#pres.t-gn .tl span{font:700 clamp(1.1rem,1.7vw,2rem)/1 var(--hand);color:var(--mut)}
+#pres.t-gn .tl.cur span{color:var(--sacT);font-size:clamp(1.3rem,2.1vw,2.4rem)}
+#pres.t-gn .tl small{margin-top:-.3em;font:700 clamp(.6rem,.85vw,.95rem)/1 var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--sacT)}
+#pres.t-gn .gsec blockquote{margin:0;max-width:38ch;font-size:clamp(1.25rem,2.5vw,2.6rem);line-height:1.3;color:var(--ink);text-wrap:balance}
+@media (max-width:760px){#pres.t-gn .tiles{gap:8px}#pres.t-gn .tl i{width:14vw;height:14vw;font-size:6vw}#pres.t-gn .tl.cur i{width:19vw;height:19vw;font-size:10vw}#pres.t-gn .tl span{font-size:1rem}#pres.t-gn .tl small{display:none}}

@@ -443,6 +443,7 @@ function render() {
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «${D.title}».</blockquote></div>
       <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
+  if (window.GUT_TEMA && GUT_TEMA[s.t]) { const th = GUT_TEMA[s.t](s, D); if (th) h = th; }   /* стиль гутірки (tema-*.js), якщо підключено */
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
