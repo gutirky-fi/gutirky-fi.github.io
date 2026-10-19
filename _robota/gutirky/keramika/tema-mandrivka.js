@@ -7,10 +7,12 @@
   const SKIP = ['Початок', 'Вступ', 'Технологія', 'Історія', 'Вікторина', 'Завершення', 'Підсумок'];
   function ensure(sv) {
     let g = sv.querySelector('#mroute'); if (g) return g;
-    const pts = [...sv.querySelectorAll('.rg')].slice(0, N).map(r => { const b = r.getBBox(); return [b.x + b.width / 2, b.y + b.height / 2]; });
+    /* зупинка в регіоні — середина його гончарних осередків (точки міст на карті); якщо їх нема — центр регіону */
+    const pts = [...sv.querySelectorAll('.rg')].slice(0, N).map((r, i) => {
+      const c = [...sv.querySelectorAll(`.mk[data-g="${i}"] circle`)].map(e => [+e.getAttribute('cx'), +e.getAttribute('cy')]);
+      if (c.length) return [c.reduce((a, p) => a + p[0], 0) / c.length, c.reduce((a, p) => a + p[1], 0) / c.length];
+      const b = r.getBBox(); return [b.x + b.width / 2, b.y + b.height / 2]; });
     if (pts.length < N) return null;
-    // поправки для регіонів, де центр рамки не на суші (Причорномор'я з Кримом, Полісся)
-    pts[8] = [pts[8][0] - 30, pts[8][1] - 30];
     /* плавні дуги між зупинками, як дорога на старій мапі */
     const d = pts.map((p, i) => { if (!i) return 'M' + p[0].toFixed(1) + ',' + p[1].toFixed(1);
       const q = pts[i - 1], mx = (q[0] + p[0]) / 2, my = (q[1] + p[1]) / 2, dx = p[0] - q[0], dy = p[1] - q[1], k = (i % 2 ? .22 : -.22);
@@ -29,7 +31,7 @@
   /* довжина шляху до кожної зупинки (крива, тож шукаємо по точках) */
   function atLen(path, pts) {
     const L = path.getTotalLength(), out = [0]; let j = 1;
-    for (let l = 0; l <= L && j < pts.length; l += 1) { const p = path.getPointAtLength(l); if (Math.hypot(p.x - pts[j][0], p.y - pts[j][1]) < 1.2) { out.push(l); j++; } }
+    for (let l = 0; l <= L && j < pts.length; l += .5) { const p = path.getPointAtLength(l); if (Math.hypot(p.x - pts[j][0], p.y - pts[j][1]) < 1) { out.push(l); j++; } }
     while (out.length < pts.length) out.push(L);
     return out;
   }
@@ -60,7 +62,7 @@
     g.querySelectorAll('.mst').forEach((m, i) => { m.classList.toggle('done', i < done || (cur >= quiz)); m.classList.toggle('now', i === here); m.classList.toggle('vis', here >= 0 || cur >= quiz); });
     // суцільна лінія — до поточного регіону
     const path = g.querySelector('.mr-done'), L = +g.dataset.len, pts = g._pts;
-    const k = cur >= quiz ? N - 1 : here, upto = k <= 0 ? 0 : (g._at || (g._at = atLen(path, pts)))[k];
+    const k = cur >= quiz ? N - 1 : here, upto = k <= 0 ? 0 : k >= N - 1 ? L : (g._at || (g._at = atLen(path, pts)))[k];
     path.style.strokeDashoffset = Math.max(0, L - upto);
     g.classList.toggle('on', here >= 0 || cur >= quiz);
     const c = chip(); if (c) { const n = cur >= quiz ? N : here >= 0 ? here + 1 : 0; c.innerHTML = `<b>Маршрут</b><span>${n}&nbsp;з&nbsp;${N}</span><i style="--p:${n / N}"></i>`; c.classList.toggle('on', n > 0); }
