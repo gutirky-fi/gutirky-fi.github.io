@@ -16,7 +16,7 @@ def rep(s, a, b):
     return s.replace(a, b)
 
 
-def page(skob_rel, yun_rel=None, home=None):
+def page(skob_rel, yun_rel=None, home=None, kart=False):
     """yun_rel — адреса сторінки для юнаків відносно цієї; без нього — сама сторінка для юнаків."""
     src = (TUT / 'index.html').read_text(encoding='utf-8')
     emblem = 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode()
@@ -31,6 +31,10 @@ def page(skob_rel, yun_rel=None, home=None):
                       ('<script src="dani.js"></script>', (TUT / 'dani.js').read_text(encoding='utf-8')),
                       ('<script src="../../src/pult-host-file.js"></script>', host)]:
         src = rep(src, tag, inl(text))
+    if kart:   # картинки з ChatGPT (19.10.2026) — поки лише в макетах; після «ставимо» — і на сайті
+        k = (TUT / 'kartynky.js').read_text(encoding='utf-8')
+        k = rep(k, '/*{{KART}}*/', ','.join(json.dumps(f.stem) + ":'data:image/webp;base64," + base64.b64encode(f.read_bytes()).decode() + "'" for f in sorted((TUT / 'kartynky').glob('*.webp'))))
+        src = src.replace(inl((TUT / 'maliunky.js').read_text(encoding='utf-8')), inl((TUT / 'maliunky.js').read_text(encoding='utf-8')) + '\n' + inl(k), 1)
     src = src.replace('{{EMBLEM}}', emblem).replace('{{KMAP}}', 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'keramika-map.webp').read_bytes()).decode())
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
@@ -52,12 +56,12 @@ if __name__ == '__main__':
     write(SITE / 'skob' / 'index.html', gr)   # коротка адреса для телефонів: gutirky-fi.github.io/skob
     if mode == 'vhody':   # макет «кілька входів»: proba/vhody/ — з гутірки й сторінки юнаків назад у макет
         root = SITE / 'proba' / 'vhody'
-        write(root / 'gutirky' / 'keramika-1' / 'index.html', page('../../skob/', '../../yunakam/keramika-1/', ('../../#vyh', 'Виховники')))
-        write(root / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво')))
+        write(root / 'gutirky' / 'keramika-1' / 'index.html', page('../../skob/', '../../yunakam/keramika-1/', ('../../#vyh', 'Виховники'), kart=True))
+        write(root / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво'), kart=True))
         write(root / 'skob' / 'index.html', gr)
     elif mode == 'proba':
-        write(SITE / 'proba' / 'keramika-1' / 'index.html', page('../skob/', '../yunakam/keramika-1/'))
-        write(SITE / 'proba' / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/'))
+        write(SITE / 'proba' / 'keramika-1' / 'index.html', page('../skob/', '../yunakam/keramika-1/', kart=True))
+        write(SITE / 'proba' / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/', kart=True))
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
     else:
         root = SITE / (sys.argv[2] if len(sys.argv) > 2 else 'proba/sait')
