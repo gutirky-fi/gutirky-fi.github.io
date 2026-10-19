@@ -35,3 +35,5 @@ html.t-mandr #app::after{content:"";position:absolute;inset:0;z-index:0;pointer-
 body.t0 #mcomp,body.t0 #mchip{opacity:0}
 @media(max-aspect-ratio:1/1){#mcomp{display:none}#mchip{left:auto;right:12px;transform:none;top:calc(12px + env(safe-area-inset-top,0px));padding:6px 12px;font-size:14px;gap:8px}#mchip b{font-size:11px}#mchip i{width:56px}}
 @media(prefers-reduced-motion:reduce){#mroute *{animation:none!important;transition:none!important}}
+/* прибрано тонку вертикальну лінію зліва (#app:before з дизайну Д1) — власник: «виглядає як дефект» */
+html.t-mandr #app:before{display:none}
