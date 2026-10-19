@@ -347,6 +347,21 @@ footer span{margin-top:10px;font-size:14px;color:var(--mut)}
 @media (max-width:760px){.fctl{padding-left:16px}.fcount{font-size:13px}.fs{display:none;grid-template-columns:1fr;min-height:0;visibility:visible;opacity:1}.fs.on{display:grid;animation:fin .35s ease-out}.fbody .dl{display:none}.fbody .ds{display:block}.fart{min-height:190px}.fart img{max-height:210px;padding:18px}.fbody{padding:20px 18px 22px}}
 @media (prefers-reduced-motion:reduce){.fs.on{animation:none}.feat.auto .fpill[aria-current=true]::after{animation:none;width:100%}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ---- 19.10.2026: смужка вгорі картки — однакова для всіх: рівна смужка, яку обрізає заокруглений кут (і однотонна, і чотирикольорова) ---- */
+.door,.tile,.featv,.lockbox,#sheet .pn,.badge.mat{border-top:1px solid var(--ln);background:var(--sbg) top/100% var(--sh,5px) no-repeat,var(--card)}
+.door{--sbg:linear-gradient(var(--db,var(--d)),var(--db,var(--d)));padding-top:28px}
+.tile,.badge.mat{--sbg:linear-gradient(var(--ab,var(--a)),var(--ab,var(--a)));--sh:4px}
+.tile{padding-top:23px}.badge.mat{padding-top:24px}
+.featv,#sheet .pn{--sbg:linear-gradient(var(--ab,var(--a)),var(--ab,var(--a)))}
+.featv{padding-top:26px}#sheet .pn{padding-top:30px}
+.lockbox{--sbg:linear-gradient(var(--a),var(--a));padding-top:30px}
+.door.all,.tile.all,#v-vsi .tile{--sbg:var(--all4)}
+.door:hover,.tile:hover{border-top-color:#5a6573}.door.soon:hover{border-top-color:var(--ln)}
+.door.soon{border-top-style:dashed}
+/* підкреслення поточної вкладки — однакова рівна риска для всіх */
+.tabs a[aria-current=page]{box-shadow:none;background:linear-gradient(var(--t),var(--t)) center calc(100% - 1px)/calc(100% - 28px) 3px no-repeat,var(--card2)}
+.tabs a[data-r=vsi][aria-current=page]{background:var(--all4) center calc(100% - 1px)/calc(100% - 28px) 3px no-repeat,var(--card2)}
 </style>
 </head>
 <body>
