@@ -115,6 +115,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .pts{list-style:none;margin:0;padding:0}
 .pts li{font-size:clamp(1rem,1.45vw,1.6rem);line-height:1.4;margin:9px 0;padding:.5em .8em;border-left:4px solid var(--sky);border-radius:0 12px 12px 0;background:rgba(255,255,255,.05);opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}
 .pts li.v{opacity:1;transform:none}
+.pts li.now{background:rgba(111,179,255,.13);border-left-color:#ffc247}
 .pts li b{color:#fff}
 .ask{margin:12px 0 6px;padding:.6em .9em;border:1px dashed var(--gd);border-radius:12px;color:#ffe3a1;font-size:clamp(1rem,1.4vw,1.5rem)}
 .ask::before{content:"Запитання: ";font-weight:700;color:var(--gd)}
@@ -466,6 +467,12 @@ function showRev() {
   $$('#panel .pts li').forEach((li, k) => li.classList.toggle('v', k < rev));
   const n = $('#panel .note'); if (n) n.classList.toggle('v', rev >= tot);
   const last = $$('#panel .pts li.v').pop(); if (last && panel.scrollHeight > panel.clientHeight + 2) try { last.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+
+  if (s.art === 'axes') {   /* 3D-літачок: який пункт щойно відкрився — такий рух і показує; на початку — усі по черзі */
+    const m = rev <= 0 ? 'all' : ['pitch', 'roll', 'yaw'][Math.min(rev, 3) - 1];
+    artEl.dataset.la3dMode = m; artEl.dispatchEvent(new CustomEvent('la3d:mode', { detail: m }));
+    $$('#panel .pts li').forEach((li, k) => li.classList.toggle('now', k === rev - 1 && rev <= 3));
+  }
 }
 function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
 function adv(d) {

@@ -456,11 +456,17 @@
     const ui = wrap.querySelector('.la3d-ui');
     function setCur(m) { cur = m; const d = MODES[m]; ui.querySelector('b').textContent = d.b; ui.querySelector('span').textContent = d.s; axis.rotation.set(...d.ax); }
     setCur('pitch');
-    wrap.querySelector('.la3d-btn').addEventListener('click', e => {
-      const b = e.target.closest('button'); if (!b) return; e.stopPropagation();
-      mode = b.dataset.m; wrap.querySelectorAll('.la3d-btn button').forEach(x => x.classList.toggle('on', x === b));
+    function setMode(m) {
+      if (!MODES[m] && m !== 'all') return;
+      mode = m; wrap.querySelectorAll('.la3d-btn button').forEach(x => x.classList.toggle('on', x.dataset.m === m));
       t0 = performance.now(); if (mode !== 'all') setCur(mode);
+    }
+    wrap.querySelector('.la3d-btn').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return; e.stopPropagation(); setMode(b.dataset.m);
     });
+    /* гутірка розкриває пункти по черзі (тангаж → крен → рискання) — літачок показує той самий рух */
+    el.addEventListener('la3d:mode', e => setMode(e.detail));
+    if (el.dataset.la3dMode) setMode(el.dataset.la3dMode);
     function size() { const w = wrap.clientWidth, h = wrap.clientHeight; if (!w || !h) return; wrap.classList.toggle('small', h < 400); R.setSize(w, h, false); cam.aspect = w / h; cam.fov = w / h < 1 ? 42 : 32; cam.updateProjectionMatrix(); }
     const ro = new ResizeObserver(size); ro.observe(wrap); size();
     function frame(now) {
@@ -474,7 +480,7 @@
         ailL.rotation.z = -(ailR.rotation.z = still ? 0 : Math.sin(t * .9) * .25); elev.rotation.z = rud.rotation.y = 0;
         plane.position.y = still ? 0 : Math.sin(t * .8) * .08; prop.rotation.x += .9; R.render(scene, cam); return;
       }
-      if (mode === 'all') { const m = ['pitch', 'roll', 'yaw'][Math.floor(t / 5) % 3]; if (m !== cur) setCur(m); }
+      if (mode === 'all') { const m = ['pitch', 'roll', 'yaw'][Math.floor(Math.max(0, t) / 5) % 3];   /* t буває трохи < 0: кадр почався до натискання */ if (m !== cur) setCur(m); }
       const ph = still ? 0.6 : Math.sin(t * 1.25);
       plane.rotation.set(0, 0, 0); ailL.rotation.z = ailR.rotation.z = elev.rotation.z = rud.rotation.y = 0;
       if (cur === 'pitch') { plane.rotation.z = ph * .32; elev.rotation.z = -ph * .45; }
