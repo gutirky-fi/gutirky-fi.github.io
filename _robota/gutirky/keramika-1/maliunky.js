@@ -228,7 +228,7 @@ ${hg(id + 'bf', '#7a5126', '#f2c48e', '#d9a066', '#6a4420')}
         vessel(X[4], ay - 26, 'jug', .92, `url(#${id}gn)`, { id, gloss: true, mouth: '#0f2a1b', deco: (p, x, b) => flower(x - 2, b - 52, 11, '#ffc247', '#fff3dc', '#fff3dc') }) + handle(X[4], ay - 26, .92, 'jug', 1, '#3b8a63'),
         `<ellipse cx="${X[5]}" cy="${ay - 72}" rx="52" ry="52" fill="url(#${id}cr)" stroke="${K.line}" stroke-width="2"/><circle cx="${X[5]}" cy="${ay - 72}" r="40" fill="none" stroke="#3b8a63" stroke-width="3"/>${flower(X[5], ay - 76, 16, '#3b8a63', '#ffc247', '#8a5a3b')}`
       ];
-      const L = [['V–III тис. до н. е.', 'Трипілля'], ['з VI ст. до н. е.', 'Античні міста'], ['IX–XIII ст.', 'Київська Русь'], ['XVI–XVIII ст.', 'Козацька доба'], ['XIX–XX ст.', 'Осередки'], ['сьогодні', 'Майстри й музеї']];
+      const L = [['V–III тис. до н. е.', 'Трипілля'], ['з VII–VI ст. до н. е.', 'Античні міста'], ['IX–XIII ст.', 'Київська Русь'], ['XVI–XVIII ст.', 'Козацька доба'], ['XIX–XX ст.', 'Осередки'], ['сьогодні', 'Майстри й музеї']];
       return svg(920, 380, 'Кераміка в Україні: шість епох', id, spot(id, 460, 170, 470, 180) +
         `<path d="M40,${ay} L880,${ay}" stroke="${K.line}" stroke-width="3"/><path d="M40,${ay} L880,${ay}" stroke="${K.gdHi}" stroke-width="3" class="la-flow" opacity=".6"/>` +
         X.map((x, i) => `<path d="M${x},${ay} L${x},${ay + (i % 2 ? 92 : 30)}" stroke="${K.line}" stroke-width="1.5" stroke-dasharray="3 4"/>`).join('') +
