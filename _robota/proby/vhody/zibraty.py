@@ -34,7 +34,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     src = rep(src, '<title>Пластова бібліотека — макет</title>', '<title>Пластова бібліотека</title>')
     src = rep(src, ' <b>У макеті код — 1912.</b>', '')
     src = src.replace("'proba-vhody:", "'gutirky:")
-    hide = {'mat': ['budova-litalnyh-aparativ-i', 'keramika-i'], 'gut': ['Будова літальних апаратів І', 'Кераміка І']}
+    hide = {'mat': [], 'gut': []}   # 19.10.2026: «Будова ЛА І» і «Кераміка І» — на сайті (власник погодив після перевірки)
     pre = '<script>window.SAIT_HIDE = ' + json.dumps(hide, ensure_ascii=False) + "; window.SAIT_OLD = 'biblioteka/';</script>\n"
     i = src.index('<script'); src = src[:i] + pre + src[i:]
     assert 'proba-vhody' not in src and 'ribbon">Макет' not in src
@@ -42,6 +42,8 @@ if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     print('   index.html', len(src) // 1024, 'КБ')
     env = dict(os.environ); [env.pop(k, None) for k in ('OUT', 'PREVIEW', 'HOME_URL', 'HOME_LABEL')]
     subprocess.run([sys.executable, str(ROB / 'build.py')], check=True, env=env)   # -> biblioteka/index.html
+    for g in ('budova-la-1', 'keramika-1'):   # нові гутірки: gutirky/…, yunakam/…, skob/
+        subprocess.run([sys.executable, str(ROB / 'gutirky' / g / 'zibraty.py'), 'sait', '.'], check=True)
     sys.exit(0)
 out = SITE / 'proba' / 'vhody' / 'index.html'
 out.parent.mkdir(parents=True, exist_ok=True)

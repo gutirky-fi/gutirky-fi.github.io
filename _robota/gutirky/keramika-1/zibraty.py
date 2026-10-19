@@ -69,6 +69,8 @@ if __name__ == '__main__':
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
     else:
         root = SITE / (sys.argv[2] if len(sys.argv) > 2 else 'proba/sait')
-        write(root / 'gutirky' / 'keramika-1' / 'index.html', page('../../skob/', '../../yunakam/keramika-1/'))
-        write(root / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/'))
+        # справжній сайт (корінь): з гутірки «назад» — у «Виховники», зі сторінки юнаків — у «Юнацтво»; стиль і картинки — як у макеті (з 19.10.2026)
+        real = root.resolve() == SITE.resolve()
+        write(root / 'gutirky' / 'keramika-1' / 'index.html', page('../../skob/', '../../yunakam/keramika-1/', ('../../#vyh', 'Виховники') if real else None, kart=True))
+        write(root / 'yunakam' / 'keramika-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво') if real else None, kart=True))
         write(root / 'skob' / 'index.html', gr)

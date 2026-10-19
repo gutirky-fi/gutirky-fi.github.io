@@ -62,8 +62,11 @@ async def main():
             await pg.locator('#k-grid .badge').first.click(); await pg.wait_for_timeout(500)
             check(await pg.is_visible('#k-det'), f'[{tag}] деталі вмілості відкриваються')
             await pg.screenshot(path=str(OUT / f'{tag}-katalog.png'))
-            await pg.locator('#k-det [data-open]').first.click(); await pg.wait_for_timeout(1200)
-            check(await pg.evaluate("!document.querySelector('#gv').hidden && document.querySelector('#lib').hidden"), f'[{tag}] гутірка відкривається з каталогу')
+            # «Кераміка України» відкривається з картки бібліотеки (у каталозі до «Кераміки» тепер веде «Кераміка І» — окрема сторінка)
+            await pg.keyboard.press('Escape'); await pg.wait_for_timeout(300)
+            await pg.locator('#lib .tabs [data-tab=lib], #lib .tabs [data-tab]').first.click(); await pg.wait_for_timeout(300)
+            await pg.locator('#lib [data-open]').first.click(); await pg.wait_for_timeout(1200)
+            check(await pg.evaluate("!document.querySelector('#gv').hidden && document.querySelector('#lib').hidden"), f'[{tag}] гутірка «Кераміка України» відкривається з бібліотеки')
             await pg.screenshot(path=str(OUT / f'{tag}-hutirka.png'))
             if not mob:
                 await pg.mouse.move(w - 20, 20); await pg.wait_for_timeout(400)
