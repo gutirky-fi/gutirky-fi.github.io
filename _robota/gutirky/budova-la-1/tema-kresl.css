@@ -1,0 +1,92 @@
+/* Стиль «Креслення» для «Будови ЛА І» (19.10.2026) — з показу «Стилі гутірок» (_robota/proby/styli).
+   Лише вигляд гутірки (#pres.t-bp): синя калька з сіткою, рамка й штамп «аркуш N», заголовки Unbounded, підписи Fira Sans Condensed,
+   розділ «Точка N з 5» — маршрут польоту. Порядок слайдів, пульт, гра, 3D-літачок — без змін. Поки що лише в макетах. */
+#pres.t-bp{--ink:#eaf2ff;--mut:#93b1d1;--sac:#5cc8ff;--am:#ffb547;--lnb:rgba(140,200,255,.36);--fc:'Fira Sans Condensed',var(--txt);--un:Unbounded,var(--disp);
+  background:
+    linear-gradient(rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5vw 2.5vw,
+    linear-gradient(90deg,rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5vw 2.5vw,
+    linear-gradient(rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5vw 12.5vw,
+    linear-gradient(90deg,rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5vw 12.5vw,
+    radial-gradient(120% 95% at 32% 38%,#16386a 0%,#0d2142 50%,#081529 100%);color:var(--ink)}
+#pres.t-bp #stage{z-index:1}
+/* рамка аркуша і штамп у кутку */
+#pres.t-bp .bp-frm{position:absolute;z-index:0;inset:clamp(8px,1.4vw,26px);border:1px solid var(--lnb);pointer-events:none}
+#pres.t-bp .bp-frm::before{content:"";position:absolute;inset:clamp(4px,.4vw,8px);border:1px solid rgba(140,200,255,.13)}
+#pres.t-bp .bp-stamp{position:absolute;z-index:2;right:clamp(8px,1.4vw,26px);bottom:clamp(8px,1.4vw,26px);display:flex;border-top:1px solid var(--lnb);border-left:1px solid var(--lnb);background:rgba(8,21,41,.85);
+  font:600 clamp(.6rem,.78vw,.9rem)/1 var(--fc);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);pointer-events:none}
+#pres.t-bp .bp-stamp span{padding:.6em 1em;border-right:1px solid var(--lnb)}#pres.t-bp .bp-stamp span:last-child{border-right:0}
+#pres.t-bp .bp-stamp b{color:var(--ink);font-weight:600}
+#pres:not(.t-bp) .bp-frm,#pres:not(.t-bp) .bp-stamp{display:none}
+@media (max-width:760px),(max-height:520px){#pres.t-bp .bp-stamp{display:none}}
+/* тексти */
+#pres.t-bp .k,#pres.t-bp .bey{display:block;font:600 clamp(.85rem,1.1vw,1.25rem)/1.2 var(--fc);letter-spacing:.22em;text-transform:uppercase;color:var(--sac)}
+#pres.t-bp .hh{margin:10px 0 14px;font:700 clamp(1.45rem,2.7vw,3.1rem)/1.08 var(--un);letter-spacing:.01em;text-transform:uppercase;color:var(--ink);text-wrap:balance}
+#pres.t-bp .pp{color:#c9daf0}
+#pres.t-bp .pts li{border:1px solid rgba(140,200,255,.18);border-left:3px solid var(--sac);border-radius:0;background:rgba(8,21,41,.55);color:#c9daf0}
+#pres.t-bp .pts li b{color:var(--ink)}
+#pres.t-bp .pts li.now{border-left-color:var(--am);background:rgba(255,181,71,.08)}
+#pres.t-bp .ask{border:1px dashed rgba(255,181,71,.7);border-radius:0;background:rgba(255,181,71,.06);color:var(--ink)}
+#pres.t-bp .ask::before{content:"Запитання";display:block;margin-bottom:.3em;font:600 .72em var(--fc);letter-spacing:.16em;text-transform:uppercase;color:var(--am)}
+#pres.t-bp .note{color:var(--mut)}
+#pres.t-bp .badge{border-radius:0;background:none;border:1px solid var(--am);color:var(--am);font:600 clamp(.75rem,.95vw,1rem) var(--fc);letter-spacing:.18em}
+#pres.t-bp .ex b{color:var(--sac)}
+#pres.t-bp #hint{color:var(--mut)}
+#pres.t-bp #bar{background:#0d2142}#pres.t-bp #bar i{background:var(--sac)}
+#pres.t-bp .big .n{font-family:var(--un);font-weight:700;color:var(--sac)}
+#pres.t-bp .big .vy{font-family:var(--fc);letter-spacing:.2em;color:var(--sac)}
+#pres.t-bp .big blockquote{border-left-color:var(--sac)}
+/* титул */
+#pres.t-bp .ttl h2{margin:14px 0 0;font:700 clamp(2.1rem,4.6vw,5.4rem)/1.02 var(--un);text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+#pres.t-bp .ttl h2 em{font-style:normal;color:var(--sac)}
+#pres.t-bp .ttl p{margin:14px 0 0;font:400 clamp(1.1rem,1.8vw,2rem)/1.2 var(--txt);color:var(--mut)}
+#pres.t-bp .ttl .meta span{border-radius:0;border-color:var(--lnb);background:rgba(8,21,41,.6);color:var(--ink);font:600 clamp(.75rem,1vw,1.1rem) var(--fc);letter-spacing:.1em;text-transform:uppercase}
+#pres.t-bp .ttl .meta span b{color:var(--sac)}
+/* розділ «Точка N з 5»: великий контурний номер і маршрут польоту — пройдені точки з галочкою, літачок на поточній */
+#pres.t-bp .bsec{grid-column:1/-1;width:100%;max-width:min(1400px,94vw);margin:0 auto}
+#pres.t-bp .bnum{display:flex;align-items:baseline;gap:.25em;margin:.15em 0 .3em}
+#pres.t-bp .bnum b{font:900 min(13vw,24vh)/.9 var(--un);color:transparent;-webkit-text-stroke:max(2px,.2vw) var(--sac);animation:bnum .8s cubic-bezier(.2,.9,.2,1) both}
+#pres.t-bp .bnum span{font:700 min(3.4vw,6vh) var(--un);color:var(--mut)}
+#pres.t-bp .bsec blockquote{margin:0;max-width:40ch;font-size:clamp(1.15rem,2.3vw,2.5rem);line-height:1.3;color:var(--ink);animation:bq .6s .35s both}
+#pres.t-bp .route{width:100%;height:min(15vw,24vh);margin-top:min(3vw,4vh)}
+#pres.t-bp .route svg{width:100%;height:100%;overflow:visible}
+#pres.t-bp .route .done{stroke-dasharray:1200;stroke-dashoffset:1200;animation:rdraw 1.1s .2s ease forwards}
+#pres.t-bp .route .pl{animation:rfly 1.1s .2s cubic-bezier(.4,0,.2,1) both}
+@keyframes bnum{from{opacity:0;transform:translateY(.15em)}}
+@keyframes bq{from{opacity:0;transform:translateY(1.4vh)}}
+@keyframes rdraw{to{stroke-dashoffset:0}}
+@keyframes rfly{from{transform:translateX(var(--from,0px))}}
+/* «великий факт» */
+#pres.t-bp .bfakt{display:flex;flex-direction:column;margin:clamp(4px,1vh,14px) 0 clamp(8px,1.6vh,18px)}
+#pres.t-bp .bfakt .d{font:600 clamp(1rem,1.7vw,2rem) var(--fc);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+#pres.t-bp .bfakt b{display:block;white-space:nowrap;font:900 clamp(4.4rem,10.5vw,12rem)/.86 var(--un);letter-spacing:-.01em;color:var(--sac);animation:bnum .9s cubic-bezier(.2,.9,.2,1) both}
+#pres.t-bp .bfakt span{margin-top:.35em;font-size:clamp(1.1rem,1.9vw,2.1rem);line-height:1.3;color:var(--ink);max-width:34ch}
+/* поява малюнка */
+#pres.t-bp #art>svg{animation:bart .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bart{from{opacity:0;transform:translateY(2vh) scale(.97)}}
+/* плавний перехід між слайдами */
+::view-transition-old(root){animation:bvOut .3s ease both}
+::view-transition-new(root){animation:bvIn .5s cubic-bezier(.2,.8,.2,1) both}
+html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
+@keyframes bvOut{to{opacity:0}}
+@keyframes bvIn{from{opacity:0;transform:translateX(2vw)}}
+@keyframes bvInB{from{opacity:0;transform:translateX(-2vw)}}
+@media (prefers-reduced-motion:reduce){#pres.t-bp *{animation:none!important}::view-transition-old(root),::view-transition-new(root){animation:none}}
+/* зміст: розділи-точки, у кожному — слайди */
+#toc.t-bp{background:linear-gradient(rgba(110,180,255,.06) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(110,180,255,.06) 1px,transparent 1px) 0 0/24px 24px,#0b1b36;color:#eaf2ff}
+#toc.t-bp .in{max-width:880px}
+#toc.t-bp h3{font:700 26px Unbounded,var(--disp);letter-spacing:.02em}
+#toc.t-bp .back{color:#5cc8ff}
+#toc.t-bp .tg{margin:10px 0;padding:6px;border:1px solid rgba(140,200,255,.22);background:rgba(8,21,41,.6)}
+#toc.t-bp .tg.here{border-color:#5cc8ff}
+#toc.t-bp .th{display:flex;align-items:center;gap:14px;width:100%;padding:8px 10px;border:0;background:none;text-align:left;cursor:pointer;color:inherit}
+#toc.t-bp .th:hover{background:rgba(92,200,255,.08)}
+#toc.t-bp .th i{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;border:2px solid #5cc8ff;font:700 18px/1 Unbounded,var(--disp);font-style:normal;color:#5cc8ff}
+#toc.t-bp .th.on i,#toc.t-bp .tg.here .th i{background:#5cc8ff;color:#081529}
+#toc.t-bp .th span{display:flex;flex-direction:column;font:700 18px/1.2 var(--txt)}
+#toc.t-bp .th small{font:600 13px/1.3 'Fira Sans Condensed',var(--txt);letter-spacing:.1em;text-transform:uppercase;color:#93b1d1;margin-top:3px}
+#toc.t-bp .tis{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 8px 68px}
+#toc.t-bp .ti{padding:6px 12px;border:1px solid rgba(140,200,255,.3);background:rgba(8,21,41,.5);font:600 15px/1.2 var(--txt);color:#c9daf0;cursor:pointer}
+#toc.t-bp .ti:hover{border-color:#5cc8ff}
+#toc.t-bp .ti.gm{border-style:dashed}
+#toc.t-bp .ti.on{background:#5cc8ff;border-color:#5cc8ff;color:#081529}
+@media (max-width:560px){#toc.t-bp .tis{padding-left:10px}}

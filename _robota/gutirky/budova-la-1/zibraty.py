@@ -17,7 +17,7 @@ def rep(s, a, b):
     return s.replace(a, b)
 
 
-def page(skob_rel, yun_rel=None, home=None):
+def page(skob_rel, yun_rel=None, home=None, tema=False):
     """yun_rel — адреса сторінки для юнаків відносно цієї; без нього — сама сторінка для юнаків."""
     src = (TUT / 'index.html').read_text(encoding='utf-8')
     emblem = 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode()
@@ -32,6 +32,11 @@ def page(skob_rel, yun_rel=None, home=None):
                       ('<script src="dani.js"></script>', (TUT / 'dani.js').read_text(encoding='utf-8')),
                       ('<script src="../../src/pult-host-file.js"></script>', host)]:
         src = rep(src, tag, inl(text))
+    if tema:   # стиль «Креслення» (19.10.2026) — поки лише в макетах
+        src = rep(src, '</style>', (TUT / 'tema-kresl.css').read_text(encoding='utf-8') + '\n</style>')
+        mal = inl((TUT / 'maliunky.js').read_text(encoding='utf-8'))
+        src = src.replace(mal, mal + '\n' + inl((TUT / 'tema-kresl.js').read_text(encoding='utf-8')), 1)
+        src = rep(src, 'family=Source+Sans+3:wght@400;600;700&display=swap', 'family=Source+Sans+3:wght@400;600;700&family=Unbounded:wght@700;900&family=Fira+Sans+Condensed:wght@600&display=swap')
     src = src.replace('{{EMBLEM}}', emblem)
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
@@ -53,12 +58,12 @@ if __name__ == '__main__':
     write(SITE / 'skob' / 'index.html', gr)   # коротка адреса для телефонів: gutirky-fi.github.io/skob
     if mode == 'vhody':   # макет «кілька входів»: proba/vhody/ — з гутірки й сторінки юнаків назад у макет
         root = SITE / 'proba' / 'vhody'
-        write(root / 'gutirky' / 'budova-la-1' / 'index.html', page('../../skob/', '../../yunakam/budova-la-1/', ('../../#vyh', 'Виховники')))
-        write(root / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво')))
+        write(root / 'gutirky' / 'budova-la-1' / 'index.html', page('../../skob/', '../../yunakam/budova-la-1/', ('../../#vyh', 'Виховники'), tema=True))
+        write(root / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво'), tema=True))
         write(root / 'skob' / 'index.html', gr)
     elif mode == 'proba':
-        write(SITE / 'proba' / 'budova-la-1' / 'index.html', page('../skob/', '../yunakam/budova-la-1/'))
-        write(SITE / 'proba' / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/'))
+        write(SITE / 'proba' / 'budova-la-1' / 'index.html', page('../skob/', '../yunakam/budova-la-1/', tema=True))
+        write(SITE / 'proba' / 'yunakam' / 'budova-la-1' / 'index.html', page('../../skob/', tema=True))
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
     else:
         root = SITE / (sys.argv[2] if len(sys.argv) > 2 else 'proba/sait')

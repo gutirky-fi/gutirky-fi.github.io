@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1b1d21">
 <title>Будова літальних апаратів І</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=Unbounded:wght@700;900&family=Fira+Sans+Condensed:wght@600&display=swap">
 <style>
 :root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--upyu:#c8284a;--upyu-t:#ff7d99;--ol:#9fb57a;--sky:#6fb3ff;
   --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;
@@ -273,6 +273,99 @@ html body #pult-ask{border-color:var(--vyh)}
 .prog .tr.sg i.pr{background:repeating-linear-gradient(-45deg,rgba(255,125,153,.6) 0 3px,var(--card2) 3px 7px)}
 .prog .tr.sg i.on{background:var(--upyu)}
 .pnote{margin:4px 0 0;color:var(--mut);font-size:14px}.pnote b{color:var(--upyu-t)}
+/* Стиль «Креслення» для «Будови ЛА І» (19.10.2026) — з показу «Стилі гутірок» (_robota/proby/styli).
+   Лише вигляд гутірки (#pres.t-bp): синя калька з сіткою, рамка й штамп «аркуш N», заголовки Unbounded, підписи Fira Sans Condensed,
+   розділ «Точка N з 5» — маршрут польоту. Порядок слайдів, пульт, гра, 3D-літачок — без змін. Поки що лише в макетах. */
+#pres.t-bp{--ink:#eaf2ff;--mut:#93b1d1;--sac:#5cc8ff;--am:#ffb547;--lnb:rgba(140,200,255,.36);--fc:'Fira Sans Condensed',var(--txt);--un:Unbounded,var(--disp);
+  background:
+    linear-gradient(rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5vw 2.5vw,
+    linear-gradient(90deg,rgba(110,180,255,.065) 1px,transparent 1px) 0 0/2.5vw 2.5vw,
+    linear-gradient(rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5vw 12.5vw,
+    linear-gradient(90deg,rgba(110,180,255,.12) 1px,transparent 1px) 0 0/12.5vw 12.5vw,
+    radial-gradient(120% 95% at 32% 38%,#16386a 0%,#0d2142 50%,#081529 100%);color:var(--ink)}
+#pres.t-bp #stage{z-index:1}
+/* рамка аркуша і штамп у кутку */
+#pres.t-bp .bp-frm{position:absolute;z-index:0;inset:clamp(8px,1.4vw,26px);border:1px solid var(--lnb);pointer-events:none}
+#pres.t-bp .bp-frm::before{content:"";position:absolute;inset:clamp(4px,.4vw,8px);border:1px solid rgba(140,200,255,.13)}
+#pres.t-bp .bp-stamp{position:absolute;z-index:2;right:clamp(8px,1.4vw,26px);bottom:clamp(8px,1.4vw,26px);display:flex;border-top:1px solid var(--lnb);border-left:1px solid var(--lnb);background:rgba(8,21,41,.85);
+  font:600 clamp(.6rem,.78vw,.9rem)/1 var(--fc);letter-spacing:.12em;text-transform:uppercase;color:var(--mut);pointer-events:none}
+#pres.t-bp .bp-stamp span{padding:.6em 1em;border-right:1px solid var(--lnb)}#pres.t-bp .bp-stamp span:last-child{border-right:0}
+#pres.t-bp .bp-stamp b{color:var(--ink);font-weight:600}
+#pres:not(.t-bp) .bp-frm,#pres:not(.t-bp) .bp-stamp{display:none}
+@media (max-width:760px),(max-height:520px){#pres.t-bp .bp-stamp{display:none}}
+/* тексти */
+#pres.t-bp .k,#pres.t-bp .bey{display:block;font:600 clamp(.85rem,1.1vw,1.25rem)/1.2 var(--fc);letter-spacing:.22em;text-transform:uppercase;color:var(--sac)}
+#pres.t-bp .hh{margin:10px 0 14px;font:700 clamp(1.45rem,2.7vw,3.1rem)/1.08 var(--un);letter-spacing:.01em;text-transform:uppercase;color:var(--ink);text-wrap:balance}
+#pres.t-bp .pp{color:#c9daf0}
+#pres.t-bp .pts li{border:1px solid rgba(140,200,255,.18);border-left:3px solid var(--sac);border-radius:0;background:rgba(8,21,41,.55);color:#c9daf0}
+#pres.t-bp .pts li b{color:var(--ink)}
+#pres.t-bp .pts li.now{border-left-color:var(--am);background:rgba(255,181,71,.08)}
+#pres.t-bp .ask{border:1px dashed rgba(255,181,71,.7);border-radius:0;background:rgba(255,181,71,.06);color:var(--ink)}
+#pres.t-bp .ask::before{content:"Запитання";display:block;margin-bottom:.3em;font:600 .72em var(--fc);letter-spacing:.16em;text-transform:uppercase;color:var(--am)}
+#pres.t-bp .note{color:var(--mut)}
+#pres.t-bp .badge{border-radius:0;background:none;border:1px solid var(--am);color:var(--am);font:600 clamp(.75rem,.95vw,1rem) var(--fc);letter-spacing:.18em}
+#pres.t-bp .ex b{color:var(--sac)}
+#pres.t-bp #hint{color:var(--mut)}
+#pres.t-bp #bar{background:#0d2142}#pres.t-bp #bar i{background:var(--sac)}
+#pres.t-bp .big .n{font-family:var(--un);font-weight:700;color:var(--sac)}
+#pres.t-bp .big .vy{font-family:var(--fc);letter-spacing:.2em;color:var(--sac)}
+#pres.t-bp .big blockquote{border-left-color:var(--sac)}
+/* титул */
+#pres.t-bp .ttl h2{margin:14px 0 0;font:700 clamp(2.1rem,4.6vw,5.4rem)/1.02 var(--un);text-transform:uppercase;letter-spacing:.01em;color:var(--ink)}
+#pres.t-bp .ttl h2 em{font-style:normal;color:var(--sac)}
+#pres.t-bp .ttl p{margin:14px 0 0;font:400 clamp(1.1rem,1.8vw,2rem)/1.2 var(--txt);color:var(--mut)}
+#pres.t-bp .ttl .meta span{border-radius:0;border-color:var(--lnb);background:rgba(8,21,41,.6);color:var(--ink);font:600 clamp(.75rem,1vw,1.1rem) var(--fc);letter-spacing:.1em;text-transform:uppercase}
+#pres.t-bp .ttl .meta span b{color:var(--sac)}
+/* розділ «Точка N з 5»: великий контурний номер і маршрут польоту — пройдені точки з галочкою, літачок на поточній */
+#pres.t-bp .bsec{grid-column:1/-1;width:100%;max-width:min(1400px,94vw);margin:0 auto}
+#pres.t-bp .bnum{display:flex;align-items:baseline;gap:.25em;margin:.15em 0 .3em}
+#pres.t-bp .bnum b{font:900 min(13vw,24vh)/.9 var(--un);color:transparent;-webkit-text-stroke:max(2px,.2vw) var(--sac);animation:bnum .8s cubic-bezier(.2,.9,.2,1) both}
+#pres.t-bp .bnum span{font:700 min(3.4vw,6vh) var(--un);color:var(--mut)}
+#pres.t-bp .bsec blockquote{margin:0;max-width:40ch;font-size:clamp(1.15rem,2.3vw,2.5rem);line-height:1.3;color:var(--ink);animation:bq .6s .35s both}
+#pres.t-bp .route{width:100%;height:min(15vw,24vh);margin-top:min(3vw,4vh)}
+#pres.t-bp .route svg{width:100%;height:100%;overflow:visible}
+#pres.t-bp .route .done{stroke-dasharray:1200;stroke-dashoffset:1200;animation:rdraw 1.1s .2s ease forwards}
+#pres.t-bp .route .pl{animation:rfly 1.1s .2s cubic-bezier(.4,0,.2,1) both}
+@keyframes bnum{from{opacity:0;transform:translateY(.15em)}}
+@keyframes bq{from{opacity:0;transform:translateY(1.4vh)}}
+@keyframes rdraw{to{stroke-dashoffset:0}}
+@keyframes rfly{from{transform:translateX(var(--from,0px))}}
+/* «великий факт» */
+#pres.t-bp .bfakt{display:flex;flex-direction:column;margin:clamp(4px,1vh,14px) 0 clamp(8px,1.6vh,18px)}
+#pres.t-bp .bfakt .d{font:600 clamp(1rem,1.7vw,2rem) var(--fc);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+#pres.t-bp .bfakt b{display:block;white-space:nowrap;font:900 clamp(4.4rem,10.5vw,12rem)/.86 var(--un);letter-spacing:-.01em;color:var(--sac);animation:bnum .9s cubic-bezier(.2,.9,.2,1) both}
+#pres.t-bp .bfakt span{margin-top:.35em;font-size:clamp(1.1rem,1.9vw,2.1rem);line-height:1.3;color:var(--ink);max-width:34ch}
+/* поява малюнка */
+#pres.t-bp #art>svg{animation:bart .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes bart{from{opacity:0;transform:translateY(2vh) scale(.97)}}
+/* плавний перехід між слайдами */
+::view-transition-old(root){animation:bvOut .3s ease both}
+::view-transition-new(root){animation:bvIn .5s cubic-bezier(.2,.8,.2,1) both}
+html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
+@keyframes bvOut{to{opacity:0}}
+@keyframes bvIn{from{opacity:0;transform:translateX(2vw)}}
+@keyframes bvInB{from{opacity:0;transform:translateX(-2vw)}}
+@media (prefers-reduced-motion:reduce){#pres.t-bp *{animation:none!important}::view-transition-old(root),::view-transition-new(root){animation:none}}
+/* зміст: розділи-точки, у кожному — слайди */
+#toc.t-bp{background:linear-gradient(rgba(110,180,255,.06) 1px,transparent 1px) 0 0/24px 24px,linear-gradient(90deg,rgba(110,180,255,.06) 1px,transparent 1px) 0 0/24px 24px,#0b1b36;color:#eaf2ff}
+#toc.t-bp .in{max-width:880px}
+#toc.t-bp h3{font:700 26px Unbounded,var(--disp);letter-spacing:.02em}
+#toc.t-bp .back{color:#5cc8ff}
+#toc.t-bp .tg{margin:10px 0;padding:6px;border:1px solid rgba(140,200,255,.22);background:rgba(8,21,41,.6)}
+#toc.t-bp .tg.here{border-color:#5cc8ff}
+#toc.t-bp .th{display:flex;align-items:center;gap:14px;width:100%;padding:8px 10px;border:0;background:none;text-align:left;cursor:pointer;color:inherit}
+#toc.t-bp .th:hover{background:rgba(92,200,255,.08)}
+#toc.t-bp .th i{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;border:2px solid #5cc8ff;font:700 18px/1 Unbounded,var(--disp);font-style:normal;color:#5cc8ff}
+#toc.t-bp .th.on i,#toc.t-bp .tg.here .th i{background:#5cc8ff;color:#081529}
+#toc.t-bp .th span{display:flex;flex-direction:column;font:700 18px/1.2 var(--txt)}
+#toc.t-bp .th small{font:600 13px/1.3 'Fira Sans Condensed',var(--txt);letter-spacing:.1em;text-transform:uppercase;color:#93b1d1;margin-top:3px}
+#toc.t-bp .tis{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 8px 68px}
+#toc.t-bp .ti{padding:6px 12px;border:1px solid rgba(140,200,255,.3);background:rgba(8,21,41,.5);font:600 15px/1.2 var(--txt);color:#c9daf0;cursor:pointer}
+#toc.t-bp .ti:hover{border-color:#5cc8ff}
+#toc.t-bp .ti.gm{border-style:dashed}
+#toc.t-bp .ti.on{background:#5cc8ff;border-color:#5cc8ff;color:#081529}
+@media (max-width:560px){#toc.t-bp .tis{padding-left:10px}}
+
 </style>
 </head>
 <body>
@@ -1532,6 +1625,82 @@ html body #pult-ask{border-color:var(--vyh)}
 
 </script>
 <script>
+/* Стиль «Креслення» (19.10.2026): вмикає вигляд #pres.t-bp, рамку й штамп «аркуш N», свою розмітку титулки,
+   розділу «Точка N з 5» (маршрут польоту) і «великого факту». Рушій питає window.GUT_TEMA[тип слайда](s, D). */
+(function () {
+  'use strict';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const pad = n => String(n).padStart(2, '0');
+  function on() {
+    const p = document.getElementById('pres');
+    if (p) { p.classList.add('t-bp'); p.insertAdjacentHTML('afterbegin', '<span class="bp-frm" aria-hidden="true"></span><span class="bp-stamp" aria-hidden="true"></span>'); }
+    const t = document.getElementById('toc'); if (t) t.classList.add('t-bp');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', on); else on();
+  /* маршрут польоту: 5 точок; пройдені — з галочкою, на поточній — літачок, далі — пунктир */
+  function route(n) {
+    const X = [60, 280, 500, 720, 940], Y = [118, 70, 56, 70, 110], i = n - 1;
+    const seg = (a, b) => `M${X[a]},${Y[a]} C${(X[a] + X[b]) / 2},${Y[a]} ${(X[a] + X[b]) / 2},${Y[b]} ${X[b]},${Y[b]}`;
+    let done = '', rest = '';
+    for (let k = 0; k < 4; k++) (k < i ? (done += seg(k, k + 1) + ' ') : (rest += seg(k, k + 1) + ' '));
+    const pts = X.map((x, k) => k < i
+      ? `<circle cx="${x}" cy="${Y[k]}" r="11" fill="#5cc8ff"/><path d="M${x - 6},${Y[k]} l4,4 l8,-9" stroke="#081529" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+      : k === i ? `<circle cx="${x}" cy="${Y[k]}" r="21" fill="none" stroke="#5cc8ff" stroke-width="2" opacity=".45"/><circle cx="${x}" cy="${Y[k]}" r="11" fill="#081529" stroke="#5cc8ff" stroke-width="3"/>`
+        : `<circle cx="${x}" cy="${Y[k]}" r="9" fill="#081529" stroke="#93b1d1" stroke-width="2" opacity=".85"/>`).join('') +
+      X.map((x, k) => `<text x="${x}" y="${Y[k] + 46}" text-anchor="middle" font-family="Unbounded" font-weight="700" font-size="20" fill="${k === i ? '#eaf2ff' : '#93b1d1'}">${pad(k + 1)}</text>`).join('');
+    const from = i > 0 ? X[i - 1] - X[i] : -60;
+    const plane = `<g class="pl" style="--from:${from}px"><g transform="translate(${X[i] + 6},${Y[i] - 34}) rotate(-4)"><path d="M22 0 L8 -2.4 L-1 -17 L-6 -17 L-2 -2.4 L-14 -2.4 L-19 -9 L-22 -9 L-19.5 0 L-22 9 L-19 9 L-14 2.4 L-2 2.4 L-6 17 L-1 17 L8 2.4 Z" fill="#eaf2ff"/></g></g>`;
+    return `<svg viewBox="0 0 1000 180" aria-hidden="true">${rest ? `<path d="${rest}" stroke="#93b1d1" stroke-width="2.5" fill="none" stroke-dasharray="3 9" stroke-linecap="round" opacity=".8"/>` : ''}` +
+      `${done ? `<path class="done" d="${done}" stroke="#5cc8ff" stroke-width="3" fill="none"/>` : ''}${pts}${plane}</svg>`;
+  }
+  const ptsHtml = s => s.pts ? `<ul class="pts">${s.pts.map(p => `<li>${p}</li>`).join('')}</ul>` : '';
+  const secName = (s, SL, idx) => { if (s.t === 'title') return 'Титул'; for (let k = idx; k >= 0; k--) { const x = SL[k]; if (x.t === 'sec') return 'Точка ' + x.n; if (x.t === 'kintro' || x.t === 'end') return 'Підсумок'; } return 'Вступ'; };
+  window.GUT_TEMA = {
+    vt: true,
+    title(s, D) {
+      return `<div class="ttl"><span class="bey">${esc(D.spec || '')} вмілість · проба 1</span><h2>Будова<br>літальних<br>апаратів <em>${esc(D.riven || '')}</em></h2><p>гутірка для юнацтва</p>` +
+        `<div class="meta"><span><b>5</b> вимог вмілості</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
+    },
+    sec(s, D) {
+      return `<div class="bsec"><span class="bey">Вимога вмілості · точка ${s.n} з 5</span><div class="bnum"><b>${pad(s.n)}</b><span>/05</span></div>` +
+        `<blockquote>${D.vymogy[s.n - 1]}</blockquote><div class="route">${route(s.n)}</div></div>`;
+    },
+    card(s) {
+      if (!s.fakt) return null;
+      return `<div class="k">${s.k} · ${s.h}</div><div class="bfakt"><span class="d">${s.fakt[0]}</span><b>${s.fakt[1]}</b><span>${s.fakt[2]}</span></div>` +
+        (s.p ? `<p class="pp">${s.p}</p>` : '') + ptsHtml(s) + (s.ask ? `<p class="ask">${s.ask}</p>` : '') + (s.note ? `<p class="note">${s.note}</p>` : '');
+    },
+    /* штамп у кутку: назва, розділ, аркуш N / усього */
+    after(s, idx, SL) {
+      const st = document.querySelector('#pres .bp-stamp'); if (!st) return;
+      st.innerHTML = `<span>Будова ЛА І</span><span>${secName(s, SL, idx)}</span><span>Аркуш <b>${pad(idx + 1)}</b>/${SL.length}</span>`;
+    },
+    toc(SL, cur, D, GN) {
+      const out = []; let grp = null;
+      const item = (i, label, cls = '') => `<button class="ti${i === cur ? ' on' : ''}${cls}" type="button" data-go="${i}">${label}</button>`;
+      const row = (i, ic, t, sm) => `<div class="tg"><button class="th${i === cur ? ' on' : ''}" type="button" data-go="${i}"><i>${ic}</i><span>${t}<small>${sm}</small></span></button></div>`;
+      SL.forEach((s, i) => {
+        if (s.t === 'title') out.push(row(i, '·', 'Початок', 'титул і план гутірки'));
+        else if (s.t === 'sec') { grp = { i, n: s.n, items: [] }; out.push(grp); }
+        else if (s.t === 'kintro') { grp = null; out.push(row(i, '?', 'Гра «Потужний СКОБ!»', 'вікторина з телефонів по всіх точках')); }
+        else if (s.t === 'end') { grp = null; out.push(row(i, '✓', 'Що далі', 'QR-код на «Вивчай сам»')); }
+        else if (grp) {
+          if (s.t === 'card' || s.t === 'prac' || s.t === 'scheme') grp.items.push(item(i, esc(s.h)));
+          else if (s.t === 'gintro') grp.items.push(item(i, 'Гра «' + esc(GN) + '»', ' gm'));
+          if (i === cur) grp.here = true;
+        }
+      });
+      return out.map(g => typeof g === 'string' ? g : (() => {
+        const k = D.konspekt.find(x => x.n === g.n) || {};
+        return `<div class="tg${g.here || g.i === cur ? ' here' : ''}"><button class="th${g.i === cur ? ' on' : ''}" type="button" data-go="${g.i}"><i>${pad(g.n)}</i><span>${esc(k.h || '')}<small>вимога ${g.n} з 5</small></span></button>` +
+          (g.items.length ? `<div class="tis">${g.items.join('')}</div>` : '') + '</div>';
+      })()).join('');
+    }
+  };
+})();
+
+</script>
+<script>
 /* Гутірка «Будова літальних апаратів І» — зміст.
    Вимоги вмілості (Летунська, проба 1) — дослівно з каталогу Пласту у Фінляндії:
    https://plast-finland.com/vmilosti/budova-litalnyh-aparativ-i
@@ -1565,7 +1734,7 @@ window.LA = {
 
     /* точка 1 */
     { t: 'sec', n: 1 },
-    { t: 'card', n: 1, k: 'Точка 1', h: 'Що таке літальний апарат', art: 'types', ask: 'Що вміє літати? Назвіть якомога більше — за 30 секунд!',
+    { t: 'card', n: 1, k: 'Точка 1', h: 'Що таке літальний апарат', art: 'types', fakt: ['17 грудня', '1903', 'Брати Райт уперше полетіли на літаку з двигуном: 12 секунд у повітрі, 37 метрів.'], ask: 'Що вміє літати? Назвіть якомога більше — за 30 секунд!',
       p: 'Літальний апарат (ЛА) — будь-який пристрій, створений людиною для польоту в атмосфері або в космосі.' },
     { t: 'card', n: 1, k: 'Точка 1', h: 'Що тримає їх у повітрі', art: 'types', pts: [
       '<b>Легші за повітря</b> — повітряна куля, аеростат, дирижабль. Їх піднімає легкий газ або нагріте повітря, як корок у воді.',
@@ -1831,6 +2000,10 @@ function render() {
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>
       <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
+  if (window.GUT_TEMA && GUT_TEMA[s.t]) {   /* стиль гутірки (tema-*.js), якщо підключено: рядок — HTML панелі, або { h, a, wide } */
+    const th = GUT_TEMA[s.t](s, D);
+    if (typeof th === 'string') h = th; else if (th) { if (th.h != null) h = th.h; if (th.a != null) a = th.a; if (th.wide != null) wide = th.wide; }
+  }
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
@@ -1839,6 +2012,7 @@ function render() {
   panel.innerHTML = h; panel.scrollTop = 0;
   if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Вгадай схему · ${s.guess} з 5` : `Перевірка · точка ${s.n}`, T: 20,
     auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  if (window.GUT_TEMA && GUT_TEMA.after) GUT_TEMA.after(s, idx, SL);
   showRev(); $('#hint').textContent = hint;
   $('#bar i').style.width = (idx / (SL.length - 1) * 100) + '%';
   if (idx > 0 && !T0) T0 = Date.now();
@@ -1857,7 +2031,14 @@ function showRev() {
     $$('#panel .pts li').forEach((li, k) => li.classList.toggle('now', k === rev - 1 && rev <= 3));
   }
 }
-function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
+function go(i, toEnd) {
+  const f = () => { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); };
+  /* плавний перехід між слайдами (якщо стиль просить і браузер уміє) */
+  if (window.GUT_TEMA && GUT_TEMA.vt && document.startViewTransition && !P.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.dataset.dir = i < idx ? 'back' : 'fwd'; try { document.startViewTransition(f); return; } catch (e) { /* без переходу */ }
+  }
+  f();
+}
 function adv(d) {
   const s = SL[idx];
   if (d > 0) {
@@ -1931,6 +2112,7 @@ function fs() { try { const r = document.fullscreenElement ? document.exitFullsc
 $('#b-fs').addEventListener('click', fs);
 $('#b-toc').addEventListener('click', () => {
   const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
+  if (window.GUT_TEMA && GUT_TEMA.toc) { $('#toc-list').innerHTML = GUT_TEMA.toc(SL, idx, D, 'Вгадай схему'); $('#toc').hidden = false; const c = $('#toc .on'); if (c) try { c.scrollIntoView({ block: 'center' }); } catch (e) {} return; }
   $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Вгадай схему»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
   $('#toc').hidden = false;
 });

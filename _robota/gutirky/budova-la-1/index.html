@@ -448,6 +448,10 @@ function render() {
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>
       <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
+  if (window.GUT_TEMA && GUT_TEMA[s.t]) {   /* стиль гутірки (tema-*.js), якщо підключено: рядок — HTML панелі, або { h, a, wide } */
+    const th = GUT_TEMA[s.t](s, D);
+    if (typeof th === 'string') h = th; else if (th) { if (th.h != null) h = th.h; if (th.a != null) a = th.a; if (th.wide != null) wide = th.wide; }
+  }
   P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title');
   artEl.innerHTML = a; artEl.hidden = !a;
   if (s.art === 'axes') stop3d = LA_ART.mount3D(artEl);
@@ -456,6 +460,7 @@ function render() {
   panel.innerHTML = h; panel.scrollTop = 0;
   if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Вгадай схему · ${s.guess} з 5` : `Перевірка · точка ${s.n}`, T: 20,
     auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  if (window.GUT_TEMA && GUT_TEMA.after) GUT_TEMA.after(s, idx, SL);
   showRev(); $('#hint').textContent = hint;
   $('#bar i').style.width = (idx / (SL.length - 1) * 100) + '%';
   if (idx > 0 && !T0) T0 = Date.now();
@@ -474,7 +479,14 @@ function showRev() {
     $$('#panel .pts li').forEach((li, k) => li.classList.toggle('now', k === rev - 1 && rev <= 3));
   }
 }
-function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
+function go(i, toEnd) {
+  const f = () => { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); };
+  /* плавний перехід між слайдами (якщо стиль просить і браузер уміє) */
+  if (window.GUT_TEMA && GUT_TEMA.vt && document.startViewTransition && !P.hidden && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.documentElement.dataset.dir = i < idx ? 'back' : 'fwd'; try { document.startViewTransition(f); return; } catch (e) { /* без переходу */ }
+  }
+  f();
+}
 function adv(d) {
   const s = SL[idx];
   if (d > 0) {
@@ -548,6 +560,7 @@ function fs() { try { const r = document.fullscreenElement ? document.exitFullsc
 $('#b-fs').addEventListener('click', fs);
 $('#b-toc').addEventListener('click', () => {
   const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
+  if (window.GUT_TEMA && GUT_TEMA.toc) { $('#toc-list').innerHTML = GUT_TEMA.toc(SL, idx, D, 'Вгадай схему'); $('#toc').hidden = false; const c = $('#toc .on'); if (c) try { c.scrollIntoView({ block: 'center' }); } catch (e) {} return; }
   $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Вгадай схему»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
   $('#toc').hidden = false;
 });
