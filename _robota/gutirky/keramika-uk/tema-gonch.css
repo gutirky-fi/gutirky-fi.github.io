@@ -1,0 +1,134 @@
+/* Стиль «Гончарня» для «Кераміки І» (19.10.2026) — з показу «Стилі гутірок» (_robota/proby/styli).
+   Лише вигляд гутірки (#pres.t-gn): фон-майстерня, шрифт заголовків Commissioner, ярлики, плитки-проби, клеймо «рівень І».
+   Порядок слайдів, пульт, гра, «Вивчай сам» — без змін. Поки що лише в макетах (zibraty.py proba|vhody). */
+#pres.t-gn{--ink:#f7ecdf;--mut:#c9ad92;--sac:#e07a45;--sacT:#f0a173;--gl:#5aa985;--bis:#e9d3b8;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 .86 0 0 0 0 .72 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(70% 60% at 50% 112%,rgba(236,124,62,.26),transparent 62%),
+    radial-gradient(130% 100% at 45% 0%,#3a281d 0%,#261911 52%,#1a100a 100%);color:var(--ink)}
+/* паперовий ярлик (замість «Точка 1» рукописом) */
+#pres.t-gn .k,#pres.t-gn .gtag,#pres.t-gn .badge{display:inline-flex;align-items:center;gap:.55em;padding:.32em .95em .32em .65em;border-radius:4px;background:var(--bis);color:#3b2416;
+  font:700 clamp(.85rem,1.08vw,1.2rem)/1.25 var(--txt);letter-spacing:.01em;text-transform:none;box-shadow:0 .2vw .5vw rgba(0,0,0,.35)}
+#pres.t-gn .k::before,#pres.t-gn .gtag::before,#pres.t-gn .badge::before{content:"";flex:none;width:.6em;height:.6em;border-radius:50%;background:#2a1a10;box-shadow:inset 0 0 0 .1em rgba(0,0,0,.4)}
+#pres.t-gn .badge{margin-bottom:4px}
+#pres.t-gn .hh{margin:12px 0 14px;font-family:Commissioner,var(--txt);font-weight:850;font-variation-settings:"FLAR" 100,"VOLM" 70;font-size:clamp(1.8rem,3.5vw,3.9rem);line-height:1.02;
+  letter-spacing:-.005em;text-transform:none;color:var(--ink);text-wrap:balance}
+#pres.t-gn .pp{color:#f1e4d6}
+#pres.t-gn .pts li{border-left-color:var(--sac);background:rgba(247,236,223,.06);color:#f1e4d6}
+#pres.t-gn .pts li b{color:#ffd9b8}
+#pres.t-gn .ask{border:1px solid rgba(240,161,115,.55);background:rgba(247,236,223,.06);color:var(--ink)}
+#pres.t-gn .ask::before{color:var(--sacT)}
+#pres.t-gn .note{color:var(--mut)}
+#pres.t-gn #hint{color:var(--mut)}
+#pres.t-gn #bar{background:#2c1d14}#pres.t-gn #bar i{background:var(--sac)}
+/* великі слайди (гра, «Що далі») */
+#pres.t-gn .big .n{font-family:Commissioner,var(--txt);font-weight:900;font-variation-settings:"FLAR" 100,"VOLM" 100;color:var(--sac)}
+#pres.t-gn .big .vy{color:var(--sacT);font-family:var(--txt);letter-spacing:.12em}
+#pres.t-gn .big blockquote{border-left-color:var(--sac)}
+/* титул: ярлик, назва, клеймо «рівень І», рукописний підпис, «таблетки» */
+#pres.t-gn .ttl .gtag{margin-bottom:6px}
+#pres.t-gn .ttl h2{margin:14px 0 0;font-family:Commissioner,var(--txt);font-weight:850;font-variation-settings:"FLAR" 100,"VOLM" 70;font-size:clamp(2.8rem,7.6vw,8.4rem);line-height:.9;letter-spacing:-.005em;color:var(--ink)}
+#pres.t-gn .gh{display:flex;align-items:center;gap:1.2vw;margin-top:1.6vw}
+#pres.t-gn .ttl p{margin:0;font:700 clamp(1.5rem,2.4vw,2.6rem)/1.1 var(--hand);color:var(--sacT)}
+#pres.t-gn .stmp{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:none;width:clamp(64px,6.4vw,118px);height:clamp(64px,6.4vw,118px);border-radius:50%;
+  border:clamp(3px,.26vw,5px) solid var(--sac);box-shadow:inset 0 0 0 clamp(4px,.4vw,8px) rgba(224,122,69,.16);color:var(--sac);font:800 clamp(1.9rem,3.1vw,3.6rem)/.9 Unbounded,var(--disp)}
+#pres.t-gn .stmp small{font:700 clamp(.55rem,.75vw,.85rem)/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;margin-bottom:.3em}
+#pres.t-gn .ttl .meta span{border-color:rgba(247,236,223,.2);background:rgba(247,236,223,.08);color:var(--ink)}
+#pres.t-gn .ttl .meta span b{color:var(--sacT)}
+/* розділ «Точка N з 5»: п’ять плиток-проб; поточна світиться, практичні — з пунктиром, пройдені — у зеленій глазурі */
+#pres.t-gn .gsec{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3vh,40px);width:100%;max-width:min(1300px,94vw);margin:0 auto;text-align:center}
+#pres.t-gn .gsec .gtag{align-self:flex-start}
+#pres.t-gn .tiles{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,1.8vw,34px)}
+#pres.t-gn .tl{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1vw,16px)}
+#pres.t-gn .tl i{display:grid;place-items:center;width:min(8.4vw,15vh);height:min(8.4vw,15vh);border-radius:min(1vw,1.8vh);font:850 min(3.6vw,6.4vh)/1 Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;font-style:normal;
+  color:rgba(59,36,22,.55);background:linear-gradient(145deg,#efdcc4,#d8bc9c);box-shadow:inset 0 -.3vw .5vw rgba(0,0,0,.18),inset 0 .2vw .35vw rgba(255,255,255,.35),0 .7vw 1.4vw rgba(0,0,0,.35)}
+#pres.t-gn .tl.pr i{background:linear-gradient(145deg,#e7d2b8,#cdb193);outline:2px dashed rgba(240,161,115,.9);outline-offset:5px}
+#pres.t-gn .tl.done i{background:radial-gradient(70% 60% at 30% 25%,rgba(255,255,255,.55),transparent 55%),linear-gradient(145deg,#6cc49a,#2f7e5a);color:rgba(255,255,255,.9)}
+#pres.t-gn .tl.cur i{width:min(11.8vw,21vh);height:min(11.8vw,21vh);border-radius:min(1.3vw,2.3vh);font-size:min(6vw,10.6vh);color:#fff4ea;
+  background:radial-gradient(60% 50% at 28% 22%,rgba(255,255,255,.6),transparent 55%),linear-gradient(145deg,#f08c52,#b9502a);box-shadow:0 0 0 .3vw rgba(240,140,82,.25),0 0 4vw rgba(240,120,60,.45),0 .9vw 1.8vw rgba(0,0,0,.4)}
+#pres.t-gn .tl span{font:700 clamp(1.1rem,1.7vw,2rem)/1 var(--hand);color:var(--mut)}
+#pres.t-gn .tl.cur span{color:var(--sacT);font-size:clamp(1.3rem,2.1vw,2.4rem)}
+#pres.t-gn .tl small{margin-top:-.3em;font:700 clamp(.6rem,.85vw,.95rem)/1 var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--sacT)}
+#pres.t-gn .gsec blockquote{margin:0;max-width:44ch;font-size:clamp(1.15rem,min(2.2vw,3.6vh),2.4rem);line-height:1.3;color:var(--ink);text-wrap:balance}
+@media (max-width:760px){#pres.t-gn .tiles{gap:8px}#pres.t-gn .tl i{width:14vw;height:14vw;font-size:6vw}#pres.t-gn .tl.cur i{width:19vw;height:19vw;font-size:10vw}#pres.t-gn .tl span{font-size:1rem}#pres.t-gn .tl small{display:none}}
+/* ---------- 19.10.2026, правки власника ---------- */
+/* титулка: полиця з виробами замість 3D-вази */
+#pres.t-gn .gtitle-art{width:100%;display:flex;align-items:center;justify-content:center}
+#pres.t-gn .gtitle-art svg{width:100%;height:auto;max-height:60vh;filter:drop-shadow(0 2vw 2.4vw rgba(0,0,0,.45))}
+/* «Про що гутірка»: п’ять плиток як малюнок */
+#pres.t-gn .gplan{display:flex;flex-direction:column;align-items:center;gap:clamp(14px,2.4vh,30px);text-align:center}
+#pres.t-gn .gplan p{margin:0;font:700 clamp(1.1rem,1.7vw,2rem)/1.2 var(--hand);color:var(--mut)}
+#pres.t-gn .gplan .tl i{width:min(6.6vw,13vh);height:min(6.6vw,13vh);font-size:min(2.9vw,5.6vh)}
+/* «великий факт» */
+#pres.t-gn .gfakt{display:flex;flex-direction:column;margin:clamp(6px,1.2vh,16px) 0 clamp(10px,2vh,22px)}
+#pres.t-gn .gbig{display:block;white-space:nowrap;font:900 clamp(4.4rem,10.5vw,12rem)/.84 Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 100;letter-spacing:-.02em;color:var(--sac);
+  text-shadow:0 0 3vw rgba(240,120,60,.35);animation:gbig .9s cubic-bezier(.2,.9,.2,1) both}
+#pres.t-gn .ghw{margin-top:.15em;font:700 clamp(1.4rem,2.5vw,2.8rem)/1.1 var(--hand);color:var(--sacT)}
+@keyframes gbig{from{opacity:0;transform:translateY(.25em) scale(.92);filter:blur(6px)}}
+/* поява: малюнок м’яко виринає, плитки встають по черзі, поточна спалахує, щойно пройдена вкривається глазур’ю */
+#pres.t-gn #art>*{animation:gart .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes gart{from{opacity:0;transform:translateY(2.4vh) scale(.97)}}
+#pres.t-gn .tl{animation:gtl .55s cubic-bezier(.2,.9,.25,1.15) both;animation-delay:calc(var(--i,0) * 70ms + 80ms)}
+@keyframes gtl{from{opacity:0;transform:translateY(3vh) scale(.85)}}
+#pres.t-gn .tl i{position:relative}
+#pres.t-gn .tl.cur i{animation:gcur 1.1s .45s cubic-bezier(.2,.9,.25,1) both}
+@keyframes gcur{0%{transform:scale(.72);box-shadow:0 0 0 0 rgba(240,140,82,0),0 0 0 rgba(240,120,60,0)}55%{transform:scale(1.06)}100%{transform:none}}
+#pres.t-gn .tl.was i::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(60% 50% at 28% 22%,rgba(255,255,255,.6),transparent 55%),linear-gradient(145deg,#f08c52,#b9502a);animation:gwas 1.2s .35s ease both}
+@keyframes gwas{to{opacity:0}}
+#pres.t-gn .gsec blockquote{animation:gq .7s .55s both}
+@keyframes gq{from{opacity:0;transform:translateY(1.6vh)}}
+/* плавний перехід між слайдами (View Transitions; де не вміє — просто без нього) */
+::view-transition-old(root){animation:gvOut .32s ease both}
+::view-transition-new(root){animation:gvIn .5s cubic-bezier(.2,.8,.2,1) both}
+html[data-dir=back]::view-transition-new(root){animation-name:gvInB}
+@keyframes gvOut{to{opacity:0;transform:scale(.985)}}
+@keyframes gvIn{from{opacity:0;transform:translateX(2.2vw)}}
+@keyframes gvInB{from{opacity:0;transform:translateX(-2.2vw)}}
+@media (prefers-reduced-motion:reduce){#pres.t-gn *,#pres.t-gn *::after{animation:none!important}::view-transition-old(root),::view-transition-new(root){animation:none}}
+/* зміст: розділи з плитками, у кожному — слайди */
+#toc.t-gn{background:radial-gradient(120% 80% at 50% 0%,#2e2016,#1a100a 70%);color:#f7ecdf}
+#toc.t-gn .in{max-width:880px}
+#toc.t-gn h3{font:850 30px Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;text-transform:none;letter-spacing:0}
+#toc.t-gn .back{color:#f0a173}
+#toc.t-gn .tg{margin:10px 0;padding:6px;border-radius:16px;border:1px solid rgba(247,236,223,.1);background:rgba(247,236,223,.035)}
+#toc.t-gn .tg.here{border-color:rgba(240,161,115,.55);background:rgba(240,140,82,.07)}
+#toc.t-gn .th{display:flex;align-items:center;gap:14px;width:100%;padding:8px 10px;border:0;border-radius:12px;background:none;text-align:left;cursor:pointer}
+#toc.t-gn .th:hover{background:rgba(247,236,223,.06)}
+#toc.t-gn .th i{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:9px;font:850 22px/1 Commissioner,var(--txt);font-style:normal;color:#3b2416;background:linear-gradient(145deg,#efdcc4,#d8bc9c)}
+#toc.t-gn .th i.pr{outline:2px dashed rgba(240,161,115,.9);outline-offset:3px}
+#toc.t-gn .th.on i,#toc.t-gn .tg.here .th i{color:#fff4ea;background:linear-gradient(145deg,#f08c52,#b9502a)}
+#toc.t-gn .th span{display:flex;flex-direction:column;font:700 19px/1.2 var(--txt);color:#f7ecdf}
+#toc.t-gn .th small{font:600 14px/1.3 var(--txt);color:#c9ad92;margin-top:2px}
+#toc.t-gn .tis{display:flex;flex-wrap:wrap;gap:6px;padding:4px 10px 8px 70px}
+#toc.t-gn .ti{padding:6px 12px;border-radius:99px;border:1px solid rgba(247,236,223,.16);background:rgba(247,236,223,.05);font:600 15px/1.2 var(--txt);color:#f1e4d6;cursor:pointer}
+#toc.t-gn .ti:hover{border-color:#f0a173}
+#toc.t-gn .ti.gm{border-style:dashed}
+#toc.t-gn .ti.on{background:#e07a45;border-color:#e07a45;color:#fff}
+@media (max-width:560px){#toc.t-gn .tis{padding-left:10px}}
+/* ---------- полиця з виробами замість плиток (19.10.2026) ---------- */
+#pres.t-gn .gshelf{width:min(100%,calc(44vh * 1000 / 320));height:auto;display:block;margin:0 auto;overflow:visible}
+#pres.t-gn .gplan .gshelf{width:100%}
+#pres.t-gn .gshelf .mo{fill:#2a1a10;opacity:.85}
+#pres.t-gn .gshelf .ves.raw .mo{fill:#7d6a52;opacity:.7}
+#pres.t-gn .gshelf .ear{fill:none;stroke-width:9;stroke-linecap:round}
+#pres.t-gn .gshelf .raw .ear{stroke:#c8b292}#pres.t-gn .gshelf .cur .ear{stroke:#c9643a}#pres.t-gn .gshelf .done .ear{stroke:#3f9a70}
+#pres.t-gn .gshelf .over .ear{stroke:#c9643a}
+#pres.t-gn .gshelf .ves.raw{opacity:.62}
+#pres.t-gn .gshelf .shine{fill:none;stroke:#fff;stroke-width:4;stroke-linecap:round;opacity:.55}
+#pres.t-gn .gshelf text{text-anchor:middle}
+#pres.t-gn .gshelf .nm{font:850 30px Commissioner,var(--txt);font-variation-settings:"FLAR" 100,"VOLM" 70;fill:var(--mut)}
+#pres.t-gn .gshelf .nm.on{fill:var(--sacT);font-size:36px}
+#pres.t-gn .gshelf .lb{font:700 26px var(--hand);fill:var(--mut)}
+#pres.t-gn .gshelf .lb.on{fill:var(--sacT);font-size:30px}
+#pres.t-gn .gshelf .pt{font:700 13px var(--txt);letter-spacing:.12em;text-transform:uppercase;fill:var(--sacT);opacity:.85}
+/* поява: вироби встають по черзі, поточний «виростає» на крузі, круг крутиться, щойно пройдений вкривається глазур'ю */
+#pres.t-gn .gshelf .ves{transform-box:fill-box;transform-origin:50% 100%;animation:gsIn .55s cubic-bezier(.2,.9,.25,1.1) both;animation-delay:calc(var(--i) * 80ms + 60ms)}
+#pres.t-gn .gshelf .ves.cur{animation:gsGrow 1.3s .35s cubic-bezier(.25,.9,.25,1) both}
+#pres.t-gn .gshelf .spin{stroke-dasharray:14 22;animation:gsSpin 1.1s linear infinite}
+#pres.t-gn .gshelf .over{animation:gsGlaze 1.3s .5s ease both}
+@keyframes gsIn{from{opacity:0;transform:translateY(16px)}}
+@keyframes gsGrow{0%{transform:scale(1.35,.18)}55%{transform:scale(.94,1.06)}100%{transform:none}}
+@keyframes gsSpin{to{stroke-dashoffset:-72}}
+@keyframes gsGlaze{to{opacity:0}}
+#toc.t-gn .th i{border-radius:50%}
+@media (max-height:520px){#pres.t-gn .gshelf{width:min(100%,calc(30vh * 1000 / 320))}#pres.t-gn .gsec{gap:8px}#pres.t-gn .gsec blockquote{font-size:clamp(.95rem,4.2vh,1.3rem)}#pres.t-gn .gsec .gtag{display:none}}
