@@ -121,7 +121,7 @@ body.has-art #kart{opacity:1}body.has-art #sv{opacity:.1}
 
 /* 20.10.2026: галерея виробів краю (вишкіл) і збільшення фото */
 .gal{margin:2px 0 10px}
-.gal .gm{display:block;height:min(24vh,250px);max-width:100%;width:auto;object-fit:contain;cursor:zoom-in;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
+.gal .gm{display:block;transition:opacity .3s;height:min(24vh,250px);max-width:100%;width:auto;object-fit:contain;cursor:zoom-in;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
 .gal figcaption{font-weight:600;font-size:clamp(.95rem,1.2vw,1.2rem);color:#e6edf3;margin:6px 0 0}
 .gal .gt{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .gal .gt img{width:clamp(48px,4.6vw,72px);height:clamp(48px,4.6vw,72px);object-fit:contain;padding:3px;border-radius:10px;background:rgba(255,255,255,.07);border:2px solid transparent;cursor:pointer}
@@ -796,7 +796,7 @@ function render(){const s=S[idx],r=R[s.i]||null;{const k=pk<0&&kartOf(s);documen
 switch(s.t){
 case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкніться праворуч, щоб почати":"Натисніть пропуск, щоб почати";break;
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2><ul>${s.x[2].map(li).join("")}</ul>`;break;
-case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2><ul>${s.e.items.map(li).join("")}</ul>${s.e.q?`<div class="ask">Запитання: <b>${s.e.q}</b></div>`:""}`;break;
+case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2>${s.e.q?`<div class="ask">Запитання: <b>${s.e.q}</b></div>`:""}<ul>${s.e.items.map(li).join("")}</ul>`;break;
 case"hist":h=`<small>${s.e[0]}</small><h2>${s.e[1]}</h2><div class="pic">${pc([s.e[3],s.e[4],"",AC],AC)}</div><p>${s.e[2]}</p>`;g=s.g;break;
 case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2>${SH_?gal(s.i):""}<p>${r.t}</p>${SH_?"":`<p class="adm">Адмінобласті: ${ADM[s.i]}</p>`}${SH_?`<ul>${li(r.f[0],0)}</ul>`:""}`;g=s.i;break;
 case"rf":h=`<small>${r.n}</small><h2>Особливості</h2><ul>${r.f.map(li).join("")}</ul><div class="w">${r.w.map(x=>`<span>${x}</span>`).join("")}</div>`;g=s.i;break;
@@ -809,16 +809,17 @@ case"end":h=`<h2>Дякуємо за увагу!</h2><p>Є запитання? �
 if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p>${phs(pk).length?gal(pk):`<div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2><p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");
 $("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
-lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();document.dispatchEvent(new CustomEvent("gutirka:slide"))}
+lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();galAuto();document.dispatchEvent(new CustomEvent("gutirka:slide"))}
 const adv=d=>{if(pk>=0){if(d>0)go(idx+1);else{pk=-1;render()}return}const rv=()=>{[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
 const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));rev=full?9999:0;pk=-1;qd=false;$("#hs").classList.remove("on");render()};
 function ans(i){const s=S[idx],ok=i===s.a;sv.querySelectorAll(".rg").forEach(x=>x.classList.remove("ok","bad"));sv.querySelector(`.rg[data-i="${i}"]`).classList.add(ok?"ok":"bad");
 qd=ok;$("#qa").innerHTML=ok?`<p>✔ Правильно: ${R[i].n}! Торкніться її ще раз, щоб перейти далі.</p><div class="pic">${im(i,0,P[i][0],R[i].col)}</div>`:`<p>✖ Це ${R[i].n}. Спробуйте ще!</p>`}
 $("#toc").innerHTML=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]])].map(a=>`<button data-j="${a[1]}">${a[0]}</button>`).join("")+`<p class="sc">Регіони</p>`+R.map((r,i)=>`<button data-j="${st[i]}" style="--rc:${r.col}">${r.n}</button>`).join("")+`<p class="sc">Далі</p><button data-j="${sec.q}">Вікторина</button><button data-j="${sec.e}">Фінал</button>`;
+let galT=0;const galAuto=()=>{clearInterval(galT);galT=setInterval(()=>{if($("#lbx.on"))return;document.querySelectorAll("#pan .gal").forEach(f=>{const L=[...f.querySelectorAll(".gt img")];if(L.length<2)return;const j=(L.findIndex(x=>x.classList.contains("on"))+1)%L.length,th=L[j];f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;L.forEach(x=>x.classList.toggle("on",x===th))})},4000)};
 const lbx=(src,cap)=>{let d=$("#lbx");if(!d){d=document.createElement("div");d.id="lbx";d.innerHTML="<img alt=\"\"><p></p>";document.body.appendChild(d)}d.querySelector("img").src=src;d.querySelector("p").textContent=cap||"";d.classList.add("on")};
 docOn("click",e=>{const T=x=>e.target.closest(x);
 if(T("#lbx")){$("#lbx").classList.remove("on");e.stopPropagation();return}
-const th=T(".gt img");if(th){const f=th.closest(".gal");f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;f.querySelectorAll(".gt img").forEach(x=>x.classList.toggle("on",x===th));e.stopPropagation();return}
+const th=T(".gt img");if(th){galAuto();const f=th.closest(".gal");f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;f.querySelectorAll(".gt img").forEach(x=>x.classList.toggle("on",x===th));e.stopPropagation();return}
 const gm=T(".gal .gm");if(gm){lbx(gm.src,gm.closest(".gal").querySelector("figcaption").textContent);e.stopPropagation();return}
 if(T("#menu")){$("#hs").classList.add("on");return}if(T(".hx")){$("#hs").classList.remove("on");return}
 const j=T("[data-j]");if(j)return go(+j.dataset.j);
