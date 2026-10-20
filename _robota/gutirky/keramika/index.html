@@ -121,6 +121,16 @@ body.has-art #kart{opacity:1}body.has-art #sv{opacity:.1}
 #lbx img{max-width:92vw;max-height:80vh;object-fit:contain;filter:drop-shadow(0 20px 40px #000)}
 #lbx p{margin:0;color:#fff;font:600 1.3rem 'Source Sans 3',sans-serif;text-align:center;padding:0 16px}
 @media(max-aspect-ratio:1/1){.gal .gm{height:16vh}}
+
+/* 21.10.2026: карусель виробів краю */
+.car{margin:2px 0 12px}
+.car .cs{position:relative;height:min(25vh,250px);perspective:900px}
+.car .ci{position:absolute;left:50%;top:0;height:100%;width:46%;object-fit:contain;cursor:pointer;transform-origin:50% 60%;
+  transition:transform .8s cubic-bezier(.45,0,.2,1),opacity .8s;filter:drop-shadow(0 12px 18px rgba(0,0,0,.55))}
+.car .ci.on{cursor:zoom-in}
+.car figcaption{font-weight:600;font-size:clamp(.95rem,1.2vw,1.2rem);color:#e6edf3;margin:8px 0 0;text-align:center}
+@media(max-aspect-ratio:1/1){.car .cs{height:16vh}}
+@media(prefers-reduced-motion:reduce){.car .ci{transition:none}}
 </style></head><body>
 <div id="app"><div id="map"></div><figure id="kart" aria-hidden="true"></figure>
 <h1 id="ttl"><i>подорож Україною</i>Кераміка України<b class="tsub"></b></h1><div id="mode-label">ПОВНА ГУТІРКА · 45–50 ХВ</div>
@@ -222,7 +232,8 @@ $("#ttl .tsub").textContent=SH_?"гутірка для юнацтва 12–17 р
 const noteFor=s=>s.t==="ask"?"Дай 20–30 секунд. Клікай область, яку назвуть: покажемо один виріб; ще раз на неї — повернутись до запитання.":s.t==="overview"?"Коротко: ми мандруємо Україною за керамікою.":s.t==="tech"?s.e.note:s.t==="ri"?"Покажи область на карті. Запитай: що відомо про кераміку цього краю?":s.t==="rp"?"Передай слово учаснику: що ви бачите на виробі?":s.t==="q"?"Дай 15 секунд подумати; відповідь клікає учасник.":s.t==="home"?"Підсумуй регіон і назви наступний.":"";
 let idx=0,vb=[0,0,612.5,408],raf,lg=-1,lf=1;
 const phs=i=>P[i].map((p,k)=>[k,p]).filter(([k,p])=>PH[i+"-"+k]&&!/уточню/.test(p[2]));
-const gal=i=>{const L=phs(i);if(!L.length)return"";const [k0,p0]=L[0];return`<figure class="gal"><img class="gm" src="${PH[i+"-"+k0]}" alt="${p0[2]}" title="Натисніть, щоб збільшити"><figcaption>${p0[2]}</figcaption>${L.length>1?`<div class="gt">${L.map(([k,p],j)=>`<img src="${PH[i+"-"+k]}" alt="${p[2]}" data-cap="${p[2]}"${j?"":` class="on"`}>`).join("")}</div>`:""}</figure>`};
+const gal=i=>{const L=phs(i);if(!L.length)return"";return`<figure class="car gal"><div class="cs">${L.map(([k,p],j)=>`<img class="ci" src="${PH[i+"-"+k]}" alt="${p[2]}" data-cap="${p[2]}" data-j="${j}">`).join("")}</div><figcaption>${L[0][1][2]}</figcaption></figure>`};
+const carLay=(f,c)=>{const I=[...f.querySelectorAll(".ci")],n=I.length;f.dataset.c=c;I.forEach((im,j)=>{let d=((j-c)%n+n)%n;if(d>n/2)d-=n;const a=Math.abs(d);im.style.transform=`translateX(calc(-50% + ${d*78}%)) scale(${a?.6:1}) rotateY(${-d*30}deg)`;im.style.opacity=a===0?1:a===1?.5:0;im.style.zIndex=10-a;im.classList.toggle("on",a===0);im.style.pointerEvents=a>1?"none":"auto"});const cap=I[c]&&I[c].dataset.cap;if(cap)f.querySelector("figcaption").textContent=cap};
 const im=(i,k,p,c)=>PH[i+"-"+k]?`<img src="${PH[i+"-"+k]}" alt="${p[2]}">`:pc(p,c);
 $("#map").innerHTML=`<svg id="sv" viewBox="0 0 612.5 408" role="img" aria-label="Карта України"><defs><filter id="gl" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs><path d="${OUT}" fill="none" stroke="#5aa2ff" stroke-width="3" opacity=".4" filter="url(#gl)"/>${R.map((r,i)=>`<g class="rg" data-i="${i}" style="--c:${r.col};--k:${i}">${OB.filter(o=>o[1]===i).map(o=>`<path d="${o[2]}"/>`).join("")}</g>`).join("")}${OB.map(o=>`<text x="${o[3]}" y="${o[4]}" data-g="${o[1]}">${o[0]}</text>`).join("")}${MK.map(m=>`<g class="mk" data-g="${m[1]}"><circle cx="${m[2]}" cy="${m[3]}" r="1.9"/><text x="${m[2]<30?m[2]+3:m[2]}" y="${m[3]-3.2}" text-anchor="${m[2]<30?"start":"middle"}">${m[0]}</text></g>`).join("")}</svg>`;
 const sv=$("#sv"),pan=$("#pan");
@@ -263,12 +274,11 @@ const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));rev=full?9999:0;pk=-1
 function ans(i){const s=S[idx],ok=i===s.a;sv.querySelectorAll(".rg").forEach(x=>x.classList.remove("ok","bad"));sv.querySelector(`.rg[data-i="${i}"]`).classList.add(ok?"ok":"bad");
 qd=ok;$("#qa").innerHTML=ok?`<p>✔ Правильно: ${R[i].n}! Торкніться її ще раз, щоб перейти далі.</p><div class="pic">${im(i,0,P[i][0],R[i].col)}</div>`:`<p>✖ Це ${R[i].n}. Спробуйте ще!</p>`}
 $("#toc").innerHTML=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]])].map(a=>`<button data-j="${a[1]}">${a[0]}</button>`).join("")+`<p class="sc">Регіони</p>`+R.map((r,i)=>`<button data-j="${st[i]}" style="border-left:5px solid ${r.col}">${r.n}</button>`).join("")+`<p class="sc">Далі</p><button data-j="${sec.q}">Вікторина</button><button data-j="${sec.e}">Фінал</button>`;
-let galT=0;const galAuto=()=>{clearInterval(galT);galT=setInterval(()=>{if($("#lbx.on"))return;document.querySelectorAll("#pan .gal").forEach(f=>{const L=[...f.querySelectorAll(".gt img")];if(L.length<2)return;const j=(L.findIndex(x=>x.classList.contains("on"))+1)%L.length,th=L[j];f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;L.forEach(x=>x.classList.toggle("on",x===th))})},4000)};
+let galT=0;const galAuto=()=>{clearInterval(galT);document.querySelectorAll("#pan .car").forEach(f=>{if(f.dataset.c===undefined)carLay(f,0)});galT=setInterval(()=>{if($("#lbx.on"))return;document.querySelectorAll("#pan .car").forEach(f=>{const n=f.querySelectorAll(".ci").length;if(n>1)carLay(f,(+f.dataset.c+1)%n)})},3500)};
 const lbx=(src,cap)=>{let d=$("#lbx");if(!d){d=document.createElement("div");d.id="lbx";d.innerHTML="<img alt=\"\"><p></p>";document.body.appendChild(d)}d.querySelector("img").src=src;d.querySelector("p").textContent=cap||"";d.classList.add("on")};
 document.addEventListener("click",e=>{const T=x=>e.target.closest(x);
 if(T("#lbx")){$("#lbx").classList.remove("on");e.stopPropagation();return}
-const th=T(".gt img");if(th){galAuto();const f=th.closest(".gal");f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;f.querySelectorAll(".gt img").forEach(x=>x.classList.toggle("on",x===th));e.stopPropagation();return}
-const gm=T(".gal .gm");if(gm){lbx(gm.src,gm.closest(".gal").querySelector("figcaption").textContent);e.stopPropagation();return}
+const ci=T(".car .ci");if(ci){if(ci.classList.contains("on"))lbx(ci.src,ci.dataset.cap);else{carLay(ci.closest(".car"),+ci.dataset.j);galAuto()}e.stopPropagation();return}
 if(T("#menu")){$("#hs").classList.add("on");return}if(T(".hx")){$("#hs").classList.remove("on");return}
 const j=T("[data-j]");if(j)return go(+j.dataset.j);
 const b=T("[data-n]");if(b)return adv(+b.dataset.n);
