@@ -119,6 +119,19 @@ body.has-art #kart{opacity:1}body.has-art #sv{opacity:.1}
 .rph figcaption{font-weight:600;font-size:clamp(1rem,1.3vw,1.3rem);line-height:1.3;color:#e6edf3}
 @media(max-aspect-ratio:1/1){.rph img{height:15vh}.rph figcaption{font-size:.95rem}}
 
+/* 20.10.2026: галерея виробів краю (вишкіл) і збільшення фото */
+.gal{margin:2px 0 10px}
+.gal .gm{display:block;height:min(24vh,250px);max-width:100%;width:auto;object-fit:contain;cursor:zoom-in;filter:drop-shadow(0 12px 18px rgba(0,0,0,.5))}
+.gal figcaption{font-weight:600;font-size:clamp(.95rem,1.2vw,1.2rem);color:#e6edf3;margin:6px 0 0}
+.gal .gt{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.gal .gt img{width:clamp(48px,4.6vw,72px);height:clamp(48px,4.6vw,72px);object-fit:contain;padding:3px;border-radius:10px;background:rgba(255,255,255,.07);border:2px solid transparent;cursor:pointer}
+.gal .gt img.on{border-color:var(--c)}
+#lbx{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(8,9,11,.92);cursor:zoom-out}
+#lbx.on{display:flex}
+#lbx img{max-width:92vw;max-height:80vh;object-fit:contain;filter:drop-shadow(0 20px 40px #000)}
+#lbx p{margin:0;color:#fff;font:600 1.3rem 'Source Sans 3',sans-serif;text-align:center;padding:0 16px}
+@media(max-aspect-ratio:1/1){.gal .gm{height:16vh}}
+
 /* ===== Кутове меню: зʼявляється, лише коли навести мишку в правий верхній кут ===== */
 #corner{position:absolute;z-index:6;top:0;right:0;width:110px;height:110px}
 #hot{position:absolute;inset:0}
@@ -696,7 +709,7 @@ f:["Поливи: зелена, коричнева, жовта, біла","Ор�
 t:"Край, заселений вихідцями з різних земель, тому гончарні форми тут різноманітні.",
 f:["Молочена кераміка Слов'янська: гарячий після випалу посуд занурюють у молоко, і він стає коричневим і міцнішим","Побутовий посуд із поливою та ангобним розписом","Глиняна пластика й іграшка"],w:["Глеки","Макітри","Кухлі","Іграшки"]},
 {n:"Причорномор'я і Крим",c:"Ольвія, Тіра, Херсонес",col:"#ff7ab0",m:"wv",
-t:"Південь — це античні амфори, чорнолакова кераміка й давні гончарні традиції Криму.",
+t:"Понад 2500 років тому тут стояли грецькі міста — Ольвія, Тіра, Херсонес. Від них лишилися амфори й чорнолаковий посуд. А в Криму — кримськотатарська кераміка.",
 f:["Амфори, черепиця й посуд грецьких колоній","Усатівська культура під Одесою: розписний посуд понад 5000 років тому","Кримськотатарське гончарство: глеки й тарелі з рослинним декором"],w:["Амфори","Глеки","Тарелі","Черепиця"]}
 ];
 const $=s=>document.querySelector(s),n=R.length;
@@ -749,17 +762,19 @@ const S=[{t:"title"},{t:"overview"}],st={},sec={};
 const ASK=q=>({t:"ask",q});
 sec.i=S.length;(SH_?[INTRO[0]]:INTRO).forEach(x=>S.push({t:"card",x}));
 if(!SH_)S.push(ASK("Яку українську кераміку ви вже бачили? Де саме?"));
-sec.t=S.length;(SH_?TECH.slice(0,3):TECH).forEach(e=>S.push({t:"tech",e}));S.push({t:"card",x:BRIDGE});
+sec.t=S.length;(SH_?TECH.slice(0,2):TECH).forEach(e=>S.push({t:"tech",e}));S.push({t:"card",x:BRIDGE});
 sec.h=S.length;if(!SH_){TL.forEach((e,j)=>S.push({t:"hist",e,g:HG[j],hl:j===4?["Опішня","Косів","Бубнівка"]:null}));S.push(ASK("Що з історії вас здивувало найбільше?"))}
 if(SH_)S.push(ASK("Яку українську кераміку ви вже бачили? Де саме?"));
 R.forEach((r,i)=>{st[i]=S.length;S.push({t:"ri",i});if(!SH_){S.push({t:"rf",i});P[i].slice(0,3).forEach((p,j)=>S.push({t:"rp",i,j}));S.push({t:"home",i});if(i===4)S.push(ASK("Яка кераміка вам ближча: яскрава, строга чи давня? Чому?"))}});
 if(!SH_)S.push({t:"card",x:CMP});
-sec.q=S.length;(SH_?[QZ[0],QZ[3]]:QZ).forEach((q,k)=>S.push({t:"q",a:q[0],q:q[1],k}));
+sec.q=S.length;QZ.forEach((q,k)=>S.push({t:"q",a:q[0],q:q[1],k}));
 sec.e=S.length;S.push({t:"card",x:SUM});S.push({t:"end"});
 let T0=0;const TARGET=SH_?20:48;
 $("#ttl .tsub").textContent=SH_?"гутірка для юнацтва 12–17 років · вишкіл · до 20 хв":"гутірка для юнацтва 12–17 років · 45–50 хв";
 const noteFor=s=>s.t==="ask"?"Дай 20–30 секунд. Клікай область, яку назвуть: покажемо один виріб; ще раз на неї — повернутись до запитання.":s.t==="overview"?"Коротко: ми мандруємо Україною за керамікою.":s.t==="tech"?s.e.note:s.t==="ri"?"Покажи область на карті. Запитай: що відомо про кераміку цього краю?":s.t==="rp"?"Передай слово учаснику: що ви бачите на виробі?":s.t==="q"?"Дай 15 секунд подумати; відповідь клікає учасник.":s.t==="home"?"Підсумуй регіон і назви наступний.":"";
 let idx=0,vb=[0,0,612.5,408],raf,lg=-1,lf=1;
+const phs=i=>P[i].map((p,k)=>[k,p]).filter(([k,p])=>PH[i+"-"+k]&&!/уточню/.test(p[2]));
+const gal=i=>{const L=phs(i);if(!L.length)return"";const [k0,p0]=L[0];return`<figure class="gal"><img class="gm" src="${PH[i+"-"+k0]}" alt="${p0[2]}" title="Натисніть, щоб збільшити"><figcaption>${p0[2]}</figcaption>${L.length>1?`<div class="gt">${L.map(([k,p],j)=>`<img src="${PH[i+"-"+k]}" alt="${p[2]}" data-cap="${p[2]}"${j?"":` class="on"`}>`).join("")}</div>`:""}</figure>`};
 const im=(i,k,p,c)=>PH[i+"-"+k]?`<img src="${PH[i+"-"+k]}" alt="${p[2]}">`:pc(p,c);
 $("#map").innerHTML=`<svg id="sv" viewBox="0 0 612.5 408" role="img" aria-label="Карта України"><defs><filter id="gl" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs><path d="${OUT}" fill="none" stroke="#5aa2ff" stroke-width="3" opacity=".4" filter="url(#gl)"/>${R.map((r,i)=>`<g class="rg" data-i="${i}" style="--c:${r.col};--k:${i}">${OB.filter(o=>o[1]===i).map(o=>`<path d="${o[2]}"/>`).join("")}</g>`).join("")}${OB.map(o=>`<text x="${o[3]}" y="${o[4]}" data-g="${o[1]}">${o[0]}</text>`).join("")}${MK.map(m=>`<g class="mk" data-g="${m[1]}"><circle cx="${m[2]}" cy="${m[3]}" r="1.9"/><text x="${m[2]<30?m[2]+3:m[2]}" y="${m[3]-3.2}" text-anchor="${m[2]<30?"start":"middle"}">${m[0]}</text></g>`).join("")}</svg>`;
 const sv=$("#sv"),pan=$("#pan");
@@ -783,15 +798,15 @@ case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкні�
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2><ul>${s.x[2].map(li).join("")}</ul>`;break;
 case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2><ul>${s.e.items.map(li).join("")}</ul>${s.e.q?`<div class="ask">Запитання: <b>${s.e.q}</b></div>`:""}`;break;
 case"hist":h=`<small>${s.e[0]}</small><h2>${s.e[1]}</h2><div class="pic">${pc([s.e[3],s.e[4],"",AC],AC)}</div><p>${s.e[2]}</p>`;g=s.g;break;
-case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2>${SH_&&PH[s.i+"-0"]&&!/уточню/.test(P[s.i][0][2])?`<figure class="rph"><img src="${PH[s.i+"-0"]}" alt="${P[s.i][0][2]}"><figcaption>${P[s.i][0][2]}</figcaption></figure>`:""}<p>${r.t}</p><p class="adm">Адмінобласті: ${ADM[s.i]}</p>${SH_?`<ul>${li(r.f[0],0)}</ul>`:""}`;g=s.i;break;
+case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2>${SH_?gal(s.i):""}<p>${r.t}</p>${SH_?"":`<p class="adm">Адмінобласті: ${ADM[s.i]}</p>`}${SH_?`<ul>${li(r.f[0],0)}</ul>`:""}`;g=s.i;break;
 case"rf":h=`<small>${r.n}</small><h2>Особливості</h2><ul>${r.f.map(li).join("")}</ul><div class="w">${r.w.map(x=>`<span>${x}</span>`).join("")}</div>`;g=s.i;break;
 case"rp":{const p=P[s.i][s.j];h=`<small>${r.n}: виріб ${s.j+1} з ${Math.min(3,P[s.i].length)}</small><div class="pic">${im(s.i,s.j,p,r.col)}</div><h2 class="sm">${p[2]}</h2>${PH[s.i+"-"+s.j]?"":`<p class="sch">Схематичний малюнок</p>`}`;g=s.i}break;
 case"home":f=1;hint="Далі: "+(R[s.i+1]?R[s.i+1].n:"вікторина");break;
-case"q":h=`<small>Вікторина ${s.k+1} з ${SH_?2:QZ.length}</small><h2 class="sm">${s.q}</h2><div id="qa"></div>`;hint="Клікніть на карті область-відповідь";break;
+case"q":h=`<small>Вікторина ${s.k+1} з ${QZ.length}</small><h2 class="sm">${s.q}</h2><div id="qa"></div>`;hint="Клікніть на карті область-відповідь";break;
 case"overview":f=1;hint="Дев'ять керамічних регіонів. Оберіть будь-який на карті або йдіть далі";break;
 case"ask":h=`<small>Запитання</small><h2>${s.q}</h2>`;hint="Торкніться області на карті: покажемо один виріб";break;
 case"end":h=`<h2>Дякуємо за увагу!</h2><p>Є запитання? Торкніться будь-якої області на карті, щоб побачити її кераміку; ще раз на ту саму область — повернутися сюди.</p><p><a class="back-home" href="#" data-lib>← До бібліотеки гутірок</a></p>`;break}
-if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p><div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2>${PH[pk+"-0"]?"":`<p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
+if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p>${phs(pk).length?gal(pk):`<div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2><p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint="Ще раз на цю область: повернутись"}
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");
 $("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
 lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();document.dispatchEvent(new CustomEvent("gutirka:slide"))}
@@ -800,12 +815,16 @@ const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));rev=full?9999:0;pk=-1
 function ans(i){const s=S[idx],ok=i===s.a;sv.querySelectorAll(".rg").forEach(x=>x.classList.remove("ok","bad"));sv.querySelector(`.rg[data-i="${i}"]`).classList.add(ok?"ok":"bad");
 qd=ok;$("#qa").innerHTML=ok?`<p>✔ Правильно: ${R[i].n}! Торкніться її ще раз, щоб перейти далі.</p><div class="pic">${im(i,0,P[i][0],R[i].col)}</div>`:`<p>✖ Це ${R[i].n}. Спробуйте ще!</p>`}
 $("#toc").innerHTML=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]])].map(a=>`<button data-j="${a[1]}">${a[0]}</button>`).join("")+`<p class="sc">Регіони</p>`+R.map((r,i)=>`<button data-j="${st[i]}" style="--rc:${r.col}">${r.n}</button>`).join("")+`<p class="sc">Далі</p><button data-j="${sec.q}">Вікторина</button><button data-j="${sec.e}">Фінал</button>`;
+const lbx=(src,cap)=>{let d=$("#lbx");if(!d){d=document.createElement("div");d.id="lbx";d.innerHTML="<img alt=\"\"><p></p>";document.body.appendChild(d)}d.querySelector("img").src=src;d.querySelector("p").textContent=cap||"";d.classList.add("on")};
 docOn("click",e=>{const T=x=>e.target.closest(x);
+if(T("#lbx")){$("#lbx").classList.remove("on");e.stopPropagation();return}
+const th=T(".gt img");if(th){const f=th.closest(".gal");f.querySelector(".gm").src=th.src;f.querySelector("figcaption").textContent=th.dataset.cap;f.querySelectorAll(".gt img").forEach(x=>x.classList.toggle("on",x===th));e.stopPropagation();return}
+const gm=T(".gal .gm");if(gm){lbx(gm.src,gm.closest(".gal").querySelector("figcaption").textContent);e.stopPropagation();return}
 if(T("#menu")){$("#hs").classList.add("on");return}if(T(".hx")){$("#hs").classList.remove("on");return}
 const j=T("[data-j]");if(j)return go(+j.dataset.j);
 const b=T("[data-n]");if(b)return adv(+b.dataset.n);
 const rg=T(".rg");if(rg){const i=+rg.dataset.i,ty=S[idx].t;if(ty==="q"){qd&&i===S[idx].a?go(idx+1):ans(i)}else{pk=pk===i?-1:i;render()}}});
-docOn("keydown",e=>{const k=e.key;
+docOn("keydown",e=>{const k=e.key;if($("#lbx.on")){$("#lbx").classList.remove("on");e.preventDefault();return}
 if(k==="Escape"){$("#hs").classList.toggle("on");return}
 if([" ","ArrowRight","ArrowDown","PageDown","Enter"].includes(k)){e.preventDefault();adv(1)}
 else if(["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(k)){e.preventDefault();adv(-1)}
