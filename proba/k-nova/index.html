@@ -181,6 +181,14 @@ body.has-art:not(.art-done) #kart figcaption{opacity:0}
 #pan.ask-mode .askq.v h2{font-size:clamp(1.1rem,1.6vw,1.6rem)}
 @media(max-aspect-ratio:1/1){#pan.ask-mode:has(.askq.v){top:auto!important;bottom:76px!important;width:calc(100vw - 24px)!important}}
 
+/* панель не обрізає заголовок, якщо вмісту багато: тоді — від верху і з прокруткою */
+#pan.on:not(.ask-mode){justify-content:flex-start;overflow-y:auto;scrollbar-width:none}
+#pan.on:not(.ask-mode)>:first-child{margin-top:auto}
+#pan.on:not(.ask-mode)>:last-child{margin-bottom:auto}
+#pan:has(.ask.v + ul) > p{display:none}
+#pan.on.ask-mode{overflow:visible}
+#pan:has(.ask + ul li:nth-child(2)) .car .cs{height:min(21vh,210px)}
+
 /* ===== Кутове меню: зʼявляється, лише коли навести мишку в правий верхній кут ===== */
 #corner{position:absolute;z-index:6;top:0;right:0;width:110px;height:110px}
 #hot{position:absolute;inset:0}
@@ -751,7 +759,7 @@ f:["Розписний посуд зі спіральним орнаментом
 {n:"Полісся і Чернігівщина",c:"Олешня, Ічня",col:"#27c4c9",m:"bd",
 t:"Північ України: побутове гончарство, димлена та лощена кераміка.",
 f:["Олешня й Ічня на Чернігівщині: прості горщики й макітри без поливи, часто задимлені","Чорнолощена кераміка: без поливи, блиск від лощіння","Прості строгі форми, орнамент із ліній і насічок"],w:["Горщики","Глеки","Макітри","Свищики"]},
-{n:"Полтавщина",c:"Опішня",col:"#ffc247",m:"dt",
+{n:"Полтавщина",c:"Опішня",col:"#ffc247",m:"dt",q:"Хто знає, що таке куманець?",qph:"6-1",qa:["Глиняна посудина-«бублик» з горлечком — для води, вина чи олії. Через отвір її зручно нести на руці.","В Опішні куманці часто фігурні: з головою баранця, птаха чи півня."],
 t:"Гончарна столиця України: тут працює Національний музей-заповідник українського гончарства.",
 f:["Поливи: зелена, коричнева, жовта, біла","Орнамент ріжком і гравіюванням","Скульптурна кераміка: леви, баранці, півні, птахи"],w:["Куманці","Глеки","Баранці","Скульптури"]},
 {n:"Слобожанщина і схід",c:"Слов'янськ, Охтирка, Харківщина",col:"#a8d44a",m:"zz",
@@ -849,7 +857,7 @@ case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкні�
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2>${s.x[3]?`<div class="ask">Запитання: <b>${s.x[3]}</b></div>`:""}<ul>${s.x[2].map(li).join("")}</ul>`;break;
 case"tech":h=`<small>${s.e.tag}</small><h2>${s.e.t}</h2>${s.e.q?`<div class="ask">Запитання: <b>${s.e.q}</b></div>`:""}<ul>${s.e.items.map(li).join("")}</ul>`;break;
 case"hist":h=`<small>${s.e[0]}</small><h2>${s.e[1]}</h2><div class="pic">${pc([s.e[3],s.e[4],"",AC],AC)}</div><p>${s.e[2]}</p>`;g=s.g;break;
-case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2>${SH_?gal(s.i):""}<p>${r.t}</p>${SH_?"":`<p class="adm">Адмінобласті: ${ADM[s.i]}</p>`}${SH_?`<ul>${li(r.f[0],0)}</ul>`:""}`;g=s.i;break;
+case"ri":h=`<small>${r.c}</small><h2>${r.n}</h2>${SH_?gal(s.i):""}<p>${r.t}</p>${SH_?"":`<p class="adm">Адмінобласті: ${ADM[s.i]}</p>`}${SH_?(r.q?`<div class="ask">Запитання: <b>${r.q}</b></div><ul>${r.qa.map(li).join("")}</ul>`:`<ul>${li(r.f[0],0)}</ul>`):""}`;g=s.i;break;
 case"rf":h=`<small>${r.n}</small><h2>Особливості</h2><ul>${r.f.map(li).join("")}</ul><div class="w">${r.w.map(x=>`<span>${x}</span>`).join("")}</div>`;g=s.i;break;
 case"rp":{const p=P[s.i][s.j];h=`<small>${r.n}: виріб ${s.j+1} з ${Math.min(3,P[s.i].length)}</small><div class="pic">${im(s.i,s.j,p,r.col)}</div><h2 class="sm">${p[2]}</h2>${PH[s.i+"-"+s.j]?"":`<p class="sch">Схематичний малюнок</p>`}`;g=s.i}break;
 case"home":f=1;hint="Далі: "+(R[s.i+1]?R[s.i+1].n:"вікторина");break;
@@ -861,7 +869,7 @@ if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 cla
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(s.t==="ask"&&pk<0&&askSeen===idx&&rev<1)rev=1;document.body.classList.toggle("art-done",(rev>tot?tot:rev)>=tot);if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");pan.classList.toggle("ask-mode",s.t==="ask"&&pk<0);
 $("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
 lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();if(idx===S.length-1){if(T0&&!TE)TE=Date.now()}else TE=0;galAuto();sv.querySelectorAll(".mk").forEach(m=>m.classList.toggle("sel",!!ptk&&m.dataset.pt===ptk&&+m.dataset.g===pk));document.dispatchEvent(new CustomEvent("gutirka:slide"))}
-const adv=d=>{if(lbI>=0){lbShow(lbI+d);return}if(pk>=0){if(d>0)go(idx+1);else{pk=-1;ptk=null;render()}return}const rv=()=>{if(S[idx].t==="ask")askSeen=rev>=1?idx:-1;[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.body.classList.toggle("art-done",rev>=tot);document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
+const adv=d=>{if(lbI>=0){lbShow(lbI+d);return}if(pk>=0){if(d>0)go(idx+1);else{pk=-1;ptk=null;render()}return}const rv=()=>{if(S[idx].t==="ask")askSeen=rev>=1?idx:-1;{const r0=S[idx].t==="ri"&&pk<0&&R[S[idx].i];if(r0&&r0.qph&&rev>=2){const f=pan.querySelector(".car"),c=f&&f.querySelector(`.ci[data-k="${r0.qph}"]`);if(c){carLay(f,+c.dataset.j);galAuto()}}}[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.body.classList.toggle("art-done",rev>=tot);document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
 const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));askSeen=-1;rev=full?9999:0;pk=-1;ptk=null;qd=false;$("#hs").classList.remove("on");render()};
 function ans(i){const s=S[idx],ok=i===s.a;sv.querySelectorAll(".rg").forEach(x=>x.classList.remove("ok","bad"));sv.querySelector(`.rg[data-i="${i}"]`).classList.add(ok?"ok":"bad");
 qd=ok;$("#qa").innerHTML=ok?`<p>✔ Правильно: ${R[i].n}!${s.why?" "+s.why:""}</p><div class="pic">${im(i,0,P[i][0],R[i].col)}</div>`:`<p>✖ Це ${R[i].n}. Спробуйте ще!</p>`}
@@ -891,7 +899,7 @@ const HINT=[
 "Питання: чим відрізняються Бубнівка й Бар?\n• Бубнівка: червоний посуд; смужки, крапки, «пір'ячко» ангобом\n• Бар: розпис по білому тлу; птах на яблуневій гілці\n• Бар заснувала королева Бона Сфорца",
 "Питання: як думаєте, навіщо посудина з двома «трубами»?\n• Трипілля — село біля Києва, тут знайшли цю культуру\n• Понад 5000 років тому\n• Розписний посуд: спіралі; червоний, чорний, білий\n• Біноклеподібна посудина — точно не знають, для чого",
 "Питання: чому тут немає яскравого розпису?\n• Олешня, Ічня: прості горщики й макітри для кухні\n• Без поливи, часто задимлені — темні\n• Блиск без поливи — від лощіння",
-"Питання: хто бачив куманець? Як із нього пити?\n• Опішня — гончарна столиця, Національний музей-заповідник гончарства\n• Поливи: зелена, коричнева, жовта, біла\n• Баранці, куманці-півні, мальовані глечики",
+"Питання: хто знає, що таке куманець?\n(вислухай здогадки, потім покажи фото)\n• Посудина-«бублик» з горлечком: вода, вино, олія\n• Отвір — щоб нести на руці або повісити\n• Часто фігурні: з головою баранця, птаха, півня\n• Опішня — гончарна столиця, Національний музей-заповідник гончарства\n• Баранці, мальовані глечики; поливи зелена, коричнева, жовта",
 "Питання: навіщо гарячий глек занурюють у молоко?\n• Молочена кераміка: посуд після випалу — у молоко\n• Стає коричневим, плямистим, міцнішим, менше пропускає воду\n• Слов'янськ, Охтирка",
 "Питання: чому в амфори гостре дно?\n• Грецькі міста 2500 років тому: Ольвія, Тіра, Херсонес\n• Амфори — для вина й олії; гостре дно встромляли в пісок, а на кораблі ставили рядами\n• Крим — кримськотатарська кераміка"];
 const NOTE_CARD={
