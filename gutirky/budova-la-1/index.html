@@ -41,7 +41,7 @@ body.yun .for-v,body:not(.yun) .for-y{display:none!important}
 @media (max-width:560px){.doors{grid-template-columns:1fr}}
 /* для юнаків: посилання й QR (у виховника) */
 .share{display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start;margin-top:20px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
-.share .qr{width:200px;padding:10px;border-radius:14px;background:#fff;line-height:0}.share .qr svg{width:100%;height:auto}
+.share .qr{width:200px;border-radius:16px;line-height:0;box-shadow:0 0 0 1px rgba(255,122,154,.35),0 0 28px -6px rgba(200,40,74,.55)}.share .qr svg{width:100%;height:auto}.share .qr svg{width:100%;height:auto}
 .share p{margin:0 0 10px;color:var(--body)}.share .url{font:600 17px var(--txt);color:var(--ink);word-break:break-all}
 .share .warn{color:var(--mut);font-size:15px}.share .acts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.share .acts .go,.share .acts .back{margin:0}
 @media (max-width:640px){.share{grid-template-columns:1fr}.share .qr{width:180px}}
@@ -149,7 +149,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .kin .sk-logo{font-size:clamp(64px,11vw,150px)}
 .kin blockquote{margin-top:22px}
 .endq{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(20px,4vw,60px);align-items:center}
-.endq figure{margin:0;text-align:center}.endq figure>div{width:clamp(150px,19vw,260px);border-radius:18px;line-height:0;box-shadow:0 0 0 1px rgba(98,207,147,.35),0 0 28px -6px rgba(61,175,110,.45)}
+.endq figure{margin:0;text-align:center}.endq figure>div{width:clamp(150px,19vw,260px);border-radius:18px;line-height:0;box-shadow:0 0 0 1px rgba(255,122,154,.35),0 0 28px -6px rgba(200,40,74,.55)}
 .endq figure>div svg{width:100%;height:auto}.endq figure svg{width:100%;height:auto}
 .endq figcaption{margin-top:10px;font:600 clamp(.9rem,1.3vw,1.3rem) var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ac)}
 @media (orientation:portrait) and (max-width:700px){.endq{grid-template-columns:1fr}.endq figure{justify-self:start}}
@@ -2029,7 +2029,7 @@ if (HOME) {
   ['#plan', '#yunakam'].forEach(id => { const b = document.querySelector(id + ' > .back'); if (b) { b.href = HOME.href; b.textContent = '← ' + HOME.label; } });
 }
 const YUN_URL = new URL(window.GUTIRKA_YUN_URL || '#vyvchy', location.href).href.replace(/#$/, '');
-const qrBox = (sel, url, px) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px); el.dataset.for = url; } };
+const qrBox = (sel, url, px, opt) => { const el = typeof sel === 'string' ? $(sel) : sel; if (el && window.qrSvg && el.dataset.for !== url) { el.innerHTML = window.qrSvg(url, px, opt); el.dataset.for = url; } };
 
 /* ===================== малюнки (maliunky.js) і фото ===================== */
 const art = k => LA_ART.get(k);
@@ -2076,7 +2076,7 @@ function render() {
       hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
     case 'end': wide = true; h = `<div class="big endq"><div><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і скажіть виховникові, що готові скласти вмілість «Будова літальних апаратів І».</blockquote></div>
-      <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
+      <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240, { eye: '#ff7a9a' }) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
   if (window.GUT_TEMA && GUT_TEMA[s.t]) {   /* стиль гутірки (tema-*.js), якщо підключено: рядок — HTML панелі, або { h, a, wide } */
     const th = GUT_TEMA[s.t](s, D);
@@ -2284,7 +2284,7 @@ function renderPlan() {
   $('#plan-box').innerHTML = h;
 }
 function renderYun() {
-  qrBox('#y-qr', YUN_URL, 200);
+  qrBox('#y-qr', YUN_URL, 200, { eye: '#ff7a9a' });
   $('#y-url').textContent = YUN_URL.replace(/^https?:\/\//, '');
   $('#y-open').href = YUN_URL;
   const b = $('#y-send'), share = !!navigator.share && matchMedia('(pointer:coarse)').matches;
