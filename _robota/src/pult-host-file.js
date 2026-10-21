@@ -327,6 +327,7 @@
     if (typeof d.from === 'number' && d.from !== cur) { pushState(rec); return; }   // застаріла команда: телефон відстав
     if (d.a === 'next') a.next(); else if (d.a === 'prev') a.prev();
     else if (d.a === 'jump' && Number.isInteger(d.i)) a.jump(d.i);
+    else if (d.a === 'act' && typeof d.id === 'string' && a.act) a.act(d.id);   // інтерактив гутірки: області, точки, фото (якщо гутірка вміє)
     clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40);
   }
   document.addEventListener('gutirka:slide', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });

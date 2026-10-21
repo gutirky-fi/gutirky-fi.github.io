@@ -106,8 +106,8 @@ adapter = r'''
 const slideTitle=s=>{if(!s)return"";switch(s.t){case"title":return"Титульний слайд";case"overview":return"Карта України";case"card":return s.x[1];case"tech":return s.e.t;case"hist":return s.e[1];case"ask":return"Запитання: "+s.q;case"ri":return R[s.i].n;case"rf":return R[s.i].n+" · особливості";case"rp":{const p=P[s.i][s.j];return R[s.i].n+" · "+(p&&p[2]?p[2]:"виріб")}case"home":return R[s.i].n+" · підсумок";case"q":return"Вікторина, запитання "+(s.k+1);case"end":return"Завершення"}return""};
 const sections=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]]),...R.map((r,i)=>[r.n,st[i]]),["Вікторина",sec.q],["Завершення",sec.e]];
 window.GUTIRKA={id:"keramika-"+MODE,title:"Кераміка України · "+(SH_?"вишкіл":"повна гутірка"),
-state:()=>({mode:MODE,index:idx,total:S.length,title:slideTitle(S[idx]),next:idx<S.length-1?slideTitle(S[idx+1]):"",note:noteFor(S[idx]),step:rev>tot?tot:rev,steps:tot,elapsed:T0?Math.floor((Date.now()-T0)/1000):0,running:!!T0,target:TARGET*60,sections}),
-next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:()=>{T0=idx>0?Date.now():0},refit:()=>focus(lg,lf)};
+state:()=>({mode:MODE,index:idx,total:S.length,title:slideTitle(S[idx]),next:idx<S.length-1?slideTitle(S[idx+1]):"",note:noteFor(S[idx]),step:rev>tot?tot:rev,steps:tot,elapsed:T0?Math.floor((Date.now()-T0)/1000):0,running:!!T0,target:TARGET*60,sections,acts:typeof actsOf==="function"?actsOf():[]}),
+next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:()=>{T0=idx>0?Date.now():0},refit:()=>focus(lg,lf),act:id=>{if(typeof gAct==="function")gAct(id)}};
 '''
 gscript = ('/* Гутірка «Кераміка України». MODE: "full" або "short". Кожен запуск — окремий екземпляр; '
            'неактивні екземпляри не реагують на події. */\n'

@@ -137,6 +137,22 @@ body.has-art #kart{opacity:1}body.has-art #sv{opacity:.1}
 .mk.sel circle:not(.hit){fill:#ffc247;fill-opacity:1;r:2.6}
 .mk.sel text{opacity:1;fill:#ffc247!important}
 #pan .ptt{margin:0 0 4px;font-weight:700;color:#ffc247;font-size:clamp(1rem,1.3vw,1.3rem)}
+
+/* 21.10.2026: фото на весь екран — гортання й автоперемикання */
+#lbx{cursor:default;gap:0}
+#lbx figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:16px}
+#lbx img{max-width:84vw;max-height:78vh;cursor:pointer}
+#lbx figcaption{color:#fff;font:600 clamp(1.1rem,1.6vw,1.6rem)/1.3 'Source Sans 3',sans-serif;text-align:center;padding:0 16px;max-width:60em}
+#lbx .lbn{position:absolute;top:22px;left:50%;transform:translateX(-50%);color:#c9ced6;font:600 1.05rem 'Source Sans 3',sans-serif}
+#lbx button{position:absolute;border:1px solid rgba(255,255,255,.25);background:rgba(30,33,38,.8);color:#fff;border-radius:50%;width:64px;height:64px;font:400 2.2rem/1 'Source Sans 3',sans-serif;cursor:pointer;display:grid;place-items:center}
+#lbx button:hover{background:rgba(60,64,72,.9)}
+#lbx .lbp{left:2vw;top:50%;transform:translateY(-50%)}#lbx .lbq{right:2vw;top:50%;transform:translateY(-50%)}
+#lbx .lbc{top:16px;right:16px;width:52px;height:52px;font-size:1.5rem}
+#lbx.one .lbp,#lbx.one .lbq{display:none}
+#lbx .lbb{position:absolute;left:0;bottom:0;height:4px;width:100%;background:#ffc247;transform-origin:0 50%;transform:scaleX(0)}
+@keyframes lbb{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){#lbx .lbb{display:none}}
+.car .ci{cursor:zoom-in}
 </style></head><body>
 <div id="app"><div id="map"></div><figure id="kart" aria-hidden="true"></figure>
 <h1 id="ttl"><i>подорож Україною</i>Кераміка України<b class="tsub"></b></h1><div id="mode-label">ПОВНА ГУТІРКА · 45–50 ХВ</div>
@@ -239,10 +255,10 @@ const noteFor=s=>s.t==="ask"?"Дай 20–30 секунд. Клікай обла
 let idx=0,vb=[0,0,612.5,408],raf,lg=-1,lf=1;
 const PT={"1-0":"Косів","1-1":"Косів","1-2":"Косів","1-3":"Косів","1-4":"Косів","1-5":"Косів","2-0":"Гавареччина","2-1":"Гавареччина","2-2":"Потелич","2-3":"Львів","3-0":"Бубнівка","3-1":"Бубнівка","3-2":"Бубнівка","3-3":"Бар","3-4":"Бар","3-5":"Бар","3-6":"Бар","3-7":"Бар","4-0":"Трипілля","4-1":"Трипілля","4-2":"Трипілля","5-0":"Олешня","5-1":"Олешня","5-2":"Олешня","6-0":"Опішня","6-1":"Опішня","6-2":"Опішня","7-0":"Слов'янськ","7-1":"Слов'янськ","7-2":"Слов'янськ","8-0":"Ольвія"};let ptk=null;
 const phs=(i,pt)=>{const A=P[i].map((p,k)=>[k,p]).filter(([k,p])=>PH[i+"-"+k]&&!/уточню/.test(p[2]));if(!pt)return A;const B=A.filter(([k])=>PT[i+"-"+k]===pt);return B};
-const gal=(i,pt)=>{let L=phs(i,pt),note="";if(pt&&!L.length){L=phs(i);note=`<p class="sch">Окремих фото з осередку ${pt} поки немає — показуємо весь край.</p>`}if(!L.length)return"";const TT=pt?`<p class="ptt">● ${pt}</p>`:"";return TT+note+`<figure class="car gal"><div class="cs">${L.map(([k,p],j)=>`<img class="ci" src="${PH[i+"-"+k]}" alt="${p[2]}" data-cap="${p[2]}" data-j="${j}">`).join("")}</div><figcaption>${L[0][1][2]}</figcaption></figure>`};
+const gal=(i,pt)=>{let L=phs(i,pt),note="";if(pt&&!L.length){L=phs(i);note=`<p class="sch">Окремих фото з осередку ${pt} поки немає — показуємо весь край.</p>`}if(!L.length)return"";const TT=pt?`<p class="ptt">● ${pt}</p>`:"";return TT+note+`<figure class="car gal"><div class="cs">${L.map(([k,p],j)=>`<img class="ci" data-tap src="${PH[i+"-"+k]}" alt="${p[2]}" data-cap="${p[2]}" data-j="${j}">`).join("")}</div><figcaption>${L[0][1][2]}</figcaption></figure>`};
 const carLay=(f,c)=>{const I=[...f.querySelectorAll(".ci")],n=I.length;f.dataset.c=c;I.forEach((im,j)=>{let d=((j-c)%n+n)%n;if(d>n/2)d-=n;const a=Math.abs(d);im.style.transform=`translateX(calc(-50% + ${d*78}%)) scale(${a?.6:1}) rotateY(${-d*30}deg)`;im.style.opacity=a===0?1:a===1?.5:0;im.style.zIndex=10-a;im.classList.toggle("on",a===0);im.style.pointerEvents=a>1?"none":"auto"});const cap=I[c]&&I[c].dataset.cap;if(cap)f.querySelector("figcaption").textContent=cap};
 const im=(i,k,p,c)=>PH[i+"-"+k]?`<img src="${PH[i+"-"+k]}" alt="${p[2]}">`:pc(p,c);
-$("#map").innerHTML=`<svg id="sv" viewBox="0 0 612.5 408" role="img" aria-label="Карта України"><defs><filter id="gl" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs><path d="${OUT}" fill="none" stroke="#5aa2ff" stroke-width="3" opacity=".4" filter="url(#gl)"/>${R.map((r,i)=>`<g class="rg" data-i="${i}" style="--c:${r.col};--k:${i}">${OB.filter(o=>o[1]===i).map(o=>`<path d="${o[2]}"/>`).join("")}</g>`).join("")}${OB.map(o=>`<text x="${o[3]}" y="${o[4]}" data-g="${o[1]}">${o[0]}</text>`).join("")}${MK.map(m=>`<g class="mk" data-g="${m[1]}" data-pt="${m[0]}"><circle class="hit" cx="${m[2]}" cy="${m[3]}" r="5"/><circle cx="${m[2]}" cy="${m[3]}" r="1.9"/><text x="${m[2]<30||m[4]==="r"?m[2]+3:m[2]}" y="${m[4]==="b"?m[3]+6.6:m[4]==="r"?m[3]+1.5:m[3]-3.2}" style="text-anchor:${m[2]<30||m[4]==="r"?"start":"middle"}">${m[0]}</text></g>`).join("")}</svg>`;
+$("#map").innerHTML=`<svg id="sv" viewBox="0 0 612.5 408" role="img" aria-label="Карта України"><defs><filter id="gl" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs><path d="${OUT}" fill="none" stroke="#5aa2ff" stroke-width="3" opacity=".4" filter="url(#gl)"/>${R.map((r,i)=>`<g class="rg" data-i="${i}" style="--c:${r.col};--k:${i}">${OB.filter(o=>o[1]===i).map(o=>`<path d="${o[2]}"/>`).join("")}</g>`).join("")}${OB.map(o=>`<text x="${o[3]}" y="${o[4]}" data-g="${o[1]}">${o[0]}</text>`).join("")}${MK.map(m=>`<g class="mk" data-tap data-g="${m[1]}" data-pt="${m[0]}"><circle class="hit" cx="${m[2]}" cy="${m[3]}" r="5"/><circle cx="${m[2]}" cy="${m[3]}" r="1.9"/><text x="${m[2]<30||m[4]==="r"?m[2]+3:m[2]}" y="${m[4]==="b"?m[3]+6.6:m[4]==="r"?m[3]+1.5:m[3]-3.2}" style="text-anchor:${m[2]<30||m[4]==="r"?"start":"middle"}">${m[0]}</text></g>`).join("")}</svg>`;
 const sv=$("#sv"),pan=$("#pan");
 const F=()=>innerWidth>=innerHeight?.6:.52;
 const fit=(b,p,f)=>{const W=sv.clientWidth,H=sv.clientHeight,cx=(b[0]+b[2])/2,cy=(b[1]+b[3])/2;let w=b[2]-b[0]+2*p,h=b[3]-b[1]+2*p;
@@ -258,7 +274,7 @@ const lightMk=n=>sv.querySelectorAll(".mk").forEach(m=>m.classList.toggle("on",n
 const li=(x,k)=>`<li style="--k:${k}">${x}</li>`;
 const KART={"Що таке кераміка":["{{K:process}}","глина → форма → сушіння → випал → кераміка"],"Від шлікеру до гіпсової форми":["{{K:mold}}","заливаємо шлікер → гіпс вбирає воду → зайве виливаємо"],"Три піали — три різні результати":["{{K:piala3}}","1-й випал (бісквіт) · 2-й випал без глазурі · розпис і глазур"],"Фарба, глазур і другий випал":["FINAL","готова піала: розпис керамічною аквареллю під прозорою глазур’ю"],"Один матеріал — різні способи":["{{K:techs}}","ліплення · гончарний круг · шаблон · гіпсова форма · пресування"]};
 const kartOf=s=>s.t==="card"?KART[s.x[1]]:s.t==="tech"?KART[s.e.t]:null;
-function render(){const s=S[idx],r=R[s.i]||null;{const k=pk<0&&kartOf(s);document.body.classList.toggle("has-art",!!k);if(k)$("#kart").innerHTML=`<img src="${k[0]==="FINAL"?FINAL_PIALA:k[0]}" alt=""${k[0]==="FINAL"?' class="ph"':""}><figcaption>${k[1]}</figcaption>`}let h="",g=-1,hint="",big=0,f=F(),c=r?r.col:"#ffc247";
+function render(){lbOff();const s=S[idx],r=R[s.i]||null;{const k=pk<0&&kartOf(s);document.body.classList.toggle("has-art",!!k);if(k)$("#kart").innerHTML=`<img src="${k[0]==="FINAL"?FINAL_PIALA:k[0]}" alt=""${k[0]==="FINAL"?' class="ph"':""}><figcaption>${k[1]}</figcaption>`}let h="",g=-1,hint="",big=0,f=F(),c=r?r.col:"#ffc247";
 switch(s.t){
 case"title":big=1;f=1;hint=matchMedia("(pointer:coarse)").matches?"Торкніться праворуч, щоб почати":"Натисніть пропуск, щоб почати";break;
 case"card":h=`<small>${s.x[0]}</small><h2>${s.x[1]}</h2><ul>${s.x[2].map(li).join("")}</ul>`;break;
@@ -272,26 +288,43 @@ case"q":h=`<small>Вікторина ${s.k+1} з ${QZ.length}</small><h2 class="
 case"overview":f=1;hint="Дев'ять керамічних регіонів. Оберіть будь-який на карті або йдіть далі";break;
 case"ask":h=`<small>Запитання</small><h2>${s.q}</h2>`;hint="Торкніться області на карті: покажемо один виріб";break;
 case"end":h=`<h2>Дякуємо за увагу!</h2><p>Є запитання? Торкніться будь-якої області на карті, щоб побачити її кераміку; ще раз на ту саму область — повернутися сюди.</p><p><a class="back-home" href="../../">← До бібліотеки гутірок</a></p>`;break}
-if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p>${phs(pk).length?gal(pk,ptk):`<div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2><p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint=ptk?"Ще раз на точку — увесь край":"Торкніться точки на карті — лише вироби цього осередку"}
+if(pk>=0&&s.t!=="q"){const r2=R[pk],p2=P[pk][0];h=`<small>${r2.c}</small><h2 class="sm">${r2.n}</h2><p>${r2.t}</p>${phs(pk).length?gal(pk,ptk):`<div class="pic">${im(pk,0,p2,r2.col)}</div><h2 class="sm">${p2[2]}</h2><p class="sch">Схематичний малюнок</p>`}`;g=pk;c=r2.col;hint=ptk?"Область на карті — уся кераміка краю":"Точка на карті — вироби осередку · область ще раз — уся карта"}
 pan.style.setProperty("--c",c);pan.innerHTML=h;const rv=[...pan.querySelectorAll("li,.ask")];tot=rv.length;if(rev>tot)rev=tot;rv.forEach((e,k)=>e.classList.toggle("v",k<rev));pan.classList.toggle("on",!!h);pan.classList.toggle("tech-mode",s.t==="tech");
 $("#ttl").classList.toggle("big",!!big);document.body.classList.toggle("t0",s.t==="title");$("#hint").textContent=hint;sv.querySelectorAll(".rg").forEach(x=>{x.toggleAttribute("data-tap",s.t==="q");x.toggleAttribute("data-pick",pk>=0||["ask","overview","end"].includes(s.t))});$("#bar i").style.width=idx/(S.length-1)*100+"%";
 lg=g;lf=h?f:1;focus(lg,lf);if(s.hl&&pk<0)lightMk(s.hl);if(!T0&&idx>0)T0=Date.now();galAuto();sv.querySelectorAll(".mk").forEach(m=>m.classList.toggle("sel",!!ptk&&m.dataset.pt===ptk&&+m.dataset.g===pk));document.dispatchEvent(new CustomEvent("gutirka:slide"))}
-const adv=d=>{if(pk>=0){if(d>0)go(idx+1);else{pk=-1;render()}return}const rv=()=>{[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
+const adv=d=>{if(lbI>=0){lbShow(lbI+d);return}if(pk>=0){if(d>0)go(idx+1);else{pk=-1;ptk=null;render()}return}const rv=()=>{[...pan.querySelectorAll("li,.ask")].forEach((e,k)=>e.classList.toggle("v",k<rev));document.dispatchEvent(new CustomEvent("gutirka:slide"))};if(d>0){if(rev<tot){rev++;rv();return}if(S[idx].t==="q"&&!qd){ans(S[idx].a);return}go(idx+1)}else{if(rev>0){rev--;rv();return}go(idx-1,true)}};
 const go=(i,full)=>{idx=Math.max(0,Math.min(S.length-1,i));rev=full?9999:0;pk=-1;ptk=null;qd=false;$("#hs").classList.remove("on");render()};
 function ans(i){const s=S[idx],ok=i===s.a;sv.querySelectorAll(".rg").forEach(x=>x.classList.remove("ok","bad"));sv.querySelector(`.rg[data-i="${i}"]`).classList.add(ok?"ok":"bad");
 qd=ok;$("#qa").innerHTML=ok?`<p>✔ Правильно: ${R[i].n}! Торкніться її ще раз, щоб перейти далі.</p><div class="pic">${im(i,0,P[i][0],R[i].col)}</div>`:`<p>✖ Це ${R[i].n}. Спробуйте ще!</p>`}
 $("#toc").innerHTML=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]])].map(a=>`<button data-j="${a[1]}">${a[0]}</button>`).join("")+`<p class="sc">Регіони</p>`+R.map((r,i)=>`<button data-j="${st[i]}" style="border-left:5px solid ${r.col}">${r.n}</button>`).join("")+`<p class="sc">Далі</p><button data-j="${sec.q}">Вікторина</button><button data-j="${sec.e}">Фінал</button>`;
-let galT=0;const galAuto=()=>{clearInterval(galT);document.querySelectorAll("#pan .car").forEach(f=>{if(f.dataset.c===undefined)carLay(f,0)});galT=setInterval(()=>{if($("#lbx.on"))return;document.querySelectorAll("#pan .car").forEach(f=>{const n=f.querySelectorAll(".ci").length;if(n>1)carLay(f,(+f.dataset.c+1)%n)})},3500)};
-const lbx=(src,cap)=>{let d=$("#lbx");if(!d){d=document.createElement("div");d.id="lbx";d.innerHTML="<img alt=\"\"><p></p>";document.body.appendChild(d)}d.querySelector("img").src=src;d.querySelector("p").textContent=cap||"";d.classList.add("on")};
+let galT=0;const galAuto=()=>{clearInterval(galT);document.querySelectorAll("#pan .car").forEach(f=>{if(f.dataset.c===undefined)carLay(f,0)});galT=setInterval(()=>{if(lbI>=0)return;document.querySelectorAll("#pan .car").forEach(f=>{const n=f.querySelectorAll(".ci").length;if(n>1)carLay(f,(+f.dataset.c+1)%n)})},6000)};
+const LBMS=7000,slideEvt=()=>document.dispatchEvent(new CustomEvent("gutirka:slide"));let lbI=-1,lbT=0;
+const lbL=()=>[...document.querySelectorAll("#pan .car .ci")];
+const lbShow=j=>{const L=lbL();if(!L.length){lbClose();return}j=((j%L.length)+L.length)%L.length;lbI=j;let d=$("#lbx");if(!d){d=document.createElement("div");d.id="lbx";d.setAttribute("data-tap","");d.innerHTML='<figure><img alt=""><figcaption></figcaption></figure><span class="lbn"></span><button class="lbp" type="button" aria-label="Попереднє фото">‹</button><button class="lbq" type="button" aria-label="Наступне фото">›</button><button class="lbc" type="button" aria-label="Закрити">✕</button><i class="lbb"></i>';document.body.appendChild(d)}const el=L[j];d.querySelector("img").src=el.src;d.querySelector("figcaption").textContent=el.dataset.cap||"";d.querySelector(".lbn").textContent=L.length>1?(j+1)+" з "+L.length:"";d.classList.toggle("one",L.length<2);d.classList.add("on");const b=d.querySelector(".lbb");b.style.animation="none";void b.offsetWidth;b.style.animation=L.length>1?`lbb ${LBMS}ms linear`:"none";clearTimeout(lbT);if(L.length>1)lbT=setTimeout(()=>lbShow(lbI+1),LBMS);const f=el.closest(".car");if(f)carLay(f,j);slideEvt()};
+const lbOff=()=>{clearTimeout(lbT);lbI=-1;const d=$("#lbx");if(d)d.classList.remove("on")};
+const lbClose=()=>{lbOff();galAuto();slideEvt()};
+const pickRg=i=>{const ty=S[idx].t;if(ty==="q"){qd&&i===S[idx].a?go(idx+1):ans(i);return}if(pk===i&&ptk)ptk=null;else if(pk===i)pk=-1;else{pk=i;ptk=null}render()};
+const pickPt=nm=>{const m=MK.find(x=>x[0]===nm);if(!m||S[idx].t==="q")return;if(pk===m[1]&&ptk===nm)ptk=null;else{pk=m[1];ptk=nm}render()};
+/* кнопки для пульта: області, осередки, фото на весь екран */
+  const actsOf=()=>{const s=S[idx],A=[];if(s.t==="title")return A;
+  const L=[...document.querySelectorAll("#pan .car .ci")];
+  if(lbI>=0)A.push({h:"Фото на весь екран",b:[["lb:prev","‹ Попереднє"],["lb:next","Наступне ›"],["lb:close","✕ Закрити фото"]]});
+  if(s.t==="q")A.push({h:"Відповідь — область на карті",b:R.map((r,i)=>["rg:"+i,r.n,false])});
+  else{const g=pk>=0?pk:["ri","rf"].includes(s.t)?s.i:-1;
+    A.push({h:"Області",b:[...R.map((r,i)=>["rg:"+i,r.n,pk===i&&!ptk]),...(pk>=0?[["map","← Уся карта",false]]:[])]});
+    if(g>=0){const M=MK.filter(m=>m[1]===g);if(M.length)A.push({h:"Осередки: "+R[g].n,b:M.map(m=>["pt:"+m[0],m[0],ptk===m[0]])})}}
+  if(lbI<0&&L.length)A.push({h:"Фото — відкрити на весь екран",b:L.map((e,j)=>["ph:"+j,e.dataset.cap,e.classList.contains("on")])});
+  return A};
+const gAct=id=>{const[k,v]=String(id).split(":");if(k==="rg")pickRg(+v);else if(k==="pt")pickPt(v);else if(k==="map"){pk=-1;ptk=null;render()}else if(k==="ph")lbShow(+v);else if(k==="lb"){v==="prev"?lbShow(lbI-1):v==="next"?lbShow(lbI+1):lbClose()}};
 document.addEventListener("click",e=>{const T=x=>e.target.closest(x);
-if(T("#lbx")){$("#lbx").classList.remove("on");e.stopPropagation();return}
-const ci=T(".car .ci");if(ci){if(ci.classList.contains("on"))lbx(ci.src,ci.dataset.cap);else{carLay(ci.closest(".car"),+ci.dataset.j);galAuto()}e.stopPropagation();return}
+if(T("#lbx")){if(T(".lbp"))lbShow(lbI-1);else if(T(".lbq")||T("#lbx img"))lbShow(lbI+1);else lbClose();e.stopPropagation();return}
+const ci=T(".car .ci");if(ci){lbShow(+ci.dataset.j);e.stopPropagation();return}
 if(T("#menu")){$("#hs").classList.add("on");return}if(T(".hx")){$("#hs").classList.remove("on");return}
 const j=T("[data-j]");if(j)return go(+j.dataset.j);
-const mk=T(".mk");if(mk&&S[idx].t!=="q"){const g=+mk.dataset.g,nm=mk.dataset.pt;if(pk===g&&ptk===nm){ptk=null}else{pk=g;ptk=nm}render();return}
+const mk=T(".mk");if(mk&&S[idx].t!=="q"){pickPt(mk.dataset.pt);return}
 const b=T("[data-n]");if(b)return adv(+b.dataset.n);
-const rg=T(".rg");if(rg){ptk=null;const i=+rg.dataset.i,ty=S[idx].t;if(ty==="q"){qd&&i===S[idx].a?go(idx+1):ans(i)}else{pk=pk===i?-1:i;render()}}});
-document.addEventListener("keydown",e=>{const k=e.key;if($("#lbx.on")){$("#lbx").classList.remove("on");e.preventDefault();return}
+const rg=T(".rg");if(rg)pickRg(+rg.dataset.i)});
+document.addEventListener("keydown",e=>{const k=e.key;if(lbI>=0){e.preventDefault();if(["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(k))lbShow(lbI-1);else if([" ","ArrowRight","ArrowDown","PageDown","Enter"].includes(k))lbShow(lbI+1);else lbClose();return}
 if(k==="Escape"){$("#hs").classList.toggle("on");return}
 if([" ","ArrowRight","ArrowDown","PageDown","Enter"].includes(k)){e.preventDefault();adv(1)}
 else if(["ArrowLeft","ArrowUp","PageUp","Backspace"].includes(k)){e.preventDefault();adv(-1)}
@@ -330,11 +363,12 @@ setVB(fit([0,0,612.5,408],6,1));render();
   window.GUTIRKA={
     id:"keramika-"+MODE,
     title:"Кераміка України · "+(SH_?"вишкіл":"повна гутірка"),
-    state:()=>({mode:MODE,index:idx,total:S.length,title:slideTitle(S[idx]),next:idx<S.length-1?slideTitle(S[idx+1]):"",note:noteFor(S[idx]),step:rev>tot?tot:rev,steps:tot,elapsed:T0?Math.floor((Date.now()-T0)/1000):0,running:!!T0,target:TARGET*60,sections}),
+    state:()=>({mode:MODE,index:idx,total:S.length,title:slideTitle(S[idx]),next:idx<S.length-1?slideTitle(S[idx+1]):"",note:noteFor(S[idx]),step:rev>tot?tot:rev,steps:tot,elapsed:T0?Math.floor((Date.now()-T0)/1000):0,running:!!T0,target:TARGET*60,sections,acts:actsOf()}),
     next:()=>adv(1),
     prev:()=>adv(-1),
     jump:i=>{if(i>=0&&i<S.length)go(i)},
-    resetTimer:()=>{T0=idx>0?Date.now():0}
+    resetTimer:()=>{T0=idx>0?Date.now():0},
+    act:gAct
   };
 })();
 </script>
