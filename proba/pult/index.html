@@ -123,6 +123,36 @@ body[data-v=pad] .mbtn{display:grid}
 #ix .b3 button{min-height:58px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font:700 24px var(--body)}
 #ix .b3 button.on{background:var(--gd);color:#1a1a1a;border-color:var(--gd)}
 #ix .pz.go{background:#ffc247;border-color:#ffc247;color:#1d1606;min-height:56px;font-size:17px}
+/* «Потужний СКОБ!» з пульта */
+#pad.sk .notes{display:none}
+#ix.skb{--stripe:#ffc247}
+#ix .sq{font:600 19px/1.25 var(--body);margin:0 2px}
+#ix .skt{font:600 15px var(--disp);color:#ffc247;white-space:nowrap}
+#ix .sa{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#ix .sa button{position:relative;display:flex;align-items:center;gap:8px;min-height:64px;padding:8px 10px;border:0;border-radius:14px;color:#fff;font:700 15px/1.2 var(--body);text-align:left}
+#ix .sa button i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:rgba(0,0,0,.22);font:700 17px var(--body);font-style:normal}
+#ix .sa .c0{background:#d64541}#ix .sa .c1{background:#2f6fd1}#ix .sa .c2{background:#e3a922;color:#1d1606}#ix .sa .c3{background:#2e8b57}
+#ix .sa button:disabled{opacity:1}
+#ix .sa .ok::after{content:"✓";position:absolute;right:6px;top:4px;font-size:13px;opacity:.85}
+#ix .sa.rev button:not(.ok){opacity:.35}
+#ix .sa.rev .bad{opacity:1!important;outline:3px solid #fff;outline-offset:-3px}
+#ix .sa.rev .ok{outline:3px solid #fff;outline-offset:-3px}
+#ix .sw{margin:0 2px;font-size:15px;line-height:1.4;color:#d9dee4}
+#ix .sw b{color:#fff}
+#ix .scode{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:10px 12px;border-radius:12px;background:var(--card2)}
+#ix .scode b{font:600 34px/1 var(--disp);letter-spacing:.08em;color:#ffc247}
+#ix .scode small{color:var(--mut);font-size:13px;text-align:right}
+#ix .chips{display:flex;flex-wrap:wrap;gap:6px}
+#ix .chips span{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;background:var(--card2);border:1px solid var(--ln);font-size:14px;font-weight:600}
+#ix .chips span.off{opacity:.45}
+#ix .chips span.wt{border-color:#ffc247}
+#ix .chips button{border:0;background:none;color:#fff;font:700 15px var(--body);padding:2px 4px}
+#ix .stop{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+#ix .stop li{display:flex;justify-content:space-between;padding:6px 10px;border-radius:10px;background:var(--card2);font-weight:600}
+#ix .stop li:first-child{background:rgba(255,194,71,.18)}
+#ix .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#ix .pz.wn{color:#ff9a8a}
+#ix .mut{margin:0 2px;color:var(--mut);font-size:14px}
 #ix .pz{width:100%;min-height:46px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font:700 15px var(--body)}
 
 /* «Назад / Далі» — завжди внизу екрана */
@@ -132,6 +162,7 @@ body[data-v=pad] .mbtn{display:grid}
 .nav button.next{background:var(--vyh);border-color:var(--vyh);color:#0e1f15;font-size:26px}
 .nav button:active{transform:scale(.97);filter:brightness(1.12)}
 .nav button:disabled{opacity:.4}
+.skm .nav button.next{font-size:19px;background:#ffc247;border-color:#ffc247;color:#1d1606}
 body:not([data-v=pad]) .nav{display:none}
 
 /* меню: розділи, таймер, відʼєднатись */
@@ -460,6 +491,11 @@ noscript{display:block;padding:20px}
     [...wrap.children].forEach((b, k) => b.classList.toggle('cur', k === cur));
     $('#secbox').hidden = !list.length;
     renderIx();
+    const sk = st.ix && st.ix.v === 'skob' && st.ix.s, inG = !!(sk && (sk.g || sk.lobby));
+    $('#pad').classList.toggle('sk', !!sk);
+    document.body.classList.toggle('skm', inG);
+    if (inG) { $('#next').disabled = !sk.lobby && sk.g === 'end'; $('#prev').disabled = true; $('#next').textContent = (sk.lobby ? 'Готово' : sk.nx || 'Далі') + ' ›'; }
+    else $('#next').textContent = 'Далі ›';
     drawTimer();
   }
   function drawTimer() {
@@ -529,9 +565,11 @@ noscript{display:block;padding:20px}
     const box = $('#ix'), ix = st && st.ix;
     if (!ix) { box.hidden = true; box.textContent = ''; ixSig = ''; return; }
     box.hidden = false;
+    if (ix.v === 'skob') { box.classList.add('skb'); renderSkob(box, ix.s || {}); return; }
+    box.classList.remove('skb');
     if (ix.v === 'btns') {   // прості кнопки дій (напр. «Почати гру»)
       const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
-      box.innerHTML = '<div class="ih"><div><b>' + esc(ix.h || '') + '</b></div></div>' + (ix.b || []).map(([id, l]) => '<button type="button" class="pz go" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('');
+      box.innerHTML = '<div class="ih"><div><b>' + esc(ix.h || '') + '</b></div></div>' + (ix.b || []).map(([id, l], k) => '<button type="button" class="' + (k ? 'pz' : 'pz go') + '" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('');
       return;
     }
     const ids = ix.v === 'photo' ? [ix.th] : [ix.map, ...(ix.ph || []).map(p => p[0])];
@@ -571,7 +609,51 @@ noscript{display:block;padding:20px}
     }
     box.innerHTML = h;
   }
-  $('#ix').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b) cmd('act', { id: b.getAttribute('data-act') }); });
+  /* «Потужний СКОБ!»: те, що на екрані гри, — кнопками на телефоні */
+  const LET = ['С', 'К', 'О', 'Б'];
+  let skAt = 0, skLeft = 0;
+  function skPlayers(v) {
+    return (v.pend.length ? '<p class="mut">Чекають підтвердження — ✓ пустити, ✕ ні:</p><div class="chips">' + v.pend.map(([n, t]) => '<span class="wt">' + esc(n) + '<button type="button" data-act="skob:ok:' + esc(t) + '" aria-label="Пустити">✓</button><button type="button" data-act="skob:x:' + esc(t) + '" aria-label="Не пускати">✕</button></span>').join('') + '</div>' : '')
+      + (v.pl.length ? '<div class="chips">' + v.pl.map(([n, on]) => '<span class="' + (on ? '' : 'off') + '">' + esc(n) + '</span>').join('') + '</div>' : '');
+  }
+  function renderSkob(box, v) {
+    skAt = Date.now(); skLeft = v.left || 0;
+    const sig = JSON.stringify(Object.assign({}, v, { left: v.left ? 1 : 0 }));
+    if (sig === ixSig) return; ixSig = sig;
+    const n = v.pl.length;
+    let h;
+    if (v.lobby) {
+      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>Запросити гравців</b></div></div>'
+        + '<div class="scode"><b>' + (v.code ? esc(v.code.slice(0, 3) + ' ' + v.code.slice(3)) : '··· ···') + '</b><small>QR-код на екрані<br>або ' + esc(v.url) + '</small></div>'
+        + '<p class="mut">' + (n ? 'Гравців: ' + n : 'Поки нікого. Імена з’являться тут.') + '</p>' + skPlayers(v)
+        + '<button type="button" class="pz go" data-act="skob:lobby-close">Готово</button>'
+        + (n ? '' : '<p class="mut">Без телефонів теж можна: учасники відповідають уголос, ви тикаєте відповідь тут.</p>');
+    } else if (!v.g) {
+      h = '<div class="ih"><div><b>Потужний СКОБ!</b></div></div><button type="button" class="pz go" data-act="skob">▶ Почати гру</button><button type="button" class="pz" data-act="skob:lobby">Запросити гравців</button>';
+    } else if (v.g === 'intro') {
+      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>Гра готова</b></div></div>'
+        + '<p class="mut">' + v.n + ' запитань · по ' + v.T + ' с. ' + (v.on ? 'На зв’язку телефонів: ' + v.on + '.' : 'Телефонів немає — грайте вголос: ви тикаєте відповідь, яку назвали учасники.') + '</p>'
+        + '<button type="button" class="pz go" data-act="skob:next">▶ Почати</button><button type="button" class="pz" data-act="skob:lobby">' + (n ? 'Гравці: ' + n + ' · запросити ще' : 'Запросити гравців (QR на екрані)') + '</button>';
+    } else if (v.g === 'q') {
+      const rev = v.r === 'rev', tap = !v.mp && v.r === 'ans';
+      h = '<div class="ih"><div><small>Запитання ' + (v.i + 1) + ' з ' + v.n + '</small><b>' + (rev ? 'Відповідь' : v.r === 'read' ? 'Читаємо запитання' : (tap ? 'Тикни відповідь учасників' : 'Відповідають з телефонів')) + '</b></div>' + (v.r === 'ans' ? '<span class="skt" id="skt"></span>' : '') + '</div>'
+        + '<p class="sq">' + esc(v.q) + '</p>'
+        + (v.r === 'read' ? '' : '<div class="sa' + (rev ? ' rev' : '') + '">' + v.a.map((t, k) => '<button type="button" class="c' + k + (k === v.ok ? ' ok' : '') + (rev && k === v.pick && k !== v.ok ? ' bad' : '') + '"' + (tap ? ' data-act="skob:pick:' + k + '"' : ' disabled') + '><i>' + LET[k] + '</i>' + esc(t) + '</button>').join('') + '</div>')
+        + (v.mp && !rev ? '<p class="mut">Відповіли: ' + v.ans + ' з ' + Math.max(v.on, v.ans) + '</p>' : '')
+        + (tap ? '<p class="mut">✓ — правильна (бачите лише ви). Тикни те, що назвали учасники, або «Показати відповідь».</p>' : '')
+        + (rev ? '<p class="sw">' + (v.mp ? '' : v.pick < 0 ? '' : v.pick === v.ok ? '<b>Правильно!</b> ' : '<b>Не зовсім.</b> ') + esc(v.why || '') + '</p>' : '');
+    } else if (v.g === 'lead' || v.g === 'end') {
+      const end = v.g === 'end';
+      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>' + (end ? (v.top.length ? 'Переможці' : 'Гру завершено') : 'Лідери') + '</b></div></div>'
+        + (v.top.length ? '<ol class="stop">' + v.top.map(([nm, sc], k) => '<li><span>' + (k + 1) + '. ' + esc(nm) + '</span><span>' + sc + '</span></li>').join('') + '</ol>' : '')
+        + (end ? '<button type="button" class="pz go" data-act="skob:done">Завершити гру</button><button type="button" class="pz" data-act="skob:again">Зіграти ще раз</button>' : '');
+    }
+    if (v.g && !v.lobby && v.g !== 'intro' && v.g !== 'end') h += '<div class="row2"><button type="button" class="pz" data-act="skob:lobby">' + (n ? 'Гравці: ' + n : 'Запросити') + '</button><button type="button" class="pz wn" data-act="skob:quit" data-sure="Завершити гру?">✕ Завершити</button></div>';
+    box.innerHTML = h; skTick();
+  }
+  function skTick() { const e = document.getElementById('skt'); if (e) e.textContent = '⏱ ' + Math.ceil(Math.max(0, skLeft - (Date.now() - skAt)) / 1000) + ' с'; }
+  setInterval(skTick, 250);
+  $('#ix').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; if (b.dataset.sure && !confirm(b.dataset.sure)) return; cmd('act', { id: b.getAttribute('data-act') }); });
   $('#menu').addEventListener('click', () => { $('#sheet').hidden = false; });
   $('#shx').addEventListener('click', () => { $('#sheet').hidden = true; });
   $('#sheet').addEventListener('click', e => { if (e.target.id === 'sheet') $('#sheet').hidden = true; });

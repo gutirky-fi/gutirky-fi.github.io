@@ -323,6 +323,8 @@
     const a = API();
     if (!a) { send(rec, { t: 'state', n: ++seq, idle: true }); return; }
     let s; try { s = a.state(); } catch (e) { return; }
+    const SK = window.SKOB;   // «Потужний СКОБ!» відкрито — пульт керує грою
+    try { if (SK && SK.view && SK.active()) s = Object.assign({}, s, { ix: { v: 'skob', s: SK.view() } }); } catch (e) { /* ok */ }
     send(rec, Object.assign({ t: 'state', n: ++seq, gtitle: a.title }, s));
   }
   function command(rec, d) {
@@ -332,6 +334,11 @@
     if (d.a === 'asset' && typeof d.id === 'string' && a.asset) {   // картинки для пульта (міні-карта, мініатюри фото): надсилаємо на запит телефона
       Promise.resolve(a.asset(d.id)).then(v => { if (v != null) send(rec, { t: 'asset', id: d.id, v }); }).catch(() => {}); return;
     }
+    const SK = window.SKOB;
+    if (SK && SK.cmd && ((d.a === 'act' && typeof d.id === 'string' && d.id.startsWith('skob:')) || ((d.a === 'next' || d.a === 'prev') && SK.active()))) {
+      if (d.a === 'act') SK.cmd(d.id.slice(5)); else if (d.a === 'next') SK.cmd('next');   // «Назад» під час гри нічого не робить
+      clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40); return;
+    }
     let cur = -1; try { cur = a.state().index; } catch (e) { /* ok */ }
     if (typeof d.from === 'number' && d.from !== cur) { pushState(rec); return; }   // застаріла команда: телефон відстав
     if (d.a === 'next') a.next(); else if (d.a === 'prev') a.prev();
@@ -340,6 +347,7 @@
     clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40);
   }
   document.addEventListener('gutirka:slide', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
+  document.addEventListener('skob:state', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
   addEventListener('online', () => {
     if (stopped) return;
     attempts = 0;
