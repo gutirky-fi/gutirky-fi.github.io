@@ -1,0 +1,27 @@
+/* друк плану гутірки — спільний паперовий стиль бібліотеки (як _robota/druk/shablon.py):
+   шапка «вид · назва · підзаголовок · лілея», колір гутірки (__ACC__), підвал «Пласт у Фінляндії».
+   Підставляє zibraty.py гутірки (позначка DRUK_PLAN у джерелі). */
+@media print{
+  @page{size:A4;margin:11mm 13mm 12mm}
+  :root{color-scheme:light}
+  html,body{height:auto;background:#fff!important;color:#1d2125!important;font:10.5pt/1.4 'Source Sans 3',sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body>*:not(#plan){display:none!important}
+  #plan{max-width:none!important;margin:0!important;padding:0!important;position:relative;background:none!important;color:#1d2125!important}
+  #plan .back,#plan .pr{display:none!important}
+  #plan::before{content:"";position:absolute;right:0;top:0;width:15mm;height:17.5mm;background:url("__LILY__") right top/contain no-repeat}
+  #plan .eyebrow{display:flex!important;align-items:center;gap:7px;margin:0!important;font:700 10.5pt 'Source Sans 3',sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:__ACC__!important}
+  #plan .eyebrow::after{content:"для ведучого";font:700 8pt 'Source Sans 3',sans-serif;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873}
+  #plan h1{margin:.6mm 22mm 0 0!important;font:600 24pt/1.02 Oswald,'Arial Narrow',sans-serif!important;letter-spacing:.01em!important;text-transform:uppercase!important;color:#1d2125!important;background:none!important;-webkit-text-fill-color:#1d2125!important;text-shadow:none!important}
+  #plan .hand{margin:1mm 0 4.5mm!important;padding:0 0 3mm!important;border-bottom:2.2pt solid __ACC__;font:400 10.5pt 'Source Sans 3',sans-serif!important;color:#5f6873!important;transform:none!important}
+  #plan-box{color:#1d2125!important}
+  #plan-box .mat{margin:0 0 3mm!important;padding:2.6mm 3.2mm!important;border:.7pt solid #cfd5dc!important;border-radius:2.5mm!important;background:none!important;box-shadow:none!important;break-inside:avoid}
+  #plan-box .mat b{display:block;margin:0 0 1.2mm!important;font:600 11pt Oswald,sans-serif!important;letter-spacing:.015em!important;text-transform:uppercase!important;color:#1d2125!important}
+  #plan-box .mat ul{margin:0!important;padding-left:5mm!important;color:#1d2125!important}#plan-box .mat li{margin:.5mm 0}
+  #plan-box h2{display:flex;align-items:baseline;flex-wrap:wrap;gap:2mm;margin:5mm 0 1.8mm!important;padding:0 0 0 2.6mm!important;border-left:2.2pt solid __ACC__;font:600 12.5pt/1.15 Oswald,sans-serif!important;letter-spacing:.015em!important;text-transform:uppercase!important;color:#1d2125!important;background:none!important;break-after:avoid}
+  #plan-box h2 small{margin:0!important;font:600 9.5pt 'Source Sans 3',sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:#5f6873!important}
+  #plan-box .row{display:grid!important;grid-template-columns:44mm minmax(0,1fr)!important;gap:1mm 4mm!important;padding:1.6mm 0!important;border-top:.6pt solid #cfd5dc!important;background:none!important;break-inside:avoid}
+  #plan-box .row .t{font-weight:700!important;color:#1d2125!important}#plan-box .row .t small{display:block;font-weight:600;color:#5f6873!important;font-size:8.5pt}
+  #plan-box .row .s,#plan-box p{color:#1d2125!important}
+  #plan-box .row .s em{color:__ACC__!important;font-style:normal;font-weight:700}
+  #plan::after{content:"Пласт у Фінляндії · бібліотека гутірок";display:block;margin-top:6mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873}
+}

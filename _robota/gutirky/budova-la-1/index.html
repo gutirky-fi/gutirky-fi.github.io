@@ -56,21 +56,7 @@ body.yun .for-v,body:not(.yun) .for-y{display:none!important}
 #plan-box .row .s{color:var(--body)}#plan-box .row .s em{color:var(--ac);font-style:normal}
 @media (max-width:640px){#plan-box .row{grid-template-columns:1fr}}
 .go.pr{display:inline-flex;align-items:center;gap:10px;margin:16px 0 4px}.go.pr svg{width:20px;height:20px;flex:none}
-/* друк плану: білий аркуш A4, лише план (у браузері — «Друкувати» або «Зберегти як PDF») */
-@media print{
-  @page{size:A4;margin:14mm 14mm 16mm}
-  :root{color-scheme:light}
-  html,body{height:auto;background:#fff!important;color:#000;font-size:10.5pt;line-height:1.4}
-  body>*:not(#plan){display:none!important}
-  #plan{max-width:none;padding:0}#plan .back,#plan .pr{display:none}
-  #plan .eyebrow{color:#555}#plan h1{margin:4px 0 0;font-size:22pt;color:#000}#plan .hand{color:#333;font-size:15pt}
-  #plan-box .mat{margin:10px 0;padding:8px 12px;border:1px solid #bbb;border-radius:8px;background:none;break-inside:avoid}
-  #plan-box .mat b{color:#000;font-size:10pt}
-  #plan-box h2{margin:16px 0 4px;font-size:14pt;color:#000;break-after:avoid}#plan-box h2 small{color:#444}
-  #plan-box .row{grid-template-columns:11em minmax(0,1fr);padding:6px 0;border-top:1px solid #ccc;break-inside:avoid}
-  #plan-box .row .t,#plan-box .row .s,#plan-box .mat ul,#plan-box p{color:#000!important}#plan-box .row .t small{color:#555}
-  #plan-box .row .s em{color:#000;font-weight:700}
-}
+{{DRUK_PLAN}}
 
 /* ---------- гутірка ---------- */
 #pres{position:fixed;inset:0;background:radial-gradient(70% 60% at 30% 45%,#232a33,var(--bg) 75%);overflow:hidden}

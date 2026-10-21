@@ -40,6 +40,9 @@ def page(skob_rel, yun_rel=None, home=None, kart=False):
         src = src.replace(inl(k), inl(k) + '\n' + inl((TUT / 'tema-gonch.js').read_text(encoding='utf-8')), 1)
         src = rep(src, 'family=Source+Sans+3:wght@400;600;700&display=swap', 'family=Source+Sans+3:wght@400;600;700&family=Commissioner:wght,FLAR,VOLM@100..900,0..100,0..100&family=Unbounded:wght@800&display=swap')
     src = src.replace('{{EMBLEM}}', emblem).replace('{{KMAP}}', 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'keramika-map.webp').read_bytes()).decode())
+    # друк плану — спільний паперовий стиль (_robota/druk/plan-druk.css), колір гутірки #8f4f25
+    _dr = D.parent / 'druk'
+    src = src.replace('{{DRUK_PLAN}}', (_dr / 'plan-druk.css').read_text(encoding='utf-8').replace('__ACC__', '#8f4f25').replace('__LILY__', 'data:image/png;base64,' + base64.b64encode((_dr / 'lileya.png').read_bytes()).decode()))
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
     pre += ('window.GUTIRKA_YUN_URL = ' + json.dumps(yun_rel) + ';') if yun_rel else 'window.GUTIRKA_YUN = true;'

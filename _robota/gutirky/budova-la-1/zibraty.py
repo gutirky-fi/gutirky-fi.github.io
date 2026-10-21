@@ -38,6 +38,9 @@ def page(skob_rel, yun_rel=None, home=None, tema=False):
         src = src.replace(mal, mal + '\n' + inl((TUT / 'tema-kresl.js').read_text(encoding='utf-8')), 1)
         src = rep(src, 'family=Source+Sans+3:wght@400;600;700&display=swap', 'family=Source+Sans+3:wght@400;600;700&family=Unbounded:wght@700;900&family=Fira+Sans+Condensed:wght@600&display=swap')
     src = src.replace('{{EMBLEM}}', emblem)
+    # друк плану — спільний паперовий стиль (_robota/druk/plan-druk.css), колір гутірки #2f6fb3
+    _dr = D.parent / 'druk'
+    src = src.replace('{{DRUK_PLAN}}', (_dr / 'plan-druk.css').read_text(encoding='utf-8').replace('__ACC__', '#2f6fb3').replace('__LILY__', 'data:image/png;base64,' + base64.b64encode((_dr / 'lileya.png').read_bytes()).decode()))
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
     pre += ('window.GUTIRKA_YUN_URL = ' + json.dumps(yun_rel) + ';') if yun_rel else 'window.GUTIRKA_YUN = true;'

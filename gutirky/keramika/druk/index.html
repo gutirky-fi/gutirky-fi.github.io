@@ -22,9 +22,9 @@ a{color:inherit}
 .ey{margin:0;color:var(--ker);font:600 15px var(--txt)}
 h1{margin:4px 0 8px;font:600 clamp(2rem,5.4vw,3.3rem)/1.02 var(--disp);letter-spacing:.02em;text-transform:uppercase}
 .lead{margin:0;max-width:62ch;color:#cfd5dc}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:28px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:28px}
 .it{display:flex;flex-direction:column;border-radius:18px;background:var(--card);border:1px solid var(--ln);overflow:hidden}
-.pv{display:block;background:#e9e6df;padding:14px 14px 0;aspect-ratio:496/400;overflow:hidden}
+.pv{display:block;background:#e9e6df;padding:16px 16px 0;aspect-ratio:496/300;overflow:hidden}
 .pv img{display:block;width:100%;height:auto;border-radius:4px 4px 0 0;box-shadow:0 6px 24px rgba(0,0,0,.25)}
 .bd{display:flex;flex-direction:column;gap:8px;padding:16px 16px 18px;flex:1}
 h2{margin:0;font:600 22px/1.15 var(--disp);letter-spacing:.02em;text-transform:uppercase}
@@ -40,7 +40,7 @@ h2{margin:0;font:600 22px/1.15 var(--disp);letter-spacing:.02em;text-transform:u
 .tip{margin-top:26px;padding:16px 18px;border-radius:16px;border:1px solid var(--ln);background:var(--card);color:#cfd5dc;font-size:16px}
 .tip b{color:var(--ink)}
 .tip ul{margin:6px 0 0;padding-left:18px}
-@media (max-width:860px){.grid{grid-template-columns:1fr 1fr}}
+
 @media (max-width:560px){.grid{grid-template-columns:1fr}.pv{aspect-ratio:496/320}}
 </style>
 </head>
@@ -52,23 +52,23 @@ h2{margin:0;font:600 22px/1.15 var(--disp);letter-spacing:.02em;text-transform:u
   </div>
   <p class="ey">Кераміка України · вишкіл, до 20 хв</p>
   <h1>Матеріали до друку</h1>
-  <p class="lead">Усе паперове до гутірки: план для ведучого, аркуш для кожного учасника і шпаргалка з відповідями. Натисніть «PDF», щоб відкрити й надрукувати.</p>
+  <p class="lead">Усе паперове до гутірки — в одному стилі: план для ведучого, аркуш для кожного учасника, шпаргалка з відповідями й таблички до досліду. Натисніть «PDF», щоб відкрити й надрукувати.</p>
 
   <div class="grid">
     <section class="it">
-      <a class="pv" href="plan-vyshkil-20.pdf" target="_blank" rel="noopener" aria-label="Відкрити план гутірки"><img src="pv-plan-vyshkil-20.jpg" alt="Перша сторінка плану гутірки" width="497" height="702" loading="lazy"></a>
+      <a class="pv" href="plan-vyshkil-20.pdf" target="_blank" rel="noopener" aria-label="Відкрити план гутірки"><img src="pv-plan-vyshkil-20.jpg" alt="Перша сторінка плану гутірки" width="496" height="702" loading="lazy"></a>
       <div class="bd">
         <h2>План гутірки</h2>
         <p class="who">Для ведучого · 2 сторінки</p>
         <p class="d">Мета, матеріали, хід гутірки по хвилинах, як залучити всіх 5–6 учасників, слова, які треба пояснити, і що робити, коли час закінчується.</p>
-        <div class="acts"><a class="btn" href="plan-vyshkil-20.pdf" target="_blank" rel="noopener">PDF</a><a class="btn gh" href="plan-vyshkil-20.docx" download="План гутірки — Кераміка України, вишкіл.docx">Word</a></div>
+        <div class="acts"><a class="btn" href="plan-vyshkil-20.pdf" target="_blank" rel="noopener">PDF</a><a class="btn gh" href="plan-vyshkil-20.docx" download="План гутірки — Кераміка України, вишкіл.docx">Word — для редагування</a></div>
       </div>
     </section>
     <section class="it">
       <a class="pv" href="arkush-uchasnyka.pdf" target="_blank" rel="noopener" aria-label="Відкрити аркуш учасника"><img src="pv-arkush-uchasnyka.jpg" alt="Перша сторінка аркуша учасника" width="496" height="702" loading="lazy"></a>
       <div class="bd">
         <h2>Аркуш учасника</h2>
-        <p class="who">Кожному учаснику · 2 сторінки</p>
+        <p class="who">Кожному учаснику · 2 сторінки, можна з двох боків</p>
         <ul><li>карта з 9 краями;</li><li>«Звідки цей виріб?» — 6 фото;</li><li>крапля води: що станеться;</li><li>що сподобалося найбільше;</li><li>словничок гончаря — 20 слів.</li></ul>
         <div class="acts"><a class="btn" href="arkush-uchasnyka.pdf" target="_blank" rel="noopener">PDF</a></div>
       </div>
@@ -82,10 +82,19 @@ h2{margin:0;font:600 22px/1.15 var(--disp);letter-spacing:.02em;text-transform:u
         <div class="acts"><a class="btn" href="shpargalka-veduchomu.pdf" target="_blank" rel="noopener">PDF</a></div>
       </div>
     </section>
+    <section class="it">
+      <a class="pv" href="tablychky-doslid.pdf" target="_blank" rel="noopener" aria-label="Відкрити таблички до досліду"><img src="pv-tablychky-doslid.jpg" alt="Таблички до досліду «Крапля води»" width="496" height="702" loading="lazy"></a>
+      <div class="bd">
+        <h2>Таблички до досліду</h2>
+        <p class="who">Для майстерні · 1 сторінка</p>
+        <p class="d">Три таблички «будиночком» до досліду «Крапля води»: вазон без глазурі, печатка (випал 1250°), піала з глазур'ю. Виріжте по пунктиру, зігніть навпіл і поставте біля зразків.</p>
+        <div class="acts"><a class="btn" href="tablychky-doslid.pdf" target="_blank" rel="noopener">PDF</a></div>
+      </div>
+    </section>
   </div>
 
   <div class="tip"><b>Що надрукувати перед вишколом</b>
-    <ul><li>Аркуш учасника — по одному на кожного (для гуртка 5–6 осіб), можна з двох боків.</li><li>План і шпаргалку — по одному для себе.</li><li>Ще взяти: гіпсову форму й піалу, вазон, печатку, глазуровану піалу, склянку води, ручки.</li></ul>
+    <ul><li>Аркуш учасника — по одному на кожного (для гуртка 5–6 осіб), можна з двох боків.</li><li>План, шпаргалку й таблички — по одному примірнику.</li><li>Ще взяти: гіпсову форму й піалу, вазон, печатку, глазуровану піалу, склянку води, ручки.</li></ul>
   </div>
 </div>
 </body>
