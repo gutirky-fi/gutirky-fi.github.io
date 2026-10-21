@@ -18,6 +18,8 @@
     'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
     'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
   const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500, AUTO_MS = 1800;
+  /* знак посередині QR-коду гри: золоті квадратики С К О Б (у кольорі «очей» коду) */
+  const QR_MARK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + LET.map((l, i) => '<rect x="' + (i % 2) * 52 + '" y="' + Math.floor(i / 2) * 52 + '" width="48" height="48" rx="9" fill="#ffc247"/><text x="' + ((i % 2) * 52 + 24) + '" y="' + (Math.floor(i / 2) * 52 + 36) + '" text-anchor="middle" font-family="Oswald,Arial Narrow,Arial,sans-serif" font-weight="700" font-size="34" fill="#1d1606">' + l + '</text>').join('') + '</svg>');
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -477,7 +479,7 @@
     if (!L || L.hidden) return;
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
-    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247' }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
+    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247', logo: QR_MARK, logoH: 1.5, logoA: 1 }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
     L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
