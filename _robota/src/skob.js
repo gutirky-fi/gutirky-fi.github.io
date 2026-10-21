@@ -20,7 +20,9 @@
   const PREFIX = 'gutirky-skob-', LET = ['С', 'К', 'О', 'Б'], MAXP = 60, READ_MS = 3500, AUTO_MS = 1800;
   /* знак посередині QR-коду гри: кольорові квадратики С К О Б, як у логотипі гри */
   const QR_COL = [['#d64541', '#fff'], ['#2f6fd0', '#fff'], ['#e8b02a', '#1d1606'], ['#2e8f55', '#fff']];
-  const QR_MARK = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">' + LET.map((l, i) => '<rect x="' + (i % 2) * 52 + '" y="' + Math.floor(i / 2) * 52 + '" width="48" height="48" rx="9" fill="' + QR_COL[i][0] + '"/><text x="' + ((i % 2) * 52 + 24) + '" y="' + (Math.floor(i / 2) * 52 + 36) + '" text-anchor="middle" font-family="Oswald,Arial Narrow,Arial,sans-serif" font-weight="700" font-size="34" fill="' + QR_COL[i][1] + '">' + l + '</text>').join('') + '</svg>');
+  const QR_MARK = (c, R) => { const t = R * 0.72, g = t * 0.12, x0 = c - t - g / 2;   // 2×2 квадратики навколо центру коду, шрифт — як у логотипі гри
+    return LET.map((l, i) => { const x = x0 + (i % 2) * (t + g), y = x0 + Math.floor(i / 2) * (t + g);
+      return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + (t * 0.18).toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t * 0.74).toFixed(2) + '" text-anchor="middle" font-family="Oswald,\'Arial Narrow\',sans-serif" font-weight="600" font-size="' + (t * 0.72).toFixed(2) + '" fill="' + QR_COL[i][1] + '">' + l + '</text>'; }).join(''); };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -485,7 +487,7 @@
     if (!L || L.hidden) return;
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
-    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247', logo: QR_MARK, logoH: 1.5, logoA: 1 }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
+    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247', logo: '', mark: QR_MARK }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
     L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
