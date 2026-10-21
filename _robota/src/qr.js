@@ -161,7 +161,7 @@
       inner += rr(X + 2, Y + 2, 3, Math.max(0.01, er * 0.41));
     });
     let lg = '';
-    if (R) { const h = R * 1.62, w = h * 0.82; lg = '<image href="' + opt.logo + '" x="' + (c - w / 2).toFixed(2) + '" y="' + (c - h / 2).toFixed(2) + '" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '" preserveAspectRatio="xMidYMid meet"/>'; }
+    if (R) { const h = R * (opt.logoH || 1.62), w = h * (opt.logoA || 0.82); lg = '<image href="' + opt.logo + '" x="' + (c - w / 2).toFixed(2) + '" y="' + (c - h / 2).toFixed(2) + '" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '" preserveAspectRatio="xMidYMid meet"/>'; }
     const gid = 'qg' + Math.random().toString(36).slice(2, 7), bg = opt.bg || '#fff';
     const fillD = opt.grad ? 'url(#' + gid + ')' : dark;
     const defs = opt.grad ? '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + opt.grad[0] + '"/><stop offset="1" stop-color="' + opt.grad[1] + '"/></linearGradient></defs>' : '';
