@@ -117,7 +117,8 @@
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
 
-#skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;background:#fff;border-radius:16px;padding:12px;display:grid;place-items:center}
+#skob-lobby .qr{width:min(380px,46vh,70vw);aspect-ratio:1;border-radius:20px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+#skob-lobby .qr svg{width:100%;height:100%}
 #skob-lobby .qr svg{width:100%;height:100%}
 #skob-lobby .steps{min-width:0}
 #skob-lobby .s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 'Source Sans 3',sans-serif;color:#fff}
@@ -476,7 +477,7 @@
     if (!L || L.hidden) return;
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
-    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
+    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247' }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
     L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';

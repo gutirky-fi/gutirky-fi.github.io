@@ -34,7 +34,6 @@
   const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
   const genCode = () => String(rnd(1000000)).padStart(6, '0');
   const genKey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
-  const QR_LOGO = '{{EMBLEM_QR}}';   // пластова лілея посередині QR-коду (підставляє збірка)
   const send = (rec, m) => { try { if (rec && rec.c && rec.c.open) rec.c.send(m); } catch (e) { /* ігноруємо */ } };
   const peerOpts = () => window.GUTIRKA_PEER_OPTS || {};
   function loadScript(src) {
@@ -86,7 +85,7 @@
     const ps = pultSite();
     const manual = base ? base.replace(/^https?:\/\//, '').replace(/\/$/, '') + (ps && ps.self ? '#pult' : '') : '';
     const showQr = on && url && (status !== 'connected' || dlg.classList.contains('more'));
-    if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 240, QR_LOGO.startsWith('data:') ? QR_LOGO : ''); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
+    if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 240); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
     q('.pd-main').hidden = !(on && (status !== 'connected' || dlg.classList.contains('more')));
     q('.pd-or').innerHTML = base ? 'Не виходить зі скануванням? Відкрийте на телефоні<br><b class="pd-url"></b><br>і введіть код:'
       : 'На телефоні відкрийте цей самий файл <b>gutirky.html</b>,<br>натисніть «📱 Цей телефон — пульт» і введіть код:';
@@ -122,7 +121,7 @@
 #pult-dlg[data-st=error] .pd-status i{background:#ff5d5d}
 @keyframes pdp{50%{opacity:.35}}
 #pult-dlg .pd-main{text-align:center;margin:14px 0 4px}
-#pult-dlg .pd-qr{display:inline-block;padding:8px;background:#fff;border-radius:14px;line-height:0}
+#pult-dlg .pd-qr{display:inline-block;line-height:0;border-radius:18px;box-shadow:0 0 0 1px rgba(98,207,147,.35),0 0 28px -6px rgba(61,175,110,.45)}
 #pult-dlg .pd-qr:empty{display:none}
 #pult-dlg .pd-or{font-size:14px;color:#b7bfc9;margin:10px 0 2px}
 #pult-dlg .pd-or b{color:#f2f4f6;word-break:break-all}
