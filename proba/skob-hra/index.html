@@ -511,6 +511,11 @@ details[open]>summary::before{transform:rotate(90deg)}
 .sk-auto{display:block;height:4px;margin-top:10px;border-radius:99px;background:#2a2f35;overflow:hidden;max-width:320px}.sk-auto i{display:block;height:100%;background:#3ee08f;transform-origin:left;animation:skauto linear forwards}
 @keyframes skauto{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 #skob-lobby .note{margin:12px 0 0;color:#a0a8b2;font-size:14px}
+#skob-lobby details.note summary{cursor:pointer;width:max-content;list-style:none;display:block;background:none;border:0;padding:0;font:inherit;color:inherit}
+#skob-lobby details.note summary::-webkit-details-marker{display:none}
+#skob-lobby details.note summary::before{content:"▸ "}
+#skob-lobby details.note[open] summary::before{content:"▾ "}
+#skob-lobby details.note p{margin:6px 0 0}
 #skob-lobby .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 @media (max-width:640px){#skob-lobby .row{grid-template-columns:1fr;justify-items:center;text-align:center}#skob-lobby .sk-logo{font-size:44px}}
 @media (prefers-reduced-motion:reduce){#skob *,#skob-lobby *{animation:none!important;transition:none!important}}
@@ -823,7 +828,7 @@ details[open]>summary::before{transform:rotate(90deg)}
           <div class="st"></div></div></div>
         <div class="pend" hidden><h3>Чекають підтвердження <span class="np"></span></h3><div class="chips pchips"></div></div>
         <h3>Гравці <span class="n"></span></h3><div class="chips"></div>
-        <p class="note">Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p>
+        <details class="note"><summary>Як допускаються імена гравців</summary><p>Імена зі списку українських імен заходять одразу. Інші (прізвиська, рідкісні імена, латиницею) — лише після вашого ✓. Лайку не пропускає. ✕ — прибрати гравця: його телефон попросить написати справжнє ім’я. Нічого не зберігається.</p></details>
         <div class="btns"><button type="button" class="sk-btn main" data-k="close">Готово</button><button type="button" class="sk-btn warn" data-k="off">Вимкнути гру для телефонів</button></div></div>`;
       document.body.appendChild(L);
       L.addEventListener('click', e => {
