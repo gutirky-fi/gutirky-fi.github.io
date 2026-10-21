@@ -87,7 +87,7 @@
     const showQr = on && url && (status !== 'connected' || dlg.classList.contains('more'));
     if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 240); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
     q('.pd-main').hidden = !(on && (status !== 'connected' || dlg.classList.contains('more')));
-    q('.pd-or').innerHTML = base ? 'Не виходить зі скануванням? Відкрийте на телефоні<br><b class="pd-url"></b><br>і введіть код:'
+    q('.pd-or').innerHTML = base ? 'або відкрийте на телефоні <b class="pd-url"></b><br>і введіть код'
       : 'На телефоні відкрийте цей самий файл <b>gutirky.html</b>,<br>натисніть «📱 Цей телефон — пульт» і введіть код:';
     q('.pd-code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '';
     if (q('.pd-url')) q('.pd-url').textContent = manual;
@@ -134,7 +134,12 @@
 #pult-dlg .pd-b{padding:10px 14px;border-radius:12px;border:1px solid #4a515b;background:#2b3037;color:#fff;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
 #pult-dlg .pd-b.go{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}
 #pult-dlg .pd-b:hover{filter:brightness(1.15)}
-#pult-dlg .pd-tip{font-size:13px;color:#98a1ac;margin:12px 0 0}
+#pult-dlg .pd-tip{font-size:13px;color:#98a1ac;margin:8px 0 0}
+#pult-dlg .pd-det{margin-top:12px;font-size:13px;color:#98a1ac}
+#pult-dlg .pd-det summary{cursor:pointer;width:max-content}
+#pult-dlg .pd-det .pd-link{margin:6px 0 0}
+#pult-dlg .pd-main{margin:18px 0 6px}
+#pult-dlg .pd-or{margin:14px 0 2px}
 #pult-ask{position:fixed;z-index:70;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(520px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#1f2328;border:1px solid #3daf6e;box-shadow:0 12px 50px #000c;color:#f2f4f6;font:16px/1.45 'Source Sans 3',system-ui,sans-serif}
 #pult-ask[hidden]{display:none}
 #pult-ask div{display:flex;gap:8px;margin-top:10px}
@@ -155,10 +160,9 @@
       <div class="pd-who" hidden>Керує: <b></b></div>
       <div class="pd-main" hidden>
         <div class="pd-qr"></div>
-        <div class="pd-or">Не виходить зі скануванням? Відкрийте на телефоні<br><b class="pd-url"></b><br>і введіть код:</div>
+        <div class="pd-or">або відкрийте <b class="pd-url"></b> і введіть код</div>
         <div class="pd-code"></div>
       </div>
-      <button class="pd-link" id="pd-site-edit" type="button" hidden>Змінити адресу пульта</button>
       <div class="pd-site" hidden>Щоб зʼявився QR-код, вставте адресу сторінки пульта (зазвичай <b>https://gutirky-fi.github.io/pult/</b>):
         <input type="url" id="pd-site" placeholder="https://gutirky-fi.github.io/pult/" autocomplete="off" spellcheck="false">
         <button class="pd-b" id="pd-site-save" type="button">Зберегти адресу</button></div>
@@ -168,7 +172,9 @@
         <button class="pd-b" id="pd-kick" type="button" hidden>Від’єднати телефон</button>
         <button class="pd-b" id="pd-stop" type="button">Зупинити пульт</button>
       </div>
-      <p class="pd-tip">Потрібен інтернет на ноутбуці й телефоні (для самої гутірки інтернет не потрібен). Не закривайте цю вкладку під час гутірки.</p></div>`;
+      <details class="pd-det"><summary>Докладніше</summary>
+        <p class="pd-tip">Потрібен інтернет на ноутбуці й телефоні (для самої гутірки інтернет не потрібен). Не закривайте цю вкладку під час гутірки.</p>
+        <button class="pd-link" id="pd-site-edit" type="button" hidden>Змінити адресу пульта</button></details></div>`;
     document.body.appendChild(dlg);
     ask = document.createElement('div'); ask.id = 'pult-ask'; ask.hidden = true; ask.setAttribute('role', 'alertdialog');
     ask.innerHTML = '<span>📱 Телефон «<b></b>» просить доступ до пульта. Це ваш телефон?</span><div><button class="ok" type="button" data-a="y">Дозволити</button><button type="button" data-a="n">Відхилити</button></div>';
