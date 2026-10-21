@@ -21,10 +21,11 @@
   /* знак посередині QR-коду гри: кольорові квадратики С К О Б, як у логотипі гри */
   const QR_COL = [['#d64541', '#fff'], ['#2f6fd0', '#fff'], ['#e8b02a', '#1d1606'], ['#2e8f55', '#fff']];
   /* знак у QR-коді гри — ті самі квадратики, що в логотипі (.sk-lt i): сторона 1.04em, шрифт .78em, кут .16em, проміжок .08em;
-     літера по центру квадратика (dominant-baseline: central — як place-items:center у логотипі) */
+     літера по центру квадратика (dominant-baseline: central — як place-items:center у логотипі);
+     стиль — у style="", щоб CSS сторінки (напр. text{…} у «Кераміці») його не перебивав */
   const QR_MARK = (c, R) => { const t = R * 0.74, g = t * 0.077, x0 = c - t - g / 2, fs = t * 0.75, rx = t * 0.154;
     return LET.map((l, i) => { const x = x0 + (i % 2) * (t + g), y = x0 + Math.floor(i / 2) * (t + g);
-      return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" dominant-baseline="central" text-anchor="middle" font-family="Oswald,\'Arial Narrow\',sans-serif" font-weight="600" font-size="' + fs.toFixed(2) + '" fill="' + QR_COL[i][1] + '">' + l + '</text>'; }).join(''); };
+      return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" style="font:600 ' + fs.toFixed(2) + 'px Oswald,\'Arial Narrow\',sans-serif;fill:' + QR_COL[i][1] + ';fill-opacity:1;stroke:none;text-anchor:middle;dominant-baseline:central;letter-spacing:0">' + l + '</text>'; }).join(''); };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
