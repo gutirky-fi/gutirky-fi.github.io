@@ -103,7 +103,7 @@ app = re.sub(r'(?<![.\w$])addEventListener\(', 'winOn(', app)
 assert 'addEventListener' not in app.replace('.addEventListener', '') or True
 
 adapter = r'''
-const slideTitle=s=>{if(!s)return"";switch(s.t){case"title":return"Титульний слайд";case"overview":return"Карта України";case"card":return s.x[1];case"tech":return s.e.t;case"hist":return s.e[1];case"ask":return"Запитання: "+s.q;case"ri":return R[s.i].n;case"rf":return R[s.i].n+" · особливості";case"rp":{const p=P[s.i][s.j];return R[s.i].n+" · "+(p&&p[2]?p[2]:"виріб")}case"home":return R[s.i].n+" · підсумок";case"q":return"Вікторина, запитання "+(s.k+1);case"end":return"Завершення"}return""};
+const slideTitle=s=>{if(!s)return"";switch(s.t){case"title":return"Титульний слайд";case"overview":return"Карта України";case"card":return s.x[1];case"tech":return s.e.t;case"hist":return s.e[1];case"ask":return"Запитання: "+s.q;case"ri":return R[s.i].n;case"rf":return R[s.i].n+" · особливості";case"rp":{const p=P[s.i][s.j];return R[s.i].n+" · "+(p&&p[2]?p[2]:"виріб")}case"home":return R[s.i].n+" · підсумок";case"q":return"Вікторина, запитання "+(s.k+1);case"skob":return"Гра «Потужний СКОБ!»";case"end":return"Завершення"}return""};
 const sections=[["Початок",0],["Вступ",sec.i],["Технологія",sec.t],...(SH_?[]:[["Історія",sec.h]]),...R.map((r,i)=>[r.n,st[i]]),["Вікторина",sec.q],["Завершення",sec.e]];
 window.GUTIRKA={id:"keramika-"+MODE,title:"Кераміка України · "+(SH_?"вишкіл":"повна гутірка"),
 state:()=>({mode:MODE,index:idx,total:S.length,title:slideTitle(S[idx]),next:idx<S.length-1?slideTitle(S[idx+1]):"",note:typeof noteNow==="function"?noteNow():noteFor(S[idx]),ns:typeof nsNow==="function"?nsNow():null,step:rev>tot?tot:rev,steps:tot,elapsed:T0?Math.floor(((typeof TE!=="undefined"&&TE||Date.now())-T0)/1000):0,running:!!T0&&!(typeof TE!=="undefined"&&TE),target:TARGET*60,sections,ix:typeof ixOf==="function"?ixOf():null}),
@@ -215,6 +215,7 @@ page = ('<!DOCTYPE html>\n<html lang="uk">\n<head>\n<meta charset="utf-8">\n'
         + shell_html + '\n<div id="gv" hidden>' + body + '</div>\n'
         + '<script>\n' + gscript + '</script>\n' + tema_js
         + '<script>\n' + qr + '\n</script>\n'
+        + '<script>\n' + open(D + 'skob.js', encoding='utf8').read() + '\n</script>\n'
         + '<script>window.GUTIRKA_PULT_URL = ' + json.dumps(PULT_URL) + ';</script>\n'
         + '<script>\n' + host_js + '\n</script>\n'
         + '<script>\n' + shell_js + '</script>\n</body>\n</html>\n')

@@ -122,6 +122,7 @@ body[data-v=pad] .mbtn{display:grid}
 #ix .b3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%}
 #ix .b3 button{min-height:58px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font:700 24px var(--body)}
 #ix .b3 button.on{background:var(--gd);color:#1a1a1a;border-color:var(--gd)}
+#ix .pz.go{background:#ffc247;border-color:#ffc247;color:#1d1606;min-height:56px;font-size:17px}
 #ix .pz{width:100%;min-height:46px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font:700 15px var(--body)}
 
 /* «Назад / Далі» — завжди внизу екрана */
@@ -528,6 +529,11 @@ noscript{display:block;padding:20px}
     const box = $('#ix'), ix = st && st.ix;
     if (!ix) { box.hidden = true; box.textContent = ''; ixSig = ''; return; }
     box.hidden = false;
+    if (ix.v === 'btns') {   // прості кнопки дій (напр. «Почати гру»)
+      const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
+      box.innerHTML = '<div class="ih"><div><b>' + esc(ix.h || '') + '</b></div></div>' + (ix.b || []).map(([id, l]) => '<button type="button" class="pz go" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('');
+      return;
+    }
     const ids = ix.v === 'photo' ? [ix.th] : [ix.map, ...(ix.ph || []).map(p => p[0])];
     ids.forEach(need);
     const sig = JSON.stringify(ix) + '|' + ids.map(id => id in AS ? 1 : 0).join('');
