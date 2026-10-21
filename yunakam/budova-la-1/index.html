@@ -668,10 +668,11 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
   /* знак посередині QR-коду гри: кольорові квадратики С К О Б, як у логотипі гри */
   const QR_COL = [['#d64541', '#fff'], ['#2f6fd0', '#fff'], ['#e8b02a', '#1d1606'], ['#2e8f55', '#fff']];
   /* знак у QR-коді гри — ті самі квадратики, що в логотипі (.sk-lt i): сторона 1.04em, шрифт .78em, кут .16em, проміжок .08em;
-     літера по центру квадратика (dominant-baseline: central — як place-items:center у логотипі) */
+     літера по центру квадратика (dominant-baseline: central — як place-items:center у логотипі);
+     стиль — у style="", щоб CSS сторінки (напр. text{…} у «Кераміці») його не перебивав */
   const QR_MARK = (c, R) => { const t = R * 0.74, g = t * 0.077, x0 = c - t - g / 2, fs = t * 0.75, rx = t * 0.154;
     return LET.map((l, i) => { const x = x0 + (i % 2) * (t + g), y = x0 + Math.floor(i / 2) * (t + g);
-      return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" dominant-baseline="central" text-anchor="middle" font-family="Oswald,\'Arial Narrow\',sans-serif" font-weight="600" font-size="' + fs.toFixed(2) + '" fill="' + QR_COL[i][1] + '">' + l + '</text>'; }).join(''); };
+      return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" style="font:600 ' + fs.toFixed(2) + 'px Oswald,\'Arial Narrow\',sans-serif;fill:' + QR_COL[i][1] + ';fill-opacity:1;stroke:none;text-anchor:middle;dominant-baseline:central;letter-spacing:0">' + l + '</text>'; }).join(''); };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -816,7 +817,7 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
   const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
   const genCode = () => String(100000 + rnd(900000));
   const genTok = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => (b % 36).toString(36)).join('');
-  const emit = () => { subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); paintReq(); };
+  const emit = () => { pulse(); subs.forEach(f => { try { f(); } catch (e) { /* ok */ } }); paintLobby(); if (R) R.paint(); paintTop(); paintReq(); };
   let RQ = null;
   function paintReq() {   // нові імена, що чекають ✓, — видно й тоді, коли вікно з QR закрите
     const pend = [...players.values()].filter(P => P.pending), show = pend.length && !(L && !L.hidden);
@@ -924,7 +925,9 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
   const mixQ = q => { const ord = shuf(q.a.map((x, i) => i)); return Object.assign({}, q, { a: ord.map(i => q.a[i]), ok: ord.indexOf(q.ok) }); };
   const ranked = () => accepted().sort((a, b) => b.score - a.score || a.seq - b.seq);
   const rankOf = P => ranked().indexOf(P) + 1;
-  const bcast = () => players.forEach(P => { if (!P.pending) send(P, stateFor(P)); });
+  let pulseT = 0;   // пульт ведучого (телефон) оновлюється на подію skob:state
+  const pulse = () => { clearTimeout(pulseT); pulseT = setTimeout(() => { try { document.dispatchEvent(new CustomEvent('skob:state')); } catch (e) { /* ok */ } }, 40); };
+  const bcast = () => { players.forEach(P => { if (!P.pending) send(P, stateFor(P)); }); pulse(); };
 
   /* ================= одне запитання ================= */
   let R = null, rid = 0, phoneView = { t: 'wait' };
@@ -1028,14 +1031,21 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
     gEl.addEventListener('click', e => {
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
-        if (k === 'lobby') lobby(); else if (k === 'x') gEl.querySelector('.sk-sure').classList.toggle('on'); else if (k === 'stay') gEl.querySelector('.sk-sure').classList.remove('on');
-        else if (k === 'quit') closeGame(); else if (k === 'start' || k === 'next') gNext(); else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); } else if (k === 'done') closeGame();
+        if (k === 'x') gEl.querySelector('.sk-sure').classList.toggle('on'); else if (k === 'stay') gEl.querySelector('.sk-sure').classList.remove('on');
+        else gCmd(k);
         return; }
       if (e.target.closest('button,a') || lastPT === 'mouse') return;
       gNext();
     });
     gEl.addEventListener('pointerdown', e => { lastPT = e.pointerType; });
     paintTop(); gIntro();
+  }
+  function gCmd(k) {
+    if (k === 'lobby') return lobby();
+    if (!G) return;
+    if (k === 'quit' || k === 'done') closeGame();
+    else if (k === 'start' || k === 'next') gNext();
+    else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); }
   }
   function gStage() { gEl.dataset.ph = G.ph; return gEl.querySelector('.sk-stage'); }
   function hint(t) { if (gEl) gEl.querySelector('.sk-hint').textContent = t || ''; }
@@ -1063,7 +1073,7 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
     G.before = new Map([...players.values()].map(P => [P.tok, P.score]));
     const st = gStage(); st.innerHTML = '<div style="width:100%"></div>';
     G.ctl = ask(st.firstElementChild, G.list[i], { mix: !G.o.keepOrder, label: `Запитання ${i + 1} з ${G.list.length}`, T: G.o.T || 20, auto: () => { if (G && G.ph === 'q' && G.i === i) gNext(); }, onPhase: ph => hint(ph === 'rev' ? (G.pl ? 'Далі — таблиця лідерів' : (i + 1 < G.list.length ? 'Далі — наступне запитання' : 'Далі — підсумок')) : 'Далі — показати відповідь') });
-    G.pl = R && R.pl;
+    G.pl = R && R.pl; pulse();
     hint(G.pl ? '' : 'Натисніть на відповідь. Правильно — гра піде далі сама, неправильно — зупиниться, щоб прочитати пояснення.');
   }
   function gLead() {
@@ -1127,10 +1137,10 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
         else if (b.dataset.ok) approve(b.dataset.ok);
       });
     }
-    L.hidden = false; paintLobby();
+    L.hidden = false; paintLobby(); pulse();
     setTimeout(() => { try { L.querySelector('[data-k=close].main').focus(); } catch (e) { /* ok */ } }, 50);
   }
-  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); }
+  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); pulse(); }
   let qrFor = '';
   function paintLobby() {
     if (!L || L.hidden) return;
@@ -1160,9 +1170,41 @@ html[data-dir=back]::view-transition-new(root){animation-name:bvInB}
   }
   document.addEventListener('keydown', e => { if ((L && !L.hidden) || G) { if (!e.defaultPrevented) key(e); e.stopImmediatePropagation(); } }, true);
 
+  /* ================= пульт ведучого =================
+     view() — що зараз у грі (для телефона ведучого); cmd(k) — команда з пульта:
+     next · lobby · lobby-close · reveal · pick:N · again · quit · ok:TOK · x:TOK · off */
+  function view() {
+    const v = { lobby: !!(L && !L.hidden), on: online().length, code: code || '', url: window.SKOB_SHORT || playerUrl().replace(/^https?:\/\//, '').replace(/\/$/, ''), net,
+      pl: accepted().sort((a, b) => a.seq - b.seq).slice(0, 40).map(P => [P.name, P.on ? 1 : 0, P.tok]), pend: [...players.values()].filter(P => P.pending).map(P => [P.name, P.tok]) };
+    if (!G) return v;
+    v.g = G.ph; v.i = G.i; v.n = G.list.length; v.T = G.o.T || 20;
+    if (G.ph === 'q' && R) {
+      v.r = R.ph; v.q = R.q.q; v.a = R.q.a; v.ok = R.q.ok; v.pick = R.pick; v.mp = !!R.pl; v.ans = R.ans.size;
+      if (R.ph === 'ans') v.left = Math.max(0, R.T * 1000 - (Date.now() - R.tA));
+      if (R.ph === 'rev') v.why = R.q.why || '';
+    }
+    if (G.ph === 'lead' || G.ph === 'end') v.top = ranked().slice(0, G.ph === 'end' ? 10 : 5).map(P => [P.name, P.score]);
+    v.nx = L && !L.hidden ? 'Готово' : G.ph === 'intro' ? 'Почати гру' : G.ph === 'q' ? (R && R.ph === 'read' ? 'Показати варіанти' : R && R.ph === 'ans' ? 'Показати відповідь' : G.pl ? 'Лідери' : G.i + 1 < G.list.length ? 'Наступне запитання' : 'Підсумок') : G.ph === 'lead' ? (G.i + 1 < G.list.length ? 'Наступне запитання' : 'Переможці') : '';
+    return v;
+  }
+  function cmd(k) {
+    k = String(k || '');
+    if (k === 'next') { if (L && !L.hidden) closeLobby(); else gNext(); }
+    else if (k === 'lobby') lobby();
+    else if (k === 'lobby-close') closeLobby();
+    else if (k === 'off') { stopNet(); closeLobby(); }
+    else if (k === 'reveal') { if (G && G.ph === 'q' && R) { if (R.ph === 'read') R.open(); R.reveal(); } }
+    else if (k.startsWith('pick:')) { const n = +k.slice(5); if (G && G.ph === 'q' && !G.pl && R && R.ph === 'ans' && n >= 0 && n < 4) { R.pick = n; R.reveal(); } }
+    else if (k.startsWith('ok:')) approve(k.slice(3));
+    else if (k.startsWith('x:')) kick(k.slice(2));
+    else gCmd(k);
+    pulse();
+  }
+
   window.SKOB = {
-    lobby, ask, game, key, logo: LOGO, shuffle: shuf,
+    lobby, ask, game, key, logo: LOGO, shuffle: shuf, view, cmd,
     close: () => { closeGame(true); closeLobby(); },
+    game_on: () => !!G,
     count: () => online().length,
     active: () => !!G || !!(L && !L.hidden),
     on: fn => { subs.add(fn); return () => subs.delete(fn); },
@@ -2659,6 +2701,8 @@ addEventListener('hashchange', route); route();
     const a = API();
     if (!a) { send(rec, { t: 'state', n: ++seq, idle: true }); return; }
     let s; try { s = a.state(); } catch (e) { return; }
+    const SK = window.SKOB;   // «Потужний СКОБ!» відкрито — пульт керує грою
+    try { if (SK && SK.view && SK.active()) s = Object.assign({}, s, { ix: { v: 'skob', s: SK.view() } }); } catch (e) { /* ok */ }
     send(rec, Object.assign({ t: 'state', n: ++seq, gtitle: a.title }, s));
   }
   function command(rec, d) {
@@ -2668,6 +2712,11 @@ addEventListener('hashchange', route); route();
     if (d.a === 'asset' && typeof d.id === 'string' && a.asset) {   // картинки для пульта (міні-карта, мініатюри фото): надсилаємо на запит телефона
       Promise.resolve(a.asset(d.id)).then(v => { if (v != null) send(rec, { t: 'asset', id: d.id, v }); }).catch(() => {}); return;
     }
+    const SK = window.SKOB;
+    if (SK && SK.cmd && ((d.a === 'act' && typeof d.id === 'string' && d.id.startsWith('skob:')) || ((d.a === 'next' || d.a === 'prev') && SK.active()))) {
+      if (d.a === 'act') SK.cmd(d.id.slice(5)); else if (d.a === 'next') SK.cmd('next');   // «Назад» під час гри нічого не робить
+      clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40); return;
+    }
     let cur = -1; try { cur = a.state().index; } catch (e) { /* ok */ }
     if (typeof d.from === 'number' && d.from !== cur) { pushState(rec); return; }   // застаріла команда: телефон відстав
     if (d.a === 'next') a.next(); else if (d.a === 'prev') a.prev();
@@ -2676,6 +2725,7 @@ addEventListener('hashchange', route); route();
     clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40);
   }
   document.addEventListener('gutirka:slide', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
+  document.addEventListener('skob:state', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
   addEventListener('online', () => {
     if (stopped) return;
     attempts = 0;
