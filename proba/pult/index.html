@@ -79,13 +79,33 @@ details[open] summary:after{content:'▴'}
 #secs button{padding:10px 8px;border-radius:12px;border:1px solid var(--ln);background:#1f2227;font-weight:600;font-size:15px;text-align:center;min-height:46px}
 #secs button.cur{border-color:var(--vyh);color:var(--vyh-t)}
 #secs button:active{background:var(--card2)}
-#acts{display:flex;flex-direction:column;gap:12px}
-#acts .ag{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:10px 12px 12px}
-#acts h3{margin:2px 2px 8px;font-size:14px;font-weight:700;color:var(--mut)}
-#acts .ab{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-#acts button{padding:10px 8px;border-radius:12px;border:1px solid var(--ln);background:#1f2227;font-weight:600;font-size:15px;line-height:1.2;text-align:center;min-height:50px}
-#acts button.on{border-color:var(--vyh);color:var(--vyh-t);background:rgba(61,175,110,.14)}
-#acts button:active{background:var(--card2)}
+/* інтерактив гутірки: міні-карта, мініатюри, фото на весь екран */
+#ix{background:var(--card);border:1px solid var(--ln);border-radius:18px;padding:10px 10px 12px;display:flex;flex-direction:column;gap:10px}
+#ix .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px;padding:0 2px}
+#ix .ih b{font-size:16px;line-height:1.2}
+#ix .ih small{display:block;font-weight:600;font-size:13px;color:var(--mut)}
+#ix .bk{flex:none;border:1px solid #5a6573;background:var(--card2);border-radius:12px;padding:9px 12px;font:700 15px 'Source Sans 3',sans-serif}
+#ix svg{display:block;width:100%;aspect-ratio:612.5/408;background:#14171a;border-radius:12px;touch-action:manipulation}
+#ix .r path{fill:var(--c);fill-opacity:.55;stroke:#0e1013;stroke-width:var(--sw)}
+#ix .r.on path{fill-opacity:.95}
+#ix svg.z .r:not(.on) path{fill-opacity:.18}
+#ix .r text,#ix .p text{font-family:'Source Sans 3',sans-serif;font-weight:700;fill:#fff;paint-order:stroke;stroke:#0e1013;stroke-linejoin:round;text-anchor:middle;pointer-events:none}
+#ix .p .d{fill:#fff;stroke:#0e1013}
+#ix .p.on .d{fill:#ffc247}
+#ix .p.on text{fill:#ffc247}
+#ix .p .h{fill:transparent}
+#ix .th{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}
+#ix .th button{flex:none;width:76px;height:76px;border-radius:12px;border:2px solid var(--ln);background:#f2efe9;padding:3px;display:grid;place-items:center}
+#ix .th button.on{border-color:var(--vyh)}
+#ix .th img{max-width:100%;max-height:100%;object-fit:contain}
+#ix .hint{margin:0;color:var(--mut);font-size:14px;text-align:center}
+#ix .big{display:flex;flex-direction:column;align-items:center;gap:8px}
+#ix .big img{max-width:100%;max-height:34vh;object-fit:contain;border-radius:12px;background:#f2efe9;padding:6px}
+#ix .big p{margin:0;text-align:center;font-weight:600}
+#ix .b3{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;width:100%}
+#ix .b3 button{min-height:64px;border-radius:16px;border:1px solid #5a6573;background:var(--card2);font:700 26px 'Source Sans 3',sans-serif}
+#ix .b3 button.x{font-size:17px}
+#note{font-size:18px}
 .foot{margin-top:10px;text-align:center}
 .link{background:none;border:0;color:var(--mut);text-decoration:underline;font-size:14px;padding:8px}
 noscript{display:block;padding:20px}
@@ -129,7 +149,7 @@ noscript{display:block;padding:20px}
       <div id="snext"></div>
     </div>
     <div id="note" class="empty">Підказок для цього слайда немає.</div>
-    <div id="acts" hidden></div>
+    <div id="ix" hidden></div>
     <div class="timer" id="timer"><span id="ttxt">⏱ 00:00 / 00:00</span><button id="treset" type="button">↺ Скинути</button></div>
     <details id="secbox"><summary>Розділи гутірки</summary><div id="secs"></div></details>
     <div class="nav">
@@ -306,6 +326,7 @@ noscript{display:block;padding:20px}
         startHb(); getWake();
         break;
       case 'state': onState(d); break;
+      case 'asset': if (typeof d.id === 'string') { AS[d.id] = d.v; renderIx(); } break;
       case 'pong': break;
       case 'deny': {
         const r = d.r;
@@ -380,19 +401,7 @@ noscript{display:block;padding:20px}
     let cur = -1; list.forEach(([, i], k) => { if (i <= st.index) cur = k; });
     [...wrap.children].forEach((b, k) => b.classList.toggle('cur', k === cur));
     $('#secbox').hidden = !list.length;
-    const ab = $('#acts'), acts = Array.isArray(st.acts) ? st.acts : [];   // інтерактив гутірки (області, точки, фото) — якщо гутірка його дає
-    const asig = JSON.stringify(acts);
-    if (ab.dataset.sig !== asig) {
-      ab.dataset.sig = asig; ab.textContent = '';
-      acts.forEach(g => {
-        const box = document.createElement('div'); box.className = 'ag';
-        const h = document.createElement('h3'); h.textContent = g.h || ''; box.appendChild(h);
-        const w = document.createElement('div'); w.className = 'ab';
-        (g.b || []).forEach(([id, label, on]) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.act = id; b.textContent = label; if (on) b.classList.add('on'); w.appendChild(b); });
-        box.appendChild(w); ab.appendChild(box);
-      });
-    }
-    ab.hidden = !acts.length;
+    renderIx();
     drawTimer();
   }
   function drawTimer() {
@@ -415,7 +424,70 @@ noscript{display:block;padding:20px}
     const b = e.target.closest('button'); if (!b) return;
     cmd('jump', { i: +b.dataset.i }); $('#secbox').open = false;
   });
-  $('#acts').addEventListener('click', e => { const b = e.target.closest('button[data-act]'); if (b) cmd('act', { id: b.dataset.act }); });
+  /* ---------- інтерактив гутірки: що на екрані — те й тикаєш ---------- */
+  const AS = {}, ASQ = {};
+  function need(id) {
+    if (!id || id in AS) return;
+    if (ASQ[id] && Date.now() - ASQ[id] < 5000) return;
+    ASQ[id] = Date.now();
+    try { if (conn && conn.open) conn.send({ t: 'cmd', a: 'asset', id }); } catch (e) { /* ok */ }
+  }
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const BB = {};
+  function bbox(m, g) {   // межі краю g на карті (для наближення)
+    const k = g; if (BB[k]) return BB[k];
+    let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+    m.O.forEach(([r, d]) => { if (r !== g) return; const n = d.match(/-?\d+(\.\d+)?/g).map(Number); for (let i = 0; i < n.length; i += 2) { x0 = Math.min(x0, n[i]); x1 = Math.max(x1, n[i]); y0 = Math.min(y0, n[i + 1]); y1 = Math.max(y1, n[i + 1]); } });
+    return (BB[k] = [x0, y0, x1, y1]);
+  }
+  function viewOf(m, z) {
+    if (z < 0) return m.vb;
+    const [x0, y0, x1, y1] = bbox(m, z), A = m.vb[2] / m.vb[3];
+    let w = (x1 - x0) * 1.3, h = (y1 - y0) * 1.3; if (w / h > A) h = w / A; else w = h * A;
+    w = Math.max(w, 150); h = w / A;
+    return [(x0 + x1) / 2 - w / 2, (y0 + y1) / 2 - h / 2, w, h];
+  }
+  let ixSig = '';
+  function renderIx() {
+    const box = $('#ix'), ix = st && st.ix;
+    if (!ix) { box.hidden = true; box.textContent = ''; ixSig = ''; return; }
+    box.hidden = false;
+    const ids = ix.v === 'photo' ? [ix.th] : [ix.map, ...(ix.ph || []).map(p => p[0])];
+    ids.forEach(need);
+    const sig = JSON.stringify(ix) + '|' + ids.map(id => id in AS ? 1 : 0).join('');
+    if (sig === ixSig) return; ixSig = sig;
+    if (ix.v === 'photo') {
+      box.innerHTML = '<div class="ih"><div><small>Фото на весь екран · ' + (ix.i + 1) + ' з ' + ix.n + '</small><b>' + esc(ix.cap) + '</b></div></div>'
+        + '<div class="big">' + (AS[ix.th] ? '<img alt="" src="' + AS[ix.th] + '">' : '') + '</div>'
+        + '<div class="b3"><button type="button" data-act="lb:prev" aria-label="Попереднє фото">‹</button><button type="button" class="x" data-act="back">✕ Закрити</button><button type="button" data-act="lb:next" aria-label="Наступне фото">›</button></div>';
+      return;
+    }
+    const m = AS[ix.map];
+    const quiz = ix.v === 'quiz', z = quiz ? -1 : ix.z;
+    const head = quiz ? '<small>Вікторина</small><b>Тикни область-відповідь</b>'
+      : z >= 0 && m ? '<small>' + (ix.pt ? 'Осередок' : 'Край') + '</small><b>' + esc(m.R[z][0]) + (ix.pt ? ' · ' + esc(ix.pt) : '') + '</b>'
+      : '<small>Карта</small><b>Тикни край</b>';
+    let h = '<div class="ih"><div>' + head + '</div>' + (ix.back ? '<button type="button" class="bk" data-act="back">← ' + esc(ix.back) + '</button>' : '') + '</div>';
+    if (m) {
+      const v = viewOf(m, z), k = v[2] / Math.max(200, box.clientWidth - 22), fs = 11 * k, sw = .8 * k;   // k — одиниць карти на 1 піксель екрана
+      h += '<svg viewBox="' + v.map(n => n.toFixed(1)).join(' ') + '" class="' + (z >= 0 ? 'z' : '') + '" style="--sw:' + sw.toFixed(2) + '">';
+      m.R.forEach(([name, col], g) => {
+        h += '<g class="r' + (g === z ? ' on' : '') + '" data-act="rg:' + g + '" style="--c:' + col + '">' + m.O.filter(o => o[0] === g).map(o => '<path d="' + o[1] + '"/>').join('') + '</g>';
+      });
+      if (z < 0) m.R.forEach(([name], g) => { const b = m.L ? [m.L[g][0], m.L[g][1]] : (q => [(q[0] + q[2]) / 2, (q[1] + q[3]) / 2])(bbox(m, g)); h += '<g class="r"><text x="' + Math.min(m.vb[2] - 40 * k, Math.max(40 * k, b[0])).toFixed(0) + '" y="' + b[1].toFixed(0) + '" font-size="' + fs.toFixed(1) + '" stroke-width="' + (2.5 * k).toFixed(2) + '">' + esc(name.split(/ і |\s/)[0]) + '</text></g>'; });
+      else m.M.filter(p => p[1] === z).forEach(([name, , x, y]) => {
+        const on = ix.pt === name;
+        h += '<g class="p' + (on ? ' on' : '') + '" data-act="pt:' + esc(name) + '"><circle class="h" cx="' + x + '" cy="' + y + '" r="' + (22 * k).toFixed(2) + '"/><circle class="d" cx="' + x + '" cy="' + y + '" r="' + ((on ? 8 : 6.5) * k).toFixed(2) + '" stroke-width="' + (1.5 * k).toFixed(2) + '"/>'
+          + '<text x="' + x + '" y="' + (y - 13 * k).toFixed(1) + '" font-size="' + (15 * k).toFixed(1) + '" stroke-width="' + (3.5 * k).toFixed(2) + '">' + esc(name) + '</text></g>';
+      });
+      h += '</svg>';
+    } else h += '<p class="hint">Завантажую карту…</p>';
+    if (!quiz && ix.ph && ix.ph.length) {
+      h += '<div class="th">' + ix.ph.map(([id, cap, on], j) => '<button type="button" data-act="ph:' + j + '" class="' + (on ? 'on' : '') + '" aria-label="' + esc(cap) + '">' + (AS[id] ? '<img alt="" src="' + AS[id] + '">' : '') + '</button>').join('') + '</div>';
+    }
+    box.innerHTML = h;
+  }
+  $('#ix').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b) cmd('act', { id: b.getAttribute('data-act') }); });
   $('#treset').addEventListener('click', () => { if (confirm('Скинути таймер?')) cmd('timer-reset'); });
   $('#leave').addEventListener('click', () => {
     if (!confirm('Від’єднати цей телефон від пульта?')) return;

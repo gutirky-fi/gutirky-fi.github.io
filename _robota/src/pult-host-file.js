@@ -323,6 +323,9 @@
     if (rec !== ctrl) return;
     const a = API(); if (!a) { pushState(rec); return; }
     if (d.a === 'timer-reset') { if (a.resetTimer) a.resetTimer(); pushState(); return; }
+    if (d.a === 'asset' && typeof d.id === 'string' && a.asset) {   // картинки для пульта (міні-карта, мініатюри фото): надсилаємо на запит телефона
+      Promise.resolve(a.asset(d.id)).then(v => { if (v != null) send(rec, { t: 'asset', id: d.id, v }); }).catch(() => {}); return;
+    }
     let cur = -1; try { cur = a.state().index; } catch (e) { /* ok */ }
     if (typeof d.from === 'number' && d.from !== cur) { pushState(rec); return; }   // застаріла команда: телефон відстав
     if (d.a === 'next') a.next(); else if (d.a === 'prev') a.prev();
