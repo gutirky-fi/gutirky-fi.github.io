@@ -97,18 +97,20 @@ details[open] summary:after{content:'▴'}
 #ix .th{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}
 #ix .th button{flex:none;width:76px;height:76px;border-radius:12px;border:2px solid var(--ln);background:#f2efe9;padding:3px;display:grid;place-items:center}
 #ix .th button.on{border-color:var(--vyh)}
+#ix .th button.pzb{width:48px;height:76px;background:var(--card2);border-color:#5a6573;color:#fff;font-size:20px;padding:0}
+#ix .th button.pzb.on{background:#ffc247;border-color:#ffc247;color:#1a1a1a}
 #ix .th img{max-width:100%;max-height:100%;object-fit:contain}
 #ix .hint{margin:0;color:var(--mut);font-size:14px;text-align:center}
 #ix .big{display:flex;flex-direction:column;align-items:center;gap:8px}
 #ix .big img{max-width:100%;max-height:34vh;object-fit:contain;border-radius:12px;background:#f2efe9;padding:6px}
 #ix .big p{margin:0;text-align:center;font-weight:600}
-#ix .b3{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;width:100%}
+#ix .b3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;width:100%}
 #ix .b3 button{min-height:64px;border-radius:16px;border:1px solid #5a6573;background:var(--card2);font:700 26px 'Source Sans 3',sans-serif}
 #ix .b3 button.x{font-size:17px}
 #note{font-size:18px;white-space:pre-line;line-height:1.4}
 #ix .pz{width:100%;min-height:48px;border-radius:14px;border:1px solid #5a6573;background:var(--card2);font:700 16px 'Source Sans 3',sans-serif}
 #ix .pz.on{background:#ffc247;color:#1a1a1a;border-color:#ffc247}
-#ix .b3 button.on{background:#ffc247;color:#1a1a1a;border-color:#ffc247;font-size:17px}
+#ix .b3 button.on{background:#ffc247;color:#1a1a1a;border-color:#ffc247}
 .foot{margin-top:10px;text-align:center}
 .link{background:none;border:0;color:var(--mut);text-decoration:underline;font-size:14px;padding:8px}
 noscript{display:block;padding:20px}
@@ -462,7 +464,7 @@ noscript{display:block;padding:20px}
     if (ix.v === 'photo') {
       box.innerHTML = '<div class="ih"><div><small>Фото на весь екран · ' + (ix.i + 1) + ' з ' + ix.n + '</small><b>' + esc(ix.cap) + '</b></div></div>'
         + '<div class="big">' + (AS[ix.th] ? '<img alt="" src="' + AS[ix.th] + '">' : '') + '</div>'
-        + (ix.n > 1 ? '<div class="b3"><button type="button" data-act="lb:prev" aria-label="Попереднє фото">‹</button><button type="button" class="x' + (ix.pz ? ' on' : '') + '" data-act="pause">' + (ix.pz ? '▶ Далі само' : '⏸ Пауза') + '</button><button type="button" data-act="lb:next" aria-label="Наступне фото">›</button></div>' : '')
+        + (ix.n > 1 ? '<div class="b3"><button type="button" data-act="lb:prev" aria-label="Попереднє фото">‹</button><button type="button" class="' + (ix.pz ? 'on' : '') + '" data-act="pause" aria-label="' + (ix.pz ? 'Далі само' : 'Пауза') + '">' + (ix.pz ? '▶' : '❚❚') + '</button><button type="button" data-act="lb:next" aria-label="Наступне фото">›</button></div>' : '')
         + '<button type="button" class="pz" data-act="back">✕ Закрити фото</button>';
       return;
     }
@@ -487,7 +489,7 @@ noscript{display:block;padding:20px}
       h += '</svg>';
     } else h += '<p class="hint">Завантажую карту…</p>';
     if (!quiz && ix.ph && ix.ph.length) {
-      h += '<div class="th">' + ix.ph.map(([id, cap, on], j) => '<button type="button" data-act="ph:' + j + '" class="' + (on ? 'on' : '') + '" aria-label="' + esc(cap) + '">' + (AS[id] ? '<img alt="" src="' + AS[id] + '">' : '') + '</button>').join('') + '</div>' + (ix.ph.length > 1 ? '<button type="button" class="pz' + (ix.pz ? ' on' : '') + '" data-act="pause">' + (ix.pz ? '▶ Прогортати далі' : '⏸ Зупинити прогортання') + '</button>' : '');
+      h += '<div class="th">' + (ix.ph.length > 1 ? '<button type="button" class="pzb' + (ix.pz ? ' on' : '') + '" data-act="pause" aria-label="' + (ix.pz ? 'Прогортати далі' : 'Зупинити прогортання') + '">' + (ix.pz ? '▶' : '❚❚') + '</button>' : '') + ix.ph.map(([id, cap, on], j) => '<button type="button" data-act="ph:' + j + '" class="' + (on ? 'on' : '') + '" aria-label="' + esc(cap) + '">' + (AS[id] ? '<img alt="" src="' + AS[id] + '">' : '') + '</button>').join('') + '</div>';
     }
     box.innerHTML = h;
   }
