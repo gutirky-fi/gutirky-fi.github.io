@@ -173,7 +173,7 @@ if SHELL_NAME == 'shell_d1':
     import base64
     def data_uri(path, mime='image/png'):
         return 'data:' + mime + ';base64,' + base64.b64encode(open(path, 'rb').read()).decode()
-    IMG = {'{{LOGO}}': data_uri(D + 'img/logo.png'), '{{EMBLEM}}': data_uri(D + 'img/emblem.webp', 'image/webp'),
+    IMG = {'{{LOGO}}': data_uri(D + 'img/logo.png'), '{{EMBLEM}}': data_uri(D + 'img/emblem.webp', 'image/webp'), '{{EMBLEM_QR}}': data_uri(D + 'img/emblem-qr.webp', 'image/webp'),
            '{{KERAMIKA_MAP}}': data_uri(D + 'img/keramika-map.webp', 'image/webp'), '{{LA_ART}}': data_uri(D + 'img/budova-la-1.webp', 'image/webp'), '{{K1_ART}}': data_uri(D + 'img/keramika-1.webp', 'image/webp')}
     def imgs(t):
         for k, v in IMG.items():

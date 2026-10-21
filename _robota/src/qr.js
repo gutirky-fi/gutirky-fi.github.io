@@ -4,7 +4,8 @@
   'use strict';
   const ECL = {
     L: { bits: 1, ecc: [7, 10, 15, 20, 26, 18, 20, 24, 30, 18], blocks: [1, 1, 1, 1, 1, 2, 2, 2, 2, 4] },
-    M: { bits: 0, ecc: [10, 16, 26, 18, 24, 16, 18, 22, 22, 26], blocks: [1, 1, 1, 2, 2, 4, 4, 4, 5, 5] }
+    M: { bits: 0, ecc: [10, 16, 26, 18, 24, 16, 18, 22, 22, 26], blocks: [1, 1, 1, 2, 2, 4, 4, 4, 5, 5] },
+    H: { bits: 2, ecc: [17, 28, 22, 16, 22, 28, 26, 26, 24, 28], blocks: [1, 1, 2, 4, 4, 4, 5, 6, 8, 8] }   /* найвища надійність: витримує знак посередині */
   };
   const RAW = [26, 44, 70, 100, 134, 172, 196, 242, 292, 346];
   const ALIGN = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]];
@@ -97,12 +98,17 @@
     return m;
   }
 
-  function qrSvg(text, px) {
-    let m; try { m = matrix(text, 'M'); } catch (e) { m = matrix(text, 'L'); }
+  /* logo — картинка (data:…) посередині коду, напр. пластова лілея; тоді рівень H (до 30 % коду може бути закрито) */
+  function qrSvg(text, px, logo) {
+    let m, lg = '';
+    if (logo) { try { m = matrix(text, 'H'); } catch (e) { m = null; } }
+    if (!m) { logo = ''; try { m = matrix(text, 'M'); } catch (e) { m = matrix(text, 'L'); } }
     const n = m.length; let d = '';
     for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (m[y][x]) d += 'M' + (x + 4) + ' ' + (y + 4) + 'h1v1h-1z';
     const s = n + 8;
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" shape-rendering="crispEdges" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+    if (logo) { const bw = Math.round(n * 0.28), bh = Math.round(bw * 1.15), bx = (s - bw) / 2, by = (s - bh) / 2;
+      lg = '<rect x="' + bx + '" y="' + by + '" width="' + bw + '" height="' + bh + '" rx="' + (bw * 0.18) + '" fill="#fff"/><image href="' + logo + '" x="' + (bx + bw * 0.12) + '" y="' + (by + bh * 0.08) + '" width="' + (bw * 0.76) + '" height="' + (bh * 0.84) + '" preserveAspectRatio="xMidYMid meet"/>'; }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" shape-rendering="crispEdges" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" fill="#fff"/><path d="' + d + '" fill="#000"/>' + lg + '</svg>';
   }
   root.qrSvg = qrSvg; root.qrMatrix = matrix;
 })(typeof window !== 'undefined' ? window : globalThis);

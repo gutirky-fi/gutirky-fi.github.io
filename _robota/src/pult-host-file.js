@@ -34,6 +34,7 @@
   const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
   const genCode = () => String(rnd(1000000)).padStart(6, '0');
   const genKey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
+  const QR_LOGO = '{{EMBLEM_QR}}';   // пластова лілея посередині QR-коду (підставляє збірка)
   const send = (rec, m) => { try { if (rec && rec.c && rec.c.open) rec.c.send(m); } catch (e) { /* ігноруємо */ } };
   const peerOpts = () => window.GUTIRKA_PEER_OPTS || {};
   function loadScript(src) {
@@ -85,7 +86,7 @@
     const ps = pultSite();
     const manual = base ? base.replace(/^https?:\/\//, '').replace(/\/$/, '') + (ps && ps.self ? '#pult' : '') : '';
     const showQr = on && url && (status !== 'connected' || dlg.classList.contains('more'));
-    if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 224); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
+    if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 240, QR_LOGO.startsWith('data:') ? QR_LOGO : ''); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
     q('.pd-main').hidden = !(on && (status !== 'connected' || dlg.classList.contains('more')));
     q('.pd-or').innerHTML = base ? 'Не виходить зі скануванням? Відкрийте на телефоні<br><b class="pd-url"></b><br>і введіть код:'
       : 'На телефоні відкрийте цей самий файл <b>gutirky.html</b>,<br>натисніть «📱 Цей телефон — пульт» і введіть код:';
