@@ -123,7 +123,7 @@ head_extra = ''
 shell_css = open(D + 'shell_file.css', encoding='utf8').read()
 shell_html = open(D + SHELL_NAME + '.html', encoding='utf8').read()
 shell_js = open(D + 'shell_file.js', encoding='utf8').read()
-host_js = open(D + 'pult-host-file.js', encoding='utf8').read()
+host_js = open(D + 'zvyazok.js', encoding='utf8').read() + '\n' + open(D + 'pult-host-file.js', encoding='utf8').read()   # запасні канали звʼязку + пульт
 if SHELL_NAME == 'shell_d1':
     # ---------- дизайн Д1 ----------
     # стилі: пульт на телефоні і спільне — зі старого файлу, бібліотека і меню гутірки — нові

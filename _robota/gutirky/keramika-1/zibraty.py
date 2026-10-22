@@ -20,7 +20,7 @@ def page(skob_rel, yun_rel=None, home=None, kart=False):
     """yun_rel — адреса сторінки для юнаків відносно цієї; без нього — сама сторінка для юнаків."""
     src = (TUT / 'index.html').read_text(encoding='utf-8')
     emblem = 'data:image/webp;base64,' + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode()
-    host = (D / 'pult-host-file.js').read_text(encoding='utf-8')
+    host = (D / 'zvyazok.js').read_text(encoding='utf-8') + '\n' + (D / 'pult-host-file.js').read_text(encoding='utf-8')   # запасні канали звʼязку + пульт
     host = rep(host, "btn.innerHTML = '📱 Пульт<i class=\"pd-dot\"></i>';", "btn.innerHTML = " + json.dumps(IC_PHONE + '<span>Пульт</span><i class="pd-dot"></i>') + ";")
     host = rep(host, '<h2 id="pd-ttl">📱 Пульт на телефоні</h2>', '<h2 id="pd-ttl"><img src="' + emblem + '" alt="">Пульт на телефоні</h2>')
     host = rep(host, "'<span>📱 Телефон «<b></b>» просить доступ до пульта.", "'<span>Телефон «<b></b>» просить доступ до пульта.")

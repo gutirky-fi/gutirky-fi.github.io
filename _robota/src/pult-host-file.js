@@ -45,8 +45,9 @@
   }
   async function loadPeer() {
     try { if (window.parent !== window && window.parent.GUTIRKA_LOCAL_PEER) return window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* інший сайт */ }   // «Репетиція»: пульт і гутірка в одній сторінці, звʼязок без інтернету
+    if (!window.Peer) for (const u of PEER_LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* пробуємо наступне джерело */ } }
+    if (window.GutirkaNet) return window.GutirkaNet(window.Peer || null);   // PeerJS + запасні канали (zvyazok.js)
     if (window.Peer) return window.Peer;
-    for (const u of PEER_LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* пробуємо наступне джерело */ } }
     throw new Error('Не вдалося завантажити бібліотеку зв’язку. Перевірте інтернет.');
   }
   const persist = () => {
@@ -229,6 +230,7 @@
   }
   function create() {
     let p;
+    window.GUTIRKA_NET_KEY = key;   // для шифрування запасного каналу
     try { p = new Peer('gutirka-' + code, peerOpts()); } catch (e) { setStatus('error', 'Не вдалося створити підключення: ' + e.message); return; }
     peer = p;
     p.on('open', () => { if (peer !== p) return; attempts = 0; setStatus(ctrl ? 'connected' : 'waiting'); persist(); });
