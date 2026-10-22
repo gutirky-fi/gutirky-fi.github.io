@@ -7,7 +7,7 @@
   html,body{height:auto;background:#fff!important;color:#1d2125!important;font:10.5pt/1.4 'Source Sans 3',sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   body>*:not(#plan){display:none!important}
   #plan{max-width:none!important;margin:0!important;padding:0!important;position:relative;background:none!important;color:#1d2125!important}
-  #plan .back,#plan .pr{display:none!important}
+  #plan .back,#plan .pr,#plan .pl-rib{display:none!important}
   #plan::before{content:"";position:absolute;right:0;top:0;width:15mm;height:17.5mm;background:url("__LILY__") right top/contain no-repeat}
   #plan .eyebrow{display:flex!important;align-items:center;gap:7px;margin:0!important;font:700 10.5pt 'Source Sans 3',sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:__ACC__!important}
   #plan .eyebrow::after{content:"для ведучого";font:700 8pt 'Source Sans 3',sans-serif;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873}

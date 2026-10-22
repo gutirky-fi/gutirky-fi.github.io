@@ -30,7 +30,8 @@ for k, f in [('{{LA_ART}}', 'budova-la-1.webp'), ('{{K1_ART}}', 'keramika-1.webp
 assert 'noindex' in src and '{{' not in src.replace('${{', '')
 if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     # справжній сайт: без смужки «макет»; нові гутірки й матеріали до них — поки сховані (додамо після перевірки)
-    src = rep(src, '<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>', '')
+    # тимчасова смужка «Чернетка» (з 22.10.2026, за рішенням власника; щоб прибрати — замінити на '')
+    src = rep(src, '<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>', '<div class="ribbon">Чернетка. Сайт поки не відкритий для всіх і може бути перероблений.</div>')
     i = src.index('<div id="cmpk"'); j = src.index('</script>', i) + len('</script>'); src = src[:i] + src[j:]   # перемикач порівняння смужок — лише в макеті
     src = rep(src, '<title>Пластова бібліотека — макет</title>', '<title>Пластова бібліотека</title>')
     src = rep(src, ' <b>У макеті код — 1912.</b>', '')

@@ -78,7 +78,8 @@ async def main():
             if len(sys.argv) < 2:
                 await pg.goto(HOME); await pg.wait_for_timeout(500)
                 check(await pg.is_visible('.door'), f'[{tag}] головна: входи «Для всіх / Юнацтво / Виховники»')
-                check(not await pg.locator('.ribbon').count(), f'[{tag}] головна: без смужки «макет»')
+                rb = await pg.locator('.ribbon').all_inner_texts()   # з 22.10.2026 — лише смужка «Чернетка», не «макет»
+                check(not any('Макет' in t for t in rb), f'[{tag}] головна: без смужки «макет»')
                 sw = await pg.evaluate("[document.documentElement.scrollWidth, document.documentElement.clientWidth]")
                 check(sw[0] <= sw[1], f'[{tag}] головна: немає горизонтальної прокрутки')
                 await pg.screenshot(path=str(OUT / f'{tag}-vhody.png'))
