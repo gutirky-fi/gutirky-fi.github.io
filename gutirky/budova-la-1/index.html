@@ -2438,6 +2438,7 @@ addEventListener('hashchange', route); route();
     });
   }
   async function loadPeer() {
+    try { if (window.parent !== window && window.parent.GUTIRKA_LOCAL_PEER) return window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* інший сайт */ }   // «Репетиція»: пульт і гутірка в одній сторінці, звʼязок без інтернету
     if (window.Peer) return window.Peer;
     for (const u of PEER_LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* пробуємо наступне джерело */ } }
     throw new Error('Не вдалося завантажити бібліотеку зв’язку. Перевірте інтернет.');

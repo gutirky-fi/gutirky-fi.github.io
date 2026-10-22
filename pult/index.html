@@ -90,7 +90,25 @@ body[data-v=pad] .mbtn{display:grid}
 #note.steps{white-space:normal;display:flex;flex-direction:column;gap:6px}
 #note .nb{white-space:pre-line;padding:8px 10px;border-radius:10px;border:1px solid transparent}
 #note .nb.cur{background:rgba(61,175,110,.12);border-color:rgba(61,175,110,.55)}
-#note .nb.past{opacity:.45}
+#note .nb.past{opacity:.42}
+/* рядки підказки за типом: ❓ запитання до залу — жирно; 🗣 сказати; ✋ зробити — теплим кольором; • доповнення й (дужки) — тихіше */
+#note .nb{white-space:normal;font-size:17px;line-height:1.38}
+#note .nb.cur{font-size:19.5px;line-height:1.4}
+#note .ln{display:grid;grid-template-columns:1.35em 1fr;column-gap:.25em;margin:0}
+#note .ln+.ln{margin-top:.18em}
+#note .ln.q,#note .ln.say,#note .ln.do,#note .ln.ans{margin-top:.45em}
+#note .ln:first-child{margin-top:0}
+#note .ln i{font-style:normal;text-align:center;line-height:inherit}
+#note .ln.q span{font-weight:700;color:#fff}
+#note .ln.do span{color:#ffcf8a;font-weight:600}
+#note .ln.pt{font-size:.9em;color:#cfd5dc}
+#note .ln.hint{font-size:.86em;color:var(--mut);font-style:italic}
+#note .ln.ans span{color:var(--vyh-t);font-weight:700}
+#note .ln.tm{display:block;margin-bottom:.15em}
+#note .ln.scr{display:block;margin:.1em 0 .35em}
+#note .ln.scr span{display:block;font-size:.84em;line-height:1.35;color:#d6e8f7;background:rgba(111,179,255,.08);border-left:3px solid #6fb3ff;border-radius:4px 8px 8px 4px;padding:5px 9px}
+#note .ln.scr small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6fb3ff;margin-bottom:1px}
+#note .ln.tm span{display:inline-block;font-size:13px;font-weight:700;line-height:1.3;padding:3px 9px;border-radius:99px;background:rgba(255,194,71,.13);color:#ffc247}
 #note .nclk{align-self:flex-start;font:700 13px var(--body);color:var(--mut);background:var(--card2);border:1px solid var(--ln);border-radius:99px;padding:3px 10px}
 #note .nclk.done{opacity:.45}
 #note .nclk.nxt{color:#0e1f15;background:var(--vyh);border-color:var(--vyh)}
@@ -229,7 +247,7 @@ noscript{display:block;padding:20px}
       <div id="stitle">…</div>
       <div id="snext"></div>
     </div>
-    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ питання · 🗣 кажу · ✋ роблю · ❯ натиснути «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
+    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · синє — що на екрані · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
     <div id="ix" class="card top" hidden></div>
   </section>
 </div>
@@ -260,7 +278,8 @@ noscript{display:block;padding:20px}
 
   /* ---------- пам'ять ---------- */
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (e) { return {}; } };
-  const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
+  let LOCAL = false; try { LOCAL = window.parent !== window && !!window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* ok */ }
+  const save = o => { if (LOCAL) return; try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };   // у «Репетиції» не запам’ятовуємо код
   let ses = load();   // {code, key, token, title}
 
   /* ---------- стан ---------- */
@@ -311,6 +330,7 @@ noscript{display:block;padding:20px}
     });
   }
   async function getPeer() {
+    try { if (window.parent !== window && window.parent.GUTIRKA_LOCAL_PEER) return window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* інший сайт */ }   // «Репетиція»: пульт і гутірка в одній сторінці, звʼязок без інтернету
     if (window.Peer) return window.Peer;
     for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* наступне джерело */ } }
     throw new Error('lib');
@@ -542,23 +562,49 @@ noscript{display:block;padding:20px}
     return [(x0 + x1) / 2 - w / 2, (y0 + y1) / 2 - h / 2, w, h];
   }
   /* примітки по кроках: що казати зараз і що з'явиться після «Далі» */
-  let nSig = '';
+  let nSig = '', nIdx = -1;
+  /* поточна підказка — завжди на видноті: над кнопками «Назад / Далі», ближче до верху */
+  function keepInView(el, now) {
+    const nav = document.querySelector('.nav'), navH = nav ? nav.getBoundingClientRect().height : 0;
+    const r = el.getBoundingClientRect(), top = 12, bottom = innerHeight - navH - 12;
+    if (!now && r.top >= top && r.bottom <= bottom && r.top <= top + (bottom - top) * 0.55) return;   // уже добре видно
+    const want = Math.max(top, Math.min(top + (bottom - top) * 0.22, bottom - r.height));
+    if (now) { window.scrollBy(0, r.top - want); return; }
+    try { window.scrollBy({ top: r.top - want, behavior: 'smooth' }); } catch (e) { window.scrollBy(0, r.top - want); }
+  }
+  /* одна підказка → рядки з позначкою зліва (текст вирівняний), вигляд за типом рядка */
+  function fmtNote(box, text) {
+    String(text || '').split('\n').forEach(raw => {
+      const t = raw.trim(); if (!t) return;
+      const ic = (t.match(/^(📺|❓|🗣|✋|•|✔|⏱)/) || [])[1] || '';
+      const cls = { '📺': 'scr', '❓': 'q', '🗣': 'say', '✋': 'do', '•': 'pt', '✔': 'ans', '⏱': 'tm' }[ic] || (/^\(/.test(t) ? 'hint' : 'say');
+      const d = document.createElement('div'); d.className = 'ln ' + cls;
+      const body = ic ? t.slice(ic.length).trim() : t;
+      if (cls === 'scr') { const sp = document.createElement('span'); const lb = document.createElement('small'); lb.textContent = 'на екрані'; sp.append(lb, document.createTextNode(body)); d.appendChild(sp); box.appendChild(d); return; }
+      if (cls === 'tm') { const sp = document.createElement('span'); sp.textContent = '⏱ ' + body; d.appendChild(sp); }
+      else { const i = document.createElement('i'); i.textContent = cls === 'say' && !ic ? '' : ic; const sp = document.createElement('span'); sp.textContent = body; d.append(i, sp); }
+      box.appendChild(d);
+    });
+  }
   function renderNotes() {
     const n = $('#note'), ns = Array.isArray(st.ns) && st.ns.length ? st.ns : null;
     const sig = JSON.stringify([ns || st.note, st.index, st.step]);
     if (sig === nSig) return; nSig = sig;
     $('#nleg').hidden = !ns && !/[❓🗣✋]/.test(st.note || '');
-    if (!ns) { n.className = st.note ? '' : 'empty'; n.textContent = st.note || 'Підказок для цього слайда немає.'; return; }
+    if (!ns) { n.className = st.note ? '' : 'empty'; n.textContent = ''; if (st.note) { const b = document.createElement('div'); b.className = 'nb cur'; fmtNote(b, st.note); n.appendChild(b); } else n.textContent = 'Підказок для цього слайда немає.'; return; }
     n.className = 'steps'; n.textContent = '';
     const cur = Math.min(st.step || 0, ns.length - 1);
     let curEl = null;
     ns.forEach(([label, text], k) => {
       if (label) { const c = document.createElement('div'); c.className = 'nclk' + (k <= cur ? ' done' : '') + (k === cur + 1 ? ' nxt' : ''); c.textContent = '❯ Далі — ' + label; n.appendChild(c); }
-      const b = document.createElement('div'); b.className = 'nb' + (k < cur ? ' past' : k === cur ? ' cur' : ''); b.textContent = text; n.appendChild(b);
+      const b = document.createElement('div'); b.className = 'nb' + (k < cur ? ' past' : k === cur ? ' cur' : ''); fmtNote(b, text); n.appendChild(b);
       if (k === cur) curEl = b;
     });
     if (st.index + 1 < st.total) { const c = document.createElement('div'); c.className = 'nclk' + (cur >= ns.length - 1 ? ' nxt' : ''); c.textContent = '❯ Далі — наступний слайд'; n.appendChild(c); }
-    if (curEl && cur > 0) try { curEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { /* ok */ }
+    const newSlide = st.index !== nIdx; nIdx = st.index;
+    // новий слайд «Далі» — одразу з початку; «Назад» на попередній — одразу там, де його закінчили (без прокручування)
+    if (newSlide && cur === 0) window.scrollTo(0, 0);
+    else if (curEl) keepInView(curEl, newSlide);
   }
   let ixSig = '';
   function renderIx() {

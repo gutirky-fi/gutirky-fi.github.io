@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Репетиція з пультом</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Репетиція»: гутірка (зменшена, зверху) і справжній пульт (знизу) в одній сторінці — без проектора й без QR.
+     Звʼязок між ними — у самій сторінці (GUTIRKA_LOCAL_PEER), інтернет для звʼязку не потрібен.
+     HOST — сторінка гутірки, PULT — сторінка пульта (відносно цієї сторінки). -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#eef1f4;--mut:#a3abb5;--vyh:#3daf6e;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 var(--txt);display:flex;flex-direction:column;overflow:hidden}
+.bar{flex:none;display:flex;align-items:center;gap:8px;padding:8px 12px;border-bottom:1px solid var(--ln);background:#181a1e}
+.bar a{flex:none;display:inline-flex;align-items:center;min-height:36px;padding:4px 12px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+.bar h1{margin:0;flex:1;min-width:0;font:600 17px/1.1 var(--disp);letter-spacing:.02em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mode{flex:none;display:flex;border:1px solid var(--ln);border-radius:99px;overflow:hidden}
+.mode button{min-height:34px;padding:4px 12px;border:0;background:var(--card);color:var(--ink);font:700 14px var(--txt);cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--vyh);color:#0e1f15}
+.mode button:focus-visible,.bar a:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
+.wrap{flex:1;min-height:0;display:flex;flex-direction:column}
+.scr{flex:none;position:relative;background:#000;overflow:hidden}
+.scr iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none}
+.scr .lbl{position:absolute;left:8px;bottom:6px;z-index:2;font-size:12px;font-weight:700;color:#fff;background:rgba(0,0,0,.55);padding:2px 8px;border-radius:99px}
+.pult{flex:1;min-height:0;position:relative}
+.pult iframe{width:100%;height:100%;border:0;display:block;background:var(--bg)}
+.st{position:absolute;inset:0;display:grid;place-items:center;padding:20px;text-align:center;color:var(--mut);background:var(--bg)}
+.st[hidden]{display:none}
+@media (min-width:900px) and (orientation:landscape){
+  .wrap{flex-direction:row}
+  .scr{flex:1;align-self:center}
+  .pult{flex:none;width:420px;border-left:1px solid var(--ln)}
+}
+</style>
+</head>
+<body data-host="../../biblioteka/" data-pult="../">
+<div class="bar">
+  <a href="../../" aria-label="На головну">←</a>
+  <h1>Репетиція</h1>
+  <div class="mode" role="group" aria-label="Версія гутірки"><button type="button" data-h="vyshkil" aria-pressed="true">Вишкіл</button><button type="button" data-h="povna" aria-pressed="false">Повна</button></div>
+</div>
+<div class="wrap">
+  <div class="scr" id="scr"><iframe id="host" title="Гутірка (як на проекторі)"></iframe><span class="lbl">так бачать учасники</span></div>
+  <div class="pult"><iframe id="pult" title="Пульт"></iframe><div class="st" id="st">Готуємо гутірку й пульт…</div></div>
+</div>
+<script>
+/* ---------- звʼязок усередині сторінки: заміна PeerJS для гутірки й пульта ---------- */
+(function () {
+  const reg = {};
+  class Em { constructor() { this.h = {}; } on(e, f) { (this.h[e] = this.h[e] || []).push(f); return this; } emit(e, ...a) { (this.h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); } }
+  class Conn extends Em {
+    constructor(me, other, cid) { super(); this.me = me; this.peer = other; this.cid = cid; this.open = false; }
+    send(d) { const t = reg[this.peer], c = t && t.conns[this.cid], m = JSON.parse(JSON.stringify(d)); setTimeout(() => { if (c && c.open) c.emit('data', m); }, 0); }
+    close() { if (!this.open) return; this.open = false; const t = reg[this.peer], c = t && t.conns[this.cid]; setTimeout(() => { if (c && c.open) { c.open = false; c.emit('close'); } }, 0); }
+  }
+  class Peer extends Em {
+    constructor(id) { super(); this.id = typeof id === 'string' ? id : 'p' + Math.random().toString(36).slice(2); this.conns = {}; this.disconnected = false; this.destroyed = false; reg[this.id] = this; setTimeout(() => this.emit('open', this.id), 20); }
+    connect(id) {
+      const cid = Math.random().toString(36).slice(2), a = new Conn(this.id, id, cid); this.conns[cid] = a;
+      setTimeout(() => { const t = reg[id]; if (!t) { this.emit('error', { type: 'peer-unavailable' }); return; }
+        const b = new Conn(id, this.id, cid); t.conns[cid] = b; b.open = true; t.emit('connection', b);
+        setTimeout(() => { b.emit('open'); a.open = true; a.emit('open'); }, 20); }, 20);
+      return a;
+    }
+    destroy() { this.destroyed = true; Object.values(this.conns).forEach(c => c.close()); if (reg[this.id] === this) delete reg[this.id]; }
+    disconnect() {} reconnect() {}
+  }
+  window.GUTIRKA_LOCAL_PEER = Peer;
+})();
+
+/* ---------- гутірка зверху: справжній розмір 1280×720, зменшений під ширину ---------- */
+const $ = s => document.querySelector(s);
+const HOST = document.body.dataset.host, PULT = document.body.dataset.pult;
+const scr = $('#scr'), host = $('#host'), pult = $('#pult'), st = $('#st');
+function fit() {
+  const land = matchMedia('(min-width:900px) and (orientation:landscape)').matches;
+  let w = scr.parentElement.clientWidth - (land ? 420 : 0);
+  if (land) w = Math.min(w, (scr.parentElement.clientHeight) * 16 / 9);
+  else w = Math.min(w, (innerHeight * 0.36) * 16 / 9);
+  const k = w / 1280; scr.style.width = w + 'px'; scr.style.height = (720 * k) + 'px'; host.style.transform = 'scale(' + k + ')';
+  if (!land) scr.style.margin = '0 auto';
+}
+addEventListener('resize', fit); fit();
+
+/* ---------- запуск: гутірка вмикає пульт, пульт підключається з кодом ---------- */
+let run = 0;
+function start(mode) {
+  const my = ++run;
+  st.hidden = false; st.textContent = 'Готуємо гутірку й пульт…';
+  pult.removeAttribute('src');
+  host.src = HOST + '?r=' + Date.now() + '#' + mode;
+  host.onload = () => {
+    const t0 = Date.now();
+    (function wait() {
+      if (my !== run) return;
+      let G = null; try { G = host.contentWindow.GutirkaPult; } catch (e) { /* ok */ }
+      if (!G) { if (Date.now() - t0 < 15000) return setTimeout(wait, 150); st.textContent = 'Не вдалося відкрити гутірку. Оновіть сторінку.'; return; }
+      if (!G.code) { if (!wait.opened) { wait.opened = true; try { G.open(); } catch (e) { /* ok */ } } return setTimeout(wait, 150); }
+      try { G.close(); } catch (e) { /* ok */ }   // вікно з QR не потрібне
+      pult.src = PULT + '?c=' + G.code + '&k=' + G.key;
+      pult.onload = () => { if (my === run) setTimeout(() => { st.hidden = true; }, 600); };
+    })();
+  };
+}
+document.querySelector('.mode').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || b.getAttribute('aria-pressed') === 'true') return;
+  document.querySelectorAll('.mode button').forEach(x => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+  start(b.dataset.h);
+});
+start('vyshkil');
+</script>
+</body>
+</html>

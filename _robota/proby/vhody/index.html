@@ -711,7 +711,7 @@ const GUT = [   /* a — коли додано (новіші — першими 
   { t: 'Кераміка України', sp: 'Мистецька · історична подорож', a: '2026-10-13', k: 'До вмілості · 2 версії', p: '9 регіонів, вироби, вікторина на карті.', c: '#e8925b',
     art: '{{KERAMIKA_MAP}}', alt: 'Карта України з регіонами, про які йдеться в гутірці',
     d: 'Подорож картою України: що таке кераміка, як її роблять, історія по епохах, девʼять регіонів із виробами, запитання та вікторина на карті.',
-    v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna', 'Юнацтво, 12–17 років'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil', 'Виховники, малі групи'], ['Матеріали до друку', 'PDF', 'gutirky/keramika/druk/?v=2210c', 'План, аркуш учасника, шпаргалка, таблички']],
+    v: [['Повна гутірка', '45–50 хв', 'biblioteka/#povna', 'Юнацтво, 12–17 років'], ['Вишкіл', 'до 20 хв', 'biblioteka/#vyshkil', 'Виховники, малі групи'], ['Матеріали до друку', 'PDF', 'gutirky/keramika/druk/?v=2210c', 'План, аркуш учасника, шпаргалка, таблички'], ['Репетиція', 'телефон', 'pult/repetytsiia/', 'Пульт і слайди на одному телефоні']],
     x: { tags: ['45–50 хв', 'вишкіл — до 20 хв', 'юнацтво 12–17'],
       plan: ['Що таке кераміка і як її роблять', 'Історія по епохах — від Трипілля до сьогодні', 'Девʼять регіонів України і їхні вироби', 'Запитання', 'Вікторина на карті'],
       mat: ['ноутбук (за можливості — проєктор або великий екран)'],
@@ -827,7 +827,7 @@ let fx0 = null;   // свайп на телефоні
 $('#fslide').addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') fx0 = e.clientX; });
 $('#fslide').addEventListener('pointerup', e => { if (fx0 === null) return; const dx = e.clientX - fx0; fx0 = null; if (Math.abs(dx) > 50 && FEAT.length > 1) featManual(FI + (dx < 0 ? 1 : -1)); });
 function renderFeatAll() {
-  const nv = GUT.reduce((n, g) => n + g.v.filter(([, , h]) => !/#plan|yunakam|druk/.test(h)).length, 0), nk = SKILLS.filter(x => x.gv).length;
+  const nv = GUT.reduce((n, g) => n + g.v.filter(([, , h]) => !/#plan|yunakam|druk|repetytsiia/.test(h)).length, 0), nk = SKILLS.filter(x => x.gv).length;
   $('#vstats').innerHTML = [[GUT.length, plural(GUT.length, ['гутірка', 'гутірки', 'гутірок'])], [nv, plural(nv, ['версія', 'версії', 'версій'])], [nk, plural(nk, ['вмілість', 'вмілості', 'вмілостей'])]]
     .map(([n, l]) => `<div><dt>${esc(l)}</dt><dd>${n}</dd></div>`).join('');
   const multi = FEAT.length > 1;
