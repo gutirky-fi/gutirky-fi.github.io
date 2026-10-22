@@ -34,7 +34,7 @@ CSS = """
 .note{margin-bottom:1mm}
 .bar{display:flex;gap:.6mm;height:9mm;border-radius:1.6mm;overflow:hidden;margin-top:1mm}
 .sg{display:flex;align-items:center;justify-content:center;gap:1.2mm;background:var(--tint);font-size:8.3pt;font-weight:600;white-space:nowrap;overflow:hidden;min-width:0;padding:0 1mm}
-.sg:nth-child(odd){filter:brightness(.94)}.sg b{color:var(--acc);font:600 9pt "Osw",sans-serif;flex:none}
+.sg:nth-child(odd){filter:brightness(.94)}.sg b{flex:none;display:inline-grid;place-items:center;width:4.2mm;height:4.2mm;border-radius:50%;background:var(--acc);color:#fff;font:600 7.5pt "Osw",sans-serif}
 .ticks{position:relative;height:4mm;margin-top:.6mm;font-size:7.5pt;color:var(--mut)}.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}.ticks span:first-child{transform:none}.ticks span:last-child{transform:translateX(-100%)}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:3mm;align-items:start}.box h2{margin:0 0 1.4mm!important;font-size:11pt}
 ul.chk{list-style:none;padding:0;margin:0}ul.chk li{display:flex;gap:2mm;align-items:baseline;margin:.8mm 0;font-size:9.6pt;line-height:1.3}

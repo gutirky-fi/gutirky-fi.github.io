@@ -40,7 +40,7 @@ h1{margin:.6mm 0 0;font:600 24pt/1.02 "Osw","Oswald",sans-serif;letter-spacing:.
 .sub{margin-top:1mm;color:var(--mut);font-size:10.5pt}
 .lily{height:17mm;width:auto;flex:none;margin-bottom:.5mm}
 h2{display:flex;align-items:center;gap:2.4mm;margin:4mm 0 2.2mm;font:600 12.5pt/1.15 "Osw","Oswald",sans-serif;letter-spacing:.015em;text-transform:uppercase;color:var(--ink)}
-h2 b{flex:none;min-width:4.2mm;color:var(--acc);font:600 12.5pt "Osw",sans-serif}
+h2 b{flex:none;display:inline-grid;place-items:center;width:5mm;height:5mm;border-radius:50%%;background:var(--acc);color:#fff;font:600 8.5pt "Osw",sans-serif;font-style:normal}
 h2 small{font:600 9.5pt "SS3",sans-serif;text-transform:none;letter-spacing:0;color:var(--mut)}
 .page>h2:first-of-type,.hd+h2{margin-top:0}
 p{margin:0 0 2mm}
