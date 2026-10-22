@@ -28,6 +28,7 @@ body{font-family:"SS3","Source Sans 3",sans-serif;color:var(--ink);font-size:10.
 :root{--ink:#1d2125;--mut:#5f6873;--ln:#cfd5dc;--soft:#f3f4f6;--acc:%(acc)s;--tint:%(tint)s}
 .page{width:210mm;height:297mm;padding:11mm 13mm 9mm;display:flex;flex-direction:column;overflow:hidden;break-after:page;position:relative}
 .page:last-child{break-after:auto}
+.page.flow{width:auto;height:auto;padding:0;overflow:visible;display:block}
 .page>*{flex-shrink:0}
 .hd{display:flex;align-items:flex-end;gap:6mm;padding-bottom:3mm;border-bottom:2.2pt solid var(--acc);margin-bottom:4.5mm}
 .hl{flex:1;min-width:0}
@@ -57,7 +58,12 @@ th{background:var(--tint);font-weight:700;font-size:9.5pt}
 
 class Doc:
     def __init__(self, gutirka, acc, tint, extra_css=''):
-        self.g, self.acc, self.tint, self.extra, self.pages = gutirka, acc, tint, extra_css, []
+        self.g, self.acc, self.tint, self.extra, self.pages, self.fl = gutirka, acc, tint, extra_css, [], None
+
+    def flow(self, kind, title, sub, body, who=None):
+        """Довгий матеріал, що сам переходить на нові сторінки (напр. план на 45 хв):
+        шапка — на першій сторінці, підвал з номерами сторінок — на кожній (його малює Chromium)."""
+        self.fl = (kind, title, sub, body, who)
 
     def page(self, kind, title, sub, body, who=None, foot=None):
         self.pages.append((kind, title, sub, body, who, foot))
@@ -65,6 +71,11 @@ class Doc:
     def html(self):
         n = len(self.pages)
         out = []
+        if self.fl:
+            kind, title, sub, body, who = self.fl
+            tag = {'uch': '<span class="for uch">для учасника</span>', 'ved': '<span class="for ved">лише для ведучого</span>', 'vd': '<span class="for uch">для ведучого</span>'}.get(who, '')
+            out.append(f'''<section class="page flow"><header class="hd"><div class="hl"><div class="kind">{H.escape(kind)}{tag}</div><h1>{H.escape(title)}</h1>{f'<div class="sub">{sub}</div>' if sub else ''}</div><img class="lily" src="{LILY}" alt="Пластова лілея"></header>
+{body}</section>''')
         for i, (kind, title, sub, body, who, foot) in enumerate(self.pages):
             tag = {'uch': '<span class="for uch">для учасника</span>', 'ved': '<span class="for ved">лише для ведучого</span>', 'vd': '<span class="for uch">для ведучого</span>'}.get(who, '')
             right = foot or f'{H.escape(self.g)} · {H.escape(kind)}' + (f' · {i + 1} / {n}' if n > 1 else '')
@@ -72,6 +83,8 @@ class Doc:
 {body}
 <footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>{right}</span></footer></section>''')
         css = CSS % {'ss': FONT_URL('SourceSans3.ttf'), 'os': FONT_URL('Oswald.ttf'), 'acc': self.acc, 'tint': self.tint}
+        if self.fl:
+            css += '@page{size:A4;margin:11mm 13mm 17mm}'
         return f'<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>{H.escape(self.g)}</title><style>{css}{self.extra}</style></head><body>{"".join(out)}</body></html>'
 
     def pdf(self, path, png=None):
@@ -83,7 +96,13 @@ class Doc:
             b = p.chromium.launch(); pg = b.new_page()
             pg.goto('file://' + os.path.abspath(tmp)); pg.wait_for_timeout(600)
             pg.evaluate('document.fonts.ready')
-            pg.pdf(path=path, prefer_css_page_size=True, print_background=True)
+            if self.fl:   # підвал на кожній сторінці
+                ft = ('<div style="width:100%;margin:0 13mm;display:flex;justify-content:space-between;font:8pt sans-serif;color:#5f6873;border-top:.6pt solid #cfd5dc;padding-top:2mm">'
+                      f'<span><b style="color:#1d2125">Пласт у Фінляндії</b> · бібліотека гутірок</span><span>{H.escape(self.g)} · {H.escape(self.fl[0])} · <span class="pageNumber"></span> / <span class="totalPages"></span></span></div>')
+                pg.pdf(path=path, format='A4', print_background=True, display_header_footer=True, header_template='<span></span>', footer_template=ft,
+                       margin={'top': '11mm', 'bottom': '17mm', 'left': '13mm', 'right': '13mm'})
+            else:
+                pg.pdf(path=path, prefer_css_page_size=True, print_background=True)
             b.close()
         os.remove(tmp)
         return path
