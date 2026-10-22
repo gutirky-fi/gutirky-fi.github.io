@@ -544,7 +544,15 @@ noscript{display:block;padding:20px}
     return [(x0 + x1) / 2 - w / 2, (y0 + y1) / 2 - h / 2, w, h];
   }
   /* примітки по кроках: що казати зараз і що з'явиться після «Далі» */
-  let nSig = '';
+  let nSig = '', nIdx = -1;
+  /* поточна підказка — завжди на видноті: над кнопками «Назад / Далі», ближче до верху */
+  function keepInView(el) {
+    const nav = document.querySelector('.nav'), navH = nav ? nav.getBoundingClientRect().height : 0;
+    const r = el.getBoundingClientRect(), top = 12, bottom = innerHeight - navH - 12;
+    if (r.top >= top && r.bottom <= bottom && r.top <= top + (bottom - top) * 0.55) return;   // уже добре видно
+    const want = Math.max(top, Math.min(top + (bottom - top) * 0.22, bottom - r.height));
+    try { window.scrollBy({ top: r.top - want, behavior: 'smooth' }); } catch (e) { window.scrollBy(0, r.top - want); }
+  }
   function renderNotes() {
     const n = $('#note'), ns = Array.isArray(st.ns) && st.ns.length ? st.ns : null;
     const sig = JSON.stringify([ns || st.note, st.index, st.step]);
@@ -560,7 +568,9 @@ noscript{display:block;padding:20px}
       if (k === cur) curEl = b;
     });
     if (st.index + 1 < st.total) { const c = document.createElement('div'); c.className = 'nclk' + (cur >= ns.length - 1 ? ' nxt' : ''); c.textContent = '❯ Далі — наступний слайд'; n.appendChild(c); }
-    if (curEl && cur > 0) try { curEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { /* ok */ }
+    const newSlide = st.index !== nIdx; nIdx = st.index;
+    if (newSlide && cur === 0) { try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); } }
+    else if (curEl) keepInView(curEl);
   }
   let ixSig = '';
   function renderIx() {
