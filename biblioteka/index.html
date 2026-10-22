@@ -1803,8 +1803,9 @@ next:()=>adv(1),prev:()=>adv(-1),jump:i=>{if(i>=0&&i<S.length)go(i)},resetTimer:
   /* Куди веде QR: 1) адреса пульта, яку ведучий вписав один раз; 2) вбудована адреса; 3) цей самий файл, якщо він на сайті. */
   let editSite = false;
   function pultSite() {
-    try { const s = localStorage.getItem(SITE_KEY); if (s) return { url: s, self: false, stored: true }; } catch (e) { /* ok */ }
     const baked = window.GUTIRKA_PULT_URL || '';
+    if (/^https:\/\//.test(baked) && location.protocol !== 'file:') return { url: baked, self: false, stored: false };   // на сайті — завжди вбудована адреса (вписана вручну стара адреса більше не заважає)
+    try { const s = localStorage.getItem(SITE_KEY); if (s) return { url: s, self: false, stored: true }; } catch (e) { /* ok */ }
     if (/^https:\/\//.test(baked)) return { url: baked, self: false, stored: false };
     if (/^https?:$/.test(location.protocol)) return { url: location.origin + location.pathname, self: true, stored: false };
     return null;
