@@ -105,6 +105,9 @@ body[data-v=pad] .mbtn{display:grid}
 #note .ln.hint{font-size:.86em;color:var(--mut);font-style:italic}
 #note .ln.ans span{color:var(--vyh-t);font-weight:700}
 #note .ln.tm{display:block;margin-bottom:.15em}
+#note .ln.scr{display:block;margin:.1em 0 .35em}
+#note .ln.scr span{display:block;font-size:.84em;line-height:1.35;color:#d6e8f7;background:rgba(111,179,255,.08);border-left:3px solid #6fb3ff;border-radius:4px 8px 8px 4px;padding:5px 9px}
+#note .ln.scr small{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6fb3ff;margin-bottom:1px}
 #note .ln.tm span{display:inline-block;font-size:13px;font-weight:700;line-height:1.3;padding:3px 9px;border-radius:99px;background:rgba(255,194,71,.13);color:#ffc247}
 #note .nclk{align-self:flex-start;font:700 13px var(--body);color:var(--mut);background:var(--card2);border:1px solid var(--ln);border-radius:99px;padding:3px 10px}
 #note .nclk.done{opacity:.45}
@@ -244,7 +247,7 @@ noscript{display:block;padding:20px}
       <div id="stitle">…</div>
       <div id="snext"></div>
     </div>
-    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
+    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · синє — що на екрані · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
     <div id="ix" class="card top" hidden></div>
   </section>
 </div>
@@ -573,10 +576,11 @@ noscript{display:block;padding:20px}
   function fmtNote(box, text) {
     String(text || '').split('\n').forEach(raw => {
       const t = raw.trim(); if (!t) return;
-      const ic = (t.match(/^(❓|🗣|✋|•|✔|⏱)/) || [])[1] || '';
-      const cls = { '❓': 'q', '🗣': 'say', '✋': 'do', '•': 'pt', '✔': 'ans', '⏱': 'tm' }[ic] || (/^\(/.test(t) ? 'hint' : 'say');
+      const ic = (t.match(/^(📺|❓|🗣|✋|•|✔|⏱)/) || [])[1] || '';
+      const cls = { '📺': 'scr', '❓': 'q', '🗣': 'say', '✋': 'do', '•': 'pt', '✔': 'ans', '⏱': 'tm' }[ic] || (/^\(/.test(t) ? 'hint' : 'say');
       const d = document.createElement('div'); d.className = 'ln ' + cls;
       const body = ic ? t.slice(ic.length).trim() : t;
+      if (cls === 'scr') { const sp = document.createElement('span'); const lb = document.createElement('small'); lb.textContent = 'на екрані'; sp.append(lb, document.createTextNode(body)); d.appendChild(sp); box.appendChild(d); return; }
       if (cls === 'tm') { const sp = document.createElement('span'); sp.textContent = '⏱ ' + body; d.appendChild(sp); }
       else { const i = document.createElement('i'); i.textContent = cls === 'say' && !ic ? '' : ic; const sp = document.createElement('span'); sp.textContent = body; d.append(i, sp); }
       box.appendChild(d);
