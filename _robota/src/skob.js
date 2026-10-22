@@ -183,7 +183,7 @@
   const send = (P, m) => { try { if (P && P.c && P.c.open) P.c.send(m); } catch (e) { /* ok */ } };
   const online = () => [...players.values()].filter(P => P.on && !P.pending);
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
-  async function getPeer() { if (window.Peer) return window.Peer; for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* далі */ } } throw new Error('lib'); }
+  async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } if (window.GutirkaNet) return window.GutirkaNet(window.Peer || null); if (window.Peer) return window.Peer; throw new Error('lib'); }   // PeerJS + запасні канали (zvyazok.js)
   function startNet() {
     if (net === 'on' || net === 'starting') return;
     net = 'starting'; netMsg = ''; emit();

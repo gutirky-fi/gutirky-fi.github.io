@@ -887,7 +887,7 @@ html[data-dir=back]::view-transition-new(root){animation-name:gvInB}
   const send = (P, m) => { try { if (P && P.c && P.c.open) P.c.send(m); } catch (e) { /* ok */ } };
   const online = () => [...players.values()].filter(P => P.on && !P.pending);
   function loadScript(src) { return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load')); }; document.head.appendChild(s); }); }
-  async function getPeer() { if (window.Peer) return window.Peer; for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* далі */ } } throw new Error('lib'); }
+  async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } if (window.GutirkaNet) return window.GutirkaNet(window.Peer || null); if (window.Peer) return window.Peer; throw new Error('lib'); }   // PeerJS + запасні канали (zvyazok.js)
   function startNet() {
     if (net === 'on' || net === 'starting') return;
     net = 'starting'; netMsg = ''; emit();
@@ -2617,7 +2617,7 @@ addEventListener('hashchange', route); route();
   const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
   async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
   async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
-  const codeOf = id => String(id || '').replace(/^gutirka-/, '');
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
 
   /* ---------------- запасний «Peer» поверх брокерів ---------------- */
   const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
@@ -2641,7 +2641,7 @@ addEventListener('hashchange', route); route();
   class RelayPeer extends Em {
     constructor(id) {
       super();
-      this.id = id || 'r' + rnd(14); this.host = /^gutirka-/.test(this.id); this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
       this.code = codeOf(this.id);
       this.brokers = BROKERS().map(u => new Mqtt(u));
       (async () => {

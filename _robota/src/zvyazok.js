@@ -74,7 +74,7 @@
   const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
   async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
   async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
-  const codeOf = id => String(id || '').replace(/^gutirka-/, '');
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
 
   /* ---------------- запасний «Peer» поверх брокерів ---------------- */
   const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
@@ -98,7 +98,7 @@
   class RelayPeer extends Em {
     constructor(id) {
       super();
-      this.id = id || 'r' + rnd(14); this.host = /^gutirka-/.test(this.id); this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
       this.code = codeOf(this.id);
       this.brokers = BROKERS().map(u => new Mqtt(u));
       (async () => {
