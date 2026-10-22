@@ -260,7 +260,8 @@ noscript{display:block;padding:20px}
 
   /* ---------- пам'ять ---------- */
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || 'null') || {}; } catch (e) { return {}; } };
-  const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
+  let LOCAL = false; try { LOCAL = window.parent !== window && !!window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* ok */ }
+  const save = o => { if (LOCAL) return; try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };   // у «Репетиції» не запам’ятовуємо код
   let ses = load();   // {code, key, token, title}
 
   /* ---------- стан ---------- */
@@ -311,6 +312,7 @@ noscript{display:block;padding:20px}
     });
   }
   async function getPeer() {
+    try { if (window.parent !== window && window.parent.GUTIRKA_LOCAL_PEER) return window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* інший сайт */ }   // «Репетиція»: пульт і гутірка в одній сторінці, звʼязок без інтернету
     if (window.Peer) return window.Peer;
     for (const u of LIBS) { try { await loadScript(u); if (window.Peer) return window.Peer; } catch (e) { /* наступне джерело */ } }
     throw new Error('lib');
