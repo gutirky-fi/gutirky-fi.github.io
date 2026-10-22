@@ -178,15 +178,15 @@ PLAN_CSS = """
 .page h2{margin:3.4mm 0 1.8mm}.note{margin-bottom:0}
 .bar{display:flex;gap:.6mm;height:9mm;border-radius:1.6mm;overflow:hidden}
 .sg{display:flex;align-items:center;justify-content:center;gap:1.4mm;background:var(--tint);color:var(--ink);font-size:8.5pt;font-weight:600;white-space:nowrap;overflow:hidden;min-width:0}
-.sg:nth-child(odd){background:#efd2bf}.sg b{display:inline-grid;place-items:center;width:4.6mm;height:4.6mm;border-radius:50%;background:var(--acc);color:#fff;font:600 8pt "Osw",sans-serif;flex:none}
+.sg:nth-child(odd){background:#efd2bf}.sg b{color:var(--acc);font:600 9pt "Osw",sans-serif;flex:none}
 .ticks{position:relative;height:4mm;margin-top:.6mm;font-size:7.5pt;color:var(--mut)}.ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap}.ticks span:first-child{transform:none}.ticks span:last-child{transform:translateX(-100%)}
 .steps{display:flex;flex-direction:column}
 .st{display:grid;grid-template-columns:17mm 8mm 1fr;gap:0 2.5mm;padding:1.45mm 0;border-top:.6pt solid var(--ln);break-inside:avoid}
 .tm b{display:block;font:600 13pt/1 "Osw",sans-serif}.tm span{display:block;margin-top:.8mm;font-size:8.5pt;color:var(--mut)}
-.nm i{display:grid;place-items:center;width:6.4mm;height:6.4mm;border-radius:50%;background:var(--acc);color:#fff;font:600 10pt "Osw",sans-serif;font-style:normal}
+.nm i{display:block;color:var(--acc);font:600 13pt/1 "Osw",sans-serif;font-style:normal}
 .tx h3{margin:0 0 .6mm;font:600 12pt/1.15 "Osw",sans-serif;text-transform:uppercase;letter-spacing:.01em}.tx p{margin:0 0 .4mm;font-size:9.8pt;line-height:1.32}
 .tx .q{font-weight:700}.tx .who{color:var(--acc);font-weight:600;font-size:9.5pt}
-.st.bonus .nm i{background:#fff;color:var(--acc);border:1.2pt solid var(--acc)}.st.bonus .tm b{font-size:11pt}
+.st.bonus .nm i{color:var(--acc)}.st.bonus .tm b{font-size:11pt}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:1mm;align-items:start}.box h2{margin:0 0 1.6mm;font-size:11pt}.two ul{margin:0;padding-left:4.5mm}
 ul.chk{list-style:none;padding:0!important}ul.chk li{display:flex;gap:2mm;align-items:baseline;margin:.9mm 0;font-size:9.8pt;line-height:1.3}
 .cb{flex:none;display:inline-block;width:3.6mm;height:3.6mm;border:1.1pt solid var(--ink);border-radius:.7mm;transform:translateY(.5mm)}
