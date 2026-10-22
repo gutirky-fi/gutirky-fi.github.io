@@ -90,7 +90,22 @@ body[data-v=pad] .mbtn{display:grid}
 #note.steps{white-space:normal;display:flex;flex-direction:column;gap:6px}
 #note .nb{white-space:pre-line;padding:8px 10px;border-radius:10px;border:1px solid transparent}
 #note .nb.cur{background:rgba(61,175,110,.12);border-color:rgba(61,175,110,.55)}
-#note .nb.past{opacity:.45}
+#note .nb.past{opacity:.42}
+/* рядки підказки за типом: ❓ запитання до залу — жирно; 🗣 сказати; ✋ зробити — теплим кольором; • доповнення й (дужки) — тихіше */
+#note .nb{white-space:normal;font-size:17px;line-height:1.38}
+#note .nb.cur{font-size:19.5px;line-height:1.4}
+#note .ln{display:grid;grid-template-columns:1.35em 1fr;column-gap:.25em;margin:0}
+#note .ln+.ln{margin-top:.18em}
+#note .ln.q,#note .ln.say,#note .ln.do,#note .ln.ans{margin-top:.45em}
+#note .ln:first-child{margin-top:0}
+#note .ln i{font-style:normal;text-align:center;line-height:inherit}
+#note .ln.q span{font-weight:700;color:#fff}
+#note .ln.do span{color:#ffcf8a;font-weight:600}
+#note .ln.pt{font-size:.9em;color:#cfd5dc}
+#note .ln.hint{font-size:.86em;color:var(--mut);font-style:italic}
+#note .ln.ans span{color:var(--vyh-t);font-weight:700}
+#note .ln.tm{display:block;margin-bottom:.15em}
+#note .ln.tm span{display:inline-block;font-size:13px;font-weight:700;line-height:1.3;padding:3px 9px;border-radius:99px;background:rgba(255,194,71,.13);color:#ffc247}
 #note .nclk{align-self:flex-start;font:700 13px var(--body);color:var(--mut);background:var(--card2);border:1px solid var(--ln);border-radius:99px;padding:3px 10px}
 #note .nclk.done{opacity:.45}
 #note .nclk.nxt{color:#0e1f15;background:var(--vyh);border-color:var(--vyh)}
@@ -229,7 +244,7 @@ noscript{display:block;padding:20px}
       <div id="stitle">…</div>
       <div id="snext"></div>
     </div>
-    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ питання · 🗣 кажу · ✋ роблю · ❯ натиснути «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
+    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
     <div id="ix" class="card top" hidden></div>
   </section>
 </div>
@@ -554,18 +569,31 @@ noscript{display:block;padding:20px}
     if (now) { window.scrollBy(0, r.top - want); return; }
     try { window.scrollBy({ top: r.top - want, behavior: 'smooth' }); } catch (e) { window.scrollBy(0, r.top - want); }
   }
+  /* одна підказка → рядки з позначкою зліва (текст вирівняний), вигляд за типом рядка */
+  function fmtNote(box, text) {
+    String(text || '').split('\n').forEach(raw => {
+      const t = raw.trim(); if (!t) return;
+      const ic = (t.match(/^(❓|🗣|✋|•|✔|⏱)/) || [])[1] || '';
+      const cls = { '❓': 'q', '🗣': 'say', '✋': 'do', '•': 'pt', '✔': 'ans', '⏱': 'tm' }[ic] || (/^\(/.test(t) ? 'hint' : 'say');
+      const d = document.createElement('div'); d.className = 'ln ' + cls;
+      const body = ic ? t.slice(ic.length).trim() : t;
+      if (cls === 'tm') { const sp = document.createElement('span'); sp.textContent = '⏱ ' + body; d.appendChild(sp); }
+      else { const i = document.createElement('i'); i.textContent = cls === 'say' && !ic ? '' : ic; const sp = document.createElement('span'); sp.textContent = body; d.append(i, sp); }
+      box.appendChild(d);
+    });
+  }
   function renderNotes() {
     const n = $('#note'), ns = Array.isArray(st.ns) && st.ns.length ? st.ns : null;
     const sig = JSON.stringify([ns || st.note, st.index, st.step]);
     if (sig === nSig) return; nSig = sig;
     $('#nleg').hidden = !ns && !/[❓🗣✋]/.test(st.note || '');
-    if (!ns) { n.className = st.note ? '' : 'empty'; n.textContent = st.note || 'Підказок для цього слайда немає.'; return; }
+    if (!ns) { n.className = st.note ? '' : 'empty'; n.textContent = ''; if (st.note) { const b = document.createElement('div'); b.className = 'nb cur'; fmtNote(b, st.note); n.appendChild(b); } else n.textContent = 'Підказок для цього слайда немає.'; return; }
     n.className = 'steps'; n.textContent = '';
     const cur = Math.min(st.step || 0, ns.length - 1);
     let curEl = null;
     ns.forEach(([label, text], k) => {
       if (label) { const c = document.createElement('div'); c.className = 'nclk' + (k <= cur ? ' done' : '') + (k === cur + 1 ? ' nxt' : ''); c.textContent = '❯ Далі — ' + label; n.appendChild(c); }
-      const b = document.createElement('div'); b.className = 'nb' + (k < cur ? ' past' : k === cur ? ' cur' : ''); b.textContent = text; n.appendChild(b);
+      const b = document.createElement('div'); b.className = 'nb' + (k < cur ? ' past' : k === cur ? ' cur' : ''); fmtNote(b, text); n.appendChild(b);
       if (k === cur) curEl = b;
     });
     if (st.index + 1 < st.total) { const c = document.createElement('div'); c.className = 'nclk' + (cur >= ns.length - 1 ? ' nxt' : ''); c.textContent = '❯ Далі — наступний слайд'; n.appendChild(c); }
