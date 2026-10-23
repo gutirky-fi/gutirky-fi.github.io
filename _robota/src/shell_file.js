@@ -36,7 +36,7 @@
       { href: 'gutirky/keramika-1/#plan', label: 'План гутірки', who: 'Що казати на кожному слайді', dur: 'друк / PDF', accent: '#3daf6e', dod: true },
       { href: 'gutirky/keramika-1/#yunakam', label: 'Для юнаків', who: 'Вивчай сам і Перевір себе', dur: 'QR-код', accent: '#c8284a', yun: true }
     ]
-  }].filter(b => !b.proba || window.GUTIRKA_PREVIEW);
+  }].filter(b => (!b.proba || window.GUTIRKA_PREVIEW) && !(window.GUTIRKA_OFFLINE && b.key !== 'keramika'));   // офлайн-файл: лише «Кераміка України» (інші гутірки — окремі сторінки сайту)
   const MODE_LABEL = { full: 'ПОВНА ГУТІРКА · 45–50 ХВ', short: 'ВИШКІЛ · ДО 20 ХВ' };
 
   /* ---------------- види ---------------- */
