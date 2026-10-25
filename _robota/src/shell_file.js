@@ -394,6 +394,9 @@
   const q = new URLSearchParams(location.search);
   const qc = digits(q.get('c')), qk = (q.get('k') || '').replace(/[^a-z0-9]/gi, '').slice(0, 20);
   const h0 = (location.hash || '').slice(1);
+  // оновлення сторінки чи відновлена вкладка з відкритою гутіркою → на головну (гутірку відкривають кнопкою, а не «застрягає» після оновлення)
+  let navType = ''; try { navType = (performance.getEntriesByType('navigation')[0] || {}).type || ''; } catch (e) { /* ok */ }
+  if ((h0 === 'povna' || h0 === 'vyshkil') && window.GUTIRKA_HOME && window.top === window && (navType === 'reload' || navType === 'back_forward')) { location.replace(window.GUTIRKA_HOME.href); return; }
   if (qc.length === 6) {
     ses = { code: qc, key: qk, token: ses.code === qc ? (ses.token || '') : '' }; store.set(PKEY, ses);
     try { history.replaceState(null, '', location.pathname + '#pult'); } catch (e) { /* ok */ }
