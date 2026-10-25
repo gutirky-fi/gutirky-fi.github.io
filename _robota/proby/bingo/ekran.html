@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Бінго — екран гри</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Пластове бінго» — екран гри (проектор/ноутбук). Джерело: _robota/proby/bingo/ (zibraty.py вбудовує qr.js і zvyazok.js). -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#f2f4f6;--mut:#a3abb5;--ok:#3daf6e;--gd:#ffc247;--rd:#d64541;--bl:#2f6fd0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(80% 70% at 30% 30%,#232a33,var(--bg) 75%);color:var(--ink);font:18px/1.45 var(--txt);overflow:hidden}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
+.logo{display:inline-flex;gap:.08em;font:600 30px/1 var(--disp)}
+.logo i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font-style:normal;font-size:.78em;color:#fff}
+.logo i:nth-child(1){background:var(--rd)}.logo i:nth-child(2){background:var(--bl)}.logo i:nth-child(3){background:var(--gd);color:#1d1606}.logo i:nth-child(4){background:var(--ok)}.logo i:nth-child(5){background:#8a5bd1}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:15px}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
+.btn{min-height:48px;padding:10px 20px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:17px}
+.btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#0e1f15}
+.btn:disabled{opacity:.45;cursor:default}
+main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-direction:column}
+[hidden]{display:none!important}
+
+/* лобі */
+#lobby{align-items:center;justify-content:center;gap:18px;overflow:auto}
+.lb{width:min(1100px,100%);display:grid;grid-template-columns:auto 1fr;gap:28px;align-items:center}
+.lb h1{margin:0 0 4px;font:600 clamp(2.2rem,5vw,3.6rem)/1 var(--disp);text-transform:uppercase}
+.lb .sub{margin:0 0 16px;color:var(--mut)}
+.qr{width:min(300px,38vh);aspect-ratio:1;border-radius:18px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 28px -6px rgba(255,194,71,.45)}
+.qr svg{width:100%;height:100%}
+.code{font:600 clamp(2.4rem,5vw,4rem)/1 var(--disp);letter-spacing:.08em;color:var(--gd)}
+.url{font:600 22px var(--disp);letter-spacing:.02em}
+.lbl{margin:10px 0 2px;color:var(--mut);font-size:14px;font-weight:700}
+.modes{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 4px}
+.modes button{min-height:44px;padding:8px 16px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700}
+.modes button[aria-pressed=true]{background:var(--ok);border-color:var(--ok);color:#0e1f15}
+.pl{display:flex;flex-wrap:wrap;gap:8px;min-height:40px;margin-top:6px}
+.pl span{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;background:var(--card);border:1px solid var(--ln);font-weight:600}
+.pl span.off{opacity:.45}.pl small{color:var(--mut)}
+.pl button{border:0;background:none;padding:0 2px;color:var(--mut)}
+.pl .empty{color:var(--mut);background:none;border:0;padding:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+.paper{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:15px}
+.paper input{width:64px;min-height:44px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:700 17px var(--txt);text-align:center}
+.rules{width:min(1100px,100%);color:var(--mut);font-size:15px;margin:0}
+
+/* гра */
+#game{gap:18px}
+.stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}
+.ballw{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.ball{position:relative;width:min(300px,34vh);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff 0 6%,var(--bc,#3daf6e) 7% 62%,#0005 100%);box-shadow:0 20px 50px #0008,inset 0 -18px 30px #0004}
+.ball b{display:grid;place-items:center;width:58%;aspect-ratio:1;border-radius:50%;background:#fff;color:#1d2125;font:600 clamp(2rem,6vh,3.6rem)/1 var(--disp)}
+.ball.pop{animation:pop .55s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.2) rotate(-90deg);opacity:0}100%{transform:none;opacity:1}}
+.hint{max-width:30ch;font:600 clamp(1.5rem,3.4vw,2.6rem)/1.2 var(--txt)}
+.hint small{display:block;font:600 15px var(--txt);color:var(--mut);letter-spacing:.04em;margin-bottom:6px}
+.ans{min-height:1.2em;font:600 clamp(2rem,4.6vw,3.6rem)/1.05 var(--disp);text-transform:uppercase;color:var(--gd)}
+.ans.hid{color:var(--mut);font-size:clamp(1rem,2vw,1.3rem);font-family:var(--txt);text-transform:none}
+.side h2{margin:0 0 8px;font:600 18px var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.called{display:flex;flex-wrap:wrap;gap:7px;max-height:52vh;overflow:auto;align-content:flex-start}
+.called span{padding:5px 11px;border-radius:99px;background:var(--card);border:1px solid var(--ln);font-weight:700;font-size:15px}
+.called span.cur{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar .sp{flex:1}
+.hintk{color:var(--mut);font-size:14px}
+
+/* вікна поверх */
+.ov{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(10,12,15,.86)}
+.box{position:relative;width:min(720px,100%);max-height:100%;overflow:auto;padding:24px;border-radius:22px;background:#1f2328;border:1px solid var(--ln);box-shadow:0 24px 90px #000a;text-align:center}
+.box h2{margin:0 0 6px;font:600 clamp(2rem,5vw,3.4rem)/1.05 var(--disp);text-transform:uppercase}
+.box p{color:#cfd5dc}
+.x{position:absolute;right:12px;top:12px;width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:20px}
+.win h2{color:var(--gd)}
+.win .big{font-size:64px;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:440px;margin:14px auto}
+.grid div{aspect-ratio:1.35;display:grid;place-items:center;padding:4px;border-radius:10px;background:var(--card);border:1px solid var(--ln);font-weight:700;font-size:14px;line-height:1.15;overflow-wrap:anywhere}
+.grid div.c{background:#2e5a43;border-color:#3daf6e}
+.grid div.w{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.chk input{width:120px;min-height:50px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:700 24px var(--txt);text-align:center}
+.verd{font-weight:700;font-size:20px;min-height:1.4em}.verd.ok{color:var(--ok)}.verd.no{color:#ff9a8a}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
+@media (max-width:820px){.lb,.stage{grid-template-columns:1fr}.qr{width:min(240px,60vw)}main{overflow:auto}}
+@media (prefers-reduced-motion:reduce){.ball.pop{animation:none}}
+</style>
+</head>
+<body>
+<div class="top"><span class="logo" aria-label="Бінго"><i>Б</i><i>І</i><i>Н</i><i>Г</i><i>О</i></span><span class="sp"></span>
+  <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <button type="button" class="chip" id="plc" hidden>Гравці: <b id="pln">0</b></button>
+</div>
+
+<main id="lobby">
+  <div class="lb">
+    <div class="qr" id="qr"></div>
+    <div>
+      <h1>Пластове бінго</h1>
+      <p class="sub">Ведучий тягне кульки, гравці шукають на своїй картці. Хто перший закрив ряд — кричить «СКОБ!»</p>
+      <div class="lbl">Про що гра</div>
+      <div class="modes" id="modes"></div>
+      <div class="lbl">Скануйте QR-код або відкрийте</div>
+      <div class="url" id="url"></div>
+      <div class="lbl">і введіть код</div>
+      <div class="code" id="code">··· ···</div>
+      <div class="lbl">Гравці <span id="pln2"></span></div>
+      <div class="pl" id="pl"></div>
+      <div class="row">
+        <button type="button" class="btn main" id="start">▶ Почати гру</button>
+        <span class="paper">Паперові картки: <input id="np" type="number" min="1" max="60" value="6" aria-label="Скільки паперових карток"> <button type="button" class="btn" id="print">🖨 Надрукувати</button></span>
+      </div>
+    </div>
+  </div>
+  <p class="rules">Картка — 4×4. Ряд — по горизонталі, вертикалі або діагоналі. Телефони й папір можна змішувати: паперові картки мають номер, і ведучий перевіряє їх кнопкою «Перевірити картку».</p>
+</main>
+
+<main id="game" hidden>
+  <div class="stage">
+    <div class="ballw">
+      <div class="ball" id="ball"><b id="bn">—</b></div>
+      <div class="hint" id="hint"><small id="hk">ПЕРША КУЛЬКА</small>Натисніть «Наступна кулька»</div>
+      <div class="ans hid" id="ans"></div>
+    </div>
+    <div class="side"><h2>Уже витягнуті · <span id="ncl">0</span></h2><div class="called" id="called"></div></div>
+  </div>
+  <div class="bar">
+    <button type="button" class="btn main" id="next">Наступна кулька →</button>
+    <button type="button" class="btn" id="reveal">Показати відповідь</button>
+    <button type="button" class="btn" id="check">Перевірити картку</button>
+    <span class="sp"></span>
+    <span class="hintk">Пробіл — далі · В — відповідь</span>
+    <button type="button" class="btn" id="end">Завершити</button>
+  </div>
+</main>
+
+<div class="ov" id="winov" hidden><div class="box win"><div class="big">🎉</div><h2>СКОБ!</h2><p id="wint"></p><div class="grid" id="wgrid"></div>
+  <div class="row" style="justify-content:center"><button type="button" class="btn ok" id="goon">Грати далі</button><button type="button" class="btn" id="newg">Нова гра</button></div></div></div>
+<div class="ov" id="chkov" hidden><div class="box chk"><button type="button" class="x" id="chkx" aria-label="Закрити">✕</button><h2>Перевірити картку</h2><p>Номер з паперової картки (або телефона гравця):</p>
+  <input id="chkn" type="number" min="1" inputmode="numeric" aria-label="Номер картки"> <button type="button" class="btn ok" id="chkgo">Перевірити</button>
+  <div class="grid" id="cgrid"></div><div class="verd" id="verd"></div></div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>/*QR*/</script>
+<script>/*ZVYAZOK*/</script>
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------- що тягнемо: слова з підказками (тематичне) або числа ---------- */
+const SETS = {
+  keramika: { name: 'Кераміка України', items: [
+    ['Глина', 'природний матеріал: з водою мʼякий, після випалу твердий'],
+    ['Кераміка', 'вироби з глини, обпалені в печі'],
+    ['Черепок', 'уламок глиняного посуду'],
+    ['Шлікер', 'рідка глина, густа, як кефір'],
+    ['Гіпсова форма', 'у неї заливають рідку глину, а вона тягне з глини воду'],
+    ['Гончарний круг', 'круг, що обертається: на ньому посуд «точать» руками'],
+    ['Випал', 'нагрівання виробу в печі — аж до 1250°'],
+    ['Бісквіт', 'виріб після першого випалу: матовий і пористий'],
+    ['Ангоб', 'рідка кольорова глина для розпису'],
+    ['Ріжок', 'посудинка з трубочкою, колись — коровʼячий ріг: ним малюють лінії'],
+    ['Ритування', 'лінії, процарапані шилом крізь ангоб'],
+    ['Полива', 'склоподібне покриття: дає блиск і не пропускає воду'],
+    ['Глазур', 'тонке скло з меленого кварцу, що плавиться в печі'],
+    ['Лощіння', 'полірування камінцем до випалу — блиск без поливи'],
+    ['Димлення', 'наприкінці випалу піч закривають, і глина чорніє'],
+    ['Молочення', 'гарячий після випалу глек занурюють у молоко'],
+    ['Кахля', 'керамічна плитка для печі або стіни'],
+    ['Куманець', 'посудина-«бублик» з горлечком'],
+    ['Макітра', 'широка глиняна миска, у якій розтирають мак'],
+    ['Амфора', 'висока посудина з гострим дном — для вина й олії'],
+    ['Опішня', 'гончарна столиця України, Полтавщина'],
+    ['Косів', 'гуцульське місто: його мальована кераміка — у списку ЮНЕСКО'],
+    ['Трипілля', 'село біля Києва, за яким назвали культуру понад 5000 років тому'],
+    ['Вільхівка', 'закарпатське село: розпис на темному, майже чорному тлі'],
+    ['Бубнівка', 'подільське село: червоний посуд із «пірʼячком»'],
+    ['Бар', 'подільське місто, яке заснувала королева Бона Сфорца'],
+    ['Гавареччина', 'галицьке село, де глечики чорні від диму'],
+    ['Олешня', 'Полісся: прості задимлені горщики й макітри'],
+    ['Ольвія', 'давньогрецьке місто біля Чорного моря, де знаходять амфори']] },
+  chysla: { name: 'Числа 1–40', items: Array.from({ length: 40 }, (_, i) => [String(i + 1), '']) }
+};
+const COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];
+let mode = 'keramika';
+const set = () => SETS[mode];
+const themed = () => mode !== 'chysla';
+
+/* ---------- картки: 4×4 з номером; однаковий номер — однакова картка (для паперу й перевірки) ---------- */
+const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+let seed = Math.floor(Math.random() * 1e6);
+function card(no) {
+  const r = rng(seed * 131 + no * 7919 + (mode === 'chysla' ? 3 : 0)), ids = set().items.map((_, i) => i);
+  for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
+  const c = ids.slice(0, 16);
+  if (mode === 'chysla') c.sort((a, b) => a - b);
+  return c;
+}
+const LINES = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [0, 5, 10, 15], [3, 6, 9, 12]];
+const known = () => new Set(drawn.filter(id => id !== cur || shown));   // витягнуті й уже названі
+function lineOf(c, ok) { return LINES.find(L => L.every(k => ok.has(c[k]))) || null; }
+
+/* ---------- стан гри ---------- */
+let phase = 'lobby', drawn = [], cur = -1, shown = false, winners = [];
+const players = new Map();   // tok -> {name, no, c, on, t}
+let nextNo = 101;
+
+/* ---------- звʼязок ---------- */
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
+const genCode = () => String(Math.floor(100000 + Math.random() * 900000));
+let code = genCode(), peer = null, net = 'starting';
+const PURL = new URL('gravets/', location.href).href;
+async function startNet() {
+  let P; try { P = await getPeer(); } catch (e) { P = null; }
+  if (!P) { net = 'error'; paint(); return; }
+  const p = peer = new P('gutirky-bingo-' + code, window.GUTIRKA_PEER_OPTS || {});
+  p.on('open', () => { net = 'on'; paint(); });
+  p.on('connection', c => onConn(c));
+  p.on('error', e => { if (e && e.type === 'unavailable-id') { try { p.destroy(); } catch (x) { /* ok */ } code = genCode(); startNet(); paint(); return; } net = 'off'; paint(); });
+  p.on('disconnected', () => { net = 'off'; paint(); setTimeout(() => { try { p.reconnect(); } catch (e) { /* ok */ } }, 2000); });
+}
+function onConn(c) {
+  let P = null;
+  c.on('data', d => {
+    if (!d || typeof d !== 'object') return;
+    if (d.t === 'join') {
+      const name = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 18) || 'Гравець';
+      P = players.get(d.tok);
+      if (!P) { P = { tok: String(d.tok || Math.random()), name, no: nextNo++, c: card(nextNo - 1) }; players.set(P.tok, P); }
+      P.name = name; P.conn = c; P.on = true; P.t = Date.now();
+      sendTo(P); paint();
+    } else if (P && d.t === 'ping') { P.t = Date.now(); if (!P.on) { P.on = true; paint(); } }
+    else if (P && d.t === 'claim') claim(P);
+  });
+  c.on('close', () => { if (P && P.conn === c) { P.on = false; paint(); } });
+}
+const stateFor = P => ({ t: 'st', ph: phase, mode, set: set().name, no: P.no, card: P.c.map(i => set().items[i][0]), cur: cur >= 0 ? { n: drawn.length, hint: set().items[cur][1], ans: (shown || !themed()) ? set().items[cur][0] : '' } : null, called: [...known()].map(i => set().items[i][0]), win: winners.length ? winners[winners.length - 1] : null });
+function sendTo(P) { try { if (P.conn && P.conn.open) P.conn.send(stateFor(P)); } catch (e) { /* ok */ } }
+const bcast = () => players.forEach(sendTo);
+setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - (P.t || 0) > 16000) { P.on = false; paint(); } }); bcast(); }, 5000);
+
+/* ---------- дії ведучого ---------- */
+function startGame() { phase = 'game'; drawn = []; cur = -1; shown = false; winners = []; $('#lobby').hidden = true; $('#game').hidden = false; paintBall(); paint(); bcast(); }
+function next() {
+  if (phase !== 'game') return;
+  if (cur >= 0 && themed() && !shown) { reveal(); return; }   // спершу назвати відповідь попередньої кульки
+  const left = set().items.map((_, i) => i).filter(i => !drawn.includes(i));
+  if (!left.length) { toast('Кульки закінчились'); return; }
+  cur = left[Math.floor(Math.random() * left.length)]; drawn.push(cur); shown = !themed();
+  paintBall(true); paint(); bcast();
+}
+function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
+function claim(P) {
+  const L = lineOf(P.c, known());
+  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «СКОБ!», але ряду ще немає'); return; }
+  if (!winners.some(w => w.no === P.no)) winners.push({ name: P.name, no: P.no });
+  showWin(P.name, P.no, P.c, L); bcast();
+}
+function showWin(name, no, c, L) {
+  $('#wint').textContent = name + ' · картка №' + no;
+  $('#wgrid').innerHTML = gridHtml(c, L);
+  $('#winov').hidden = false;
+}
+function gridHtml(c, L) { const ok = known(); return c.map((id, k) => `<div class="${L && L.includes(k) ? 'w' : ok.has(id) ? 'c' : ''}">${esc(set().items[id][0])}</div>`).join(''); }
+function checkNo() {
+  const n = parseInt($('#chkn').value, 10); if (!(n > 0)) return;
+  const pl = [...players.values()].find(P => P.no === n), c = pl ? pl.c : card(n), L = lineOf(c, known());
+  $('#cgrid').innerHTML = gridHtml(c, L);
+  const v = $('#verd'); v.className = 'verd ' + (L ? 'ok' : 'no');
+  v.textContent = L ? '✓ Є ряд! ' + (pl ? pl.name : 'Картка №' + n) + ' виграє' : 'Ряду ще немає — грайте далі';
+  if (L) { const nm = pl ? pl.name : 'Картка №' + n; if (!winners.some(w => w.no === n)) winners.push({ name: nm, no: n }); bcast(); }
+}
+
+/* ---------- малювання ---------- */
+let tt;
+function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 3200); }
+function paintBall(pop) {
+  const b = $('#ball');
+  if (cur < 0) { $('#bn').textContent = '—'; $('#hint').innerHTML = '<small>ГОТОВІ?</small>Натисніть «Наступна кулька»'; $('#ans').textContent = ''; $('#ans').className = 'ans hid'; return; }
+  const it = set().items[cur];
+  b.style.setProperty('--bc', COLORS[drawn.length % COLORS.length]);
+  $('#bn').textContent = drawn.length;
+  if (themed()) {
+    $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + ' · ЩО ЦЕ?</small>' + esc(it[1]);
+    const a = $('#ans'); a.className = 'ans' + (shown ? '' : ' hid'); a.textContent = shown ? it[0] : 'Хто знає? Відповідь — кнопкою «Показати відповідь»';
+  } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>'; $('#ans').textContent = ''; }
+  if (pop) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
+}
+function paint() {
+  $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
+  $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
+  const url = PURL + '?k=' + code;
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
+  $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+  $('#modes').innerHTML = Object.entries(SETS).map(([k, s]) => `<button type="button" data-m="${k}" aria-pressed="${k === mode}">${esc(s.name)}</button>`).join('');
+  const all = [...players.values()];
+  $('#pln').textContent = all.filter(P => P.on).length; $('#pln2').textContent = all.length ? '· ' + all.length : '';
+  $('#plc').hidden = phase === 'lobby';
+  $('#pl').innerHTML = all.length ? all.map(P => `<span class="${P.on ? '' : 'off'}">${esc(P.name)} <small>№${P.no}</small><button type="button" data-x="${esc(P.tok)}" aria-label="Прибрати ${esc(P.name)}">✕</button></span>`).join('') : '<span class="empty">Поки нікого. Можна грати й лише з паперовими картками.</span>';
+  $('#reveal').hidden = !themed(); $('#reveal').disabled = cur < 0 || shown;
+  $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
+  const ok = known(); $('#ncl').textContent = ok.size;
+  $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(set().items[id][0])}</span>`).join('');
+}
+
+/* ---------- паперові картки ---------- */
+function printCards() {
+  const n = Math.max(1, Math.min(60, parseInt($('#np').value, 10) || 6));
+  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c"><header><b>БІНГО</b><span>${esc(set().name)}</span><em>Картка №${no}</em></header><div class="g">${card(no).map(id => { const w = set().items[id][0]; return `<div class="${w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>Закресли слово, коли ведучий прочитає підказку. Закрив ряд — кричи «СКОБ!»</footer></section>`).join('');
+  const w = window.open('', '_blank');
+  if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Бінго — паперові картки</title><style>
+@page{size:A4;margin:10mm}*{box-sizing:border-box}body{margin:0;font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125}
+.wrap{display:grid;grid-template-columns:1fr 1fr;gap:8mm}.c{border:1.2pt solid #1d2125;border-radius:4mm;padding:4mm;break-inside:avoid;height:128mm;display:flex;flex-direction:column}
+header{display:flex;align-items:baseline;gap:3mm;border-bottom:1pt solid #1d2125;padding-bottom:2mm;margin-bottom:3mm}header b{font:700 18pt Oswald,Arial,sans-serif;letter-spacing:.06em}header span{flex:1;font-size:9pt;color:#555}header em{font-style:normal;font-weight:700;font-size:11pt}
+.g{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:1.5mm}.g div{border:.8pt solid #9aa3ad;border-radius:2mm;display:grid;place-items:center;text-align:center;padding:1mm;font-weight:700;font-size:${themed() ? '10.5' : '20'}pt;line-height:1.1;overflow-wrap:normal;word-break:normal}.g div.l{font-size:8.6pt}
+footer{margin-top:2mm;font-size:8pt;color:#555;text-align:center}
+</style></head><body><div class="wrap">${cards}</div><script>setTimeout(()=>print(),300)<\/script></body></html>`);
+  w.document.close();
+}
+
+/* ---------- кнопки й клавіші ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.m && phase === 'lobby') { mode = b.dataset.m; seed = Math.floor(Math.random() * 1e6); players.forEach(P => { P.c = card(P.no); }); paint(); bcast(); return; }
+  if (b.dataset.x) { const P = players.get(b.dataset.x); if (P) { try { P.conn.send({ t: 'kick' }); } catch (x) { /* ok */ } players.delete(P.tok); paint(); } return; }
+  switch (b.id) {
+    case 'start': startGame(); break;
+    case 'print': printCards(); break;
+    case 'next': next(); break;
+    case 'reveal': reveal(); break;
+    case 'check': $('#chkov').hidden = false; $('#cgrid').innerHTML = ''; $('#verd').textContent = ''; $('#chkn').value = ''; setTimeout(() => $('#chkn').focus(), 30); break;
+    case 'chkgo': checkNo(); break;
+    case 'chkx': $('#chkov').hidden = true; break;
+    case 'goon': $('#winov').hidden = true; break;
+    case 'newg': $('#winov').hidden = true; phase = 'lobby'; drawn = []; cur = -1; winners = []; seed = Math.floor(Math.random() * 1e6); players.forEach(P => { P.c = card(P.no); }); $('#game').hidden = true; $('#lobby').hidden = false; paint(); bcast(); break;
+    case 'end': if (confirm('Завершити гру й повернутися до запрошення?')) { phase = 'lobby'; drawn = []; cur = -1; winners = []; $('#game').hidden = true; $('#lobby').hidden = false; paint(); bcast(); } break;
+    case 'plc': $('#chkov').hidden = true; toast([...players.values()].map(P => P.name + ' №' + P.no + (P.on ? '' : ' (не на звʼязку)')).join(' · ') || 'Гравців з телефонами немає'); break;
+  }
+});
+$('#chkn').addEventListener('keydown', e => { if (e.key === 'Enter') checkNo(); });
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input')) return;
+  if (!$('#chkov').hidden || !$('#winov').hidden) { if (e.key === 'Escape') { $('#chkov').hidden = true; $('#winov').hidden = true; } return; }
+  if (phase !== 'game') return;
+  if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next(); }
+  else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') reveal();
+});
+paint(); startNet();
+window.BINGO = { state: () => ({ phase, mode, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
+})();
+</script>
+</body>
+</html>

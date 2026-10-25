@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Бінго — гравець</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Пластове бінго» — сторінка гравця на телефоні. Джерело: _robota/proby/bingo/gravets.html -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#f2f4f6;--mut:#a3abb5;--ok:#3daf6e;--gd:#ffc247;--rd:#d64541;--bl:#2f6fd0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.4 var(--txt);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.in{max-width:520px;margin:0 auto;padding:14px 14px calc(110px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.logo{display:inline-flex;gap:.08em;font:600 24px/1 var(--disp)}
+.logo i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font-style:normal;font-size:.78em;color:#fff}
+.logo i:nth-child(1){background:var(--rd)}.logo i:nth-child(2){background:var(--bl)}.logo i:nth-child(3){background:var(--gd);color:#1d1606}.logo i:nth-child(4){background:var(--ok)}.logo i:nth-child(5){background:#8a5bd1}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
+[hidden]{display:none!important}
+h1{margin:16px 0 6px;font:600 30px/1.05 var(--disp);text-transform:uppercase}
+p.m{color:var(--mut);margin:0 0 14px}
+label{display:block;font-weight:700;font-size:14px;color:var(--mut);margin:12px 0 4px}
+input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font-size:20px}
+.btn{width:100%;min-height:56px;margin-top:14px;border-radius:16px;border:0;background:var(--gd);color:#1d1606;font:700 19px var(--txt)}
+.err{color:#ff9a8a;min-height:1.3em;margin-top:6px}
+.ball{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--ln);margin-bottom:12px}
+.ball b{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--bc,#3daf6e);color:#fff;font:600 22px var(--disp);box-shadow:inset 0 -6px 10px #0004}
+.ball div{min-width:0}
+.ball small{display:block;font-weight:700;font-size:12px;color:var(--mut);letter-spacing:.04em}
+.ball .h{font-weight:700;line-height:1.25}
+.ball .a{font:600 20px var(--disp);text-transform:uppercase;color:var(--gd)}
+.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);font-weight:700;margin:2px 2px 6px}
+.card{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.card button{aspect-ratio:1;border-radius:12px;border:1px solid var(--ln);background:var(--card);padding:3px;font-weight:700;font-size:clamp(11px,3.2vw,14px);line-height:1.12;overflow-wrap:anywhere;position:relative}
+.card.num button{font:600 26px var(--disp)}
+.card button.long{font-size:clamp(9.5px,2.7vw,12.5px);overflow-wrap:normal;word-break:normal;hyphens:manual}
+.card button.on{background:var(--ok);border-color:var(--ok);color:#0e1f15}
+.card button.on::after{content:"✓";position:absolute;right:5px;top:2px;font-size:12px}
+.card button.w{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.tip{color:var(--mut);font-size:14px;margin:10px 2px 0}
+.skob{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(27,29,33,0),var(--bg) 35%)}
+.skob button{display:block;width:100%;max-width:520px;margin:0 auto;min-height:68px;border-radius:20px;border:0;background:var(--gd);color:#1d1606;font:600 28px var(--disp);letter-spacing:.04em}
+.skob button:disabled{background:var(--card2);color:var(--mut)}
+.msg{margin-top:10px;padding:12px 14px;border-radius:14px;font-weight:700;text-align:center}
+.msg.no{background:rgba(229,83,75,.15);color:#ffb3aa}.msg.win{background:rgba(255,194,71,.18);color:var(--gd);font-size:20px}.msg.oth{background:var(--card);color:#cfd5dc}
+</style>
+</head>
+<body>
+<div class="in">
+  <div class="top"><span class="logo" aria-label="Бінго"><i>Б</i><i>І</i><i>Н</i><i>Г</i><i>О</i></span><span class="sp"></span><span class="chip"><span class="dot" id="dot"></span><span id="st">…</span></span></div>
+
+  <section id="join">
+    <h1>Пластове бінго</h1>
+    <p class="m">Введи своє імʼя — і отримаєш картку.</p>
+    <div id="cbox"><label for="f-code">Код гри (з екрана)</label><input id="f-code" inputmode="numeric" maxlength="7" placeholder="123 456" autocomplete="off"></div>
+    <label for="f-name">Твоє імʼя</label><input id="f-name" maxlength="18" autocomplete="given-name" placeholder="Імʼя">
+    <button type="button" class="btn" id="go">Грати</button>
+    <div class="err" id="err"></div>
+  </section>
+
+  <section id="play" hidden>
+    <div class="ball" id="ball"><b id="bn">…</b><div><small id="bk">ЧЕКАЄМО ПОЧАТКУ</small><div class="h" id="bh">Ведучий скоро потягне першу кульку</div><div class="a" id="ba"></div></div></div>
+    <div class="meta"><span id="me"></span><span id="setn"></span></div>
+    <div class="card" id="card"></div>
+    <p class="tip" id="tip">Тисни на клітинку, коли знайшов відповідь. Закрив ряд (рядок, стовпчик чи діагональ) — тисни «СКОБ!»</p>
+    <div id="msg"></div>
+  </section>
+</div>
+<div class="skob" id="skobw" hidden><button type="button" id="skob" disabled>СКОБ!</button></div>
+
+<script>/*ZVYAZOK*/</script>
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const KEY = 'bingo.ses', COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
+const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
+let ses = load();
+if (!ses.tok) { ses.tok = Math.random().toString(36).slice(2) + Date.now().toString(36); save(ses); }
+const q = new URLSearchParams(location.search), qk = (q.get('k') || '').replace(/\D/g, '').slice(0, 6);
+if (qk.length === 6) { if (ses.code !== qk) { ses.code = qk; ses.marks = []; } save(ses); $('#cbox').hidden = true; }
+if (ses.name) $('#f-name').value = ses.name;
+
+/* ---------- звʼязок ---------- */
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
+let peer = null, conn = null, att = 0, lastRx = 0, hb = 0, st = null;
+function chip(on, t) { $('#dot').className = 'dot' + (on ? ' on' : ''); $('#st').textContent = t; }
+function stop() { att++; clearInterval(hb); try { conn && conn.close(); } catch (e) { /* ok */ } try { peer && peer.destroy(); } catch (e) { /* ok */ } conn = peer = null; }
+async function connect() {
+  stop(); const my = att; chip(false, 'Підключаємось…');
+  let P; try { P = await getPeer(); } catch (e) { P = null; }
+  if (my !== att) return;
+  if (!P) { chip(false, 'Немає звʼязку'); return; }
+  const p = peer = new P(undefined, window.GUTIRKA_PEER_OPTS || {});
+  const tmo = setTimeout(() => { if (my === att && !(conn && conn.open)) retry(my, 'Не знайшли гру — перевір код'); }, 15000);
+  p.on('error', e => { if (my !== att) return; if (e && e.type === 'peer-unavailable') { clearTimeout(tmo); retry(my, 'Гру з таким кодом не знайдено'); } });
+  p.on('open', () => {
+    if (my !== att) return;
+    const c = conn = p.connect('gutirky-bingo-' + ses.code, { reliable: true });
+    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'join', name: ses.name, tok: ses.tok }); chip(true, 'На звʼязку');
+      hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 5000); });
+    c.on('data', d => { if (my === att) { lastRx = Date.now(); onData(d); } });
+    c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
+  });
+}
+function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
+
+/* ---------- гра ---------- */
+const LINES = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [0, 5, 10, 15], [3, 6, 9, 12]];
+let marks = new Set(ses.marks || []), lastSig = '';
+function onData(d) {
+  if (!d) return;
+  if (d.t === 'st') { st = d; render(); }
+  else if (d.t === 'no') msg('no', 'Ще ні — ряд не закритий. Перевір, чи всі слова справді вже були.');
+  else if (d.t === 'kick') { stop(); chip(false, 'Ведучий прибрав тебе з гри'); }
+}
+function msg(k, t) { const m = $('#msg'); m.className = 'msg ' + k; m.textContent = t; }
+function render() {
+  $('#join').hidden = true; $('#play').hidden = false; $('#skobw').hidden = false;
+  const sig = st.mode + '|' + st.no + '|' + st.card.join(',');
+  if (sig !== lastSig) { if (lastSig) marks = new Set(); lastSig = sig; }
+  $('#me').textContent = ses.name + ' · картка №' + st.no; $('#setn').textContent = st.set;
+  const num = st.mode === 'chysla', b = $('#ball');
+  if (st.ph !== 'game' || !st.cur) { $('#bn').textContent = '…'; $('#bk').textContent = st.ph === 'game' ? 'ГРА ПОЧАЛАСЯ' : 'ЧЕКАЄМО ПОЧАТКУ'; $('#bh').textContent = 'Ведучий скоро потягне першу кульку'; $('#ba').textContent = ''; }
+  else {
+    b.style.setProperty('--bc', COLORS[st.cur.n % COLORS.length]);
+    $('#bn').textContent = num ? st.cur.ans : st.cur.n;
+    $('#bk').textContent = 'КУЛЬКА ' + st.cur.n + (num ? '' : ' · ЩО ЦЕ?');
+    $('#bh').textContent = num ? '' : st.cur.hint;
+    $('#ba').textContent = num ? '' : (st.cur.ans ? '→ ' + st.cur.ans : '');
+  }
+  const called = new Set(st.called || []), line = LINES.find(L => L.every(k => marks.has(k)));
+  const c = $('#card'); c.className = 'card' + (num ? ' num' : '');
+  c.innerHTML = st.card.map((w, k) => `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
+  $('#skob').disabled = !line || st.ph !== 'game';
+  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? '🎉 СКОБ! Ти виграв(-ла)!' : 'СКОБ! ' + st.win.name + ' закрив(-ла) ряд'); }
+  else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) $('#msg').className = '';
+}
+$('#card').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !st) return;
+  const k = +b.dataset.k; marks.has(k) ? marks.delete(k) : marks.add(k);
+  ses.marks = [...marks]; save(ses); render();
+});
+$('#skob').addEventListener('click', () => { try { conn.send({ t: 'claim' }); } catch (e) { /* ok */ } if (navigator.vibrate) navigator.vibrate(60); });
+function join() {
+  const name = $('#f-name').value.replace(/\s+/g, ' ').trim(), cd = ($('#f-code').value || '').replace(/\D/g, '');
+  if (!ses.code || !$('#cbox').hidden) { if (cd.length !== 6) { $('#err').textContent = 'Код — 6 цифр з екрана гри.'; return; } ses.code = cd; }
+  if (name.length < 2) { $('#err').textContent = 'Напиши своє імʼя.'; return; }
+  ses.name = name; save(ses); $('#err').textContent = ''; connect();
+  $('#join').hidden = true; $('#play').hidden = false; $('#skobw').hidden = false;
+}
+$('#go').addEventListener('click', join);
+$('#f-name').addEventListener('keydown', e => { if (e.key === 'Enter') join(); });
+if (ses.code && ses.name && qk.length !== 6) connect();
+})();
+</script>
+</body>
+</html>
