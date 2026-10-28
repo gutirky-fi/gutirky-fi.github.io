@@ -423,6 +423,10 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
       <h1>Для всіх</h1>
       <p class="hand">юнацтву, новацтву, виховникам і гостям</p>
     </section>
+    <section class="sec" aria-labelledby="h-games">
+      <h2 id="h-games">Ігри<small>для сходин, ватри й таборів</small></h2>
+      <div class="tiles"><a class="tile" href="bingo/" style="--a:#ffc247;--ab:#ffc247"><b>Пластове бінго</b><span>Ведучий тягне кульки на великому екрані, гравці — з телефонів або паперових карток. Числа або слова з гутірки.</span><span class="go">Грати</span></a></div>
+    </section>
     <section class="sec" aria-labelledby="h-tips">
       <h2 id="h-tips">Швидкі підказки<small>натисни — і бачиш, як робити</small></h2>
       <div class="tiles" id="tips"></div>
@@ -768,7 +772,8 @@ HIDE.gut.forEach(t => {
 const ALSO = [
   ['#yun', 'Усе для юнацтва', 'Вмілості, «Вивчай сам», «Перевір себе» — те саме, що бачать юнаки.', 'Відкрити', COL.yun],
   ['#vsi', 'Для всіх', 'Підказки, співаник, цікаве.', 'Відкрити', COL.vsi],
-  ['skob', 'Гра «Потужний СКОБ!»', 'Вікторина з телефонів юнаків — є наприкінці кожної гутірки.', 'Як це працює', COL.vyh]
+  ['skob', 'Гра «Потужний СКОБ!»', 'Вікторина з телефонів юнаків — є наприкінці кожної гутірки.', 'Як це працює', COL.vyh],
+  ['bingo/', 'Пластове бінго', 'Кульки на екрані, картки на телефонах або папері. Числа чи слова з «Кераміки України».', 'Грати', '#ffc247']
 ];
 const isIn = () => store.get(K_CODE) === true || UNLOCK;
 let UNLOCK = false;
@@ -793,7 +798,7 @@ function renderVyh() {
   if (!inn) return;
   renderFeatAll();
   renderGCards();
-  $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => h.startsWith('#')
+  $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => (h.startsWith('#') || h.includes('/'))
     ? `<a class="tile${h === '#vsi' ? ' all' : ''}" href="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></a>`
     : `<button class="tile${h === '#vsi' ? ' all' : ''}" type="button" data-also="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></button>`).join('');
   showTab(VT);
