@@ -18,7 +18,7 @@ def page(skob_rel):
     src = (TUT / 'index.html').read_text(encoding='utf-8')
     inl = lambda t: '<script>\n' + t + '\n</script>'
     for tag, text in [('<script src="../../src/qr.js"></script>', (D / 'qr.js').read_text(encoding='utf-8')),
-                      ('<script src="../../src/skob.js"></script>', (D / 'skob.js').read_text(encoding='utf-8')),
+                      ('<script src="../../src/skob.js"></script>', (D / 'zvyazok.js').read_text(encoding='utf-8') + '\n' + (D / 'skob.js').read_text(encoding='utf-8')),   # запасні канали звʼязку + гра
                       ('<script src="pryklad.js"></script>', (TUT / 'pryklad.js').read_text(encoding='utf-8'))]:
         src = rep(src, tag, inl(text))
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
