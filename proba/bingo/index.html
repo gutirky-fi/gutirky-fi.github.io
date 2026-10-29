@@ -83,7 +83,12 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
 .x{position:absolute;right:12px;top:12px;width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:20px}
 .win h2{color:var(--gd)}
 .win .big{font-size:64px;line-height:1}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-width:440px;margin:14px auto}
+.grid{display:grid;grid-template-columns:repeat(var(--gc,4),1fr);gap:6px;max-width:440px;margin:14px auto}
+.grid.n9{max-width:640px;gap:4px}.grid.n9 div{aspect-ratio:.9;font-size:18px}
+.grid div.e{background:none;border-style:dashed;opacity:.35}
+.grid div.hd{background:none;border:0;font:600 22px var(--disp);aspect-ratio:auto;padding:0}
+.modes.pats button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.modes button small{display:block;font-weight:600;font-size:12px;opacity:.75}
 .grid div{aspect-ratio:1.35;display:grid;place-items:center;padding:4px;border-radius:10px;background:var(--card);border:1px solid var(--ln);font-weight:700;font-size:14px;line-height:1.15;overflow-wrap:anywhere}
 .grid div.c{background:#2e5a43;border-color:#3daf6e}
 .grid div.w{background:var(--gd);border-color:var(--gd);color:#1d1606}
@@ -97,6 +102,7 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
 <body>
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a><span class="logo" aria-label="Бінго"><i>Б</i><i>І</i><i>Н</i><i>Г</i><i>О</i></span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <button type="button" class="chip" id="patc" hidden title="Змінити мету">Мета: <b id="patn"></b></button>
   <button type="button" class="chip" id="plc" hidden>Гравці: <b id="pln">0</b></button>
 </div>
 
@@ -106,8 +112,10 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
     <div>
       <h1>Пластове бінго</h1>
       <p class="sub">Ведучий тягне кульки, гравці шукають на своїй картці. Хто перший закрив ряд — кричить «СКОБ!»</p>
-      <div class="lbl">Про що гра</div>
+      <div class="lbl">Варіант гри</div>
       <div class="modes" id="modes"></div>
+      <div class="lbl">Як виграти</div>
+      <div class="modes pats" id="pats"></div>
       <div class="lbl">Скануйте QR-код або відкрийте</div>
       <div class="url" id="url"></div>
       <div class="lbl">і введіть код</div>
@@ -120,7 +128,7 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
       </div>
     </div>
   </div>
-  <p class="rules">Картка — 4×4. Ряд — по горизонталі, вертикалі або діагоналі. Телефони й папір можна змішувати: паперові картки мають номер, і ведучий перевіряє їх кнопкою «Перевірити картку».</p>
+  <p class="rules" id="rules"></p>
 </main>
 
 <main id="game" hidden>
@@ -540,6 +548,7 @@ const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ---------- що тягнемо: слова з підказками (тематичне) або числа ---------- */
+const num = n => Array.from({ length: n }, (_, i) => [String(i + 1), '']);
 const SETS = {
   keramika: { name: 'Кераміка України', items: [
     ['Глина', 'природний матеріал: з водою мʼякий, після випалу твердий'],
@@ -571,26 +580,70 @@ const SETS = {
     ['Гавареччина', 'галицьке село, де глечики чорні від диму'],
     ['Олешня', 'Полісся: прості задимлені горщики й макітри'],
     ['Ольвія', 'давньогрецьке місто біля Чорного моря, де знаходять амфори']] },
-  chysla: { name: 'Числа 1–40', items: Array.from({ length: 40 }, (_, i) => [String(i + 1), '']) }
+  chysla: { name: 'Числа 1–40', sub: 'картка 4×4', cols: 4, rows: 4, items: num(40) },
+  shvydke: { name: 'Швидке 1–20', sub: 'картка 3×3, для менших', cols: 3, rows: 3, items: num(20) },
+  klasyka: { name: 'Класичне 1–75', sub: 'картка 5×5, Б-І-Н-Г-О', cols: 5, rows: 5, head: ['Б', 'І', 'Н', 'Г', 'О'], free: 12, items: num(75).map(([s]) => [s, '', 'БІНГО'[Math.floor((+s - 1) / 15)] + ' ' + s]) },
+  loto: { name: 'Лото 1–90', sub: 'картка 3×9, як у Європі', cols: 9, rows: 3, loto: true, items: num(90) }
 };
+SETS.keramika.cols = 4; SETS.keramika.rows = 4; SETS.keramika.themed = true; SETS.keramika.sub = 'слова з гутірки, 4×4';
+const ORDER = ['chysla', 'shvydke', 'klasyka', 'loto', 'keramika'];
+/* як виграти */
+const PATS = {
+  ryad: { name: 'Ряд', d: 'закрий рядок, стовпчик або діагональ' },
+  kuty: { name: 'Чотири кути', d: 'закрий чотири кутові клітинки' },
+  r1: { name: 'Один рядок', d: 'закрий будь-який рядок' },
+  r2: { name: 'Два рядки', d: 'закрий два рядки' },
+  vsia: { name: 'Уся картка', d: 'закрий усю картку' }
+};
+const patsFor = () => set().loto ? ['r1', 'r2', 'vsia'] : ['ryad', 'kuty', 'vsia'];
+let pat = 'ryad';
 const COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];
-let mode = (new URLSearchParams(location.search).get('tema') === 'keramika') ? 'keramika' : 'chysla';   // за замовчуванням — просте бінго з числами
+const QS = new URLSearchParams(location.search), QM = QS.get('gra') || QS.get('tema');
+let mode = ORDER.includes(QM) ? QM : 'chysla';   // за замовчуванням — просте бінго з числами 1–40
 const set = () => SETS[mode];
-const themed = () => mode !== 'chysla';
+const themed = () => !!set().themed;
+if (!patsFor().includes(pat)) pat = patsFor()[0];
+const ballT = id => set().items[id][2] || set().items[id][0];   // як назвати кульку («Б 7» у класичному)
+const cellT = id => id === -1 ? '' : id === -2 ? '★' : set().items[id][0];   // -1 — порожня клітинка (лото), -2 — вільна (центр 5×5)
 
 /* ---------- картки: 4×4 з номером; однаковий номер — однакова картка (для паперу й перевірки) ---------- */
 const rng = s => () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 let seed = Math.floor(Math.random() * 1e6);
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
 function card(no) {
-  const r = rng(seed * 131 + no * 7919 + (mode === 'chysla' ? 3 : 0)), ids = set().items.map((_, i) => i);
-  for (let i = ids.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [ids[i], ids[j]] = [ids[j], ids[i]]; }
-  const c = ids.slice(0, 16);
-  if (mode === 'chysla') c.sort((a, b) => a - b);
+  const S = set(), r = rng(seed * 131 + no * 7919 + ORDER.indexOf(mode) * 17);
+  const shuf = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  if (S.loto) {   // 3 рядки × 9 стовпців, у кожному рядку 5 чисел; стовпці: 1–9, 10–19 … 80–90
+    const use = [0, 1, 2].map(() => shuf(range(0, 8)).slice(0, 5)), c = Array(27).fill(-1);
+    for (let col = 0; col < 9; col++) {
+      const rows = [0, 1, 2].filter(rw => use[rw].includes(col)), lo = col ? col * 10 : 1, hi = col === 8 ? 90 : col * 10 + 9;
+      const pool = shuf(range(lo, hi)).slice(0, rows.length).sort((a, b) => a - b);
+      rows.forEach((rw, i) => { c[rw * 9 + col] = pool[i] - 1; });
+    }
+    return c;
+  }
+  if (S.head) {   // класичне: стовпець Б 1–15, І 16–30, Н 31–45, Г 46–60, О 61–75; центр вільний
+    const c = Array(25);
+    for (let col = 0; col < 5; col++) shuf(range(col * 15, col * 15 + 14)).slice(0, 5).sort((a, b) => a - b).forEach((id, rw) => { c[rw * 5 + col] = id; });
+    c[S.free] = -2; return c;
+  }
+  const c = shuf(S.items.map((_, i) => i)).slice(0, S.cols * S.rows);
+  if (!themed()) c.sort((a, b) => a - b);
   return c;
 }
-const LINES = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [0, 5, 10, 15], [3, 6, 9, 12]];
+function wins(c) {   // набори клітинок, кожен з яких дає виграш
+  const S = set(), C = S.cols, R = S.rows, idx = range(0, C * R - 1).filter(k => c[k] !== -1);
+  const rows = range(0, R - 1).map(y => idx.filter(k => Math.floor(k / C) === y));
+  if (pat === 'vsia') return [idx];
+  if (pat === 'r1') return rows;
+  if (pat === 'r2') return [[...rows[0], ...rows[1]], [...rows[0], ...rows[2]], [...rows[1], ...rows[2]]];
+  if (pat === 'kuty') return [[0, C - 1, C * (R - 1), C * R - 1]];
+  const cols = range(0, C - 1).map(x => range(0, R - 1).map(y => y * C + x));
+  const diag = C === R ? [range(0, C - 1).map(i => i * C + i), range(0, C - 1).map(i => i * C + C - 1 - i)] : [];
+  return [...rows, ...cols, ...diag];
+}
 const known = () => new Set(drawn.filter(id => id !== cur || shown));   // витягнуті й уже названі
-function lineOf(c, ok) { return LINES.find(L => L.every(k => ok.has(c[k]))) || null; }
+function lineOf(c, ok) { return wins(c).find(W => W.every(k => c[k] === -2 || ok.has(c[k]))) || null; }
 
 /* ---------- стан гри ---------- */
 let phase = 'lobby', drawn = [], cur = -1, shown = false, winners = [];
@@ -628,7 +681,7 @@ function onConn(c) {
   });
   c.on('close', () => { if (P && P.conn === c) { P.on = false; paint(); } });
 }
-const stateFor = P => ({ t: 'st', ph: phase, mode, set: set().name, no: P.no, card: P.c.map(i => set().items[i][0]), cur: cur >= 0 ? { n: drawn.length, hint: set().items[cur][1], ans: (shown || !themed()) ? set().items[cur][0] : '' } : null, called: [...known()].map(i => set().items[i][0]), win: winners.length ? winners[winners.length - 1] : null });
+const stateFor = P => ({ t: 'st', ph: phase, mode, th: themed(), set: set().name, no: P.no, card: P.c.map(cellT), cols: set().cols, head: set().head || null, free: P.c.map((id, k) => id === -2 ? k : -1).filter(k => k >= 0), blank: P.c.map((id, k) => id === -1 ? k : -1).filter(k => k >= 0), wins: wins(P.c), goal: PATS[pat].name, gd: PATS[pat].d, cur: cur >= 0 ? { n: drawn.length, hint: set().items[cur][1], ball: ballT(cur), ans: (shown || !themed()) ? set().items[cur][0] : '' } : null, called: [...known()].map(ballT), win: winners.length ? winners[winners.length - 1] : null });
 function sendTo(P) { try { if (P.conn && P.conn.open) P.conn.send(stateFor(P)); } catch (e) { /* ok */ } }
 const bcast = () => players.forEach(sendTo);
 setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - (P.t || 0) > 16000) { P.on = false; paint(); } }); bcast(); }, 5000);
@@ -646,22 +699,23 @@ function next() {
 function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
 function claim(P) {
   const L = lineOf(P.c, known());
-  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «СКОБ!», але ряду ще немає'); return; }
+  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «СКОБ!», але мету ще не виконано'); return; }
   if (!winners.some(w => w.no === P.no)) winners.push({ name: P.name, no: P.no });
   showWin(P.name, P.no, P.c, L); bcast();
 }
 function showWin(name, no, c, L) {
   $('#wint').textContent = name + ' · картка №' + no;
-  $('#wgrid').innerHTML = gridHtml(c, L);
+  gridEl($('#wgrid')).innerHTML = gridHtml(c, L);
   $('#winov').hidden = false;
 }
-function gridHtml(c, L) { const ok = known(); return c.map((id, k) => `<div class="${L && L.includes(k) ? 'w' : ok.has(id) ? 'c' : ''}">${esc(set().items[id][0])}</div>`).join(''); }
+function gridHtml(c, L) { const ok = known(), S = set(); return (S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '') + c.map((id, k) => `<div class="${id === -1 ? 'e' : L && L.includes(k) ? 'w' : (id === -2 || ok.has(id)) ? 'c' : ''}">${esc(cellT(id))}</div>`).join(''); }
+function gridEl(el) { el.style.setProperty('--gc', set().cols); el.classList.toggle('n9', set().cols === 9); return el; }
 function checkNo() {
   const n = parseInt($('#chkn').value, 10); if (!(n > 0)) return;
   const pl = [...players.values()].find(P => P.no === n), c = pl ? pl.c : card(n), L = lineOf(c, known());
-  $('#cgrid').innerHTML = gridHtml(c, L);
+  gridEl($('#cgrid')).innerHTML = gridHtml(c, L);
   const v = $('#verd'); v.className = 'verd ' + (L ? 'ok' : 'no');
-  v.textContent = L ? '✓ Є ряд! ' + (pl ? pl.name : 'Картка №' + n) + ' виграє' : 'Ряду ще немає — грайте далі';
+  v.textContent = L ? '✓ Мету «' + PATS[pat].name + '» виконано! ' + (pl ? pl.name : 'Картка №' + n) + ' виграє' : 'Мету «' + PATS[pat].name + '» ще не виконано — грайте далі';
   if (L) { const nm = pl ? pl.name : 'Картка №' + n; if (!winners.some(w => w.no === n)) winners.push({ name: nm, no: n }); bcast(); }
 }
 
@@ -677,7 +731,7 @@ function paintBall(pop) {
   if (themed()) {
     $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + ' · ЩО ЦЕ?</small>' + esc(it[1]);
     const a = $('#ans'); a.className = 'ans' + (shown ? '' : ' hid'); a.textContent = shown ? it[0] : 'Хто знає? Відповідь — кнопкою «Показати відповідь»';
-  } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>'; $('#ans').textContent = ''; }
+  } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>' + (it[2] ? esc(it[2]) : ''); $('#ans').textContent = ''; }
   if (pop) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
 }
 function paint() {
@@ -687,7 +741,11 @@ function paint() {
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
-  $('#modes').innerHTML = ['chysla', 'keramika'].map(k => [k, SETS[k]]).map(([k, s]) => `<button type="button" data-m="${k}" aria-pressed="${k === mode}">${esc(s.name)}</button>`).join('');
+  $('#modes').innerHTML = ORDER.map(k => [k, SETS[k]]).map(([k, s]) => `<button type="button" data-m="${k}" aria-pressed="${k === mode}">${esc(s.name)}<small>${esc(s.sub)}</small></button>`).join('');
+  $('#pats').innerHTML = patsFor().map(k => `<button type="button" data-p="${k}" aria-pressed="${k === pat}">${esc(PATS[k].name)}</button>`).join('');
+  $('#patn').textContent = PATS[pat].name; $('#patc').hidden = phase === 'lobby';
+  const S = set();
+  $('#rules').textContent = 'Картка ' + (S.loto ? '3×9: у кожному рядку 5 чисел' : S.cols + '×' + S.rows + (S.head ? ', центр вільний' : '')) + ', кульок ' + S.items.length + '. Виграє той, хто перший ' + PATS[pat].d.replace('закрий', 'закрив') + '. Мету можна змінити й під час гри (кнопка «Мета» вгорі). Телефони й папір можна змішувати: паперові картки мають номер, і ведучий перевіряє їх кнопкою «Перевірити картку».';
   const all = [...players.values()];
   $('#pln').textContent = all.filter(P => P.on).length; $('#pln2').textContent = all.length ? '· ' + all.length : '';
   $('#plc').hidden = phase === 'lobby';
@@ -695,20 +753,21 @@ function paint() {
   $('#reveal').hidden = !themed(); $('#reveal').disabled = cur < 0 || shown;
   $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
   const ok = known(); $('#ncl').textContent = ok.size;
-  $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(set().items[id][0])}</span>`).join('');
+  $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(ballT(id))}</span>`).join('');
 }
 
 /* ---------- паперові картки ---------- */
 function printCards() {
   const n = Math.max(1, Math.min(60, parseInt($('#np').value, 10) || 6));
-  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c"><header><b>БІНГО</b><span>${esc(set().name)}</span><em>Картка №${no}</em></header><div class="g">${card(no).map(id => { const w = set().items[id][0]; return `<div class="${w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>Закресли слово, коли ведучий прочитає підказку. Закрив ряд — кричи «СКОБ!»</footer></section>`).join('');
+  const S = set(), lo = !!S.loto, hd = S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '';
+  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c${lo ? ' lo' : ''}"><header><b>БІНГО</b><span>${esc(S.name)}</span><em>Картка №${no}</em></header><div class="g">${hd}${card(no).map(id => { const w = cellT(id); return `<div class="${id === -1 ? 'e' : w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>${themed() ? 'Закресли слово, коли ведучий прочитає підказку.' : 'Закресли число, коли ведучий його назве.'} Мета: ${esc(PATS[pat].d)} — і кричи «СКОБ!»</footer></section>`).join('');
   const w = window.open('', '_blank');
   if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
   w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Бінго — паперові картки</title><style>
 @page{size:A4;margin:10mm}*{box-sizing:border-box}body{margin:0;font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125}
-.wrap{display:grid;grid-template-columns:1fr 1fr;gap:8mm}.c{border:1.2pt solid #1d2125;border-radius:4mm;padding:4mm;break-inside:avoid;height:128mm;display:flex;flex-direction:column}
+.wrap{display:grid;grid-template-columns:${lo ? '1fr' : '1fr 1fr'};gap:8mm}.c{border:1.2pt solid #1d2125;border-radius:4mm;padding:4mm;break-inside:avoid;height:${lo ? '62mm' : '128mm'};display:flex;flex-direction:column}
 header{display:flex;align-items:baseline;gap:3mm;border-bottom:1pt solid #1d2125;padding-bottom:2mm;margin-bottom:3mm}header b{font:700 18pt Oswald,Arial,sans-serif;letter-spacing:.06em}header span{flex:1;font-size:9pt;color:#555}header em{font-style:normal;font-weight:700;font-size:11pt}
-.g{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));gap:1.5mm}.g div{border:.8pt solid #9aa3ad;border-radius:2mm;display:grid;place-items:center;text-align:center;padding:1mm;font-weight:700;font-size:${themed() ? '10.5' : '20'}pt;line-height:1.1;overflow-wrap:normal;word-break:normal}.g div.l{font-size:8.6pt}
+.g{flex:1;display:grid;grid-template-columns:repeat(${S.cols},minmax(0,1fr));grid-template-rows:${S.head ? 'auto ' : ''}repeat(${S.rows},minmax(0,1fr));gap:1.5mm}.g div.e{background:#e9ecef;border-color:#e9ecef}.g div.hd{border:0;font:700 18pt Oswald,Arial,sans-serif;padding:0}.g div{border:.8pt solid #9aa3ad;border-radius:2mm;display:grid;place-items:center;text-align:center;padding:1mm;font-weight:700;font-size:${themed() ? '10.5' : '20'}pt;line-height:1.1;overflow-wrap:normal;word-break:normal}.g div.l{font-size:8.6pt}
 footer{margin-top:2mm;font-size:8pt;color:#555;text-align:center}
 </style></head><body><div class="wrap">${cards}</div><script>setTimeout(()=>print(),300)<\/script></body></html>`);
   w.document.close();
@@ -717,7 +776,8 @@ footer{margin-top:2mm;font-size:8pt;color:#555;text-align:center}
 /* ---------- кнопки й клавіші ---------- */
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
-  if (b.dataset.m && phase === 'lobby') { mode = b.dataset.m; seed = Math.floor(Math.random() * 1e6); players.forEach(P => { P.c = card(P.no); }); paint(); bcast(); return; }
+  if (b.dataset.p) { pat = b.dataset.p; paint(); bcast(); return; }
+  if (b.dataset.m && phase === 'lobby') { mode = b.dataset.m; if (!patsFor().includes(pat)) pat = patsFor()[0]; seed = Math.floor(Math.random() * 1e6); players.forEach(P => { P.c = card(P.no); }); paint(); bcast(); return; }
   if (b.dataset.x) { const P = players.get(b.dataset.x); if (P) { try { P.conn.send({ t: 'kick' }); } catch (x) { /* ok */ } players.delete(P.tok); paint(); } return; }
   switch (b.id) {
     case 'start': startGame(); break;
@@ -730,6 +790,7 @@ document.addEventListener('click', e => {
     case 'goon': $('#winov').hidden = true; break;
     case 'newg': $('#winov').hidden = true; phase = 'lobby'; drawn = []; cur = -1; winners = []; seed = Math.floor(Math.random() * 1e6); players.forEach(P => { P.c = card(P.no); }); document.body.classList.remove('playing'); $('#game').hidden = true; $('#lobby').hidden = false; paint(); bcast(); break;
     case 'end': if (confirm('Завершити гру й повернутися до запрошення?')) { phase = 'lobby'; drawn = []; cur = -1; winners = []; document.body.classList.remove('playing'); $('#game').hidden = true; $('#lobby').hidden = false; paint(); bcast(); } break;
+    case 'patc': { const L = patsFor(); pat = L[(L.indexOf(pat) + 1) % L.length]; paint(); bcast(); toast('Нова мета: ' + PATS[pat].name); break; }
     case 'plc': $('#chkov').hidden = true; toast([...players.values()].map(P => P.name + ' №' + P.no + (P.on ? '' : ' (не на звʼязку)')).join(' · ') || 'Гравців з телефонами немає'); break;
   }
 });
@@ -742,7 +803,7 @@ document.addEventListener('keydown', e => {
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') reveal();
 });
 paint(); startNet();
-window.BINGO = { state: () => ({ phase, mode, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
+window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
 })();
 </script>
 </body>

@@ -39,7 +39,12 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .ball .h{font-weight:700;line-height:1.25}
 .ball .a{font:600 20px var(--disp);text-transform:uppercase;color:var(--gd)}
 .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);font-weight:700;margin:2px 2px 6px}
-.card{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.card{display:grid;grid-template-columns:repeat(var(--gc,4),1fr);gap:6px}
+.card.n9{gap:3px}.card.n9 button.on::after{display:none}.card.n9 button{aspect-ratio:.78;border-radius:7px;font:600 clamp(15px,4.6vw,21px) var(--disp);padding:0}
+.card .hd{display:grid;place-items:center;font:600 24px var(--disp);color:var(--gd)}
+.card button.e{background:none;border-style:dashed;opacity:.3}
+.card button.fr{background:#2e5a43;border-color:var(--ok);color:var(--gd)}
+.ball b.sm{font-size:17px}
 .card button{aspect-ratio:1;border-radius:12px;border:1px solid var(--ln);background:var(--card);padding:3px;font-weight:700;font-size:clamp(11px,3.2vw,14px);line-height:1.12;overflow-wrap:anywhere;position:relative}
 .card.num button{font:600 26px var(--disp)}
 .card button.long{font-size:clamp(9.5px,2.7vw,12.5px);overflow-wrap:normal;word-break:normal;hyphens:manual}
@@ -119,12 +124,11 @@ async function connect() {
 function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
 
 /* ---------- гра ---------- */
-const LINES = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15], [0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15], [0, 5, 10, 15], [3, 6, 9, 12]];
 let marks = new Set(ses.marks || []), lastSig = '';
 function onData(d) {
   if (!d) return;
   if (d.t === 'st') { st = d; render(); }
-  else if (d.t === 'no') msg('no', 'Ще ні — ряд не закритий. Перевір, чи всі слова справді вже були.');
+  else if (d.t === 'no') msg('no', 'Ще ні — мету не виконано. Перевір, чи все, що ти позначив, справді вже було.');
   else if (d.t === 'kick') { stop(); chip(false, 'Ведучий прибрав тебе з гри'); }
 }
 function msg(k, t) { const m = $('#msg'); m.className = 'msg ' + k; m.textContent = t; }
@@ -133,24 +137,25 @@ function render() {
   const sig = st.mode + '|' + st.no + '|' + st.card.join(',');
   if (sig !== lastSig) { if (lastSig) marks = new Set(); lastSig = sig; }
   $('#me').textContent = ses.name + ' · картка №' + st.no; $('#setn').textContent = st.set;
-  const num = st.mode === 'chysla', b = $('#ball');
+  const num = !st.th, b = $('#ball'), free = new Set(st.free || []), blank = new Set(st.blank || []);
   if (st.ph !== 'game' || !st.cur) { $('#bn').textContent = '…'; $('#bk').textContent = st.ph === 'game' ? 'ГРА ПОЧАЛАСЯ' : 'ЧЕКАЄМО ПОЧАТКУ'; $('#bh').textContent = 'Ведучий скоро потягне першу кульку'; $('#ba').textContent = ''; }
   else {
     b.style.setProperty('--bc', COLORS[st.cur.n % COLORS.length]);
-    $('#bn').textContent = num ? st.cur.ans : st.cur.n;
+    $('#bn').textContent = num ? (st.cur.ball || st.cur.ans) : st.cur.n; $('#bn').className = String($('#bn').textContent).length > 2 ? 'sm' : '';
     $('#bk').textContent = 'КУЛЬКА ' + st.cur.n + (num ? '' : ' · ЩО ЦЕ?');
     $('#bh').textContent = num ? '' : st.cur.hint;
     $('#ba').textContent = num ? '' : (st.cur.ans ? '→ ' + st.cur.ans : '');
   }
-  const called = new Set(st.called || []), line = LINES.find(L => L.every(k => marks.has(k)));
-  const c = $('#card'); c.className = 'card' + (num ? ' num' : '');
-  c.innerHTML = st.card.map((w, k) => `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
+  const W = st.wins || [], line = W.find(L => L.every(k => marks.has(k) || free.has(k)));
+  const c = $('#card'); c.className = 'card' + (num ? ' num' : '') + (st.cols === 9 ? ' n9' : ''); c.style.setProperty('--gc', st.cols || 4);
+  c.innerHTML = (st.head ? st.head.map(h => `<span class="hd">${esc(h)}</span>`).join('') : '') + st.card.map((w, k) => blank.has(k) ? `<button type="button" class="e" disabled aria-hidden="true"></button>` : free.has(k) ? `<button type="button" class="${line && line.includes(k) ? 'w' : 'fr'}" disabled aria-label="Вільна клітинка">★</button>` : `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
+  $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «СКОБ!»';
   $('#skob').disabled = !line || st.ph !== 'game';
-  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? '🎉 СКОБ! Ти виграв(-ла)!' : 'СКОБ! ' + st.win.name + ' закрив(-ла) ряд'); }
+  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? '🎉 СКОБ! Ти виграв(-ла)!' : 'СКОБ! ' + st.win.name + ' виграв(-ла)'); }
   else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) $('#msg').className = '';
 }
 $('#card').addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b || !st) return;
+  const b = e.target.closest('button[data-k]'); if (!b || !st) return;
   const k = +b.dataset.k; marks.has(k) ? marks.delete(k) : marks.add(k);
   ses.marks = [...marks]; save(ses); render();
 });
