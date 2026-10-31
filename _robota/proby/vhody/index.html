@@ -375,6 +375,21 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 #cmpk b{align-self:center;padding:0 8px 0 10px;font:600 13px var(--txt);color:var(--mut)}
 #cmpk button{padding:8px 14px;border-radius:99px;border:0;background:none;color:var(--mut);font:700 14px var(--txt);cursor:pointer}
 #cmpk button[aria-pressed=true]{background:var(--card2);color:var(--ink)}
+/*PG*/
+.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.pg section{padding:18px 18px 14px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.pg h3{margin:0 0 4px;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+.pg .why{margin:0 0 10px;color:var(--mut);font-size:14px}
+.pg ul{list-style:none;margin:0;padding:0}
+.pg li+li{border-top:1px solid var(--ln)}
+.pg a{display:flex;gap:10px;align-items:flex-start;padding:10px 0;color:inherit;text-decoration:none}
+.pg a:hover b{text-decoration:underline;text-decoration-color:var(--vyh)}
+.pg a:focus-visible{outline:3px solid #ffc247;outline-offset:2px;border-radius:6px}
+.pg a b{display:block;font-weight:700;line-height:1.25}
+.pg a small{display:block;color:var(--mut);font-size:14px;line-height:1.35;margin-top:2px}
+.pg a i{flex:none;margin-left:auto;margin-top:2px;font-style:normal;font-size:12px;font-weight:700;color:var(--vyh-t);border:1px solid var(--ln);border-radius:6px;padding:1px 6px}
+.pgsrc{margin:12px 2px 0;color:var(--mut);font-size:14px}
+/*/PG*/
 </style>
 </head>
 <body>
@@ -522,6 +537,29 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
         <h2 id="h-also">Також для вас</h2>
         <div class="tiles" id="also"></div>
       </section>
+      <!--PG-->
+      <section class="sec" aria-labelledby="h-pg">
+        <h2 id="h-pg">Від Пласту<small>офіційні матеріали з plast.global — відкриваються на їхньому сайті</small></h2>
+        <div class="pg">
+          <section><h3>Безпека</h3><p class="why">Прочитати перед сходинами, мандрівкою чи табором.</p><ul>
+            <li><a href="https://plast.global/rulers/napryamni-plastu-pro-bezpeku/" target="_blank" rel="noopener"><span><b>Напрямні Пласту про безпеку</b><small>правила безпеки на заходах</small></span><i>сайт</i></a></li>
+            <li><a href="https://plast.global/rulers/obyava-gpb-shhodo-poperedzhennya-ta-reaguvannya-na-nasylstvo-v-plastovyh-organizacziyah/" target="_blank" rel="noopener"><span><b>Насильство: як запобігти й що робити</b><small>об’ява Головної пластової булави</small></span><i>сайт</i></a></li>
+            <li><a href="https://plast.global/rulers/obyava-gpb-shhodo-proyaviv-dyskryminacziyi-ta-vorozhnechi/" target="_blank" rel="noopener"><span><b>Дискримінація й ворожнеча</b><small>об’ява Головної пластової булави</small></span><i>сайт</i></a></li>
+          </ul></section>
+          <section><h3>Як вести гурток</h3><p class="why">Книжки з архіву пластової літератури.</p><ul>
+            <li><a href="https://plast.global/plast-books/osnovy-plastovoyi-skautskoyi-gurtkovoyi-systemy/" target="_blank" rel="noopener"><span><b>Основи гурткової системи</b><small>як працює гурток і хто в ньому що робить</small></span><i>книжка</i></a></li>
+            <li><a href="https://plast.global/plast-books/posibnyk-organizatoru-ta-instruktoru-vpv/" target="_blank" rel="noopener"><span><b>Посібник організатору й інструктору</b><small>як підготувати й провести вишкіл</small></span><i>книжка</i></a></li>
+            <li><a href="https://plast.global/plast-books/pastuh-r-yak-stvoryty-plastovyj-kurin/" target="_blank" rel="noopener"><span><b>Як створити пластовий курінь</b><small>Р. Пастух</small></span><i>книжка</i></a></li>
+          </ul></section>
+          <section><h3>Вмілості</h3><p class="why">Коли юнак показав вимоги — інструктор підписує посвідку.</p><ul>
+            <li><a href="https://plast.global/wp-content/uploads/2024/12/posvidka_standart.pdf" target="_blank" rel="noopener"><span><b>Бланк посвідки вмілості</b><small>роздрукувати й заповнити після проби</small></span><i>PDF</i></a></li>
+            <li><a href="https://plast.global/biblioteka-vmilostej/" target="_blank" rel="noopener"><span><b>Бібліотека вмілостей</b><small>усі вмілості УПЮ з вимогами</small></span><i>сайт</i></a></li>
+            <li><a href="https://plast.global/yak-zareyestruvaty-vmilist/" target="_blank" rel="noopener"><span><b>Як запропонувати нову вмілість</b><small>якщо потрібної вмілості ще немає</small></span><i>сайт</i></a></li>
+          </ul></section>
+        </div>
+        <p class="pgsrc">Матеріали належать Пласту (© Plast Global). Ми лише даємо посилання.</p>
+      </section>
+      <!--/PG-->
     </div>
   </main>
 
