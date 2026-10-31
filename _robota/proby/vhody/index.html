@@ -376,7 +376,8 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 #cmpk button{padding:8px 14px;border-radius:99px;border:0;background:none;color:var(--mut);font:700 14px var(--txt);cursor:pointer}
 #cmpk button[aria-pressed=true]{background:var(--card2);color:var(--ink)}
 /*PG*/
-.pg{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+.pg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:720px){.pg{grid-template-columns:1fr}}
 .pg section{padding:18px 18px 14px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
 .pg h3{margin:0 0 4px;font:600 20px/1.15 var(--disp);letter-spacing:.03em;text-transform:uppercase}
 .pg .why{margin:0 0 10px;color:var(--mut);font-size:14px}
@@ -389,6 +390,21 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 .pg a small{display:block;color:var(--mut);font-size:14px;line-height:1.35;margin-top:2px}
 .pg a i{flex:none;margin-left:auto;margin-top:2px;font-style:normal;font-size:12px;font-weight:700;color:var(--vyh-t);border:1px solid var(--ln);border-radius:6px;padding:1px 6px}
 .pgsrc{margin:12px 2px 0;color:var(--mut);font-size:14px}
+.lvx{border-top:1px solid var(--ln)}
+.lvx details{border-bottom:1px solid var(--ln)}
+.lvx summary{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:12px 2px;cursor:pointer;font-weight:700;list-style:none}
+.lvx summary::-webkit-details-marker{display:none}
+.lvx summary span{color:var(--mut);font-weight:600;font-size:14px}
+.lvx summary::after{content:"▾";color:var(--mut);margin-left:6px}
+.lvx details[open] summary::after{content:"▴"}
+.lvx .req{margin:0 0 6px;padding-left:24px;color:var(--body)}
+.lvx .req li{margin:7px 0;line-height:1.4}
+.lvx .how{margin:12px 0 14px;padding:12px 14px;border-radius:12px;background:var(--card2);color:var(--body);font-size:15px}
+.lvx .how b{color:var(--ink)}
+.lvx .how ol{margin:6px 0 10px;padding-left:20px}
+.lvx .how a{display:inline-flex;align-items:center;min-height:40px;padding:6px 14px;border-radius:10px;background:var(--a);color:#1b1d21;font-weight:700;text-decoration:none}
+.lvx .none{margin:0 0 12px;color:var(--mut);font-size:15px}
+.lvx .src{display:block;margin:0 0 12px;color:var(--mut);font-size:13px}
 /*/PG*/
 </style>
 </head>
@@ -539,25 +555,29 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
       </section>
       <!--PG-->
       <section class="sec" aria-labelledby="h-pg">
-        <h2 id="h-pg">Від Пласту<small>офіційні матеріали з plast.global — відкриваються на їхньому сайті</small></h2>
+        <h2 id="h-pg">Документи Пласту<small>читати й друкувати — тут, на сайті</small></h2>
         <div class="pg">
+          <section><h3>Правильники</h3><p class="why">Як улаштоване юнацтво: гурток, курінь, проби, вмілості.</p><ul>
+            <li><a href="../plast-global/dokumenty/#pravylnyk-1"><span><b>Правильник УПЮ, частина I</b><small>гурток, курінь, членство, відзначення</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#pravylnyk-2"><span><b>Правильник УПЮ, частина II</b><small>проби й програма</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#pravylnyk-3"><span><b>Правильник УПЮ, частина III</b><small>вмілості</small></span><i>читати</i></a></li>
+          </ul></section>
           <section><h3>Безпека</h3><p class="why">Прочитати перед сходинами, мандрівкою чи табором.</p><ul>
-            <li><a href="https://plast.global/rulers/napryamni-plastu-pro-bezpeku/" target="_blank" rel="noopener"><span><b>Напрямні Пласту про безпеку</b><small>правила безпеки на заходах</small></span><i>сайт</i></a></li>
-            <li><a href="https://plast.global/rulers/obyava-gpb-shhodo-poperedzhennya-ta-reaguvannya-na-nasylstvo-v-plastovyh-organizacziyah/" target="_blank" rel="noopener"><span><b>Насильство: як запобігти й що робити</b><small>об’ява Головної пластової булави</small></span><i>сайт</i></a></li>
-            <li><a href="https://plast.global/rulers/obyava-gpb-shhodo-proyaviv-dyskryminacziyi-ta-vorozhnechi/" target="_blank" rel="noopener"><span><b>Дискримінація й ворожнеча</b><small>об’ява Головної пластової булави</small></span><i>сайт</i></a></li>
+            <li><a href="../plast-global/dokumenty/#bezpeka"><span><b>Напрямні Пласту про безпеку</b><small>правила безпеки на заходах</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#nasylstvo"><span><b>Насильство: як запобігти й що робити</b><small>об’ява Головної пластової булави</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#dyskryminatsiia"><span><b>Дискримінація й ворожнеча</b><small>об’ява Головної пластової булави</small></span><i>читати</i></a></li>
           </ul></section>
           <section><h3>Як вести гурток</h3><p class="why">Книжки з архіву пластової літератури.</p><ul>
-            <li><a href="https://plast.global/plast-books/osnovy-plastovoyi-skautskoyi-gurtkovoyi-systemy/" target="_blank" rel="noopener"><span><b>Основи гурткової системи</b><small>як працює гурток і хто в ньому що робить</small></span><i>книжка</i></a></li>
-            <li><a href="https://plast.global/plast-books/posibnyk-organizatoru-ta-instruktoru-vpv/" target="_blank" rel="noopener"><span><b>Посібник організатору й інструктору</b><small>як підготувати й провести вишкіл</small></span><i>книжка</i></a></li>
-            <li><a href="https://plast.global/plast-books/pastuh-r-yak-stvoryty-plastovyj-kurin/" target="_blank" rel="noopener"><span><b>Як створити пластовий курінь</b><small>Р. Пастух</small></span><i>книжка</i></a></li>
+            <li><a href="../plast-global/dokumenty/#hurtok"><span><b>Основи гурткової системи</b><small>як працює гурток і хто в ньому що робить</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#posibnyk"><span><b>Посібник організатору й інструктору</b><small>як підготувати й провести вишкіл</small></span><i>читати</i></a></li>
+            <li><a href="../plast-global/dokumenty/#kurin"><span><b>Як створити пластовий курінь</b><small>Р. Пастух</small></span><i>читати</i></a></li>
           </ul></section>
           <section><h3>Вмілості</h3><p class="why">Коли юнак показав вимоги — інструктор підписує посвідку.</p><ul>
-            <li><a href="https://plast.global/wp-content/uploads/2024/12/posvidka_standart.pdf" target="_blank" rel="noopener"><span><b>Бланк посвідки вмілості</b><small>роздрукувати й заповнити після проби</small></span><i>PDF</i></a></li>
-            <li><a href="https://plast.global/biblioteka-vmilostej/" target="_blank" rel="noopener"><span><b>Бібліотека вмілостей</b><small>усі вмілості УПЮ з вимогами</small></span><i>сайт</i></a></li>
-            <li><a href="https://plast.global/yak-zareyestruvaty-vmilist/" target="_blank" rel="noopener"><span><b>Як запропонувати нову вмілість</b><small>якщо потрібної вмілості ще немає</small></span><i>сайт</i></a></li>
+            <li><a href="../plast-global/dokumenty/#posvidka"><span><b>Бланк посвідки вмілості</b><small>надрукувати й заповнити після проби</small></span><i>друк</i></a></li>
+            <li><a href="../plast-global/dokumenty/#pravylnyk-3"><span><b>Як здобувають вмілості</b><small>з Правильника УПЮ, частина III</small></span><i>читати</i></a></li>
           </ul></section>
         </div>
-        <p class="pgsrc">Матеріали належать Пласту (© Plast Global). Ми лише даємо посилання.</p>
+        <p class="pgsrc">Матеріали Пласту (plast.global, Пласт у Фінляндії).</p>
       </section>
       <!--/PG-->
     </div>
@@ -736,8 +756,23 @@ function skillHtml(s) {
     ${ASK && OK == null ? `<div class="consent"><p>Запам’ятати твої позначки на цьому пристрої? Вони нікуди не надсилаються, і стерти їх можна будь-коли.</p>
       <div class="btns"><button class="btn" type="button" data-ok="1">Так, запам’ятати</button><button class="btn ghost" type="button" data-ok="0">Ні, лише зараз</button></div></div>` : ''}
     <h4>Рівні й вимоги</h4>
-    <ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`;
+    ${window.PG_LV ? PG_LV(s) : `<ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`}`;
 }
+/*PG*/
+/* ПРОБА «усе на нашому сайті»: вимоги рівнів прямо в картці вмілості (поки лише для двох вмілостей — тексти є в наших гутірках) */
+const PG_DOCS = '../plast-global/dokumenty/';
+const PG_REQ = {
+  'keramika-i': ['Знати в загальному історію розвитку виробів з глини, зокрема в Україні.', 'Розповісти про техніки формотворення керамічних виробів: а) вільне та стрічкове ліплення; б) точення на гончарному крузі; в) формування шаблоном; г) ліплення в гіпсових формах; ґ) пресування із порошкоподібної маси.', 'Розрізняти технологічні види кераміки (теракота, майоліка, фаянс, порцеляна, кам’яна маса, шамот).', 'Відвідати виставку або музей кераміки.', 'Виконати три речі власноручно: тарілку, миску, глечик або горнятко.'],
+  'budova-litalnyh-aparativ-i': ['Знає що таке ЛА та назве кілька їх видів.', 'Знає з яких основних частин складається літак. Пояснить призначення кожної частини.', 'Вміє намалювати і знає що таке профіль крила. Пояснить виникнення підйомної сили на крилі.', 'Пояснить що таке кут тангажу, крену і рискання. Знає які елементи забезпечують керованість літака.', 'Знає і пояснить на прикладах 5 аеродинамічних схем літаків (наприклад: нормальна, «качка», «безхвістка», «літаюче крило», «тандем»).']
+};
+window.PG_LV = s => '<div class="lvx">' + s.levels.map((l, i) => {
+  const r = PG_REQ[l.slug];
+  return `<details${(r || s.levels.length === 1) && i === 0 ? ' open' : ''}><summary>${esc(lvName(s, l))}<span>${r ? r.length + ' вимог' : ''}</span></summary>` + (r
+    ? `<ol class="req">${r.map(x => `<li>${esc(x)}</li>`).join('')}</ol><small class="src">Вимоги — з каталогу вмілостей Пласту</small>
+       <div class="how"><b>Як здобути</b><ol><li>Підготуйся й виконай усі вимоги.</li><li>Покажи їх інструкторові вмілості.</li><li>Інструктор заповнює й підписує посвідку.</li></ol><a href="${PG_DOCS}#posvidka">Бланк посвідки</a></div>`
+    : `<p class="none">У пробі вимоги показано лише для «Кераміки І» і «Будови літальних апаратів І». Після дозволу тут будуть вимоги кожного рівня.</p>`) + '</details>';
+}).join('') + '</div>';
+/*/PG*/
 let OPEN_SK = '';
 function openSkill(id) { OPEN_SK = id; sheet(skillHtml(byId[id]), COL.yun); }
 $('#sh-c').addEventListener('click', e => {
@@ -982,7 +1017,7 @@ function vSkillHtml(s) {
   return `<div class="skh">${pic(s.img, s.n, 'lg')}<div><h3 id="sh-t">${esc(s.n)}</h3><p class="sub">${esc(specs)}</p></div></div>
     ${s.gv ? `<h4>Гутірки до вмілості «${esc(s.gv.lvl)}»</h4>${s.gv.list.map(box).join('')}` : '<p class="tip">До цієї вмілості гутірки ще немає.</p>'}
     <h4>Рівні й вимоги</h4>
-    <ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`;
+    ${window.PG_LV ? PG_LV(s) : `<ul class="lv">${s.levels.map(l => `<li><a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(lvName(s, l))}<span>на порталі</span></a></li>`).join('')}</ul>`}`;
 }
 $('#vq').addEventListener('input', renderVGrid);
 $('#vonly').addEventListener('change', e => { VONLY = e.target.checked; renderVGrid(); });

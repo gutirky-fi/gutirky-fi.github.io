@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Документи Пласту — проба</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- ПРОБА (31.10.2026): «усе на нашому сайті» — документи Пласту читаються й друкуються тут, без переходів.
+     Тексти поки — зміст і короткий переказ; повні тексти — після дозволу Пласту. Сторінка ручна (не збирається скриптом). -->
+<style>
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--vyh:#3daf6e;--vyh-t:#62cf93;--gd:#ffc247;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.6 var(--txt)}
+a{color:inherit}
+[hidden]{display:none!important}
+.ribbon{padding:7px 14px;background:#cfd5dc;color:#16181c;text-align:center;font-weight:700;font-size:14px}
+.in{max-width:1180px;margin:0 auto;padding:20px 16px 64px}
+.top{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;margin-bottom:22px}
+.top a{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);text-decoration:none;font-weight:600;font-size:15px}
+.top a:hover{border-color:var(--vyh)}
+.top h1{margin:0;font:600 clamp(1.6rem,3.4vw,2.2rem)/1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.wrap{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;align-items:start}
+
+/* список документів */
+nav{position:sticky;top:16px;padding:6px 0}
+nav h2{margin:16px 10px 6px;font:600 13px var(--txt);letter-spacing:.08em;color:var(--mut)}
+nav h2:first-child{margin-top:0}
+nav a{display:block;padding:8px 10px;border-radius:10px;text-decoration:none;font-weight:600;font-size:16px;line-height:1.3;color:var(--body);border-left:3px solid transparent}
+nav a:hover{background:var(--card);color:var(--ink)}
+nav a[aria-current=true]{background:var(--card);color:var(--ink);border-left-color:var(--vyh)}
+nav a:focus-visible,.btn:focus-visible,.toc a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+
+/* документ */
+article{max-width:74ch}
+.kick{margin:0;color:var(--vyh-t);font-weight:700;font-size:15px}
+article h1{margin:4px 0 6px;font:600 clamp(2rem,4.6vw,3rem)/1.04 var(--disp);letter-spacing:.02em;text-transform:uppercase}
+.meta{margin:0 0 16px;color:var(--mut);font-size:15px}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:8px 16px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font:700 16px var(--txt);text-decoration:none;cursor:pointer}
+.btn.main{background:var(--vyh);border-color:var(--vyh);color:#0e1f15}
+.btn:hover{filter:brightness(1.08)}
+.note{margin:0 0 24px;padding:12px 16px;border-radius:12px;border:1px dashed #5a6573;color:var(--body);font-size:15px}
+.note b{color:var(--gd)}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 26px;padding:0;list-style:none}
+.toc a{display:inline-block;padding:6px 12px;border-radius:99px;background:var(--card);border:1px solid var(--ln);text-decoration:none;font-weight:600;font-size:15px}
+.toc a:hover{border-color:var(--vyh)}
+article h2{margin:34px 0 8px;padding-top:14px;border-top:1px solid var(--ln);font:600 24px/1.2 var(--disp);letter-spacing:.03em;text-transform:uppercase}
+article h2 span{color:var(--vyh-t);margin-right:10px}
+article h3{margin:20px 0 4px;font:700 18px/1.3 var(--txt)}
+article p{margin:0 0 12px;color:var(--body)}
+.subs{margin:4px 0 0;padding:0;list-style:none;columns:2;column-gap:28px;color:var(--mut);font-size:15px}
+.subs li{break-inside:avoid;padding:3px 0}
+.subs b{color:var(--body);font-weight:600;margin-right:6px}
+.steps{margin:0 0 16px;padding-left:22px;color:var(--body)}.steps li{margin:6px 0}
+.pdf{display:block;width:100%;height:min(78vh,900px);border:1px solid var(--ln);border-radius:12px;background:#e9e6df}
+.src{margin-top:34px;padding-top:12px;border-top:1px solid var(--ln);color:var(--mut);font-size:14px}
+
+@media (max-width:860px){
+  .wrap{grid-template-columns:1fr;gap:12px}
+  nav{position:static;display:flex;gap:6px;overflow-x:auto;padding:0 0 8px;margin:0 -16px;padding-left:16px;scrollbar-width:none}
+  nav h2{display:none}
+  nav a{flex:none;white-space:nowrap;border:1px solid var(--ln);border-radius:99px;font-size:15px;padding:7px 13px}
+  nav a[aria-current=true]{border-color:var(--vyh);border-left-color:var(--vyh)}
+  .subs{columns:1}
+}
+@media print{
+  body{background:#fff;color:#111;font-size:11pt}
+  .ribbon,.top,nav,.acts,.note,.toc{display:none!important}
+  .wrap{display:block}article{max-width:none}
+  article h1,article h2{color:#111}article h2 span,.kick{color:#2d7d4f}article p,.subs,.subs b,.steps{color:#222}
+  .meta,.src{color:#555}
+}
+</style>
+</head>
+<body>
+<div class="ribbon">Проба: як виглядатимуть документи Пласту на нашому сайті. Справжній сайт не змінено.</div>
+<div class="in">
+  <div class="top">
+    <a href="../../vhody/#vyh">← Виховники</a>
+    <h1>Документи Пласту</h1>
+  </div>
+  <div class="wrap">
+    <nav id="nav" aria-label="Документи">
+      <h2>Правильники</h2>
+      <a href="#pravylnyk-1">Правильник УПЮ, ч. I</a>
+      <a href="#pravylnyk-2">Правильник УПЮ, ч. II</a>
+      <a href="#pravylnyk-3">Правильник УПЮ, ч. III</a>
+      <h2>Безпека</h2>
+      <a href="#bezpeka">Напрямні про безпеку</a>
+      <a href="#nasylstvo">Насильство</a>
+      <a href="#dyskryminatsiia">Дискримінація</a>
+      <h2>Як вести гурток</h2>
+      <a href="#hurtok">Основи гурткової системи</a>
+      <a href="#posibnyk">Посібник інструктору</a>
+      <a href="#kurin">Як створити курінь</a>
+      <h2>Вмілості</h2>
+      <a href="#posvidka">Бланк посвідки</a>
+    </nav>
+
+    <div id="docs">
+      <article id="pravylnyk-1">
+        <p class="kick">Правильник · Улад пластунів юнаків і пластунок юначок</p>
+        <h1>Правильник УПЮ, частина I</h1>
+        <p class="meta">Пласт · зі змінами КУПО 2019 року · 6 розділів</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button><a class="btn" href="https://plast.global/wp-content/uploads/2024/09/pravylnyk-upu-1-zminy-kupo-2019.pdf" download>Завантажити PDF</a></div>
+        <p class="note"><b>У пробі</b> — справжній зміст правильника і короткий переказ перших двох розділів. Після дозволу тут буде повний текст.</p>
+        <ul class="toc">
+          <li><a href="#p1-1">1. Програмові напрямні</a></li><li><a href="#p1-2">2. Членство</a></li><li><a href="#p1-3">3. Юнацький гурток</a></li>
+          <li><a href="#p1-4">4. Юнацький курінь</a></li><li><a href="#p1-5">5. Відзначення</a></li><li><a href="#p1-6">6. Перестороги</a></li>
+        </ul>
+
+        <h2 id="p1-1"><span>1.0</span>Програмові напрямні</h2>
+        <p>УПЮ — пластова спільнота юнацтва приблизно від 11 до 18 років (або до кінця середньої школи). Членство добровільне, а в основі — самовиховання. Мета — щоб юнак розвивався всебічно: фізично, розумово й духовно, з любовʼю до України.</p>
+        <p>У цьому розділі — Три головні обовʼязки (Пластова присяга), Пластовий закон, Пластовий обіт, Пластовий клич «СКОБ!» і Пластовий гимн.</p>
+        <ul class="subs"><li><b>1.1</b>Дефініція УПЮ</li><li><b>1.2</b>Концепція самовиховання</li><li><b>1.3</b>Три головні обовʼязки — Пластова присяга</li><li><b>1.4</b>Пластовий закон</li><li><b>1.5</b>Пластовий обіт</li><li><b>1.6</b>Пластовий клич</li><li><b>1.7</b>Пластовий гимн</li></ul>
+
+        <h2 id="p1-2"><span>2.0</span>Членство в УПЮ</h2>
+        <p>Юнак належить до гуртка своїх ровесників, а якщо Пласту поруч немає — до гуртка далекого віддалення. Членство починається з прихильника. Кандидатам до 17 років потрібні заява і згода батьків, а гурток і рада погоджують вступ.</p>
+        <p>Також — як вийти з Пласту з власної волі, як перейти до іншого гуртка чи куреня і коли пластування в УПЮ закінчується (з кінцем школи або у 18 років).</p>
+        <ul class="subs"><li><b>2.1</b>Основні ствердження</li><li><b>2.2</b>Набуття членства</li><li><b>2.3</b>Виступлення на власне бажання</li><li><b>2.4</b>Перехід до іншого гуртка/куреня</li><li><b>2.5</b>Закінчення пластування в УПЮ</li></ul>
+
+        <h2 id="p1-3"><span>3.0</span>Юнацький гурток</h2>
+        <ul class="subs"><li><b>3.1</b>Дефініція</li><li><b>3.2</b>Елементи устрою: гурткова рада, назва, порядкове число, прапорець, книга гуртка, звичаї</li><li><b>3.3</b>Впорядник гуртка</li><li><b>3.4</b>Обовʼязки гурткових діловодів: гуртковий, заступник, писар, скарбник, господар, хронікар</li><li><b>3.5</b>Обовʼязки і права члена гуртка</li><li><b>3.6</b>Самостійний гурток</li><li><b>3.7</b>Гурток далекого віддалення</li><li><b>3.8</b>Створення нового гуртка</li><li><b>3.9</b>Розвʼязання гуртка</li></ul>
+
+        <h2 id="p1-4"><span>4.0</span>Юнацький курінь</h2>
+        <ul class="subs"><li><b>4.1</b>Дефініція</li><li><b>4.2</b>Елементи устрою: курінна рада, патрон, барви, знамено, порядкове число, прапор</li><li><b>4.3</b>Звʼязковий КПС</li><li><b>4.4</b>Рада гурткових</li><li><b>4.5</b>Обовʼязки курінних діловодів</li><li><b>4.6</b>Мішаний курінь</li><li><b>4.7</b>Створення нового куреня</li><li><b>4.8</b>Розвʼязання куреня</li><li><b>4.9</b>Опікун куреня</li></ul>
+
+        <h2 id="p1-5"><span>5.0</span>Відзначення в УПЮ</h2>
+        <ul class="subs"><li><b>5.1</b>Основні ствердження</li><li><b>5.2</b>Перше (найвище) відзначення</li><li><b>5.3</b>Друге відзначення</li><li><b>5.4</b>Третє відзначення</li><li><b>5.5</b>Четверте відзначення</li><li><b>5.6</b>Надзвичайні: Бронзовий хрест за геройський чин, Залізний пластовий хрест</li></ul>
+
+        <h2 id="p1-6"><span>6.0</span>Перестороги і втрата членства</h2>
+        <ul class="subs"><li><b>6.1</b>Основні ствердження</li><li><b>6.2</b>Викреслення</li><li><b>6.3</b>Перша пересторога</li><li><b>6.4</b>Друга пересторога</li><li><b>6.5</b>Третя пересторога</li><li><b>6.6</b>Комендантська пересторога</li><li><b>6.7</b>Виключення</li></ul>
+
+        <p class="src">Джерело: Пласт — Кодекс пластових правильників (plast.global).</p>
+      </article>
+
+      <article id="pravylnyk-2" hidden>
+        <p class="kick">Правильник · УПЮ</p>
+        <h1>Правильник УПЮ, частина II</h1>
+        <p class="meta">Пласт · проби й програма юнацтва</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button></div>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут буде повний текст: вимоги проб і програма для юнацтва.</p>
+        <p class="src">Джерело: Пласт (plast.org).</p>
+      </article>
+
+      <article id="pravylnyk-3" hidden>
+        <p class="kick">Правильник · УПЮ</p>
+        <h1>Правильник УПЮ, частина III</h1>
+        <p class="meta">Пласт · вмілості</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button><a class="btn" href="#posvidka">Бланк посвідки</a></div>
+        <p class="note"><b>У пробі</b> — лише короткий опис. Після дозволу тут буде повний текст правил про вмілості.</p>
+        <h2>Коротко: як здобувають вмілість</h2>
+        <ol class="steps"><li>Юнак вибирає вмілість у каталозі й готується за її вимогами.</li><li>Показує інструкторові вмілості, що вміє, — практично.</li><li>Інструктор заповнює й підписує посвідку.</li></ol>
+        <p>У багатьох вмілостей три рівні — відповідно до проби: І — учасник, ІІ — розвідувач, ІІІ — скоб чи вірлиця. Деякі вмілості — лише з 15 років.</p>
+        <p class="src">Джерело: Пласт — «Пластові вмілості УПЮ» (plast.global).</p>
+      </article>
+
+      <article id="bezpeka" hidden>
+        <p class="kick">Безпека</p>
+        <h1>Напрямні Пласту про безпеку</h1>
+        <p class="meta">Пласт · Кодекс пластових правильників</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button></div>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут буде повний текст.</p>
+        <p class="src">Джерело: Пласт (plast.global).</p>
+      </article>
+
+      <article id="nasylstvo" hidden>
+        <p class="kick">Безпека · обʼява Головної пластової булави</p>
+        <h1>Насильство: як запобігти й що робити</h1>
+        <p class="meta">Пласт · Головна пластова булава</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button></div>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут буде повний текст.</p>
+        <p class="src">Джерело: Пласт (plast.global).</p>
+      </article>
+
+      <article id="dyskryminatsiia" hidden>
+        <p class="kick">Безпека · обʼява Головної пластової булави</p>
+        <h1>Дискримінація й ворожнеча</h1>
+        <p class="meta">Пласт · Головна пластова булава</p>
+        <div class="acts"><button class="btn main" type="button" data-print>Надрукувати</button></div>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут буде повний текст.</p>
+        <p class="src">Джерело: Пласт (plast.global).</p>
+      </article>
+
+      <article id="hurtok" hidden>
+        <p class="kick">Книжка · архів пластової літератури</p>
+        <h1>Основи гурткової системи</h1>
+        <p class="meta">Як працює гурток і хто в ньому що робить</p>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут можна буде читати книжку.</p>
+        <p class="src">Джерело: Пласт — архів пластової літератури (plast.global).</p>
+      </article>
+
+      <article id="posibnyk" hidden>
+        <p class="kick">Книжка · архів пластової літератури</p>
+        <h1>Посібник організатору й інструктору</h1>
+        <p class="meta">Як підготувати й провести вишкіл</p>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут можна буде читати книжку.</p>
+        <p class="src">Джерело: Пласт — архів пластової літератури (plast.global).</p>
+      </article>
+
+      <article id="kurin" hidden>
+        <p class="kick">Книжка · архів пластової літератури</p>
+        <h1>Як створити пластовий курінь</h1>
+        <p class="meta">Р. Пастух</p>
+        <p class="note"><b>У пробі</b> — лише заголовок. Після дозволу тут можна буде читати книжку.</p>
+        <p class="src">Джерело: Пласт — архів пластової літератури (plast.global).</p>
+      </article>
+
+      <article id="posvidka" hidden>
+        <p class="kick">Вмілості · бланк для друку</p>
+        <h1>Посвідка вмілості</h1>
+        <p class="meta">Офіційний бланк Пласту · 1 сторінка</p>
+        <div class="acts"><a class="btn main" href="https://plast.global/wp-content/uploads/2024/12/posvidka_standart.pdf" target="_blank" rel="noopener">Надрукувати бланк</a></div>
+        <ol class="steps"><li>Юнак виконав усі вимоги вмілості й показав їх інструкторові.</li><li>Інструктор заповнює посвідку: хто, яка вмілість і рівень, дата.</li><li>Підписує — і юнак може носити нашивку.</li></ol>
+        <object class="pdf" data="https://plast.global/wp-content/uploads/2024/12/posvidka_standart.pdf#view=FitH" type="application/pdf" aria-label="Бланк посвідки вмілості">
+          <p class="note">Тут має бути видно бланк. Якщо його не видно — натисніть «Надрукувати бланк».</p>
+        </object>
+        <p class="src">Джерело: Пласт — «Пластові вмілості УПЮ» (plast.global).</p>
+      </article>
+    </div>
+  </div>
+</div>
+<script>
+(function () {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  var arts = [].slice.call(document.querySelectorAll('article')), links = [].slice.call(document.querySelectorAll('#nav a'));
+  function show() {
+    var h = (location.hash || '').slice(1), sub = document.getElementById(h), art = sub && (sub.tagName === 'ARTICLE' ? sub : sub.closest('article'));
+    if (!art) art = arts[0];
+    arts.forEach(function (a) { a.hidden = a !== art; });
+    links.forEach(function (a) { a.setAttribute('aria-current', a.getAttribute('href') === '#' + art.id ? 'true' : 'false'); });
+    var go = function () { if (sub && sub !== art) sub.scrollIntoView(); else window.scrollTo(0, 0); }; go(); setTimeout(go, 80); setTimeout(go, 300);
+    document.title = art.querySelector('h1').textContent + ' — Документи Пласту';
+  }
+  window.addEventListener('hashchange', show); show();
+  document.addEventListener('click', function (e) { if (e.target.closest('[data-print]')) window.print(); });
+})();
+</script>
+</body>
+</html>
