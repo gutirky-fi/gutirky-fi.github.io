@@ -131,7 +131,7 @@ body.vedon .grid button{cursor:default}
 .rest span{padding:6px 14px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700}
 .fin .row{margin-top:14px;opacity:0;transition:opacity .5s 1s}.fin.show .row{opacity:1}
 body.vedon .fin .row{display:none}
-#cf{position:fixed;inset:0;pointer-events:none;z-index:15}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:0}.fin{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.pod .bl,.fin h1,.fin .wk,.pod .nm,.pod .sc2,.pod .crown{transition:none}}
 
 /* редактор */
@@ -511,14 +511,50 @@ function finish() {
     setTimeout(() => { by(1).forEach(rise); B.classList.add('show'); beep('fin'); confetti(wn.map(t => t.c)); }, 2500));
 }
 function countUp(el) { const end = +el.dataset.s, t0 = performance.now(), d = 900; const f = now => { const k = Math.min(1, (now - t0) / d); el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
-function confetti(cols) {
-  const cv = $('#cf'), x = cv.getContext('2d'), W = cv.width = innerWidth, Hh = cv.height = innerHeight, C = [...cols, '#ffc247', '#ffffff', '#3daf6e', '#2f8fe0'];
-  const ps = Array.from({ length: 180 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * Hh * .6, vx: (Math.random() - .5) * 2.4, vy: 2 + Math.random() * 3.5, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 7, h: 4 + Math.random() * 5, c: C[Math.floor(Math.random() * C.length)] }));
-  const t0 = performance.now();
-  (function f(now) { x.clearRect(0, 0, W, Hh); let live = 0;
-    ps.forEach(p => { p.x += p.vx + Math.sin((now + p.r * 900) / 600) * .6; p.y += p.vy; p.r += p.vr; if (p.y < Hh + 20) live++; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); });
-    if (live && now - t0 < 9000 && phase === 'fin') requestAnimationFrame(f); else x.clearRect(0, 0, W, Hh); })(t0);
+function confetti(cols) {   /* свято: конфеті + феєрверки на фоні + оплески (≈14 с або поки не вийшли з фіналу) */
+  const cv = $('#cf'), x = cv.getContext('2d'), W = cv.width = innerWidth, Hh = cv.height = innerHeight, C = [...cols, '#ffc247', '#ffffff', '#3daf6e', '#2f8fe0', '#e5534b'];
+  const pick = () => C[Math.floor(Math.random() * C.length)];
+  const mk = (y0) => ({ x: Math.random() * W, y: y0, vx: (Math.random() - .5) * 2.4, vy: 1.6 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 7, h: 4 + Math.random() * 5, c: pick() });
+  const conf = Array.from({ length: 200 }, () => mk(-20 - Math.random() * Hh * .7));
+  const rockets = [], sparks = [], t0 = performance.now(); let nextR = t0 + 300;
+  applause();
+  (function f(now) {
+    const el = now - t0, on = el < 14000 && phase === 'fin';
+    x.clearRect(0, 0, W, Hh);
+    if (on && now > nextR && el < 11000) {   // новий феєрверк
+      rockets.push({ x: W * (.12 + Math.random() * .76), y: Hh + 10, vy: -(Hh * .011 + Math.random() * Hh * .004), ty: Hh * (.12 + Math.random() * .3), c: pick() });
+      nextR = now + 350 + Math.random() * 550;
+    }
+    for (let k = rockets.length - 1; k >= 0; k--) { const R = rockets[k]; R.y += R.vy; R.vy *= .985;
+      x.fillStyle = '#ffe9b0'; x.beginPath(); x.arc(R.x, R.y, 2.4, 0, 6.3); x.fill();
+      if (R.y <= R.ty || R.vy > -1.5) { rockets.splice(k, 1); boom();
+        const n = 90 + Math.floor(Math.random() * 40), sp = 3.6 + Math.random() * 2.6, c2 = Math.random() < .4 ? pick() : R.c;
+        for (let q = 0; q < n; q++) { const a = q / n * 6.283, v = sp * (.6 + Math.random() * .5); sparks.push({ x: R.x, y: R.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: 1, c: q % 3 ? R.c : c2 }); } } }
+    x.globalCompositeOperation = 'lighter';
+    for (let k = sparks.length - 1; k >= 0; k--) { const P = sparks[k]; P.x += P.vx; P.y += P.vy; P.vy += .05; P.vx *= .975; P.vy *= .975; P.life -= .0095;
+      if (P.life <= 0) { sparks.splice(k, 1); continue; } x.globalAlpha = Math.max(0, P.life); x.fillStyle = P.c; x.beginPath(); x.arc(P.x, P.y, 3.2, 0, 6.3); x.fill(); x.globalAlpha = Math.max(0, P.life) * .25; x.beginPath(); x.arc(P.x, P.y, 8, 0, 6.3); x.fill(); }
+    x.globalAlpha = 1; x.globalCompositeOperation = 'source-over';
+    conf.forEach(p => { p.x += p.vx + Math.sin((now + p.r * 900) / 600) * .6; p.y += p.vy; p.r += p.vr; if (p.y > Hh + 20 && on && el < 9000) Object.assign(p, mk(-20));
+      x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); });
+    if (phase === 'fin' && (on || sparks.length || conf.some(p => p.y < Hh + 20))) requestAnimationFrame(f); else x.clearRect(0, 0, W, Hh);
+  })(t0);
 }
+/* оплески: сотні коротких «хлопків» шуму, гучність наростає й стихає */
+let NB = null;
+function applause() { if (!sound) return; try { const A = ac();
+  if (!NB) { NB = A.createBuffer(1, A.sampleRate * .03, A.sampleRate); const d = NB.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); }
+  const out = A.createGain(); out.gain.value = .5; out.connect(A.destination); const T = 5.5, t0 = A.currentTime + .05;
+  for (let i = 0; i < 520; i++) { const u = Math.random(), t = t0 + u * T, env = Math.sin(Math.PI * Math.min(1, u * 1.15)) ** .7;
+    const s2 = A.createBufferSource(), bp = A.createBiquadFilter(), g = A.createGain(); s2.buffer = NB; s2.playbackRate.value = .8 + Math.random() * .6;
+    bp.type = 'bandpass'; bp.frequency.value = 900 + Math.random() * 1800; bp.Q.value = .9; g.gain.value = (.25 + Math.random() * .35) * env;
+    s2.connect(bp); bp.connect(g); g.connect(out); s2.start(t); }
+  for (let i = 0; i < 6; i++) { const t = t0 + .3 + i * .7 + Math.random() * .3; blip(1800 + Math.random() * 900, t - A.currentTime, .12, .02, 'sine'); }   // «ву-ху» свист ледь чутно
+} catch (e) { /* без звуку */ } }
+function boom() { if (!sound) return; try { const A = ac(), t = A.currentTime, o = A.createOscillator(), g = A.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(40, t + .35);
+  g.gain.setValueAtTime(.18, t); g.gain.exponentialRampToValueAtTime(.0001, t + .4); o.connect(g); g.connect(A.destination); o.start(t); o.stop(t + .45);
+  if (!NB) return; for (let i = 0; i < 10; i++) { const s2 = A.createBufferSource(), g2 = A.createGain(); s2.buffer = NB; s2.playbackRate.value = 1.5 + Math.random(); g2.gain.value = .05; s2.connect(g2); g2.connect(A.destination); s2.start(t + .15 + Math.random() * .5); }   // тріскіт іскор
+} catch (e) { /* ok */ } }
+
 
 /* ---------- малювання ---------- */
 function paintTop() {
