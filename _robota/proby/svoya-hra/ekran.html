@@ -123,6 +123,7 @@ body.vedon .grid button{cursor:default}
 .pod .sc2{font:600 clamp(1.6rem,3.4vw,2.6rem)/1 var(--disp);margin-bottom:10px;opacity:0;transition:opacity .4s .3s}
 .pod .bl{width:100%;height:0;border-radius:16px 16px 4px 4px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 85%,#fff 15%),var(--c));display:flex;justify-content:center;padding-top:10px;font:600 clamp(2.4rem,6vw,4.4rem)/1 var(--disp);color:rgba(255,255,255,.92);text-shadow:0 2px 0 rgba(0,0,0,.25);box-shadow:inset 0 -10px 0 rgba(0,0,0,.18);transition:height .9s cubic-bezier(.2,.9,.2,1);overflow:hidden}
 .pod .p.up .nm,.pod .p.up .sc2{opacity:1}
+.pod .p:not(.up) .bl{padding:0;box-shadow:none;opacity:0}   /* щоб колір переможця не видно наперед */
 .pod .p.first .nm{font-size:clamp(1.4rem,2.8vw,2.1rem)}
 .pod .crown{font-size:clamp(2.4rem,5vw,3.6rem);line-height:1;margin-bottom:4px;opacity:0;transform:translateY(-20px);transition:all .6s cubic-bezier(.2,1.6,.4,1) .5s}
 .pod .p.up .crown{opacity:1;transform:none}
@@ -131,6 +132,7 @@ body.vedon .grid button{cursor:default}
 .rest span{padding:6px 14px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700}
 .fin .row{margin-top:14px;opacity:0;transition:opacity .5s 1s}.fin.show .row{opacity:1}
 body.vedon .fin .row{display:none}
+.fanno{position:absolute;left:0;right:0;top:22%;margin:0;font:600 clamp(2.2rem,5.5vw,4.2rem)/1 var(--disp);text-transform:uppercase;letter-spacing:.06em;color:var(--ink);pointer-events:none}.fanno.pulse{animation:fan 1s ease-out}@keyframes fan{0%{opacity:0;transform:scale(.8)}30%{opacity:1;transform:scale(1.04)}100%{opacity:1;transform:none}}
 #cf{position:fixed;inset:0;pointer-events:none;z-index:0}.fin{position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.pod .bl,.fin h1,.fin .wk,.pod .nm,.pod .sc2,.pod .crown{transition:none}}
 
@@ -207,7 +209,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
       <div class="lbl">Як граємо</div>
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
-      <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 02.11 23:55</p>
+      <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 03.11 00:10</p>
       <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
         <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
@@ -241,7 +243,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
 </main>
 
 <main id="fin" hidden>
-  <div class="fin" id="finb"><p class="wk" id="wk">Перемогли</p><h1 id="win"></h1>
+  <div class="fin" id="finb"><p class="fanno" id="fanno"></p><p class="wk" id="wk">Перемогли</p><h1 id="win"></h1>
     <div class="pod" id="pod"></div><div class="rest" id="rest"></div>
     <div class="row" style="justify-content:center"><button type="button" class="btn" id="tob">Повернутися до табла</button><button type="button" class="btn main" id="again">Нова гра</button></div></div>
   <canvas id="cf"></canvas>
@@ -470,7 +472,7 @@ function tada() { [523.25, 659.25, 783.99].forEach((f, i) => bell(f, i * 0.09, 0
 function sparkle() { [1568, 1976, 2349, 2637, 3136].forEach((f, i) => bell(f, i * 0.06, 0.6, 0.08)); }
 function fanfare() { [[392, 0], [523.25, .16], [659.25, .32], [783.99, .48], [659.25, .68], [783.99, .8]].forEach(([f, t]) => bell(f, t, .7, .17)); [523.25, 659.25, 783.99, 1046.5].forEach(f => bell(f, 1.0, 2.2, .12)); }
 /* справжні звуки — SFX Kit (Wyzowl, CC0 — вільні, можна без підпису): zvuky/*.mp3; синтез нижче — запасний, поки не завантажились */
-const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'clap', 'applause', 'fireworks'];
+const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'clap', 'applause', 'fireworks', 'roll1', 'roll2', 'roll3', 'riser', 'p1', 'p2', 'p3'];
 let sfxOn = false;
 function sfxLoad() { if (sfxOn) return; sfxOn = true; try { const A = ac(); SFXN.forEach(n => fetch('zvuky/' + n + '.mp3').then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => A.decodeAudioData(b, ok, no))).then(buf => { SFX[n] = buf; sndLbl(); }).catch(() => { /* лишиться синтез */ })); } catch (e) { /* ok */ } }
 document.addEventListener('pointerdown', sfxLoad, { once: true }); document.addEventListener('keydown', sfxLoad, { once: true });
@@ -523,8 +525,14 @@ function finish() {
   const P = [...document.querySelectorAll('#pod .p')], avail = Math.max(120, $('#pod').clientHeight - 130), rise = el => { el.classList.add('up'); el.querySelector('.bl').style.height = Math.round(avail * el.querySelector('.bl').dataset.h / 100) + 'px'; countUp(el.querySelector('.sc2')); beep('rise'); };
   if (!fresh || matchMedia('(prefers-reduced-motion: reduce)').matches) { P.forEach(rise); B.classList.add('show'); return; }
   const by = pl => P.filter(el => +el.dataset.pl === pl);
-  finT.push(setTimeout(() => { by(3).forEach(rise); if (by(3).length) beep('p3'); }, 500), setTimeout(() => { by(2).forEach(rise); if (by(2).length) beep('p2'); }, 1600),
-    setTimeout(() => { by(1).forEach(rise); B.classList.add('show'); beep('fin'); confetti(wn.map(t => t.c)); }, 3000));
+  /* нагородження з інтригою: барабанний дріб → місце; 3-тє скромно, 2-ге тепліше, 1-ше — довгий дріб, удар, овація, феєрверк */
+  const A = $('#fanno'), at = (ms, f) => finT.push(setTimeout(f, ms)), ann = t => { A.textContent = t; A.classList.remove('pulse'); void A.offsetWidth; A.classList.add('pulse'); };
+  let t = 300;
+  if (by(3).length) { at(t, () => { ann('3-тє місце…'); play('roll1', .7); }); at(t + 1000, () => { by(3).forEach(rise); play('p3', .8); }); t += 2600; }
+  if (by(2).length) { at(t, () => { ann('2-ге місце…'); play('roll2', .8); }); at(t + 1500, () => { by(2).forEach(rise); play('p2', .85); play('clap', .5, .3); }); t += 3200; }
+  at(t, () => { ann(wn.length > 1 ? 'І перемагають…' : 'І переможець…'); play('roll3', 1); play('riser', .35, .8); });
+  at(t + 1950, () => play('p1', .9));   // удар «стінгу» припадає на появу переможця
+  at(t + 3000, () => { A.textContent = ''; by(1).forEach(rise); B.classList.add('show'); if (!play('applause', .85, .15)) beep('fin'); else play('fireworks', .5, .9); confetti(wn.map(t2 => t2.c)); });
 }
 function countUp(el) { const end = +el.dataset.s, t0 = performance.now(), d = 900; const f = now => { const k = Math.min(1, (now - t0) / d); el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
 function confetti(cols) {   /* свято: конфеті + феєрверки на фоні + оплески (≈14 с або поки не вийшли з фіналу) */
@@ -532,7 +540,7 @@ function confetti(cols) {   /* свято: конфеті + феєрверки �
   const pick = () => C[Math.floor(Math.random() * C.length)];
   const mk = (y0) => ({ x: Math.random() * W, y: y0, vx: (Math.random() - .5) * 2.4, vy: 1.6 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 7, h: 4 + Math.random() * 5, c: pick() });
   const conf = Array.from({ length: 200 }, () => mk(-20 - Math.random() * Hh * .7));
-  const rockets = [], sparks = [], t0 = performance.now(), SCHED = [100, 1500, 2600, 3900];
+  const rockets = [], sparks = [], t0 = performance.now(), SCHED = [700, 2300];
   applause();
   (function f(now) {
     const el = now - t0, on = el < 14000 && phase === 'fin';
