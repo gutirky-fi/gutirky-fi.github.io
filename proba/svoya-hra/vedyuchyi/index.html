@@ -333,9 +333,9 @@ function render() {
   else if (T) h += `<div class="who" style="--c:${T.c}">Відповідає: ${esc(T.tn)}${T.name ? ' · ' + esc(T.name) : ''}</div>`;
   else h += `<div class="who">Чекаємо, хто натисне «Відповідаю!»</div><p class="hint">Або виберіть команду самі:</p><div class="picks">${st.teams.map((t, i) => `<button type="button" data-pick="${i}" style="--c:${t.c}"${Q.wrong.includes(i) ? ' disabled' : ''}>${esc(t.n)}</button>`).join('')}</div>`;
   B.innerHTML = h;
-  A.hidden = false;
+  A.hidden = !!Q.done;   /* після відповіді — лише зелена плашка «далі, до табла» */
   R.innerHTML = (Q.canHint ? '<button type="button" class="hn" data-a="hint">💡 Дати варіанти (половина балів)</button>' : '') + (T && !Q.done ? '<button type="button" class="yes" data-a="yes">✓ Правильно</button><button type="button" class="no" data-a="no">✗ Неправильно</button>' : '')
-    + (Q.done ? '<button type="button" class="go" data-a="back">Далі, до табла →</button>' : (Q.shown ? '' : '<button type="button" data-a="ans">Показати відповідь усім</button>') + '<button type="button" data-a="back">До табла</button>');
+    + (Q.done ? '' : (Q.shown ? '' : '<button type="button" data-a="ans">Показати відповідь усім</button>') + '<button type="button" data-a="back">До табла</button>');
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !st) return;
