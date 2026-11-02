@@ -159,8 +159,8 @@ body.vedon .grid button{cursor:default}
       <div class="lbl">Як граємо</div>
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
-      <div class="ved" id="ved"><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
-        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn main" id="vshow" style="min-height:40px;padding:6px 14px;font-size:15px">📱 Підключити мій телефон</button><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
+      <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
+        <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
   </div>
 </main>
@@ -201,7 +201,7 @@ body.vedon .grid button{cursor:default}
   <div id="ed"></div>
   <div class="row"><button type="button" class="btn" id="edreset">Повернути приклад</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
-<div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Відскануйте <b>своїм</b> телефоном. Код одноразовий: щойно телефон підключиться, він зникне й більше не діятиме.<br>Пульт закрився? Просто відкрийте його знову — телефон себе памʼятає.</p><div class="vq" id="vqr2"></div><button type="button" class="btn" id="local">Керувати з ноутбука</button></div></div>
+<div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Скануйте своїм телефоном — там відповіді. Юнакам не показуйте.<br>Пульт закрився? Просто відкрийте його знову — телефон себе памʼятає.</p><div class="vq" id="vqr2"></div><button type="button" class="btn" id="local">Керувати з ноутбука</button></div></div>
 <div class="drw" id="drw" hidden><div><small>Хто починає?</small><b id="drn"></b><small id="drs"></small></div></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -261,7 +261,7 @@ if (!Array.isArray(CATS) || CATS.length !== 5) CATS = JSON.parse(JSON.stringify(
 let teams = [{ n: 'Вовки', s: 0, h: HINTS }, { n: 'Соколи', s: 0, h: HINTS }, { n: 'Олені', s: 0, h: HINTS }];
 let mode = 'cherha', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
 const MODES = { cherha: ['Хто вибрав — той відповідає', '30 секунд на роздуми; помилились — хід наступній команді'], shvydko: ['Хто швидше', 'вибирає одна команда, відповідає та, що перша натисне «Відповідаю!»'] };
-/* пульт ведучого: одноразовий QR (ключ vkey міняється, щойно телефон підключився); підключений телефон запамʼятовується (tok) і повертається сам */
+/* пульт ведучого: QR з ключем vkey (діє всю гру); підключений телефон запамʼятовується (tok) і повертається сам */
 let vkey = Math.random().toString(36).slice(2, 10);
 const trusted = new Map();
 const veds = new Set();
@@ -335,7 +335,7 @@ function vedAuth(c, d) {
   const dev = String(d.dev || '').slice(0, 40), send = o => { try { c.send(o); } catch (e) { /* ok */ } };
   if (!dev) return;
   if (d.tok && trusted.get(dev) === d.tok) { accept(c, dev); return; }
-  if (d.key && d.key === vkey) { vkey = Math.random().toString(36).slice(2, 10); paintVq(); $('#vov').hidden = true; accept(c, dev); return; }
+  if (d.key && d.key === vkey) { $('#vov').hidden = true; accept(c, dev); return; }
   send({ t: 'needqr' });
 }
 function accept(c, dev) {
@@ -405,10 +405,10 @@ function paintTop() {
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
   document.body.classList.toggle('vedon', vedOn());   /* пульт підключено — кнопки керування на табло ховаємо */
-  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Натисніть кнопку й відскануйте код своїм телефоном — там будуть правильні відповіді й кнопки ✓ і ✗.';
+  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки ✓ і ✗. Юнакам його не показуйте.';
   $('#vedc').textContent = veds.size ? '📱 Ведучий ✓' : '📱 Ведучий';
 }
-function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey, q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; } }
+function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey, q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; $('#vqr').innerHTML = window.qrSvg(vu, 112); } }
 function paintLobby() {
   const url = PURL + '?k=' + code;
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
@@ -473,7 +473,6 @@ document.addEventListener('click', e => {
   switch (b.id) {
     case 'print': printSheet(); break;
     case 'vedc': $('#vov').hidden = false; $('#local').hidden = false; break;
-    case 'vshow': $('#vov').hidden = false; $('#local').hidden = true; break;
     case 'vovx': $('#vov').hidden = true; break;
     case 'local': local = true; $('#vov').hidden = true; paintTop(); if (phase === 'q') paintQ(); else if (phase === 'board') paintBoard(); toast('Кнопки керування — на екрані'); break;
     case 'draw': draw(); break;

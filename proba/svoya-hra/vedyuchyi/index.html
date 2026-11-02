@@ -322,7 +322,7 @@ async function connect() {
       switch (d.t) {
         case 'vst': authed = true; st = d; render(); break;
         case 'ok': authed = true; ses.tok = d.tok; okey = ''; saveS(); try { history.replaceState(null, '', location.pathname); } catch (x) { /* ok */ } break;
-        case 'needqr': msg('Підключіть телефон', 'На ноутбуці натисніть «📱 Підключити мій телефон» (у грі — «📱 Ведучий» угорі) і відскануйте код, що зʼявиться.'); break;
+        case 'needqr': msg('Відскануйте код ще раз', 'Відскануйте QR-код «Ведучому» на ноутбуці (у грі — кнопка «📱 Ведучий» угорі).'); break;
       } });
     c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
   });
