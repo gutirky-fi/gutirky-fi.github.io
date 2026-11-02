@@ -293,7 +293,9 @@ let ses = {}; try { ses = JSON.parse(localStorage.getItem(SK) || '{}'); } catch 
 const saveS = () => { try { localStorage.setItem(SK, JSON.stringify(ses)); } catch (e) { /* ok */ } };
 if (!ses.dev) { ses.dev = Math.random().toString(36).slice(2) + Date.now().toString(36); saveS(); }
 const qk = (new URLSearchParams(location.search).get('k') || '').replace(/\D/g, '').slice(0, 6);
+const qv = new URLSearchParams(location.search).get('v') || '';
 if (qk.length === 6 && ses.code !== qk) { ses.code = qk; ses.tok = ''; saveS(); }
+let okey = qv;   // одноразовий ключ із QR
 let authed = false;
 
 const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
@@ -314,18 +316,13 @@ async function connect() {
   p.on('open', () => {
     if (my !== att) return;
     const c = conn = p.connect('gutirky-svoya-' + ses.code, { reliable: true });
-    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '' }); chip(true, 'На звʼязку');
+    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '', key: okey }); chip(true, 'На звʼязку');
       hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (authed && Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 4000); });
     c.on('data', d => { if (my !== att || !d) return; lastRx = Date.now();
       switch (d.t) {
         case 'vst': authed = true; st = d; render(); break;
-        case 'ok': authed = true; ses.tok = d.tok; saveS(); break;
-        case 'needpin': askPin('', d.left); break;
-        case 'badpin': askPin('Неправильний PIN', d.left); break;
-        case 'blocked': msg('Пульт заблоковано', 'Тричі введено неправильний PIN. На цю гру з цього телефона підключитися вже не можна.'); break;
-        case 'nopin': msg('Спершу PIN', 'На ноутбуці, у лобі гри, впишіть свій PIN (4–6 цифр). Цей екран оновиться сам.'); setTimeout(() => { if (my === att && !authed) try { c.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '' }); } catch (x) { /* ok */ } }, 3000); break;
-        case 'wait': msg('Підтвердіть на ноутбуці', 'На екрані зʼявилося питання «Новий пульт ведучого» — натисніть там «Так, це я».'); break;
-        case 'denied': msg('Не підтверджено', 'На ноутбуці натиснули «Ні».', true); break;
+        case 'ok': authed = true; ses.tok = d.tok; okey = ''; saveS(); try { history.replaceState(null, '', location.pathname); } catch (x) { /* ok */ } break;
+        case 'needqr': msg('Підключіть телефон', 'На ноутбуці натисніть «📱 Підключити мій телефон» (у грі — «📱 Ведучий» угорі) і відскануйте код, що зʼявиться.'); break;
       } });
     c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
   });
@@ -333,18 +330,12 @@ async function connect() {
 function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
 
 function msg(t, s, again) { $('#act').hidden = true; $('#body').innerHTML = `<div class="pf"><b>${t}</b><p>${s}</p>${again ? '<button type="button" id="again">Спробувати знову</button>' : ''}</div>`; }
-function askPin(err, left) {
-  $('#act').hidden = true;
-  $('#body').innerHTML = `<form class="pf" id="pinf"><b>PIN ведучого</b><p>Той, що ви вписали на ноутбуці. Спроб: ${left}.</p><input id="pinv" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••"><button type="submit">Увійти</button><div class="er">${err}</div></form>`;
-  setTimeout(() => { const i = $('#pinv'); if (i) i.focus(); }, 50);
-}
 function askCode(err) {
   $('#act').hidden = true;
   $('#body').innerHTML = `<form class="pf" id="codef"><b>Код гри</b><p>6 цифр — великі жовті цифри на екрані гри.</p><input id="codev" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="123 456" value="${esc(ses.code || '')}"><button type="submit">Далі</button><div class="er">${err || ''}</div></form>`;
 }
 document.addEventListener('submit', e => {
   e.preventDefault();
-  if (e.target.id === 'pinf') { const v = $('#pinv').value.replace(/\D/g, ''); if (v.length >= 4) { try { conn.send({ t: 'ved', dev: ses.dev, pin: v }); } catch (x) { /* ok */ } $('#body').innerHTML = '<div class="wait"><b>Перевіряємо…</b></div>'; } }
   if (e.target.id === 'codef') { const v = $('#codev').value.replace(/\D/g, ''); if (v.length === 6) { if (ses.code !== v) { ses.code = v; ses.tok = ''; saveS(); } $('#body').innerHTML = '<div class="wait"><b>Підключаємось…</b></div>'; connect(); } }
 });
 function render() {

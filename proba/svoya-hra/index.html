@@ -108,8 +108,6 @@ body.vedon .grid button{cursor:default}
 .tm{font:600 28px var(--disp);color:var(--mut);min-height:1.2em}.tm.low{color:#ff9a8a}
 .vov{position:fixed;inset:0;z-index:25;display:grid;place-items:center;background:rgba(8,10,20,.9)}
 .vov .box{width:auto;text-align:center}
-.pinl{display:flex;align-items:center;gap:8px;margin-top:8px;color:var(--mut);font-size:15px;font-weight:700}.pinl input{width:7.5em;min-height:40px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font:700 20px var(--txt);letter-spacing:.2em;text-align:center}
-.apr{position:fixed;inset:0;z-index:40;display:grid;place-items:center;background:rgba(8,10,20,.9)}.apr .box{width:min(520px,100%);text-align:center}.apr .row{justify-content:center}.vov .vq{width:min(320px,60vh);margin:10px auto}.vov .vq svg{width:100%;height:100%}
 
 /* кінець */
 .fin{margin:auto;text-align:center}
@@ -161,9 +159,8 @@ body.vedon .grid button{cursor:default}
       <div class="lbl">Як граємо</div>
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
-      <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
-        <label class="pinl">Ваш PIN (4–6 цифр): <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••"></label>
-        <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
+      <div class="ved" id="ved"><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
+        <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn main" id="vshow" style="min-height:40px;padding:6px 14px;font-size:15px">📱 Підключити мій телефон</button><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
   </div>
 </main>
@@ -204,9 +201,8 @@ body.vedon .grid button{cursor:default}
   <div id="ed"></div>
   <div class="row"><button type="button" class="btn" id="edreset">Повернути приклад</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
-<div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Відскануйте телефоном і введіть свій PIN. Без PIN відповідей не видно — показувати цей код можна.<br>Пульт закрився? Відкрийте його знову — гра продовжиться з того ж місця.</p><div class="vq" id="vqr2"></div><button type="button" class="btn" id="local">Керувати з ноутбука</button></div></div>
+<div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Відскануйте <b>своїм</b> телефоном. Код одноразовий: щойно телефон підключиться, він зникне й більше не діятиме.<br>Пульт закрився? Просто відкрийте його знову — телефон себе памʼятає.</p><div class="vq" id="vqr2"></div><button type="button" class="btn" id="local">Керувати з ноутбука</button></div></div>
 <div class="drw" id="drw" hidden><div><small>Хто починає?</small><b id="drn"></b><small id="drs"></small></div></div>
-<div class="apr" id="apr" hidden><div class="box"><h2>Новий пульт ведучого</h2><p class="sub">Хтось ввів правильний PIN і хоче керувати грою зі свого телефона. Це ви?</p><div class="row"><button type="button" class="btn ok" id="aprY">Так, це я</button><button type="button" class="btn no" id="aprN">Ні</button></div></div></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -647,9 +643,9 @@ if (!Array.isArray(CATS) || CATS.length !== 5) CATS = JSON.parse(JSON.stringify(
 let teams = [{ n: 'Вовки', s: 0, h: HINTS }, { n: 'Соколи', s: 0, h: HINTS }, { n: 'Олені', s: 0, h: HINTS }];
 let mode = 'cherha', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
 const MODES = { cherha: ['Хто вибрав — той відповідає', '30 секунд на роздуми; помилились — хід наступній команді'], shvydko: ['Хто швидше', 'вибирає одна команда, відповідає та, що перша натисне «Відповідаю!»'] };
-/* пульт ведучого: PIN (знає лише ведучий; 3 спроби на телефон); підключений телефон запамʼятовується (tok) і повертається без PIN */
-let pin = ''; try { pin = localStorage.getItem('svoya.pin') || ''; } catch (e) { /* ok */ }
-const trusted = new Map(), tries = new Map(); let pend = null;
+/* пульт ведучого: одноразовий QR (ключ vkey міняється, щойно телефон підключився); підключений телефон запамʼятовується (tok) і повертається сам */
+let vkey = Math.random().toString(36).slice(2, 10);
+const trusted = new Map();
 const veds = new Set();
 let local = false;   // ведучий натиснув «Керувати з ноутбука»
 const vedOn = () => veds.size > 0 && !local;
@@ -721,12 +717,8 @@ function vedAuth(c, d) {
   const dev = String(d.dev || '').slice(0, 40), send = o => { try { c.send(o); } catch (e) { /* ok */ } };
   if (!dev) return;
   if (d.tok && trusted.get(dev) === d.tok) { accept(c, dev); return; }
-  if (pin.length < 4) { send({ t: 'nopin' }); return; }
-  const n = tries.get(dev) || 0;
-  if (n >= 3) { send({ t: 'blocked' }); return; }
-  if (d.pin == null) { send({ t: 'needpin', left: 3 - n }); return; }
-  if (String(d.pin) !== pin) { tries.set(dev, n + 1); toast('Невдала спроба підключити пульт ведучого'); send(n + 1 >= 3 ? { t: 'blocked' } : { t: 'badpin', left: 2 - n }); return; }
-  accept(c, dev);
+  if (d.key && d.key === vkey) { vkey = Math.random().toString(36).slice(2, 10); paintVq(); $('#vov').hidden = true; accept(c, dev); return; }
+  send({ t: 'needqr' });
 }
 function accept(c, dev) {
   const tok = trusted.get(dev) || Math.random().toString(36).slice(2) + Date.now().toString(36);
@@ -795,17 +787,16 @@ function paintTop() {
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
   document.body.classList.toggle('vedon', vedOn());   /* пульт підключено — кнопки керування на табло ховаємо */
-  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : pin.length < 4 ? 'Придумайте PIN і впишіть сюди. Потім відскануйте код телефоном і введіть той самий PIN — там будуть відповіді. Без PIN їх ніхто не побачить.' : 'Відскануйте код своїм телефоном і введіть цей PIN — один раз, далі телефон памʼятає.';
+  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Натисніть кнопку й відскануйте код своїм телефоном — там будуть правильні відповіді й кнопки ✓ і ✗.';
   $('#vedc').textContent = veds.size ? '📱 Ведучий ✓' : '📱 Ведучий';
 }
+function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey, q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; } }
 function paintLobby() {
   const url = PURL + '?k=' + code;
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
-  const vu = VURL + '?k=' + code;
-  if (window.qrSvg && $('#vqr').dataset.u !== vu) { $('#vqr').innerHTML = window.qrSvg(vu, 112); $('#vqr').dataset.u = vu; $('#vqr2').innerHTML = window.qrSvg(vu, 240); }
-  if (document.activeElement !== $('#pin')) $('#pin').value = pin;
+  paintVq();
   $('#draw').textContent = drew && teams[chooser] ? '🎲 Починають: ' + teams[chooser].n : '🎲 Хто починає?';
   $('#modes').innerHTML = Object.entries(MODES).map(([k, [n, d]]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${n}<small>${d}</small></button>`).join('');
   if (document.activeElement && document.activeElement.closest('#teams')) return;   // не заважати друкувати назву
@@ -853,7 +844,6 @@ function readEd() {
 
 /* ---------- кнопки ---------- */
 $('#teams').addEventListener('input', e => { const i = e.target.dataset.t; if (i != null) { teams[+i].n = e.target.value.trim() || 'Команда ' + (+i + 1); bcast(); } });
-$('#pin').addEventListener('input', e => { pin = e.target.value.replace(/\D/g, '').slice(0, 6); e.target.value = pin; try { localStorage.setItem('svoya.pin', pin); } catch (x) { /* ok */ } paintTop(); });
 $('#teams').addEventListener('focusout', () => setTimeout(paintLobby, 0));
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
@@ -864,9 +854,8 @@ document.addEventListener('click', e => {
   if (b.dataset.tx != null) { const i = +b.dataset.tx; teams.splice(i, 1); players.forEach(P => { if (P.team === i) P.team = -1; else if (P.team > i) P.team--; }); paintLobby(); bcast(); return; }
   switch (b.id) {
     case 'print': printSheet(); break;
-    case 'vedc': $('#vov').hidden = false; break;
-    case 'aprY': if (pend) accept(pend.c, pend.dev); pend = null; $('#apr').hidden = true; break;
-    case 'aprN': if (pend) { try { pend.c.send({ t: 'denied' }); } catch (x) { /* ok */ } } pend = null; $('#apr').hidden = true; break;
+    case 'vedc': $('#vov').hidden = false; $('#local').hidden = false; break;
+    case 'vshow': $('#vov').hidden = false; $('#local').hidden = true; break;
     case 'vovx': $('#vov').hidden = true; break;
     case 'local': local = true; $('#vov').hidden = true; paintTop(); if (phase === 'q') paintQ(); else if (phase === 'board') paintBoard(); toast('Кнопки керування — на екрані'); break;
     case 'draw': draw(); break;
@@ -910,7 +899,7 @@ function printSheet() {
   w.document.close();
 }
 paintLobby(); paintTop(); startNet();
-window.SVOYA = { setPin: v => { pin = v; }, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
+window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
 </script>
 </body>
