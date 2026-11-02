@@ -84,6 +84,18 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 .picks button{min-height:40px;padding:6px 14px;border-radius:11px;border:1px solid var(--ln);background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:15px}
 .picks button:disabled{opacity:.35}
 .hintk{color:var(--mut);font-size:14px}
+.modes{display:flex;flex-wrap:wrap;gap:8px}
+.modes button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700;text-align:left}
+.modes button small{display:block;font-weight:600;font-size:12px;color:var(--mut)}
+.modes button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#1d1606}.modes button[aria-pressed=true] small{color:#5a4310}
+.ved{display:flex;gap:14px;align-items:center;margin-top:16px;padding:12px;border-radius:14px;background:var(--card);border:1px dashed #5a6390}
+.ved .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}.ved .vq svg{width:100%;height:100%}
+.ved b{display:block;font-size:17px}.ved span{color:var(--mut);font-size:15px}
+.ved.on{border-style:solid;border-color:var(--ok)}
+.choose{font-weight:700;color:var(--ink);font-size:17px}.choose i{font-style:normal;padding:2px 10px;border-radius:8px;background:var(--c);color:#fff}
+.tm{font:600 28px var(--disp);color:var(--mut);min-height:1.2em}.tm.low{color:#ff9a8a}
+.vov{position:fixed;inset:0;z-index:25;display:grid;place-items:center;background:rgba(8,10,20,.9)}
+.vov .box{width:auto;text-align:center}.vov .vq{width:min(320px,60vh);margin:10px auto}.vov .vq svg{width:100%;height:100%}
 
 /* кінець */
 .fin{margin:auto;text-align:center}
@@ -111,6 +123,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a><span class="logo">Своя гра</span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
   <span class="chip">Телефонів: <b id="pn">0</b></span>
+  <button type="button" class="chip" id="vedc" hidden>📱 Ведучий</button>
 </div>
 
 <main id="lobby">
@@ -118,7 +131,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
     <div class="qr" id="qr"></div>
     <div>
       <h1>Своя гра</h1>
-      <p class="sub">Табло з темами й балами. Команда вибирає питання, хто перший натиснув «Відповідаю!» — той і відповідає. Правильно — бали додаються, ні — віднімаються.</p>
+      <p class="sub">Табло з темами й балами. Правильна відповідь — бали додаються, неправильна — віднімаються. Від кожної команди код сканує лише <b>капітан</b>: команда радиться, капітан натискає.</p>
       <div class="lbl">Команди (2–6) — назви можна змінити</div>
       <div class="teams" id="teams"></div>
       <div class="lbl">Скануйте QR-код або відкрийте</div>
@@ -130,8 +143,11 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
         <button type="button" class="btn" id="edit">✎ Питання</button>
         <button type="button" class="btn" id="tadd">+ Команда</button>
       </div>
+      <div class="lbl">Як граємо</div>
+      <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
-      <p class="sub" style="margin-top:10px">Без телефонів теж можна: ведучий сам натискає, яка команда відповідає.</p>
+      <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst">Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки ✓ і ✗. Юнакам його не показуйте.</span>
+        <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
   </div>
 </main>
@@ -147,6 +163,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
   <p class="qt" id="qt"></p>
   <div class="who">
     <div class="turn" id="turn">Хто знає — тисніть «Відповідаю!»</div>
+    <div class="tm" id="tm"></div>
     <div class="picks" id="picks"></div>
     <div class="qa" id="qa"></div>
   </div>
@@ -169,6 +186,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
   <div id="ed"></div>
   <div class="row"><button type="button" class="btn" id="edreset">Повернути приклад</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
+<div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Скануйте своїм телефоном — там відповіді. Юнакам не показуйте.</p><div class="vq" id="vqr2"></div></div></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -604,6 +622,11 @@ if (!Array.isArray(CATS) || CATS.length !== 5) CATS = JSON.parse(JSON.stringify(
 
 /* ---------- стан ---------- */
 let teams = [{ n: 'Вовки', s: 0 }, { n: 'Соколи', s: 0 }, { n: 'Олені', s: 0 }];
+let mode = 'shvydko', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
+const MODES = { shvydko: ['Хто швидше', 'капітани тиснуть «Відповідаю!»'], cherha: ['По черзі', 'без кнопок, 30 секунд на роздуми'] };
+const hkey = Math.random().toString(36).slice(2, 8);   // ключ пульта ведучого — лише в його QR-коді
+const veds = new Set();
+let deadline = 0;
 let phase = 'lobby', used = new Set(), cur = null;   // cur = {c, r, buzz:[tok або 'T'+індекс], wrong:Set(команд), ans:bool, done:bool}
 const players = new Map();   // tok -> {name, team, conn, t, on}
 const teamColor = i => COLS[i % COLS.length];
@@ -615,7 +638,7 @@ const loadScript = src => new Promise((res, rej) => { const s = document.createE
 async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
 const genCode = () => String(Math.floor(100000 + Math.random() * 900000));
 let code = genCode(), net = 'starting';
-const PURL = new URL('hravets/', location.href).href;
+const PURL = new URL('hravets/', location.href).href, VURL = new URL('vedyuchyi/', location.href).href;
 async function startNet() {
   let P; try { P = await getPeer(); } catch (e) { P = null; }
   if (!P) { net = 'error'; paintTop(); return; }
@@ -629,6 +652,11 @@ function onConn(c) {
   let tok = null;
   c.on('data', d => {
     if (!d || typeof d !== 'object') return;
+    if (d.t === 'ved') {
+      if (d.key !== hkey) { try { c.send({ t: 'bad' }); } catch (x) { /* ok */ } return; }
+      c.isVed = true; veds.add(c); sendVed(c); paintTop(); return;
+    }
+    if (c.isVed) { if (d.t === 'cmd') vedCmd(d); return; }
     if (d.t === 'join') {
       tok = String(d.tok || Math.random()).slice(0, 40);
       const P = players.get(tok) || { team: -1 };
@@ -640,11 +668,11 @@ function onConn(c) {
     else if (d.t === 'team') { const P = players.get(tok); if (P && d.team >= 0 && d.team < teams.length) { P.team = d.team; sendTo(tok); paintLobby(); } }
     else if (d.t === 'buzz') buzz(tok);
   });
-  c.on('close', () => { const P = tok && players.get(tok); if (P && P.conn === c) { P.on = false; paintTop(); } });
+  c.on('close', () => { if (c.isVed) { veds.delete(c); paintTop(); return; } const P = tok && players.get(tok); if (P && P.conn === c) { P.on = false; paintTop(); } });
 }
 function stateFor(tok) {
   const P = players.get(tok) || {};
-  const s = { t: 'st', ph: phase, teams: teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })), me: { name: P.name, team: P.team } };
+  const s = { t: 'st', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })), me: { name: P.name, team: P.team } };
   if (phase === 'q' && cur) {
     const first = cur.buzz[0];
     s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], open: !cur.done && !first, done: cur.done, lock: P.team >= 0 && cur.wrong.has(P.team),
@@ -653,8 +681,26 @@ function stateFor(tok) {
   return s;
 }
 function sendTo(tok) { const P = players.get(tok); try { if (P && P.conn && P.conn.open) P.conn.send(stateFor(tok)); } catch (e) { /* ok */ } }
-const bcast = () => players.forEach((_, tok) => sendTo(tok));
-setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - P.t > 16000) { P.on = false; paintTop(); } }); bcast(); }, 5000);
+function vedState() {
+  const s = { t: 'vst', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })),
+    cats: CATS.map(C => C.n), vals: VALS, cells: CATS.map((C, c) => VALS.map((_, r) => has(c, r) ? (used.has(c + '-' + r) ? 2 : 1) : 0)) };
+  if (phase === 'q' && cur) { const first = cur.buzz[0]; s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], q: CATS[cur.c].q[cur.r][0], a: CATS[cur.c].q[cur.r][1], turn: first ? whoOf(first) : null, done: cur.done, shown: cur.ans, wrong: [...cur.wrong] }; }
+  if (phase === 'fin') s.rank = teams.map((t, i) => [t.n, t.s, teamColor(i)]).sort((a, b) => b[1] - a[1]);
+  return s;
+}
+function sendVed(c) { try { if (c.open) c.send(vedState()); } catch (e) { /* ok */ } }
+const bcast = () => { players.forEach((_, tok) => sendTo(tok)); veds.forEach(sendVed); };
+function vedCmd(d) {
+  switch (d.a) {
+    case 'open': if (phase === 'board' && has(d.c, d.r) && !used.has(d.c + '-' + d.r)) openQ(d.c, d.r); break;
+    case 'yes': judge(true); break;
+    case 'no': judge(false); break;
+    case 'pick': buzz('T' + d.team); break;
+    case 'ans': if (cur) { cur.ans = true; cur.done = true; paintQ(); bcast(); } break;
+    case 'back': if (phase === 'q') toBoard(); break;
+  }
+}
+setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - P.t > 16000) { P.on = false; paintTop(); } }); veds.forEach(c => { if (!c.open) veds.delete(c); }); bcast(); }, 5000);
 
 /* хто відповідає: гравець з телефона або команда, яку вибрав ведучий */
 function teamOf(id) { return id[0] === 'T' ? +id.slice(1) : (players.get(id) || {}).team; }
@@ -666,16 +712,19 @@ function buzz(id) {
 }
 
 /* ---------- дії ведучого ---------- */
-function show(id) { ['lobby', 'board', 'qv', 'fin'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); }
-function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false }; phase = 'q'; show('qv'); paintQ(); bcast(); }
+function show(id) { ['lobby', 'board', 'qv', 'fin'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); $('#vedc').hidden = id === 'lobby'; }
+function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false }; if (mode === 'cherha') { cur.buzz = ['T' + chooser]; deadline = Date.now() + 30000; } else deadline = 0; phase = 'q'; show('qv'); paintQ(); bcast(); }
 function judge(ok) {
   if (!cur || !cur.buzz.length || cur.done) return;
   const ti = teamOf(cur.buzz[0]), v = VALS[cur.r];
-  if (ok) { teams[ti].s += v; cur.done = true; cur.ans = true; toast('+' + v + ' · ' + teams[ti].n); }
-  else { if ($('#minus').checked) teams[ti].s -= v; cur.wrong.add(ti); cur.buzz = []; toast(($('#minus').checked ? '−' + v + ' · ' : '') + teams[ti].n + ' — ні. Інші можуть відповісти'); if (cur.wrong.size >= teams.length) { cur.done = true; cur.ans = true; } }
+  deadline = 0;
+  if (ok) { teams[ti].s += v; cur.done = true; cur.ans = true; cur.win = ti; toast('+' + v + ' · ' + teams[ti].n); }
+  else { if ($('#minus').checked) teams[ti].s -= v; cur.wrong.add(ti); cur.buzz = []; if (cur.wrong.size >= teams.length) { cur.done = true; cur.ans = true; }
+    else if (mode === 'cherha') { let n = ti; do { n = (n + 1) % teams.length; } while (cur.wrong.has(n)); cur.buzz = ['T' + n]; deadline = Date.now() + 30000; }
+    toast(($('#minus').checked ? '−' + v + ' · ' : '') + teams[ti].n + ' — ні. ' + (cur.done ? 'Ніхто не відповів' : mode === 'cherha' ? 'Відповідає ' + teams[teamOf(cur.buzz[0])].n : 'Інші можуть відповісти')); }
   paintQ(); bcast();
 }
-function toBoard() { if (cur) used.add(cur.c + '-' + cur.r); cur = null; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
+function toBoard() { if (cur) { used.add(cur.c + '-' + cur.r); if (mode === 'cherha') chooser = (chooser + 1) % teams.length; else if (cur.win != null) chooser = cur.win; } cur = null; deadline = 0; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
 function finish() {
   phase = 'fin'; show('fin');
   const order = teams.map((t, i) => [t, i]).sort((a, b) => b[0].s - a[0].s), top = order[0][0].s, wn = order.filter(([t]) => t.s === top);
@@ -689,12 +738,17 @@ function paintTop() {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
+  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки ✓ і ✗. Юнакам його не показуйте.';
+  $('#vedc').textContent = veds.size ? '📱 Ведучий ✓' : '📱 Ведучий';
 }
 function paintLobby() {
   const url = PURL + '?k=' + code;
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+  const vu = VURL + '?k=' + code + '&v=' + hkey;
+  if (window.qrSvg && $('#vqr').dataset.u !== vu) { $('#vqr').innerHTML = window.qrSvg(vu, 112); $('#vqr').dataset.u = vu; $('#vqr2').innerHTML = window.qrSvg(vu, 320); }
+  $('#modes').innerHTML = Object.entries(MODES).map(([k, [n, d]]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${n}<small>${d}</small></button>`).join('');
   if (document.activeElement && document.activeElement.closest('#teams')) return;   // не заважати друкувати назву
   const cnt = i => [...players.values()].filter(P => P.team === i).length;
   $('#teams').innerHTML = teams.map((t, i) => `<span class="team" style="--c:${teamColor(i)}"><input data-t="${i}" value="${esc(t.n)}" maxlength="16" aria-label="Назва команди ${i + 1}"><small>${cnt(i) ? '📱 ' + cnt(i) : ''}</small>${teams.length > 2 ? `<button type="button" data-tx="${i}" aria-label="Прибрати команду">✕</button>` : ''}</span>`).join('');
@@ -710,6 +764,7 @@ function paintBoard() {
   let h = CATS.map(C => `<div class="cat">${esc(C.n)}</div>`).join('');
   for (let r = 0; r < 5; r++) h += CATS.map((C, c) => `<button type="button" data-c="${c}" data-r="${r}"${!has(c, r) || used.has(c + '-' + r) ? ' disabled' : ''} aria-label="${esc(C.n)}, ${VALS[r]}">${has(c, r) ? VALS[r] : ''}</button>`).join('');
   g.innerHTML = h; $('#scores').innerHTML = scoresHtml(true);
+  const ch = teams[chooser] ? chooser : 0; $('#bh').className = 'choose'; $('#bh').innerHTML = `Вибирає питання: <i style="--c:${teamColor(ch)}">${esc(teams[ch].n)}</i>`;
 }
 function paintQ() {
   const C = CATS[cur.c], Q = C.q[cur.r];
@@ -718,7 +773,7 @@ function paintQ() {
   if (first) { const w = whoOf(first); t.className = 'turn on'; t.style.setProperty('--c', w.c); t.textContent = 'Відповідає: ' + w.tn + (w.name ? ' · ' + w.name : ''); }
   else { t.className = 'turn'; t.textContent = cur.done ? (cur.wrong.size >= teams.length ? 'Ніхто не відповів правильно' : 'Правильно!') : cur.wrong.size ? 'Інші команди — тисніть «Відповідаю!»' : 'Хто знає — тисніть «Відповідаю!»'; }
   if (cur.done && first) t.textContent = '✓ ' + whoOf(first).tn + ' +' + VALS[cur.r];
-  $('#picks').innerHTML = cur.done || first ? '' : teams.map((tm, i) => `<button type="button" data-pick="${i}" style="--c:${teamColor(i)}"${cur.wrong.has(i) ? ' disabled' : ''}>${esc(tm.n)} відповідає</button>`).join('');
+  $('#picks').innerHTML = cur.done || first || mode === 'cherha' ? '' : teams.map((tm, i) => `<button type="button" data-pick="${i}" style="--c:${teamColor(i)}"${cur.wrong.has(i) ? ' disabled' : ''}>${esc(tm.n)} відповідає</button>`).join('');
   $('#qa').textContent = cur.ans ? Q[1] : '';
   $('#ans').disabled = cur.ans;
   $('#yes').disabled = $('#no').disabled = !first || cur.done;
@@ -737,13 +792,17 @@ $('#teams').addEventListener('input', e => { const i = e.target.dataset.t; if (i
 $('#teams').addEventListener('focusout', () => setTimeout(paintLobby, 0));
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.mode) { mode = b.dataset.mode; paintLobby(); bcast(); return; }
   if (b.dataset.c != null) { openQ(+b.dataset.c, +b.dataset.r); return; }
   if (b.dataset.pick != null) { buzz('T' + b.dataset.pick); return; }
   if (b.dataset.adj != null) { teams[+b.dataset.adj].s += +b.dataset.d; paintBoard(); bcast(); return; }
   if (b.dataset.tx != null) { const i = +b.dataset.tx; teams.splice(i, 1); players.forEach(P => { if (P.team === i) P.team = -1; else if (P.team > i) P.team--; }); paintLobby(); bcast(); return; }
   switch (b.id) {
+    case 'print': printSheet(); break;
+    case 'vedc': $('#vov').hidden = false; break;
+    case 'vovx': $('#vov').hidden = true; break;
     case 'tadd': if (teams.length < 6) { teams.push({ n: ['Вовки', 'Соколи', 'Олені', 'Лиси', 'Ведмеді', 'Орли'].find(n => !teams.some(t => t.n === n)) || 'Команда ' + (teams.length + 1), s: 0 }); paintLobby(); bcast(); } break;
-    case 'start': teams.forEach(t => { t.s = 0; }); used = new Set(); phase = 'board'; show('board'); paintBoard(); bcast(); break;
+    case 'start': teams.forEach(t => { t.s = 0; }); used = new Set(); chooser = 0; phase = 'board'; show('board'); paintBoard(); bcast(); break;
     case 'yes': judge(true); break;
     case 'no': judge(false); break;
     case 'ans': if (cur) { cur.ans = true; cur.done = true; paintQ(); bcast(); } break;
@@ -758,14 +817,20 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { $('#edov').hidden = true; return; }
+  if (e.key === 'Escape') { $('#edov').hidden = true; $('#vov').hidden = true; return; }
   if (e.target.closest('input,textarea') || phase !== 'q') return;
   if (e.key === '+' || e.key === '=') judge(true); else if (e.key === '-') judge(false);
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') $('#ans').click();
   else if (e.key === 'Backspace') toBoard();
 });
+setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? '⏱ ' + left : '⏱ Час! Відповідайте'; }, 250);
+function printSheet() {
+  const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Своя гра — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Своя гра — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(Q[1])}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
+  w.document.close();
+}
 paintLobby(); paintTop(); startNet();
-window.SVOYA = { state: () => ({ phase, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
+window.SVOYA = { hkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
 </script>
 </body>

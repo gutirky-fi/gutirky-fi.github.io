@@ -7,7 +7,7 @@ qr = open(os.path.join(ROB, 'src', 'qr.js'), encoding='utf8').read()
 z = open(os.path.join(ROB, 'src', 'zvyazok.js'), encoding='utf8').read()
 DIRS = ['proba/svoya-hra'] + (['svoya-hra'] if 'sait' in sys.argv else [])
 for d in DIRS:
-    for src, out in [('ekran.html', d + '/index.html'), ('hravets.html', d + '/hravets/index.html')]:
+    for src, out in [('ekran.html', d + '/index.html'), ('hravets.html', d + '/hravets/index.html'), ('vedyuchyi.html', d + '/vedyuchyi/index.html')]:
         s = open(os.path.join(H, src), encoding='utf8').read()
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
         assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s

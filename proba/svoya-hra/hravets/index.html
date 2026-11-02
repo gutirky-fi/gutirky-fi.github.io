@@ -57,7 +57,7 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 
   <section id="join">
     <h1>Своя гра</h1>
-    <p class="m">Введи імʼя, потім вибери свою команду.</p>
+    <p class="m">Від кожної команди — <b>один телефон: капітан</b>. Команда радиться, капітан натискає.</p>
     <div id="cbox"><label for="f-code">Код з екрана</label><input id="f-code" inputmode="numeric" maxlength="7" placeholder="123 456" autocomplete="off"></div>
     <label for="f-name">Твоє імʼя</label><input id="f-name" maxlength="18" autocomplete="given-name" placeholder="Імʼя">
     <button type="button" class="btn" id="go">Далі</button>
@@ -347,14 +347,14 @@ function render() {
     $('#q').innerHTML = esc(Q.cat) + '<b>' + Q.v + '</b>';
     b.disabled = !Q.open || Q.lock;
     if (Q.mine && !Q.done) { b.className = 'mine'; b.disabled = true; s.className = 'st ok'; s.textContent = 'Ти перший! Відповідай уголос'; }
-    else if (Q.turn && !Q.done) s.textContent = 'Відповідає: ' + Q.turn.tn + (Q.turn.name ? ' · ' + Q.turn.name : '');
+    else if (Q.turn && !Q.done) { s.textContent = (Q.turn.team === ti ? 'Ваша черга! Порадьтеся й відповідайте' : 'Відповідає: ' + Q.turn.tn) + (Q.turn.name && Q.turn.team !== ti ? ' · ' + Q.turn.name : ''); if (Q.turn.team === ti) s.className = 'st ok'; }
     else if (Q.done) s.textContent = Q.turn ? '✓ ' + Q.turn.tn + ' +' + Q.v : 'Питання закрите';
     else if (Q.lock) s.textContent = 'Твоя команда вже відповідала';
-    else s.textContent = 'Знаєш? Тисни!';
+    else s.textContent = st.mode === 'cherha' ? 'Чекаємо' : 'Знаєш? Тисни!';
     $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';
   } else {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
-    b.disabled = true; s.textContent = st.ph === 'board' ? 'Чекаємо, яке питання виберуть' : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
+    b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
   }
   $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join('');
 }
