@@ -60,6 +60,9 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr div.ok{background:rgba(61,175,110,.25)}.vr b{color:var(--gd);margin-right:8px}
 .act .hn{grid-column:1/-1;background:rgba(255,194,71,.14);border-color:var(--gd);color:var(--gd)}
 .end{display:block;width:100%;margin-top:16px;min-height:46px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font-weight:700}
+.pf{padding:18px 14px;border-radius:16px;background:var(--card);text-align:center}.pf b{display:block;font:600 22px var(--disp);margin-bottom:6px}.pf p{color:var(--mut);margin:0 0 12px}
+.pf input{width:100%;min-height:58px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font:700 28px var(--txt);letter-spacing:.3em;text-align:center}
+.pf button{width:100%;min-height:54px;margin-top:10px;border-radius:14px;border:0;background:var(--gd);color:#1d1606;font-weight:700;font-size:18px}.pf .er{color:#ff9a8a;font-weight:700;min-height:1.3em;margin-top:8px}
 .rk{list-style:none;padding:0}.rk li{display:flex;justify-content:space-between;padding:10px 14px;margin:6px 0;border-radius:12px;background:var(--card);border-left:6px solid var(--c);font-weight:700;font-size:19px}
 </style>
 </head>
@@ -77,7 +80,13 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const splitA = a => { const m = String(a || '').match(/^(.*?)\s*\(([^()]*)\)\s*$/); return m && m[1] ? [m[1], m[2]] : [String(a || ''), '']; };   // «Говерла (2061 м)» → головне + довідка
-const q = new URLSearchParams(location.search), code = (q.get('k') || '').replace(/\D/g, '').slice(0, 6), key = q.get('v') || '';
+const SK = 'svoya.ved';
+let ses = {}; try { ses = JSON.parse(localStorage.getItem(SK) || '{}'); } catch (e) { ses = {}; }
+const saveS = () => { try { localStorage.setItem(SK, JSON.stringify(ses)); } catch (e) { /* ok */ } };
+if (!ses.dev) { ses.dev = Math.random().toString(36).slice(2) + Date.now().toString(36); saveS(); }
+const qk = (new URLSearchParams(location.search).get('k') || '').replace(/\D/g, '').slice(0, 6);
+if (qk.length === 6 && ses.code !== qk) { ses.code = qk; ses.tok = ''; saveS(); }
+let authed = false;
 
 const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
 const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
@@ -92,21 +101,44 @@ async function connect() {
   if (my !== att) return;
   if (!P) { chip(false, 'Немає звʼязку'); return; }
   const p = peer = new P(undefined, window.GUTIRKA_PEER_OPTS || {});
-  const tmo = setTimeout(() => { if (my === att && !(conn && conn.open)) retry(my, 'Не знайшли гру'); }, 15000);
-  p.on('error', e => { if (my !== att) return; if (e && e.type === 'peer-unavailable') { clearTimeout(tmo); retry(my, 'Гру не знайдено'); } });
+  const tmo = setTimeout(() => { if (my === att && !(conn && conn.open)) { retry(my, 'Не знайшли гру'); askCode('Гру з кодом ' + ses.code + ' не знайдено. Перевірте код на екрані.'); } }, 15000);
+  p.on('error', e => { if (my !== att) return; if (e && e.type === 'peer-unavailable') { clearTimeout(tmo); retry(my, 'Гру не знайдено'); askCode('Гру з кодом ' + ses.code + ' не знайдено. Перевірте код на екрані.'); } });
   p.on('open', () => {
     if (my !== att) return;
-    const c = conn = p.connect('gutirky-svoya-' + code, { reliable: true });
-    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'ved', key }); chip(true, 'На звʼязку');
-      hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 4000); });
+    const c = conn = p.connect('gutirky-svoya-' + ses.code, { reliable: true });
+    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '' }); chip(true, 'На звʼязку');
+      hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (authed && Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 4000); });
     c.on('data', d => { if (my !== att || !d) return; lastRx = Date.now();
-      if (d.t === 'bad') { stop(); chip(false, 'Не той код'); $('#body').innerHTML = '<div class="wait"><b>Не вдалося</b>Відскануйте QR-код «Ведучому» з табла ще раз.</div>'; return; }
-      if (d.t === 'vst') { st = d; render(); } });
+      switch (d.t) {
+        case 'vst': authed = true; st = d; render(); break;
+        case 'ok': authed = true; ses.tok = d.tok; saveS(); break;
+        case 'needpin': askPin('', d.left); break;
+        case 'badpin': askPin('Неправильний PIN', d.left); break;
+        case 'blocked': msg('Пульт заблоковано', 'Тричі введено неправильний PIN. На цю гру з цього телефона підключитися вже не можна.'); break;
+        case 'nopin': msg('Спершу PIN', 'На ноутбуці, у лобі гри, впишіть свій PIN (4–6 цифр). Цей екран оновиться сам.'); setTimeout(() => { if (my === att && !authed) try { c.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '' }); } catch (x) { /* ok */ } }, 3000); break;
+        case 'wait': msg('Підтвердіть на ноутбуці', 'На екрані зʼявилося питання «Новий пульт ведучого» — натисніть там «Так, це я».'); break;
+        case 'denied': msg('Не підтверджено', 'На ноутбуці натиснули «Ні».', true); break;
+      } });
     c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
   });
 }
 function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
 
+function msg(t, s, again) { $('#act').hidden = true; $('#body').innerHTML = `<div class="pf"><b>${t}</b><p>${s}</p>${again ? '<button type="button" id="again">Спробувати знову</button>' : ''}</div>`; }
+function askPin(err, left) {
+  $('#act').hidden = true;
+  $('#body').innerHTML = `<form class="pf" id="pinf"><b>PIN ведучого</b><p>Той, що ви вписали на ноутбуці. Спроб: ${left}.</p><input id="pinv" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••"><button type="submit">Увійти</button><div class="er">${err}</div></form>`;
+  setTimeout(() => { const i = $('#pinv'); if (i) i.focus(); }, 50);
+}
+function askCode(err) {
+  $('#act').hidden = true;
+  $('#body').innerHTML = `<form class="pf" id="codef"><b>Код гри</b><p>6 цифр — великі жовті цифри на екрані гри.</p><input id="codev" inputmode="numeric" maxlength="7" autocomplete="off" placeholder="123 456" value="${esc(ses.code || '')}"><button type="submit">Далі</button><div class="er">${err || ''}</div></form>`;
+}
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  if (e.target.id === 'pinf') { const v = $('#pinv').value.replace(/\D/g, ''); if (v.length >= 4) { try { conn.send({ t: 'ved', dev: ses.dev, pin: v }); } catch (x) { /* ok */ } $('#body').innerHTML = '<div class="wait"><b>Перевіряємо…</b></div>'; } }
+  if (e.target.id === 'codef') { const v = $('#codev').value.replace(/\D/g, ''); if (v.length === 6) { if (ses.code !== v) { ses.code = v; ses.tok = ''; saveS(); } $('#body').innerHTML = '<div class="wait"><b>Підключаємось…</b></div>'; connect(); } }
+});
 function render() {
   const B = $('#body'), A = $('#act'), R = $('#actr');
   const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)} <small>💡${t.h}</small><b>${t.s}</b></span>`).join('')}</div>`;
@@ -131,14 +163,15 @@ function render() {
     + (Q.done ? '' : (Q.shown ? '' : '<button type="button" data-a="ans">Показати відповідь усім</button>') + '<button type="button" data-a="back">До табла</button>');
 }
 document.addEventListener('click', e => {
-  const b = e.target.closest('button'); if (!b || !st) return;
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'again') { try { conn.send({ t: 'ved', dev: ses.dev, tok: ses.tok || '' }); } catch (x) { connect(); } return; }
+  if (!st) return;
   if (b.dataset.end) { if (confirm('Завершити гру й показати переможця?')) cmd({ a: 'end' }); return; }
   if (b.dataset.c != null) cmd({ a: 'open', c: +b.dataset.c, r: +b.dataset.r });
   else if (b.dataset.pick != null) cmd({ a: 'pick', team: +b.dataset.pick });
   else if (b.dataset.a) cmd({ a: b.dataset.a });
 });
-if (code.length === 6 && key) connect();
-else { chip(false, 'Немає коду'); $('#body').innerHTML = '<div class="wait"><b>Відкрийте з QR-коду</b>Пульт ведучого відкривається, коли скануєте код «Ведучому» на табло гри.</div>'; }
+if ((ses.code || '').length === 6) connect(); else { chip(false, 'Немає коду'); askCode(''); }
 })();
 </script>
 </body>
