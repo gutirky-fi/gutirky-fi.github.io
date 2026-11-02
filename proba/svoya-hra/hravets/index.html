@@ -47,6 +47,8 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .st.ok{color:var(--ok)}
 .ans{margin-top:6px;text-align:center;color:var(--mut)}
 .ans b{color:var(--gd)}
+.vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr b{color:var(--gd);margin-right:8px}
+.hn{display:block;width:100%;min-height:48px;margin-top:10px;border-radius:14px;border:1px solid var(--gd);background:rgba(255,194,71,.12);color:var(--gd);font-weight:700;font-size:17px}
 .tbl{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .tbl span{padding:4px 10px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:14px}
 </style>
@@ -75,6 +77,7 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
     <div class="q" id="q"></div>
     <div class="bz"><button type="button" id="bz" disabled>Відповідаю!</button></div>
     <div class="st" id="st"></div>
+    <div id="vr"></div>
     <div class="ans" id="ans"></div>
     <div class="tbl" id="tbl"></div>
   </section>
@@ -344,22 +347,23 @@ function render() {
   b.className = ''; s.className = 'st';
   if (st.ph === 'q' && Q) {
     const sig = Q.cat + Q.v; if (sig !== lastQ) { lastQ = sig; if (navigator.vibrate) navigator.vibrate(40); }
-    $('#q').innerHTML = esc(Q.cat) + '<b>' + Q.v + '</b>';
+    $('#q').innerHTML = esc(Q.cat) + '<b>' + (Q.worth !== Q.v ? Q.v + ' → ' + Q.worth : Q.v) + '</b>';
+    $('#vr').innerHTML = (Q.vars ? '<div class="vr">' + Q.vars.map((o, i) => '<div><b>' + 'АБВГ'[i] + '</b>' + esc(o) + '</div>').join('') + '</div>' : '') + (Q.canHint ? '<button type="button" class="hn" id="hn">💡 Взяти варіанти · за правильну — половина балів (ще ' + T.h + ')</button>' : '');
     b.disabled = !Q.open || Q.lock;
     if (Q.mine && !Q.done) { b.className = 'mine'; b.disabled = true; s.className = 'st ok'; s.textContent = 'Ти перший! Відповідай уголос'; }
     else if (Q.turn && !Q.done) { s.textContent = (Q.turn.team === ti ? 'Ваша черга! Порадьтеся й відповідайте' : 'Відповідає: ' + Q.turn.tn) + (Q.turn.name && Q.turn.team !== ti ? ' · ' + Q.turn.name : ''); if (Q.turn.team === ti) s.className = 'st ok'; }
-    else if (Q.done) s.textContent = Q.turn ? '✓ ' + Q.turn.tn + ' +' + Q.v : 'Питання закрите';
+    else if (Q.done) s.textContent = Q.turn ? '✓ ' + Q.turn.tn + ' +' + (Q.gain || Q.v) : 'Питання закрите';
     else if (Q.lock) s.textContent = 'Твоя команда вже відповідала';
     else s.textContent = st.mode === 'cherha' ? 'Чекаємо' : 'Знаєш? Тисни!';
     $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';   // повна, з довідкою
   } else {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
-    b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
+    $('#vr').innerHTML = ''; b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
   }
-  $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join('');
+  $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · 💡${t.h}</span>`).join('');
 }
 $('#tp').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; ses.team = +b.dataset.t; save(ses); st.me.team = ses.team; sendc({ t: 'team', team: ses.team }); render(); });
-$('#play').addEventListener('click', e => { if (e.target.id === 'chg') { e.preventDefault(); st.me.team = -1; render(); } });
+$('#play').addEventListener('click', e => { if (e.target.id === 'hn') { sendc({ t: 'hint' }); e.target.disabled = true; return; } if (e.target.id === 'chg') { e.preventDefault(); st.me.team = -1; render(); } });
 $('#bz').addEventListener('pointerdown', e => { e.preventDefault(); if ($('#bz').disabled) return; sendc({ t: 'buzz' }); $('#bz').disabled = true; if (navigator.vibrate) navigator.vibrate(80); });
 $('#bz').addEventListener('click', e => { if (e.detail === 0 && !$('#bz').disabled) { sendc({ t: 'buzz' }); $('#bz').disabled = true; } });   // клавіатура
 function join() {

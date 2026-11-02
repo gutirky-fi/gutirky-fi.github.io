@@ -53,6 +53,8 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .act button:disabled{opacity:.35}
 .wait{padding:30px 10px;text-align:center;color:var(--mut)}
 .wait b{display:block;font:600 24px var(--disp);color:var(--ink);margin-bottom:6px}
+.vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr div.ok{background:rgba(61,175,110,.25)}.vr b{color:var(--gd);margin-right:8px}
+.act .hn{grid-column:1/-1;background:rgba(255,194,71,.14);border-color:var(--gd);color:var(--gd)}
 .rk{list-style:none;padding:0}.rk li{display:flex;justify-content:space-between;padding:10px 14px;margin:6px 0;border-radius:12px;background:var(--card);border-left:6px solid var(--c);font-weight:700;font-size:19px}
 </style>
 </head>
@@ -310,7 +312,7 @@ function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' ·
 
 function render() {
   const B = $('#body'), A = $('#act'), R = $('#actr');
-  const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)}<b>${t.s}</b></span>`).join('')}</div>`;
+  const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)} <small>💡${t.h}</small><b>${t.s}</b></span>`).join('')}</div>`;
   if (st.ph === 'lobby') { B.innerHTML = '<div class="wait"><b>Пульт підключено ✓</b>Натисніть «Почати гру» на табло. Тут ви бачитимете правильні відповіді.</div>'; A.hidden = true; return; }
   if (st.ph === 'fin') { B.innerHTML = sc + `<div class="wait"><b>Гру завершено</b></div><ol class="rk">${st.rank.map(([n, s, c]) => `<li style="--c:${c}"><span>${esc(n)}</span><span>${s}</span></li>`).join('')}</ol>`; A.hidden = true; return; }
   if (st.ph === 'board') {
@@ -322,13 +324,13 @@ function render() {
   }
   const Q = st.q; if (!Q) return;
   const T = Q.turn;
-  let h = sc + `<div class="qm">${esc(Q.cat)}<b>${Q.v}</b></div><p class="qq">${esc(Q.q)}</p><div class="qa"><small>ПРАВИЛЬНА ВІДПОВІДЬ</small><b>${esc(splitA(Q.a)[0])}</b>${splitA(Q.a)[1] ? `<div class="nt">Для довідки, не обовʼязково: <em>${esc(splitA(Q.a)[1])}</em></div>` : ''}</div>`;
-  if (Q.done) h += `<div class="who">${T ? '✓ ' + esc(T.tn) + ' +' + Q.v : 'Ніхто не відповів правильно'}</div>`;
+  let h = sc + `<div class="qm">${esc(Q.cat)}<b>${Q.worth !== Q.v ? Q.v + ' → ' + Q.worth : Q.v}</b></div><p class="qq">${esc(Q.q)}</p><div class="qa"><small>ПРАВИЛЬНА ВІДПОВІДЬ</small><b>${esc(splitA(Q.a)[0])}</b>${splitA(Q.a)[1] ? `<div class="nt">Для довідки, не обовʼязково: <em>${esc(splitA(Q.a)[1])}</em></div>` : ''}</div>` + (Q.vars ? '<div class="vr">' + Q.vars.map((o, i) => `<div class="${o === splitA(Q.a)[0] ? 'ok' : ''}"><b>${'АБВГ'[i]}</b>${esc(o)}</div>`).join('') + '</div>' : '');
+  if (Q.done) h += `<div class="who">${T ? '✓ ' + esc(T.tn) + ' +' + (Q.gain || Q.v) : 'Ніхто не відповів правильно'}</div>`;
   else if (T) h += `<div class="who" style="--c:${T.c}">Відповідає: ${esc(T.tn)}${T.name ? ' · ' + esc(T.name) : ''}</div>`;
   else h += `<div class="who">Чекаємо, хто натисне «Відповідаю!»</div><p class="hint">Або виберіть команду самі:</p><div class="picks">${st.teams.map((t, i) => `<button type="button" data-pick="${i}" style="--c:${t.c}"${Q.wrong.includes(i) ? ' disabled' : ''}>${esc(t.n)}</button>`).join('')}</div>`;
   B.innerHTML = h;
   A.hidden = false;
-  R.innerHTML = (T && !Q.done ? '<button type="button" class="yes" data-a="yes">✓ Правильно</button><button type="button" class="no" data-a="no">✗ Неправильно</button>' : '')
+  R.innerHTML = (Q.canHint ? '<button type="button" class="hn" data-a="hint">💡 Дати варіанти (половина балів)</button>' : '') + (T && !Q.done ? '<button type="button" class="yes" data-a="yes">✓ Правильно</button><button type="button" class="no" data-a="no">✗ Неправильно</button>' : '')
     + (Q.shown ? '' : '<button type="button" data-a="ans">Показати відповідь усім</button>') + '<button type="button" data-a="back">До табла</button>';
 }
 document.addEventListener('click', e => {

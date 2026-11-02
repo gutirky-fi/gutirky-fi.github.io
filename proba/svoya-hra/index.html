@@ -84,6 +84,16 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 .picks button{min-height:40px;padding:6px 14px;border-radius:11px;border:1px solid var(--ln);background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:15px}
 .picks button:disabled{opacity:.35}
 .hintk{color:var(--mut);font-size:14px}
+.vars{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(900px,100%);margin:0 auto}
+.vars div{padding:12px 16px;border-radius:14px;background:var(--card);border:1px solid var(--ln);font:700 clamp(1.1rem,2.2vw,1.6rem)/1.2 var(--txt)}
+.vars div b{color:var(--gd);margin-right:10px;font-family:var(--disp)}
+.vars div.ok{background:rgba(61,175,110,.25);border-color:var(--ok)}
+.hb{color:var(--gd);font-weight:700}
+#qv.v .qt{font-size:clamp(1.5rem,3.2vw,2.5rem)}#qv.v .turn{min-height:50px;padding:6px 20px}#qv.v .who{gap:8px}
+.drw{position:fixed;inset:0;z-index:26;display:grid;place-items:center;background:rgba(8,10,20,.92);text-align:center}
+.drw small{display:block;color:var(--mut);font-weight:700;font-size:20px;letter-spacing:.06em;text-transform:uppercase}
+.drw b{display:inline-block;margin:14px 0;padding:14px 40px;border-radius:24px;background:var(--c,#2a3266);font:600 clamp(3rem,9vw,6rem)/1 var(--disp);text-transform:uppercase;color:#fff;transition:background .15s}
+.drw.fin b{animation:pulse .6s ease-out}
 .modes{display:flex;flex-wrap:wrap;gap:8px}
 .modes button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700;text-align:left}
 .modes button small{display:block;font-weight:600;font-size:12px;color:var(--mut)}
@@ -112,10 +122,10 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 .ec{margin:14px 0;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
 .ec .f{display:block;width:100%;min-height:40px;padding:6px 10px;border-radius:9px;border:1px solid var(--ln);background:var(--card2);font-size:16px}
 .ec .cn{font:600 20px var(--disp);text-transform:uppercase;margin-bottom:8px}
-.er{display:grid;grid-template-columns:52px 1fr 220px;gap:8px;align-items:center;margin-top:6px}
+.er{display:grid;grid-template-columns:52px 2fr 1fr 1.3fr;gap:8px;align-items:center;margin-top:6px}
 .er b{font:600 20px var(--disp);color:var(--gd);text-align:center}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#262c47;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
-@media (max-width:820px){.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.er{grid-template-columns:40px 1fr}.er .f:last-child{grid-column:2}}
+@media (max-width:820px){.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.er{grid-template-columns:40px 1fr}.er .f:nth-child(n+3){grid-column:2}}
 @media (prefers-reduced-motion:reduce){.turn.on{animation:none}}
 </style>
 </head>
@@ -139,6 +149,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
       <div class="lbl">і введіть код</div>
       <div class="code" id="code">··· ···</div>
       <div class="row">
+        <button type="button" class="btn" id="draw">🎲 Хто починає?</button>
         <button type="button" class="btn main" id="start">▶ Почати гру</button>
         <button type="button" class="btn" id="edit">✎ Питання</button>
         <button type="button" class="btn" id="tadd">+ Команда</button>
@@ -165,11 +176,13 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
     <div class="turn" id="turn">Хто знає — тисніть «Відповідаю!»</div>
     <div class="tm" id="tm"></div>
     <div class="picks" id="picks"></div>
+    <div class="vars" id="vars" hidden></div>
     <div class="qa" id="qa"></div>
   </div>
   <div class="bar">
     <button type="button" class="btn ok" id="yes" disabled>✓ Правильно</button>
     <button type="button" class="btn no" id="no" disabled>✗ Неправильно</button>
+    <button type="button" class="btn" id="hint" disabled>💡 Варіанти</button>
     <span class="sp"></span>
     <button type="button" class="btn" id="ans">Показати відповідь</button>
     <button type="button" class="btn main" id="back">До табла</button>
@@ -182,11 +195,12 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 </main>
 
 <div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
-  <h2>Питання</h2><p class="sub">5 тем по 5 питань. Порожнє питання на табло не показується. Те, що у відповіді в дужках, — довідка для ведучого, називати не обовʼязково. Зберігається в цьому браузері.</p>
+  <h2>Питання</h2><p class="sub">5 тем по 5 питань. Порожнє питання на табло не показується. Те, що у відповіді в дужках, — довідка для ведучого, називати не обовʼязково. Для підказки «Варіанти» впишіть 3 неправильні відповіді через «;». Зберігається в цьому браузері.</p>
   <div id="ed"></div>
   <div class="row"><button type="button" class="btn" id="edreset">Повернути приклад</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
 <div class="vov" id="vov" hidden><div class="box"><button type="button" class="x" id="vovx" aria-label="Закрити">✕</button><h2>Пульт ведучого</h2><p class="sub">Скануйте своїм телефоном — там відповіді. Юнакам не показуйте.</p><div class="vq" id="vqr2"></div></div></div>
+<div class="drw" id="drw" hidden><div><small>Хто починає?</small><b id="drn"></b><small id="drs"></small></div></div>
 <div class="toast" id="toast" hidden></div>
 
 <script>
@@ -580,6 +594,7 @@ const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 3000); }
 const VALS = [100, 200, 300, 400, 500];
+const HINTS = 2;   // підказок «Варіанти» на команду за гру
 const splitA = a => { const m = String(a || '').match(/^(.*?)\s*\(([^()]*)\)\s*$/); return m && m[1] ? [m[1], m[2]] : [String(a || ''), '']; };   // «Говерла (2061 м)» → головне + довідка
 
 const COLS = ['#e5534b', '#2f8fe0', '#3daf6e', '#ffc247', '#a46be0', '#e8925b'];
@@ -587,35 +602,35 @@ const COLS = ['#e5534b', '#2f8fe0', '#3daf6e', '#ffc247', '#a46be0', '#e8925b'];
 /* ---------- приклад гри (можна змінити кнопкою «Питання») ---------- */
 const BASE = [
   { n: 'Пласт', q: [
-    ['Яким словом пластуни вітаються й прощаються?', 'СКОБ!'],
-    ['Як скорочено називається улад юнаків і юначок 11–18 років? (три букви)', 'УПЮ'],
-    ['У якому році у Львові склали першу пластову присягу?', '1912'],
-    ['Як звали засновника Пласту, якого називали «Дрот»?', 'Олександр Тисовський'],
-    ['Що означають чотири букви СКОБ?', 'Сильно, Красно, Обережно, Бистро']] },
+    ['Яким словом пластуни вітаються й прощаються?', 'СКОБ!', ['Слава!', 'Готов!', 'Добрий день!']],
+    ['Як скорочено називається улад юнаків і юначок 11–18 років? (три букви)', 'УПЮ', ['УПН', 'УСП', 'УПС']],
+    ['У якому році у Львові склали першу пластову присягу?', '1912', ['1905', '1918', '1930']],
+    ['Як звали засновника Пласту, якого називали «Дрот»?', 'Олександр Тисовський', ['Петро Франко', 'Іван Франко', 'Роберт Баден-Пауел']],
+    ['Що означають чотири букви СКОБ?', 'Сильно, Красно, Обережно, Бистро', ['Сміливо, Кмітливо, Охоче, Бадьоро', 'Сильно, Красиво, Обачно, Бадьоро', 'Спритно, Красно, Обачно, Бистро']]] },
   { n: 'Україна', q: [
-    ['Яка найдовша річка України?', 'Дніпро'],
-    ['Яка найвища гора України?', 'Говерла (2061 м)'],
-    ['Яке місто було столицею радянської України до 1934 року?', 'Харків'],
-    ['Хто написав слова «Ще не вмерла України…»?', 'Павло Чубинський'],
-    ['Як називається навчальний заклад, заснований 1576 року князем Острозьким?', 'Острозька академія']] },
+    ['Яка найдовша річка України?', 'Дніпро', ['Дністер', 'Південний Буг', 'Десна']],
+    ['Яка найвища гора України?', 'Говерла (2061 м)', ['Піп Іван', 'Петрос', 'Бребенескул']],
+    ['Яке місто було столицею радянської України до 1934 року?', 'Харків', ['Київ', 'Львів', 'Одеса']],
+    ['Хто написав слова «Ще не вмерла України…»?', 'Павло Чубинський', ['Тарас Шевченко', 'Іван Франко', 'Михайло Вербицький']],
+    ['Як називається навчальний заклад, заснований 1576 року князем Острозьким?', 'Острозька академія', ['Києво-Могилянська академія', 'Львівський університет', 'Харківський університет']]] },
   { n: 'Природа й табір', q: [
-    ['Яким вузлом звʼязують дві мотузки однакової товщини?', 'Прямим вузлом'],
-    ['Яку сторону світу показує Полярна зоря?', 'Північ'],
-    ['Скільки ніг у павука?', '8'],
-    ['Як звучить сигнал SOS азбукою Морзе?', '··· ——— ··· (три крапки, три тире, три крапки)'],
-    ['Яка тварина — національний символ Фінляндії?', 'Бурий ведмідь']] },
+    ['Яким вузлом звʼязують дві мотузки однакової товщини?', 'Прямим вузлом', ['Вісімкою', 'Булинем', 'Шкотовим вузлом']],
+    ['Яку сторону світу показує Полярна зоря?', 'Північ', ['Південь', 'Схід', 'Захід']],
+    ['Скільки ніг у павука?', '8', ['6', '10', '12']],
+    ['Як звучить сигнал SOS азбукою Морзе?', '··· ——— ··· (три крапки, три тире, три крапки)', ['——— ··· ———', '·—· ·—· ·—·', '··· ··· ···']],
+    ['Яка тварина — національний символ Фінляндії?', 'Бурий ведмідь', ['Лось', 'Вовк', 'Рись']]] },
   { n: 'Кераміка', q: [
-    ['Як називається уламок глиняного посуду?', 'Черепок'],
-    ['Яке селище називають гончарною столицею України?', 'Опішня'],
-    ['Посудинка з трубочкою, колись — коровʼячий ріг: нею малюють лінії. Що це?', 'Ріжок'],
-    ['Мальована кераміка якого міста внесена до списку ЮНЕСКО?', 'Косова'],
-    ['Як називається культура понад 5000 років тому, названа за селом біля Києва?', 'Трипільська']] },
+    ['Як називається уламок глиняного посуду?', 'Черепок', ['Шлікер', 'Бісквіт', 'Ангоб']],
+    ['Яке селище називають гончарною столицею України?', 'Опішня', ['Косів', 'Бубнівка', 'Вільхівка']],
+    ['Посудинка з трубочкою, колись — коровʼячий ріг: нею малюють лінії. Що це?', 'Ріжок', ['Шило', 'Пензель', 'Макітра']],
+    ['Мальована кераміка якого міста внесена до списку ЮНЕСКО?', 'Косова', ['Опішні', 'Бару', 'Олешні']],
+    ['Як називається культура понад 5000 років тому, названа за селом біля Києва?', 'Трипільська', ['Скіфська', 'Черняхівська', 'Зарубинецька']]] },
   { n: 'Всяке-різне', q: [
-    ['Скільки гравців однієї футбольної команди на полі?', '11'],
-    ['Яка планета найближча до Сонця?', 'Меркурій'],
-    ['Скільки клавіш у звичайного фортепіано?', '88'],
-    ['Яка крихітна тварина може вижити навіть у відкритому космосі?', 'Тихохідка'],
-    ['Скільки кісток у дорослої людини?', '206']] }
+    ['Скільки гравців однієї футбольної команди на полі?', '11', ['10', '9', '12']],
+    ['Яка планета найближча до Сонця?', 'Меркурій', ['Венера', 'Марс', 'Земля']],
+    ['Скільки клавіш у звичайного фортепіано?', '88', ['76', '92', '100']],
+    ['Яка крихітна тварина може вижити навіть у відкритому космосі?', 'Тихохідка', ['Мураха', 'Таракан', 'Медуза']],
+    ['Скільки кісток у дорослої людини?', '206', ['186', '212', '250']]] }
 ];
 const LS = 'svoya.board';
 let CATS;
@@ -623,12 +638,15 @@ try { CATS = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { CATS 
 if (!Array.isArray(CATS) || CATS.length !== 5) CATS = JSON.parse(JSON.stringify(BASE));
 
 /* ---------- стан ---------- */
-let teams = [{ n: 'Вовки', s: 0 }, { n: 'Соколи', s: 0 }, { n: 'Олені', s: 0 }];
+let teams = [{ n: 'Вовки', s: 0, h: HINTS }, { n: 'Соколи', s: 0, h: HINTS }, { n: 'Олені', s: 0, h: HINTS }];
 let mode = 'shvydko', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
 const MODES = { shvydko: ['Хто швидше', 'капітани тиснуть «Відповідаю!»'], cherha: ['По черзі', 'без кнопок, 30 секунд на роздуми'] };
 const hkey = Math.random().toString(36).slice(2, 8);   // ключ пульта ведучого — лише в його QR-коді
 const veds = new Set();
-let deadline = 0;
+let deadline = 0, drew = false;
+const wrongOf = (c, r) => { const w = CATS[c] && CATS[c].q[r] && CATS[c].q[r][2]; return Array.isArray(w) ? w.filter(Boolean).slice(0, 3) : []; };
+const canVars = () => cur && !cur.done && !cur.var && cur.buzz.length && wrongOf(cur.c, cur.r).length >= 2 && (teams[teamOf(cur.buzz[0])] || {}).h > 0;
+const worth = () => cur.var ? VALS[cur.r] / 2 : VALS[cur.r];
 let phase = 'lobby', used = new Set(), cur = null;   // cur = {c, r, buzz:[tok або 'T'+індекс], wrong:Set(команд), ans:bool, done:bool}
 const players = new Map();   // tok -> {name, team, conn, t, on}
 const teamColor = i => COLS[i % COLS.length];
@@ -669,24 +687,26 @@ function onConn(c) {
     else if (d.t === 'ping') { const P = players.get(tok); if (P) { P.t = Date.now(); if (!P.on) { P.on = true; paintTop(); } } }
     else if (d.t === 'team') { const P = players.get(tok); if (P && d.team >= 0 && d.team < teams.length) { P.team = d.team; sendTo(tok); paintLobby(); } }
     else if (d.t === 'buzz') buzz(tok);
+    else if (d.t === 'hint') { const P = players.get(tok); if (P && cur && cur.buzz.length && P.team === teamOf(cur.buzz[0])) useVars(); }
   });
   c.on('close', () => { if (c.isVed) { veds.delete(c); paintTop(); return; } const P = tok && players.get(tok); if (P && P.conn === c) { P.on = false; paintTop(); } });
 }
 function stateFor(tok) {
   const P = players.get(tok) || {};
-  const s = { t: 'st', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })), me: { name: P.name, team: P.team } };
+  const s = { t: 'st', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, h: t.h, c: teamColor(i) })), me: { name: P.name, team: P.team } };
   if (phase === 'q' && cur) {
     const first = cur.buzz[0];
     s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], open: !cur.done && !first, done: cur.done, lock: P.team >= 0 && cur.wrong.has(P.team),
-      turn: first ? whoOf(first) : null, mine: first === tok, ans: cur.ans ? CATS[cur.c].q[cur.r][1] : '' };
+      turn: first ? whoOf(first) : null, mine: first === tok, ans: cur.ans ? CATS[cur.c].q[cur.r][1] : '', vars: cur.var ? cur.opts : null, worth: worth(), gain: cur.gain || 0,
+      canHint: !!(canVars() && P.team === teamOf(first)) };
   }
   return s;
 }
 function sendTo(tok) { const P = players.get(tok); try { if (P && P.conn && P.conn.open) P.conn.send(stateFor(tok)); } catch (e) { /* ok */ } }
 function vedState() {
-  const s = { t: 'vst', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })),
+  const s = { t: 'vst', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, h: t.h, c: teamColor(i) })),
     cats: CATS.map(C => C.n), vals: VALS, cells: CATS.map((C, c) => VALS.map((_, r) => has(c, r) ? (used.has(c + '-' + r) ? 2 : 1) : 0)) };
-  if (phase === 'q' && cur) { const first = cur.buzz[0]; s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], q: CATS[cur.c].q[cur.r][0], a: CATS[cur.c].q[cur.r][1], turn: first ? whoOf(first) : null, done: cur.done, shown: cur.ans, wrong: [...cur.wrong] }; }
+  if (phase === 'q' && cur) { const first = cur.buzz[0]; s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], q: CATS[cur.c].q[cur.r][0], a: CATS[cur.c].q[cur.r][1], turn: first ? whoOf(first) : null, done: cur.done, shown: cur.ans, wrong: [...cur.wrong], vars: cur.var ? cur.opts : null, canHint: !!canVars(), worth: worth(), gain: cur.gain || 0 }; }
   if (phase === 'fin') s.rank = teams.map((t, i) => [t.n, t.s, teamColor(i)]).sort((a, b) => b[1] - a[1]);
   return s;
 }
@@ -698,6 +718,7 @@ function vedCmd(d) {
     case 'yes': judge(true); break;
     case 'no': judge(false); break;
     case 'pick': buzz('T' + d.team); break;
+    case 'hint': useVars(); break;
     case 'ans': if (cur) { cur.ans = true; cur.done = true; paintQ(); bcast(); } break;
     case 'back': if (phase === 'q') toBoard(); break;
   }
@@ -715,18 +736,26 @@ function buzz(id) {
 
 /* ---------- дії ведучого ---------- */
 function show(id) { ['lobby', 'board', 'qv', 'fin'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); $('#vedc').hidden = id === 'lobby'; }
-function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false }; if (mode === 'cherha') { cur.buzz = ['T' + chooser]; deadline = Date.now() + 30000; } else deadline = 0; phase = 'q'; show('qv'); paintQ(); bcast(); }
+function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false, var: false, opts: null }; if (mode === 'cherha') { cur.buzz = ['T' + chooser]; deadline = Date.now() + 30000; } else deadline = 0; phase = 'q'; show('qv'); paintQ(); bcast(); }
+function useVars() {
+  if (!canVars()) return;
+  const ti = teamOf(cur.buzz[0]); teams[ti].h--;
+  const o = [CATS[cur.c].q[cur.r][1].replace(/\s*\([^()]*\)\s*$/, ''), ...wrongOf(cur.c, cur.r)];
+  for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
+  cur.var = true; cur.opts = o; cur.okOpt = o.indexOf(splitA(CATS[cur.c].q[cur.r][1])[0]);
+  toast('💡 ' + teams[ti].n + ' взяли варіанти — тепер питання коштує ' + worth()); paintQ(); bcast();
+}
 function judge(ok) {
   if (!cur || !cur.buzz.length || cur.done) return;
   const ti = teamOf(cur.buzz[0]), v = VALS[cur.r];
   deadline = 0;
-  if (ok) { teams[ti].s += v; cur.done = true; cur.ans = true; cur.win = ti; toast('+' + v + ' · ' + teams[ti].n); }
+  if (ok) { const g = worth(); teams[ti].s += g; cur.gain = g; cur.done = true; cur.ans = true; cur.win = ti; toast('+' + g + ' · ' + teams[ti].n); }
   else { if ($('#minus').checked) teams[ti].s -= v; cur.wrong.add(ti); cur.buzz = []; if (cur.wrong.size >= teams.length) { cur.done = true; cur.ans = true; }
     else if (mode === 'cherha') { let n = ti; do { n = (n + 1) % teams.length; } while (cur.wrong.has(n)); cur.buzz = ['T' + n]; deadline = Date.now() + 30000; }
     toast(($('#minus').checked ? '−' + v + ' · ' : '') + teams[ti].n + ' — ні. ' + (cur.done ? 'Ніхто не відповів' : mode === 'cherha' ? 'Відповідає ' + teams[teamOf(cur.buzz[0])].n : 'Інші можуть відповісти')); }
   paintQ(); bcast();
 }
-function toBoard() { if (cur) { used.add(cur.c + '-' + cur.r); if (mode === 'cherha') chooser = (chooser + 1) % teams.length; else if (cur.win != null) chooser = cur.win; } cur = null; deadline = 0; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
+function toBoard() { if (cur) { used.add(cur.c + '-' + cur.r); chooser = (chooser + 1) % teams.length; }   /* питання вибирають по колу */ cur = null; deadline = 0; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
 function finish() {
   phase = 'fin'; show('fin');
   const order = teams.map((t, i) => [t, i]).sort((a, b) => b[0].s - a[0].s), top = order[0][0].s, wn = order.filter(([t]) => t.s === top);
@@ -750,6 +779,7 @@ function paintLobby() {
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   const vu = VURL + '?k=' + code + '&v=' + hkey;
   if (window.qrSvg && $('#vqr').dataset.u !== vu) { $('#vqr').innerHTML = window.qrSvg(vu, 112); $('#vqr').dataset.u = vu; $('#vqr2').innerHTML = window.qrSvg(vu, 320); }
+  $('#draw').textContent = drew && teams[chooser] ? '🎲 Починають: ' + teams[chooser].n : '🎲 Хто починає?';
   $('#modes').innerHTML = Object.entries(MODES).map(([k, [n, d]]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${n}<small>${d}</small></button>`).join('');
   if (document.activeElement && document.activeElement.closest('#teams')) return;   // не заважати друкувати назву
   const cnt = i => [...players.values()].filter(P => P.team === i).length;
@@ -759,7 +789,7 @@ function paintLobby() {
 function scoresHtml(adj) {
   const mx = Math.max(...teams.map(t => t.s));
   return teams.map((t, i) => { const n = [...players.values()].filter(P => P.team === i && P.on).length;
-    return `<div class="sc${t.s === mx && t.s > 0 ? ' lead' : ''}" style="--c:${teamColor(i)}"><b>${esc(t.n)}<small>${n ? '📱 ' + n : ''}</small></b><span class="${t.s < 0 ? 'neg' : ''}">${t.s}</span>${adj ? `<span class="adj"><button type="button" data-adj="${i}" data-d="100" aria-label="Додати 100 балів">+</button><button type="button" data-adj="${i}" data-d="-100" aria-label="Відняти 100 балів">−</button></span>` : ''}</div>`; }).join('');
+    return `<div class="sc${t.s === mx && t.s > 0 ? ' lead' : ''}" style="--c:${teamColor(i)}"><b>${esc(t.n)}<small>${n ? '📱 ' + n + ' · ' : ''}<span class="hb">💡 ${t.h}</span></small></b><span class="${t.s < 0 ? 'neg' : ''}">${t.s}</span>${adj ? `<span class="adj"><button type="button" data-adj="${i}" data-d="100" aria-label="Додати 100 балів">+</button><button type="button" data-adj="${i}" data-d="-100" aria-label="Відняти 100 балів">−</button></span>` : ''}</div>`; }).join('');
 }
 function paintBoard() {
   const g = $('#grid'); g.style.gridTemplateColumns = `repeat(${CATS.length},minmax(0,1fr))`; g.style.gridTemplateRows = `auto repeat(5,minmax(0,1fr))`;
@@ -774,19 +804,24 @@ function paintQ() {
   const first = cur.buzz[0], t = $('#turn');
   if (first) { const w = whoOf(first); t.className = 'turn on'; t.style.setProperty('--c', w.c); t.textContent = 'Відповідає: ' + w.tn + (w.name ? ' · ' + w.name : ''); }
   else { t.className = 'turn'; t.textContent = cur.done ? (cur.wrong.size >= teams.length ? 'Ніхто не відповів правильно' : 'Правильно!') : cur.wrong.size ? 'Інші команди — тисніть «Відповідаю!»' : 'Хто знає — тисніть «Відповідаю!»'; }
-  if (cur.done && first) t.textContent = '✓ ' + whoOf(first).tn + ' +' + VALS[cur.r];
+  if (cur.done && first) t.textContent = '✓ ' + whoOf(first).tn + ' +' + (cur.gain || VALS[cur.r]);
   $('#picks').innerHTML = cur.done || first || mode === 'cherha' ? '' : teams.map((tm, i) => `<button type="button" data-pick="${i}" style="--c:${teamColor(i)}"${cur.wrong.has(i) ? ' disabled' : ''}>${esc(tm.n)} відповідає</button>`).join('');
   { const [m, n] = splitA(Q[1]); $('#qa').innerHTML = cur.ans ? esc(m) + (n ? `<small style="display:block;font:600 20px var(--txt);text-transform:none;color:var(--mut);margin-top:6px">${esc(n)}</small>` : '') : ''; }
   $('#ans').disabled = cur.ans;
   $('#yes').disabled = $('#no').disabled = !first || cur.done;
+  const hb = $('#hint'), ht = first ? teams[teamOf(first)] : null; hb.disabled = !canVars();
+  hb.textContent = '💡 Варіанти' + (ht && wrongOf(cur.c, cur.r).length >= 2 && !cur.var ? ' (у ' + ht.n + ' ще ' + ht.h + ')' : ''); hb.hidden = !wrongOf(cur.c, cur.r).length;
+  $('#qvv').textContent = cur.var ? VALS[cur.r] + ' → ' + worth() : VALS[cur.r];
+  const V = $('#vars'); V.hidden = !cur.var; $('#qv').classList.toggle('v', !!cur.var);
+  if (cur.var) V.innerHTML = cur.opts.map((o, i) => `<div class="${cur.ans && i === cur.okOpt ? 'ok' : ''}"><b>${'АБВГ'[i]}</b>${esc(o)}</div>`).join('');
 }
 
 /* ---------- редактор ---------- */
 function paintEd(src) {
-  $('#ed').innerHTML = src.map((C, c) => `<div class="ec"><input class="f cn" data-cn="${c}" value="${esc(C.n)}" maxlength="24" aria-label="Тема ${c + 1}">${VALS.map((v, r) => `<div class="er"><b>${v}</b><input class="f" data-q="${c}-${r}" value="${esc((C.q[r] || [''])[0])}" maxlength="160" placeholder="Питання"><input class="f" data-a="${c}-${r}" value="${esc((C.q[r] || ['', ''])[1])}" maxlength="80" placeholder="Відповідь (довідка — в дужках)"></div>`).join('')}</div>`).join('');
+  $('#ed').innerHTML = src.map((C, c) => `<div class="ec"><input class="f cn" data-cn="${c}" value="${esc(C.n)}" maxlength="24" aria-label="Тема ${c + 1}">${VALS.map((v, r) => `<div class="er"><b>${v}</b><input class="f" data-q="${c}-${r}" value="${esc((C.q[r] || [''])[0])}" maxlength="160" placeholder="Питання"><input class="f" data-a="${c}-${r}" value="${esc((C.q[r] || ['', ''])[1])}" maxlength="80" placeholder="Відповідь (довідка — в дужках)"><input class="f" data-w="${c}-${r}" value="${esc(((C.q[r] || [])[2] || []).join('; '))}" maxlength="160" placeholder="3 неправильні, через ;"></div>`).join('')}</div>`).join('');
 }
 function readEd() {
-  return CATS.map((_, c) => ({ n: $(`[data-cn="${c}"]`).value.trim() || 'Тема ' + (c + 1), q: VALS.map((_, r) => [$(`[data-q="${c}-${r}"]`).value.trim(), $(`[data-a="${c}-${r}"]`).value.trim()]) }));
+  return CATS.map((_, c) => ({ n: $(`[data-cn="${c}"]`).value.trim() || 'Тема ' + (c + 1), q: VALS.map((_, r) => [$(`[data-q="${c}-${r}"]`).value.trim(), $(`[data-a="${c}-${r}"]`).value.trim(), $(`[data-w="${c}-${r}"]`).value.split(';').map(x => x.trim()).filter(Boolean).slice(0, 3)]) }));
 }
 
 /* ---------- кнопки ---------- */
@@ -803,15 +838,17 @@ document.addEventListener('click', e => {
     case 'print': printSheet(); break;
     case 'vedc': $('#vov').hidden = false; break;
     case 'vovx': $('#vov').hidden = true; break;
-    case 'tadd': if (teams.length < 6) { teams.push({ n: ['Вовки', 'Соколи', 'Олені', 'Лиси', 'Ведмеді', 'Орли'].find(n => !teams.some(t => t.n === n)) || 'Команда ' + (teams.length + 1), s: 0 }); paintLobby(); bcast(); } break;
-    case 'start': teams.forEach(t => { t.s = 0; }); used = new Set(); chooser = 0; phase = 'board'; show('board'); paintBoard(); bcast(); break;
+    case 'draw': draw(); break;
+    case 'hint': useVars(); break;
+    case 'tadd': if (teams.length < 6) { teams.push({ h: HINTS, n: ['Вовки', 'Соколи', 'Олені', 'Лиси', 'Ведмеді', 'Орли'].find(n => !teams.some(t => t.n === n)) || 'Команда ' + (teams.length + 1), s: 0 }); paintLobby(); bcast(); } break;
+    case 'start': teams.forEach(t => { t.s = 0; t.h = HINTS; }); used = new Set(); if (!drew || chooser >= teams.length) chooser = 0; phase = 'board'; show('board'); paintBoard(); bcast(); break;
     case 'yes': judge(true); break;
     case 'no': judge(false); break;
     case 'ans': if (cur) { cur.ans = true; cur.done = true; paintQ(); bcast(); } break;
     case 'back': toBoard(); break;
     case 'endg': if (confirm('Завершити гру й показати переможця?')) finish(); break;
     case 'tob': phase = 'board'; show('board'); paintBoard(); bcast(); break;
-    case 'again': phase = 'lobby'; used = new Set(); teams.forEach(t => { t.s = 0; }); show('lobby'); paintLobby(); bcast(); break;
+    case 'again': phase = 'lobby'; used = new Set(); drew = false; teams.forEach(t => { t.s = 0; t.h = HINTS; }); show('lobby'); paintLobby(); bcast(); break;
     case 'edit': paintEd(CATS); $('#edov').hidden = false; break;
     case 'edreset': if (confirm('Повернути приклад? Ваші питання зітруться.')) paintEd(BASE); break;
     case 'edok': CATS = readEd(); try { localStorage.setItem(LS, JSON.stringify(CATS)); } catch (x) { /* ok */ } $('#edov').hidden = true; toast('Питання збережено на цьому пристрої'); break;
@@ -826,6 +863,16 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') toBoard();
 });
 setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? '⏱ ' + left : '⏱ Час! Відповідайте'; }, 250);
+function draw() {
+  const o = $('#drw'), n = $('#drn'), sm = $('#drs'), win = Math.floor(Math.random() * teams.length);
+  o.hidden = false; o.className = 'drw'; sm.textContent = ''; let k = 0, d = 60;
+  const step = () => {
+    const i = k % teams.length; n.textContent = teams[i].n; n.style.setProperty('--c', teamColor(i)); k++;
+    if (d > 380 && i === win) { o.className = 'drw fin'; chooser = win; drew = true; sm.textContent = 'вибирає перше питання'; paintLobby(); bcast(); setTimeout(() => { o.hidden = true; }, 2600); return; }
+    d *= 1.12; setTimeout(step, d);
+  };
+  step();
+}
 function printSheet() {
   const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
   w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Своя гра — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Своя гра — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(splitA(Q[1])[0])}${splitA(Q[1])[1] ? `<br><span style="font-weight:400;color:#666">довідка: ${esc(splitA(Q[1])[1])}</span>` : ''}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
