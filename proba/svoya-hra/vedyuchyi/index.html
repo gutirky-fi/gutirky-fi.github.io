@@ -59,6 +59,7 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .wait b{display:block;font:600 24px var(--disp);color:var(--ink);margin-bottom:6px}
 .vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr div.ok{background:rgba(61,175,110,.25)}.vr b{color:var(--gd);margin-right:8px}
 .act .hn{grid-column:1/-1;background:rgba(255,194,71,.14);border-color:var(--gd);color:var(--gd)}
+.end{display:block;width:100%;margin-top:16px;min-height:46px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font-weight:700}
 .rk{list-style:none;padding:0}.rk li{display:flex;justify-content:space-between;padding:10px 14px;margin:6px 0;border-radius:12px;background:var(--card);border-left:6px solid var(--c);font-weight:700;font-size:19px}
 </style>
 </head>
@@ -318,12 +319,12 @@ function render() {
   const B = $('#body'), A = $('#act'), R = $('#actr');
   const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)} <small>💡${t.h}</small><b>${t.s}</b></span>`).join('')}</div>`;
   if (st.ph === 'lobby') { B.innerHTML = '<div class="wait"><b>Пульт підключено ✓</b>Натисніть «Почати гру» на табло. Тут ви бачитимете правильні відповіді.</div>'; A.hidden = true; return; }
-  if (st.ph === 'fin') { B.innerHTML = sc + `<div class="wait"><b>Гру завершено</b></div><ol class="rk">${st.rank.map(([n, s, c]) => `<li style="--c:${c}"><span>${esc(n)}</span><span>${s}</span></li>`).join('')}</ol>`; A.hidden = true; return; }
+  if (st.ph === 'fin') { B.innerHTML = sc + `<div class="wait"><b>Гру завершено</b></div><ol class="rk">${st.rank.map(([n, s, c]) => `<li style="--c:${c}"><span>${esc(n)}</span><span>${s}</span></li>`).join('')}</ol><button type="button" class="end" data-a="again">← Повернутися до табла</button>`; A.hidden = true; return; }
   if (st.ph === 'board') {
     const ch = st.teams[st.chooser] || st.teams[0];
     let g = `<div class="bd" style="grid-template-columns:repeat(${st.cats.length},1fr)">${st.cats.map(n => `<div class="ct">${esc(n)}</div>`).join('')}`;
     for (let r = 0; r < st.vals.length; r++) g += st.cats.map((_, c) => `<button type="button" data-c="${c}" data-r="${r}"${st.cells[c][r] !== 1 ? ' disabled' : ''}>${st.cells[c][r] ? st.vals[r] : ''}</button>`).join('');
-    B.innerHTML = sc + `<p class="hint">Вибирає питання: <i style="--c:${ch.c}">${esc(ch.n)}</i>. Натисніть клітинку, яку вони назвали, — питання зʼявиться на табло.</p>` + g + '</div>';
+    B.innerHTML = sc + `<p class="hint" id="bh">Вибирає питання: <i style="--c:${ch.c}">${esc(ch.n)}</i>. Натисніть клітинку, яку вони назвали, — питання зʼявиться на табло.</p>` + g + '</div><button type="button" class="end" data-end="1">Завершити гру й показати переможця</button>';
     A.hidden = true; return;
   }
   const Q = st.q; if (!Q) return;
@@ -339,6 +340,7 @@ function render() {
 }
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !st) return;
+  if (b.dataset.end) { if (confirm('Завершити гру й показати переможця?')) cmd({ a: 'end' }); return; }
   if (b.dataset.c != null) cmd({ a: 'open', c: +b.dataset.c, r: +b.dataset.r });
   else if (b.dataset.pick != null) cmd({ a: 'pick', team: +b.dataset.pick });
   else if (b.dataset.a) cmd({ a: b.dataset.a });
