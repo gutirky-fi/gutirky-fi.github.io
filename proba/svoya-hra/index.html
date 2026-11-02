@@ -780,7 +780,7 @@ function useVars() {
   const o = [CATS[cur.c].q[cur.r][1].replace(/\s*\([^()]*\)\s*$/, ''), ...wrongOf(cur.c, cur.r)];
   for (let i = o.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [o[i], o[j]] = [o[j], o[i]]; }
   cur.var = true; cur.opts = o; cur.okOpt = o.indexOf(splitA(CATS[cur.c].q[cur.r][1])[0]);
-  toast('💡 ' + teams[ti].n + ' взяли варіанти — тепер питання коштує ' + worth()); paintQ(); bcast();
+  beep('hint'); toast('💡 ' + teams[ti].n + ' взяли варіанти — тепер питання коштує ' + worth()); paintQ(); bcast();
 }
 let sound = true; try { sound = localStorage.getItem('svoya.snd') !== '0'; } catch (e) { /* ok */ }
 let AC = null;
@@ -796,12 +796,23 @@ function buzzer(t0, len) {   /* гудок: два низькі «пилопод
   [110, 116].forEach(fr => { const o = A.createOscillator(), g = A.createGain(); o.type = 'sawtooth'; o.frequency.value = fr;
     g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.02); g.gain.setValueAtTime(0.16, t + len - 0.06); g.gain.exponentialRampToValueAtTime(0.0001, t + len); o.connect(g); g.connect(f); o.start(t); o.stop(t + len + .05); });
 }
-function tick() { const A = ac(), t = A.currentTime, o = A.createOscillator(), g = A.createGain(); o.type = 'square'; o.frequency.value = 1800; g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04); o.connect(g); g.connect(A.destination); o.start(t); o.stop(t + 0.06); }
+function blip(f, t0, len, vol, type) { const A = ac(), t = A.currentTime + t0, o = A.createOscillator(), g = A.createGain(); o.type = type || 'square'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + len); o.connect(g); g.connect(A.destination); o.start(t); o.stop(t + len + 0.02); }
+const tick = strong => { blip(strong ? 2200 : 1500, 0, 0.05, strong ? 0.09 : 0.045); blip(strong ? 1100 : 750, 0.012, 0.04, strong ? 0.05 : 0.025, 'triangle'); };   /* «тік» годинника */
+function alarm() { [0, 0.95].forEach(t0 => { for (let i = 0; i < 8; i++) blip(i % 2 ? 1320 : 1050, t0 + i * 0.08, 0.065, 0.07); }); }   /* будильник: дві трелі «дзелень» */
+function wheel(fast) { blip(fast ? 1250 : 950, 0, 0.035, 0.06, 'triangle'); }   /* клац рулетки */
+function tada() { [523.25, 659.25, 783.99].forEach((f, i) => bell(f, i * 0.09, 0.9, 0.16)); [1046.5, 1318.5, 1568].forEach(f => bell(f, 0.32, 1.8, 0.12)); }
+function sparkle() { [1568, 1976, 2349, 2637, 3136].forEach((f, i) => bell(f, i * 0.06, 0.6, 0.08)); }
+function fanfare() { [[392, 0], [523.25, .16], [659.25, .32], [783.99, .48], [659.25, .68], [783.99, .8]].forEach(([f, t]) => bell(f, t, .7, .17)); [523.25, 659.25, 783.99, 1046.5].forEach(f => bell(f, 1.0, 2.2, .12)); }
 function beep(k) { if (!sound) return; try {
   if (k === 'ok') { bell(1046.5, 0, 1.1, .22); bell(1318.5, .12, 1.1, .2); bell(1568, .24, 1.6, .2); }
   else if (k === 'no') buzzer(0, .55);
-  else if (k === 'time') buzzer(0, .9);
-  else if (k === 'tick') tick();
+  else if (k === 'time') alarm();
+  else if (k === 'tick') tick(false);
+  else if (k === 'tick!') tick(true);
+  else if (k === 'wheel') wheel(false);
+  else if (k === 'tada') tada();
+  else if (k === 'hint') sparkle();
+  else if (k === 'fin') fanfare();
 } catch (e) { /* без звуку */ } }
 const SND = { ok: 'ok', no: 'no', time: 'time' };
 function judge(ok) {
@@ -816,7 +827,7 @@ function judge(ok) {
 }
 function toBoard() { if (cur) { used.add(cur.c + '-' + cur.r); chooser = (chooser + 1) % teams.length; }   /* питання вибирають по колу */ cur = null; deadline = 0; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
 function finish() {
-  phase = 'fin'; show('fin');
+  if (phase !== 'fin') beep('fin'); phase = 'fin'; show('fin');
   const order = teams.map((t, i) => [t, i]).sort((a, b) => b[0].s - a[0].s), top = order[0][0].s, wn = order.filter(([t]) => t.s === top);
   $('#win').textContent = wn.length > 1 ? 'Нічия: ' + wn.map(([t]) => t.n).join(' і ') : 'Перемогли ' + order[0][0].n + '!';
   $('#rank').innerHTML = order.map(([t, i]) => `<li style="--c:${teamColor(i)}"><span>${esc(t.n)}</span><span>${t.s}</span></li>`).join('');
@@ -927,13 +938,13 @@ document.addEventListener('keydown', e => {
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') $('#ans').click();
   else if (e.key === 'Backspace') toBoard();
 });
-setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? '⏱ ' + left : '⏱ Час! Відповідайте'; if (left && left <= 3 && cur.tk !== left) { cur.tk = left; beep('tick'); } if (!left && !cur.tbeep) { cur.tbeep = true; beep(SND.time); } }, 250);
+setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? '⏱ ' + left : '⏱ Час! Відповідайте'; if (left && left <= 10 && cur.tk !== left) { cur.tk = left; beep(left <= 3 ? 'tick!' : 'tick'); } if (!left && !cur.tbeep) { cur.tbeep = true; beep(SND.time); } }, 250);
 function draw() {
   const o = $('#drw'), n = $('#drn'), sm = $('#drs'), win = Math.floor(Math.random() * teams.length);
   o.hidden = false; o.className = 'drw'; sm.textContent = ''; let k = 0, d = 60;
   const step = () => {
-    const i = k % teams.length; n.textContent = teams[i].n; n.style.setProperty('--c', teamColor(i)); k++;
-    if (d > 380 && i === win) { o.className = 'drw fin'; chooser = win; drew = true; sm.textContent = 'вибирає перше питання'; paintLobby(); bcast(); setTimeout(() => { o.hidden = true; }, 2600); return; }
+    const i = k % teams.length; n.textContent = teams[i].n; n.style.setProperty('--c', teamColor(i)); k++; beep('wheel');
+    if (d > 380 && i === win) { beep('tada'); o.className = 'drw fin'; chooser = win; drew = true; sm.textContent = 'вибирає перше питання'; paintLobby(); bcast(); setTimeout(() => { o.hidden = true; }, 2600); return; }
     d *= 1.12; setTimeout(step, d);
   };
   step();
