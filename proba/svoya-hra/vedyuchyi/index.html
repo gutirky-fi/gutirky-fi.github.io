@@ -306,7 +306,7 @@ async function connect() {
     if (my !== att) return;
     const c = conn = p.connect('gutirky-svoya-' + code, { reliable: true });
     c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'ved', key }); chip(true, 'На звʼязку');
-      hb = setInterval(() => { if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 5000); });
+      hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 4000); });
     c.on('data', d => { if (my !== att || !d) return; lastRx = Date.now();
       if (d.t === 'bad') { stop(); chip(false, 'Не той код'); $('#body').innerHTML = '<div class="wait"><b>Не вдалося</b>Відскануйте QR-код «Ведучому» з табла ще раз.</div>'; return; }
       if (d.t === 'vst') { st = d; render(); } });
