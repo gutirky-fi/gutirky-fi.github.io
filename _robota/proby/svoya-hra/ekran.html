@@ -286,34 +286,9 @@ body.v2 .toast{background:var(--card2);border-color:var(--ln)}
 body.fam main{padding:70px max(18px,3vw) 22px}
 body.fam .logo{display:flex;align-items:center}
 body.fam .logo .lg{display:none}
-/* лобі — заставка як у СКОБ */
-body.fam #lobby{align-items:center;justify-content:center}
-body.fam .fz{width:min(980px,100%);margin:auto;text-align:center}
-body.fam .fz .fm-logo.big{align-items:center;font-size:clamp(56px,min(8vw,13vh),120px)}
-body.fam .team input{border:0;background:none;padding:6px 4px}
-body.fam .fz .fm-hand{margin:14px 0 0}
-body.fam .fz .desc{margin:10px auto 0;max-width:60ch;font-size:clamp(1.05rem,1.6vw,1.4rem);color:#cfd5dc}
-body.fam .fz .fm-h3{justify-content:center;margin-top:18px}
-body.fam .fz .teams{justify-content:center}
-body.fam .team{border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);padding:4px 6px 4px 16px;border-left:1px solid var(--ln)}
-body.fam .team::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--c);flex:none}
-body.fam .team input{width:7.5em;font:700 17px var(--txt);color:var(--ink)}
-body.fam .team small{display:none}
-body.fam .modes{justify-content:center;gap:0;margin-top:14px;display:inline-flex;border:1px solid var(--ln);border-radius:99px;padding:4px;background:rgba(34,38,43,.9)}
-body.fam .modes button{border:0;background:none;border-radius:99px;padding:8px 18px;font:600 15px var(--txt);color:var(--mut)}
-body.fam .modes button small{display:none}
-body.fam .modes button[aria-pressed=true]{background:var(--gd);color:#16130a}
-body.fam .fz .mdesc{margin:8px 0 0;color:var(--mut);font-size:15px;min-height:1.4em}
-body.fam .fz .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}
-body.fam .fz .lnk{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:15px}
-body.fam .fz .lnk button{border:0;background:none;color:var(--mut);font:600 15px var(--txt);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-body.fam .fz .lnk button:hover{color:var(--ink)}
-body.fam .resume{border-radius:18px;background:#3a3220;border-color:#ffc247}
-body.fam #netc{cursor:pointer}
-body.fam .fm-pl{display:flex;flex-wrap:wrap;gap:8px}
-body.fam .fm-pl span{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:#22262b;font-weight:700}
-body.fam .fm-pl span i{width:10px;height:10px;border-radius:50%;background:var(--c)}
-body.fam .fm-pl .no{color:var(--mut);background:none;padding:0;font-weight:600}
+/* однакові кнопки й мітки поза лобі */
+body.fam .btn{border-radius:12px}
+body.fam .chip{border-radius:10px}
 /* табло */
 body.fam .grid{gap:10px}
 body.fam .grid .cat{background:none;border:0;padding:2px 4px 8px;color:var(--mut);font:600 clamp(.95rem,1.5vw,1.25rem)/1.1 var(--disp);letter-spacing:.08em;text-transform:uppercase}
@@ -328,11 +303,11 @@ body.fam .sc b small{font:600 13px var(--txt);color:var(--mut);display:flex;alig
 body.fam .sc>span{font:600 38px/1 var(--disp);color:#fff}
 body.fam .sc.lead>span{color:#ffc247}
 body.fam .sc .adj button{border-radius:99px;border-color:var(--ln);background:#272b31}
-body.fam #bh{font:600 16px var(--txt);color:var(--mut)}body.fam #bh i{background:none;padding:0 0 0 4px;font:500 1.6em/1 Caveat,cursive;color:var(--c)}
+body.fam #bh{font:600 16px var(--txt);color:var(--mut)}body.fam #bh i{background:none;padding:0 0 0 4px;font:700 1.15em/1 var(--txt);font-style:normal;color:var(--c)}
 /* питання */
 body.fam #qv{gap:14px;width:min(1250px,100%);margin:0 auto;padding-left:max(18px,3vw);padding-right:max(18px,3vw)}
 body.fam #qv .qh{gap:10px;align-items:baseline}
-body.fam #qv .qh .ct,body.fam #qv .qh .vl{font:500 clamp(1.3rem,1.9vw,2rem)/1.1 Caveat,cursive;color:#2fd2c0;letter-spacing:0;text-transform:none;text-shadow:none}
+body.fam #qv .qh .ct,body.fam #qv .qh .vl{font:700 clamp(1rem,1.5vw,1.3rem)/1.1 var(--txt);color:#9aa3ad;letter-spacing:.06em;text-transform:uppercase;text-shadow:none}
 body.fam #qv .qh .vl::before{content:"· "}
 body.fam .qt{margin:0;max-width:none;text-align:left;font:600 clamp(1.8rem,3.6vw,3.6rem)/1.1 var(--disp);letter-spacing:.01em;text-wrap:balance}
 body.fam .who{align-items:flex-start}
@@ -352,7 +327,7 @@ body.fam .qa{text-align:left;font:600 clamp(1.8rem,3.4vw,3rem)/1.05 var(--disp);
 body.fam #qv .bar .btn{min-height:46px}
 /* фінал */
 body.fam .fanno{font:600 clamp(2.4rem,5vw,4.4rem)/1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
-body.fam .fin .wk{font:500 clamp(1.8rem,3vw,2.8rem)/1 Caveat,cursive;letter-spacing:0;text-transform:none;color:#2fd2c0}
+body.fam .fin .wk{font:600 clamp(1.1rem,2vw,1.6rem)/1 var(--txt);letter-spacing:.12em;text-transform:uppercase;color:#9aa3ad}
 body.fam .fin h1{color:#fff;text-shadow:none;font:600 clamp(3.4rem,8vw,6.6rem)/1 var(--disp);letter-spacing:.04em}
 body.fam .pod .crown{color:#ffc247}
 body.fam .pod .p.first .bl{box-shadow:0 0 60px -12px rgba(255,194,71,.7)}
@@ -930,40 +905,43 @@ if (FAM) {
   const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
   const LT = '<span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span>';
   $('.logo').innerHTML = '<span class="fm-logo board sm" aria-label="Інтелектуальний змаг">' + LT + '</span>';
-  /* заставка */
-  const z = el('div', 'fz', '<span class="fm-logo board big" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + LT + '</span><p class="fm-hand">теми, бали й трохи азарту</p><p class="desc">Команди по черзі вибирають питання на табло. Правильна відповідь — бали, помилка — мінус бали.</p><h3 class="fm-h3">Команди <span id="fmtn"></span></h3>');
-  const lb = $('#lobby .lb'); lb.before(z);
-  z.append(q('teams'));
-  const tr = el('div', 'lnk'); tr.append(q('tadd')); q('tadd').className = 'btn'; z.append(tr);
-  z.append(el('div', '', ''), q('modes'), el('p', 'mdesc', ''));
-  const bt = el('div', 'btns'); const inv = el('button', 'btn', '<span class="dot" id="fmdot"></span>Запросити гравців'); inv.type = 'button'; inv.id = 'fminv';
-  bt.append(q('start'), inv, q('draw')); z.append(bt);
-  const lk = el('div', 'lnk'); const hv = el('button', '', 'Для ведучого: відповіді на телефоні, шпаргалка'); hv.type = 'button'; hv.id = 'fmved';
-  lk.append(hv, q('edit')); q('edit').className = ''; z.append(lk);
-  lb.remove();
-  /* вікно «Запросити гравців» */
-  const io = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" id="fmix" aria-label="Закрити">✕</button><span class="fm-logo board" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + LT + '</span><div class="fm-join"><div id="fmqr"></div><div class="steps"><p class="fm-s1">Капітани команд: скануйте QR-код телефоном</p><div class="fm-or">АБО</div><div class="fm-lbl">відкрийте</div><div id="fmurl"></div><div class="fm-lbl">і введіть код</div><div id="fmcode"></div></div></div><h3 class="fm-h3">Капітани <span id="fmpn">0</span></h3><div class="fm-pl" id="fmpl"></div></div>');
-  io.hidden = true; io.id = 'fmio'; document.body.append(io);
-  q('fmqr').append(q('qr')); q('fmurl').append(q('url')); q('fmcode').append(q('code'));
-  q('url').className = 'fm-url'; q('code').className = 'fm-code';
-  const qrbox = q('qr'); qrbox.className = 'qr'; q('fmqr').parentNode.replaceChild(qrbox, q('fmqr'));
-  /* вікно «Для ведучого» */
-  const vo = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" id="fmvx" aria-label="Закрити">✕</button><h3 class="fm-h3" style="margin-top:0">Для ведучого</h3></div>');
-  vo.hidden = true; vo.id = 'fmvo'; document.body.append(vo);
-  const vb = vo.querySelector('.fm-box'); vb.append(q('ved'), q('minus').closest('label'), q('sndi').parentNode);
-  const show = (o, v) => { o.hidden = !v; };
-  inv.addEventListener('click', () => show(io, true)); q('fmix').addEventListener('click', () => show(io, false));
-  hv.addEventListener('click', () => show(vo, true)); q('fmvx').addEventListener('click', () => show(vo, false));
-  q('netc').addEventListener('click', () => show(io, true));
+  /* лобі: панель ведучого ліворуч, запрошення праворуч */
+  const lob = $('#lobby'), lb = $('#lobby .lb');
+  const L = el('div', 'l3');
+  const pn = el('aside', 'pn', '<div class="pn-h"><a class="pn-b" href="../" aria-label="На головну"><i class="ic ic-back" aria-hidden="true"></i></a><span class="fm-logo board" aria-label="Інтелектуальний змаг">' + LT + '</span></div><p class="pn-n">Інтелектуальний змаг</p><p class="pn-d">Команди по черзі вибирають питання на табло. Правильна відповідь — бали, помилка — мінус бали.</p><div class="pn-l">Команди</div>');
+  pn.append(q('teams'));
+  q('tadd').className = 'pn-a'; q('tadd').innerHTML = '+ Додати команду'; pn.append(q('tadd'));
+  pn.append(el('div', 'pn-l', 'Як граємо'), q('modes'), el('p', 'mdesc', ''), el('div', 'pn-sp'));
+  q('start').className = 'btn main'; q('start').innerHTML = 'Почати гру'; pn.append(q('start'));
+  const lk = el('div', 'pn-k'); const hv = el('button', '', 'Ведучому'); hv.type = 'button';
+  q('draw').className = ''; q('draw').innerHTML = '<span>Хто починає?</span>'; q('edit').className = ''; q('edit').innerHTML = 'Питання';
+  lk.append(q('draw'), q('edit'), hv); pn.append(lk);
+  const rt = el('section', 'rt', '<span id="fmqr"></span><p class="rt-s">Капітани команд: скануйте QR-код телефоном або відкрийте</p><span id="fmurl"></span><span id="fmcode"></span><div class="rt-pl" id="fmpl"></div>');
+  rt.querySelector('#fmqr').replaceWith(q('qr')); rt.querySelector('#fmurl').replaceWith(q('url')); rt.querySelector('#fmcode').replaceWith(q('code'));
+  q('qr').className = 'qr'; q('url').className = 'rt-u'; q('code').className = 'rt-c';
+  L.append(pn, rt); lob.append(L); lb.hidden = true;
+  const rs = q('resume') || $('#resume'); if (rs) rt.prepend(rs);
+  /* вікно «Запросити гравців» — під час гри (хтось запізнився) */
+  const io = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" aria-label="Закрити">✕</button><div class="fm-join"><div class="qr" id="fmq2"></div><div><p class="fm-s1">Капітани команд: скануйте QR-код телефоном</p><div class="fm-or">АБО</div><div class="fm-lbl">відкрийте</div><div class="fm-url" id="fmu2"></div><div class="fm-lbl">і введіть код</div><div class="fm-code" id="fmc2"></div></div></div></div>');
+  io.hidden = true; document.body.append(io);
+  const openIo = () => { const u = PURL + '?k=' + code + '&dyz=fam'; if (window.qrSvg) io.querySelector('#fmq2').innerHTML = window.qrSvg(u, 300, { eye: '#ffc247' }); io.querySelector('#fmu2').textContent = q('url').textContent; io.querySelector('#fmc2').textContent = q('code').textContent; io.hidden = false; };
+  /* вікно «Ведучому» */
+  const vo = el('div', 'fm-ov', '<div class="fm-box" style="width:min(720px,100%)"><button type="button" class="x" aria-label="Закрити">✕</button><h3 class="fm-h3" style="margin-top:0">Ведучому</h3></div>');
+  vo.hidden = true; document.body.append(vo);
+  vo.querySelector('.fm-box').append(q('ved'), q('minus').closest('label'), q('sndi').parentNode);
+  [io, vo].forEach(o => { o.querySelector('.x').addEventListener('click', () => { o.hidden = true; }); o.addEventListener('click', e => { if (e.target === o) o.hidden = true; }); });
+  hv.addEventListener('click', () => { vo.hidden = false; });
+  q('netc').addEventListener('click', openIo);
   $('#turn').dataset.l = '';
   /* підписи, що змінюються */
   const famPaint = () => {
     const all = [...players.values()], on = all.filter(P => P.on);
-    q('fmpn').textContent = on.length; q('fmtn').textContent = teams.length;
-    q('fmpl').innerHTML = all.length ? all.map(P => `<span><i style="--c:${P.team >= 0 ? teamColor(P.team) : '#6b7480'}"></i>${esc(P.name)}${P.team >= 0 && teams[P.team] ? ' · ' + esc(teams[P.team].n) : ''}</span>`).join('') : '<span class="no">Поки нікого. Можна грати й без телефонів.</span>';
-    q('fmdot').className = 'dot' + (on.length ? ' on' : '');
-    $('.fz .mdesc').textContent = MODES[mode][1];
+    document.querySelectorAll('#teams .team').forEach((t, i) => { const nm = on.filter(P => P.team === i).map(P => P.name); const sm = t.querySelector('small'); if (sm) { sm.textContent = nm.length ? nm.join(', ') + ' ✓' : ''; } });
+    const free = on.filter(P => !(P.team >= 0));
+    q('fmpl').innerHTML = on.length ? (free.length ? free.map(P => `<span>${esc(P.name)} · вибирає команду</span>`).join('') : '') + `<em>На звʼязку: ${on.length}</em>` : '<em>Можна грати й без телефонів</em>';
+    $('.pn .mdesc').textContent = MODES[mode][1];
     q('nett').textContent = net === 'on' ? 'Запросити гравців' : { starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
+    document.body.classList.toggle('lob', !lob.hidden);
   };
   const pT = paintTop, pL = paintLobby;
   paintTop = function () { pT(); famPaint(); }; paintLobby = function () { pL(); famPaint(); };

@@ -106,6 +106,52 @@ body.fam .in>.top{padding:0}
 body.fam input{border-radius:14px;background:#22262b;border:1px solid var(--ln)}
 body.fam input:focus{border-color:var(--gd);outline:0}
 
+/* ---- лобі (варіант Б): панель ведучого ліворуч, запрошення праворуч ---- */
+body.fam.lob .top{display:none}
+body.fam #lobby{padding:0;display:block}
+body.fam .l3{display:grid;grid-template-columns:minmax(340px,400px) 1fr;height:100%}
+body.fam .pn{display:flex;flex-direction:column;padding:22px 26px 20px;background:#1f2328;border-right:1px solid #33383f;overflow:auto}
+body.fam .pn-h{display:flex;align-items:center;gap:14px}
+body.fam .pn-b{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid #33383f;color:#cfd5dc}
+body.fam .pn-b:hover{border-color:var(--gd)}
+body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
+body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
+body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
+body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
+body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
+body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+body.fam .pn .team input{flex:1;min-width:0;width:auto;border:0;background:none;padding:6px 2px;font:700 18px var(--txt);color:#f2f4f6;border-radius:6px}
+body.fam .pn .team input:focus{background:#1f2328}
+body.fam .pn .team small{display:block;font:600 14px var(--txt);color:#3ee08f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+body.fam .pn .team button{width:32px;height:32px;border:0;background:none;color:#6b7480;border-radius:8px}
+body.fam .pn .team button:hover{color:#fff;background:#33383f}
+body.fam .pn-a{align-self:flex-start;margin-top:10px;border:0;background:none;padding:2px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .pn-a:hover,body.fam .pn-k button:hover{color:#fff}
+body.fam .pn .modes{display:flex;gap:0;margin:0;padding:4px;border-radius:12px;background:#15171b;border:1px solid #33383f}
+body.fam .pn .modes button{flex:auto;min-height:0;border:0;background:none;border-radius:9px;padding:9px 10px;font:600 14px var(--txt);color:#9aa3ad;white-space:nowrap}
+body.fam .pn .modes button small{display:none}
+body.fam .pn .modes button[aria-pressed=true]{background:#33383f;color:#fff}
+body.fam .pn .mdesc{margin:8px 0 0;color:#9aa3ad;font-size:14px}
+body.fam .pn-sp{flex:1;min-height:22px}
+body.fam .pn #start{width:100%;min-height:60px;border-radius:12px;font-size:20px}
+body.fam .pn-k{display:flex;justify-content:space-between;margin-top:14px}
+body.fam .pn-k button{border:0;background:none;padding:4px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .rt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;overflow:auto}
+body.fam .rt .qr{width:min(320px,44vh);aspect-ratio:1;border-radius:20px;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+body.fam .rt-s{margin:24px 0 4px;font:600 20px var(--txt);color:#f2f4f6}
+body.fam .rt-u{font:600 clamp(1.5rem,2.4vw,2.1rem)/1.15 var(--disp);color:#fff;overflow-wrap:anywhere}
+body.fam .rt-c{margin-top:6px;font:600 clamp(4rem,8vw,6.4rem)/1 var(--disp);letter-spacing:.06em;color:#ffc247;font-variant-numeric:tabular-nums}
+body.fam .rt-pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:14px;min-height:34px}
+body.fam .rt-pl span{padding:5px 14px;border-radius:99px;background:#22262b;font-weight:600;font-size:15px}
+body.fam .rt-pl em{font-style:normal;color:#9aa3ad;font-size:15px}
+body.fam .rt .resume{position:absolute;left:28px;right:28px;top:22px;width:auto;margin:0;border-radius:14px;background:#2b2618;border:1px solid #6b5520;text-align:left}
+body.fam .rt .resume .btn{min-height:44px;border-radius:12px}
+body.fam .ved{margin-top:0}
+body.fam .fm-ov .opt{margin-top:14px}
+body.fam .fm-ov .sub{margin:12px 0 0}
+@media (max-width:860px){body.fam .l3{grid-template-columns:1fr;height:auto}body.fam #lobby{overflow:auto}body.fam .pn{border-right:0}}
+
 </style>
 </head>
 <body class="fam">
@@ -113,7 +159,6 @@ body.fam input:focus{border-color:var(--gd);outline:0}
   <div class="top"><a class="chip" href="../../" aria-label="На головну сайту">← Сайт</a><span class="sp"></span><span class="chip">проба · не на сайті</span></div>
   <header class="hd">
     <h1>Ігри для сходин</h1>
-    <p class="fm-hand">одна родина — у кожної своє обличчя</p>
     <p class="d">Екран гри — на ноутбуці чи проекторі, юнаки грають з телефонів (QR-код). Відкрийте будь-яку й поклацайте.</p>
   </header>
   <div class="g">
