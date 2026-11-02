@@ -130,6 +130,34 @@ body.vedon .grid button{cursor:default}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#262c47;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
 @media (max-width:820px){.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.er{grid-template-columns:40px 1fr}.er .f:nth-child(n+3){grid-column:2}}
 @media (prefers-reduced-motion:reduce){.turn.on{animation:none}}
+/* ===== ПРОБА СТИЛІВ (?styl=plast | vatra) ===== */
+body.st-plast{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--mut:#a0a8b2;--gd:#ffc247;background:#1b1d21}
+body.st-plast::before{content:"";position:fixed;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:url({{EMBLEM}}) center/contain no-repeat;opacity:.05;pointer-events:none}
+body.st-plast .top{background:linear-gradient(180deg,#1b1d21 75%,rgba(27,29,33,0))}
+body.st-plast .logo{color:var(--ink);display:flex;align-items:center;gap:10px}
+body.st-plast .logo::before{content:"";width:30px;height:30px;background:url({{EMBLEM}}) center/contain no-repeat}
+body.st-plast .grid .cat{background:none;border-bottom:4px solid var(--cc);border-radius:0;color:var(--ink);font-size:clamp(1rem,1.7vw,1.35rem)}
+body.st-plast .grid button{background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--cc);border-radius:14px;color:var(--gd);box-shadow:none}
+body.st-plast .grid button:hover:not(:disabled){filter:none;border-color:#5a6573;border-top-color:var(--cc);background:#262b31}
+body.st-plast .grid button:disabled{color:transparent;background:transparent;border:1px dashed #2e3238;border-top:4px solid transparent}
+body.st-plast .sc{border-radius:14px}
+body.st-plast .turn{border-radius:14px}
+body.st-plast .lb h1,body.st-plast .qt{letter-spacing:.01em}
+body.st-plast #qv .qh .ct{color:var(--cc)}
+
+body.st-vatra{--bg:#120c08;--card:#24180f;--card2:#2f2015;--ln:#4a3220;--ink:#fbefe0;--mut:#c9ad8e;--gd:#ffb347;background:radial-gradient(70% 60% at 50% 115%,#6b2a0c 0,#2a140a 45%,#120c08 80%)}
+body.st-vatra .top{background:linear-gradient(180deg,#120c08 75%,rgba(18,12,8,0))}
+body.st-vatra .logo{color:#ffb347;text-shadow:0 0 18px rgba(255,140,40,.55)}
+body.st-vatra .logo::before{content:"🔥 "}
+body.st-vatra .grid .cat{background:linear-gradient(180deg,#3a2414,#2a190d);border:1px solid #5a3a20;color:#f3d9b5;border-radius:8px}
+body.st-vatra .grid button{border-radius:8px;border:1px solid #2a170a;color:#ffd08a;text-shadow:0 1px 0 #3a1c06,0 0 14px rgba(255,150,50,.45);
+  background:repeating-linear-gradient(92deg,rgba(0,0,0,.08) 0 3px,transparent 3px 9px),linear-gradient(180deg,#8a5530,#6a3c1c 60%,#5a3016);box-shadow:inset 0 2px 0 rgba(255,220,170,.18),inset 0 -5px 0 rgba(0,0,0,.25),0 3px 8px rgba(0,0,0,.4)}
+body.st-vatra .grid button:hover:not(:disabled){filter:brightness(1.12)}
+body.st-vatra .grid button:disabled{color:transparent;text-shadow:none;background:rgba(40,24,14,.5);border:1px solid #2a1a10;box-shadow:none}
+body.st-vatra .sc{background:rgba(36,24,15,.85);border-color:#4a3220}
+body.st-vatra .qh .vl,body.st-vatra .qa{color:#ffb347;text-shadow:0 0 18px rgba(255,140,40,.45)}
+body.st-vatra .turn{background:rgba(36,24,15,.9)}
+body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:var(--ln)}
 </style>
 </head>
 <body>
@@ -482,8 +510,9 @@ function scoresHtml(adj) {
 }
 function paintBoard() {
   const g = $('#grid'); g.style.gridTemplateColumns = `repeat(${CATS.length},minmax(0,1fr))`; g.style.gridTemplateRows = `auto repeat(5,minmax(0,1fr))`;
-  let h = CATS.map(C => `<div class="cat">${esc(C.n)}</div>`).join('');
-  for (let r = 0; r < 5; r++) h += CATS.map((C, c) => `<button type="button" data-c="${c}" data-r="${r}"${!has(c, r) || used.has(c + '-' + r) ? ' disabled' : ''} aria-label="${esc(C.n)}, ${VALS[r]}">${has(c, r) ? VALS[r] : ''}</button>`).join('');
+  const CC = ['#ffd23f', '#c8284a', '#3daf6e', '#b0773a', '#2fd2c0'];
+  let h = CATS.map((C, c) => `<div class="cat" style="--cc:${CC[c % 5]}">${esc(C.n)}</div>`).join('');
+  for (let r = 0; r < 5; r++) h += CATS.map((C, c) => `<button type="button" style="--cc:${CC[c % 5]}" data-c="${c}" data-r="${r}"${!has(c, r) || used.has(c + '-' + r) ? ' disabled' : ''} aria-label="${esc(C.n)}, ${VALS[r]}">${has(c, r) ? VALS[r] : ''}</button>`).join('');
   g.innerHTML = h; $('#scores').innerHTML = scoresHtml(true);
   const ch = teams[chooser] ? chooser : 0; $('#bh').className = 'choose'; $('#bh').innerHTML = `Вибирає питання: <i style="--c:${teamColor(ch)}">${esc(teams[ch].n)}</i>`;
 }
@@ -589,6 +618,8 @@ function printSheet() {
 }
 if (SAVED) { $('#resume').hidden = false; $('#rsm').textContent = SAVED.teams.map(t => t.n + ' ' + t.s).join(' · ') + ' · відкрито ' + SAVED.used.length + ' з ' + CATS.reduce((n, C, c) => n + VALS.filter((_, r) => has(c, r)).length, 0) + ' питань. Телефони підключаться самі.'; }
 importLink();
+const STYL = new URLSearchParams(location.search).get('styl');
+if (STYL === 'plast' || STYL === 'vatra') { document.body.classList.add('st-' + STYL); const NM = STYL === 'vatra' ? 'Ватра знань' : 'Знавці'; document.querySelector('.logo').textContent = NM; document.querySelector('.lb h1').textContent = NM; document.title = NM; }
 paintLobby(); paintTop(); startNet();
 window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
