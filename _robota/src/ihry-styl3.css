@@ -1,0 +1,26 @@
+/* «Стиль 3» ігор (проба ?dyz=3) — за дизайн-системою «Ігри Пласту»: картка QR ліворуч, логотип «значок + назва»,
+   назва гри лише один раз, інструменти ведучого — кнопка «Ведучому» в шапці. Працює поверх стилю 2 (body.v2 у Змагу, body.s2 у Бінго й Опитуванні). */
+body.s3 .logo .nm{display:none}
+/* картка QR ліворуч */
+body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:340px minmax(0,1fr);gap:48px}
+body.s3 .l2j,body.s3 .s2j{order:-1;top:0}
+/* логотип гри */
+body.s3 .eyb{display:none}
+body.s3 .s3lg{display:flex;flex-direction:column;align-items:flex-start}
+body.s3 .s3lg small{font:600 18px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 12px 2px}
+body.s3 .s3lg .w{display:flex;align-items:center;gap:17px}
+body.s3 .s3lg .w svg{height:56px;width:56px;flex:none;display:block}
+body.s3 .s3lg b{font:600 72px/.8 var(--disp);letter-spacing:.01em;text-transform:uppercase;color:var(--ink);padding-top:3px}
+body.s3 .hand{margin:16px 0 20px}
+/* лінійні значки в кнопках */
+body.s3 i.s3i{display:inline-flex;width:20px;height:20px;flex:none}body.s3 i.s3i svg{width:100%;height:100%;display:block}
+/* кнопка «Ведучому» і вікно */
+body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
+body.s3 .s3v:hover{border-color:var(--gd)}
+body.s3 .l2x,body.s3 .s2x{display:none}
+body.s3 .s3o{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px;background:rgba(10,12,15,.8);overflow:auto}
+body.s3 .s3o .bx{position:relative;width:min(820px,100%);padding:22px 24px;border-radius:18px;background:#1f2328;border:1px solid var(--ln)}
+body.s3 .s3o h3{margin:0 0 14px;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
+body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center}
+body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
+@media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}

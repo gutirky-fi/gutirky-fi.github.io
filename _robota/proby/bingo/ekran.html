@@ -501,7 +501,7 @@ if (QS.get('dyz') === 'fam') {
 /*/FAM*/
 /*FAM*/
 /* СТИЛЬ 2 (?dyz=2): як «Інтелектуальний змаг» — заголовок ліворуч, картка з QR праворуч */
-if (QS.get('dyz') === '2') {
+if (['2', '3'].includes(QS.get('dyz'))) {
   document.body.classList.add('s2');
   const q = id => document.getElementById(id), el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
   $('.logo').insertAdjacentHTML('beforeend', '<img class="plast" src="{{LOGO}}" alt="Пласт"><span class="nm">Пластове бінго</span>');
@@ -514,6 +514,7 @@ if (QS.get('dyz') === '2') {
   xi.append($('.paper'), q('rules')); x.append(xi);
   const L = el('div', 'l2'); L.append(m, j); lb.before(L); L.after(x); lb.hidden = true;   /* lb лишається: paint() оновлює #pln2 */
   $('#winov h2').textContent = 'БІНГО!';
+  if (QS.get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'bingo', m, x, knopky: { start: 'play', print: 'print' } });   /* стиль 3 */
 }
 /*/FAM*/
 paint(); startNet();
