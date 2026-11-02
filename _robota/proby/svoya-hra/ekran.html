@@ -19,7 +19,7 @@ button,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 [hidden]{display:none!important}
-.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
+.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5;background:linear-gradient(180deg,var(--bg) 75%,rgba(20,24,42,0))}
 .top .sp{flex:1}
 .logo{font:600 24px/1 var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--gd)}
 .chip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none}
@@ -257,8 +257,8 @@ if (!Array.isArray(CATS) || CATS.length !== 5) CATS = JSON.parse(JSON.stringify(
 
 /* ---------- стан ---------- */
 let teams = [{ n: 'Вовки', s: 0, h: HINTS }, { n: 'Соколи', s: 0, h: HINTS }, { n: 'Олені', s: 0, h: HINTS }];
-let mode = 'shvydko', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
-const MODES = { shvydko: ['Хто швидше', 'капітани тиснуть «Відповідаю!»'], cherha: ['По черзі', 'без кнопок, 30 секунд на роздуми'] };
+let mode = 'cherha', chooser = 0;   // shvydko — хто перший натисне; cherha — команди по черзі
+const MODES = { cherha: ['Хто вибрав — той відповідає', '30 секунд на роздуми; помилились — хід наступній команді'], shvydko: ['Хто швидше', 'вибирає одна команда, відповідає та, що перша натисне «Відповідаю!»'] };
 const hkey = Math.random().toString(36).slice(2, 8);   // ключ пульта ведучого — лише в його QR-коді
 const veds = new Set();
 let deadline = 0, drew = false;
