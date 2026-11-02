@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#14182a">
-<title>Своя гра — гравець</title>
+<meta name="theme-color" content="#1b1d21">
+<title>Інтелектуальний змаг — гравець</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
-<!-- «Своя гра» — кнопка «Відповідаю!» на телефоні. Джерело: _robota/proby/svoya-hra/hravets.html -->
+<!-- «Інтелектуальний змаг» (колишня «Своя гра») — кнопка «Відповідаю!» на телефоні. Джерело: _robota/proby/svoya-hra/hravets.html -->
 <style>
-:root{--bg:#14182a;--card:#1d2238;--card2:#262c47;--ln:#343b5c;--ink:#f2f4f8;--mut:#a8afc8;--gd:#ffc247;--ok:#3daf6e;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--mut:#a0a8b2;--gd:#ffc247;--ok:#3daf6e;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%}
 body{background:var(--bg);color:var(--ink);font:17px/1.4 var(--txt);-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
@@ -20,7 +20,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-off
 [hidden]{display:none!important}
 .in{max-width:520px;margin:0 auto;padding:14px 14px 30px;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
 .top{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.top b{font:600 20px var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--gd)}
+.top b{font:600 17px/1.1 var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--gd)}
 .top .sp{flex:1}
 .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px}
 .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
@@ -41,7 +41,8 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .bz{flex:1;display:flex;align-items:center;justify-content:center;padding:14px 0}
 .bz button{width:min(78vw,340px);aspect-ratio:1;border-radius:50%;border:0;background:radial-gradient(circle at 40% 35%,#ff6b62,#d0342c 60%,#8f1f19);color:#fff;font:600 34px/1.1 var(--disp);text-transform:uppercase;letter-spacing:.04em;box-shadow:0 14px 0 #6d1813,0 22px 40px #000a;touch-action:manipulation}
 .bz button:active:not(:disabled){transform:translateY(8px);box-shadow:0 6px 0 #6d1813,0 12px 24px #000a}
-.bz button:disabled{background:radial-gradient(circle at 40% 35%,#4a5070,#30354f 60%,#20243a);color:#8b92ad;box-shadow:0 14px 0 #161a2c}
+.bz button:disabled{background:radial-gradient(circle at 40% 35%,#454b53,#2f343a 60%,#22262b);color:#8b929b;box-shadow:0 14px 0 #15171a}
+body.cherha .bz{display:none}body.cherha .st{flex:1;display:flex;align-items:center;justify-content:center;font-size:26px;line-height:1.25;padding:20px 6px}
 .bz button.mine{background:radial-gradient(circle at 40% 35%,#ffd77a,#ffc247 60%,#c8901b);color:#1d1606;box-shadow:0 14px 0 #8a6210}
 .st{min-height:3em;text-align:center;font-weight:700;font-size:20px}
 .st.ok{color:var(--ok)}
@@ -55,10 +56,10 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 </head>
 <body>
 <div class="in">
-  <div class="top"><b>Своя гра</b><span class="sp"></span><span class="chip"><span class="dot" id="dot"></span><span id="stx">…</span></span></div>
+  <div class="top"><b>Інтелектуальний змаг</b><span class="sp"></span><span class="chip"><span class="dot" id="dot"></span><span id="stx">…</span></span></div>
 
   <section id="join">
-    <h1>Своя гра</h1>
+    <h1>Інтелектуальний змаг</h1>
     <p class="m">Від кожної команди — <b>один телефон: капітан</b>. Команда радиться, капітан натискає.</p>
     <div id="cbox"><label for="f-code">Код з екрана</label><input id="f-code" inputmode="numeric" maxlength="7" placeholder="123 456" autocomplete="off"></div>
     <label for="f-name">Твоє імʼя</label><input id="f-name" maxlength="18" autocomplete="given-name" placeholder="Імʼя">
@@ -135,6 +136,7 @@ function render() {
   $('#pick').hidden = true; $('#play').hidden = false;
   $('#me').style.setProperty('--c', T.c);
   $('#me').innerHTML = `<b>${esc(T.n)}<small>${esc(st.me.name || '')} · <a href="#" id="chg" style="color:inherit">змінити команду</a></small></b><span>${T.s}</span>`;
+  document.body.classList.toggle('cherha', st.mode === 'cherha');   /* «Хто вибрав — той відповідає»: кнопка не потрібна */
   const b = $('#bz'), s = $('#st'), Q = st.q;
   b.className = ''; s.className = 'st';
   if (st.ph === 'q' && Q) {

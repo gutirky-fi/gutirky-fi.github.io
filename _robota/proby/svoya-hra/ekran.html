@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#14182a">
-<title>Своя гра — табло</title>
+<meta name="theme-color" content="#1b1d21">
+<title>Інтелектуальний змаг — табло</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
-<!-- «Своя гра» — табло ведучого (проектор/ноутбук). Джерело: _robota/proby/svoya-hra/ (zibraty.py вбудовує qr.js і zvyazok.js).
+<!-- «Інтелектуальний змаг» (колишня «Своя гра») — табло ведучого (проектор/ноутбук). Джерело: _robota/proby/svoya-hra/ (zibraty.py вбудовує qr.js і zvyazok.js).
      Команди відповідають кнопкою «Відповідаю!» з телефонів; без телефонів ведучий обирає команду сам. Свої питання зберігаються в цьому браузері. -->
 <style>
 :root{--bg:#14182a;--card:#1d2238;--card2:#262c47;--ln:#343b5c;--ink:#f2f4f8;--mut:#a8afc8;--gd:#ffc247;--ok:#3daf6e;--no:#e5534b;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
@@ -119,7 +119,7 @@ body.vedon .grid button{cursor:default}
 
 /* редактор */
 .ov{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:18px;background:rgba(8,10,20,.88);overflow:auto}
-.box{position:relative;width:min(980px,100%);padding:24px;border-radius:22px;background:#1a1f35;border:1px solid var(--ln);box-shadow:0 24px 90px #000a}
+.box{position:relative;width:min(980px,100%);padding:24px;border-radius:22px;background:var(--card);border:1px solid var(--ln);box-shadow:0 24px 90px #000a}
 .box h2{margin:0 0 6px;font:600 30px/1.05 var(--disp);text-transform:uppercase}
 .x{position:absolute;right:12px;top:12px;width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:20px}
 .ec{margin:14px 0;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
@@ -135,7 +135,7 @@ body.st-plast{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2
 body.st-plast::before{content:"";position:fixed;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:url({{EMBLEM}}) center/contain no-repeat;opacity:.05;pointer-events:none}
 body.st-plast .top{background:linear-gradient(180deg,#1b1d21 75%,rgba(27,29,33,0))}
 body.st-plast .logo{color:var(--ink);display:flex;align-items:center;gap:10px}
-body.st-plast .logo::before{content:"";width:30px;height:30px;background:url({{EMBLEM}}) center/contain no-repeat}
+.logo .lg{width:30px;height:30px;flex:none}body.st-vatra .logo .lg,body.st-tv .logo .lg{display:none}
 body.st-plast .grid .cat{background:none;border-bottom:2px solid var(--ln);border-radius:0;color:var(--mut);font-size:clamp(1rem,1.7vw,1.35rem)}
 body.st-plast .grid button{background:var(--card);border:1px solid var(--ln);border-radius:14px;color:var(--gd);box-shadow:none}
 body.st-plast .grid button:hover:not(:disabled){filter:none;border-color:#5a6573;background:#262b31}
@@ -161,7 +161,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
 </style>
 </head>
 <body>
-<div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a><span class="logo">Своя гра</span><span class="sp"></span>
+<div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a><span class="logo"><svg class="lg" viewBox="0 0 74 74" aria-hidden="true"><g fill="#2a2f35" stroke="#5a616b" stroke-width="2.5"><rect x="2" y="2" width="21" height="21" rx="5"/><rect x="26.5" y="2" width="21" height="21" rx="5"/><rect x="51" y="2" width="21" height="21" rx="5"/><rect x="2" y="26.5" width="21" height="21" rx="5"/><rect x="51" y="26.5" width="21" height="21" rx="5"/><rect x="2" y="51" width="21" height="21" rx="5"/><rect x="26.5" y="51" width="21" height="21" rx="5"/><rect x="51" y="51" width="21" height="21" rx="5"/></g><rect x="26.5" y="26.5" width="21" height="21" rx="5" fill="#ffc247"/><text x="37" y="43" text-anchor="middle" font-family="Oswald,Arial" font-weight="600" font-size="15" fill="#1d1606">?</text></svg><span>Інтелектуальний змаг</span></span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
   <span class="chip">Телефонів: <b id="pn">0</b></span>
   <button type="button" class="chip" id="vedc" hidden>📱 Ведучий</button>
@@ -173,7 +173,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
   <div class="lb">
     <div class="qr" id="qr"></div>
     <div>
-      <h1>Своя гра</h1>
+      <h1>Інтелектуальний змаг</h1>
       <p class="sub">Табло з темами й балами. Правильна відповідь — бали додаються, неправильна — віднімаються. Від кожної команди код сканує лише <b>капітан</b>: команда радиться, капітан натискає.</p>
       <div class="lbl">Команди (2–6) — назви можна змінити</div>
       <div class="teams" id="teams"></div>
@@ -613,13 +613,13 @@ async function importLink() {
 }
 function printSheet() {
   const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
-  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Своя гра — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Своя гра — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(splitA(Q[1])[0])}${splitA(Q[1])[1] ? `<br><span style="font-weight:400;color:#666">довідка: ${esc(splitA(Q[1])[1])}</span>` : ''}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Інтелектуальний змаг — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Інтелектуальний змаг — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(splitA(Q[1])[0])}${splitA(Q[1])[1] ? `<br><span style="font-weight:400;color:#666">довідка: ${esc(splitA(Q[1])[1])}</span>` : ''}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
   w.document.close();
 }
 if (SAVED) { $('#resume').hidden = false; $('#rsm').textContent = SAVED.teams.map(t => t.n + ' ' + t.s).join(' · ') + ' · відкрито ' + SAVED.used.length + ' з ' + CATS.reduce((n, C, c) => n + VALS.filter((_, r) => has(c, r)).length, 0) + ' питань. Телефони підключаться самі.'; }
 importLink();
 const STYL = new URLSearchParams(location.search).get('styl');
-if (STYL === 'plast' || STYL === 'vatra') { document.body.classList.add('st-' + STYL); const NM = STYL === 'vatra' ? 'Ватра знань' : 'Знавці'; document.querySelector('.logo').textContent = NM; document.querySelector('.lb h1').textContent = NM; document.title = NM; }
+document.body.classList.add('st-' + (STYL === 'tv' || STYL === 'vatra' ? STYL : 'plast'));   /* стиль сайту — головний (власник, 02.11.2026) */
 paintLobby(); paintTop(); startNet();
 window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
