@@ -111,11 +111,28 @@ body.vedon .grid button{cursor:default}
 .vov .box{width:auto;text-align:center}
 
 /* кінець */
-.fin{margin:auto;text-align:center}
-.fin .big{font-size:80px;line-height:1}
-.fin h1{margin:6px 0;font:600 clamp(2.6rem,6vw,4.6rem)/1 var(--disp);text-transform:uppercase;color:var(--gd)}
-.fin ol{list-style:none;padding:0;margin:20px auto;max-width:520px}
-.fin li{display:flex;justify-content:space-between;padding:10px 16px;margin:6px 0;border-radius:12px;background:var(--card);border-left:6px solid var(--c);font-weight:700;font-size:22px}
+/* фінал: пʼєдестал + конфеті */
+#fin{padding-bottom:16px;overflow:hidden}
+.fin{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;text-align:center}
+.fin .wk{margin:4px 0 0;font:600 clamp(1rem,1.8vw,1.4rem)/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--mut);opacity:0;transition:opacity .6s}
+.fin h1{margin:6px 0 0;font:600 clamp(3rem,8.5vw,6.6rem)/1 var(--disp);text-transform:uppercase;color:var(--wc,var(--gd));text-shadow:0 0 40px color-mix(in srgb,var(--wc,#ffc247) 45%,transparent);opacity:0;transform:scale(.6);transition:opacity .5s,transform .7s cubic-bezier(.2,1.6,.4,1)}
+.fin.show .wk,.fin.show h1{opacity:1;transform:none}
+.pod{flex:1;min-height:0;width:min(900px,100%);display:flex;align-items:flex-end;justify-content:center;gap:14px;margin-top:14px}
+.pod .p{flex:1;max-width:270px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.pod .nm{font:700 clamp(1.1rem,2.2vw,1.7rem)/1.15 var(--txt);margin-bottom:4px;opacity:0;transition:opacity .4s .3s}
+.pod .sc2{font:600 clamp(1.6rem,3.4vw,2.6rem)/1 var(--disp);margin-bottom:10px;opacity:0;transition:opacity .4s .3s}
+.pod .bl{width:100%;height:0;border-radius:16px 16px 4px 4px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 85%,#fff 15%),var(--c));display:flex;justify-content:center;padding-top:10px;font:600 clamp(2.4rem,6vw,4.4rem)/1 var(--disp);color:rgba(255,255,255,.92);text-shadow:0 2px 0 rgba(0,0,0,.25);box-shadow:inset 0 -10px 0 rgba(0,0,0,.18);transition:height .9s cubic-bezier(.2,.9,.2,1);overflow:hidden}
+.pod .p.up .nm,.pod .p.up .sc2{opacity:1}
+.pod .p.first .nm{font-size:clamp(1.4rem,2.8vw,2.1rem)}
+.pod .crown{font-size:clamp(2.4rem,5vw,3.6rem);line-height:1;margin-bottom:4px;opacity:0;transform:translateY(-20px);transition:all .6s cubic-bezier(.2,1.6,.4,1) .5s}
+.pod .p.up .crown{opacity:1;transform:none}
+.rest{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:12px;opacity:0;transition:opacity .5s}
+.fin.show .rest{opacity:1}
+.rest span{padding:6px 14px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700}
+.fin .row{margin-top:14px;opacity:0;transition:opacity .5s 1s}.fin.show .row{opacity:1}
+body.vedon .fin .row{display:none}
+#cf{position:fixed;inset:0;pointer-events:none;z-index:15}
+@media (prefers-reduced-motion:reduce){.pod .bl,.fin h1,.fin .wk,.pod .nm,.pod .sc2,.pod .crown{transition:none}}
 
 /* редактор */
 .ov{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:18px;background:rgba(8,10,20,.88);overflow:auto}
@@ -223,8 +240,10 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
 </main>
 
 <main id="fin" hidden>
-  <div class="fin"><div class="big">🏆</div><h1 id="win"></h1><ol id="rank"></ol>
+  <div class="fin" id="finb"><p class="wk" id="wk">Перемогли</p><h1 id="win"></h1>
+    <div class="pod" id="pod"></div><div class="rest" id="rest"></div>
     <div class="row" style="justify-content:center"><button type="button" class="btn" id="tob">Повернутися до табла</button><button type="button" class="btn main" id="again">Нова гра</button></div></div>
+  <canvas id="cf"></canvas>
 </main>
 
 <div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
@@ -854,12 +873,33 @@ function judge(ok) {
   paintQ(); bcast();
 }
 function toBoard() { if (cur) { used.add(cur.c + '-' + cur.r); chooser = (chooser + 1) % teams.length; }   /* питання вибирають по колу */ cur = null; deadline = 0; phase = 'board'; show('board'); paintBoard(); bcast(); if (CATS.every((C, c) => VALS.every((_, r) => !has(c, r) || used.has(c + '-' + r)))) finish(); }
+let finT = [];
 function finish() {
-  if (phase !== 'fin') beep('fin'); phase = 'fin'; show('fin');
-  const order = teams.map((t, i) => [t, i]).sort((a, b) => b[0].s - a[0].s), top = order[0][0].s, wn = order.filter(([t]) => t.s === top);
-  $('#win').textContent = wn.length > 1 ? 'Нічия: ' + wn.map(([t]) => t.n).join(' і ') : 'Перемогли ' + order[0][0].n + '!';
-  $('#rank').innerHTML = order.map(([t, i]) => `<li style="--c:${teamColor(i)}"><span>${esc(t.n)}</span><span>${t.s}</span></li>`).join('');
-  bcast();
+  const fresh = phase !== 'fin'; phase = 'fin'; show('fin'); bcast();
+  finT.forEach(clearTimeout); finT = [];
+  const order = teams.map((t, i) => ({ n: t.n, s: t.s, c: teamColor(i) })).sort((a, b) => b.s - a.s);
+  order.forEach((t, k) => { t.pl = k && t.s === order[k - 1].s ? order[k - 1].pl : k + 1; });   // нічия — те саме місце
+  const wn = order.filter(t => t.pl === 1), top3 = order.slice(0, 3), H = { 1: 100, 2: 68, 3: 44 };
+  const B = $('#finb'); B.classList.remove('show'); B.style.setProperty('--wc', wn.length > 1 ? '#ffc247' : wn[0].c);
+  $('#wk').textContent = wn.length > 1 ? 'Нічия! Перемогли разом' : 'Перемогли';
+  $('#win').textContent = wn.map(t => t.n).join(' і ');
+  const slot = [top3[1], top3[0], top3[2]].filter(Boolean);   // 2 · 1 · 3
+  $('#pod').innerHTML = slot.map(t => `<div class="p${t.pl === 1 ? ' first' : ''}" data-pl="${t.pl}" style="--c:${t.c}">${t.pl === 1 ? '<div class="crown">🏆</div>' : ''}<div class="nm">${esc(t.n)}</div><div class="sc2" data-s="${t.s}">0</div><div class="bl" data-h="${H[t.pl] || 30}">${t.pl}</div></div>`).join('');
+  $('#rest').innerHTML = order.slice(3).map(t => `<span style="--c:${t.c}">${t.pl}. ${esc(t.n)} · ${t.s}</span>`).join('');
+  const P = [...document.querySelectorAll('#pod .p')], avail = Math.max(120, $('#pod').clientHeight - 130), rise = el => { el.classList.add('up'); el.querySelector('.bl').style.height = Math.round(avail * el.querySelector('.bl').dataset.h / 100) + 'px'; countUp(el.querySelector('.sc2')); beep('tick!'); };
+  if (!fresh || matchMedia('(prefers-reduced-motion: reduce)').matches) { P.forEach(rise); B.classList.add('show'); return; }
+  const by = pl => P.filter(el => +el.dataset.pl === pl);
+  finT.push(setTimeout(() => by(3).forEach(rise), 500), setTimeout(() => by(2).forEach(rise), 1400),
+    setTimeout(() => { by(1).forEach(rise); B.classList.add('show'); beep('fin'); confetti(wn.map(t => t.c)); }, 2500));
+}
+function countUp(el) { const end = +el.dataset.s, t0 = performance.now(), d = 900; const f = now => { const k = Math.min(1, (now - t0) / d); el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
+function confetti(cols) {
+  const cv = $('#cf'), x = cv.getContext('2d'), W = cv.width = innerWidth, Hh = cv.height = innerHeight, C = [...cols, '#ffc247', '#ffffff', '#3daf6e', '#2f8fe0'];
+  const ps = Array.from({ length: 180 }, () => ({ x: Math.random() * W, y: -20 - Math.random() * Hh * .6, vx: (Math.random() - .5) * 2.4, vy: 2 + Math.random() * 3.5, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 7, h: 4 + Math.random() * 5, c: C[Math.floor(Math.random() * C.length)] }));
+  const t0 = performance.now();
+  (function f(now) { x.clearRect(0, 0, W, Hh); let live = 0;
+    ps.forEach(p => { p.x += p.vx + Math.sin((now + p.r * 900) / 600) * .6; p.y += p.vy; p.r += p.vr; if (p.y < Hh + 20) live++; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); x.restore(); });
+    if (live && now - t0 < 9000 && phase === 'fin') requestAnimationFrame(f); else x.clearRect(0, 0, W, Hh); })(t0);
 }
 
 /* ---------- малювання ---------- */

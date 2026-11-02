@@ -50,6 +50,8 @@ body.cherha .bz{display:none}body.cherha .st{flex:1;display:flex;align-items:cen
 .ans b{color:var(--gd)}
 .vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr b{color:var(--gd);margin-right:8px}
 .hn{display:block;width:100%;min-height:48px;margin-top:10px;border-radius:14px;border:1px solid var(--gd);background:rgba(255,194,71,.12);color:var(--gd);font-weight:700;font-size:17px}
+body.finph .st{display:none}body.finph #vr{flex:1;display:flex;align-items:center}body.finph .fin1{flex:1}
+.fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
 .tbl{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .tbl span{padding:4px 10px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:14px}
 </style>
@@ -344,7 +346,7 @@ function render() {
   $('#pick').hidden = true; $('#play').hidden = false;
   $('#me').style.setProperty('--c', T.c);
   $('#me').innerHTML = `<b>${esc(T.n)}<small>${esc(st.me.name || '')} · <a href="#" id="chg" style="color:inherit">змінити команду</a></small></b><span>${T.s}</span>`;
-  document.body.classList.toggle('cherha', st.mode === 'cherha');   /* «Хто вибрав — той відповідає»: кнопка не потрібна */
+  document.body.classList.toggle('cherha', st.mode === 'cherha'); document.body.classList.remove('finph');   /* «Хто вибрав — той відповідає»: кнопка не потрібна */
   const b = $('#bz'), s = $('#st'), Q = st.q;
   b.className = ''; s.className = 'st';
   if (st.ph === 'q' && Q) {
@@ -360,6 +362,12 @@ function render() {
     $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';   // повна, з довідкою
   } else {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
+    if (st.ph === 'fin') {   /* фінал і на телефоні: місце команди */
+      const pl = st.teams.filter(t => t.s > T.s).length + 1;
+      $('#vr').innerHTML = '<div class="fin1" style="--c:' + T.c + '"><b>' + (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏') + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
+      b.disabled = true; $('#q').textContent = 'Гру завершено'; s.textContent = ''; $('#ans').textContent = ''; document.body.classList.add('cherha', 'finph');
+      $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join(''); return;
+    }
     $('#vr').innerHTML = ''; b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
   }
   $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · 💡${t.h}</span>`).join('');
