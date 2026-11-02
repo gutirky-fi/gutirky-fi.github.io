@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#1b1d21">
 <title>Швидке опитування — екран</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
 <!-- «Швидке опитування» — екран ведучого (проектор/ноутбук). Джерело: _robota/proby/opytuvannia/ (zibraty.py вбудовує qr.js і zvyazok.js).
      Голоси анонімні: екран бачить лише відповіді, без імен. Опитування ведучого зберігаються в цьому браузері (localStorage). -->
 <style>
@@ -323,7 +323,7 @@ let paintTop = function () {
 };
 function paintLobby() {
   const url = PURL + '?k=' + code + ((location.search.match(/dyz=(fam|2)/) || [''])[0] ? '&' + location.search.match(/dyz=(fam|2)/)[0] : '');
-  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#2fd2c0' }); $('#qr').dataset.u = url; }
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   $('#polls').innerHTML = POLLS.map((p, i) => `<button type="button" data-p="${i}" aria-pressed="${i === pi}">${esc(p.t)}<small>${p.qs.length} ${p.qs.length === 1 ? 'питання' : p.qs.length < 5 ? 'питання' : 'питань'}</small></button>`).join('');

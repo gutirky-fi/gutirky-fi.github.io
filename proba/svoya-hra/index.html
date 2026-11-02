@@ -470,7 +470,7 @@ body.s3 .hand{margin:16px 0 20px}
 /* лінійні значки в кнопках */
 body.s3 i.s3i{display:inline-flex;width:20px;height:20px;flex:none}body.s3 i.s3i svg{width:100%;height:100%;display:block}
 /* кнопка «Ведучому» і вікно */
-body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
+body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
 body.s3 .s3v:hover{border-color:var(--gd)}
 body.s3 .l2x,body.s3 .s2x{display:none}
 body.s3 .s3o{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px;background:rgba(10,12,15,.8);overflow:auto}
@@ -479,6 +479,15 @@ body.s3 .s3o h3{margin:0 0 14px;font:600 24px var(--disp);text-transform:upperca
 body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center}
 body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
 @media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}
+/* шапка однаково в усіх іграх (як у Змагу): круглі мітки й кнопка «назад» */
+body.s3 .top .chip,body.s3 #home{border-radius:99px}
+body.s3 #home{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;padding:0}
+body.s3 #home i.s3i{width:18px;height:18px}
+body.s3 .s3o .x{border-radius:99px}
+/* вміст лобі — посередині висоти, як у Змагу */
+body.s3.s2 #lobby{display:flex;flex-direction:column}
+body.s3.s2 #lobby .l2{margin:auto 0}
+body.s3 .s2j .pl{font-size:15px}
 
 </style>
 <script>
@@ -486,7 +495,7 @@ body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
    Викликається з гри: IHRY_S3({gra, m (блок із заголовком), x (розкривний блок ведучого або null), knopky: {id: 'значок'}}) */
 window.IHRY_S3 = function (o) {
   const L = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-  const IC = { play: '<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>', dice: '<rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>', plus: '<path d="M12 5v14M5 12h14"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', gear: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/>', print: '<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>' };
+  const IC = { play: '<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>', dice: '<rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><circle cx="8.5" cy="8.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="15.5" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/>', edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>', plus: '<path d="M12 5v14M5 12h14"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', gear: '<path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/>', back: '<path d="M15 6l-6 6 6 6"/>', print: '<path d="M7 9V3.5h10V9"/><rect x="3.5" y="9" width="17" height="8" rx="2"/><path d="M7 14h10v6.5H7z"/>' };
   const ic = n => '<i class="s3i">' + L + IC[n] + '</svg></i>';
   const Z = {
     skob: ['Потужний', 'СКОБ!', '<svg viewBox="0 0 40 40"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>'],
@@ -500,6 +509,10 @@ window.IHRY_S3 = function (o) {
   if (h1) { const d = document.createElement('div'); d.className = 's3lg'; d.setAttribute('role', 'heading'); d.setAttribute('aria-level', '1'); d.setAttribute('aria-label', Z[0] + ' ' + Z[1]); d.innerHTML = '<small>' + Z[0] + '</small><div class="w">' + Z[2] + '<b>' + Z[1] + '</b></div>'; h1.replaceWith(d); }
   /* значки в кнопках замість символів ▶ ✎ + */
   Object.entries(o.knopky || {}).forEach(([id, n]) => { const b = document.getElementById(id); if (!b) return; [...b.childNodes].forEach(c => { if (c.nodeType === 3) c.textContent = c.textContent.replace(/^[\s▶✎+🖨]+/, ''); }); b.querySelectorAll('i.ic').forEach(e => e.remove()); b.insertAdjacentHTML('afterbegin', ic(n)); });
+  /* кнопка «назад» — значок, як у Змагу */
+  const home = document.getElementById('home'); if (home && !home.querySelector('i')) home.innerHTML = ic('back');
+  /* картка QR: «або відкрийте адресу й введіть код» — під кодом, як у Змагу */
+  const jc = document.querySelector('.s2j'); if (jc) { const l = [...jc.querySelectorAll('.s2l')].find(e => /відкрийте/.test(e.textContent)), cd = jc.querySelector('.code'); if (l && cd) cd.after(l); }
   /* «Ведучому» в шапці: відкриває вікно з інструментами */
   if (o.x) {
     const ov = document.createElement('div'); ov.className = 's3o'; ov.hidden = true;

@@ -15,7 +15,7 @@ body.s3 .hand{margin:16px 0 20px}
 /* лінійні значки в кнопках */
 body.s3 i.s3i{display:inline-flex;width:20px;height:20px;flex:none}body.s3 i.s3i svg{width:100%;height:100%;display:block}
 /* кнопка «Ведучому» і вікно */
-body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 12px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
+body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
 body.s3 .s3v:hover{border-color:var(--gd)}
 body.s3 .l2x,body.s3 .s2x{display:none}
 body.s3 .s3o{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px;background:rgba(10,12,15,.8);overflow:auto}
@@ -24,3 +24,12 @@ body.s3 .s3o h3{margin:0 0 14px;font:600 24px var(--disp);text-transform:upperca
 body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center}
 body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
 @media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}
+/* шапка однаково в усіх іграх (як у Змагу): круглі мітки й кнопка «назад» */
+body.s3 .top .chip,body.s3 #home{border-radius:99px}
+body.s3 #home{width:38px;height:38px;display:inline-flex;align-items:center;justify-content:center;padding:0}
+body.s3 #home i.s3i{width:18px;height:18px}
+body.s3 .s3o .x{border-radius:99px}
+/* вміст лобі — посередині висоти, як у Змагу */
+body.s3.s2 #lobby{display:flex;flex-direction:column}
+body.s3.s2 #lobby .l2{margin:auto 0}
+body.s3 .s2j .pl{font-size:15px}
