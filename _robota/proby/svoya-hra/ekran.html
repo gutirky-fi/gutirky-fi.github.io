@@ -438,7 +438,7 @@ function buzz(id) {
 
 /* ---------- дії ведучого ---------- */
 function show(id) { ['lobby', 'board', 'qv', 'fin'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); $('#vedc').hidden = id === 'lobby'; }
-function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false, var: false, opts: null }; if (mode === 'cherha') { cur.buzz = ['T' + chooser]; deadline = Date.now() + 30000; } else deadline = 0; phase = 'q'; show('qv'); paintQ(); bcast(); }
+function openQ(c, r) { cur = { c, r, buzz: [], wrong: new Set(), ans: false, done: false, var: false, opts: null }; if (mode === 'cherha') { cur.buzz = ['T' + chooser]; deadline = Date.now() + 30000; } else deadline = 0; phase = 'q'; show('qv'); paintQ(); bcast(); beep('open'); }
 function useVars() {
   if (!canVars()) return;
   const ti = teamOf(cur.buzz[0]); teams[ti].h--;
@@ -468,7 +468,19 @@ function wheel(fast) { blip(fast ? 1250 : 950, 0, 0.035, 0.06, 'triangle'); }   
 function tada() { [523.25, 659.25, 783.99].forEach((f, i) => bell(f, i * 0.09, 0.9, 0.16)); [1046.5, 1318.5, 1568].forEach(f => bell(f, 0.32, 1.8, 0.12)); }
 function sparkle() { [1568, 1976, 2349, 2637, 3136].forEach((f, i) => bell(f, i * 0.06, 0.6, 0.08)); }
 function fanfare() { [[392, 0], [523.25, .16], [659.25, .32], [783.99, .48], [659.25, .68], [783.99, .8]].forEach(([f, t]) => bell(f, t, .7, .17)); [523.25, 659.25, 783.99, 1046.5].forEach(f => bell(f, 1.0, 2.2, .12)); }
-function beep(k) { if (!sound) return; try {
+/* справжні звуки — SFX Kit (Wyzowl, CC0 — вільні, можна без підпису): zvuky/*.mp3; синтез нижче — запасний, поки не завантажились */
+const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'popper', 'applause', 'fireworks', 'confetti'];
+let sfxOn = false;
+function sfxLoad() { if (sfxOn) return; sfxOn = true; try { const A = ac(); SFXN.forEach(n => fetch('zvuky/' + n + '.mp3').then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => A.decodeAudioData(b, ok, no))).then(buf => { SFX[n] = buf; }).catch(() => { /* лишиться синтез */ })); } catch (e) { /* ok */ } }
+document.addEventListener('pointerdown', sfxLoad, { once: true }); document.addEventListener('keydown', sfxLoad, { once: true });
+function play(n, vol, at) { if (!sound || !SFX[n]) return false; try { const A = ac(), s = A.createBufferSource(), g = A.createGain(); s.buffer = SFX[n]; g.gain.value = vol == null ? 1 : vol; s.connect(g); g.connect(A.destination); s.start(A.currentTime + (at || 0)); return true; } catch (e) { return false; } }
+const REAL = { ok: ['ok'], no: ['no'], time: ['time'], tick: ['tick', .9], 'tick!': ['tick2'], wheel: ['tick', .7], hint: ['hint'], rise: ['rise', .8], open: ['open', .6] };
+function beep(k) { if (!sound) return; sfxLoad();
+  if (k === 'tada') { if (play('tada')) { play('popper', .7, .05); return; } }
+  else if (k === 'fin') { if (play('popper', .9)) { play('confetti', .7, .2); return; } }
+  else if (REAL[k] && play(REAL[k][0], REAL[k][1])) return;
+  if (k === 'open' || k === 'rise') return;
+  try {
   if (k === 'ok') { bell(1046.5, 0, 1.1, .22); bell(1318.5, .12, 1.1, .2); bell(1568, .24, 1.6, .2); }
   else if (k === 'no') buzzer(0, .55);
   else if (k === 'time') alarm();
@@ -504,7 +516,7 @@ function finish() {
   const slot = [top3[1], top3[0], top3[2]].filter(Boolean);   // 2 · 1 · 3
   $('#pod').innerHTML = slot.map(t => `<div class="p${t.pl === 1 ? ' first' : ''}" data-pl="${t.pl}" style="--c:${t.c}">${t.pl === 1 ? '<div class="crown">🏆</div>' : ''}<div class="nm">${esc(t.n)}</div><div class="sc2" data-s="${t.s}">0</div><div class="bl" data-h="${H[t.pl] || 30}">${t.pl}</div></div>`).join('');
   $('#rest').innerHTML = order.slice(3).map(t => `<span style="--c:${t.c}">${t.pl}. ${esc(t.n)} · ${t.s}</span>`).join('');
-  const P = [...document.querySelectorAll('#pod .p')], avail = Math.max(120, $('#pod').clientHeight - 130), rise = el => { el.classList.add('up'); el.querySelector('.bl').style.height = Math.round(avail * el.querySelector('.bl').dataset.h / 100) + 'px'; countUp(el.querySelector('.sc2')); beep('tick!'); };
+  const P = [...document.querySelectorAll('#pod .p')], avail = Math.max(120, $('#pod').clientHeight - 130), rise = el => { el.classList.add('up'); el.querySelector('.bl').style.height = Math.round(avail * el.querySelector('.bl').dataset.h / 100) + 'px'; countUp(el.querySelector('.sc2')); beep('rise'); };
   if (!fresh || matchMedia('(prefers-reduced-motion: reduce)').matches) { P.forEach(rise); B.classList.add('show'); return; }
   const by = pl => P.filter(el => +el.dataset.pl === pl);
   finT.push(setTimeout(() => by(3).forEach(rise), 500), setTimeout(() => by(2).forEach(rise), 1400),
@@ -541,7 +553,7 @@ function confetti(cols) {   /* свято: конфеті + феєрверки �
 }
 /* оплески: сотні коротких «хлопків» шуму, гучність наростає й стихає */
 let NB = null;
-function applause() { if (!sound) return; try { const A = ac();
+function applause() { if (!sound) return; if (play('applause', .9)) { [.4, 2.6, 5, 7.6].forEach(t => play('fireworks', .55, t)); return; } try { const A = ac();
   if (!NB) { NB = A.createBuffer(1, A.sampleRate * .03, A.sampleRate); const d = NB.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); }
   const out = A.createGain(); out.gain.value = .5; out.connect(A.destination); const T = 5.5, t0 = A.currentTime + .05;
   for (let i = 0; i < 520; i++) { const u = Math.random(), t = t0 + u * T, env = Math.sin(Math.PI * Math.min(1, u * 1.15)) ** .7;
@@ -550,7 +562,7 @@ function applause() { if (!sound) return; try { const A = ac();
     s2.connect(bp); bp.connect(g); g.connect(out); s2.start(t); }
   for (let i = 0; i < 6; i++) { const t = t0 + .3 + i * .7 + Math.random() * .3; blip(1800 + Math.random() * 900, t - A.currentTime, .12, .02, 'sine'); }   // «ву-ху» свист ледь чутно
 } catch (e) { /* без звуку */ } }
-function boom() { if (!sound) return; try { const A = ac(), t = A.currentTime, o = A.createOscillator(), g = A.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(40, t + .35);
+function boom() { if (!sound || SFX.fireworks) return; try {   /* є справжні феєрверки — свій «бах» не потрібен */ const A = ac(), t = A.currentTime, o = A.createOscillator(), g = A.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(40, t + .35);
   g.gain.setValueAtTime(.18, t); g.gain.exponentialRampToValueAtTime(.0001, t + .4); o.connect(g); g.connect(A.destination); o.start(t); o.stop(t + .45);
   if (!NB) return; for (let i = 0; i < 10; i++) { const s2 = A.createBufferSource(), g2 = A.createGain(); s2.buffer = NB; s2.playbackRate.value = 1.5 + Math.random(); g2.gain.value = .05; s2.connect(g2); g2.connect(A.destination); s2.start(t + .15 + Math.random() * .5); }   // тріскіт іскор
 } catch (e) { /* ok */ } }
