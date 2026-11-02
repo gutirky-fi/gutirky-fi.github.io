@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Швидке опитування — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Швидке опитування» — екран ведучого (проектор/ноутбук). Джерело: _robota/proby/opytuvannia/ (zibraty.py вбудовує qr.js і zvyazok.js).
+     Голоси анонімні: екран бачить лише відповіді, без імен. Опитування ведучого зберігаються в цьому браузері (localStorage). -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#f2f4f6;--mut:#a3abb5;--ok:#3daf6e;--gd:#ffc247;--ac:#2fd2c0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(80% 70% at 70% 20%,#1f2c30,var(--bg) 70%);color:var(--ink);font:18px/1.45 var(--txt);overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
+.top .sp{flex:1}
+.logo{font:600 24px/1 var(--disp);letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.logo svg{width:30px;height:30px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
+body.run #home{display:none}
+.btn{min-height:48px;padding:10px 20px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:17px}
+.btn.main{background:var(--ac);border-color:var(--ac);color:#06201d}
+.btn.sm{min-height:40px;padding:6px 14px;font-size:15px;border-radius:11px}
+.btn:disabled{opacity:.45;cursor:default}
+main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-direction:column;overflow:auto}
+
+/* лобі */
+.lb{width:min(1100px,100%);margin:auto;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.qr{width:min(280px,36vh);aspect-ratio:1;border-radius:18px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(47,210,192,.45),0 0 28px -6px rgba(47,210,192,.5)}
+.qr svg{width:100%;height:100%}
+.lb h1{margin:0 0 4px;font:600 clamp(2.2rem,5vw,3.4rem)/1 var(--disp);text-transform:uppercase}
+.sub{margin:0 0 14px;color:var(--mut)}
+.lbl{margin:14px 0 4px;color:var(--mut);font-size:14px;font-weight:700}
+.code{font:600 clamp(2.2rem,4.6vw,3.6rem)/1 var(--disp);letter-spacing:.08em;color:var(--ac)}
+.url{font:600 21px var(--disp)}
+.polls{display:flex;flex-wrap:wrap;gap:8px}
+.polls button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700;text-align:left}
+.polls button small{display:block;font-weight:600;font-size:12px;color:var(--mut)}
+.polls button[aria-pressed=true]{background:var(--ac);border-color:var(--ac);color:#06201d}
+.polls button[aria-pressed=true] small{color:#0d3a35}
+.qlist{margin:6px 0 0;padding-left:22px;color:#cfd5dc}
+.qlist li{margin:3px 0}
+.qlist small{color:var(--mut)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.opt{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:15px}
+.opt input{width:20px;height:20px;accent-color:var(--ac)}
+
+/* питання */
+#run{gap:16px}
+.qh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.qn{color:var(--ac);font:600 18px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.qt{margin:0;font:600 clamp(2rem,4.6vw,3.6rem)/1.08 var(--disp);max-width:30ch}
+.stage{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.bars{display:flex;flex-direction:column;gap:12px;width:min(1100px,100%)}
+.bar{display:grid;grid-template-columns:minmax(120px,32%) 1fr 92px;gap:14px;align-items:center;font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:700}
+.bar .tr{display:block;height:clamp(26px,5vh,48px);border-radius:12px;background:var(--card);overflow:hidden;border:1px solid var(--ln)}
+.bar .fl{display:block;height:100%;width:0;background:var(--ac);border-radius:11px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.bar.lead .fl{background:var(--gd)}
+.bar .n{text-align:right;color:#cfd5dc}
+.bar .n small{display:block;font-size:.6em;color:var(--mut)}
+.avg{display:flex;align-items:center;gap:28px;margin-bottom:22px}
+.ots{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+.sum .ots{display:block}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
+.avg b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--gd)}
+.avg span{color:var(--mut);font-size:20px}
+.cloud{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;justify-content:center;max-width:1100px;margin:0 auto}
+.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}
+.hid{display:grid;place-items:center;gap:6px;text-align:center;color:var(--mut);font-size:22px}
+.hid b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--ac)}
+.bar2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar2 .sp{flex:1}
+.cnt{font-weight:700;color:#cfd5dc}
+
+/* підсумок */
+.sum{width:min(1000px,100%);margin:0 auto}
+.sum h1{margin:0 0 6px;font:600 clamp(2rem,4vw,3rem)/1 var(--disp);text-transform:uppercase}
+.sum section{margin:18px 0;padding:16px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+.sum h2{margin:0 0 10px;font:700 20px/1.3 var(--txt)}
+.sum .bar{font-size:17px;grid-template-columns:minmax(110px,30%) 1fr 70px}
+.sum .bar .tr{height:24px}
+.sum .avg b{font-size:3rem}
+.sum .cloud{justify-content:flex-start}
+
+/* редактор */
+.ov{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:18px;background:rgba(10,12,15,.86);overflow:auto}
+.box{position:relative;width:min(820px,100%);padding:24px;border-radius:22px;background:#1f2328;border:1px solid var(--ln);box-shadow:0 24px 90px #000a}
+.box h2{margin:0 0 12px;font:600 30px/1.05 var(--disp);text-transform:uppercase}
+.x{position:absolute;right:12px;top:12px;width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:20px}
+.f{display:block;width:100%;min-height:46px;padding:8px 12px;border-radius:11px;border:1px solid var(--ln);background:var(--card);font-size:17px}
+textarea.f{min-height:96px;resize:vertical}
+.eq{margin:12px 0;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.eq .hd{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.eq .hd b{color:var(--ac);font:600 18px var(--disp)}
+.eq .hd .sp{flex:1}
+.eq select{min-height:40px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);padding:4px 8px}
+.eq .ib{width:38px;height:38px;border-radius:10px;border:1px solid var(--ln);background:var(--card2)}
+.eq .f+.f,.eq .f+label{margin-top:8px}
+.eq label{display:block;color:var(--mut);font-size:14px;font-weight:700;margin:8px 0 4px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
+@media (max-width:820px){.ots{grid-template-columns:1fr;gap:12px}.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.bar{grid-template-columns:1fr 70px}.bar .lab{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){.bar .fl{transition:none}}
+</style>
+</head>
+<body>
+<div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
+  <span class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="17" width="6" height="12" rx="2" fill="#2fd2c0"/><rect x="13" y="7" width="6" height="22" rx="2" fill="#ffc247"/><rect x="23" y="12" width="6" height="17" rx="2" fill="#2fd2c0"/></svg>Опитування</span><span class="sp"></span>
+  <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <span class="chip">На звʼязку: <b id="pn">0</b></span>
+</div>
+
+<main id="lobby">
+  <div class="lb">
+    <div class="qr" id="qr"></div>
+    <div>
+      <h1>Швидке опитування</h1>
+      <p class="sub">Питання — на екрані, відповіді — з телефонів. Анонімно: видно лише результати, без імен.</p>
+      <div class="lbl">Опитування</div>
+      <div class="polls" id="polls"></div>
+      <ol class="qlist" id="qlist"></ol>
+      <div class="lbl">Скануйте QR-код або відкрийте</div>
+      <div class="url" id="url"></div>
+      <div class="lbl">і введіть код</div>
+      <div class="code" id="code">··· ···</div>
+      <div class="row">
+        <button type="button" class="btn main" id="start">▶ Почати</button>
+        <button type="button" class="btn" id="edit">✎ Змінити питання</button>
+        <button type="button" class="btn" id="new">+ Нове опитування</button>
+      </div>
+      <label class="opt"><input type="checkbox" id="live" checked> Показувати результати одразу, поки голосують</label>
+    </div>
+  </div>
+</main>
+
+<main id="run" hidden>
+  <div class="qh"><span class="qn" id="qn"></span><span class="cnt" id="cnt"></span></div>
+  <h1 class="qt" id="qt"></h1>
+  <div class="stage" id="stage"></div>
+  <div class="bar2">
+    <button type="button" class="btn" id="prev">← Назад</button>
+    <button type="button" class="btn" id="reveal">Показати результати</button>
+    <button type="button" class="btn" id="close">Закрити голосування</button>
+    <span class="sp"></span>
+    <button type="button" class="btn main" id="next">Далі →</button>
+  </div>
+</main>
+
+<main id="end" hidden>
+  <div class="sum">
+    <h1>Підсумок</h1>
+    <p class="sub" id="sumsub"></p>
+    <div id="sumlist"></div>
+    <div class="row"><button type="button" class="btn main" id="copy">Скопіювати підсумок</button><button type="button" class="btn" id="again">До опитувань</button></div>
+  </div>
+</main>
+
+<div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
+  <h2>Питання</h2>
+  <label class="lbl" for="edname">Назва опитування</label><input class="f" id="edname" maxlength="40">
+  <div id="edqs"></div>
+  <div class="row"><button type="button" class="btn" id="edadd">+ Питання</button><span style="flex:1"></span><button type="button" class="btn" id="eddel">Видалити опитування</button><button type="button" class="btn main" id="edok">Зберегти</button></div>
+</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>/*QR*/</script>
+<script>/*ZVYAZOK*/</script>
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 3000); }
+
+/* ---------- типи питань ---------- */
+const KINDS = { var: 'Варіанти', tak: 'Так / ні', ots: 'Оцінка 1–5', slovo: 'Одне слово' };
+const FACES = ['😞', '🙁', '😐', '🙂', '😄'];
+const optsOf = q => q.k === 'var' ? q.o : q.k === 'tak' ? ['Так', 'Ні'] : q.k === 'ots' ? ['1', '2', '3', '4', '5'] : [];
+
+/* ---------- готові опитування (можна змінювати; свої зберігаються в цьому браузері) ---------- */
+const BASE = [
+  { id: 'shodyny', t: 'Як пройшли сходини', qs: [
+    { k: 'ots', q: 'Як тобі сьогоднішні сходини?' },
+    { k: 'var', q: 'Що сподобалося найбільше?', o: ['Гутірка', 'Гра', 'Пісня', 'Усе разом'] },
+    { k: 'tak', q: 'Чи дізнався(-лася) ти щось нове?' },
+    { k: 'slovo', q: 'Про що хочеш наступні сходини? Одним-двома словами' }] },
+  { id: 'mandrivka', t: 'Куди йдемо в мандрівку', qs: [
+    { k: 'var', q: 'Куди підемо?', o: ['Ліс і озеро', 'Скелі й стежки', 'Місто й музей', 'Острів, на човнах'] },
+    { k: 'var', q: 'Коли зручніше?', o: ['Субота', 'Неділя', 'Два дні з ночівлею'] },
+    { k: 'tak', q: 'Готуємо їжу на вогні?' }] },
+  { id: 'hra', t: 'Яку гру граємо', qs: [
+    { k: 'var', q: 'Яку гру граємо зараз?', o: ['Потужний СКОБ!', 'Бінго', 'Гра надворі', 'Співаємо'] }] }
+];
+const LS = 'opyt.polls';
+let POLLS;
+try { POLLS = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { POLLS = null; }
+if (!Array.isArray(POLLS) || !POLLS.length) POLLS = JSON.parse(JSON.stringify(BASE));
+const savePolls = () => { try { localStorage.setItem(LS, JSON.stringify(POLLS)); } catch (e) { /* ok */ } };
+let pi = 0;
+const poll = () => POLLS[pi];
+
+/* ---------- стан ---------- */
+let phase = 'lobby', qi = 0, open = true, shown = true;
+let votes = [];                       // для кожного питання: Map tok -> значення
+const players = new Map();            // tok -> {conn, t, on}
+const q = () => poll().qs[qi];
+
+/* ---------- звʼязок ---------- */
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
+const genCode = () => String(Math.floor(100000 + Math.random() * 900000));
+let code = genCode(), net = 'starting';
+const PURL = new URL('golos/', location.href).href;
+async function startNet() {
+  let P; try { P = await getPeer(); } catch (e) { P = null; }
+  if (!P) { net = 'error'; paintTop(); return; }
+  const p = new P('gutirky-opyt-' + code, window.GUTIRKA_PEER_OPTS || {});
+  p.on('open', () => { net = 'on'; paintTop(); });
+  p.on('connection', c => onConn(c));
+  p.on('error', e => { if (e && e.type === 'unavailable-id') { try { p.destroy(); } catch (x) { /* ok */ } code = genCode(); startNet(); paintLobby(); return; } net = 'off'; paintTop(); });
+  p.on('disconnected', () => { net = 'off'; paintTop(); setTimeout(() => { try { p.reconnect(); } catch (e) { /* ok */ } }, 2000); });
+}
+function onConn(c) {
+  let tok = null;
+  c.on('data', d => {
+    if (!d || typeof d !== 'object') return;
+    if (d.t === 'join') { tok = String(d.tok || Math.random()).slice(0, 40); players.set(tok, { conn: c, t: Date.now(), on: true }); sendTo(tok); paintTop(); }
+    else if (tok && d.t === 'ping') { const P = players.get(tok); if (P) { P.t = Date.now(); if (!P.on) { P.on = true; paintTop(); } } }
+    else if (tok && d.t === 'vote') vote(tok, d);
+  });
+  c.on('close', () => { const P = tok && players.get(tok); if (P && P.conn === c) { P.on = false; paintTop(); } });
+}
+function stateFor(tok) {
+  if (phase !== 'run') return { t: 'st', ph: phase, poll: poll().t };
+  const Q = q(), my = votes[qi].get(tok);
+  return { t: 'st', ph: 'run', poll: poll().t, i: qi, n: poll().qs.length, q: { k: Q.k, q: Q.q, o: optsOf(Q) }, open, my: my === undefined ? null : my, res: shown ? resOf(qi) : null };
+}
+function sendTo(tok) { const P = players.get(tok); try { if (P && P.conn && P.conn.open) P.conn.send(stateFor(tok)); } catch (e) { /* ok */ } }
+const bcast = () => players.forEach((_, tok) => sendTo(tok));
+setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - P.t > 16000) { P.on = false; paintTop(); } }); bcast(); }, 5000);
+
+function vote(tok, d) {
+  if (phase !== 'run' || !open || d.i !== qi) return;
+  const Q = q(); let v = d.v;
+  if (Q.k === 'slovo') { v = String(v || '').replace(/\s+/g, ' ').trim().slice(0, 30); if (!v) return; }
+  else { v = Number(v); if (!(v >= 0 && v < optsOf(Q).length)) return; }
+  votes[qi].set(tok, v); paintRun(); bcast();
+}
+
+/* ---------- результати ---------- */
+function resOf(i) {
+  const Q = poll().qs[i], m = votes[i] || new Map(), all = [...m.values()];
+  if (Q.k === 'slovo') {
+    const cnt = new Map(), show = new Map();
+    all.forEach(w => { const k = w.toLowerCase(); cnt.set(k, (cnt.get(k) || 0) + 1); if (!show.has(k)) show.set(k, w); });
+    return { k: 'slovo', n: all.length, w: [...cnt].sort((a, b) => b[1] - a[1]).slice(0, 40).map(([k, c]) => [show.get(k), c]) };
+  }
+  const o = optsOf(Q), c = o.map((_, j) => all.filter(v => v === j).length);
+  const r = { k: Q.k, n: all.length, o, c };
+  if (Q.k === 'ots') r.avg = all.length ? all.reduce((s, v) => s + v + 1, 0) / all.length : 0;
+  return r;
+}
+function barsHtml(r) {
+  const mx = Math.max(1, ...r.c);
+  const lab = (t, j) => r.k === 'ots' ? FACES[j] + ' ' + t : esc(t);
+  return '<div class="bars">' + r.o.map((t, j) => `<div class="bar${r.c[j] && r.c[j] === mx ? ' lead' : ''}"><span class="lab">${lab(t, j)}</span><span class="tr"><span class="fl" style="width:${(r.c[j] / mx * 100).toFixed(1)}%"></span></span><span class="n">${r.c[j]}<small>${r.n ? Math.round(r.c[j] / r.n * 100) : 0}%</small></span></div>`).join('') + '</div>';
+}
+function resHtml(r) {
+  if (r.k === 'slovo') {
+    if (!r.w.length) return '<div class="hid">Поки жодного слова</div>';
+    const mx = r.w[0][1], cols = ['#2fd2c0', '#ffc247', '#cfd5dc', '#62cf93', '#ff9a8a'];
+    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup> ${c}</sup>` : ''}</span>`).join('') + '</div>';
+  }
+  if (r.k === 'ots') return `<div class="ots"><div class="avg"><b>${r.n ? r.avg.toFixed(1).replace('.', ',') : '—'}</b><span>середня оцінка з 5 ${r.n ? FACES[Math.max(0, Math.round(r.avg) - 1)] : ''}</span></div>${barsHtml(r)}</div>`;
+  return barsHtml(r);
+}
+
+/* ---------- малювання ---------- */
+function paintTop() {
+  $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
+  $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
+  $('#pn').textContent = [...players.values()].filter(P => P.on).length;
+  if (phase === 'run') paintRun();
+}
+function paintLobby() {
+  const url = PURL + '?k=' + code;
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#2fd2c0' }); $('#qr').dataset.u = url; }
+  $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+  $('#polls').innerHTML = POLLS.map((p, i) => `<button type="button" data-p="${i}" aria-pressed="${i === pi}">${esc(p.t)}<small>${p.qs.length} ${p.qs.length === 1 ? 'питання' : p.qs.length < 5 ? 'питання' : 'питань'}</small></button>`).join('');
+  $('#qlist').innerHTML = poll().qs.map(Q => `<li>${esc(Q.q)} <small>· ${KINDS[Q.k]}${Q.k === 'var' ? ': ' + esc(Q.o.join(', ')) : ''}</small></li>`).join('');
+  $('#start').disabled = !poll().qs.length;
+}
+function paintRun() {
+  const Q = q(), r = resOf(qi), on = [...players.values()].filter(P => P.on).length;
+  $('#qn').textContent = 'Питання ' + (qi + 1) + ' з ' + poll().qs.length;
+  $('#cnt').textContent = '· відповіли ' + r.n + (on ? ' з ' + on : '') + (open ? '' : ' · голосування закрите');
+  $('#qt').textContent = Q.q;
+  $('#stage').innerHTML = shown ? resHtml(r) : `<div class="hid"><b>${r.n}</b>${r.n === 1 ? 'відповідь' : 'відповідей'} · результати сховані</div>`;
+  $('#reveal').textContent = shown ? 'Сховати результати' : 'Показати результати';
+  $('#close').textContent = open ? 'Закрити голосування' : 'Відкрити знову';
+  $('#prev').disabled = qi === 0;
+  $('#next').textContent = qi === poll().qs.length - 1 ? 'Підсумок →' : 'Далі →';
+}
+function show(id) { ['lobby', 'run', 'end'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); }
+function goQ(i) { qi = i; open = true; shown = $('#live').checked; show('run'); paintRun(); bcast(); }
+function finish() {
+  phase = 'end'; open = false; show('end');
+  const tot = Math.max(0, ...votes.map(m => m.size));
+  $('#sumsub').textContent = poll().t + ' · ' + new Date().toLocaleDateString('uk-UA') + ' · відповідали до ' + tot + ' осіб';
+  $('#sumlist').innerHTML = poll().qs.map((Q, i) => `<section><h2>${i + 1}. ${esc(Q.q)}</h2>${resHtml(resOf(i))}</section>`).join('');
+  bcast();
+}
+function sumText() {
+  return poll().t + ' — ' + new Date().toLocaleDateString('uk-UA') + '\n\n' + poll().qs.map((Q, i) => {
+    const r = resOf(i); let t = (i + 1) + '. ' + Q.q + ' (відповідей: ' + r.n + ')\n';
+    if (r.k === 'slovo') t += r.w.map(([w, c]) => '   ' + w + (c > 1 ? ' ×' + c : '')).join('\n');
+    else { if (r.k === 'ots') t += '   Середня: ' + (r.n ? r.avg.toFixed(1) : '—') + ' з 5\n'; t += r.o.map((o, j) => '   ' + o + ': ' + r.c[j]).join('\n'); }
+    return t;
+  }).join('\n\n');
+}
+
+/* ---------- редактор ---------- */
+let ED = null;
+function openEd(p) { ED = JSON.parse(JSON.stringify(p)); $('#edov').hidden = false; paintEd(); setTimeout(() => $('#edname').focus(), 30); }
+function paintEd() {
+  $('#edname').value = ED.t;
+  $('#edqs').innerHTML = ED.qs.map((Q, i) => `<div class="eq" data-i="${i}"><div class="hd"><b>${i + 1}</b><select data-f="k" aria-label="Тип питання">${Object.entries(KINDS).map(([k, n]) => `<option value="${k}"${k === Q.k ? ' selected' : ''}>${n}</option>`).join('')}</select><span class="sp"></span>
+    <button type="button" class="ib" data-a="up" aria-label="Вище"${i ? '' : ' disabled'}>↑</button><button type="button" class="ib" data-a="dn" aria-label="Нижче"${i < ED.qs.length - 1 ? '' : ' disabled'}>↓</button><button type="button" class="ib" data-a="rm" aria-label="Видалити питання">✕</button></div>
+    <input class="f" data-f="q" maxlength="120" placeholder="Питання" value="${esc(Q.q)}">
+    ${Q.k === 'var' ? `<label>Варіанти — кожен з нового рядка (2–6)</label><textarea class="f" data-f="o">${esc((Q.o || []).join('\n'))}</textarea>` : ''}</div>`).join('');
+}
+function readEd() {
+  ED.t = $('#edname').value.trim() || 'Опитування';
+  document.querySelectorAll('#edqs .eq').forEach(el => {
+    const Q = ED.qs[+el.dataset.i]; Q.q = el.querySelector('[data-f=q]').value.trim(); Q.k = el.querySelector('[data-f=k]').value;
+    const ta = el.querySelector('[data-f=o]'); if (ta) Q.o = ta.value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 6);
+    if (Q.k === 'var' && !(Q.o && Q.o.length)) Q.o = ['Варіант 1', 'Варіант 2'];
+  });
+}
+$('#edqs').addEventListener('change', e => { if (e.target.dataset.f === 'k') { readEd(); paintEd(); } });
+$('#edqs').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return; readEd();
+  const i = +b.closest('.eq').dataset.i, a = b.dataset.a;
+  if (a === 'rm') ED.qs.splice(i, 1);
+  else { const j = a === 'up' ? i - 1 : i + 1; [ED.qs[i], ED.qs[j]] = [ED.qs[j], ED.qs[i]]; }
+  paintEd();
+});
+
+/* ---------- кнопки ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.p) { pi = +b.dataset.p; paintLobby(); return; }
+  switch (b.id) {
+    case 'start': phase = 'run'; votes = poll().qs.map(() => new Map()); goQ(0); break;
+    case 'next': if (qi < poll().qs.length - 1) goQ(qi + 1); else finish(); break;
+    case 'prev': if (qi > 0) { qi--; open = false; shown = true; paintRun(); bcast(); } break;
+    case 'reveal': shown = !shown; paintRun(); bcast(); break;
+    case 'close': open = !open; if (!open) shown = true; paintRun(); bcast(); break;
+    case 'copy': { const t = sumText(); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Підсумок скопійовано — можна вставити в лист чи чат'), () => toast('Не вдалося скопіювати')); break; }
+    case 'again': phase = 'lobby'; show('lobby'); paintLobby(); bcast(); break;
+    case 'edit': openEd(poll()); break;
+    case 'new': POLLS.push({ id: 'p' + Date.now(), t: 'Нове опитування', qs: [{ k: 'var', q: '', o: ['Так', 'Ні', 'Не знаю'] }] }); pi = POLLS.length - 1; savePolls(); paintLobby(); openEd(poll()); break;
+    case 'edadd': readEd(); ED.qs.push({ k: 'var', q: '', o: ['Варіант 1', 'Варіант 2'] }); paintEd(); break;
+    case 'edok': readEd(); ED.qs = ED.qs.filter(Q => Q.q); POLLS[pi] = ED; savePolls(); $('#edov').hidden = true; paintLobby(); toast('Збережено на цьому пристрої'); break;
+    case 'eddel': if (confirm('Видалити це опитування?')) { POLLS.splice(pi, 1); if (!POLLS.length) POLLS = JSON.parse(JSON.stringify(BASE)); pi = 0; savePolls(); $('#edov').hidden = true; paintLobby(); } break;
+    case 'edx': $('#edov').hidden = true; break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea,select') || !$('#edov').hidden) { if (e.key === 'Escape') $('#edov').hidden = true; return; }
+  if (phase !== 'run') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); $('#next').click(); } else if (e.key === 'ArrowLeft') $('#prev').click();
+});
+paintLobby(); paintTop(); startNet();
+window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? votes[qi].size : 0, res: phase === 'run' ? resOf(qi) : null }) };
+})();
+</script>
+</body>
+</html>

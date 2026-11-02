@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Швидке опитування — екран</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Швидке опитування» — екран ведучого (проектор/ноутбук). Джерело: _robota/proby/opytuvannia/ (zibraty.py вбудовує qr.js і zvyazok.js).
+     Голоси анонімні: екран бачить лише відповіді, без імен. Опитування ведучого зберігаються в цьому браузері (localStorage). -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#f2f4f6;--mut:#a3abb5;--ok:#3daf6e;--gd:#ffc247;--ac:#2fd2c0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(80% 70% at 70% 20%,#1f2c30,var(--bg) 70%);color:var(--ink);font:18px/1.45 var(--txt);overflow:hidden}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
+.top .sp{flex:1}
+.logo{font:600 24px/1 var(--disp);letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.logo svg{width:30px;height:30px}
+.chip{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:15px;color:var(--ink);text-decoration:none}
+.chip .dot{width:9px;height:9px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
+body.run #home{display:none}
+.btn{min-height:48px;padding:10px 20px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:17px}
+.btn.main{background:var(--ac);border-color:var(--ac);color:#06201d}
+.btn.sm{min-height:40px;padding:6px 14px;font-size:15px;border-radius:11px}
+.btn:disabled{opacity:.45;cursor:default}
+main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-direction:column;overflow:auto}
+
+/* лобі */
+.lb{width:min(1100px,100%);margin:auto;display:grid;grid-template-columns:auto 1fr;gap:32px;align-items:start}
+.qr{width:min(280px,36vh);aspect-ratio:1;border-radius:18px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(47,210,192,.45),0 0 28px -6px rgba(47,210,192,.5)}
+.qr svg{width:100%;height:100%}
+.lb h1{margin:0 0 4px;font:600 clamp(2.2rem,5vw,3.4rem)/1 var(--disp);text-transform:uppercase}
+.sub{margin:0 0 14px;color:var(--mut)}
+.lbl{margin:14px 0 4px;color:var(--mut);font-size:14px;font-weight:700}
+.code{font:600 clamp(2.2rem,4.6vw,3.6rem)/1 var(--disp);letter-spacing:.08em;color:var(--ac)}
+.url{font:600 21px var(--disp)}
+.polls{display:flex;flex-wrap:wrap;gap:8px}
+.polls button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700;text-align:left}
+.polls button small{display:block;font-weight:600;font-size:12px;color:var(--mut)}
+.polls button[aria-pressed=true]{background:var(--ac);border-color:var(--ac);color:#06201d}
+.polls button[aria-pressed=true] small{color:#0d3a35}
+.qlist{margin:6px 0 0;padding-left:22px;color:#cfd5dc}
+.qlist li{margin:3px 0}
+.qlist small{color:var(--mut)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+.opt{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:15px}
+.opt input{width:20px;height:20px;accent-color:var(--ac)}
+
+/* питання */
+#run{gap:16px}
+.qh{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.qn{color:var(--ac);font:600 18px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.qt{margin:0;font:600 clamp(2rem,4.6vw,3.6rem)/1.08 var(--disp);max-width:30ch}
+.stage{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center}
+.bars{display:flex;flex-direction:column;gap:12px;width:min(1100px,100%)}
+.bar{display:grid;grid-template-columns:minmax(120px,32%) 1fr 92px;gap:14px;align-items:center;font-size:clamp(1.1rem,2.2vw,1.6rem);font-weight:700}
+.bar .tr{display:block;height:clamp(26px,5vh,48px);border-radius:12px;background:var(--card);overflow:hidden;border:1px solid var(--ln)}
+.bar .fl{display:block;height:100%;width:0;background:var(--ac);border-radius:11px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.bar.lead .fl{background:var(--gd)}
+.bar .n{text-align:right;color:#cfd5dc}
+.bar .n small{display:block;font-size:.6em;color:var(--mut)}
+.avg{display:flex;align-items:center;gap:28px;margin-bottom:22px}
+.ots{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+.sum .ots{display:block}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
+.avg b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--gd)}
+.avg span{color:var(--mut);font-size:20px}
+.cloud{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;justify-content:center;max-width:1100px;margin:0 auto}
+.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}
+.hid{display:grid;place-items:center;gap:6px;text-align:center;color:var(--mut);font-size:22px}
+.hid b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--ac)}
+.bar2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.bar2 .sp{flex:1}
+.cnt{font-weight:700;color:#cfd5dc}
+
+/* підсумок */
+.sum{width:min(1000px,100%);margin:0 auto}
+.sum h1{margin:0 0 6px;font:600 clamp(2rem,4vw,3rem)/1 var(--disp);text-transform:uppercase}
+.sum section{margin:18px 0;padding:16px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+.sum h2{margin:0 0 10px;font:700 20px/1.3 var(--txt)}
+.sum .bar{font-size:17px;grid-template-columns:minmax(110px,30%) 1fr 70px}
+.sum .bar .tr{height:24px}
+.sum .avg b{font-size:3rem}
+.sum .cloud{justify-content:flex-start}
+
+/* редактор */
+.ov{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-start;justify-content:center;padding:18px;background:rgba(10,12,15,.86);overflow:auto}
+.box{position:relative;width:min(820px,100%);padding:24px;border-radius:22px;background:#1f2328;border:1px solid var(--ln);box-shadow:0 24px 90px #000a}
+.box h2{margin:0 0 12px;font:600 30px/1.05 var(--disp);text-transform:uppercase}
+.x{position:absolute;right:12px;top:12px;width:42px;height:42px;border-radius:50%;border:1px solid var(--ln);background:var(--card2);font-size:20px}
+.f{display:block;width:100%;min-height:46px;padding:8px 12px;border-radius:11px;border:1px solid var(--ln);background:var(--card);font-size:17px}
+textarea.f{min-height:96px;resize:vertical}
+.eq{margin:12px 0;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.eq .hd{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.eq .hd b{color:var(--ac);font:600 18px var(--disp)}
+.eq .hd .sp{flex:1}
+.eq select{min-height:40px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);padding:4px 8px}
+.eq .ib{width:38px;height:38px;border-radius:10px;border:1px solid var(--ln);background:var(--card2)}
+.eq .f+.f,.eq .f+label{margin-top:8px}
+.eq label{display:block;color:var(--mut);font-size:14px;font-weight:700;margin:8px 0 4px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
+@media (max-width:820px){.ots{grid-template-columns:1fr;gap:12px}.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.bar{grid-template-columns:1fr 70px}.bar .lab{grid-column:1/-1}}
+@media (prefers-reduced-motion:reduce){.bar .fl{transition:none}}
+</style>
+</head>
+<body>
+<div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
+  <span class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="17" width="6" height="12" rx="2" fill="#2fd2c0"/><rect x="13" y="7" width="6" height="22" rx="2" fill="#ffc247"/><rect x="23" y="12" width="6" height="17" rx="2" fill="#2fd2c0"/></svg>Опитування</span><span class="sp"></span>
+  <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <span class="chip">На звʼязку: <b id="pn">0</b></span>
+</div>
+
+<main id="lobby">
+  <div class="lb">
+    <div class="qr" id="qr"></div>
+    <div>
+      <h1>Швидке опитування</h1>
+      <p class="sub">Питання — на екрані, відповіді — з телефонів. Анонімно: видно лише результати, без імен.</p>
+      <div class="lbl">Опитування</div>
+      <div class="polls" id="polls"></div>
+      <ol class="qlist" id="qlist"></ol>
+      <div class="lbl">Скануйте QR-код або відкрийте</div>
+      <div class="url" id="url"></div>
+      <div class="lbl">і введіть код</div>
+      <div class="code" id="code">··· ···</div>
+      <div class="row">
+        <button type="button" class="btn main" id="start">▶ Почати</button>
+        <button type="button" class="btn" id="edit">✎ Змінити питання</button>
+        <button type="button" class="btn" id="new">+ Нове опитування</button>
+      </div>
+      <label class="opt"><input type="checkbox" id="live" checked> Показувати результати одразу, поки голосують</label>
+    </div>
+  </div>
+</main>
+
+<main id="run" hidden>
+  <div class="qh"><span class="qn" id="qn"></span><span class="cnt" id="cnt"></span></div>
+  <h1 class="qt" id="qt"></h1>
+  <div class="stage" id="stage"></div>
+  <div class="bar2">
+    <button type="button" class="btn" id="prev">← Назад</button>
+    <button type="button" class="btn" id="reveal">Показати результати</button>
+    <button type="button" class="btn" id="close">Закрити голосування</button>
+    <span class="sp"></span>
+    <button type="button" class="btn main" id="next">Далі →</button>
+  </div>
+</main>
+
+<main id="end" hidden>
+  <div class="sum">
+    <h1>Підсумок</h1>
+    <p class="sub" id="sumsub"></p>
+    <div id="sumlist"></div>
+    <div class="row"><button type="button" class="btn main" id="copy">Скопіювати підсумок</button><button type="button" class="btn" id="again">До опитувань</button></div>
+  </div>
+</main>
+
+<div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
+  <h2>Питання</h2>
+  <label class="lbl" for="edname">Назва опитування</label><input class="f" id="edname" maxlength="40">
+  <div id="edqs"></div>
+  <div class="row"><button type="button" class="btn" id="edadd">+ Питання</button><span style="flex:1"></span><button type="button" class="btn" id="eddel">Видалити опитування</button><button type="button" class="btn main" id="edok">Зберегти</button></div>
+</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* Мінімальний генератор QR-коду (режим Byte, рівні L/M, версії 1–10, до ~170 байт).
+   Без зовнішніх бібліотек. Використання: qrSvg("https://…", 240) → рядок <svg>. */
+(function (root) {
+  'use strict';
+  const ECL = {
+    L: { bits: 1, ecc: [7, 10, 15, 20, 26, 18, 20, 24, 30, 18], blocks: [1, 1, 1, 1, 1, 2, 2, 2, 2, 4] },
+    M: { bits: 0, ecc: [10, 16, 26, 18, 24, 16, 18, 22, 22, 26], blocks: [1, 1, 1, 2, 2, 4, 4, 4, 5, 5] },
+    H: { bits: 2, ecc: [17, 28, 22, 16, 22, 28, 26, 26, 24, 28], blocks: [1, 1, 2, 4, 4, 4, 5, 6, 8, 8] }   /* найвища надійність: витримує знак посередині */
+  };
+  const RAW = [26, 44, 70, 100, 134, 172, 196, 242, 292, 346];
+  const ALIGN = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]];
+  const EXP = new Array(512), LOG = new Array(256);
+  (function () { let x = 1; for (let i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 256) x ^= 0x11d; } for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255]; })();
+  const mul = (a, b) => (a && b ? EXP[LOG[a] + LOG[b]] : 0);
+  function gen(n) { let g = [1]; for (let i = 0; i < n; i++) { const ng = new Array(g.length + 1).fill(0); for (let j = 0; j < g.length; j++) { ng[j] ^= g[j]; ng[j + 1] ^= mul(g[j], EXP[i]); } g = ng; } return g; }
+  function rs(data, n) { const g = gen(n), r = new Array(n).fill(0); for (const b of data) { const f = b ^ r.shift(); r.push(0); for (let i = 0; i < n; i++) r[i] ^= mul(g[i + 1], f); } return r; }
+  const bit = (v, i) => ((v >>> i) & 1) !== 0;
+
+  function matrix(text, level) {
+    const E = ECL[level], data = Array.from(new TextEncoder().encode(text));
+    let ver = 1, dataCap = 0;
+    for (; ver <= 10; ver++) {
+      dataCap = RAW[ver - 1] - E.ecc[ver - 1] * E.blocks[ver - 1];
+      if (4 + (ver < 10 ? 8 : 16) + data.length * 8 <= dataCap * 8) break;
+    }
+    if (ver > 10) throw new Error('QR: надто довгий текст');
+    const bb = [], put = (v, n) => { for (let i = n - 1; i >= 0; i--) bb.push((v >>> i) & 1); };
+    put(4, 4); put(data.length, ver < 10 ? 8 : 16); data.forEach(b => put(b, 8));
+    const cap = dataCap * 8; put(0, Math.min(4, cap - bb.length)); while (bb.length % 8) bb.push(0);
+    for (let p = 0xec; bb.length < cap; p ^= 0xec ^ 0x11) put(p, 8);
+    const cw = []; for (let i = 0; i < bb.length; i += 8) { let v = 0; for (let j = 0; j < 8; j++) v = (v << 1) | bb[i + j]; cw.push(v); }
+    const nb = E.blocks[ver - 1], el = E.ecc[ver - 1], shortLen = Math.floor(dataCap / nb), longCount = dataCap % nb;
+    const blocks = []; let pos = 0;
+    for (let i = 0; i < nb; i++) { const len = shortLen + (i >= nb - longCount ? 1 : 0); const d = cw.slice(pos, pos + len); pos += len; blocks.push({ d, e: rs(d, el) }); }
+    const out = [];
+    for (let i = 0; i < shortLen + (longCount ? 1 : 0); i++) blocks.forEach(b => { if (i < b.d.length) out.push(b.d[i]); });
+    for (let i = 0; i < el; i++) blocks.forEach(b => out.push(b.e[i]));
+
+    const size = ver * 4 + 17;
+    const m = Array.from({ length: size }, () => new Array(size).fill(false));
+    const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+    const setF = (x, y, v) => { if (x >= 0 && x < size && y >= 0 && y < size) { m[y][x] = v; fn[y][x] = true; } };
+    const finder = (cx, cy) => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const d = Math.max(Math.abs(dx), Math.abs(dy)); setF(cx + dx, cy + dy, d !== 2 && d !== 4); } };
+    for (let i = 0; i < size; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    const al = ALIGN[ver - 1], last = al.length - 1;
+    for (let a = 0; a < al.length; a++) for (let b = 0; b < al.length; b++) {
+      if ((a === 0 && b === 0) || (a === 0 && b === last) || (a === last && b === 0)) continue;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setF(al[a] + dx, al[b] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }
+    function drawFormat(mask) {
+      const d0 = (E.bits << 3) | mask; let r = d0; for (let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      const bits = ((d0 << 10) | r) ^ 0x5412;
+      for (let i = 0; i <= 5; i++) setF(8, i, bit(bits, i));
+      setF(8, 7, bit(bits, 6)); setF(8, 8, bit(bits, 7)); setF(7, 8, bit(bits, 8));
+      for (let i = 9; i < 15; i++) setF(14 - i, 8, bit(bits, i));
+      for (let i = 0; i < 8; i++) setF(size - 1 - i, 8, bit(bits, i));
+      for (let i = 8; i < 15; i++) setF(8, size - 15 + i, bit(bits, i));
+      setF(8, size - 8, true);
+    }
+    drawFormat(0);
+    if (ver >= 7) {
+      let r = ver; for (let i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1f25);
+      const bits = (ver << 12) | r;
+      for (let i = 0; i < 18; i++) { const c = bit(bits, i), a = size - 11 + (i % 3), b = Math.floor(i / 3); setF(a, b, c); setF(b, a, c); }
+    }
+    let k = 0;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+        const x = right - j, y = ((right + 1) & 2) === 0 ? size - 1 - vert : vert;
+        if (!fn[y][x] && k < out.length * 8) { m[y][x] = bit(out[k >>> 3], 7 - (k & 7)); k++; }
+      }
+    }
+    const MASK = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+      (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+      (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0, (x, y) => (((x + y) % 2) + ((x * y) % 3)) % 2 === 0];
+    function apply(mask) { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fn[y][x] && MASK[mask](x, y)) m[y][x] = !m[y][x]; }
+    function penalty() {
+      let p = 0;
+      for (let pass = 0; pass < 2; pass++) for (let a = 0; a < size; a++) {
+        let run = 1, prev = null, hist = '';
+        for (let b = 0; b < size; b++) {
+          const v = pass ? m[b][a] : m[a][b];
+          hist += v ? '1' : '0';
+          if (v === prev) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else { run = 1; prev = v; }
+        }
+        const re = /1011101(?=0000)|(?<=0000)1011101/g; let mt; while ((mt = re.exec(hist))) p += 40;
+      }
+      for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) { const v = m[y][x]; if (v === m[y][x + 1] && v === m[y + 1][x] && v === m[y + 1][x + 1]) p += 3; }
+      let dark = 0; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (m[y][x]) dark++;
+      p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return p;
+    }
+    let best = 0, bp = Infinity;
+    for (let mk = 0; mk < 8; mk++) { apply(mk); drawFormat(mk); const p = penalty(); if (p < bp) { bp = p; best = mk; } apply(mk); }
+    apply(best); drawFormat(best);
+    return m;
+  }
+
+  /* logo — картинка (data:…) посередині коду, напр. пластова лілея. Тоді рівень H (до 30 % коду може бути закрито),
+     модулі — круглі крапки, «очі» в кутах — заокруглені, а під знаком модулі прибрано (без білої плашки).
+     eye — колір «очей» (необов'язково). */
+  /* Стиль сайту (21.10.2026, власник обрав варіант 8): темне тло, світлі круглі крапки, зелені «очі», пластова лілея.
+     qrSvg(текст, px) — так скрізь (пульт, СКОБ, «Вивчай сам»); qrSvg(текст, px, {eye:…}) — інші кольори; qrSvg(текст, px, false) — простий чорно-білий. */
+  const LILY = 'data:image/webp;base64,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';
+  const STYLE = { logo: LILY, bg: '#1b1d21', dark: '#e8f3ec', eye: '#62cf93', eyeIn: '#e8f3ec', rx: 0.1 };
+  function qrSvg(text, px, opt) {
+    if (opt === false) return qrPlain(text, px);
+    if (typeof opt === 'string') return qrPlain(text, px, opt);   // старий виклик: qrSvg(текст, px, лого)
+    return qrPretty(text, px, Object.assign({}, STYLE, opt || {}));
+  }
+  function qrPlain(text, px, logo, eye) {
+    let m = null;
+    if (logo) { try { m = matrix(text, 'H'); } catch (e) { m = null; } }
+    if (!m) { logo = ''; try { m = matrix(text, 'M'); } catch (e) { m = matrix(text, 'L'); } }
+    const n = m.length, s = n + 8, Q = 4, ink = '#15171a';
+    if (!logo) {
+      let d = '';
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (m[y][x]) d += 'M' + (x + Q) + ' ' + (y + Q) + 'h1v1h-1z';
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" shape-rendering="crispEdges" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+    }
+    const inEye = (x, y) => (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+    const c = n / 2, R = n * 0.15;   /* місце під лілею */
+    let d = '';
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!m[y][x] || inEye(x, y)) continue;
+      const dx = x + 0.5 - c, dy = (y + 0.5 - c) / 1.12;
+      if (Math.hypot(dx, dy) < R + 0.6) continue;
+      const cx = x + Q + 0.5, cy = y + Q + 0.5, r = 0.46;
+      d += 'M' + (cx - r) + ' ' + cy + 'a' + r + ' ' + r + ' 0 1 0 ' + (2 * r) + ' 0a' + r + ' ' + r + ' 0 1 0 ' + (-2 * r) + ' 0';
+    }
+    const ec = eye || ink;
+    const eyeAt = (x, y) => '<rect x="' + (x + 0.5) + '" y="' + (y + 0.5) + '" width="6" height="6" rx="1.9" fill="none" stroke="' + ec + '" stroke-width="1"/><rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" rx="0.9" fill="' + ec + '"/>';
+    const lw = R * 2 * 0.78, lh = lw * 1.2;
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" rx="3" fill="#fff"/>'
+      + '<path d="' + d + '" fill="' + ink + '"/>' + eyeAt(Q, Q) + eyeAt(Q + n - 7, Q) + eyeAt(Q, Q + n - 7)
+      + '<image href="' + logo + '" x="' + (Q + c - lw / 2) + '" y="' + (Q + c - lh / 2) + '" width="' + lw + '" height="' + lh + '" preserveAspectRatio="xMidYMid meet"/></svg>';
+  }
+  /* Гарний QR (як у банків): круглі «крапки», округлі «очі» в кутах, посередині — вільне коло з лілеєю.
+     opt: {logo, dark, eye, eyeIn} — кольори; рівень H, тож середина може бути порожньою. */
+  function qrPretty(text, px, opt) {
+    opt = opt || {}; let m; try { m = matrix(text, 'H'); } catch (e) { return qrPlain(text, px); }
+    const n = m.length, q = 3, s = n + 2 * q, c = s / 2, dark = opt.dark || '#16181c', eye = opt.eye || dark, eyeIn = opt.eyeIn || eye;
+    const R = opt.logo || opt.mark ? n * 0.17 : 0;   // радіус порожнього кола під лілею (у модулях)
+    const inEye = (x, y) => (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+    let d = '';
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!m[y][x] || inEye(x, y)) continue;
+      const cx = x + q + 0.5, cy = y + q + 0.5;
+      if (R && Math.hypot(cx - c, cy - c) < R + 0.5) continue;
+      const dr = opt.dot == null ? 0.43 : opt.dot;   // радіус крапки (0.5 — квадрат із заокругленням)
+      if (dr >= 0.5) { const k = opt.dotR == null ? 0.25 : opt.dotR; d += 'M' + (x + q + k) + ' ' + (y + q) + 'h' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1 ' + k + ' ' + k + 'v' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1-' + k + ' ' + k + 'h-' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1-' + k + '-' + k + 'v-' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1 ' + k + '-' + k + 'z'; }
+      else d += 'M' + (cx - dr).toFixed(2) + ' ' + cy + 'a' + dr + ' ' + dr + ' 0 1 0 ' + (2 * dr) + ' 0a' + dr + ' ' + dr + ' 0 1 0-' + (2 * dr) + ' 0';
+    }
+    const rr = (x, y, w, r) => 'M' + (x + r) + ' ' + y + 'h' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r + 'v' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + ' ' + r + 'h-' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + '-' + r + 'v-' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + '-' + r + 'z';
+    let eyes = '', inner = '';
+    [[0, 0], [n - 7, 0], [0, n - 7]].forEach(([ex, ey]) => {
+      const X = ex + q, Y = ey + q;
+      const er = opt.eyeR == null ? 2.2 : opt.eyeR; eyes += rr(X, Y, 7, er) + rr(X + 1, Y + 1, 5, Math.max(0.01, er * 0.64));   // кільце (evenodd)
+      inner += rr(X + 2, Y + 2, 3, Math.max(0.01, er * 0.41));
+    });
+    let lg = '';
+    if (R && opt.mark) lg = opt.mark(c, R);   /* свій знак прямо в SVG (бере шрифти сторінки) */
+    else if (R) { const h = R * (opt.logoH || 1.62), w = h * (opt.logoA || 0.82); lg = '<image href="' + opt.logo + '" x="' + (c - w / 2).toFixed(2) + '" y="' + (c - h / 2).toFixed(2) + '" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '" preserveAspectRatio="xMidYMid meet"/>'; }
+    const gid = 'qg' + Math.random().toString(36).slice(2, 7), bg = opt.bg || '#fff';
+    const fillD = opt.grad ? 'url(#' + gid + ')' : dark;
+    const defs = opt.grad ? '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + opt.grad[0] + '"/><stop offset="1" stop-color="' + opt.grad[1] + '"/></linearGradient></defs>' : '';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" role="img" aria-label="QR-код">' + defs + (bg === 'none' ? '' : '<rect width="' + s + '" height="' + s + '" rx="' + (s * (opt.rx == null ? 0.06 : opt.rx)) + '" fill="' + bg + '"/>') + '<path d="' + d + '" fill="' + fillD + '"/><path d="' + eyes + '" fill="' + eye + '" fill-rule="evenodd"/><path d="' + inner + '" fill="' + eyeIn + '"/>' + lg + '</svg>';
+  }
+  root.qrSvg = qrSvg; root.qrPlain = qrPlain; root.qrPretty = qrPretty; root.qrMatrix = matrix;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+</script>
+<script>
+/* Звʼязок пульта з гутіркою — з запасними каналами (з 22.10.2026).
+   window.GutirkaNet(PeerJS) → клас, схожий на Peer з PeerJS (той самий API для pult-host-file.js і сторінки пульта),
+   але працює одразу двома шляхами:
+     1) PeerJS (безкоштовний сервер 0.peerjs.com) — як і раніше;
+     2) запасний: кілька публічних MQTT-брокерів через WebSocket (повідомлення йдуть через усі, повтори відкидаються).
+   Пульт підключається тим шляхом, що відповів першим. Якщо PeerJS-сервер «лежить» — працює запасний, і навпаки.
+   Запасні повідомлення зашифровані (AES-GCM, ключ — з коду й ключа з QR), адреса гутірки — хеш коду.
+   Брокери можна замінити: window.GUTIRKA_MQTT = ['wss://…', …] (перед завантаженням). */
+(function () {
+  'use strict';
+  if (window.GutirkaNet) return;
+  const BROKERS = () => window.GUTIRKA_MQTT || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const NS = 'gutirky-fi/v1/';
+  const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(b => (b % 36).toString(36)).join(''); };
+  class Em {
+    constructor() { this._h = {}; }
+    on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
+    off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
+    emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+
+  /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
+  const te = new TextEncoder(), td = new TextDecoder();
+  const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255, ...b]; };
+  const len = n => { const o = []; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; o.push(d); } while (n > 0); return o; };
+  const pkt = (h, body) => { const b = body instanceof Uint8Array ? body : Uint8Array.from(body); const L = len(b.length); const o = new Uint8Array(1 + L.length + b.length); o[0] = h; o.set(L, 1); o.set(b, 1 + L.length); return o; };
+  class Mqtt extends Em {
+    constructor(url) { super(); this.url = url; this.subs = new Set(); this.ok = false; this.dead = false; this.tries = 0; this.buf = new Uint8Array(0); this.open(); }
+    open() {
+      if (this.dead) return;
+      let ws; try { ws = new WebSocket(this.url, ['mqtt']); } catch (e) { return this.retry(); }
+      this.ws = ws; ws.binaryType = 'arraybuffer';
+      const to = setTimeout(() => { if (!this.ok) try { ws.close(); } catch (e) { /* ok */ } }, 8000);
+      ws.onopen = () => {
+        const id = 'gf' + rnd(12);
+        ws.send(pkt(0x10, [...str('MQTT'), 4, 2, 0, 45, ...str(id)]));   // CONNECT, clean session, keepalive 45 с
+      };
+      ws.onmessage = ev => { const d = new Uint8Array(ev.data); const b = new Uint8Array(this.buf.length + d.length); b.set(this.buf); b.set(d, this.buf.length); this.buf = b; this.parse(); };
+      ws.onclose = ws.onerror = () => { clearTimeout(to); clearInterval(this.ping); const was = this.ok; this.ok = false; if (this.ws === ws) { this.ws = null; if (was) this.emit('down'); this.retry(); } };
+    }
+    retry() { if (this.dead) return; this.tries++; clearTimeout(this.rt); this.rt = setTimeout(() => this.open(), Math.min(20000, 1000 * 2 ** Math.min(this.tries, 4))); }
+    parse() {
+      for (;;) {
+        const b = this.buf; if (b.length < 2) return;
+        let m = 1, v = 0, i = 1, d;
+        do { if (i >= b.length) return; d = b[i++]; v += (d & 127) * m; m *= 128; } while (d & 128);
+        if (b.length < i + v) return;
+        const t = b[0] >> 4, body = b.subarray(i, i + v); this.buf = b.slice(i + v);
+        if (t === 2) {   // CONNACK
+          if (body[1] !== 0) { try { this.ws.close(); } catch (e) { /* ok */ } return; }
+          this.ok = true; this.tries = 0;
+          this.ping = setInterval(() => { try { this.ws.send(Uint8Array.of(0xC0, 0)); } catch (e) { /* ok */ } }, 20000);
+          this.subs.forEach(s => this.sendSub(s));
+          this.emit('up');
+        } else if (t === 3) {   // PUBLISH (QoS 0)
+          const tl = (body[0] << 8) | body[1], topic = td.decode(body.subarray(2, 2 + tl));
+          this.emit('msg', topic, td.decode(body.subarray(2 + tl)));
+        }
+      }
+    }
+    sendSub(topic) { try { this.ws.send(pkt(0x82, [0, 1, ...str(topic), 0])); } catch (e) { /* ok */ } }
+    sub(topic) { this.subs.add(topic); if (this.ok) this.sendSub(topic); }
+    pub(topic, text) { if (!this.ok) return false; const t = str(topic), p = te.encode(text); const b = new Uint8Array(t.length + p.length); b.set(t); b.set(p, t.length); try { this.ws.send(pkt(0x30, b)); return true; } catch (e) { return false; } }
+    close() { this.dead = true; clearTimeout(this.rt); clearInterval(this.ping); const ws = this.ws; this.ws = null; this.ok = false; if (ws) { try { ws.send(Uint8Array.of(0xE0, 0)); } catch (e) { /* ok */ } try { ws.close(); } catch (e) { /* ok */ } } }
+  }
+
+  /* ---------------- шифрування й адреси ---------------- */
+  const b64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const sha = async s => new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(s)));
+  const hex = a => [...a].map(x => x.toString(16).padStart(2, '0')).join('');
+  const KEYS = {};
+  const aesKey = (code, k) => KEYS[code + '|' + k] || (KEYS[code + '|' + k] = sha('gutirky-fi|' + code + '|' + (k || '')).then(h => crypto.subtle.importKey('raw', h, 'AES-GCM', false, ['encrypt', 'decrypt'])));
+  const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
+  async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
+  async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
+
+  /* ---------------- запасний «Peer» поверх брокерів ---------------- */
+  const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
+  class RelayConn extends Em {
+    constructor(peer, cid, to, key) { super(); this.p = peer; this.cid = cid; this.to = to; this.key = key; this.open = false; this.parts = {}; this.peer = to; }
+    send(d) {
+      if (!this.open) return;
+      const s = JSON.stringify(d), mid = rnd(10);
+      if (s.length <= PART) return this.p.out(this.to, this.key, { k: 'data', cid: this.cid, from: this.p.inbox, s });
+      const n = Math.ceil(s.length / PART);
+      for (let i = 0; i < n; i++) this.p.out(this.to, this.key, { k: 'part', cid: this.cid, from: this.p.inbox, m: mid, i, n, s: s.slice(i * PART, (i + 1) * PART) });
+    }
+    got(m) {
+      let s = m.s;
+      if (m.k === 'part') { const P = this.parts[m.m] = this.parts[m.m] || []; P[m.i] = m.s; if (P.filter(x => x != null).length < m.n) return; s = P.join(''); delete this.parts[m.m]; }
+      let d; try { d = JSON.parse(s); } catch (e) { return; }
+      this.emit('data', d);
+    }
+    close() { if (!this.open) return; this.open = false; this.p.out(this.to, this.key, { k: 'close', cid: this.cid, from: this.p.inbox }); delete this.p.conns[this.cid]; setTimeout(() => this.emit('close'), 0); }
+  }
+  class RelayPeer extends Em {
+    constructor(id) {
+      super();
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.code = codeOf(this.id);
+      this.brokers = BROKERS().map(u => new Mqtt(u));
+      (async () => {
+        this.inbox = this.host ? await hostTopic(this.id) : NS + 'p/' + this.id;
+        this.brokers.forEach(b => {
+          b.on('up', () => { if (!this.isOpen && !this.destroyed) { this.isOpen = true; this.emit('open', this.id); } });
+          b.on('msg', (t, text) => { if (t === this.inbox) this.inMsg(text); });
+          b.sub(this.inbox);
+        });
+      })();
+      this.failT = setTimeout(() => { if (!this.isOpen && !this.destroyed) this.emit('error', { type: 'network' }); }, 15000);
+    }
+    up() { return this.brokers.some(b => b.ok); }
+    out(to, key, msg) {
+      msg.mid = rnd(10);
+      seal(key, msg).then(text => { this.brokers.forEach(b => b.pub(to, text)); });
+    }
+    async inMsg(text) {
+      // гутірка: пробуємо ключ з QR, тоді — лише код (пульт, де код ввели вручну); пульт: ключ свого зʼєднання
+      let m = null, key = null;
+      if (this.host) { for (const k of [window.GUTIRKA_NET_KEY || '', '']) { key = aesKey(this.code, k); m = await open(key, text); if (m) break; } }
+      else for (const c of Object.values(this.conns)) { m = await open(c.key, text); if (m) { key = c.key; break; } }
+      if (!m || this.seen.has(m.mid)) return;
+      this.seen.add(m.mid); if (this.seen.size > 800) this.seen = new Set([...this.seen].slice(-400));
+      let c = this.conns[m.cid];
+      if (m.k === 'conn' && this.host) {
+        if (!c) { c = this.conns[m.cid] = new RelayConn(this, m.cid, m.from, key); c.open = true; this.emit('connection', c); setTimeout(() => c.emit('open'), 0); }
+        this.out(m.from, key, { k: 'ack', cid: m.cid, from: this.inbox });
+      } else if (m.k === 'ack' && c && !c.open) { c.open = true; clearInterval(c.knock); c.emit('open'); }
+      else if ((m.k === 'data' || m.k === 'part') && c) c.got(m);
+      else if (m.k === 'close' && c) { c.open = false; delete this.conns[m.cid]; c.emit('close'); }
+    }
+    connect(id) {
+      const cid = rnd(12), key = aesKey(codeOf(id), window.GUTIRKA_NET_KEY || '');
+      const c = this.conns[cid] = new RelayConn(this, cid, null, key);
+      hostTopic(id).then(to => {
+        c.to = to; c.peer = id;
+        const knock = () => { if (!c.open && !this.destroyed) this.out(to, key, { k: 'conn', cid, from: this.inbox }); };
+        knock(); c.knock = setInterval(knock, 2500);   // повторюємо, поки гутірка не відповість
+        setTimeout(() => { if (!c.open) { clearInterval(c.knock); c.emit('error', { type: 'peer-unavailable' }); } }, 12000);
+      });
+      return c;
+    }
+    destroy() { this.destroyed = true; clearTimeout(this.failT); Object.values(this.conns).forEach(c => { try { c.close(); } catch (e) { /* ok */ } clearInterval(c.knock); }); this.brokers.forEach(b => b.close()); }
+    disconnect() {} reconnect() {}
+  }
+
+  /* ---------------- спільний Peer: PeerJS + запасний одночасно ---------------- */
+  window.GutirkaNet = function (PJ) {
+    class NetConn extends Em {
+      constructor(peer, id, opts) {
+        super(); this.peer = id; this.open = false; this.win = null; this.tries = []; this.failed = 0; this.n = 0;
+        const add = c => {
+          this.n++; this.tries.push(c);
+          c.on('open', () => {
+            if (this.win || this.closed) { if (this.win !== c) try { c.close(); } catch (e) { /* ok */ } return; }
+            this.win = c; this.open = true;
+            this.tries.forEach(x => { if (x !== c) try { x.close(); } catch (e) { /* ok */ } });
+            c.on('data', d => this.emit('data', d));
+            c.on('close', () => { if (this.win === c) { this.open = false; this.emit('close'); } });
+            this.emit('open');
+          });
+          c.on('error', e => { if (this.win === c) { this.emit('error', e); return; } if (++this.failed >= this.need()) { peer.emit('error', e && e.type ? e : { type: 'peer-unavailable' }); this.emit('error', e); } });
+        };
+        this.need = () => peer.inner.length;
+        peer.inner.forEach(p => { if (p.isUp) { try { add(p.connect(id, opts)); } catch (e) { this.failed++; } } else p._gq.push(() => { if (!this.win && !this.closed) try { add(p.connect(id, opts)); } catch (e) { this.failed++; } }); });
+      }
+      send(d) { if (this.win) this.win.send(d); }
+      close() { this.closed = true; this.open = false; this.tries.forEach(c => { try { c.close(); } catch (e) { /* ok */ } }); }
+    }
+    class NetPeer extends Em {
+      constructor(id, opts) {
+        super(); this.id = id; this.inner = []; this.destroyed = false; this.opened = false; this.errs = 0;
+        const add = (p, kind) => {
+          p.kind = kind; p.isUp = false; p._gq = []; this.inner.push(p);
+          p.on('open', pid => { p.isUp = true; if (!this.id) this.id = pid; p._gq.splice(0).forEach(f => f()); if (!this.opened) { this.opened = true; this.emit('open', this.id); } });
+          p.on('connection', c => this.emit('connection', c));
+          p.on('error', e => {
+            const ty = e && e.type;
+            if (ty === 'unavailable-id' || ty === 'browser-incompatible') { this.emit('error', e); return; }   // код зайнятий — гутірка сама візьме інший
+            if (ty === 'peer-unavailable') return;   // це вирішує NetConn
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) this.emit('error', e);   // помилка лише тоді, коли не працює жоден шлях
+          });
+          p.on('disconnected', () => {
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) { this.emit('disconnected'); return; }
+            // інший шлях працює — цей відновлюємо самі, тихо
+            const again = () => { if (this.destroyed || p.destroyed || !p.disconnected) return; try { p.reconnect(); } catch (e) { /* ok */ } setTimeout(again, 10000); };
+            setTimeout(again, 3000);
+          });
+          p.on('close', () => { p.isUp = false; if (!this.destroyed && !this.inner.some(x => x.isUp)) this.emit('close'); });
+        };
+        if (PJ) { try { add(new PJ(id, opts), 'peerjs'); } catch (e) { /* без PeerJS */ } }
+        try { add(new RelayPeer(id), 'relay'); } catch (e) { /* без запасного */ }
+      }
+      get disconnected() { return !this.inner.some(x => x.isUp); }
+      connect(id, opts) { return new NetConn(this, id, opts); }
+      reconnect() { this.inner.forEach(p => { if (p.disconnected && !p.destroyed) try { p.reconnect(); } catch (e) { /* ok */ } }); }
+      destroy() { this.destroyed = true; this.inner.forEach(p => { try { p.destroy(); } catch (e) { /* ok */ } }); }
+    }
+    return NetPeer;
+  };
+  window.GutirkaNet.RelayPeer = RelayPeer;
+})();
+
+</script>
+<script>
+(function () {
+'use strict';
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 3000); }
+
+/* ---------- типи питань ---------- */
+const KINDS = { var: 'Варіанти', tak: 'Так / ні', ots: 'Оцінка 1–5', slovo: 'Одне слово' };
+const FACES = ['😞', '🙁', '😐', '🙂', '😄'];
+const optsOf = q => q.k === 'var' ? q.o : q.k === 'tak' ? ['Так', 'Ні'] : q.k === 'ots' ? ['1', '2', '3', '4', '5'] : [];
+
+/* ---------- готові опитування (можна змінювати; свої зберігаються в цьому браузері) ---------- */
+const BASE = [
+  { id: 'shodyny', t: 'Як пройшли сходини', qs: [
+    { k: 'ots', q: 'Як тобі сьогоднішні сходини?' },
+    { k: 'var', q: 'Що сподобалося найбільше?', o: ['Гутірка', 'Гра', 'Пісня', 'Усе разом'] },
+    { k: 'tak', q: 'Чи дізнався(-лася) ти щось нове?' },
+    { k: 'slovo', q: 'Про що хочеш наступні сходини? Одним-двома словами' }] },
+  { id: 'mandrivka', t: 'Куди йдемо в мандрівку', qs: [
+    { k: 'var', q: 'Куди підемо?', o: ['Ліс і озеро', 'Скелі й стежки', 'Місто й музей', 'Острів, на човнах'] },
+    { k: 'var', q: 'Коли зручніше?', o: ['Субота', 'Неділя', 'Два дні з ночівлею'] },
+    { k: 'tak', q: 'Готуємо їжу на вогні?' }] },
+  { id: 'hra', t: 'Яку гру граємо', qs: [
+    { k: 'var', q: 'Яку гру граємо зараз?', o: ['Потужний СКОБ!', 'Бінго', 'Гра надворі', 'Співаємо'] }] }
+];
+const LS = 'opyt.polls';
+let POLLS;
+try { POLLS = JSON.parse(localStorage.getItem(LS) || 'null'); } catch (e) { POLLS = null; }
+if (!Array.isArray(POLLS) || !POLLS.length) POLLS = JSON.parse(JSON.stringify(BASE));
+const savePolls = () => { try { localStorage.setItem(LS, JSON.stringify(POLLS)); } catch (e) { /* ok */ } };
+let pi = 0;
+const poll = () => POLLS[pi];
+
+/* ---------- стан ---------- */
+let phase = 'lobby', qi = 0, open = true, shown = true;
+let votes = [];                       // для кожного питання: Map tok -> значення
+const players = new Map();            // tok -> {conn, t, on}
+const q = () => poll().qs[qi];
+
+/* ---------- звʼязок ---------- */
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
+const genCode = () => String(Math.floor(100000 + Math.random() * 900000));
+let code = genCode(), net = 'starting';
+const PURL = new URL('golos/', location.href).href;
+async function startNet() {
+  let P; try { P = await getPeer(); } catch (e) { P = null; }
+  if (!P) { net = 'error'; paintTop(); return; }
+  const p = new P('gutirky-opyt-' + code, window.GUTIRKA_PEER_OPTS || {});
+  p.on('open', () => { net = 'on'; paintTop(); });
+  p.on('connection', c => onConn(c));
+  p.on('error', e => { if (e && e.type === 'unavailable-id') { try { p.destroy(); } catch (x) { /* ok */ } code = genCode(); startNet(); paintLobby(); return; } net = 'off'; paintTop(); });
+  p.on('disconnected', () => { net = 'off'; paintTop(); setTimeout(() => { try { p.reconnect(); } catch (e) { /* ok */ } }, 2000); });
+}
+function onConn(c) {
+  let tok = null;
+  c.on('data', d => {
+    if (!d || typeof d !== 'object') return;
+    if (d.t === 'join') { tok = String(d.tok || Math.random()).slice(0, 40); players.set(tok, { conn: c, t: Date.now(), on: true }); sendTo(tok); paintTop(); }
+    else if (tok && d.t === 'ping') { const P = players.get(tok); if (P) { P.t = Date.now(); if (!P.on) { P.on = true; paintTop(); } } }
+    else if (tok && d.t === 'vote') vote(tok, d);
+  });
+  c.on('close', () => { const P = tok && players.get(tok); if (P && P.conn === c) { P.on = false; paintTop(); } });
+}
+function stateFor(tok) {
+  if (phase !== 'run') return { t: 'st', ph: phase, poll: poll().t };
+  const Q = q(), my = votes[qi].get(tok);
+  return { t: 'st', ph: 'run', poll: poll().t, i: qi, n: poll().qs.length, q: { k: Q.k, q: Q.q, o: optsOf(Q) }, open, my: my === undefined ? null : my, res: shown ? resOf(qi) : null };
+}
+function sendTo(tok) { const P = players.get(tok); try { if (P && P.conn && P.conn.open) P.conn.send(stateFor(tok)); } catch (e) { /* ok */ } }
+const bcast = () => players.forEach((_, tok) => sendTo(tok));
+setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && now - P.t > 16000) { P.on = false; paintTop(); } }); bcast(); }, 5000);
+
+function vote(tok, d) {
+  if (phase !== 'run' || !open || d.i !== qi) return;
+  const Q = q(); let v = d.v;
+  if (Q.k === 'slovo') { v = String(v || '').replace(/\s+/g, ' ').trim().slice(0, 30); if (!v) return; }
+  else { v = Number(v); if (!(v >= 0 && v < optsOf(Q).length)) return; }
+  votes[qi].set(tok, v); paintRun(); bcast();
+}
+
+/* ---------- результати ---------- */
+function resOf(i) {
+  const Q = poll().qs[i], m = votes[i] || new Map(), all = [...m.values()];
+  if (Q.k === 'slovo') {
+    const cnt = new Map(), show = new Map();
+    all.forEach(w => { const k = w.toLowerCase(); cnt.set(k, (cnt.get(k) || 0) + 1); if (!show.has(k)) show.set(k, w); });
+    return { k: 'slovo', n: all.length, w: [...cnt].sort((a, b) => b[1] - a[1]).slice(0, 40).map(([k, c]) => [show.get(k), c]) };
+  }
+  const o = optsOf(Q), c = o.map((_, j) => all.filter(v => v === j).length);
+  const r = { k: Q.k, n: all.length, o, c };
+  if (Q.k === 'ots') r.avg = all.length ? all.reduce((s, v) => s + v + 1, 0) / all.length : 0;
+  return r;
+}
+function barsHtml(r) {
+  const mx = Math.max(1, ...r.c);
+  const lab = (t, j) => r.k === 'ots' ? FACES[j] + ' ' + t : esc(t);
+  return '<div class="bars">' + r.o.map((t, j) => `<div class="bar${r.c[j] && r.c[j] === mx ? ' lead' : ''}"><span class="lab">${lab(t, j)}</span><span class="tr"><span class="fl" style="width:${(r.c[j] / mx * 100).toFixed(1)}%"></span></span><span class="n">${r.c[j]}<small>${r.n ? Math.round(r.c[j] / r.n * 100) : 0}%</small></span></div>`).join('') + '</div>';
+}
+function resHtml(r) {
+  if (r.k === 'slovo') {
+    if (!r.w.length) return '<div class="hid">Поки жодного слова</div>';
+    const mx = r.w[0][1], cols = ['#2fd2c0', '#ffc247', '#cfd5dc', '#62cf93', '#ff9a8a'];
+    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup> ${c}</sup>` : ''}</span>`).join('') + '</div>';
+  }
+  if (r.k === 'ots') return `<div class="ots"><div class="avg"><b>${r.n ? r.avg.toFixed(1).replace('.', ',') : '—'}</b><span>середня оцінка з 5 ${r.n ? FACES[Math.max(0, Math.round(r.avg) - 1)] : ''}</span></div>${barsHtml(r)}</div>`;
+  return barsHtml(r);
+}
+
+/* ---------- малювання ---------- */
+function paintTop() {
+  $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
+  $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
+  $('#pn').textContent = [...players.values()].filter(P => P.on).length;
+  if (phase === 'run') paintRun();
+}
+function paintLobby() {
+  const url = PURL + '?k=' + code;
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#2fd2c0' }); $('#qr').dataset.u = url; }
+  $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
+  $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
+  $('#polls').innerHTML = POLLS.map((p, i) => `<button type="button" data-p="${i}" aria-pressed="${i === pi}">${esc(p.t)}<small>${p.qs.length} ${p.qs.length === 1 ? 'питання' : p.qs.length < 5 ? 'питання' : 'питань'}</small></button>`).join('');
+  $('#qlist').innerHTML = poll().qs.map(Q => `<li>${esc(Q.q)} <small>· ${KINDS[Q.k]}${Q.k === 'var' ? ': ' + esc(Q.o.join(', ')) : ''}</small></li>`).join('');
+  $('#start').disabled = !poll().qs.length;
+}
+function paintRun() {
+  const Q = q(), r = resOf(qi), on = [...players.values()].filter(P => P.on).length;
+  $('#qn').textContent = 'Питання ' + (qi + 1) + ' з ' + poll().qs.length;
+  $('#cnt').textContent = '· відповіли ' + r.n + (on ? ' з ' + on : '') + (open ? '' : ' · голосування закрите');
+  $('#qt').textContent = Q.q;
+  $('#stage').innerHTML = shown ? resHtml(r) : `<div class="hid"><b>${r.n}</b>${r.n === 1 ? 'відповідь' : 'відповідей'} · результати сховані</div>`;
+  $('#reveal').textContent = shown ? 'Сховати результати' : 'Показати результати';
+  $('#close').textContent = open ? 'Закрити голосування' : 'Відкрити знову';
+  $('#prev').disabled = qi === 0;
+  $('#next').textContent = qi === poll().qs.length - 1 ? 'Підсумок →' : 'Далі →';
+}
+function show(id) { ['lobby', 'run', 'end'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); }
+function goQ(i) { qi = i; open = true; shown = $('#live').checked; show('run'); paintRun(); bcast(); }
+function finish() {
+  phase = 'end'; open = false; show('end');
+  const tot = Math.max(0, ...votes.map(m => m.size));
+  $('#sumsub').textContent = poll().t + ' · ' + new Date().toLocaleDateString('uk-UA') + ' · відповідали до ' + tot + ' осіб';
+  $('#sumlist').innerHTML = poll().qs.map((Q, i) => `<section><h2>${i + 1}. ${esc(Q.q)}</h2>${resHtml(resOf(i))}</section>`).join('');
+  bcast();
+}
+function sumText() {
+  return poll().t + ' — ' + new Date().toLocaleDateString('uk-UA') + '\n\n' + poll().qs.map((Q, i) => {
+    const r = resOf(i); let t = (i + 1) + '. ' + Q.q + ' (відповідей: ' + r.n + ')\n';
+    if (r.k === 'slovo') t += r.w.map(([w, c]) => '   ' + w + (c > 1 ? ' ×' + c : '')).join('\n');
+    else { if (r.k === 'ots') t += '   Середня: ' + (r.n ? r.avg.toFixed(1) : '—') + ' з 5\n'; t += r.o.map((o, j) => '   ' + o + ': ' + r.c[j]).join('\n'); }
+    return t;
+  }).join('\n\n');
+}
+
+/* ---------- редактор ---------- */
+let ED = null;
+function openEd(p) { ED = JSON.parse(JSON.stringify(p)); $('#edov').hidden = false; paintEd(); setTimeout(() => $('#edname').focus(), 30); }
+function paintEd() {
+  $('#edname').value = ED.t;
+  $('#edqs').innerHTML = ED.qs.map((Q, i) => `<div class="eq" data-i="${i}"><div class="hd"><b>${i + 1}</b><select data-f="k" aria-label="Тип питання">${Object.entries(KINDS).map(([k, n]) => `<option value="${k}"${k === Q.k ? ' selected' : ''}>${n}</option>`).join('')}</select><span class="sp"></span>
+    <button type="button" class="ib" data-a="up" aria-label="Вище"${i ? '' : ' disabled'}>↑</button><button type="button" class="ib" data-a="dn" aria-label="Нижче"${i < ED.qs.length - 1 ? '' : ' disabled'}>↓</button><button type="button" class="ib" data-a="rm" aria-label="Видалити питання">✕</button></div>
+    <input class="f" data-f="q" maxlength="120" placeholder="Питання" value="${esc(Q.q)}">
+    ${Q.k === 'var' ? `<label>Варіанти — кожен з нового рядка (2–6)</label><textarea class="f" data-f="o">${esc((Q.o || []).join('\n'))}</textarea>` : ''}</div>`).join('');
+}
+function readEd() {
+  ED.t = $('#edname').value.trim() || 'Опитування';
+  document.querySelectorAll('#edqs .eq').forEach(el => {
+    const Q = ED.qs[+el.dataset.i]; Q.q = el.querySelector('[data-f=q]').value.trim(); Q.k = el.querySelector('[data-f=k]').value;
+    const ta = el.querySelector('[data-f=o]'); if (ta) Q.o = ta.value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 6);
+    if (Q.k === 'var' && !(Q.o && Q.o.length)) Q.o = ['Варіант 1', 'Варіант 2'];
+  });
+}
+$('#edqs').addEventListener('change', e => { if (e.target.dataset.f === 'k') { readEd(); paintEd(); } });
+$('#edqs').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return; readEd();
+  const i = +b.closest('.eq').dataset.i, a = b.dataset.a;
+  if (a === 'rm') ED.qs.splice(i, 1);
+  else { const j = a === 'up' ? i - 1 : i + 1; [ED.qs[i], ED.qs[j]] = [ED.qs[j], ED.qs[i]]; }
+  paintEd();
+});
+
+/* ---------- кнопки ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.p) { pi = +b.dataset.p; paintLobby(); return; }
+  switch (b.id) {
+    case 'start': phase = 'run'; votes = poll().qs.map(() => new Map()); goQ(0); break;
+    case 'next': if (qi < poll().qs.length - 1) goQ(qi + 1); else finish(); break;
+    case 'prev': if (qi > 0) { qi--; open = false; shown = true; paintRun(); bcast(); } break;
+    case 'reveal': shown = !shown; paintRun(); bcast(); break;
+    case 'close': open = !open; if (!open) shown = true; paintRun(); bcast(); break;
+    case 'copy': { const t = sumText(); (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => toast('Підсумок скопійовано — можна вставити в лист чи чат'), () => toast('Не вдалося скопіювати')); break; }
+    case 'again': phase = 'lobby'; show('lobby'); paintLobby(); bcast(); break;
+    case 'edit': openEd(poll()); break;
+    case 'new': POLLS.push({ id: 'p' + Date.now(), t: 'Нове опитування', qs: [{ k: 'var', q: '', o: ['Так', 'Ні', 'Не знаю'] }] }); pi = POLLS.length - 1; savePolls(); paintLobby(); openEd(poll()); break;
+    case 'edadd': readEd(); ED.qs.push({ k: 'var', q: '', o: ['Варіант 1', 'Варіант 2'] }); paintEd(); break;
+    case 'edok': readEd(); ED.qs = ED.qs.filter(Q => Q.q); POLLS[pi] = ED; savePolls(); $('#edov').hidden = true; paintLobby(); toast('Збережено на цьому пристрої'); break;
+    case 'eddel': if (confirm('Видалити це опитування?')) { POLLS.splice(pi, 1); if (!POLLS.length) POLLS = JSON.parse(JSON.stringify(BASE)); pi = 0; savePolls(); $('#edov').hidden = true; paintLobby(); } break;
+    case 'edx': $('#edov').hidden = true; break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input,textarea,select') || !$('#edov').hidden) { if (e.key === 'Escape') $('#edov').hidden = true; return; }
+  if (phase !== 'run') return;
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); $('#next').click(); } else if (e.key === 'ArrowLeft') $('#prev').click();
+});
+paintLobby(); paintTop(); startNet();
+window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? votes[qi].size : 0, res: phase === 'run' ? resOf(qi) : null }) };
+})();
+</script>
+</body>
+</html>
