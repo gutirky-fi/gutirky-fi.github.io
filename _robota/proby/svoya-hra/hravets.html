@@ -54,6 +54,16 @@ body.finph .st{display:none}body.finph #vr{flex:1;display:flex;align-items:cente
 .fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
 .tbl{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .tbl span{padding:4px 10px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:14px}
+/* родина ігор (?dyz=fam) — телефон */
+body.fam .top b{display:none}
+body.fam .top .fm-logo{font-size:26px}
+body.fam #join h1,body.fam #pick h1{font:600 30px/1.05 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+body.fam #join .fm-logo{font-size:52px;margin:6px 0 14px}
+body.fam .in .btn{display:block;width:100%;min-height:56px;margin-top:14px;padding:0 18px;border-radius:99px;border:0;background:var(--gd);color:#16130a;font:700 19px var(--txt)}
+body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
+body.fam .tp button{border-radius:99px;border:1px solid var(--ln);border-left:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:6px 18px}
+body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
+
 </style>
 </head>
 <body>
@@ -88,6 +98,12 @@ body.finph .st{display:none}body.finph #vr{flex:1;display:flex;align-items:cente
 
 <script>/*ZVYAZOK*/</script>
 <script>
+if (/dyz=fam/.test(location.search)) {   /* родина ігор */
+  document.body.classList.add('fam');
+  const T = '<span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span>';
+  const tb = document.querySelector('.top b'); if (tb) tb.insertAdjacentHTML('afterend', '<span class="fm-logo board sm" aria-label="Інтелектуальний змаг">' + T + '</span>');
+  const h = document.querySelector('#join h1'); if (h) h.outerHTML = '<span class="fm-logo board" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + T + '</span>';
+}
 (function () {
 'use strict';
 const $ = s => document.querySelector(s);

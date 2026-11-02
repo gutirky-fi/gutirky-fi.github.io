@@ -53,6 +53,17 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .rb span:nth-child(2){text-align:right;color:var(--mut)}
 .words{display:flex;flex-wrap:wrap;gap:6px}
 .words span{padding:4px 10px;border-radius:99px;background:var(--card2);font-weight:700}
+/*FAM*/
+body.fam .top b{display:none}
+body.fam .top .fm-logo{font-size:24px}
+body.fam #join .fm-logo{font-size:46px;margin:8px 0 14px}
+body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
+body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
+body.fam .opts button{border-radius:99px;border-width:1px;padding:10px 22px}
+body.fam .opts button[aria-pressed=true]{border-color:#ffc247;background:rgba(255,194,71,.16)}
+body.fam .opts button[aria-pressed=true]::after{color:#ffc247}
+body.fam .stars button[aria-pressed=true]{border-color:#ffc247;background:rgba(255,194,71,.16)}
+/*/FAM*/
 </style>
 </head>
 <body>
@@ -76,6 +87,14 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 <script>
 (function () {
 'use strict';
+/*FAM*/
+if (/dyz=fam/.test(location.search)) {   /* родина ігор */
+  document.body.classList.add('fam');
+  const T = '<span class="fm-lt"><i style="height:.5em;background:#2fd2c0"></i><i style="height:.95em;background:#ffc247"></i><i style="height:.7em;background:#cfd5dc"></i><span>Опитування</span></span>';
+  document.querySelector('.top b').insertAdjacentHTML('afterend', '<span class="fm-logo stovp sm" aria-label="Опитування">' + T + '</span>');
+  document.querySelector('#join h1').outerHTML = '<span class="fm-logo stovp" aria-label="Швидке опитування"><small>Швидке</small>' + T + '</span>';
+}
+/*/FAM*/
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const FACES = ['😞', '🙁', '😐', '🙂', '😄'];

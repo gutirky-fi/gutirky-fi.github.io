@@ -57,6 +57,21 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .skob button:disabled{background:var(--card2);color:var(--mut)}
 .msg{margin-top:10px;padding:12px 14px;border-radius:14px;font-weight:700;text-align:center}
 .msg.no{background:rgba(229,83,75,.15);color:#ffb3aa}.msg.win{background:rgba(255,194,71,.18);color:var(--gd);font-size:20px}.msg.oth{background:var(--card);color:#cfd5dc}
+/*FAM*/
+body.fam .logo{display:none}
+body.fam .top .fm-logo{font-size:26px}
+body.fam #join .fm-logo{font-size:52px;margin:8px 0 14px}
+body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
+body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
+body.fam .ball{border:0;background:#22262b}
+body.fam .ball small{font:500 19px/1 Caveat,cursive;color:#2fd2c0;letter-spacing:0;text-transform:lowercase}
+body.fam .card button{border:0;background:#22262b;border-radius:14px}
+body.fam .card button.e{background:none;border:1px dashed #3b4048}
+body.fam .card button.on{background:#2e8f55;color:#fff}
+body.fam .card button.w{background:#ffc247;color:#16130a}
+body.fam .skob button{border-radius:99px;letter-spacing:.08em}
+body.fam .skob{background:linear-gradient(180deg,rgba(21,23,27,0),#15171b 35%)}
+/*/FAM*/
 </style>
 </head>
 <body>
@@ -86,6 +101,17 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 <script>
 (function () {
 'use strict';
+/*FAM*/
+const FAM = /dyz=fam/.test(location.search);
+if (FAM) {   /* родина ігор: кнопка «БІНГО!», логотип-кульки */
+  document.body.classList.add('fam');
+  const T = '<span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span>';
+  document.querySelector('.top .logo').insertAdjacentHTML('afterend', '<span class="fm-logo balls sm" aria-label="Бінго">' + T + '</span>');
+  document.querySelector('#join h1').outerHTML = '<span class="fm-logo balls" aria-label="Пластове бінго"><small>Пластове</small>' + T + '</span>';
+  document.getElementById('skob').textContent = 'БІНГО!';
+}
+/*/FAM*/
+const SKOB = typeof FAM !== 'undefined' && FAM ? 'БІНГО' : 'СКОБ';
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const KEY = 'bingo.ses', COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];
@@ -149,9 +175,9 @@ function render() {
   const W = st.wins || [], line = W.find(L => L.every(k => marks.has(k) || free.has(k)));
   const c = $('#card'); c.className = 'card' + (num ? ' num' : '') + (st.cols === 9 ? ' n9' : ''); c.style.setProperty('--gc', st.cols || 4);
   c.innerHTML = (st.head ? st.head.map(h => `<span class="hd">${esc(h)}</span>`).join('') : '') + st.card.map((w, k) => blank.has(k) ? `<button type="button" class="e" disabled aria-hidden="true"></button>` : free.has(k) ? `<button type="button" class="${line && line.includes(k) ? 'w' : 'fr'}" disabled aria-label="Вільна клітинка">★</button>` : `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
-  $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «СКОБ!»';
+  $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «' + SKOB + '!»';
   $('#skob').disabled = !line || st.ph !== 'game';
-  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? '🎉 СКОБ! Ти виграв(-ла)!' : 'СКОБ! ' + st.win.name + ' виграв(-ла)'); }
+  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? '🎉 ' + SKOB + '! Ти виграв(-ла)!' : SKOB + '! ' + st.win.name + ' виграв(-ла)'); }
   else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) $('#msg').className = '';
 }
 $('#card').addEventListener('click', e => {

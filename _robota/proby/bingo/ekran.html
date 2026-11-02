@@ -97,6 +97,53 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
 @media (max-width:820px){.lb,.stage{grid-template-columns:1fr}.qr{width:min(240px,60vw)}main{overflow:auto}#lobby{justify-content:flex-start}.top{background:var(--bg)}}
 @media (prefers-reduced-motion:reduce){.ball.pop{animation:none}}
+/*FAM*/
+/* ===== РОДИНА ІГОР (?dyz=fam): як «Потужний СКОБ!», обличчя — кульки ===== */
+body.fam main{padding:70px max(18px,3vw) 22px}
+body.fam #lobby{justify-content:center}
+body.fam .fz{width:min(980px,100%);margin:auto;text-align:center}
+body.fam .fz .fm-logo.big{font-size:clamp(48px,min(7vw,11vh),110px);align-items:center}
+body.fam .fz .fm-hand{margin:10px 0 0}
+body.fam .fz .desc{margin:10px auto 0;max-width:60ch;font-size:clamp(1.05rem,1.5vw,1.3rem);color:#cfd5dc}
+body.fam .fz .fm-h3{justify-content:center;margin:16px 0 8px}
+body.fam .modes{justify-content:center;gap:6px;margin:0}
+body.fam .modes button{min-height:44px;padding:6px 18px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);font:600 15px var(--txt);color:var(--ink)}
+body.fam .modes button small{display:none}
+body.fam .modes button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#16130a}
+body.fam .fz .mdesc{margin:8px 0 0;color:var(--mut);font-size:15px;min-height:1.4em}
+body.fam .fz .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+body.fam .fz .lnk{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+body.fam .fz .lnk button{border:0;background:none;color:var(--mut);font:600 15px var(--txt);text-decoration:underline;text-underline-offset:3px;padding:4px}
+body.fam .fz .lnk button:hover{color:var(--ink)}
+body.fam .logo{display:none}
+body.fam .top .fm-logo{font-size:30px}
+body.fam #netc{cursor:pointer}
+body.fam .fm-box .pl{margin-top:4px}
+body.fam .pl span{border:0;background:#22262b;padding:6px 14px}
+body.fam .paper{justify-content:flex-start;font-size:16px;color:#cfd5dc;gap:12px;flex-wrap:wrap}
+body.fam .paper input{border-radius:99px;width:80px}
+/* гра */
+body.fam .stage{gap:clamp(18px,3vw,48px)}
+body.fam .ball{width:min(320px,38vh)}
+body.fam .hint{font:600 clamp(1.5rem,3vw,2.6rem)/1.15 var(--txt)}
+body.fam .hint small{font:500 clamp(1.3rem,1.9vw,2rem)/1.1 Caveat,cursive;color:#2fd2c0;letter-spacing:0;text-transform:none;margin-bottom:8px;text-transform:lowercase}
+body.fam .ans{color:#ffc247}
+body.fam .side h2{font:600 20px var(--disp);letter-spacing:.08em;color:var(--ink);display:flex;gap:10px;align-items:baseline}
+body.fam .side h2 span{color:#ffc247}
+body.fam .called{gap:8px}
+body.fam .called span{display:grid;place-items:center;min-width:2.6em;height:2.6em;padding:0 .7em;border-radius:99px;border:0;background:#22262b;font:600 19px var(--disp);color:#fff}
+body.fam .called span.cur{background:#ffc247;color:#16130a;box-shadow:0 0 22px -4px rgba(255,194,71,.7)}
+body.fam .hintk{font-size:14px}
+/* вікна */
+body.fam .box{border-radius:22px;background:#1f2328;border-color:#3b4048}
+body.fam .box h2{font:600 clamp(2.2rem,5vw,3.6rem)/1 var(--disp);letter-spacing:.04em}
+body.fam .win .big{display:none}
+body.fam .win .fm-hand{margin:0 0 4px}
+body.fam .grid div{border-radius:12px;border:0;background:#22262b}
+body.fam .grid div.c{background:#2e5a43}
+body.fam .chk input{border-radius:99px}
+body.fam .toast{border-radius:99px}
+/*/FAM*/
 </style>
 </head>
 <body>
@@ -352,10 +399,10 @@ function paintBall(pop) {
   } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>' + (it[2] ? esc(it[2]) : ''); $('#ans').textContent = ''; }
   if (pop) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
 }
-function paint() {
+let paint = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
-  const url = PURL + '?k=' + code;
+  const url = PURL + '?k=' + code + (QS.get('dyz') === 'fam' ? '&dyz=fam' : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -372,7 +419,7 @@ function paint() {
   $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
   const ok = known(); $('#ncl').textContent = ok.size;
   $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(ballT(id))}</span>`).join('');
-}
+};
 
 /* ---------- паперові картки ---------- */
 function printCards() {
@@ -420,6 +467,47 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next(); }
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') reveal();
 });
+/*FAM*/
+/* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, гравців запрошуємо окремим вікном */
+if (QS.get('dyz') === 'fam') {
+  document.body.classList.add('fam');
+  const Q = {}, q = id => Q[id] || (Q[id] = document.getElementById(id));
+  'modes pats start print np qr url code pl pln2 rules netc'.split(' ').forEach(q);
+  const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  const LT = '<span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span>';
+  $('.logo').insertAdjacentHTML('afterend', '<span class="fm-logo balls sm" aria-label="Бінго">' + LT + '</span>');
+  const z = el('div', 'fz', '<span class="fm-logo balls big" aria-label="Пластове бінго"><small>Пластове</small>' + LT + '</span><p class="fm-hand">тягнемо кульки — шукаємо на картці</p><p class="desc" id="fmdesc"></p><h3 class="fm-h3">Варіант гри</h3>');
+  const lb = $('#lobby .lb'); lb.before(z);
+  z.append(q('modes'), el('p', 'mdesc', ''), el('h3', 'fm-h3', 'Як виграти'), q('pats'));
+  const bt = el('div', 'btns'); const inv = el('button', 'btn', '<span class="dot" id="fmdot"></span>Запросити гравців'); inv.type = 'button';
+  const pap = el('button', 'btn', 'Паперові картки'); pap.type = 'button';
+  q('start').textContent = 'Почати гру'; bt.append(q('start'), inv, pap); z.append(bt);
+  lb.hidden = true; q('rules').hidden = true;   /* лишаємо в документі: paint() їх оновлює */
+  const io = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" aria-label="Закрити">✕</button><span class="fm-logo balls" aria-label="Пластове бінго"><small>Пластове</small>' + LT + '</span><div class="fm-join"><span id="fmqr"></span><div><p class="fm-s1">Скануйте QR-код телефоном — і отримаєте картку</p><div class="fm-or">АБО</div><div class="fm-lbl">відкрийте</div><span id="fmurl"></span><div class="fm-lbl">і введіть код</div><span id="fmcode"></span></div></div><h3 class="fm-h3">Гравці <span id="fmpn">0</span></h3></div>');
+  io.hidden = true; document.body.append(io);
+  q('qr').className = 'qr'; q('url').className = 'fm-url'; q('code').className = 'fm-code';
+  io.querySelector('#fmqr').replaceWith(q('qr')); io.querySelector('#fmurl').replaceWith(q('url')); io.querySelector('#fmcode').replaceWith(q('code'));
+  io.querySelector('.fm-box').append(q('pl'));
+  const po = el('div', 'fm-ov', '<div class="fm-box" style="width:min(640px,100%)"><button type="button" class="x" aria-label="Закрити">✕</button><h3 class="fm-h3" style="margin-top:0">Паперові картки</h3><p style="color:#cfd5dc;margin:0 0 14px">Кожна картка має номер. Хто закрив ряд на папері — назвіть ведучому номер, він перевірить кнопкою «Перевірити картку».</p></div>');
+  po.hidden = true; document.body.append(po);
+  const pp = el('div', 'paper', 'Скільки карток:'); pp.append(q('np'), q('print')); q('print').textContent = 'Надрукувати'; q('print').classList.add('main'); po.querySelector('.fm-box').append(pp);
+  [io, po].forEach(o => { o.querySelector('.x').addEventListener('click', () => { o.hidden = true; }); o.addEventListener('click', e => { if (e.target === o) o.hidden = true; }); });
+  inv.addEventListener('click', () => { io.hidden = false; }); pap.addEventListener('click', () => { po.hidden = false; });
+  q('netc').addEventListener('click', () => { io.hidden = false; });
+  $('#winov h2').textContent = 'БІНГО!'; $('#winov .big').insertAdjacentHTML('afterend', '<p class="fm-hand">є переможець</p>');
+  $('#next').textContent = 'Наступна кулька';
+  const pP = paint;
+  paint = function () {
+    pP();
+    const all = [...players.values()], on = all.filter(P => P.on).length, S = set();
+    q('fmpn').textContent = all.length; q('fmdot').className = 'dot' + (on ? ' on' : '');
+    $('.fz .mdesc').textContent = S.sub ? S.sub[0].toUpperCase() + S.sub.slice(1) + ', кульок ' + S.items.length : '';
+    q('fmdesc').textContent = 'Ведучий тягне кульки, гравці закривають клітинки на картці — у телефоні або на папері. Хто перший ' + PATS[pat].d.replace('закрий', 'закрив') + ' — виграє.';
+    $('#nett').textContent = net === 'on' ? 'Запросити гравців' : $('#nett').textContent;
+    if (phase === 'game' && !(cur >= 0 && themed() && !shown)) $('#next').textContent = 'Наступна кулька';
+  };
+}
+/*/FAM*/
 paint(); startNet();
 window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
 })();

@@ -107,6 +107,45 @@ textarea.f{min-height:96px;resize:vertical}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
 @media (max-width:820px){.ots{grid-template-columns:1fr;gap:12px}.lb{grid-template-columns:1fr}.qr{width:min(220px,60vw)}.top{background:var(--bg)}.bar{grid-template-columns:1fr 70px}.bar .lab{grid-column:1/-1}}
 @media (prefers-reduced-motion:reduce){.bar .fl{transition:none}}
+/*FAM*/
+/* ===== РОДИНА ІГОР (?dyz=fam): як «Потужний СКОБ!», обличчя — стовпчики ===== */
+body.fam main{padding:70px max(18px,3vw) 22px}
+body.fam .logo{display:none}
+body.fam .top .fm-logo{font-size:30px}
+body.fam .fz{width:min(980px,100%);margin:auto;text-align:center}
+body.fam .fz .fm-logo.big{font-size:clamp(48px,min(7vw,11vh),104px)}
+body.fam .fz .fm-hand{margin:12px 0 0}
+body.fam .fz .desc{margin:10px auto 0;max-width:60ch;font-size:clamp(1.05rem,1.5vw,1.3rem);color:#cfd5dc}
+body.fam .fz .fm-h3{justify-content:center;margin:18px 0 8px}
+body.fam .polls{justify-content:center;gap:6px}
+body.fam .polls button{min-height:44px;padding:6px 18px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);font:600 15px var(--txt);text-align:center}
+body.fam .polls button small{display:none}
+body.fam .polls button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#16130a}
+body.fam .qlist{display:inline-block;margin:12px auto 0;padding:12px 18px 12px 38px;border-radius:16px;background:rgba(34,38,43,.7);text-align:left;font-size:16px;max-width:100%}
+body.fam .fz .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+body.fam .fz .lnk{display:flex;gap:18px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:14px}
+body.fam .fz .lnk button{border:0;background:none;color:var(--mut);font:600 15px var(--txt);text-decoration:underline;text-underline-offset:3px;padding:4px}
+body.fam .fz .lnk button:hover{color:var(--ink)}
+body.fam .opt input{accent-color:var(--gd)}
+body.fam #netc{cursor:pointer}
+/* питання */
+body.fam #run{width:min(1250px,100%);margin:0 auto;padding-left:max(18px,3vw);padding-right:max(18px,3vw)}
+body.fam .qn{font:500 clamp(1.3rem,1.9vw,2rem)/1.1 Caveat,cursive;color:#2fd2c0;letter-spacing:0;text-transform:lowercase}
+body.fam .cnt{font-weight:600;color:var(--mut)}
+body.fam .qt{font:600 clamp(1.9rem,3.8vw,3.6rem)/1.08 var(--disp);letter-spacing:.01em;text-wrap:balance}
+body.fam .bar .tr{border:0;background:#22262b;border-radius:99px}
+body.fam .bar .fl{border-radius:99px;background:#2fd2c0}
+body.fam .bar.lead .fl{background:#ffc247;box-shadow:0 0 24px -6px rgba(255,194,71,.7)}
+body.fam .bar .n{font:600 1.3em/1 var(--disp);color:#fff}
+body.fam .bar .n small{font:600 .5em var(--txt)}
+body.fam .avg b{color:#ffc247}
+body.fam .hid b{color:#ffc247}
+body.fam .sum section{border:0;background:#22262b;border-radius:18px}
+body.fam .sum h1{font:600 clamp(2.2rem,4vw,3.2rem)/1 var(--disp);letter-spacing:.04em}
+body.fam .box{border-color:#3b4048}
+body.fam .f,body.fam .eq select{border-radius:12px}
+body.fam .toast{border-radius:99px}
+/*/FAM*/
 </style>
 </head>
 <body>
@@ -283,14 +322,14 @@ function resHtml(r) {
 }
 
 /* ---------- малювання ---------- */
-function paintTop() {
+let paintTop = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
   if (phase === 'run') paintRun();
-}
+};
 function paintLobby() {
-  const url = PURL + '?k=' + code;
+  const url = PURL + '?k=' + code + (/dyz=fam/.test(location.search) ? '&dyz=fam' : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#2fd2c0' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -379,6 +418,36 @@ document.addEventListener('keydown', e => {
   if (phase !== 'run') return;
   if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); $('#next').click(); } else if (e.key === 'ArrowLeft') $('#prev').click();
 });
+/*FAM*/
+/* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, запрошення окремим вікном */
+if (new URLSearchParams(location.search).get('dyz') === 'fam') {
+  document.body.classList.add('fam');
+  const Q = {}, g = id => Q[id] || (Q[id] = document.getElementById(id));
+  'polls qlist start edit new live qr url code netc'.split(' ').forEach(g);
+  const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  const LT = '<span class="fm-lt"><i style="height:.5em;background:#2fd2c0"></i><i style="height:.95em;background:#ffc247"></i><i style="height:.7em;background:#cfd5dc"></i><span>Опитування</span></span>';
+  $('.logo').insertAdjacentHTML('afterend', '<span class="fm-logo stovp sm" aria-label="Швидке опитування">' + LT + '</span>');
+  const z = el('div', 'fz', '<span class="fm-logo stovp big" aria-label="Швидке опитування"><small>Швидке</small>' + LT + '</span><p class="fm-hand">питання на екрані — відповіді з телефонів</p><p class="desc">Анонімно: на екрані лише результати, без імен.</p><h3 class="fm-h3">Що питаємо</h3>');
+  const lb = $('#lobby .lb'); lb.before(z);
+  z.append(g('polls'), g('qlist'));
+  const bt = el('div', 'btns'); const inv = el('button', 'btn', '<span class="dot" id="fmdot"></span>Запросити учасників'); inv.type = 'button';
+  g('start').textContent = 'Почати'; g('edit').textContent = 'Змінити питання'; bt.append(g('start'), inv, g('edit')); z.append(bt);
+  const lk = el('div', 'lnk'); g('new').className = ''; g('new').textContent = '+ Нове опитування'; lk.append(g('new'), g('live').parentNode); z.append(lk);
+  lb.hidden = true;
+  const io = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" aria-label="Закрити">✕</button><span class="fm-logo stovp" aria-label="Швидке опитування"><small>Швидке</small>' + LT + '</span><div class="fm-join"><span id="fmqr"></span><div><p class="fm-s1">Скануйте QR-код телефоном — і відповідайте</p><div class="fm-or">АБО</div><div class="fm-lbl">відкрийте</div><span id="fmurl"></span><div class="fm-lbl">і введіть код</div><span id="fmcode"></span></div></div><h3 class="fm-h3">На звʼязку <span id="fmpn">0</span></h3></div>');
+  io.hidden = true; document.body.append(io);
+  g('qr').className = 'qr'; g('url').className = 'fm-url'; g('code').className = 'fm-code';
+  io.querySelector('#fmqr').replaceWith(g('qr')); io.querySelector('#fmurl').replaceWith(g('url')); io.querySelector('#fmcode').replaceWith(g('code'));
+  io.querySelector('.x').addEventListener('click', () => { io.hidden = true; }); io.addEventListener('click', e => { if (e.target === io) io.hidden = true; });
+  inv.addEventListener('click', () => { io.hidden = false; }); g('netc').addEventListener('click', () => { io.hidden = false; });
+  const pT = paintTop;
+  paintTop = function () {
+    pT(); const on = [...players.values()].filter(P => P.on).length;
+    io.querySelector('#fmpn').textContent = on; $('#fmdot').className = 'dot' + (on ? ' on' : '');
+    if (net === 'on') $('#nett').textContent = 'Запросити учасників';
+  };
+}
+/*/FAM*/
 paintLobby(); paintTop(); startNet();
 window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? votes[qi].size : 0, res: phase === 'run' ? resOf(qi) : null }) };
 })();

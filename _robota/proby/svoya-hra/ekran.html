@@ -282,6 +282,83 @@ body.v2 .rest span{border-radius:12px;border-left:0;border-top:3px solid var(--c
 body.v2 .toast{background:var(--card2);border-color:var(--ln)}
 @media (max-width:900px){body.v2 #lobby .lb{grid-template-columns:1fr}body.v2 .l2j{position:static}body.v2 .logo .nm{display:none}}
 
+/* ===== РОДИНА ІГОР (?dyz=fam): як «Потужний СКОБ!», обличчя — табло ===== */
+body.fam main{padding:70px max(18px,3vw) 22px}
+body.fam .logo{display:flex;align-items:center}
+body.fam .logo .lg{display:none}
+/* лобі — заставка як у СКОБ */
+body.fam #lobby{align-items:center;justify-content:center}
+body.fam .fz{width:min(980px,100%);margin:auto;text-align:center}
+body.fam .fz .fm-logo.big{align-items:center;font-size:clamp(56px,min(8vw,13vh),120px)}
+body.fam .team input{border:0;background:none;padding:6px 4px}
+body.fam .fz .fm-hand{margin:14px 0 0}
+body.fam .fz .desc{margin:10px auto 0;max-width:60ch;font-size:clamp(1.05rem,1.6vw,1.4rem);color:#cfd5dc}
+body.fam .fz .fm-h3{justify-content:center;margin-top:18px}
+body.fam .fz .teams{justify-content:center}
+body.fam .team{border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);padding:4px 6px 4px 16px;border-left:1px solid var(--ln)}
+body.fam .team::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--c);flex:none}
+body.fam .team input{width:7.5em;font:700 17px var(--txt);color:var(--ink)}
+body.fam .team small{display:none}
+body.fam .modes{justify-content:center;gap:0;margin-top:14px;display:inline-flex;border:1px solid var(--ln);border-radius:99px;padding:4px;background:rgba(34,38,43,.9)}
+body.fam .modes button{border:0;background:none;border-radius:99px;padding:8px 18px;font:600 15px var(--txt);color:var(--mut)}
+body.fam .modes button small{display:none}
+body.fam .modes button[aria-pressed=true]{background:var(--gd);color:#16130a}
+body.fam .fz .mdesc{margin:8px 0 0;color:var(--mut);font-size:15px;min-height:1.4em}
+body.fam .fz .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+body.fam .fz .lnk{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:15px}
+body.fam .fz .lnk button{border:0;background:none;color:var(--mut);font:600 15px var(--txt);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+body.fam .fz .lnk button:hover{color:var(--ink)}
+body.fam .resume{border-radius:18px;background:#3a3220;border-color:#ffc247}
+body.fam #netc{cursor:pointer}
+body.fam .fm-pl{display:flex;flex-wrap:wrap;gap:8px}
+body.fam .fm-pl span{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:99px;background:#22262b;font-weight:700}
+body.fam .fm-pl span i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+body.fam .fm-pl .no{color:var(--mut);background:none;padding:0;font-weight:600}
+/* табло */
+body.fam .grid{gap:10px}
+body.fam .grid .cat{background:none;border:0;padding:2px 4px 8px;color:var(--mut);font:600 clamp(.95rem,1.5vw,1.25rem)/1.1 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+body.fam .grid button{background:#22262b;border:1px solid #2f343b;border-radius:16px;color:#ffc247;font:600 clamp(1.8rem,3.6vw,3rem)/1 var(--disp);box-shadow:0 2px 0 rgba(0,0,0,.25);text-shadow:none;transition:transform .12s,background .12s}
+body.fam .grid button:hover:not(:disabled){filter:none;transform:translateY(-2px);background:#2a2f35;border-color:#ffc247}
+body.fam .grid button:disabled{background:transparent;border:1px dashed #2a2e34;box-shadow:none;color:transparent}
+body.fam .scores{gap:10px}
+body.fam .sc{border-radius:14px;border:0;background:#22262b;box-shadow:inset 5px 0 0 var(--c);padding:10px 12px 10px 20px}
+body.fam .sc.lead{background:#3a3220;box-shadow:inset 5px 0 0 #ffc247}
+body.fam .sc b{font:700 20px/1.1 var(--txt);color:var(--ink)}
+body.fam .sc b small{font:600 13px var(--txt);color:var(--mut);display:flex;align-items:center;gap:3px;margin-top:4px}
+body.fam .sc>span{font:600 38px/1 var(--disp);color:#fff}
+body.fam .sc.lead>span{color:#ffc247}
+body.fam .sc .adj button{border-radius:99px;border-color:var(--ln);background:#272b31}
+body.fam #bh{font:600 16px var(--txt);color:var(--mut)}body.fam #bh i{background:none;padding:0 0 0 4px;font:500 1.6em/1 Caveat,cursive;color:var(--c)}
+/* питання */
+body.fam #qv{gap:14px;width:min(1250px,100%);margin:0 auto;padding-left:max(18px,3vw);padding-right:max(18px,3vw)}
+body.fam #qv .qh{gap:10px;align-items:baseline}
+body.fam #qv .qh .ct,body.fam #qv .qh .vl{font:500 clamp(1.3rem,1.9vw,2rem)/1.1 Caveat,cursive;color:#2fd2c0;letter-spacing:0;text-transform:none;text-shadow:none}
+body.fam #qv .qh .vl::before{content:"· "}
+body.fam .qt{margin:0;max-width:none;text-align:left;font:600 clamp(1.8rem,3.6vw,3.6rem)/1.1 var(--disp);letter-spacing:.01em;text-wrap:balance}
+body.fam .who{align-items:flex-start}
+body.fam .turn{display:inline-flex;align-items:center;gap:10px;min-height:0;padding:10px 22px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9) !important;font:700 clamp(1.1rem,2vw,1.6rem) var(--txt);animation:none}
+body.fam .turn.on{border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 40%,transparent)}
+body.fam .turn.on::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c)}
+body.fam .tm{--k:1;position:relative;isolation:isolate;width:clamp(54px,6vw,86px);height:clamp(54px,6vw,86px);min-height:0;border-radius:50%;display:grid;place-items:center;font:600 clamp(1.3rem,2vw,2.2rem)/1 var(--disp);color:#fff;background:conic-gradient(#ffc247 calc(var(--k)*360deg),#2a2f35 0)}
+body.fam .tm::before{content:"";position:absolute;inset:5px;border-radius:50%;background:#1b1e23;z-index:-1}
+body.fam .tm:empty{visibility:hidden}body.fam .tm.low{color:#ff6b5e;background:conic-gradient(#ff6b5e calc(var(--k)*360deg),#2a2f35 0)}
+body.fam .who{flex-direction:row;flex-wrap:wrap;gap:16px;align-items:center}
+body.fam .vars{width:100%;grid-template-columns:1fr 1fr;gap:clamp(8px,1.1vw,16px)}
+body.fam .vars div{display:flex;align-items:center;gap:14px;min-height:clamp(58px,10vh,110px);padding:12px 18px;border:0;border-radius:16px;color:#fff;font:700 clamp(1.05rem,2vw,1.9rem)/1.15 var(--txt)}
+body.fam .vars div:nth-child(1){background:#d64541}body.fam .vars div:nth-child(2){background:#2f6fd0}body.fam .vars div:nth-child(3){background:#e8b02a;color:#1d1606}body.fam .vars div:nth-child(4){background:#2e8f55}
+body.fam .vars div b{flex:none;display:grid;place-items:center;width:1.9em;height:1.9em;border-radius:12px;background:rgba(0,0,0,.2);color:inherit;margin:0;font:600 1em/1 var(--disp)}
+body.fam .vars div.ok{box-shadow:0 0 0 4px #fff}
+body.fam .qa{text-align:left;font:600 clamp(1.8rem,3.4vw,3rem)/1.05 var(--disp);color:#ffc247;text-shadow:none}
+body.fam #qv .bar .btn{min-height:46px}
+/* фінал */
+body.fam .fanno{font:600 clamp(2.4rem,5vw,4.4rem)/1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+body.fam .fin .wk{font:500 clamp(1.8rem,3vw,2.8rem)/1 Caveat,cursive;letter-spacing:0;text-transform:none;color:#2fd2c0}
+body.fam .fin h1{color:#fff;text-shadow:none;font:600 clamp(3.4rem,8vw,6.6rem)/1 var(--disp);letter-spacing:.04em}
+body.fam .pod .crown{color:#ffc247}
+body.fam .pod .p.first .bl{box-shadow:0 0 60px -12px rgba(255,194,71,.7)}
+body.fam .rest span{border-radius:99px;border-left:0;background:#22262b}
+body.fam .toast{border-radius:99px;background:#272b31;border-color:#3b4048}
+
 </style>
 </head>
 <body>
@@ -686,7 +763,7 @@ function boom() { if (!sound || SFX.fireworks) return; try {   /* є справ�
 
 
 /* ---------- малювання ---------- */
-function paintTop() {
+let paintTop = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
@@ -694,9 +771,9 @@ function paintTop() {
   $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки ✓ і ✗. Юнакам його не показуйте.';
   $('#vedc span').textContent = veds.size ? 'Ведучий ✓' : 'Ведучий';
 }
-function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey, q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; $('#vqr').innerHTML = window.qrSvg(vu, 112); } }
-function paintLobby() {
-  const url = PURL + '?k=' + code;
+function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey + (/dyz=fam/.test(location.search) ? '&dyz=fam' : ''), q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; $('#vqr').innerHTML = window.qrSvg(vu, 112); } }
+let paintLobby = function () {
+  const url = PURL + '?k=' + code + (/dyz=fam/.test(location.search) ? '&dyz=fam' : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -843,6 +920,53 @@ if (V2) {
   xi.append(q('ved'), side); x.append(xi);
   lb.replaceChildren(m, j); lb.after(x);
   $('#turn').dataset.l = 'Відповідає';
+}
+/* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, гравців запрошуємо окремим вікном */
+const FAM = new URLSearchParams(location.search).get('dyz') === 'fam';
+if (FAM) {
+  document.body.classList.add('fam');
+  const Q = {}, q = id => Q[id] || (Q[id] = document.getElementById(id));
+  'teams tadd modes start draw edit qr url code ved minus sndi netc nett'.split(' ').forEach(q);
+  const el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  const LT = '<span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span>';
+  $('.logo').innerHTML = '<span class="fm-logo board sm" aria-label="Інтелектуальний змаг">' + LT + '</span>';
+  /* заставка */
+  const z = el('div', 'fz', '<span class="fm-logo board big" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + LT + '</span><p class="fm-hand">теми, бали й трохи азарту</p><p class="desc">Команди по черзі вибирають питання на табло. Правильна відповідь — бали, помилка — мінус бали.</p><h3 class="fm-h3">Команди <span id="fmtn"></span></h3>');
+  const lb = $('#lobby .lb'); lb.before(z);
+  z.append(q('teams'));
+  const tr = el('div', 'lnk'); tr.append(q('tadd')); q('tadd').className = 'btn'; z.append(tr);
+  z.append(el('div', '', ''), q('modes'), el('p', 'mdesc', ''));
+  const bt = el('div', 'btns'); const inv = el('button', 'btn', '<span class="dot" id="fmdot"></span>Запросити гравців'); inv.type = 'button'; inv.id = 'fminv';
+  bt.append(q('start'), inv, q('draw')); z.append(bt);
+  const lk = el('div', 'lnk'); const hv = el('button', '', 'Для ведучого: відповіді на телефоні, шпаргалка'); hv.type = 'button'; hv.id = 'fmved';
+  lk.append(hv, q('edit')); q('edit').className = ''; z.append(lk);
+  lb.remove();
+  /* вікно «Запросити гравців» */
+  const io = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" id="fmix" aria-label="Закрити">✕</button><span class="fm-logo board" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + LT + '</span><div class="fm-join"><div id="fmqr"></div><div class="steps"><p class="fm-s1">Капітани команд: скануйте QR-код телефоном</p><div class="fm-or">АБО</div><div class="fm-lbl">відкрийте</div><div id="fmurl"></div><div class="fm-lbl">і введіть код</div><div id="fmcode"></div></div></div><h3 class="fm-h3">Капітани <span id="fmpn">0</span></h3><div class="fm-pl" id="fmpl"></div></div>');
+  io.hidden = true; io.id = 'fmio'; document.body.append(io);
+  q('fmqr').append(q('qr')); q('fmurl').append(q('url')); q('fmcode').append(q('code'));
+  q('url').className = 'fm-url'; q('code').className = 'fm-code';
+  const qrbox = q('qr'); qrbox.className = 'qr'; q('fmqr').parentNode.replaceChild(qrbox, q('fmqr'));
+  /* вікно «Для ведучого» */
+  const vo = el('div', 'fm-ov', '<div class="fm-box"><button type="button" class="x" id="fmvx" aria-label="Закрити">✕</button><h3 class="fm-h3" style="margin-top:0">Для ведучого</h3></div>');
+  vo.hidden = true; vo.id = 'fmvo'; document.body.append(vo);
+  const vb = vo.querySelector('.fm-box'); vb.append(q('ved'), q('minus').closest('label'), q('sndi').parentNode);
+  const show = (o, v) => { o.hidden = !v; };
+  inv.addEventListener('click', () => show(io, true)); q('fmix').addEventListener('click', () => show(io, false));
+  hv.addEventListener('click', () => show(vo, true)); q('fmvx').addEventListener('click', () => show(vo, false));
+  q('netc').addEventListener('click', () => show(io, true));
+  $('#turn').dataset.l = '';
+  /* підписи, що змінюються */
+  const famPaint = () => {
+    const all = [...players.values()], on = all.filter(P => P.on);
+    q('fmpn').textContent = on.length; q('fmtn').textContent = teams.length;
+    q('fmpl').innerHTML = all.length ? all.map(P => `<span><i style="--c:${P.team >= 0 ? teamColor(P.team) : '#6b7480'}"></i>${esc(P.name)}${P.team >= 0 && teams[P.team] ? ' · ' + esc(teams[P.team].n) : ''}</span>`).join('') : '<span class="no">Поки нікого. Можна грати й без телефонів.</span>';
+    q('fmdot').className = 'dot' + (on.length ? ' on' : '');
+    $('.fz .mdesc').textContent = MODES[mode][1];
+    q('nett').textContent = net === 'on' ? 'Запросити гравців' : { starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
+  };
+  const pT = paintTop, pL = paintLobby;
+  paintTop = function () { pT(); famPaint(); }; paintLobby = function () { pL(); famPaint(); };
 }
 paintLobby(); paintTop(); startNet();
 window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };

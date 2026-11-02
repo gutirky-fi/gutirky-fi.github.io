@@ -1,0 +1,68 @@
+/* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
+   Вмикається класом body.fam (поки проба: ?dyz=fam). Кожна гра має своє «обличчя» — логотип .fm-logo:
+     .sq — квадратні плитки (СКОБ), .balls — кульки (бінго), .board — клітинки табла (змаг), .stovp — стовпчики (опитування).
+   Вбудовується в сторінки ігор їхніми zibraty.py. */
+body.fam{--bg:#15171b;--card:#22262b;--card2:#272b31;--ln:#3b4048;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--ok:#3ee08f;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;
+  background:radial-gradient(80% 70% at 50% 40%,#232a33,#15171b 75%) fixed #15171b;color:var(--ink);font-family:var(--txt)}
+body.fam::before{display:none}
+
+/* ---- логотип гри ---- */
+.fm-logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-family:var(--disp);vertical-align:middle}
+.fm-logo small{font:600 .34em/1 var(--disp);letter-spacing:.32em;text-transform:uppercase;color:#ffc247;margin:0 0 .2em .06em;white-space:nowrap}
+.fm-lt{display:flex;gap:.08em;align-items:center}
+.fm-lt i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.fm-lt i.c0{background:#d64541}.fm-lt i.c1{background:#2f6fd0}.fm-lt i.c2{background:#e8b02a;color:#1d1606}.fm-lt i.c3{background:#2e8f55}.fm-lt i.c4{background:#8a5bd1}
+.fm-lt b{font:600 .9em/1 var(--disp);color:#ffc247;margin-left:.06em}
+.fm-logo.balls .fm-lt i{border-radius:50%;box-shadow:inset -.07em -.09em 0 rgba(0,0,0,.2),inset .05em .06em 0 rgba(255,255,255,.18)}
+.fm-logo.board .fm-lt i{background:#22262b;box-shadow:inset 0 0 0 .045em #ffc247;color:#ffc247;border-radius:.14em}
+.fm-logo.board .fm-lt i.on{background:#ffc247;color:#1d1606;box-shadow:none}
+.fm-logo.stovp .fm-lt{align-items:flex-end;gap:.06em}
+.fm-logo.stovp .fm-lt i{width:.3em;border-radius:.07em}
+.fm-logo.stovp .fm-lt span{font:600 .78em/1 var(--disp);letter-spacing:.02em;margin-left:.16em;text-transform:uppercase;color:#fff}
+.fm-logo.sm{font-size:30px}.fm-logo.sm small{display:none}
+
+/* ---- шапка й кнопки-«пігулки» ---- */
+body.fam .top{background:none;border:0;padding:max(10px,env(safe-area-inset-top)) 14px 0 18px}
+body.fam .chip{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 15px var(--txt);gap:8px}
+body.fam .chip:hover{border-color:var(--gd)}
+body.fam .chip .dot{width:9px;height:9px;background:#6b7480}body.fam .chip .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+body.fam .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 16px var(--txt)}
+body.fam .btn:hover:not(:disabled){border-color:var(--gd)}
+body.fam .btn.main{min-height:54px;padding:0 28px;background:var(--gd);border-color:var(--gd);color:#16130a;font-size:18px;font-weight:700}
+body.fam .btn.ok{background:#2e8f55;border-color:#2e8f55;color:#fff}
+body.fam .btn.no{background:#d64541;border-color:#d64541;color:#fff}
+
+/* ---- підписи як у СКОБ ---- */
+.fm-hand{font:500 clamp(1.3rem,2vw,2.1rem)/1.1 Caveat,'Segoe Print',cursive;color:#2fd2c0}
+.fm-lbl{margin:10px 0 4px;color:#a0a8b2;font:600 14px var(--txt);letter-spacing:.12em;text-transform:uppercase}
+.fm-or{display:flex;align-items:center;gap:12px;margin:12px 0 8px;color:#6b7480;font-size:14px}
+.fm-or::before,.fm-or::after{content:"";flex:1;height:1px;background:#383d44}
+.fm-h3{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;font:600 20px var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.fm-h3 span{color:#ffc247}
+
+/* ---- вікно «Запросити гравців» (як лобі СКОБ) ---- */
+.fm-ov{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,12,15,.9)}
+.fm-box{position:relative;width:min(1060px,100%);max-height:100%;overflow:auto;padding:24px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;box-shadow:0 24px 90px #000a;text-align:left}
+.fm-box .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
+.fm-box .fm-logo{font-size:clamp(44px,6vw,66px)}
+.fm-join{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
+.fm-join .qr{width:min(380px,46vh,70vw);aspect-ratio:1;border-radius:20px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+.fm-join .qr svg{width:100%;height:100%}
+.fm-s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 var(--txt);color:#fff}
+.fm-url{font:600 clamp(1.4rem,2.6vw,2.2rem)/1.1 var(--disp);color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+.fm-code{font:600 clamp(2.6rem,6vw,4.8rem)/1 var(--disp);letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.fm-join{grid-template-columns:1fr}.fm-join .qr{margin:0 auto}}
+
+/* ---- пʼєдестал: золото, срібло, бронза (як у СКОБ) ---- */
+body.fam .pod .bl{color:#16130a;text-shadow:none;border:0;border-radius:14px 14px 0 0;box-shadow:none;background:#d9925b}
+body.fam .pod .p[data-pl="1"] .bl{background:#ffc247}
+body.fam .pod .p[data-pl="2"] .bl{background:#cfd5dc}
+body.fam .pod .nm{font:700 clamp(1rem,2vw,1.8rem) var(--txt);text-transform:none;letter-spacing:0;color:#fff}
+body.fam .pod .nm::before{content:"";display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--c);margin-right:.35em;vertical-align:.08em}
+body.fam .pod .sc2{font:600 clamp(.9rem,1.5vw,1.4rem) var(--disp);color:#cfd5dc;margin-bottom:8px}
+
+/* ---- телефон ---- */
+body.fam .in>.top{padding:0}
+body.fam input{border-radius:14px;background:#22262b;border:1px solid var(--ln)}
+body.fam input:focus{border-color:var(--gd);outline:0}

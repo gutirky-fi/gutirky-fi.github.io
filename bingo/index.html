@@ -97,6 +97,7 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:30;padding:12px 20px;border-radius:14px;background:#2c3036;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px #0008}
 @media (max-width:820px){.lb,.stage{grid-template-columns:1fr}.qr{width:min(240px,60vw)}main{overflow:auto}#lobby{justify-content:flex-start}.top{background:var(--bg)}}
 @media (prefers-reduced-motion:reduce){.ball.pop{animation:none}}
+
 </style>
 </head>
 <body>
@@ -734,10 +735,10 @@ function paintBall(pop) {
   } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>' + (it[2] ? esc(it[2]) : ''); $('#ans').textContent = ''; }
   if (pop) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
 }
-function paint() {
+let paint = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
-  const url = PURL + '?k=' + code;
+  const url = PURL + '?k=' + code + (QS.get('dyz') === 'fam' ? '&dyz=fam' : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -754,7 +755,7 @@ function paint() {
   $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
   const ok = known(); $('#ncl').textContent = ok.size;
   $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(ballT(id))}</span>`).join('');
-}
+};
 
 /* ---------- паперові картки ---------- */
 function printCards() {
@@ -802,6 +803,7 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next(); }
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') reveal();
 });
+
 paint(); startNet();
 window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
 })();
