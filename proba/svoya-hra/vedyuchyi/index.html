@@ -40,6 +40,7 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .qa{padding:14px 16px;border-radius:16px;background:rgba(255,194,71,.12);border:2px solid var(--gd)}
 .qa small{display:block;color:var(--mut);font-weight:700;font-size:13px;letter-spacing:.04em}
 .qa b{font:600 26px/1.15 var(--disp);color:var(--gd)}
+.qa .nt{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,194,71,.3);color:var(--mut);font-size:15px}.qa .nt em{font-style:normal;font-weight:700;color:#cfd5dc}
 .who{margin:12px 0;padding:12px 14px;border-radius:14px;background:var(--card);font-weight:700;font-size:18px;text-align:center;border:2px solid var(--c,var(--ln))}
 .picks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
 .picks button{min-height:48px;border-radius:12px;border:1px solid var(--ln);border-left:6px solid var(--c);background:var(--card);font-weight:700}
@@ -276,6 +277,7 @@ button:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 'use strict';
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const splitA = a => { const m = String(a || '').match(/^(.*?)\s*\(([^()]*)\)\s*$/); return m && m[1] ? [m[1], m[2]] : [String(a || ''), '']; };   // «Говерла (2061 м)» → головне + довідка
 const q = new URLSearchParams(location.search), code = (q.get('k') || '').replace(/\D/g, '').slice(0, 6), key = q.get('v') || '';
 
 const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
@@ -320,7 +322,7 @@ function render() {
   }
   const Q = st.q; if (!Q) return;
   const T = Q.turn;
-  let h = sc + `<div class="qm">${esc(Q.cat)}<b>${Q.v}</b></div><p class="qq">${esc(Q.q)}</p><div class="qa"><small>ПРАВИЛЬНА ВІДПОВІДЬ</small><b>${esc(Q.a)}</b></div>`;
+  let h = sc + `<div class="qm">${esc(Q.cat)}<b>${Q.v}</b></div><p class="qq">${esc(Q.q)}</p><div class="qa"><small>ПРАВИЛЬНА ВІДПОВІДЬ</small><b>${esc(splitA(Q.a)[0])}</b>${splitA(Q.a)[1] ? `<div class="nt">Для довідки, не обовʼязково: <em>${esc(splitA(Q.a)[1])}</em></div>` : ''}</div>`;
   if (Q.done) h += `<div class="who">${T ? '✓ ' + esc(T.tn) + ' +' + Q.v : 'Ніхто не відповів правильно'}</div>`;
   else if (T) h += `<div class="who" style="--c:${T.c}">Відповідає: ${esc(T.tn)}${T.name ? ' · ' + esc(T.name) : ''}</div>`;
   else h += `<div class="who">Чекаємо, хто натисне «Відповідаю!»</div><p class="hint">Або виберіть команду самі:</p><div class="picks">${st.teams.map((t, i) => `<button type="button" data-pick="${i}" style="--c:${t.c}"${Q.wrong.includes(i) ? ' disabled' : ''}>${esc(t.n)}</button>`).join('')}</div>`;

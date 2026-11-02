@@ -182,7 +182,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 </main>
 
 <div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
-  <h2>Питання</h2><p class="sub">5 тем по 5 питань. Порожнє питання на табло не показується. Зберігається в цьому браузері.</p>
+  <h2>Питання</h2><p class="sub">5 тем по 5 питань. Порожнє питання на табло не показується. Те, що у відповіді в дужках, — довідка для ведучого, називати не обовʼязково. Зберігається в цьому браузері.</p>
   <div id="ed"></div>
   <div class="row"><button type="button" class="btn" id="edreset">Повернути приклад</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
@@ -580,6 +580,8 @@ const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden = false; clearTimeout(tt); tt = setTimeout(() => { e.hidden = true; }, 3000); }
 const VALS = [100, 200, 300, 400, 500];
+const splitA = a => { const m = String(a || '').match(/^(.*?)\s*\(([^()]*)\)\s*$/); return m && m[1] ? [m[1], m[2]] : [String(a || ''), '']; };   // «Говерла (2061 м)» → головне + довідка
+
 const COLS = ['#e5534b', '#2f8fe0', '#3daf6e', '#ffc247', '#a46be0', '#e8925b'];
 
 /* ---------- приклад гри (можна змінити кнопкою «Питання») ---------- */
@@ -774,14 +776,14 @@ function paintQ() {
   else { t.className = 'turn'; t.textContent = cur.done ? (cur.wrong.size >= teams.length ? 'Ніхто не відповів правильно' : 'Правильно!') : cur.wrong.size ? 'Інші команди — тисніть «Відповідаю!»' : 'Хто знає — тисніть «Відповідаю!»'; }
   if (cur.done && first) t.textContent = '✓ ' + whoOf(first).tn + ' +' + VALS[cur.r];
   $('#picks').innerHTML = cur.done || first || mode === 'cherha' ? '' : teams.map((tm, i) => `<button type="button" data-pick="${i}" style="--c:${teamColor(i)}"${cur.wrong.has(i) ? ' disabled' : ''}>${esc(tm.n)} відповідає</button>`).join('');
-  $('#qa').textContent = cur.ans ? Q[1] : '';
+  { const [m, n] = splitA(Q[1]); $('#qa').innerHTML = cur.ans ? esc(m) + (n ? `<small style="display:block;font:600 20px var(--txt);text-transform:none;color:var(--mut);margin-top:6px">${esc(n)}</small>` : '') : ''; }
   $('#ans').disabled = cur.ans;
   $('#yes').disabled = $('#no').disabled = !first || cur.done;
 }
 
 /* ---------- редактор ---------- */
 function paintEd(src) {
-  $('#ed').innerHTML = src.map((C, c) => `<div class="ec"><input class="f cn" data-cn="${c}" value="${esc(C.n)}" maxlength="24" aria-label="Тема ${c + 1}">${VALS.map((v, r) => `<div class="er"><b>${v}</b><input class="f" data-q="${c}-${r}" value="${esc((C.q[r] || [''])[0])}" maxlength="160" placeholder="Питання"><input class="f" data-a="${c}-${r}" value="${esc((C.q[r] || ['', ''])[1])}" maxlength="80" placeholder="Відповідь"></div>`).join('')}</div>`).join('');
+  $('#ed').innerHTML = src.map((C, c) => `<div class="ec"><input class="f cn" data-cn="${c}" value="${esc(C.n)}" maxlength="24" aria-label="Тема ${c + 1}">${VALS.map((v, r) => `<div class="er"><b>${v}</b><input class="f" data-q="${c}-${r}" value="${esc((C.q[r] || [''])[0])}" maxlength="160" placeholder="Питання"><input class="f" data-a="${c}-${r}" value="${esc((C.q[r] || ['', ''])[1])}" maxlength="80" placeholder="Відповідь (довідка — в дужках)"></div>`).join('')}</div>`).join('');
 }
 function readEd() {
   return CATS.map((_, c) => ({ n: $(`[data-cn="${c}"]`).value.trim() || 'Тема ' + (c + 1), q: VALS.map((_, r) => [$(`[data-q="${c}-${r}"]`).value.trim(), $(`[data-a="${c}-${r}"]`).value.trim()]) }));
@@ -826,7 +828,7 @@ document.addEventListener('keydown', e => {
 setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? '⏱ ' + left : '⏱ Час! Відповідайте'; }, 250);
 function printSheet() {
   const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
-  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Своя гра — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Своя гра — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(Q[1])}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Своя гра — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Своя гра — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(splitA(Q[1])[0])}${splitA(Q[1])[1] ? `<br><span style="font-weight:400;color:#666">довідка: ${esc(splitA(Q[1])[1])}</span>` : ''}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
   w.document.close();
 }
 paintLobby(); paintTop(); startNet();

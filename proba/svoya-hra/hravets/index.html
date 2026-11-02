@@ -351,7 +351,7 @@ function render() {
     else if (Q.done) s.textContent = Q.turn ? '✓ ' + Q.turn.tn + ' +' + Q.v : 'Питання закрите';
     else if (Q.lock) s.textContent = 'Твоя команда вже відповідала';
     else s.textContent = st.mode === 'cherha' ? 'Чекаємо' : 'Знаєш? Тисни!';
-    $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';
+    $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';   // повна, з довідкою
   } else {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
     b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
