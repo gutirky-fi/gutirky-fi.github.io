@@ -88,7 +88,7 @@ body.fam .stars button[aria-pressed=true]{border-color:#ffc247;background:rgba(2
 (function () {
 'use strict';
 /*FAM*/
-if (/dyz=fam/.test(location.search)) {   /* родина ігор */
+if (/dyz=(fam|2)/.test(location.search)) {   /* родина ігор */
   document.body.classList.add('fam');
   const T = '<span class="fm-lt"><i style="height:.5em;background:#2fd2c0"></i><i style="height:.95em;background:#ffc247"></i><i style="height:.7em;background:#cfd5dc"></i><span>Опитування</span></span>';
   document.querySelector('.top b').insertAdjacentHTML('afterend', '<span class="fm-logo stovp sm" aria-label="Опитування">' + T + '</span>');

@@ -102,7 +102,7 @@ body.fam .skob{background:linear-gradient(180deg,rgba(21,23,27,0),#15171b 35%)}
 (function () {
 'use strict';
 /*FAM*/
-const FAM = /dyz=fam/.test(location.search);
+const FAM = /dyz=(fam|2)/.test(location.search);
 if (FAM) {   /* родина ігор: кнопка «БІНГО!», логотип-кульки */
   document.body.classList.add('fam');
   const T = '<span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span>';

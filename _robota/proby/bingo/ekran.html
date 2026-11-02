@@ -391,7 +391,7 @@ function paintBall(pop) {
 let paint = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
-  const url = PURL + '?k=' + code + (QS.get('dyz') === 'fam' ? '&dyz=fam' : '');
+  const url = PURL + '?k=' + code + (QS.get('dyz') ? '&dyz=' + QS.get('dyz') : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -497,6 +497,23 @@ if (QS.get('dyz') === 'fam') {
     if (phase === 'game' && !(cur >= 0 && themed() && !shown)) $('#next').textContent = 'Наступна кулька';
     document.body.classList.toggle('lob', !lob.hidden);
   };
+}
+/*/FAM*/
+/*FAM*/
+/* СТИЛЬ 2 (?dyz=2): як «Інтелектуальний змаг» — заголовок ліворуч, картка з QR праворуч */
+if (QS.get('dyz') === '2') {
+  document.body.classList.add('s2');
+  const q = id => document.getElementById(id), el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  $('.logo').insertAdjacentHTML('beforeend', '<img class="plast" src="{{LOGO}}" alt="Пласт"><span class="nm">Пластове бінго</span>');
+  const lb = $('#lobby .lb'), m = el('div', 's2m', '<p class="eyb">Гра для всіх</p><h1>Пластове бінго</h1><p class="hand">кульки, картки й хто перший</p><div class="s2l">Варіант гри</div>');
+  m.append(q('modes'), el('div', 's2l', 'Як виграти'), q('pats'));
+  const act = el('div', 's2a'); q('start').innerHTML = '▶ Почати гру'; act.append(q('start')); m.append(act);
+  const j = el('aside', 's2j', '<h2>Гравцям</h2><p>Скануйте QR-код — і отримаєте картку</p>');
+  j.append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'), el('div', 's2l', 'Гравці'), q('pl'));
+  const x = el('details', 's2x', '<summary>Для ведучого: паперові картки, правила</summary>'), xi = el('div', 's2xi');
+  xi.append($('.paper'), q('rules')); x.append(xi);
+  const L = el('div', 'l2'); L.append(m, j); lb.before(L); L.after(x); lb.hidden = true;   /* lb лишається: paint() оновлює #pln2 */
+  $('#winov h2').textContent = 'БІНГО!';
 }
 /*/FAM*/
 paint(); startNet();

@@ -738,7 +738,7 @@ function paintBall(pop) {
 let paint = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
-  const url = PURL + '?k=' + code + (QS.get('dyz') === 'fam' ? '&dyz=fam' : '');
+  const url = PURL + '?k=' + code + (QS.get('dyz') ? '&dyz=' + QS.get('dyz') : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -803,6 +803,7 @@ document.addEventListener('keydown', e => {
   if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next(); }
   else if (e.key.toLowerCase() === 'в' || e.key.toLowerCase() === 'd') reveal();
 });
+
 
 paint(); startNet();
 window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };

@@ -11,7 +11,8 @@ for d in DIRS:
         s = open(os.path.join(H, src), encoding='utf8').read()
         import re
         if d.startswith('proba/'):   # «родина ігор» (?dyz=fam) — лише в пробі
-            s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-rodyna.css'), encoding='utf8').read() + '\n</style>\n</head>', 1)
+            s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-rodyna.css'), encoding='utf8').read() + '\n' + open(os.path.join(ROB, 'src', 'ihry-styl2.css'), encoding='utf8').read() + '\n</style>\n</head>', 1)
+            import base64; s = s.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'logo.png'), 'rb').read()).decode())
         else:
             s = re.sub(r'/\*FAM\*/.*?/\*/FAM\*/', '', s, flags=re.S)
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')

@@ -1,0 +1,43 @@
+/* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
+   Вмикається класом body.s2 (проба: ?dyz=2). Шапка з логотипом Пласту, заголовок ліворуч, налаштування під ним,
+   праворуч картка з QR-кодом, унизу розкривний блок «Для ведучого». Вбудовується zibraty.py бінго й опитування. */
+body.s2{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--pad:max(24px,calc(50vw - 620px));background:var(--bg)}
+body.s2 .top{padding:14px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln);gap:12px}
+body.s2 .logo{display:flex;align-items:center;gap:14px;font:600 22px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+body.s2 .logo i,body.s2 .logo svg{display:none}
+body.s2 .logo .plast{height:38px;width:auto;display:block}
+body.s2 .logo .nm{padding-left:14px;border-left:1px solid var(--ln)}
+body.s2 .chip{min-height:38px;padding:6px 12px;font:600 14px var(--txt);background:transparent;color:var(--mut);border-radius:12px}
+body.s2 .chip b{color:var(--ink)}
+body.s2 #home{width:38px;justify-content:center;padding:0;color:var(--ink)}
+body.s2 main{padding:92px var(--pad) 24px}
+body.s2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 16px var(--txt);border-radius:12px;min-height:46px;padding:10px 18px;border:1px solid var(--ln);background:var(--card);color:var(--ink)}
+body.s2 .btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+body.s2 #lobby{display:block;overflow:auto}
+body.s2 #lobby .l2{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start}
+body.s2 .eyb{margin:0 0 6px;font:600 14px var(--txt);letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+body.s2 #lobby h1{margin:0;font:600 clamp(3rem,6vw,5rem)/.95 var(--disp);text-transform:uppercase;letter-spacing:.005em}
+body.s2 .hand{margin:8px 0 22px;font:500 clamp(1.5rem,2.4vw,2rem)/1.1 Caveat,cursive;color:var(--hand)}
+body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
+body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
+body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 13px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
+body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
+body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
+body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+body.s2 .s2a .btn{min-height:54px;font-size:18px;padding:12px 24px}
+body.s2 .s2j{position:sticky;top:0;padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd);text-align:center}
+body.s2 .s2j h2{margin:0;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
+body.s2 .s2j p{margin:2px 0 14px;color:var(--mut);font-size:15px}
+body.s2 .s2j .qr{width:100%;max-width:260px;margin:0 auto;box-shadow:none;border-radius:14px}
+body.s2 .s2j .url{margin-top:12px;font:600 15px var(--txt);color:var(--body);word-break:break-all;letter-spacing:0}
+body.s2 .s2j .s2l{margin:14px 0 2px}
+body.s2 .s2j .code{font:600 54px/1 var(--disp);letter-spacing:.06em;color:var(--gd)}
+body.s2 .s2j .pl{justify-content:center;margin-top:14px;min-height:0}
+body.s2 .s2x{width:100%;margin-top:34px;border-top:1px solid var(--ln);padding-top:14px;color:var(--mut)}
+body.s2 .s2x summary{cursor:pointer;font:700 15px var(--txt);list-style:none}
+body.s2 .s2x summary::-webkit-details-marker{display:none}
+body.s2 .s2x summary::before{content:"▸ "}body.s2 .s2x[open] summary::before{content:"▾ "}
+body.s2 .s2xi{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:14px;color:var(--body)}
+body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:12px}
+@media (max-width:900px){body.s2 #lobby .l2{grid-template-columns:1fr}body.s2 .s2j{position:static}}

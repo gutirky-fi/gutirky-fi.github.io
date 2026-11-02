@@ -322,7 +322,7 @@ let paintTop = function () {
   if (phase === 'run') paintRun();
 };
 function paintLobby() {
-  const url = PURL + '?k=' + code + (/dyz=fam/.test(location.search) ? '&dyz=fam' : '');
+  const url = PURL + '?k=' + code + ((location.search.match(/dyz=(fam|2)/) || [''])[0] ? '&' + location.search.match(/dyz=(fam|2)/)[0] : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#2fd2c0' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -441,6 +441,21 @@ if (new URLSearchParams(location.search).get('dyz') === 'fam') {
     if (net === 'on') $('#nett').textContent = 'Запросити учасників';
     document.body.classList.toggle('lob', !lob.hidden);
   };
+}
+/*/FAM*/
+/*FAM*/
+/* СТИЛЬ 2 (?dyz=2): як «Інтелектуальний змаг» — заголовок ліворуч, картка з QR праворуч */
+if (new URLSearchParams(location.search).get('dyz') === '2') {
+  document.body.classList.add('s2');
+  const q = id => document.getElementById(id), el = (t, c, h) => { const e = document.createElement(t); if (c) e.className = c; if (h != null) e.innerHTML = h; return e; };
+  $('.logo').insertAdjacentHTML('beforeend', '<img class="plast" src="{{LOGO}}" alt="Пласт"><span class="nm">Швидке опитування</span>');
+  [...$('.logo').childNodes].forEach(n => { if (n.nodeType === 3) n.remove(); });
+  const lb = $('#lobby .lb'), m = el('div', 's2m', '<p class="eyb">Для сходин</p><h1>Швидке опитування</h1><p class="hand">питання на екрані — відповіді з телефонів</p><div class="s2l">Що питаємо</div>');
+  m.append(q('polls'), q('qlist'));
+  const act = el('div', 's2a'); q('start').innerHTML = '▶ Почати'; act.append(q('start'), q('edit'), q('new')); m.append(act, q('live').parentNode);
+  const j = el('aside', 's2j', '<h2>Учасникам</h2><p>Скануйте QR-код — і відповідайте. Анонімно.</p>');
+  j.append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'));
+  const L = el('div', 'l2'); L.append(m, j); lb.replaceWith(L);
 }
 /*/FAM*/
 paintLobby(); paintTop(); startNet();
