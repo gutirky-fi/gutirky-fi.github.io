@@ -207,6 +207,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
       <div class="lbl">Як граємо</div>
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
+      <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 02.11 23:40</p>
       <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
         <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
@@ -853,8 +854,9 @@ function fanfare() { [[392, 0], [523.25, .16], [659.25, .32], [783.99, .48], [65
 /* справжні звуки — SFX Kit (Wyzowl, CC0 — вільні, можна без підпису): zvuky/*.mp3; синтез нижче — запасний, поки не завантажились */
 const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'popper', 'applause', 'fireworks', 'confetti'];
 let sfxOn = false;
-function sfxLoad() { if (sfxOn) return; sfxOn = true; try { const A = ac(); SFXN.forEach(n => fetch('zvuky/' + n + '.mp3').then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => A.decodeAudioData(b, ok, no))).then(buf => { SFX[n] = buf; }).catch(() => { /* лишиться синтез */ })); } catch (e) { /* ok */ } }
+function sfxLoad() { if (sfxOn) return; sfxOn = true; try { const A = ac(); SFXN.forEach(n => fetch('zvuky/' + n + '.mp3').then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => A.decodeAudioData(b, ok, no))).then(buf => { SFX[n] = buf; sndLbl(); }).catch(() => { /* лишиться синтез */ })); } catch (e) { /* ok */ } }
 document.addEventListener('pointerdown', sfxLoad, { once: true }); document.addEventListener('keydown', sfxLoad, { once: true });
+function sndLbl() { const e = document.getElementById('sndi'); if (!e) return; const k = Object.keys(SFX).length; e.textContent = !sound ? 'звук вимкнено' : k >= SFXN.length ? 'звук: справжній ✓' : sfxOn ? 'звук: вантажиться… ' + k + '/' + SFXN.length : 'звук: натисніть будь-де'; }
 function play(n, vol, at) { if (!sound || !SFX[n]) return false; try { const A = ac(), s = A.createBufferSource(), g = A.createGain(); s.buffer = SFX[n]; g.gain.value = vol == null ? 1 : vol; s.connect(g); g.connect(A.destination); s.start(A.currentTime + (at || 0)); return true; } catch (e) { return false; } }
 const REAL = { ok: ['ok'], no: ['no'], time: ['time'], tick: ['tick', .9], 'tick!': ['tick2'], wheel: ['tick', .7], hint: ['hint'], rise: ['rise', .8], open: ['open', .6] };
 function beep(k) { if (!sound) return; sfxLoad();
@@ -1039,7 +1041,7 @@ document.addEventListener('click', e => {
     case 'tob': phase = 'board'; show('board'); paintBoard(); bcast(); break;
     case 'rgo': if (SAVED) resumeGame(SAVED); break;
     case 'rno': dropGame(); $('#resume').hidden = true; break;
-    case 'snd': sound = !sound; try { localStorage.setItem('svoya.snd', sound ? '1' : '0'); } catch (x) { /* ok */ } $('#snd').textContent = sound ? '🔊' : '🔇'; break;
+    case 'snd': sound = !sound; try { localStorage.setItem('svoya.snd', sound ? '1' : '0'); } catch (x) { /* ok */ } $('#snd').textContent = sound ? '🔊' : '🔇'; sndLbl(); if (sound) { sfxLoad(); setTimeout(() => beep('ok'), 150); } break;
     case 'share': shareLink(); break;
     case 'again': dropGame(); phase = 'lobby'; used = new Set(); drew = false; teams.forEach(t => { t.s = 0; t.h = HINTS; }); show('lobby'); paintLobby(); bcast(); break;
     case 'edit': paintEd(CATS); $('#edov').hidden = false; break;
@@ -1090,6 +1092,7 @@ if (SAVED) { $('#resume').hidden = false; $('#rsm').textContent = SAVED.teams.ma
 importLink();
 const STYL = new URLSearchParams(location.search).get('styl');
 document.body.classList.add('st-' + (STYL === 'tv' || STYL === 'vatra' ? STYL : 'plast'));   /* стиль сайту — головний (власник, 02.11.2026) */
+$('#sndt').addEventListener('click', e => { e.preventDefault(); sfxLoad(); setTimeout(() => { beep('ok'); sndLbl(); }, 300); });
 paintLobby(); paintTop(); startNet();
 window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
