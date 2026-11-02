@@ -207,7 +207,7 @@ body.st-plast .toast,body.st-vatra .toast{background:var(--card2);border-color:v
       <div class="lbl">Як граємо</div>
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
-      <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 02.11 23:40</p>
+      <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 02.11 23:55</p>
       <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
         <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px">🖨 Шпаргалка з відповідями</button></div></div></div>
     </div>
@@ -470,7 +470,7 @@ function tada() { [523.25, 659.25, 783.99].forEach((f, i) => bell(f, i * 0.09, 0
 function sparkle() { [1568, 1976, 2349, 2637, 3136].forEach((f, i) => bell(f, i * 0.06, 0.6, 0.08)); }
 function fanfare() { [[392, 0], [523.25, .16], [659.25, .32], [783.99, .48], [659.25, .68], [783.99, .8]].forEach(([f, t]) => bell(f, t, .7, .17)); [523.25, 659.25, 783.99, 1046.5].forEach(f => bell(f, 1.0, 2.2, .12)); }
 /* справжні звуки — SFX Kit (Wyzowl, CC0 — вільні, можна без підпису): zvuky/*.mp3; синтез нижче — запасний, поки не завантажились */
-const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'popper', 'applause', 'fireworks', 'confetti'];
+const SFX = {}, SFXN = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'hint', 'rise', 'tada', 'clap', 'applause', 'fireworks'];
 let sfxOn = false;
 function sfxLoad() { if (sfxOn) return; sfxOn = true; try { const A = ac(); SFXN.forEach(n => fetch('zvuky/' + n + '.mp3').then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => A.decodeAudioData(b, ok, no))).then(buf => { SFX[n] = buf; sndLbl(); }).catch(() => { /* лишиться синтез */ })); } catch (e) { /* ok */ } }
 document.addEventListener('pointerdown', sfxLoad, { once: true }); document.addEventListener('keydown', sfxLoad, { once: true });
@@ -478,8 +478,10 @@ function sndLbl() { const e = document.getElementById('sndi'); if (!e) return; c
 function play(n, vol, at) { if (!sound || !SFX[n]) return false; try { const A = ac(), s = A.createBufferSource(), g = A.createGain(); s.buffer = SFX[n]; g.gain.value = vol == null ? 1 : vol; s.connect(g); g.connect(A.destination); s.start(A.currentTime + (at || 0)); return true; } catch (e) { return false; } }
 const REAL = { ok: ['ok'], no: ['no'], time: ['time'], tick: ['tick', .9], 'tick!': ['tick2'], wheel: ['tick', .7], hint: ['hint'], rise: ['rise', .8], open: ['open', .6] };
 function beep(k) { if (!sound) return; sfxLoad();
-  if (k === 'tada') { if (play('tada')) { play('popper', .7, .05); return; } }
-  else if (k === 'fin') { if (play('popper', .9)) { play('confetti', .7, .2); return; } }
+  if (k === 'tada') { if (play('tada')) return; }
+  else if (k === 'p3') { if (play('clap', .45)) return; }
+  else if (k === 'p2') { if (play('clap', .8)) return; }
+  else if (k === 'fin') { if (play('fireworks', .7)) { play('applause', .9, .9); play('fireworks', .45, 2.3); return; } }
   else if (REAL[k] && play(REAL[k][0], REAL[k][1])) return;
   if (k === 'open' || k === 'rise') return;
   try {
@@ -521,8 +523,8 @@ function finish() {
   const P = [...document.querySelectorAll('#pod .p')], avail = Math.max(120, $('#pod').clientHeight - 130), rise = el => { el.classList.add('up'); el.querySelector('.bl').style.height = Math.round(avail * el.querySelector('.bl').dataset.h / 100) + 'px'; countUp(el.querySelector('.sc2')); beep('rise'); };
   if (!fresh || matchMedia('(prefers-reduced-motion: reduce)').matches) { P.forEach(rise); B.classList.add('show'); return; }
   const by = pl => P.filter(el => +el.dataset.pl === pl);
-  finT.push(setTimeout(() => by(3).forEach(rise), 500), setTimeout(() => by(2).forEach(rise), 1400),
-    setTimeout(() => { by(1).forEach(rise); B.classList.add('show'); beep('fin'); confetti(wn.map(t => t.c)); }, 2500));
+  finT.push(setTimeout(() => { by(3).forEach(rise); if (by(3).length) beep('p3'); }, 500), setTimeout(() => { by(2).forEach(rise); if (by(2).length) beep('p2'); }, 1600),
+    setTimeout(() => { by(1).forEach(rise); B.classList.add('show'); beep('fin'); confetti(wn.map(t => t.c)); }, 3000));
 }
 function countUp(el) { const end = +el.dataset.s, t0 = performance.now(), d = 900; const f = now => { const k = Math.min(1, (now - t0) / d); el.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))); if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); }
 function confetti(cols) {   /* свято: конфеті + феєрверки на фоні + оплески (≈14 с або поки не вийшли з фіналу) */
@@ -530,14 +532,14 @@ function confetti(cols) {   /* свято: конфеті + феєрверки �
   const pick = () => C[Math.floor(Math.random() * C.length)];
   const mk = (y0) => ({ x: Math.random() * W, y: y0, vx: (Math.random() - .5) * 2.4, vy: 1.6 + Math.random() * 3, r: Math.random() * 6.28, vr: (Math.random() - .5) * .3, w: 7 + Math.random() * 7, h: 4 + Math.random() * 5, c: pick() });
   const conf = Array.from({ length: 200 }, () => mk(-20 - Math.random() * Hh * .7));
-  const rockets = [], sparks = [], t0 = performance.now(); let nextR = t0 + 300;
+  const rockets = [], sparks = [], t0 = performance.now(), SCHED = [100, 1500, 2600, 3900];
   applause();
   (function f(now) {
     const el = now - t0, on = el < 14000 && phase === 'fin';
     x.clearRect(0, 0, W, Hh);
-    if (on && now > nextR && el < 11000) {   // новий феєрверк
+    if (on && SCHED.length && el >= SCHED[0]) { SCHED.shift();   // феєрверки — у такт із «бах»
       rockets.push({ x: W * (.12 + Math.random() * .76), y: Hh + 10, vy: -(Hh * .011 + Math.random() * Hh * .004), ty: Hh * (.12 + Math.random() * .3), c: pick() });
-      nextR = now + 350 + Math.random() * 550;
+
     }
     for (let k = rockets.length - 1; k >= 0; k--) { const R = rockets[k]; R.y += R.vy; R.vy *= .985;
       x.fillStyle = '#ffe9b0'; x.beginPath(); x.arc(R.x, R.y, 2.4, 0, 6.3); x.fill();
@@ -555,7 +557,7 @@ function confetti(cols) {   /* свято: конфеті + феєрверки �
 }
 /* оплески: сотні коротких «хлопків» шуму, гучність наростає й стихає */
 let NB = null;
-function applause() { if (!sound) return; if (play('applause', .9)) { [.4, 2.6, 5, 7.6].forEach(t => play('fireworks', .55, t)); return; } try { const A = ac();
+function applause() { if (!sound || SFX.applause) return; try {   /* є справжні — звучать у фіналі по місцях */ const A = ac();
   if (!NB) { NB = A.createBuffer(1, A.sampleRate * .03, A.sampleRate); const d = NB.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3); }
   const out = A.createGain(); out.gain.value = .5; out.connect(A.destination); const T = 5.5, t0 = A.currentTime + .05;
   for (let i = 0; i < 520; i++) { const u = Math.random(), t = t0 + u * T, env = Math.sin(Math.PI * Math.min(1, u * 1.15)) ** .7;
