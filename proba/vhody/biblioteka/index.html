@@ -1207,6 +1207,43 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
       return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" style="font:600 ' + fs.toFixed(2) + 'px Oswald,\'Arial Narrow\',sans-serif;fill:' + QR_COL[i][1] + ';fill-opacity:1;stroke:none;text-anchor:middle;dominant-baseline:central;letter-spacing:0">' + l + '</text>'; }).join(''); };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  /* стиль 3 (проба ?dyz=3, дизайн-система «Ігри Пласту»): екран перед грою як у Змагу — картка QR ліворуч. Без ?dyz=3 нічого не змінюється. */
+  const S3 = /[?&]dyz=3(&|$)/.test(location.search);
+  const LOGO3 = () => `<span class="sk3-lg" role="heading" aria-level="1" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>`;
+  const CSS3 = `
+#skob.s3 .sk-top{padding:12px max(24px,calc(50vw - 620px));border-bottom:1px solid #383d44;background:#1b1d21}
+#skob.s3 .sk3-pl{height:38px;width:auto;display:block}
+#skob.s3 .sk-top .sk-btn{border-radius:99px}
+#skob.s3 .sk-stage{padding-left:max(24px,calc(50vw - 620px));padding-right:max(24px,calc(50vw - 620px))}
+#skob .sk3-in{width:100%;display:grid;grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:center;text-align:left}
+#skob .sk3-lg{display:flex;flex-direction:column;align-items:flex-start}
+#skob .sk3-lg small{font:600 18px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 12px 2px}
+#skob .sk3-lg .w{display:flex;align-items:center;gap:17px}
+#skob .sk3-lg svg{width:56px;height:56px;flex:none}
+#skob .sk3-lg b{font:600 72px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:3px}
+#skob .sk3-r .sk3-hand{margin:16px 0 0;font:500 32px/1.1 Caveat,'Segoe Print',cursive;color:#2fd2c0}
+#skob .sk3-r h2{margin:26px 0 0;font:600 34px/1.1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.01em}
+#skob .sk3-r p{margin:8px 0 0;color:#a0a8b2;font-size:17px;max-width:56ch}
+#skob .sk3-r .btns{display:flex;gap:10px;margin-top:26px;justify-content:flex-start}
+#skob .sk3-r .sk-btn{border-radius:12px}
+#skob .sk3-r .sk-btn.main{min-height:54px;padding:0 28px;font-size:18px;font-weight:700}
+#skob-lobby.inl{position:static;inset:auto;z-index:auto;display:block;padding:0;background:none}
+#skob-lobby.inl .box{width:340px;max-height:none;overflow:visible;padding:20px 22px;border-radius:18px;background:#1f2328;border:1px solid #383d44;border-top:4px solid #ffc247;box-shadow:none;text-align:center}
+#skob-lobby.inl .box::before{content:"Гравцям";display:block;font:600 24px Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em}
+#skob-lobby.inl .box::after{content:"";display:block}
+#skob-lobby.inl .x,#skob-lobby.inl>.box>.sk-logo,#skob-lobby.inl .btns,#skob-lobby.inl .note,#skob-lobby.inl .or,#skob-lobby.inl .lbl{display:none}
+#skob-lobby.inl .row{display:flex;flex-direction:column;gap:0;margin:0}
+#skob-lobby.inl .s1{order:-1;margin:2px 0 12px;font:400 15px 'Source Sans 3',sans-serif;color:#a0a8b2}
+#skob-lobby.inl .steps{display:flex;flex-direction:column}
+#skob-lobby.inl .qr{order:0;width:240px;margin:0 auto;border-radius:14px;box-shadow:none}
+#skob-lobby.inl .url{margin-top:12px;font:600 15px 'Source Sans 3',sans-serif;color:#cfd5dc;letter-spacing:0}
+#skob-lobby.inl .code{font-size:54px;margin-top:4px}
+#skob-lobby.inl .st{margin-top:6px;font-size:14px}
+#skob-lobby.inl .steps::after{content:"або відкрийте адресу й введіть код";color:#a0a8b2;font-size:14px;margin-top:2px}
+#skob-lobby.inl h3{justify-content:center;font-size:16px;margin:16px 0 8px}
+#skob-lobby.inl .chips{justify-content:center;min-height:0}
+@media (max-width:900px){#skob .sk3-in{grid-template-columns:1fr}#skob .sk3-lg b{font-size:52px}#skob-lobby.inl .box{width:100%}}
+`;
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
 
   const CSS = `
@@ -1341,7 +1378,7 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
 @media (prefers-reduced-motion:reduce){#skob *,#skob-lobby *{animation:none!important;transition:none!important}}
 `;
   let cssDone = false;
-  function injectCss() { if (cssDone) return; cssDone = true; const s = document.createElement('style'); s.id = 'skob-css'; s.textContent = CSS; document.head.appendChild(s); }
+  function injectCss() { if (cssDone) return; cssDone = true; const s = document.createElement('style'); s.id = 'skob-css'; s.textContent = CSS + (S3 ? CSS3 : ''); document.head.appendChild(s); }
 
   /* ================= звʼязок ================= */
   let Peer = null, peer = null, code = '', net = 'off', netMsg = '', att = 0, retryT = 0, idRetry = 0, joinSeq = 0;
@@ -1556,7 +1593,8 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
     injectCss(); closeGame(true);
     G = { src: list, list: o.keepOrder ? list.slice() : shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
-    gEl.innerHTML = `<div class="sk-top">${LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
+    if (S3) gEl.classList.add('s3');
+    gEl.innerHTML = `<div class="sk-top">${S3 ? (window.SKOB_PLAST ? `<img class="sk3-pl" src="${window.SKOB_PLAST}" alt="Пласт">` : '') : LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
       <button type="button" class="sk-btn" data-k="x" aria-label="Завершити гру">✕</button></div><div class="sk-stage"></div><div class="sk-hint"></div><button type="button" class="sk-btn sk-next" data-k="next">Далі →</button>`;
     document.body.appendChild(gEl);
@@ -1584,6 +1622,12 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
   function gIntro() {
     G.ph = 'intro'; phoneView = { t: 'wait' }; bcast();
     const n = online().length, had = [...players.values()].some(P => P.score > 0);
+    if (S3) {   /* стиль 3: картка «Гравцям» ліворуч, назва й «Почати» праворуч */
+      const st = gStage();
+      st.innerHTML = `<div class="sk3-in"><div class="sk3-j"></div><div class="sk3-r">${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.${n ? '' : ' Без телефонів — відповідайте вголос.'}</p>
+        <div class="btns"><button type="button" class="sk-btn main" data-k="start">Почати</button></div></div></div>`;
+      lobby(st.querySelector('.sk3-j'));
+    } else
     gStage().innerHTML = `<div class="sk-intro">${LOGO()}${G.o.title ? `<h2 class="sk-gt">${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.<br>${n ? `На звʼязку ${n} ${plural(n, 'телефон', 'телефони', 'телефонів')}.${had ? ' Бали з гутірки теж рахуються.' : ''}` : 'Грати можна з телефонами — або просто на екрані, відповідаючи вголос.'}</p>
       <div class="btns"><button type="button" class="sk-btn main" data-k="start">Почати</button><button type="button" class="sk-btn" data-k="lobby">Запросити гравців</button></div></div>`;
     hint('');
@@ -1644,7 +1688,7 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
   /* ================= лобі ================= */
   let L = null, killArm = '';
   function playerUrl() { return window.SKOB_URL || (location.origin + '/skob/'); }
-  function lobby() {
+  function lobby(host) {
     injectCss(); startNet();
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
@@ -1669,10 +1713,12 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
         else if (b.dataset.ok) approve(b.dataset.ok);
       });
     }
+    if (host && host.nodeType === 1) { L.classList.add('inl'); host.append(L); L.hidden = false; paintLobby(); pulse(); return; }   /* стиль 3: картка в екрані перед грою */
+    if (L.parentNode !== document.body) { L.classList.remove('inl'); document.body.appendChild(L); }
     L.hidden = false; paintLobby(); pulse();
     setTimeout(() => { try { L.querySelector('[data-k=close].main').focus(); } catch (e) { /* ok */ } }, 50);
   }
-  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); pulse(); }
+  function closeLobby() { if (L) L.hidden = true; killArm = ''; paintReq(); pulse(); if (S3 && G && G.ph === 'intro') gIntro(); }
   let qrFor = '';
   function paintLobby() {
     if (!L || L.hidden) return;
@@ -1691,7 +1737,7 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
 
   /* ================= клавіші ================= */
   function key(e) {
-    if (L && !L.hidden) { if (['Escape', 'Enter'].includes(e.key) && !(e.target && e.target.closest && e.target.closest('#skob-lobby button:not(.main)'))) { e.preventDefault(); closeLobby(); } return true; }
+    if (L && !L.hidden && !L.classList.contains('inl')) { if (['Escape', 'Enter'].includes(e.key) && !(e.target && e.target.closest && e.target.closest('#skob-lobby button:not(.main)'))) { e.preventDefault(); closeLobby(); } return true; }
     if (!G) return false;
     const k = e.key;
     if (k === 'Escape') { e.preventDefault(); gEl.querySelector('.sk-sure').classList.toggle('on'); return true; }
@@ -1700,13 +1746,13 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
     else if (G.ph === 'q' && !G.pl && /^[1-4]$/.test(k) && R && R.ph === 'ans') { R.pick = +k - 1; R.reveal(); }
     return true;
   }
-  document.addEventListener('keydown', e => { if ((L && !L.hidden) || G) { if (!e.defaultPrevented) key(e); e.stopImmediatePropagation(); } }, true);
+  document.addEventListener('keydown', e => { if ((L && !L.hidden && !L.classList.contains('inl')) || G) { if (!e.defaultPrevented) key(e); e.stopImmediatePropagation(); } }, true);
 
   /* ================= пульт ведучого =================
      view() — що зараз у грі (для телефона ведучого); cmd(k) — команда з пульта:
      next · lobby · lobby-close · reveal · pick:N · again · quit · ok:TOK · x:TOK · off */
   function view() {
-    const v = { lobby: !!(L && !L.hidden), on: online().length, code: code || '', url: window.SKOB_SHORT || playerUrl().replace(/^https?:\/\//, '').replace(/\/$/, ''), net,
+    const v = { lobby: !!(L && !L.hidden && !L.classList.contains('inl')), on: online().length, code: code || '', url: window.SKOB_SHORT || playerUrl().replace(/^https?:\/\//, '').replace(/\/$/, ''), net,
       pl: accepted().sort((a, b) => a.seq - b.seq).slice(0, 40).map(P => [P.name, P.on ? 1 : 0, P.tok]), pend: [...players.values()].filter(P => P.pending).map(P => [P.name, P.tok]) };
     if (!G) return v;
     v.g = G.ph; v.i = G.i; v.n = G.list.length; v.T = G.o.T || 20;

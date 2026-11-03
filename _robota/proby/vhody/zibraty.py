@@ -33,7 +33,9 @@ if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     # тимчасова смужка «Чернетка» (з 22.10.2026, за рішенням власника; щоб прибрати — замінити на '')
     src = rep(src, '<div class="ribbon">Макет для перегляду. Справжній сайт не змінено. <a href="/proba/">← Усі макети</a></div>', '<div class="ribbon">Чернетка. Сайт поки не відкритий для всіх і може бути перероблений.</div>')
     i = src.index('<div id="cmpk"'); j = src.index('</script>', i) + len('</script>'); src = src[:i] + src[j:]   # перемикач порівняння смужок — лише в макеті
-    import re; src = re.sub(r'/\*PG\*/.*?/\*/PG\*/\n|\s*<!--PG-->.*?<!--/PG-->', '', src, flags=re.S)   # «Від Пласту» — поки лише в макеті (31.10.2026, чекає згоди власника)
+    import re; src = re.sub(r'/\*PG\*/.*?/\*/PG\*/\n|\s*<!--PG-->.*?<!--/PG-->', '', src, flags=re.S)
+    src = re.sub(r'/\*IG\*/.*?/\*/IG\*/\n?|<!--IG-->.*?<!--/IG-->', '', src, flags=re.S)   # «Виховники → Ігри» — поки лише в макеті (03.11.2026, чекає згоди власника)
+    assert 'IHRY_VYH' not in src and 'ihry.vidkryty' not in src   # «Від Пласту» — поки лише в макеті (31.10.2026, чекає згоди власника)
     src = rep(src, '<title>Пластова бібліотека — макет</title>', '<title>Пластова бібліотека</title>')
     src = rep(src, ' <b>У макеті код — 1912.</b>', '')
     src = src.replace("'proba-vhody:", "'gutirky:")
@@ -48,6 +50,9 @@ if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     for g in ('budova-la-1', 'keramika-1'):   # нові гутірки: gutirky/…, yunakam/…, skob/
         subprocess.run([sys.executable, str(ROB / 'gutirky' / g / 'zibraty.py'), 'sait', '.'], check=True)
     sys.exit(0)
+import re
+IG_F = ROB / 'ihry-vyh' / 'ihry.enc.json'   # «Ігри» виховників — лише зашифровані (див. _robota/ihry-vyh/ihry.py)
+src = re.sub(r'/\*IHRY_VYH\*/.*?/\*/IHRY_VYH\*/', lambda m: json.dumps(json.loads(IG_F.read_text(encoding='utf-8')) if IG_F.exists() else {'v': 1, 'salt': '', 'it': 1, 'ihry': []}, ensure_ascii=False, separators=(',', ':')), src, count=1, flags=re.S)
 out = SITE / 'proba' / 'vhody' / 'index.html'
 out.parent.mkdir(parents=True, exist_ok=True)
 out.write_text(src, encoding='utf-8')

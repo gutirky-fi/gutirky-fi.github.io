@@ -406,6 +406,33 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 .lvx .none{margin:0 0 12px;color:var(--mut);font-size:15px}
 .lvx .src{display:block;margin:0 0 12px;color:var(--mut);font-size:13px}
 /*/PG*/
+/*IG*/
+/* «Ігри» у виховників (макет 03.11.2026): підготовлені ігри — зашифровані кодом виховників (_robota/ihry-vyh/) */
+.ig-list{display:flex;flex-direction:column;gap:12px;margin:0 0 40px}
+.ig{display:grid;grid-template-columns:56px 1fr auto;gap:18px;align-items:center;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.ig .lg{width:56px;height:56px;display:grid;place-items:center;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.ig .lg svg{width:34px;height:34px}
+.ig b{display:block;font:700 20px/1.2 var(--txt);color:var(--ink)}
+.ig .m{display:block;margin-top:4px;color:var(--mut);font-size:15px}
+.ig .tg{display:inline-block;margin-top:8px;padding:2px 10px;border-radius:99px;font-size:13px;font-weight:700;border:1px solid var(--ln);color:var(--body)}
+.ig .tg.new{border-color:#3daf6e;color:#62cf93}
+.ig .act{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.ig .act a{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:12px;font:700 16px var(--txt);text-decoration:none;border:1px solid var(--ln);color:var(--ink);background:#2a2f35}
+.ig .act a:hover{border-color:#62cf93}
+.ig .act a.go{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}
+.ig .act a.go:hover{background:#4cc07d}
+.ig .igph{display:none;flex-basis:100%;text-align:right;color:var(--mut);font-size:13px}
+.ig-own{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ig-own a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--ln);text-decoration:none;color:var(--ink);font-weight:700}
+.ig-own a:hover{border-color:#62cf93}
+.ig-own a svg{width:28px;height:28px;flex:none}.ig-own a small{display:block;color:var(--mut);font-weight:600;font-size:13px}
+.ig-kod{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);margin-bottom:40px}
+.ig-kod p{flex-basis:100%;margin:0;color:var(--body)}
+.ig-kod input{width:140px;min-height:48px;padding:0 14px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--ink);font:700 20px var(--txt);letter-spacing:.2em}
+.ig-empty{color:var(--mut);margin:0 0 40px}
+@media (max-width:700px){.ig{grid-template-columns:44px 1fr;gap:12px}.ig .lg{width:44px;height:44px}.ig .lg svg{width:26px;height:26px}.ig .act{grid-column:1/-1}.ig .act a.go{flex:1}.ig .igph{display:block;text-align:left}.ig-own{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.vtabs.v3{grid-template-columns:repeat(3,1fr)}.vtabs.v3 button{padding:0 6px}}
+/*/IG*/
 </style>
 </head>
 <body>
@@ -521,6 +548,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
         <div class="vtabs" role="tablist" aria-label="Для виховників">
           <button type="button" role="tab" id="t-g" aria-controls="p-g" aria-selected="true">Гутірки<span class="n" id="t-g-n"></span></button>
           <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог<span class="wd"> вмілостей</span><span class="n" id="t-k-n"></span></button>
+          <!--IG--><button type="button" role="tab" id="t-i" aria-controls="p-i" aria-selected="false" tabindex="-1">Ігри<span class="n" id="t-i-n"></span></button><!--/IG-->
         </div>
         <button class="leave" type="button" id="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button>
       </div>
@@ -549,6 +577,12 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
         <p class="empty" id="vkempty" hidden></p>
         <button class="more" type="button" id="vkmore" hidden></button>
       </section>
+      <!--IG--><section class="sec" id="p-i" role="tabpanel" aria-labelledby="t-i" hidden>
+        <h2 id="h-i">Ігри<small>підготовлені для вашого гуртка — відкриваються одразу з питаннями</small></h2>
+        <div id="ig-box"></div>
+        <h2>Скласти свою гру<small>з нуля, своїми питаннями — це бачать і юнаки</small></h2>
+        <div class="ig-own" id="ig-own"></div>
+      </section><!--/IG-->
       <section class="sec" aria-labelledby="h-also">
         <h2 id="h-also">Також для вас</h2>
         <div class="tiles" id="also"></div>
@@ -859,12 +893,12 @@ function backToRow() {
 function renderVyh() {
   const inn = isIn();
   $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn; $('#vstats').hidden = !inn;
-  if (inn) { $('#t-g-n').textContent = GUT.length; $('#t-k-n').textContent = SKILLS.length; }
+  if (inn) { $('#t-g-n').textContent = GUT.length; $('#t-k-n').textContent = SKILLS.length; /*IG*/$('#t-i-n').textContent = IHRY.ihry.length;/*/IG*/ }
   $('#lk').innerHTML = inn ? OPEN : LOCK;
   if (!inn) return;
   renderFeatAll();
   renderGCards();
-  $('#also').innerHTML = ALSO.map(([h, t, s, go, c]) => (h.startsWith('#') || h.includes('/'))
+  $('#also').innerHTML = ALSO/*IG*/.filter(a => a[0] !== 'skob' && a[0] !== 'bingo/')/*/IG*/.map(([h, t, s, go, c]) => (h.startsWith('#') || h.includes('/'))
     ? `<a class="tile${h === '#vsi' ? ' all' : ''}" href="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></a>`
     : `<button class="tile${h === '#vsi' ? ' all' : ''}" type="button" data-also="${h}" style="--a:${c};--ab:${c === COL.yun ? COLB.yun[0] : c}"><b>${esc(t)}</b><span>${esc(s)}</span><span class="go">${esc(go)}</span></button>`).join('');
   showTab(VT);
@@ -955,15 +989,65 @@ $('#gcards').addEventListener('click', e => {
   if (e.target.closest('a, .gr-det')) return;            // посилання й розкритий вміст — не перемикають
   const c = e.target.closest('.grow'); if (c) toggleG(+c.dataset.gi);
 });
+/*IG*/
+/* ---------- «Ігри» у виховників ----------
+   Підготовлені ігри лежать на сайті ЗАШИФРОВАНІ кодом виховників (_robota/ihry-vyh/ihry.py; PBKDF2 → AES-GCM).
+   Код, який виховник ввів на вході, памʼятається на пристрої (K_KOD) і розшифровує ігри. «Грати» — передає питання Змагу через localStorage. */
+const IHRY = /*IHRY_VYH*/{ v: 1, salt: '', it: 1, ihry: [] }/*/IHRY_VYH*/;
+const K_KOD = 'proba-vhody:kod', K_GRANO = 'proba-vhody:ihry-vidkryvaly';
+const IG_URL = { zmag: '../svoya-hra/?dyz=3' };
+const IG_NAME = { zmag: 'Інтелектуальний змаг' };
+const IG_IC = {
+  zmag: '<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg>',
+  bingo: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>',
+  opyt: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg>',
+  skob: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>'
+};
+const IG_OWN = [['zmag', '../svoya-hra/?dyz=3', 'Змаг', 'свої теми й питання'], ['bingo', '../bingo/?dyz=3', 'Бінго', 'числа або слова'], ['opyt', '../opytuvannia/?dyz=3', 'Опитування', 'питання до гуртка'], ['skob', '../skob-hra/?dyz=3', 'Потужний СКОБ!', 'є в кожній гутірці']];
+const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
+let IG = null;   // розшифровані ігри
+const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function igOpen(kod) {
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(kod), 'PBKDF2', false, ['deriveKey']);
+  const k = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: ub(IHRY.salt), iterations: IHRY.it, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  return Promise.all(IHRY.ihry.map(async e => JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ub(e.iv) }, k, ub(e.ct))))));
+}
+async function renderIhry() {
+  const box = $('#ig-box');
+  $('#ig-own').innerHTML = IG_OWN.map(([g, u, n, d]) => `<a href="${u}">${IG_IC[g]}<span>${esc(n)}<small>${esc(d)}</small></span></a>`).join('');
+  if (!IHRY.ihry.length) { box.innerHTML = '<p class="ig-empty">Поки що підготовлених ігор немає.</p>'; return; }
+  if (!IG) {
+    const kod = store.get(K_KOD);
+    if (kod) { box.innerHTML = '<p class="ig-empty">Відкриваємо ігри…</p>'; try { IG = await igOpen(String(kod)); } catch (e) { IG = null; } }
+    if (!IG) {   /* увійшли раніше (код тоді не запамʼятовувався) або код змінився */
+      box.innerHTML = '<form class="ig-kod" id="ig-kod"><p>Щоб відкрити ігри на цьому пристрої, введіть код виховників ще раз.</p><input inputmode="numeric" maxlength="12" aria-label="Код виховників" autocomplete="off"><button class="btn" type="submit">Відкрити</button></form>';
+      $('#ig-kod').addEventListener('submit', e => { e.preventDefault(); store.set(K_KOD, e.target.querySelector('input').value.replace(/\s/g, '')); renderIhry(); });
+      if (kod) box.querySelector('p').textContent = 'Код не підходить до ігор. Введіть код виховників ще раз.';
+      return;
+    }
+  }
+  const was = store.get(K_GRANO) || {};
+  box.innerHTML = '<div class="ig-list">' + IG.map((g, i) => `<div class="ig"><div class="lg">${IG_IC[g.gra] || ''}</div><div><b>${esc(g.nazva)}</b><span class="m">${esc([IG_NAME[g.gra], g.opys, g.vik].filter(Boolean).join(' · '))}</span>${was[g.id] ? `<span class="tg">Відкривали ${esc(was[g.id])}</span>` : '<span class="tg new">Нова</span>'}</div>
+    <div class="act"><a class="go" href="${IG_URL[g.gra]}" data-ig="${i}">${PLAY} Грати</a><a href="${IG_URL[g.gra]}" data-ig="${i}" data-druk="1" target="_blank" rel="noopener">Друк відповідей</a><span class="igph">Грати — з ноутбука, який показує на екран</span></div></div>`).join('') + '</div>';
+}
+$('#ig-box').addEventListener('click', e => {
+  const a = e.target.closest('[data-ig]'); if (!a || !IG) return;
+  const g = IG[+a.dataset.ig];
+  try { localStorage.setItem('ihry.vidkryty', JSON.stringify({ nazva: g.nazva, c: g.c, druk: !!a.dataset.druk, t: Date.now() })); } catch (x) { e.preventDefault(); return; }
+  if (!a.dataset.druk) { const was = store.get(K_GRANO) || {}, d = new Date(); was[g.id] = d.getDate() + '.' + String(d.getMonth() + 1).padStart(2, '0'); store.set(K_GRANO, was); }
+});
+document.querySelector('.vtabs').classList.add('v3');
+/*/IG*/
 let VT = 'g';   // відкрита вкладка: g — гутірки, k — каталог
 function showTab(t, focus) {
   VT = t;
-  [['g', '#t-g', '#p-g'], ['k', '#t-k', '#p-k']].forEach(([k, tb, pn]) => { const on = k === t; $(tb).setAttribute('aria-selected', String(on)); $(tb).tabIndex = on ? 0 : -1; $(pn).hidden = !on; });
+  document.querySelectorAll('.vtabs [role=tab]').forEach(b => { const on = b.id.slice(2) === t; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; $('#' + b.getAttribute('aria-controls')).hidden = !on; });
   if (t === 'k') { renderVChips(); renderVGrid(); }
-  if (focus) $(t === 'g' ? '#t-g' : '#t-k').focus();
+  /*IG*/if (t === 'i') renderIhry();/*/IG*/
+  if (focus) $('#t-' + t).focus();
 }
-$('.vtabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) showTab(b.id === 't-k' ? 'k' : 'g'); });
-$('.vtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); showTab(VT === 'g' ? 'k' : 'g', true); } });
+$('.vtabs').addEventListener('click', e => { const b = e.target.closest('[role=tab]'); if (b) showTab(b.id.slice(2)); });
+$('.vtabs').addEventListener('keydown', e => { if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const ids = [...document.querySelectorAll('.vtabs [role=tab]')].map(b => b.id.slice(2)), i = ids.indexOf(VT); showTab(ids[(i + (e.key === 'ArrowRight' ? 1 : ids.length - 1)) % ids.length], true); } });
 SKILLS.forEach(s => { const l = s.levels.find(x => GV[x.slug]); s.gv = l ? { lvl: lvName(s, l), list: GV[l.slug] } : null; });
 const covN = g => g.req.filter(r => r[1] === 'full' || r[1] === 'part').length;
 const ICO = { full: ['✓', 'є'], part: ['◐', 'частково'], none: ['○', 'немає'], task: ['✎', 'юнак виконує сам'] };
@@ -1031,10 +1115,10 @@ $('#vkgrid').addEventListener('click', e => { const b = e.target.closest('[data-
 $('#lockbox').addEventListener('submit', e => {
   e.preventDefault();
   const v = $('#code').value.replace(/\s/g, '');
-  if (v === CODE) { UNLOCK = true; store.set(K_CODE, true); $('#cerr').hidden = true; $('#code').value = ''; renderVyh(); }
+  if (v === CODE) { UNLOCK = true; store.set(K_CODE, true); /*IG*/store.set(K_KOD, v);/*/IG*/ $('#cerr').hidden = true; $('#code').value = ''; renderVyh(); }
   else { $('#cerr').hidden = false; $('#code').select(); }
 });
-$('#leave').addEventListener('click', () => { UNLOCK = false; store.del(K_CODE); try { history.pushState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; } route(); });   /* вийшов — на головну, не на екран з кодом */
+$('#leave').addEventListener('click', () => { UNLOCK = false; store.del(K_CODE); /*IG*/store.del(K_KOD); IG = null;/*/IG*/ try { history.pushState(null, '', location.pathname + location.search); } catch (e) { location.hash = ''; } route(); });   /* вийшов — на головну, не на екран з кодом */
 $('#also').addEventListener('click', e => {
   if (!e.target.closest('[data-also=skob]')) return;
   sheet(`<h3 id="sh-t">Потужний СКОБ!</h3><p class="sub">Своя гра на зразок Kahoot — без реєстрації й реклами, нічого не збирає.</p>
