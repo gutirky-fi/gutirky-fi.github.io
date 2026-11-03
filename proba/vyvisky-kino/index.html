@@ -30,6 +30,12 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
 #sv small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
 #sv h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
 #sv p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:420px;opacity:.9}
+/* ескіз */
+#sk .sh{background:linear-gradient(90deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,.35) 32%,transparent 55%)}
+#sk .tx{left:var(--g);bottom:clamp(50px,15vh,140px);max-width:min(480px,80vw)}
+#sk small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sk h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#sk p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:340px;opacity:.9}
 /* 2 — «всередині світла» */
 #s2 .ph{background-size:620%;background-position:81% 56%;filter:blur(5px) brightness(.9) saturate(1.15)}
 #s2 .sh{background:radial-gradient(80% 90% at 60% 40%,transparent 20%,rgba(5,5,5,.7)),linear-gradient(0deg,rgba(5,5,5,.75),transparent 55%)}
@@ -52,13 +58,15 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
   <div class="tx"><h1>Від знаку<br>до вивіски</h1><p>Як простий малюнок стає знаком, а знак — вивіскою, що світиться на стіні.</p></div></section>
 <section class="sl" id="sv" data-o="70% 31%"><div class="ph" style="background-image:url(k2.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина перша</small><h2>Знак,<br>що говорить</h2><p>Скільки вивісок ви бачили сьогодні дорогою сюди? А яку запамʼятали?</p></div></section>
-<section class="sl" id="s2"><div class="ph"></div><div class="sh"></div>
-  <div class="tx"><div class="n">04</div><div><small>Частина четверта</small><h2>Як вивіска<br>починає світитися</h2></div></div></section>
+<section class="sl" id="sk" data-o="64% 55%"><div class="ph" style="background-image:url(k3.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина друга</small><h2>Хороший<br>знак</h2><p>Простий. Впізнаваний. Видно здалеку. Працює в одному кольорі.</p></div></section>
 <section class="sl" id="s3"><div class="ph"></div><div class="sh"></div>
   <div class="tx"><q>Хороший знак упізнають за секунду — навіть здалеку.</q><p>Тому в ньому мало деталей і великі прості форми.</p></div></section>
+<section class="sl" id="s2"><div class="ph"></div><div class="sh"></div>
+  <div class="tx"><div class="n">04</div><div><small>Частина четверта</small><h2>Як вивіска<br>починає світитися</h2></div></div></section>
 <div class="top"><b>Пласт у Фінляндії</b><b>Гутірка для юнацтва · 12–17 років</b></div>
 <div class="bar t"></div><div class="bar b"></div><div class="flash"></div><div class="grain"></div>
-<div class="nav"><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
+<div class="nav"><i></i><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
 <script src="../../lib/gsap-3/gsap.min.js"></script>
 <script src="../../lib/gsap-3/SplitText.min.js"></script>
 <script>
@@ -93,7 +101,8 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     return t;
   }
   /* 1 → 2: камера «влітає» в лампочку, спалах, і ми — всередині світла */
-  function into(a, b) {
+  function into(a, b, col = '#fff3dc') {
+    gsap.set('.flash', { background: col });
     const t = gsap.timeline(), ph = S[a].querySelectorAll('.ph');
     gsap.set(ph, { transformOrigin: S[a].dataset.o || '81% 56%' });
     t.to(S[a].querySelector('.tx'), { opacity: 0, y: -20, filter: 'blur(8px)', duration: .5, ease: 'power2.in' })
@@ -105,13 +114,14 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     return t;
   }
   /* швидка панорама (whip pan): кадр «злітає» вбік з розмиттям руху, новий влітає з другого боку */
-  function whip(a, b, dir) {
+  function whip(a, b, dir, ax = 'x') {
+    const P = ax === 'x' ? 'xPercent' : 'yPercent';
     const t = gsap.timeline(), A = S[a], B = S[b];
     t.to(A.querySelector('.tx'), { opacity: 0, x: -40 * dir, duration: .35, ease: 'power2.in' })
-     .to(A, { xPercent: -100 * dir, filter: 'blur(18px)', duration: .9, ease: 'expo.inOut' }, .15)
+     .to(A, { [P]: -100 * dir, filter: 'blur(18px)', duration: .9, ease: 'expo.inOut' }, .15)
      .add(() => { B.style.visibility = 'visible'; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); }, .15)
-     .fromTo(B, { xPercent: 100 * dir, filter: 'blur(18px)' }, { xPercent: 0, filter: 'blur(0px)', duration: .9, ease: 'expo.inOut' }, .15)
-     .add(() => { A.style.visibility = 'hidden'; gsap.set(A, { xPercent: 0, filter: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1, x: 0 }); })
+     .fromTo(B, { [P]: 100 * dir, filter: 'blur(18px)' }, { [P]: 0, filter: 'blur(0px)', duration: .9, ease: 'expo.inOut' }, .15)
+     .add(() => { A.style.visibility = 'hidden'; gsap.set(A, { xPercent: 0, yPercent: 0, filter: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1, x: 0 }); })
      .add(textIn(b), '-=.35');
     return t;
   }
@@ -129,7 +139,9 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     if (tl) tl.progress(1);
     const a = cur; cur = i;
     if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: 1 }); tl = textIn(i); drift(i); return; }
-    tl = a === -1 ? intro() : Math.abs(a - i) === 1 && Math.min(a, i) === 0 ? whip(a, i, i > a ? 1 : -1) : (a === 1 && i === 2) ? into(a, i) : focus(a, i);
+    const key = S[a] ? S[a].id + '>' + S[i].id : '';
+    tl = a === -1 ? intro() : key === 's1>sv' ? whip(a, i, 1) : key === 'sv>s1' ? whip(a, i, -1) : key === 'sv>sk' ? whip(a, i, 1, 'y') : key === 'sk>sv' ? whip(a, i, -1, 'y')
+      : key === 'sk>s3' ? into(a, i, '#050505') : key === 's3>s2' ? focus(a, i) : focus(a, i);
   }
   addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
   let x0 = null;
