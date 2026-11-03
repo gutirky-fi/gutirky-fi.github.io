@@ -518,6 +518,10 @@ function onConn(c) {
     } else if (!tok) return;
     else if (d.t === 'ping') { const P = players.get(tok); if (P) { P.t = Date.now(); if (!P.on) { P.on = true; paintTop(); } } }
     else if (d.t === 'team') { const P = players.get(tok); if (P && d.team >= 0 && d.team < teams.length) { P.team = d.team; sendTo(tok); paintLobby(); } }
+    else if (d.t === 'rename') {   /* капітан змінює назву — лише якщо ведучий дозволив цій команді і гра ще не почалась */
+      const P = players.get(tok), T = P && teams[P.team];
+      if (T && T.ren && phase === 'lobby') { const nm = String(d.n || '').replace(/\s+/g, ' ').trim().slice(0, 16); if (nm) { const old = T.n; T.n = nm; T.ren = false; paintLobby(); bcast(); toast(old + ' → ' + nm); } }
+    }
     else if (d.t === 'buzz') buzz(tok);
     else if (d.t === 'hint') { const P = players.get(tok); if (P && cur && cur.buzz.length && P.team === teamOf(cur.buzz[0])) useVars(); }
   });
@@ -525,7 +529,7 @@ function onConn(c) {
 }
 function stateFor(tok) {
   const P = players.get(tok) || {};
-  const s = { t: 'st', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, h: t.h, c: teamColor(i) })), me: { name: P.name, team: P.team } };
+  const s = { t: 'st', ph: phase, mode, chooser, teams: teams.map((t, i) => ({ n: t.n, s: t.s, h: t.h, c: teamColor(i), ren: !!t.ren })), me: { name: P.name, team: P.team } };
   if (phase === 'q' && cur) {
     const first = cur.buzz[0];
     s.q = { cat: CATS[cur.c].n, v: VALS[cur.r], open: !cur.done && !first, done: cur.done, lock: P.team >= 0 && cur.wrong.has(P.team),
@@ -757,7 +761,7 @@ let paintLobby = function () {
   $('#modes').innerHTML = Object.entries(MODES).map(([k, [n, d]]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${n}<small>${d}</small></button>`).join('');
   if (document.activeElement && document.activeElement.matches('#teams input')) return;   // не заважати друкувати назву (лише поле; кнопка ✕ теж буває у фокусі — тоді перемальовуємо)
   const cnt = i => [...players.values()].filter(P => P.team === i).length;
-  $('#teams').innerHTML = teams.map((t, i) => `<span class="team" style="--c:${teamColor(i)}"><input data-t="${i}" value="${esc(t.n)}" maxlength="16" aria-label="Назва команди ${i + 1}"><small>${cnt(i) ? '📱 ' + cnt(i) : ''}</small>${teams.length > 2 ? `<button type="button" data-tx="${i}" aria-label="Прибрати команду">✕</button>` : ''}</span>`).join('');
+  $('#teams').innerHTML = teams.map((t, i) => `<span class="team" style="--c:${teamColor(i)}"><input data-t="${i}" value="${esc(t.n)}" maxlength="16" aria-label="Назва команди ${i + 1}"><small>${cnt(i) ? '📱 ' + cnt(i) : ''}</small>${cnt(i) ? `<button type="button" class="ren${t.ren ? ' on' : ''}" data-ren="${i}" aria-pressed="${!!t.ren}" title="${t.ren ? 'Капітан може змінити назву — натисніть, щоб скасувати' : 'Дозволити капітану змінити назву'}" aria-label="Дозволити капітану змінити назву"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button>` : ''}${teams.length > 2 ? `<button type="button" data-tx="${i}" aria-label="Прибрати команду">✕</button>` : ''}</span>`).join('');
   $('#tadd').disabled = teams.length >= 6;
 }
 function scoresHtml(adj) {
@@ -808,6 +812,7 @@ document.addEventListener('click', e => {
   if (b.dataset.c != null) { if (!vedOn()) openQ(+b.dataset.c, +b.dataset.r); return; }   /* з пультом — питання вибирає ведучий на телефоні */
   if (b.dataset.pick != null) { buzz('T' + b.dataset.pick); return; }
   if (b.dataset.adj != null) { teams[+b.dataset.adj].s += +b.dataset.d; paintBoard(); bcast(); return; }
+  if (b.dataset.ren != null) { const T = teams[+b.dataset.ren]; if (T) { T.ren = !T.ren; b.blur(); paintLobby(); bcast(); toast(T.ren ? 'Капітан «' + T.n + '» може змінити назву на телефоні' : 'Дозвіл скасовано'); } return; }
   if (b.dataset.tx != null) { const i = +b.dataset.tx; b.blur(); teams.splice(i, 1); if (chooser === i) { drew = false; chooser = 0; } else if (chooser > i) chooser--;   /* жеребкування стосувалось прибраної команди — скидаємо */ players.forEach(P => { if (P.team === i) P.team = -1; else if (P.team > i) P.team--; }); paintLobby(); bcast(); return; }
   switch (b.id) {
     case 'print': printSheet(); break;

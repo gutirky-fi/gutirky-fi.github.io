@@ -34,6 +34,9 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .tp button{min-height:56px;border-radius:14px;border:2px solid var(--ln);border-left:8px solid var(--c);background:var(--card);font-weight:700;font-size:18px;text-align:left;padding:6px 12px}
 .tp button[aria-pressed=true]{border-color:var(--c);background:color-mix(in srgb,var(--c) 22%,var(--card))}
 .me{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-radius:14px;background:var(--card);border-left:8px solid var(--c)}
+.ren{margin:12px 0 0;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--gd)}
+.ren label{display:block;margin:0 0 8px;font-weight:700;color:var(--gd)}
+.ren .btn{margin-top:10px}
 .me b{font-size:18px}.me span{font:600 28px var(--disp)}
 .me small{display:block;color:var(--mut);font-weight:600}
 .q{margin:14px 0 4px;text-align:center;color:var(--mut);font-weight:700;letter-spacing:.04em;text-transform:uppercase;font-size:14px}
@@ -504,6 +507,9 @@ function render() {
   $('#pick').hidden = true; $('#play').hidden = false;
   $('#me').style.setProperty('--c', T.c);
   $('#me').innerHTML = `<b>${esc(T.n)}<small>${esc(st.me.name || '')} · <a href="#" id="chg" style="color:inherit">змінити команду</a></small></b><span>${T.s}</span>`;
+  { const rn = $('#ren');   /* ведучий дозволив змінити назву команди */
+    if (T.ren && st.ph === 'lobby') { if (!rn) { $('#me').insertAdjacentHTML('afterend', '<div id="ren" class="ren"><label for="ren-i">Ведучий дозволив змінити назву команди</label><input id="ren-i" maxlength="16" autocomplete="off"><button type="button" class="btn" id="ren-ok">Зберегти назву</button></div>'); $('#ren-i').value = T.n; } }
+    else if (rn) rn.remove(); }
   document.body.classList.toggle('cherha', st.mode === 'cherha'); document.body.classList.remove('finph');   /* «Хто вибрав — той відповідає»: кнопка не потрібна */
   const b = $('#bz'), s = $('#st'), Q = st.q;
   b.className = ''; s.className = 'st';
@@ -531,7 +537,9 @@ function render() {
   $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · 💡${t.h}</span>`).join('');
 }
 $('#tp').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; ses.team = +b.dataset.t; save(ses); st.me.team = ses.team; sendc({ t: 'team', team: ses.team }); render(); });
-$('#play').addEventListener('click', e => { if (e.target.id === 'hn') { sendc({ t: 'hint' }); e.target.disabled = true; return; } if (e.target.id === 'chg') { e.preventDefault(); st.me.team = -1; render(); } });
+const sendRen = () => { const v = ($('#ren-i') || {}).value; if (!v || !v.trim()) return; sendc({ t: 'rename', n: v }); $('#ren-ok').disabled = true; $('#ren-ok').textContent = 'Надсилаємо…'; };
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'ren-i') sendRen(); });
+$('#play').addEventListener('click', e => { if (e.target.id === 'ren-ok') { sendRen(); return; } if (e.target.id === 'hn') { sendc({ t: 'hint' }); e.target.disabled = true; return; } if (e.target.id === 'chg') { e.preventDefault(); st.me.team = -1; render(); } });
 $('#bz').addEventListener('pointerdown', e => { e.preventDefault(); if ($('#bz').disabled) return; sendc({ t: 'buzz' }); $('#bz').disabled = true; if (navigator.vibrate) navigator.vibrate(80); });
 $('#bz').addEventListener('click', e => { if (e.detail === 0 && !$('#bz').disabled) { sendc({ t: 'buzz' }); $('#bz').disabled = true; } });   // клавіатура
 function join() {

@@ -92,3 +92,7 @@ body.s3 .bars .bar .n small{font:600 .55em var(--txt);color:var(--mut);margin-to
 body.s3 .avg b,body.s3 .hid b{color:#ffc247}
 body.s3 .sum section{border:0;background:var(--card);border-radius:18px}
 body.s3 #vedc{display:none!important}
+/* Змаг: олівець «дозволити капітану змінити назву» */
+body.s3 .team .ren{width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:8px;background:none;color:var(--mut);cursor:pointer}
+body.s3 .team .ren:hover{color:var(--ink);background:var(--card2)}
+body.s3 .team .ren.on{color:#1d1606;background:#ffc247}
