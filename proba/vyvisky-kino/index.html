@@ -11,12 +11,13 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
 .ph{position:absolute;inset:-3%;background:url(k1.webp) center/cover;will-change:transform,filter}
 .lit{opacity:1}
 .sh{position:absolute;inset:0;pointer-events:none}
-.grain{position:fixed;inset:-50%;pointer-events:none;z-index:8;opacity:.09;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");animation:gr 1s steps(4) infinite}
+.grain{position:fixed;inset:-50%;pointer-events:none;z-index:8;opacity:.09;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");}
 @keyframes gr{25%{transform:translate(3%,-2%)}50%{transform:translate(-2%,3%)}75%{transform:translate(2%,2%)}}
 .bar{position:fixed;left:0;right:0;height:12vh;background:#050505;z-index:7}.bar.t{top:0}.bar.b{bottom:0}
 .flash{position:fixed;inset:0;background:#fff3dc;opacity:0;z-index:6;pointer-events:none}
 .top{position:fixed;left:var(--g);right:var(--g);top:clamp(18px,4.5vh,44px);display:flex;justify-content:space-between;font:500 clamp(11px,1.05vw,15px)/1.2 Golos;z-index:5;opacity:0}
 .top b{font-weight:500;opacity:.72}
+.seal{position:fixed;right:clamp(16px,2.4vw,32px);top:clamp(14px,2.6vh,28px);width:clamp(22px,2vw,30px);opacity:0;z-index:5;pointer-events:none}
 .tx{position:absolute;z-index:2;text-shadow:0 2px 30px rgba(0,0,0,.5)}
 [class*='-mask']{padding-bottom:.16em;margin-bottom:-.16em}
 /* 1 */
@@ -99,16 +100,16 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
 <section class="sl" id="sl" data-o="75.5% 49.5%"><div class="ph" style="background-image:url(k4.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина третя</small><h2>Як роблять<br>вивіску</h2><p>Верстат вирізає деталі точно за векторним файлом — лінія в лінію.</p></div></section>
 <section class="sl" id="sz" data-o="57% 7%"><div class="ph" style="background-image:url(k5.webp)"></div><div class="sh"></div>
-  <div class="tx"><small>Частина третя · збірка</small><h2>З плоского&nbsp;—<br>обʼємне</h2><p>Борт вигинають точно по контуру літери й кріплять до основи. Так зʼявляється глибина.</p></div></section>
+  <div class="tx"><small>Частина третя · збірка</small><h2>З плоского<br>в обʼємне</h2><p>Борт вигинають точно по контуру літери й кріплять до основи. Так зʼявляється глибина.</p></div></section>
 <section class="sl" id="s2"><div class="ph"></div><div class="sh"></div>
-  <div class="tx"><div class="n">04</div><div><small>Частина четверта</small><h2>Як вивіска<br>починає<br>світитися</h2></div></div></section>
+  <div class="tx"><div><small>Частина четверта</small><h2>Як вивіска<br>починає<br>світитися</h2></div></div></section>
 <section class="sl" id="se"><div class="ph dark" style="background-image:url(k6.webp);filter:brightness(.1) saturate(.5)"></div><div class="ph lit" style="background-image:url(k6.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина четверта · світло</small><h2>Світло<br>всередині</h2><p>Рівні ряди світлодіодів світять крізь акрилове лице літери. Струм дає блок живлення — підключає лише фахівець.</p></div></section>
 <section class="sl" id="sm"><div class="ph" style="background-image:url(k7.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина четверта · монтаж</small><h2>Останній<br>крок</h2><p>Фахівці на підйомнику кріплять літери до фасаду й підключають світло. Тепер знак бачить уся вулиця.</p></div></section>
 <section class="sl" id="st"><div class="ph" style="background-image:url(k8.webp)"><svg class="mark" viewBox="0 0 200 120" aria-hidden="true"><circle cx="60" cy="60" r="42"/><path d="M28 82 58 34 72 56 80 46 96 82"/><path d="M114 52h44M114 72h30"/></svg></div><div class="sh"></div>
   <div class="tx"><small>Частина пʼята · практика</small><h2>Наш знак</h2><p>Придумайте знак свого гуртка — і зробіть з нього вивіску для табору.</p></div></section>
-<div class="top"><b>Пласт у Фінляндії</b><b>Гутірка для юнацтва · 12–17 років</b></div>
+<img class="seal" src="lileya.webp" alt=""><div class="top"><b>Пласт у Фінляндії</b><b>Гутірка для юнацтва · 12–17 років</b></div>
 <div class="bar t"></div><div class="bar b"></div><div class="flash"></div><div class="beam"></div><div class="grain"></div>
 <div class="nav"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
 <script src="../../lib/gsap-3/gsap.min.js"></script>
@@ -122,7 +123,7 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
   const words = i => split[i].flatMap(s => s.words);
   function textIn(i) {
     const t = gsap.timeline();
-    t.fromTo(words(i), { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: RM ? .01 : 1.1, ease: 'expo.out', stagger: .05 })
+    t.fromTo(words(i), { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: RM ? .01 : .9, ease: 'expo.out', stagger: .04 })
      .fromTo(S[i].querySelectorAll('p,small'), { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: RM ? .01 : .9, ease: 'power3.out', stagger: .1 }, '-=.75');
     return t;
   }
@@ -227,6 +228,18 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
      .add(textIn(b), 2.2);
     return t;
   }
+  /* основний перехід: короткий наїзд із розчиненням — без розмиття, щоб не гальмувало */
+  function cross(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, y: -12, duration: .3, ease: 'power2.in' })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); }, .1)
+     .to(A.querySelectorAll('.ph'), { scale: '+=.06', duration: .9, ease: 'power2.in' }, 0)
+     .fromTo(B, { opacity: 0 }, { opacity: 1, duration: .8, ease: 'power1.inOut' }, .1)
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(A.querySelector('.tx'), { opacity: 1, y: 0 }); })
+     .add(textIn(b), .5);
+    if (B.id === 'st') t.fromTo(B.querySelectorAll('.mark *'), { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 1.4, ease: 'power1.inOut', stagger: .3 }, 1.2);
+    return t;
+  }
   /* 2 → 3 і назад: «фокусування» — один кадр розмивається, інший проявляється з туману */
   function focus(a, b) {
     const t = gsap.timeline();
@@ -240,10 +253,10 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     if (i < 0 || i >= S.length || i === cur) return;
     if (tl) tl.progress(1);
     const a = cur; cur = i;
-    if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: 1 }); tl = textIn(i); drift(i); return; }
+    if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: i === 0 ? 1 : 0 }); gsap.set('.seal', { opacity: i === 0 ? 0 : .5 }); if (S[i].id === 'st') gsap.set(S[i].querySelectorAll('.mark *'), { strokeDashoffset: 0 }); tl = textIn(i); drift(i); return; }
     const key = S[a] ? S[a].id + '>' + S[i].id : '';
-    tl = a === -1 ? intro() : key === 's1>sv' ? whip(a, i, 1) : key === 'sv>s1' ? whip(a, i, -1) : key === 'sv>sk' ? whip(a, i, 1, 'y') : key === 'sk>sv' ? whip(a, i, -1, 'y')
-      : key === 'sk>s3' ? zoomMatch(a, i) : key === 's3>sl' ? laser(a, i) : key === 'sl>sz' ? match(a, i) : key === 'sz>s2' ? into(a, i, '#ffcf8f') : key === 's2>se' ? ledOn(a, i) : key === 'sm>st' ? iris(a, i) : key === 'se>sm' ? whip(a, i, -1, 'y') : key === 'sm>se' ? whip(a, i, 1, 'y') : focus(a, i);
+    tl = a === -1 ? intro() : key === 'sk>s3' ? zoomMatch(a, i) : key === 's3>sl' ? laser(a, i) : cross(a, i);
+    gsap.to('.top', { opacity: i === 0 ? 1 : 0, duration: .4 }); gsap.to('.seal', { opacity: i === 0 ? 0 : .5, duration: .6 });
   }
   addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
   let x0 = null;
