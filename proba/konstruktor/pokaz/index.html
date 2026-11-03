@@ -1261,6 +1261,7 @@ function showRev() {
   if (SL[idx].t !== 'card') return;
   $$('#panel .pts li').forEach((li, k) => li.classList.toggle('v', k < rev));
   const ka = $('#panel .kask'); if (ka) ka.classList.toggle('v', rev >= SL[idx].pts.length + 1);
+  document.dispatchEvent(new CustomEvent('gutirka:slide'));   /* пульт: новий крок */
   const last = $$('#panel .pts li.v').pop(); if (last && panel.scrollHeight > panel.clientHeight + 2) try { last.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
 }
 function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
@@ -1288,14 +1289,31 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 let T0 = 0;
 const strip = h => String(h || '').replace(/\*\*/g, '');
 const titleOf = s => !s ? '' : s.t === 'tsytata' ? 'Цитата' : s.t === 'fakt' ? 'Факт: ' + s.v : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Розділ ' + s.n + ': ' + strip(s.h) : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
-const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.` : s.t === 'kintro' ? 'Гра-вікторина «Потужний СКОБ!». Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.' : (s.say || '');
+/* підказки на пульт — у тому ж форматі, що й у «Кераміці України»: 📺 на екрані · 🗣 скажи · ❓ запитай · ✔ відповідь · • доповнення · ⏱ час */
+const plain = x => strip(x || '');
+const sayL = x => x ? '\n🗣 ' + plain(x) : '';
+const short = x => { const w = plain(x).split(/\s+/); return w.slice(0, 5).join(' ') + (w.length > 5 ? '…' : ''); };
+const noteFor = s => !s ? '' :
+  s.t === 'title' ? '🗣 ' + plain(D.vstup || 'Привітайтеся й назвіть тему гутірки.') + (D.chas ? '\n⏱ ' + D.chas + ' на всю гутірку' : '') + (kviz().length ? '\n(Якщо гратимете з телефонів — меню в куті → «Потужний СКОБ!»: нехай юнаки підключаються вже зараз.)' : '')
+  : s.t === 'sec' ? '📺 Розділ ' + s.n + ': ' + plain(s.h) + sayL(s.say)
+  : s.t === 'q' ? '❓ ' + s.q + '\n✔ ' + s.a[s.ok] + (s.why ? '\n• ' + s.why : '') + '\n(Без телефонів — група радиться, хтось один натискає; правильно — далі само.)'
+  : s.t === 'kintro' ? '🗣 Гра-вікторина «Потужний СКОБ!»: ' + kviz().length + ' запитань.\n✋ Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.'
+  : s.t === 'end' ? '📺 Дякую!' + (D.kinets ? '\n🗣 ' + plain(D.kinets) : '\n🗣 Подякуйте й дайте час на запитання.')
+  : s.t === 'fakt' ? '📺 ' + s.v + ' — ' + plain(s.h) + (s.p ? '\n• ' + plain(s.p) : '') + sayL(s.say)
+  : s.t === 'tsytata' ? '📺 «' + plain(s.p) + '»' + (s.avtor ? ' — ' + s.avtor : '') + sayL(s.say)
+  : s.t === 'dvi' ? '📺 ' + plain(s.h) + '\n• ' + s.l.h + ': ' + s.l.pts.join('; ') + '\n• ' + s.r.h + ': ' + s.r.pts.join('; ') + sayL(s.say)
+  : s.t === 'velyka' ? '📺 Велика картинка' + (s.h ? ': ' + plain(s.h) : '') + (s.p ? '\n• ' + plain(s.p) : '') + sayL(s.say)
+  : '📺 ' + plain(s.h) + (s.p ? '\n• ' + plain(s.p) : '') + sayL(s.say);
+/* слайд з пунктами: підказка на кожен крок (пункт за пунктом) */
+const nsFor = s => !s || s.t !== 'card' || !steps(s) ? null : [[null, noteFor(s)], ...s.pts.map(p => [short(p), '📺 ' + plain(p)]), ...(s.ask ? [['запитання', '❓ ' + plain(s.ask)]] : [])];
+const ixFor = s => s && s.t === 'kintro' ? { v: 'btns', h: 'Гра «Потужний СКОБ!»', b: [['game', 'Почати гру'], ['lobby', 'Підключити телефони'], ['skip', 'Пропустити гру']] } : null;
 const SECTIONS = () => SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const mins = (() => { const m = String(D.chas || '').match(/\d+/); return m ? +m[0] : 30; })();
 const API = { id: 'konstruktor-' + (D.id || 'x'), title: D.nazva || 'Гутірка',
-  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
+  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteFor(SL[idx]), ns: nsFor(SL[idx]), ix: ixFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
     elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: mins * 60, sections: SECTIONS() }),
   next: () => SKOB.active() ? SKOB.key(new KeyboardEvent('keydown', { key: 'ArrowRight' })) : adv(1), prev: () => SKOB.active() ? null : adv(-1),
-  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
+  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, act: id => { if (SL[idx].t !== 'kintro') return; if (id === 'game') startGame(); else if (id === 'lobby') SKOB.lobby(); else if (id === 'skip') go(idx + 1); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
 
 document.addEventListener('keydown', e => {
   if (P.hidden) return;
