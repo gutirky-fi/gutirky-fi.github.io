@@ -74,6 +74,7 @@ body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
 body.fam .tp button{border-radius:99px;border:1px solid var(--ln);border-left:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:6px 18px}
 body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
 
+svg.li{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}
 </style>
 </head>
 <body>
@@ -85,6 +86,7 @@ body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;
 
 <script>/*ZVYAZOK*/</script>
 <script>
+const S3T = /[?&]dyz=3(&|$)/.test(location.search), IC_BULB = S3T ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>' : '💡';   /* стиль 3: лінійні значки замість емодзі */
 if (/dyz=fam/.test(location.search)) {   /* родина ігор */
   document.body.classList.add('fam');
   const T = '<span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span>';
@@ -130,7 +132,7 @@ async function connect() {
       switch (d.t) {
         case 'vst': authed = true; st = d; render(); break;
         case 'ok': authed = true; ses.tok = d.tok; okey = ''; saveS(); try { history.replaceState(null, '', location.pathname); } catch (x) { /* ok */ } break;
-        case 'needqr': msg('Відскануйте код ще раз', 'Відскануйте QR-код «Ведучому» на ноутбуці (у грі — кнопка «📱 Ведучий» угорі).'); break;
+        case 'needqr': msg('Відскануйте код ще раз', 'Відскануйте QR-код «Ведучому» на ноутбуці (у грі — кнопка «Ведучому» угорі).'); break;
       } });
     c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
   });
@@ -148,7 +150,7 @@ document.addEventListener('submit', e => {
 });
 function render() {
   const B = $('#body'), A = $('#act'), R = $('#actr');
-  const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)} <small>💡${t.h}</small><b>${t.s}</b></span>`).join('')}</div>`;
+  const sc = `<div class="sc">${st.teams.map((t, i) => `<span style="--c:${t.c}"${st.ph === 'board' && i === st.chooser ? ' class="ch"' : ''}>${esc(t.n)} <small>${IC_BULB}${t.h}</small><b>${t.s}</b></span>`).join('')}</div>`;
   if (st.ph === 'lobby') { B.innerHTML = '<div class="wait"><b>Пульт підключено ✓</b>Натисніть «Почати гру» на табло. Тут ви бачитимете правильні відповіді.</div>'; A.hidden = true; return; }
   if (st.ph === 'fin') { B.innerHTML = sc + `<div class="wait"><b>Гру завершено</b></div><ol class="rk">${st.rank.map(([n, s, c]) => `<li style="--c:${c}"><span>${esc(n)}</span><span>${s}</span></li>`).join('')}</ol><button type="button" class="end" data-a="again">← Повернутися до табла</button>`; A.hidden = true; return; }
   if (st.ph === 'board') {
@@ -166,7 +168,7 @@ function render() {
   else h += `<div class="who">Чекаємо, хто натисне «Відповідаю!»</div><p class="hint">Або виберіть команду самі:</p><div class="picks">${st.teams.map((t, i) => `<button type="button" data-pick="${i}" style="--c:${t.c}"${Q.wrong.includes(i) ? ' disabled' : ''}>${esc(t.n)}</button>`).join('')}</div>`;
   B.innerHTML = h;
   A.hidden = !!Q.done;   /* після відповіді — лише зелена плашка «далі, до табла» */
-  R.innerHTML = (Q.canHint ? '<button type="button" class="hn" data-a="hint">💡 Дати варіанти (половина балів)</button>' : '') + (T && !Q.done ? '<button type="button" class="yes" data-a="yes">✓ Правильно</button><button type="button" class="no" data-a="no">✗ Неправильно</button>' : '')
+  R.innerHTML = (Q.canHint ? '<button type="button" class="hn" data-a="hint">' + IC_BULB + ' Дати варіанти (половина балів)</button>' : '') + (T && !Q.done ? '<button type="button" class="yes" data-a="yes">✓ Правильно</button><button type="button" class="no" data-a="no">✗ Неправильно</button>' : '')
     + (Q.done ? '' : (Q.shown ? '' : '<button type="button" data-a="ans">Показати відповідь усім</button>') + '<button type="button" data-a="back">До табла</button>');
 }
 document.addEventListener('click', e => {

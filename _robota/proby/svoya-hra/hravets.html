@@ -67,6 +67,7 @@ body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
 body.fam .tp button{border-radius:99px;border:1px solid var(--ln);border-left:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:6px 18px}
 body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
 
+svg.li{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}.fin1 svg.li{width:64px;height:64px;color:#ffc247}.fin1 .md.m2 svg.li{color:#cfd5dc}.fin1 .md.m3 svg.li{color:#d9925b}
 </style>
 </head>
 <body>
@@ -101,6 +102,7 @@ body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;
 
 <script>/*ZVYAZOK*/</script>
 <script>
+const S3T = /[?&]dyz=3(&|$)/.test(location.search), IC_BULB = S3T ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.8.6 1.1 1.4 1.1 2.2h5c0-.8.3-1.6 1.1-2.2A6 6 0 0 0 12 3z"/></svg>' : '💡';   /* стиль 3: лінійні значки замість емодзі */
 if (window.IHRY_TEL3) IHRY_TEL3('zmag');
 if (/dyz=fam/.test(location.search)) {   /* родина ігор */
   document.body.classList.add('fam');
@@ -167,7 +169,7 @@ function render() {
   if (st.ph === 'q' && Q) {
     const sig = Q.cat + Q.v; if (sig !== lastQ) { lastQ = sig; if (navigator.vibrate) navigator.vibrate(40); }
     $('#q').innerHTML = esc(Q.cat) + '<b>' + (Q.worth !== Q.v ? Q.v + ' → ' + Q.worth : Q.v) + '</b>';
-    $('#vr').innerHTML = (Q.vars ? '<div class="vr">' + Q.vars.map((o, i) => '<div><b>' + 'АБВГ'[i] + '</b>' + esc(o) + '</div>').join('') + '</div>' : '') + (Q.canHint ? '<button type="button" class="hn" id="hn">💡 Взяти варіанти · за правильну — половина балів (ще ' + T.h + ')</button>' : '');
+    $('#vr').innerHTML = (Q.vars ? '<div class="vr">' + Q.vars.map((o, i) => '<div><b>' + 'АБВГ'[i] + '</b>' + esc(o) + '</div>').join('') + '</div>' : '') + (Q.canHint ? '<button type="button" class="hn" id="hn">' + IC_BULB + ' Взяти варіанти · за правильну — половина балів (ще ' + T.h + ')</button>' : '');
     b.disabled = !Q.open || Q.lock;
     if (Q.mine && !Q.done) { b.className = 'mine'; b.disabled = true; s.className = 'st ok'; s.textContent = 'Ти перший! Відповідай уголос'; }
     else if (Q.turn && !Q.done) { s.textContent = (Q.turn.team === ti ? 'Ваша черга! Порадьтеся й відповідайте' : 'Відповідає: ' + Q.turn.tn) + (Q.turn.name && Q.turn.team !== ti ? ' · ' + Q.turn.name : ''); if (Q.turn.team === ti) s.className = 'st ok'; }
@@ -179,13 +181,13 @@ function render() {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
     if (st.ph === 'fin') {   /* фінал і на телефоні: місце команди */
       const pl = st.teams.filter(t => t.s > T.s).length + 1;
-      $('#vr').innerHTML = '<div class="fin1" style="--c:' + T.c + '"><b>' + (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏') + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
+      $('#vr').innerHTML = '<div class="fin1" style="--c:' + T.c + '"><b>' + (S3T ? (pl === 1 ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>' : pl <= 3 ? '<span class="md m' + pl + '"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 7 3-7"/></svg></span>' : '') : (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏')) + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
       b.disabled = true; $('#q').textContent = 'Гру завершено'; s.textContent = ''; $('#ans').textContent = ''; document.body.classList.add('cherha', 'finph');
       $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join(''); return;
     }
     $('#vr').innerHTML = ''; b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
   }
-  $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · 💡${t.h}</span>`).join('');
+  $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · ${IC_BULB}${t.h}</span>`).join('');
 }
 $('#tp').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; ses.team = +b.dataset.t; save(ses); st.me.team = ses.team; sendc({ t: 'team', team: ses.team }); render(); });
 const sendRen = () => { const v = ($('#ren-i') || {}).value; if (!v || !v.trim()) return; sendc({ t: 'rename', n: v }); $('#ren-ok').disabled = true; $('#ren-ok').textContent = 'Надсилаємо…'; };

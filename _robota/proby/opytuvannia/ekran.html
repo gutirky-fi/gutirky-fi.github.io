@@ -139,6 +139,7 @@ body.fam .box{border-color:#3b4048}
 body.fam .f,body.fam .eq select{border-radius:12px}
 body.fam .toast{border-radius:99px}
 /*/FAM*/
+svg.li{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}svg.fc{width:1.15em;height:1.15em;vertical-align:-.2em}.stars svg.fc{width:34px;height:34px;display:block;margin:0 auto 2px}
 </style>
 </head>
 <body>
@@ -212,7 +213,7 @@ let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden =
 
 /* ---------- типи питань ---------- */
 const KINDS = { var: 'Варіанти', tak: 'Так / ні', ots: 'Оцінка 1–5', slovo: 'Одне слово' };
-const FACES = ['😞', '🙁', '😐', '🙂', '😄'];
+const FACES = /[?&]dyz=3(&|$)/.test(location.search) ? ['<svg class="li fc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/><path d="M8 16.6Q12 13.2 16 16.6"/></svg>','<svg class="li fc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/><path d="M8.5 16Q12 14.6 15.5 16"/></svg>','<svg class="li fc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/><path d="M8.5 15.2H15.5"/></svg>','<svg class="li fc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/><path d="M8.5 14.6Q12 16.4 15.5 14.6"/></svg>','<svg class="li fc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M9 9.5h.01M15 9.5h.01" stroke-width="2.8"/><path d="M8 14Q12 18.2 16 14"/></svg>'] : ['😞', '🙁', '😐', '🙂', '😄'];   /* стиль 3: лінійні обличчя замість емодзі */
 const optsOf = q => q.k === 'var' ? q.o : q.k === 'tak' ? ['Так', 'Ні'] : q.k === 'ots' ? ['1', '2', '3', '4', '5'] : [];
 
 /* ---------- готові опитування (можна змінювати; свої зберігаються в цьому браузері) ---------- */

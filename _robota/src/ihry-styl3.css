@@ -93,3 +93,6 @@ body.s3 #vedc{display:none!important}
 body.s3 .team .ren{width:30px;height:30px;display:grid;place-items:center;border:0;border-radius:8px;background:none;color:var(--mut);cursor:pointer}
 body.s3 .team .ren:hover{color:var(--ink);background:var(--card2)}
 body.s3 .team .ren.on{color:#1d1606;background:#ffc247}
+/* без емодзі: бінго — святкова картинка у вікні переможця */
+body.s3 #winov .big{display:none}
+body.s3 .team small .ic{width:14px;height:14px;vertical-align:-2px}
