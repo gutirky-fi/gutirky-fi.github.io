@@ -479,10 +479,10 @@ function render() {
   if (st.ph === 'lobby') { B.innerHTML = '<div class="wait"><b>Пульт підключено ✓</b>Натисніть «Почати гру» на табло. Тут ви бачитимете правильні відповіді.</div>'; A.hidden = true; return; }
   if (st.ph === 'fin') { B.innerHTML = sc + `<div class="wait"><b>Гру завершено</b></div><ol class="rk">${st.rank.map(([n, s, c]) => `<li style="--c:${c}"><span>${esc(n)}</span><span>${s}</span></li>`).join('')}</ol><button type="button" class="end" data-a="again">← Повернутися до табла</button>`; A.hidden = true; return; }
   if (st.ph === 'board') {
-    const ch = st.teams[st.chooser] || st.teams[0];
+    const ch = st.teams[st.chooser] || (st.mode === 'sam' ? null : st.teams[0]);
     let g = `<div class="bd" style="grid-template-columns:repeat(${st.cats.length},1fr)">${st.cats.map(n => `<div class="ct">${esc(n)}</div>`).join('')}`;
     for (let r = 0; r < st.vals.length; r++) g += st.cats.map((_, c) => `<button type="button" data-c="${c}" data-r="${r}"${st.cells[c][r] !== 1 ? ' disabled' : ''}>${st.cells[c][r] ? st.vals[r] : ''}</button>`).join('');
-    B.innerHTML = sc + `<p class="hint" id="bh">Вибирає питання: <i style="--c:${ch.c}">${esc(ch.n)}</i>. Натисніть клітинку, яку вони назвали, — питання зʼявиться на табло.</p>` + g + '</div><button type="button" class="end" data-end="1">Завершити гру й показати переможця</button>';
+    B.innerHTML = sc + (ch ? `<p class="hint" id="bh">Вибирає питання: <i style="--c:${ch.c}">${esc(ch.n)}</i>. Натисніть клітинку, яку ${st.mode === 'sam' ? 'назвали' : 'вони назвали'}, — питання зʼявиться на табло.</p>` : '<p class="hint" id="bh">Перше питання вибираєте ви — натисніть будь-яку клітинку.</p>') + g + '</div><button type="button" class="end" data-end="1">Завершити гру й показати переможця</button>';
     A.hidden = true; return;
   }
   const Q = st.q; if (!Q) return;

@@ -155,11 +155,13 @@ let lastQ = '';
 function render() {
   $('#join').hidden = true;
   const ti = st.me.team, T = st.teams[ti];
-  if (!T) { $('#pick').hidden = false; $('#play').hidden = true;
+  const SAM = st.mode === 'sam';
+  if (!T && SAM) { $('#pick').hidden = false; $('#play').hidden = true; $('#pick h1').textContent = 'Майже готово'; $('#pick .m').textContent = 'Чекаємо, поки ведучий додасть тебе до гри…'; $('#tp').innerHTML = ''; return; }
+  if (!T) { $('#pick').hidden = false; $('#play').hidden = true; $('#pick h1').textContent = 'Твоя команда'; $('#pick .m').textContent = 'Натисни на свою команду.';
     $('#tp').innerHTML = st.teams.map((t, i) => `<button type="button" data-t="${i}" style="--c:${t.c}">${esc(t.n)}</button>`).join(''); return; }
   $('#pick').hidden = true; $('#play').hidden = false;
   $('#me').style.setProperty('--c', T.c);
-  $('#me').innerHTML = `<b>${esc(T.n)}<small>${esc(st.me.name || '')} · <a href="#" id="chg" style="color:inherit">змінити команду</a></small></b><span>${T.s}</span>`;
+  $('#me').innerHTML = `<b>${esc(T.n)}<small>${SAM ? 'граєш сам · підказка «Варіанти»: ' + T.h : esc(st.me.name || '') + ' · <a href="#" id="chg" style="color:inherit">змінити команду</a>'}</small></b><span>${T.s}</span>`;
   { const rn = $('#ren');   /* ведучий дозволив змінити назву команди */
     if (T.ren && st.ph === 'lobby') { if (!rn) { $('#me').insertAdjacentHTML('afterend', '<div id="ren" class="ren"><label for="ren-i">Ведучий дозволив змінити назву команди</label><input id="ren-i" maxlength="16" autocomplete="off"><button type="button" class="btn" id="ren-ok">Зберегти назву</button></div>'); $('#ren-i').value = T.n; } }
     else if (rn) rn.remove(); }
@@ -174,7 +176,7 @@ function render() {
     if (Q.mine && !Q.done) { b.className = 'mine'; b.disabled = true; s.className = 'st ok'; s.textContent = 'Ти перший! Відповідай уголос'; }
     else if (Q.turn && !Q.done) { s.textContent = (Q.turn.team === ti ? 'Ваша черга! Порадьтеся й відповідайте' : 'Відповідає: ' + Q.turn.tn) + (Q.turn.name && Q.turn.team !== ti ? ' · ' + Q.turn.name : ''); if (Q.turn.team === ti) s.className = 'st ok'; }
     else if (Q.done) s.textContent = Q.turn ? '✓ ' + Q.turn.tn + ' +' + (Q.gain || Q.v) : 'Питання закрите';
-    else if (Q.lock) s.textContent = 'Твоя команда вже відповідала';
+    else if (Q.lock) s.textContent = SAM ? 'Ти вже відповідав на це питання' : 'Твоя команда вже відповідала';
     else s.textContent = st.mode === 'cherha' ? 'Чекаємо' : 'Знаєш? Тисни!';
     $('#ans').innerHTML = Q.ans ? 'Відповідь: <b>' + esc(Q.ans) + '</b>' : '';   // повна, з довідкою
   } else {
@@ -185,7 +187,7 @@ function render() {
       b.disabled = true; $('#q').textContent = 'Гру завершено'; s.textContent = ''; $('#ans').textContent = ''; document.body.classList.add('cherha', 'finph');
       $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join(''); return;
     }
-    $('#vr').innerHTML = ''; b.disabled = true; s.textContent = st.ph === 'board' ? 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '') : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
+    $('#vr').innerHTML = ''; b.disabled = true; s.textContent = st.ph === 'board' ? (SAM && st.chooser === ti ? 'Ти відповів правильно — назви ведучому наступне питання!' : SAM && !st.teams[st.chooser] ? 'Перше питання вибирає ведучий' : 'Питання вибирає: ' + ((st.teams[st.chooser] || {}).n || '')) : st.ph === 'fin' ? 'Результати — на екрані' : 'Ведучий скоро почне'; $('#ans').textContent = '';
   }
   $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s} · ${IC_BULB}${t.h}</span>`).join('');
 }
