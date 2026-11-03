@@ -17,6 +17,7 @@ for d in DIRS:
             import base64; s = s.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'logo.png'), 'rb').read()).decode())
         else:
             s = re.sub(r'/\*FAM\*/.*?/\*/FAM\*/', '', s, flags=re.S)
+        import base64; s = s.replace('{{EMBLEM3}}', 'data:image/webp;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'emblem.webp'), 'rb').read()).decode())   # фонова лілея (стиль 3)
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
         assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s
         p = os.path.join(ROOT, out); os.makedirs(os.path.dirname(p), exist_ok=True)

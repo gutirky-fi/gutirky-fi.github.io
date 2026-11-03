@@ -17,6 +17,7 @@ for d in DIRS:
         s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-rodyna.css'), encoding='utf8').read() + '\n</style>\n</head>', 1)   # «родина ігор» (?dyz=fam)
         if src == 'hravets.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'ihry-tel3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # телефон, стиль 3
         if src == 'ekran.html': s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.css'), encoding='utf8').read() + '\n</style>\n<script>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # стиль 3 (?dyz=3)
+        s = s.replace('url({{EMBLEM3}})', 'none')   # у Змагу своя фонова лілея (body.st-plast)
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
         assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s
         p = os.path.join(ROOT, out); os.makedirs(os.path.dirname(p), exist_ok=True)

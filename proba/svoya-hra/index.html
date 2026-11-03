@@ -555,6 +555,9 @@ body.s3 .team .ren.on{color:#1d1606;background:#ffc247}
 body.s3 #winov .big{display:none}
 body.s3 .team small .ic{width:14px;height:14px;vertical-align:-2px}
 
+/* фонова лілея в куті — однаково в усіх іграх (як у Змагу: body.st-plast::before; власник обрав варіант A 03.11.2026) */
+body.s3:not(.st-plast)::before{content:"";display:block;position:fixed;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:none center/contain no-repeat;opacity:.04;pointer-events:none}
+
 </style>
 <script>
 /* «Стиль 3» ігор (проба ?dyz=3): логотип «значок + назва», картка QR ліворуч, «Ведучому» в шапці, лінійні значки.
