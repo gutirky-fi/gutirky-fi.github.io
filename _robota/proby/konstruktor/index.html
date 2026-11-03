@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Конструктор гутірки</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- Конструктор гутірки: виховник складає гутірку сам (або вставляє відповідь ChatGPT) — показ у тому ж вигляді, що й гутірки сайту.
+     Джерело: _robota/proby/konstruktor/ (index.html — редактор, rushiy.html — показ). Гутірки — лише в цьому браузері або у файлі. -->
+<style>
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--red:#ff8a7f;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--pad:max(20px,calc(50vw - 700px))}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.45 var(--txt);min-height:100vh}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.li{width:18px;height:18px;flex:none}
+.top{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:12px;padding:12px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln)}
+.top .pl{height:36px;width:auto;display:block}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;min-width:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt);color:var(--ink);text-decoration:none}
+.chip.ic{padding:0;width:40px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font:700 15px var(--txt);color:var(--ink);white-space:nowrap}
+.btn:hover:not(:disabled){border-color:#5a616b}
+.btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.btn.main:hover{background:#ffd06b}
+.btn.sm{min-height:36px;padding:5px 12px;font-size:14px;border-radius:10px}
+.menu{position:relative}
+.menu .pop{position:absolute;right:0;top:calc(100% + 6px);z-index:20;min-width:260px;padding:8px;border-radius:14px;background:var(--card);border:1px solid var(--ln);box-shadow:0 20px 50px rgba(0,0,0,.5)}
+.menu .pop button{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:10px;background:none;font-weight:600;text-align:left}
+.menu .pop button:hover{background:var(--card2)}
+.menu .pop hr{border:0;border-top:1px solid var(--ln);margin:6px 0}
+.menu .pop .dan{color:var(--red)}
+
+.head{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:24px var(--pad) 8px}
+.lg small{display:block;font:600 15px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 10px 2px}
+.lg .w{display:flex;align-items:center;gap:14px}
+.lg svg{width:44px;height:44px;flex:none}
+.lg b{font:600 52px/.8 var(--disp);text-transform:uppercase;padding-top:3px}
+.head .hand{margin:0 0 4px;font:500 26px/1.1 Caveat,'Segoe Print',cursive;color:var(--hand)}
+.head .sp{flex:1}
+.mine{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:14px;font-weight:700}
+.mine select{min-height:40px;max-width:280px;padding:6px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font-weight:700}
+
+.wrap{display:grid;grid-template-columns:300px minmax(0,1fr) minmax(360px,520px);gap:20px;align-items:start;padding:16px var(--pad) 60px}
+.col h3{margin:0 0 10px;font:600 15px var(--disp);letter-spacing:.18em;text-transform:uppercase;color:var(--mut)}
+/* список слайдів */
+.list{display:flex;flex-direction:column;gap:4px}
+.it{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 8px 8px 10px;border-radius:12px;border:1px solid transparent;background:none;text-align:left;width:100%}
+.it:hover{background:var(--card)}
+.it.on{background:var(--card2);border-color:var(--gd)}
+.it .ty{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--card2);color:var(--mut);font:600 13px var(--disp)}
+.it.sec .ty{background:#3a2f12;color:var(--gd)}
+.it.q .ty{background:#123a33;color:var(--hand)}
+.it.sk .ty{background:none}
+.it .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.it.sec .nm{font-family:var(--disp);text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.it.ind{padding-left:22px}
+.it .mv{display:flex;gap:2px;opacity:0}
+.it:hover .mv,.it.on .mv{opacity:1}
+.it .mv span{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;color:var(--mut)}
+.it .mv span:hover{background:var(--card);color:var(--ink)}
+.adds{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.empty{padding:14px;border-radius:12px;border:1px dashed var(--ln);color:var(--mut);font-size:14px}
+
+/* редактор */
+.ed{padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
+.ed h2{margin:0 0 4px;font:600 22px var(--disp);text-transform:uppercase;letter-spacing:.03em}
+.ed .why{margin:0 0 14px;color:var(--mut);font-size:14px}
+.f{display:block;margin:14px 0 0}
+.f>span{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;font-weight:700;font-size:14px;color:var(--body)}
+.f>span small{font-weight:600;color:var(--mut)}
+.f input[type=text],.f textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--ln);background:#14171a;color:var(--ink)}
+.f textarea{min-height:90px;resize:vertical;line-height:1.45}
+.f textarea.tall{min-height:150px}
+.f .hint{margin-top:5px;color:var(--mut);font-size:13px}
+.ans{display:grid;gap:6px}
+.ans label{display:grid;grid-template-columns:auto 26px minmax(0,1fr);gap:8px;align-items:center}
+.ans input[type=radio]{width:18px;height:18px;accent-color:var(--hand)}
+.ans b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font:600 13px var(--disp);color:#fff}
+.ans label:nth-child(1) b{background:#e2574c}.ans label:nth-child(2) b{background:#3f7fd9}.ans label:nth-child(3) b{background:#e0a526}.ans label:nth-child(4) b{background:#3aa565}
+.ans input[type=text]{width:100%;padding:8px 10px;border-radius:9px;border:1px solid var(--ln);background:#14171a}
+.ans label.ok input[type=text]{border-color:var(--hand)}
+.img{display:flex;align-items:center;gap:12px}
+.img img{width:120px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--ln)}
+.kq{margin-top:14px;padding:14px;border-radius:14px;background:#1d2024;border:1px solid var(--ln)}
+.kq .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 14px var(--disp);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+.del{border:0;background:none;color:var(--mut);font-weight:700;font-size:14px;padding:4px 8px;border-radius:8px}
+.del:hover{color:var(--red);background:var(--card2)}
+
+/* попередній перегляд */
+.pv{position:sticky;top:76px}
+.frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--ln);background:#111}
+.frame iframe{position:absolute;left:0;top:0;width:1280px;height:720px;border:0;transform-origin:0 0;pointer-events:none}
+.pv .cap{margin:8px 0 0;color:var(--mut);font-size:13px}
+.pv .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+
+/* вікна */
+.dlg{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-start;justify-content:center;padding:60px 16px 16px;background:rgba(10,12,15,.82);overflow:auto}
+.dlg .bx{width:min(760px,100%);padding:24px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
+.dlg h3{margin:0 0 6px;font:600 24px var(--disp);text-transform:uppercase}
+.dlg p{color:var(--body);margin:6px 0}
+.dlg ol{color:var(--body);padding-left:22px}
+.dlg textarea{width:100%;min-height:220px;padding:12px;border-radius:12px;border:1px solid var(--ln);background:#14171a;font:13px/1.45 ui-monospace,Consolas,monospace;color:var(--ink)}
+.dlg .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px}
+.err{color:var(--red);font-weight:700}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:40;padding:12px 20px;border-radius:14px;background:#2a2f35;border:1px solid var(--ln);font-weight:700;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+
+@media (max-width:1180px){.wrap{grid-template-columns:260px minmax(0,1fr)}.pv{grid-column:1/-1;position:static;max-width:640px}}
+@media (max-width:760px){.wrap{grid-template-columns:1fr}.lg b{font-size:40px}.it .mv{opacity:1}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="chip ic" href="/" id="home" aria-label="Назад"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
+  <img class="pl" src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії">
+  <span class="sp"></span>
+  <button type="button" class="btn main" id="show"><svg class="li" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>Показати гутірку</button>
+  <button type="button" class="btn" id="save"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Зберегти файлом</button>
+  <div class="menu"><button type="button" class="btn" id="more" aria-haspopup="true" aria-expanded="false">Ще<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+    <div class="pop" id="pop" hidden>
+      <button type="button" data-a="gpt"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.6L18 9l-4.2 1.4L12 15l-1.8-4.6L6 9l4.2-1.4z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg>Зробити з ChatGPT</button>
+      <button type="button" data-a="new"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Нова порожня гутірка</button>
+      <button type="button" data-a="open"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Відкрити файл гутірки</button>
+      <button type="button" data-a="copy"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Зробити копію</button>
+      <hr><button type="button" data-a="del" class="dan"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Видалити цю гутірку</button>
+    </div></div>
+  <input type="file" id="file" accept=".html,.htm,.json" hidden>
+</div>
+
+<div class="head">
+  <div class="lg" role="heading" aria-level="1" aria-label="Конструктор гутірки"><small>Конструктор</small><div class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="6" width="36" height="24" rx="4" fill="none" stroke="#2fd2c0" stroke-width="3"/><rect x="7" y="11" width="12" height="3.5" rx="1.5" fill="#ffc247"/><rect x="7" y="17" width="18" height="2.5" rx="1.25" fill="#cfd5dc"/><rect x="7" y="22" width="14" height="2.5" rx="1.25" fill="#cfd5dc"/><path d="M20 30v5M13 36h14" stroke="#cfd5dc" stroke-width="3" stroke-linecap="round"/></svg><b>Гутірки</b></div></div>
+  <p class="hand">склади сам — покажи як на сайті</p>
+  <span class="sp"></span>
+  <label class="mine">Мої гутірки<select id="mine"></select></label>
+</div>
+
+<div class="wrap">
+  <div class="col">
+    <h3>Слайди</h3>
+    <div class="list" id="list"></div>
+    <div class="adds">
+      <button type="button" class="btn sm" data-add="rozdil">+ Розділ</button>
+      <button type="button" class="btn sm" data-add="slaid">+ Слайд</button>
+      <button type="button" class="btn sm" data-add="pyt">+ Перевірка</button>
+    </div>
+  </div>
+  <div class="col"><div class="ed" id="ed"></div></div>
+  <div class="col pv">
+    <h3>Як побачать юнаки</h3>
+    <div class="frame" id="frame"><iframe id="ifr" title="Попередній перегляд слайда" tabindex="-1"></iframe></div>
+    <p class="cap">Це той самий вигляд, що й у гутірках сайту. Пункти на справжньому показі зʼявляються по одному.</p>
+    <div class="acts"><button type="button" class="btn sm" id="show2">Показати всю гутірку</button><button type="button" class="btn sm" id="plan">План для друку</button></div>
+  </div>
+</div>
+
+<div class="dlg" id="gpt" hidden><div class="bx">
+  <h3>Зробити гутірку з ChatGPT</h3>
+  <p>Без Claude і без грошей — з будь-яким ChatGPT (або іншим помічником).</p>
+  <ol>
+    <li><button type="button" class="btn sm" id="gpt-copy">Скопіювати підказку</button> — у ній пояснено, що й як писати.</li>
+    <li>Відкрийте <b>ChatGPT</b>, вставте підказку, а під нею — свій матеріал: тему, нотатки, текст, вимоги вмілості.</li>
+    <li>Скопіюйте всю відповідь ChatGPT і вставте її сюди:</li>
+  </ol>
+  <textarea id="gpt-in" placeholder="Вставте сюди відповідь ChatGPT…" spellcheck="false"></textarea>
+  <p class="err" id="gpt-err" hidden></p>
+  <div class="row"><button type="button" class="btn" id="gpt-x">Скасувати</button><button type="button" class="btn main" id="gpt-go">Зробити гутірку</button></div>
+</div></div>
+
+<script>
+(() => {
+'use strict';
+const RUSHIY_B64 = '{{RUSHIY_B64}}';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const K = 'konstruktor.gutirky', K_SHOW = 'konstruktor.pokaz';
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const toast = t => { const d = document.createElement('div'); d.className = 'toast'; d.textContent = t; document.body.append(d); setTimeout(() => d.remove(), 2600); };
+
+/* ---------- приклад: невелика, але повна гутірка ---------- */
+const PRYKLAD = () => ({ id: uid(), nazva: 'Компас і сторони світу', pidpys: 'Приклад з конструктора', chas: '20 хв',
+  vstup: 'Привітайтеся. Запитайте: «Хто хоч раз губився в лісі чи в незнайомому місті?» — і назвіть тему.',
+  materialy: ['ноутбук і проектор (або великий екран)', '2–3 компаси, якщо є', 'телефони юнаків — для гри (не обовʼязково)'],
+  slaidy: [
+    { t: 'rozdil', h: 'Сторони світу', say: '≈ 7 хв. Спершу — чотири основні сторони.' },
+    { t: 'slaid', k: 'основне', h: 'Чотири сторони світу', p: '', pts: ['**Північ** — угорі на карті', '**Південь** — унизу', '**Схід** — праворуч: там сходить Сонце', '**Захід** — ліворуч: там Сонце заходить'], ask: 'Де в цій кімнаті північ? Покажіть рукою!', say: 'Відкривайте пункти по одному. На запитання — нехай кожен покаже, а потім перевірте компасом.' },
+    { t: 'slaid', k: 'підказка', h: 'Сонце як компас', p: 'Опівдні у нас Сонце — на півдні. Отже, якщо стати до нього обличчям, позаду буде північ.', pts: [], ask: '', say: 'Наголосіть: це приблизно, а влітку «опівдні» за годинником — близько 13:00–14:00.' },
+    { t: 'pyt', q: 'Де сходить Сонце?', a: ['На сході', 'На заході', 'На півночі', 'На півдні'], ok: 0, why: 'Сонце сходить на сході й заходить на заході.' },
+    { t: 'rozdil', h: 'Як працює компас', say: '≈ 8 хв. Дайте компаси в руки.' },
+    { t: 'slaid', k: 'як це працює', h: 'Стрілка компаса', p: '', pts: ['Стрілка — це маленький магніт', 'Її кольоровий кінець показує на **північ**', 'Тримай компас рівно, подалі від металу й телефона'], ask: 'Чому компас бреше біля телефона?', say: 'Відповідь: телефон і метал мають свої магнітні поля й відхиляють стрілку.' },
+    { t: 'pyt', q: 'Куди показує кольоровий кінець стрілки компаса?', a: ['На північ', 'На південь', 'На схід', 'Туди, куди ти йдеш'], ok: 0, why: 'Кольоровий (зазвичай червоний) кінець стрілки показує на північ.' }
+  ],
+  kviz: [
+    { q: 'Яка сторона світу на карті зазвичай угорі?', a: ['Північ', 'Південь', 'Схід', 'Захід'], ok: 0, why: 'На більшості карт північ — угорі.' },
+    { q: 'Де заходить Сонце?', a: ['На заході', 'На сході', 'На півночі', 'На півдні'], ok: 0, why: 'Сонце заходить на заході.' },
+    { q: 'Що може збити компас?', a: ['Телефон або метал поруч', 'Дощ', 'Темрява', 'Холод'], ok: 0, why: 'Метал і електроніка мають магнітні поля й відхиляють стрілку.' },
+    { q: 'Опівдні Сонце в нас…', a: ['на півдні', 'на півночі', 'на сході', 'прямо над головою'], ok: 0, why: 'У північній півкулі опівдні Сонце на півдні.' }
+  ],
+  kinets: 'Наступного разу — вчимося йти за азимутом. СКОБ!' });
+const PORO = () => ({ id: uid(), nazva: 'Нова гутірка', pidpys: '', chas: '30 хв', vstup: '', materialy: [], slaidy: [{ t: 'rozdil', h: 'Перший розділ', say: '' }, { t: 'slaid', k: '', h: 'Заголовок слайда', p: '', pts: ['Перший пункт'], ask: '', say: '' }], kviz: [], kinets: '' });
+
+/* ---------- сховище ---------- */
+let S = (() => { try { return JSON.parse(localStorage.getItem(K) || 'null'); } catch (e) { return null; } })();
+if (!S || !S.all || !Object.keys(S.all).length) { const g = PRYKLAD(); S = { cur: g.id, all: { [g.id]: g } }; }
+if (!S.all[S.cur]) S.cur = Object.keys(S.all)[0];
+let G = S.all[S.cur], sel = 'title';
+let saveT = 0;
+function persist() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    try { localStorage.setItem(K, JSON.stringify(S)); } catch (e) { toast('Місця в браузері забагато зайнято картинками — збережіть гутірку файлом'); }
+    try { localStorage.setItem(K_SHOW, JSON.stringify(G)); } catch (e) { /* ok */ }
+    preview();
+  }, 250);
+}
+
+/* ---------- список ---------- */
+const ICON = { title: 'Т', rozdil: '', slaid: '', pyt: '?', kviz: '', end: '✓' };
+const SKI = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg>';
+const UP = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>', DN = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
+function paintList() {
+  let sec = 0, n = 0;
+  const row = (key, cls, ty, nm, mv) => `<button type="button" class="it ${cls}${String(sel) === String(key) ? ' on' : ''}" data-sel="${key}"><span class="ty">${ty}</span><span class="nm">${esc(nm)}</span>${mv ? `<span class="mv"><span data-mv="-1" title="Вище">${UP}</span><span data-mv="1" title="Нижче">${DN}</span></span>` : '<span></span>'}</button>`;
+  let h = row('title', '', 'Т', G.nazva || 'Титульний слайд', false);
+  G.slaidy.forEach((s, i) => {
+    if (s.t === 'rozdil') h += row(i, 'sec', ++sec, s.h || 'Розділ без назви', true);
+    else if (s.t === 'pyt') h += row(i, 'q ind', '?', s.q || 'Перевірка', true);
+    else h += row(i, 'ind', ++n, (s.h || 'Слайд').replace(/\*\*/g, ''), true);
+  });
+  h += row('kviz', 'sk', SKI, 'Гра «Потужний СКОБ!» · ' + G.kviz.length, false);
+  h += row('end', '', '✓', 'Кінець', false);
+  $('#list').innerHTML = h;
+  $('#mine').innerHTML = Object.values(S.all).map(g => `<option value="${g.id}"${g.id === G.id ? ' selected' : ''}>${esc(g.nazva || 'Без назви')}</option>`).join('');
+}
+$('#list').addEventListener('click', e => {
+  const b = e.target.closest('[data-sel]'); if (!b) return;
+  const mv = e.target.closest('[data-mv]');
+  if (mv) { const i = +b.dataset.sel, j = i + +mv.dataset.mv; if (j < 0 || j >= G.slaidy.length) return; [G.slaidy[i], G.slaidy[j]] = [G.slaidy[j], G.slaidy[i]]; sel = j; paintAll(); persist(); return; }
+  const v = b.dataset.sel; sel = /^\d+$/.test(v) ? +v : v; paintAll(); preview(true);
+});
+$$('[data-add]').forEach(b => b.addEventListener('click', () => {
+  const t = b.dataset.add, at = typeof sel === 'number' ? sel + 1 : G.slaidy.length;
+  const s = t === 'rozdil' ? { t, h: '', say: '' } : t === 'pyt' ? { t, q: '', a: ['', '', '', ''], ok: 0, why: '' } : { t, k: '', h: '', p: '', pts: [], ask: '', say: '' };
+  G.slaidy.splice(at, 0, s); sel = at; paintAll(); persist();
+  const f = $('#ed input[type=text], #ed textarea'); if (f) f.focus();
+}));
+
+/* ---------- редактор ---------- */
+const fld = (key, label, val, o = {}) => `<label class="f"><span>${label}${o.small ? `<small>${o.small}</small>` : ''}</span>${o.area ? `<textarea data-k="${key}"${o.tall ? ' class="tall"' : ''} placeholder="${esc(o.ph || '')}">${esc(val)}</textarea>` : `<input type="text" data-k="${key}" value="${esc(val)}" placeholder="${esc(o.ph || '')}" maxlength="${o.max || 140}">`}${o.hint ? `<div class="hint">${o.hint}</div>` : ''}</label>`;
+const ansBox = (pre, q) => `<div class="f"><span>Відповіді<small>позначте правильну</small></span><div class="ans">${[0, 1, 2, 3].map(j => `<label class="${q.ok === j ? 'ok' : ''}"><input type="radio" name="${pre}ok" data-k="${pre}ok" value="${j}"${q.ok === j ? ' checked' : ''} aria-label="Правильна — ${'АБВГ'[j]}"><b>${'АБВГ'[j]}</b><input type="text" data-k="${pre}a${j}" value="${esc((q.a || [])[j] || '')}" placeholder="${j < 2 ? 'Варіант' : 'Варіант (можна лишити порожнім)'}" maxlength="90"></label>`).join('')}</div></div>`;
+function paintEd() {
+  const E = $('#ed'); let h = '';
+  if (sel === 'title') {
+    h = `<h2>Титульний слайд</h2><p class="why">Назва й загальне про гутірку.</p>
+      ${fld('nazva', 'Назва гутірки', G.nazva, { max: 60 })}${fld('pidpys', 'Над назвою', G.pidpys, { ph: 'напр. «Мистецька вмілість · проба 1» або «Тема сходин»', max: 60 })}
+      ${fld('chas', 'Тривалість', G.chas, { ph: 'напр. 30 хв', max: 20 })}${fld('vstup', 'Що сказати на початку', G.vstup, { area: true, small: 'лише для вас — у плані й на пульті' })}
+      ${fld('materialy', 'Що підготувати', (G.materialy || []).join('\n'), { area: true, small: 'кожне з нового рядка' })}`;
+  } else if (sel === 'kviz') {
+    h = `<h2>Гра «Потужний СКОБ!»</h2><p class="why">Вікторина в кінці гутірки: запитання на екрані, юнаки відповідають з телефонів. Краще 8–15 запитань.</p>` +
+      G.kviz.map((q, i) => `<div class="kq"><div class="hd">Запитання ${i + 1}<button type="button" class="del" data-kdel="${i}">Прибрати</button></div>${fld('k' + i + 'q', 'Запитання', q.q, { max: 160 })}${ansBox('k' + i, q)}${fld('k' + i + 'why', 'Пояснення після відповіді', q.why, { max: 200 })}</div>`).join('') +
+      `<div class="adds"><button type="button" class="btn sm" id="kadd">+ Запитання</button></div>`;
+  } else if (sel === 'end') {
+    h = `<h2>Останній слайд</h2><p class="why">Великим «Дякую!» і рядок під ним.</p>${fld('kinets', 'Рядок під «Дякую!»', G.kinets, { ph: 'напр. «Наступного разу — …» або «Запитання? Обговорімо.»', max: 160 })}`;
+  } else {
+    const s = G.slaidy[sel];
+    if (s.t === 'rozdil') h = `<h2>Розділ</h2><p class="why">Великий номер і назва — як вимога у гутірках-вмілостях.</p>${fld('h', 'Назва розділу', s.h, { max: 120 })}${fld('say', 'Що казати / скільки часу', s.say, { area: true, small: 'лише для вас' })}`;
+    else if (s.t === 'pyt') h = `<h2>Перевірка</h2><p class="why">Одне запитання посеред гутірки — з телефонів або всі разом.</p>${fld('q', 'Запитання', s.q, { max: 160 })}${ansBox('', s)}${fld('why', 'Пояснення після відповіді', s.why, { max: 200 })}`;
+    else h = `<h2>Слайд</h2><p class="why">Ліворуч — картинка (якщо є), праворуч — текст. <b>**слово**</b> — буде жирним.</p>
+      ${fld('k', 'Рукописний підпис над заголовком', s.k, { ph: 'напр. «основне», «цікаво», «спробуй»', max: 40 })}${fld('h', 'Заголовок', s.h, { max: 80 })}
+      ${fld('p', 'Текст', s.p, { area: true, small: 'не обовʼязково' })}
+      ${fld('pts', 'Пункти', (s.pts || []).join('\n'), { area: true, tall: true, small: 'кожен з нового рядка — зʼявляються по одному', hint: 'Короткі: до 12–15 слів. 2–5 пунктів на слайд.' })}
+      ${fld('ask', 'Запитання гуртку', s.ask, { ph: 'не обовʼязково — зʼявиться в жовтій рамці', max: 140 })}
+      <div class="f"><span>Картинка<small>не обовʼязково</small></span><div class="img">${s.img ? `<img src="${esc(s.img)}" alt=""><button type="button" class="btn sm" id="img-del">Прибрати</button>` : ''}<button type="button" class="btn sm" id="img-add">${s.img ? 'Замінити' : 'Додати картинку'}</button></div></div>
+      ${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас — у плані й на пульті' })}`;
+    h += `<div class="adds" style="justify-content:flex-end;margin-top:18px"><button type="button" class="del" id="sdel">Видалити цей ${s.t === 'rozdil' ? 'розділ' : s.t === 'pyt' ? 'слайд-перевірку' : 'слайд'}</button></div>`;
+  }
+  E.innerHTML = h;
+}
+const lines = v => v.split('\n').map(x => x.trim()).filter(Boolean);
+$('#ed').addEventListener('input', e => {
+  const k = e.target.dataset.k; if (!k) return; const v = e.target.value;
+  if (sel === 'title') { if (k === 'materialy') G.materialy = lines(v); else G[k] = v; }
+  else if (sel === 'end') G.kinets = v;
+  else if (sel === 'kviz') { const m = k.match(/^k(\d+)(q|why|ok|a(\d))$/); if (!m) return; const q = G.kviz[+m[1]]; if (m[2] === 'q') q.q = v; else if (m[2] === 'why') q.why = v; else if (m[2] === 'ok') q.ok = +v; else q.a[+m[3]] = v; if (m[2] === 'ok') paintEd(); }
+  else { const s = G.slaidy[sel]; if (k === 'pts') s.pts = lines(v); else if (k === 'ok') { s.ok = +v; paintEd(); } else if (/^a\d$/.test(k)) s.a[+k[1]] = v; else s[k] = v; }
+  if (['nazva', 'h', 'q'].includes(k) || /^k\d+q$/.test(k)) paintList();
+  persist();
+});
+$('#ed').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.id === 'kadd') { G.kviz.push({ q: '', a: ['', '', '', ''], ok: 0, why: '' }); paintAll(); persist(); const t = $$('#ed .kq'); t[t.length - 1].querySelector('input').focus(); }
+  else if (b.dataset.kdel != null) { G.kviz.splice(+b.dataset.kdel, 1); paintAll(); persist(); }
+  else if (b.id === 'sdel') { if (!confirm('Видалити цей слайд?')) return; G.slaidy.splice(sel, 1); sel = Math.min(sel, G.slaidy.length - 1); if (sel < 0) sel = 'title'; paintAll(); persist(); }
+  else if (b.id === 'img-del') { G.slaidy[sel].img = ''; paintEd(); persist(); }
+  else if (b.id === 'img-add') pickImg();
+});
+/* картинка: зменшуємо до 1400 px і стискаємо, щоб гутірка не важила забагато */
+function pickImg() {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = () => { const f = inp.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => {
+    const k = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+    c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); let d = c.toDataURL('image/webp', 0.8); if (!d.startsWith('data:image/webp')) d = c.toDataURL('image/jpeg', 0.82);
+    G.slaidy[sel].img = d; paintEd(); persist(); }; im.onerror = () => toast('Не вдалося відкрити картинку'); im.src = r.result; }; r.readAsDataURL(f); };
+  inp.click();
+}
+
+/* ---------- попередній перегляд (той самий рушій у віконці) ---------- */
+let pvReady = false;
+function preview(nosave) {
+  if (!nosave) try { localStorage.setItem(K_SHOW, JSON.stringify(G)); } catch (e) { /* ok */ }
+  const f = $('#ifr');
+  if (!pvReady) { try { localStorage.setItem(K_SHOW, JSON.stringify(G)); } catch (e) { /* ok */ } f.src = 'pokaz/#hutirka'; pvReady = true; f.onload = () => setTimeout(() => post(), 50); return; }
+  post();
+}
+const post = () => { try { $('#ifr').contentWindow.postMessage({ t: 'konstruktor', i: sel }, location.origin); } catch (e) { /* ok */ } };
+function fitFrame() { const w = $('#frame').clientWidth; $('#ifr').style.transform = `scale(${w / 1280})`; }
+addEventListener('resize', fitFrame);
+
+/* ---------- кнопки ---------- */
+function show(hash) { try { localStorage.setItem(K_SHOW, JSON.stringify(G)); } catch (e) { toast('Забагато картинок для показу — збережіть файлом і відкрийте файл'); return; } window.open('pokaz/' + (hash || ''), '_blank'); }
+$('#show').addEventListener('click', () => show('#hutirka'));
+$('#show2').addEventListener('click', () => show('#hutirka'));
+$('#plan').addEventListener('click', () => show('#plan'));
+const fname = () => (G.nazva || 'gutirka').replace(/[\\/:*?"<>|]+/g, '').trim().slice(0, 60) || 'gutirka';
+$('#save').addEventListener('click', () => {
+  const eng = new TextDecoder().decode(Uint8Array.from(atob(RUSHIY_B64), c => c.charCodeAt(0)));
+  const data = JSON.stringify(G).replace(/</g, '\\u003c');
+  const html = eng.replace('<head>', '<head>\n<script>window.GUT_DANI = ' + data + ';<\/script>');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = fname() + '.html'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  toast('Файл «' + fname() + '.html» збережено — відкривається на будь-якому компʼютері');
+});
+$('#more').addEventListener('click', () => { const p = $('#pop'); p.hidden = !p.hidden; $('#more').setAttribute('aria-expanded', String(!p.hidden)); });
+document.addEventListener('click', e => { if (!e.target.closest('.menu')) { $('#pop').hidden = true; $('#more').setAttribute('aria-expanded', 'false'); } });
+$('#pop').addEventListener('click', e => {
+  const b = e.target.closest('[data-a]'); if (!b) return; $('#pop').hidden = true; const a = b.dataset.a;
+  if (a === 'new') { const g = PORO(); S.all[g.id] = g; S.cur = g.id; G = g; sel = 'title'; paintAll(); persist(); }
+  if (a === 'copy') { const g = JSON.parse(JSON.stringify(G)); g.id = uid(); g.nazva = (g.nazva || '') + ' (копія)'; S.all[g.id] = g; S.cur = g.id; G = g; paintAll(); persist(); toast('Зроблено копію'); }
+  if (a === 'del') { if (!confirm('Видалити гутірку «' + (G.nazva || '') + '» з цього компʼютера? Якщо вона збережена файлом — файл лишиться.')) return; delete S.all[G.id]; if (!Object.keys(S.all).length) { const g = PORO(); S.all[g.id] = g; } S.cur = Object.keys(S.all)[0]; G = S.all[S.cur]; sel = 'title'; paintAll(); persist(); }
+  if (a === 'open') $('#file').click();
+  if (a === 'gpt') { $('#gpt').hidden = false; $('#gpt-err').hidden = true; $('#gpt-in').focus(); }
+});
+$('#mine').addEventListener('change', e => { S.cur = e.target.value; G = S.all[S.cur]; sel = 'title'; paintAll(); persist(); });
+function adopt(g, how) {
+  g = norm(g); if (!g) return false;
+  g.id = uid(); S.all[g.id] = g; S.cur = g.id; G = g; sel = 'title'; paintAll(); persist(); toast(how); return true;
+}
+$('#file').addEventListener('change', () => {
+  const f = $('#file').files[0]; if (!f) return; const r = new FileReader();
+  r.onload = () => { const t = String(r.result); let g = null;
+    try { const m = t.match(/window\.GUT_DANI = (\{[\s\S]*?\});<\/script>/); g = JSON.parse(m ? m[1] : t); } catch (e) { g = null; }
+    if (!adopt(g, 'Гутірку відкрито')) toast('Це не файл гутірки з конструктора'); $('#file').value = ''; };
+  r.readAsText(f);
+});
+
+/* ---------- ChatGPT ---------- */
+const PROMPT = `Ти допомагаєш виховникові Пласту (українська скаутська організація) підготувати гутірку — коротке заняття для юнацтва 12–17 років на сходинах. Гутірку показують на великому екрані слайдами.
+
+Зроби гутірку на основі МАТЕРІАЛУ нижче. Пиши українською, просто й цікаво для підлітків, без вигаданих фактів (якщо не впевнений — не пиши).
+
+Відповідай ЛИШЕ одним блоком JSON (без пояснень до чи після) точно в такому форматі:
+{
+  "nazva": "Коротка назва гутірки (до 50 знаків)",
+  "pidpys": "Що над назвою: напр. «Мистецька вмілість · проба 1» або «Тема сходин»",
+  "chas": "30 хв",
+  "vstup": "Що виховникові сказати на початку (1–2 речення)",
+  "materialy": ["що підготувати", "..."],
+  "slaidy": [
+    { "t": "rozdil", "h": "Назва розділу", "say": "Порада виховникові + час, напр. ≈ 7 хв" },
+    { "t": "slaid", "k": "рукописний підпис 1–2 слова", "h": "Заголовок слайда (до 7 слів)", "p": "одне речення або порожньо", "pts": ["пункт до 15 слів", "..."], "ask": "запитання гуртку або порожньо", "say": "що виховникові сказати на цьому слайді" },
+    { "t": "pyt", "q": "Запитання-перевірка", "a": ["правильна", "хибна", "хибна", "хибна"], "ok": 0, "why": "коротке пояснення" }
+  ],
+  "kviz": [
+    { "q": "Запитання для гри", "a": ["варіант", "варіант", "варіант", "варіант"], "ok": 0, "why": "пояснення" }
+  ],
+  "kinets": "Рядок на останньому слайді"
+}
+
+Правила:
+- 3–5 розділів ("rozdil"); після кожного розділу — 2–4 слайди ("slaid") і 1 перевірка ("pyt").
+- У слайді 2–5 пунктів ("pts"), кожен до 15 слів. Можна виділити слово так: **слово**.
+- Хоча б у кожному другому слайді — "ask": запитання, щоб юнаки думали й говорили.
+- "kviz" — 8–12 запитань по всій гутірці, по 4 варіанти; "ok" — номер правильної відповіді, рахуючи з 0. Правильну ставити на різні місця.
+- Загальний час — як у "chas".
+
+МАТЕРІАЛ:
+`;
+$('#gpt-copy').addEventListener('click', async () => { try { await navigator.clipboard.writeText(PROMPT); toast('Підказку скопійовано — вставте її в ChatGPT і допишіть свій матеріал'); } catch (e) { $('#gpt-in').value = PROMPT; $('#gpt-in').select(); toast('Скопіюйте текст з поля (Ctrl+C)'); } });
+$('#gpt-x').addEventListener('click', () => { $('#gpt').hidden = true; });
+$('#gpt-go').addEventListener('click', () => {
+  const t = $('#gpt-in').value; const i = t.indexOf('{'), j = t.lastIndexOf('}');
+  let g = null; try { g = JSON.parse(t.slice(i, j + 1)); } catch (e) { g = null; }
+  if (!g || !adopt(g, 'Гутірку зроблено — перевірте й поправте, якщо треба')) { $('#gpt-err').textContent = 'Не вдалося прочитати відповідь. Скопіюйте з ChatGPT усю відповідь разом із { } — або попросіть його: «Дай лише JSON, без пояснень».'; $('#gpt-err').hidden = false; return; }
+  $('#gpt').hidden = true; $('#gpt-in').value = '';
+});
+/* перевірка й вирівнювання даних (з файла чи від ChatGPT) */
+function norm(g) {
+  if (!g || typeof g !== 'object' || !Array.isArray(g.slaidy)) return null;
+  const str = v => typeof v === 'string' ? v.trim() : '';
+  const ans = a => { a = Array.isArray(a) ? a.map(str) : []; while (a.length < 4) a.push(''); return a.slice(0, 4); };
+  const okN = (o, a) => { o = parseInt(o, 10); return o >= 0 && o < 4 && a[o] ? o : 0; };
+  const sl = g.slaidy.map(s => {
+    if (!s || typeof s !== 'object') return null;
+    if (s.t === 'rozdil') return { t: 'rozdil', h: str(s.h), say: str(s.say) };
+    if (s.t === 'pyt') { const a = ans(s.a); return { t: 'pyt', q: str(s.q), a, ok: okN(s.ok, a), why: str(s.why) }; }
+    return { t: 'slaid', k: str(s.k), h: str(s.h), p: str(s.p), pts: (Array.isArray(s.pts) ? s.pts : []).map(str).filter(Boolean), ask: str(s.ask), img: typeof s.img === 'string' && s.img.startsWith('data:image/') ? s.img : '', say: str(s.say) };
+  }).filter(Boolean);
+  return { nazva: str(g.nazva) || 'Гутірка', pidpys: str(g.pidpys), chas: str(g.chas), vstup: str(g.vstup), materialy: (Array.isArray(g.materialy) ? g.materialy : []).map(str).filter(Boolean),
+    slaidy: sl, kviz: (Array.isArray(g.kviz) ? g.kviz : []).map(q => { const a = ans(q && q.a); return { q: str(q && q.q), a, ok: okN(q && q.ok, a), why: str(q && q.why) }; }).filter(q => q.q), kinets: str(g.kinets) };
+}
+
+function paintAll() { paintList(); paintEd(); }
+/* назад — туди, звідки прийшли */
+{ const a = $('#home'); a.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vyh';
+  a.addEventListener('click', e => { try { const r = document.referrer && new URL(document.referrer); if (r && r.origin === location.origin && r.pathname !== location.pathname && history.length > 1) { e.preventDefault(); history.back(); } } catch (x) { /* ok */ } }); }
+paintAll(); fitFrame(); persist();
+})();
+</script>
+</body>
+</html>

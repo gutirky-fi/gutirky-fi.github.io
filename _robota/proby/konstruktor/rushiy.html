@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Гутірка</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- Рушій гутірки з конструктора (_robota/proby/konstruktor/). Стиль — той самий, що в гутірках-вмілостях (береться з budova-la-1 під час збирання).
+     Дані: window.GUT_DANI (у збереженому файлі) або localStorage «konstruktor.pokaz» (перегляд з конструктора). -->
+<style>
+/*STYLE*/
+/* конструктор: власні картинки замість малюнків */
+#art img.ki{max-width:100%;max-height:72vh;border-radius:18px;object-fit:contain;box-shadow:0 20px 60px -20px rgba(0,0,0,.7)}
+.ttl .vy,.big .vy{color:var(--ol)}
+.kp{margin:0;color:var(--mut)}
+.kask{opacity:0;transform:translateY(8px);transition:opacity .35s,transform .35s}.kask.v{opacity:1;transform:none}
+#start .acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.empty{max-width:640px;margin:20vh auto;padding:24px;text-align:center;color:var(--body)}
+</style>
+</head>
+<body>
+<div class="empty" id="nodata" hidden><h1 style="font-size:2.4rem">Гутірку не знайдено</h1><p>Відкрийте її з конструктора — кнопка «Показати гутірку».</p></div>
+
+<main id="start" hidden>
+  <a class="back" id="home-back" href="../" style="align-self:flex-start;margin:0 0 18px">← До конструктора</a>
+  <span class="eyebrow" id="s-eb"></span>
+  <h1 id="s-h"></h1>
+  <p class="hand">гутірка для юнацтва</p>
+  <div class="req" id="s-req"><b>Що буде</b><ol id="req"></ol></div>
+  <div class="doors">
+    <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span id="s-chas">На весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
+    <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді. Можна роздрукувати.</span></a>
+  </div>
+  <p class="kh" id="s-kh"></p>
+</main>
+
+<section id="pres" hidden aria-label="Гутірка">
+  <div id="corner"><div id="hot" aria-hidden="true"></div>
+    <nav id="cmenu" aria-label="Меню гутірки">
+      <div class="cm-head"><img src="{{EMBLEM}}" alt=""><div><b id="cm-t"></b><div id="mode-label">Гутірка</div></div></div>
+      <button id="b-toc" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg><span>Зміст</span></button>
+      <button id="b-skob" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg><span>Потужний СКОБ!</span><b id="skob-n"></b></button>
+      <button id="phone-mode" type="button" aria-label="Керування презентацією з телефона"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Пульт</span></button>
+      <button id="b-fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
+      <a id="home-link" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>На початок</span></a>
+    </nav></div>
+  <div id="stage"><div id="art"></div><div id="panel" aria-live="polite"></div></div>
+  <div id="hint"></div><div id="bar"><i></i></div>
+  <div id="tapfx" aria-hidden="true"></div>
+</section>
+<div id="toc" hidden role="dialog" aria-label="Зміст гутірки"><div class="in"><button class="back" type="button" id="toc-x">← Назад до гутірки</button><h3>Зміст</h3><div id="toc-list"></div></div></div>
+
+<main id="plan" class="page" hidden>
+  <a class="back" href="#">← На початок</a>
+  <span class="eyebrow">План для виховника</span>
+  <h1 id="p-h"></h1>
+  <p class="hand">що робити й казати на кожному слайді</p>
+  <button class="go pr" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a1 1 0 0 1-1-1v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a1 1 0 0 1-1 1h-2"/><rect x="6" y="14" width="12" height="7"/></svg>Друкувати</button>
+  <div id="plan-box"></div>
+</main>
+
+<script>/*QR*/</script>
+<script>/*SKOB*/</script>
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+/* текст від виховника — без HTML, лише **жирне** */
+const rich = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+function load() {
+  if (window.GUT_DANI) return window.GUT_DANI;
+  try { return JSON.parse(localStorage.getItem('konstruktor.pokaz') || 'null'); } catch (e) { return null; }
+}
+let D = load();
+if (!D || !Array.isArray(D.slaidy)) { $('#nodata').hidden = false; return; }
+if (window.GUT_DANI) { $('#home-back').hidden = true; }
+if (window.top !== window) { $('#corner').hidden = true; $('#hint').hidden = true; }
+const kviz = () => (D.kviz || []).filter(q => q && q.q && Array.isArray(q.a) && q.a.filter(Boolean).length >= 2).map(q => ({ q: q.q, a: q.a.filter(Boolean), ok: Math.min(q.ok || 0, q.a.filter(Boolean).length - 1), why: q.why || '' }));
+let SL = [];
+function build() {
+  let n = 0; const secN = D.slaidy.filter(s => s.t === 'rozdil').length;
+  SL = [{ t: 'title' }];
+  D.slaidy.forEach((s, src) => {
+    if (s.t === 'rozdil') SL.push({ t: 'sec', src, n: ++n, of: secN, h: s.h || '', say: s.say || '' });
+    else if (s.t === 'pyt') { const a = (s.a || []).filter(Boolean); if (s.q && a.length >= 2) SL.push({ t: 'q', src, q: s.q, a, ok: Math.min(s.ok || 0, a.length - 1), why: s.why || '', n }); }
+    else SL.push({ t: 'card', src, k: s.k || '', h: s.h || '', p: s.p || '', pts: (s.pts || []).filter(Boolean), ask: s.ask || '', img: s.img || '', say: s.say || '' });
+  });
+  if (kviz().length) SL.push({ t: 'kintro' });
+  SL.push({ t: 'end', say: D.kinets || '' });
+  document.title = D.nazva || 'Гутірка';
+  $('#cm-t').textContent = $('#s-h').textContent = $('#p-h').textContent = D.nazva || 'Гутірка';
+  $('#s-eb').textContent = D.pidpys || 'Гутірка';
+  $('#mode-label').textContent = 'Гутірка' + (D.chas ? ' · ' + D.chas : '');
+  const secs = D.slaidy.filter(s => s.t === 'rozdil');
+  $('#req').innerHTML = secs.map(s => `<li>${esc(s.h)}</li>`).join(''); $('#s-req').hidden = !secs.length;
+  $('#s-chas').textContent = (D.chas ? D.chas + ', на весь екран. ' : 'На весь екран. ') + 'Гортати: пробіл / стрілки, на телефоні — дотик.';
+  $('#s-kh').textContent = kviz().length ? 'Наприкінці — гра «Потужний СКОБ!» (' + kviz().length + ' запитань): юнаки відповідають зі своїх телефонів через QR-код.' : '';
+}
+build();
+
+let idx = 0, rev = 0, tot = 0, qctl = null;
+const P = $('#pres'), panel = $('#panel'), artEl = $('#art');
+const steps = s => s.t === 'card' ? s.pts.length + (s.ask ? 1 : 0) : 0;   /* запитання гуртку — після всіх пунктів */
+function render() {
+  if (qctl) { qctl.stop(); qctl = null; }
+  const s = SL[idx]; let h = '', a = '', wide = false, quiz = false, hint = '';
+  tot = steps(s); rev = Math.min(rev, tot);
+  switch (s.t) {
+    case 'title': wide = true; h = `<div class="ttl"><span class="vy">${esc(D.pidpys || 'Гутірка')}</span><h2>${esc(D.nazva || '')}</h2><p>гутірка для юнацтва</p>
+      <div class="meta">${SL.filter(x => x.t === 'sec').length ? `<span><b>${SL.filter(x => x.t === 'sec').length}</b> ${pl(SL.filter(x => x.t === 'sec').length, ['розділ', 'розділи', 'розділів'])}</span>` : ''}${D.chas ? `<span>${esc(D.chas)}</span>` : ''}${kviz().length ? '<span>гра з телефонів</span>' : ''}</div></div>`;
+      hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
+    case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ ${s.of}</small></div><span class="vy">Розділ</span><blockquote>${rich(s.h)}</blockquote></div>`; break;
+    case 'card': a = s.img ? `<img class="ki" src="${esc(s.img)}" alt="">` : '';
+      h = `${s.k ? `<div class="k">${esc(s.k)}</div>` : ''}<h2 class="hh">${rich(s.h)}</h2>${s.p ? `<p class="pp">${rich(s.p)}</p>` : ''}${s.pts.length ? `<ul class="pts">${s.pts.map(p => `<li>${rich(p)}</li>`).join('')}</ul>` : ''}${s.ask ? `<p class="ask kask">${rich(s.ask)}</p>` : ''}`; break;
+    case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
+      hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
+    case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz().length} ${pl(kviz().length, ['запитання', 'запитання', 'запитань'])} про все, що ми сьогодні говорили. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
+      <div class="kbtn"><button class="go" type="button" data-skob="game">Почати гру</button><button class="pb" type="button" data-skob="lobby">Підключити телефони</button><button class="pb" type="button" data-skob="skip">Пропустити</button></div></div>`;
+      hint = 'Далі — почати гру'; break;
+    case 'end': wide = true; h = `<div class="big"><span class="vy">Кінець</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Дякую!</div><blockquote>${D.kinets ? rich(D.kinets) : 'Запитання? Обговорімо.'}</blockquote></div>`; break;
+  }
+  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.remove('hero');
+  artEl.innerHTML = a; artEl.hidden = !a;
+  panel.innerHTML = h; panel.scrollTop = 0;
+  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: 'Перевірка' + (s.n ? ' · розділ ' + s.n : ''), T: 20,
+    auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
+  showRev(); $('#hint').textContent = hint;
+  $('#bar i').style.width = (idx / Math.max(1, SL.length - 1) * 100) + '%';
+  if (idx > 0 && !T0) T0 = Date.now();
+  document.dispatchEvent(new CustomEvent('gutirka:slide'));
+}
+const pl = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
+function showRev() {
+  if (SL[idx].t !== 'card') return;
+  $$('#panel .pts li').forEach((li, k) => li.classList.toggle('v', k < rev));
+  const ka = $('#panel .kask'); if (ka) ka.classList.toggle('v', rev >= SL[idx].pts.length + 1);
+  const last = $$('#panel .pts li.v').pop(); if (last && panel.scrollHeight > panel.clientHeight + 2) try { last.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+}
+function go(i, toEnd) { idx = Math.max(0, Math.min(SL.length - 1, i)); rev = toEnd ? 99 : 0; render(); }
+function adv(d) {
+  const s = SL[idx];
+  if (d > 0) {
+    if (s.t === 'q' && qctl && qctl.next()) return;
+    if (s.t === 'kintro') { startGame(); return; }
+    if (rev < tot) { rev++; showRev(); return; } if (idx < SL.length - 1) go(idx + 1);
+  } else { if (rev > 0) { rev--; showRev(); return; } if (idx > 0) go(idx - 1, true); }
+}
+function startGame() { SKOB.game(kviz(), { T: 20, onClose: () => { if (SL[idx].t === 'kintro') go(idx + 1); } }); }
+panel.addEventListener('click', e => { const b = e.target.closest('[data-skob]'); if (!b) return; const k = b.dataset.skob; if (k === 'game') startGame(); else if (k === 'lobby') SKOB.lobby(); else if (k === 'skip') go(idx + 1); });
+$('#b-skob').addEventListener('click', () => SKOB.lobby());
+SKOB.on(() => { const n = SKOB.count(); $('#skob-n').textContent = n ? String(n) : ''; });
+
+/* меню в куті */
+const corner = $('#corner'); let cornerT = 0;
+function peekCorner(ms) { corner.classList.add('open'); corner.dataset.user = ''; clearTimeout(cornerT); cornerT = setTimeout(() => corner.classList.remove('open'), ms); }
+$('#hot').addEventListener('click', () => { clearTimeout(cornerT); corner.dataset.user = corner.classList.toggle('open') ? '1' : ''; });
+document.addEventListener('pointerdown', e => { document.body.classList.toggle('touchmode', e.pointerType === 'touch'); if (!corner.contains(e.target)) { clearTimeout(cornerT); corner.classList.remove('open'); } }, true);
+$('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,a'); if (!b) return; clearTimeout(cornerT); corner.classList.remove('open'); });
+
+/* пульт на телефоні (pult-host-file.js) */
+let T0 = 0;
+const strip = h => String(h || '').replace(/\*\*/g, '');
+const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Розділ ' + s.n + ': ' + strip(s.h) : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.` : s.t === 'kintro' ? 'Гра-вікторина «Потужний СКОБ!». Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.' : (s.say || '');
+const SECTIONS = () => SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
+const mins = (() => { const m = String(D.chas || '').match(/\d+/); return m ? +m[0] : 30; })();
+const API = { id: 'konstruktor-' + (D.id || 'x'), title: D.nazva || 'Гутірка',
+  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
+    elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: mins * 60, sections: SECTIONS() }),
+  next: () => SKOB.active() ? SKOB.key(new KeyboardEvent('keydown', { key: 'ArrowRight' })) : adv(1), prev: () => SKOB.active() ? null : adv(-1),
+  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
+
+document.addEventListener('keydown', e => {
+  if (P.hidden) return;
+  if (!$('#toc').hidden) { if (e.key === 'Escape') $('#toc').hidden = true; return; }
+  const k = e.key;
+  if ([' ', 'ArrowRight', 'ArrowDown', 'PageDown', 'Enter'].includes(k)) { e.preventDefault(); adv(1); }
+  else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); adv(-1); }
+  else if (k === 'Home') go(0); else if (k === 'End') go(SL.length - 1);
+  else if (k === 'f' || k === 'F' || k === 'а' || k === 'А') fs();
+});
+(() => {   /* дотик: ліва третина — назад, решта — далі; свайп теж */
+  const fx = $('#tapfx'); let st = null, eat = false, t = 0;
+  P.addEventListener('pointerdown', e => { const menuOpen = corner.classList.contains('open') && corner.dataset.user === '1'; st = (e.pointerType === 'mouse' || !e.isPrimary || menuOpen || e.target.closest('button,a,#toc,#corner')) ? null : { x: e.clientX, y: e.clientY, t: Date.now(), id: e.pointerId }; });
+  P.addEventListener('pointerup', e => {
+    const s = st; st = null; if (!s || s.id !== e.pointerId) return;
+    const dx = e.clientX - s.x, dy = e.clientY - s.y; let dir = 0;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.3) dir = dx < 0 ? 1 : -1; else if (Math.hypot(dx, dy) < 12 && Date.now() - s.t < 700) dir = e.clientX < innerWidth / 3 ? -1 : 1;
+    if (!dir) return; eat = true; setTimeout(() => { eat = false; }, 500);
+    adv(dir); fx.className = dir > 0 ? 'r on' : 'l on'; clearTimeout(t); t = setTimeout(() => { fx.className = dir > 0 ? 'r' : 'l'; }, 140);
+  });
+  P.addEventListener('click', e => { if (eat) { eat = false; e.stopPropagation(); } }, true);
+})();
+document.addEventListener('fullscreenchange', () => { $('#b-fs span').textContent = document.fullscreenElement ? 'Вийти з повного екрана' : 'На весь екран'; });
+if (!document.documentElement.requestFullscreen) $('#b-fs').hidden = true;
+function fs() { try { const r = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); if (r && r.catch) r.catch(() => {}); } catch (e) {} }
+$('#b-fs').addEventListener('click', fs);
+$('#b-toc').addEventListener('click', () => {
+  $('#toc-list').innerHTML = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro'].includes(s.t)).map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? rich(s.h) : s.t === 'title' ? 'Початок' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
+  $('#toc').hidden = false;
+});
+$('#toc').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { go(+b.dataset.go); $('#toc').hidden = true; } });
+$('#toc-x').addEventListener('click', () => { $('#toc').hidden = true; });
+
+/* план */
+function renderPlan() {
+  let h = (D.materialy || []).filter(Boolean).length ? `<div class="mat"><b>Що підготувати</b><ul>${D.materialy.filter(Boolean).map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>` : '';
+  h += `<div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, повний екран.</li><li>Пункти на слайді зʼявляються по одному — розповідайте до кожного.</li><li>Нотатки «що казати» й правильні відповіді видно лише вам — на телефоні-пульті (меню → «Пульт»).</li></ul></div>`;
+  h += '<h2>Початок</h2>';
+  SL.forEach(s => {
+    if (s.t === 'title') { h += `<div class="row"><div class="t">Титульний слайд</div><div class="s">${esc(D.vstup || 'Привітайтеся й назвіть тему.')}</div></div>`; return; }
+    if (s.t === 'sec') { h += `<h2>Розділ ${s.n}<small>${esc(strip(s.h))}</small></h2>`; if (s.say) h += `<div class="row"><div class="t">Розділ</div><div class="s">${esc(s.say)}</div></div>`; return; }
+    if (s.t === 'q') { h += `<div class="row"><div class="t">Перевірка<small>20 секунд</small></div><div class="s"><em>${esc(s.q)}</em> — правильна відповідь: «${esc(s.a[s.ok])}». ${esc(s.why)}</div></div>`; return; }
+    if (s.t === 'kintro') { h += `<h2>Гра<small>«Потужний СКОБ!», ${kviz().length} запитань</small></h2>`; kviz().forEach((q, i) => { h += `<div class="row"><div class="t">Запитання ${i + 1}</div><div class="s"><em>${esc(q.q)}</em> — «${esc(q.a[q.ok])}». ${esc(q.why)}</div></div>`; }); return; }
+    if (s.t === 'end') { h += `<h2>Завершення</h2><div class="row"><div class="t">Останній слайд</div><div class="s">${esc(D.kinets || 'Подякуйте й дайте час на запитання.')}</div></div>`; return; }
+    h += `<div class="row"><div class="t">${esc(strip(s.h))}${s.pts.length ? `<small>${s.pts.length} ${pl(s.pts.length, ['пункт', 'пункти', 'пунктів'])}</small>` : ''}</div><div class="s">${esc(s.say) || '<span style="color:var(--mut)">—</span>'}${s.ask ? `<br><em>Запитання гуртку:</em> ${esc(strip(s.ask))}` : ''}</div></div>`;
+  });
+  $('#plan-box').innerHTML = h;
+}
+const T_DOC = () => document.title;
+$('#b-print').addEventListener('click', () => { renderPlan(); window.print(); });
+
+function route() {
+  const h = location.hash.slice(1);
+  const wasG = !P.hidden;
+  $('#start').hidden = !!h && h !== 'start';
+  P.hidden = h !== 'hutirka'; $('#plan').hidden = h !== 'plan';
+  window.GUTIRKA = h === 'hutirka' ? API : null;
+  if (h === 'hutirka' && !wasG && window.top === window) peekCorner(2500);   /* у віконці конструктора — без меню */
+  if (h !== 'hutirka') { SKOB.close(); if (qctl) { qctl.stop(); qctl = null; } $('#toc').hidden = true; if (document.fullscreenElement) try { document.exitFullscreen().catch(() => {}); } catch (e) {} try { window.GutirkaPult && window.GutirkaPult.close(); } catch (e) {} }
+  if (h === 'hutirka') render(); else document.dispatchEvent(new CustomEvent('gutirka:slide'));
+  if (h === 'plan') { renderPlan(); scrollTo(0, 0); }
+}
+addEventListener('hashchange', route);
+/* попередній перегляд у конструкторі: дані змінились — перемалювати й показати потрібний слайд */
+addEventListener('message', e => {
+  if (e.origin !== location.origin || !e.data || e.data.t !== 'konstruktor') return;
+  const nd = load(); if (!nd) return; D = nd; build();
+  const j = e.data.i === 'title' ? 0 : e.data.i === 'kviz' ? SL.findIndex(x => x.t === 'kintro') : e.data.i === 'end' ? SL.length - 1 : SL.findIndex(x => x.src === e.data.i);   /* що вибрано в конструкторі */
+  if (j >= 0) { idx = j; rev = 99; }
+  if (location.hash !== '#hutirka') { location.hash = 'hutirka'; } else render();
+});
+route();
+})();
+</script>
+<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>/*PULT*/</script>
+</body>
+</html>
