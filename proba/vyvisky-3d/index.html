@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Від знаку до вивіски — 3D</title>
+<style>
+@font-face{font-family:Wix;src:url(wix.ttf);font-weight:400 800;font-display:block}
+@font-face{font-family:Golos;src:url(golos.ttf);font-weight:400 900;font-display:block}
+:root{--pap:#f3ede2;--warm:#ffc477;--g:clamp(20px,5vw,72px)}
+*{margin:0;box-sizing:border-box}
+html,body{height:100%;background:#06070a;color:var(--pap);font-family:Golos,system-ui,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+.vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 60% 50%,transparent 45%,rgba(4,5,8,.75))}
+.grain{position:fixed;inset:-50%;pointer-events:none;opacity:.10;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");animation:gr 1s steps(4) infinite}
+@keyframes gr{25%{transform:translate(3%,-2%)}50%{transform:translate(-2%,3%)}75%{transform:translate(2%,2%)}}
+.top{position:fixed;left:var(--g);right:var(--g);top:clamp(18px,4.5vh,44px);display:flex;justify-content:space-between;font:500 clamp(11px,1.05vw,15px)/1.2 Golos;opacity:0;z-index:3}
+.top b{font-weight:500;opacity:.75}
+.sl{position:fixed;inset:0;pointer-events:none;z-index:2;visibility:hidden;text-shadow:0 2px 28px rgba(0,0,0,.55)}
+.sl.on{visibility:visible}
+/* 1 */
+#t1 .tx{position:absolute;left:var(--g);bottom:clamp(44px,13vh,120px);max-width:min(600px,86vw)}
+#t1 h1{font:800 clamp(50px,8.4vw,122px)/.95 Wix;letter-spacing:-.035em}
+#t1 p{margin-top:clamp(16px,3vh,28px);font:400 clamp(16px,1.5vw,22px)/1.5 Golos;max-width:430px;opacity:.85}
+/* 2 */
+#t2 .tx{position:absolute;left:var(--g);right:var(--g);bottom:clamp(44px,10vh,96px);display:flex;align-items:flex-end;gap:clamp(16px,3vw,44px)}
+#t2 .n{font:800 clamp(100px,18vw,250px)/.78 Wix;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px var(--pap)}
+#t2 small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.75;margin-bottom:12px}
+#t2 h2{font:800 clamp(38px,6vw,86px)/.98 Wix;letter-spacing:-.03em}
+/* 3 */
+#t3 .tx{position:absolute;left:var(--g);top:clamp(80px,16vh,150px);max-width:min(470px,86vw)}
+#t3 small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.75;margin-bottom:12px}
+#t3 h2{font:800 clamp(38px,5.4vw,78px)/.98 Wix;letter-spacing:-.03em}
+#t3 p{margin-top:20px;font:400 clamp(15px,1.35vw,20px)/1.5 Golos;opacity:.8}
+.ln-mask,[class*='-mask']{padding-bottom:.16em;margin-bottom:-.16em}
+.lbl{position:fixed;left:0;top:0;z-index:2;pointer-events:none;opacity:0;display:flex;align-items:center;gap:10px;white-space:nowrap}
+.lbl i{width:10px;height:10px;border-radius:50%;background:var(--warm);box-shadow:0 0 0 5px rgba(255,196,119,.18),0 0 18px var(--warm);flex:none}
+.lbl span{font:700 clamp(15px,1.4vw,21px) Wix;letter-spacing:-.01em}
+.lbl small{display:block;font:400 clamp(12px,1.05vw,15px) Golos;opacity:.75}
+.drag{position:absolute;right:var(--g);bottom:clamp(40px,8vh,80px);font:500 13px Golos;opacity:.55}
+/* 4 */
+#t4 .tx{position:absolute;left:0;right:0;top:clamp(70px,15vh,140px);text-align:center;padding:0 6vw}
+#t4 q{display:block;quotes:none;font:700 clamp(34px,5.2vw,76px)/1.06 Wix;letter-spacing:-.025em;max-width:15ch;margin:0 auto;text-wrap:balance}
+#t4 p{margin-top:22px;font:400 clamp(15px,1.35vw,20px)/1.5 Golos;opacity:.75}
+.nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;z-index:4}
+.nav i{width:26px;height:3px;border-radius:2px;background:rgba(243,237,226,.22);transition:background .4s}.nav i.on{background:var(--pap)}
+.hint{position:fixed;right:18px;bottom:11px;font:500 12px Golos;opacity:.4;z-index:4}
+#fb{position:fixed;inset:0;background:#06070a url(../vyvisky-dyzain/a.jpg) 70% 50%/cover;display:none}
+@media (max-aspect-ratio:1/1){#t3 .tx{top:auto;bottom:clamp(60px,12vh,120px)}.drag{display:none}}
+</style></head><body>
+<div id="fb"></div>
+<canvas id="gl"></canvas><div class="vig"></div><div class="grain"></div>
+<div class="top"><b>Пласт у Фінляндії</b><b id="tr">Гутірка для юнацтва · 12–17 років</b></div>
+
+<section class="sl" id="t1"><div class="tx"><h1>Від знаку<br>до вивіски</h1><p>Як простий малюнок стає знаком, а знак — вивіскою, що світиться на стіні.</p></div></section>
+<section class="sl" id="t2"><div class="tx"><div class="n">04</div><div><small>Частина четверта</small><h2>Як вивіска<br>починає світитися</h2></div></div></section>
+<section class="sl" id="t3"><div class="tx"><small>Частина четверта</small><h2>Будова<br>обʼємної літери</h2><p>Три шари — і кожен має свою роботу.</p></div><div class="drag">Потягніть, щоб покрутити</div></section>
+<section class="sl" id="t4"><div class="tx"><q>Хороший знак упізнають за секунду — навіть здалеку.</q><p>Тому в ньому мало деталей і великі прості форми.</p></div></section>
+<div class="lbl" id="l1"><i></i><div><span>Лице</span><small>акрил — пропускає світло</small></div></div>
+<div class="lbl" id="l2"><i></i><div><span>Борт</span><small>боковина — глибина й міцність</small></div></div>
+<div class="lbl" id="l3"><i></i><div><span>Основа</span><small>світлодіоди, дроти, кріплення</small></div></div>
+<div class="nav"><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
+
+<script src="../../lib/gsap-3/gsap.min.js"></script>
+<script src="../../lib/gsap-3/SplitText.min.js"></script>
+<script type="importmap">{"imports":{"three":"../../lib/three-0.187/three.module.js","three/addons/":"../../lib/three-0.187/addons/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+gsap.registerPlugin(SplitText);
+const cv = document.getElementById('gl');
+let R;
+try { R = new THREE.WebGLRenderer({ canvas: cv, antialias: true, powerPreference: 'high-performance' }); }
+catch (e) { document.getElementById('fb').style.display = 'block'; cv.remove(); throw e; }
+R.setPixelRatio(Math.min(devicePixelRatio, 2)); R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.0;
+
+const scene = new THREE.Scene(); scene.background = new THREE.Color('#06070a'); scene.fog = new THREE.FogExp2('#06070a', .055);
+const pm = new THREE.PMREMGenerator(R); scene.environment = pm.fromScene(new RoomEnvironment(), .04).texture; scene.environmentIntensity = .22;
+const cam = new THREE.PerspectiveCamera(32, 1, .05, 120);
+
+/* ── літера «А» з лампочками ─────────────────────────────── */
+const sh = new THREE.Shape([[-1.7, 0], [-.6, 4], [.6, 4], [1.7, 0], [.95, 0], [.64, 1.02], [-.64, 1.02], [-.95, 0]].map(p => new THREE.Vector2(...p)));
+sh.holes.push(new THREE.Path([[-.4, 1.62], [0, 2.92], [.4, 1.62]].map(p => new THREE.Vector2(...p))));
+const D = .62;
+const geo = new THREE.ExtrudeGeometry(sh, { depth: D, bevelEnabled: true, bevelThickness: .035, bevelSize: .03, bevelSegments: 3, curveSegments: 2 });
+geo.translate(0, 0, -D / 2);
+const metal = new THREE.MeshStandardMaterial({ color: '#3d3f45', metalness: .8, roughness: .55 });
+const A = new THREE.Group(); scene.add(A);
+const body = new THREE.Mesh(geo, metal); A.add(body);
+const ZF = D / 2 + .035;
+/* лампочки вздовж ніг, на перекладині й угорі — як на фото */
+const P = [];
+const lerp = (a, b, t) => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+for (const t of [.1, .33, .56, .79]) { const p = lerp([-1.3, .1], [-.33, 3.55], t); P.push(p, [-p[0], p[1]]); }
+P.push([0, 3.62], [0, 1.32]);
+const bulbs = [], sockG = new THREE.CylinderGeometry(.19, .2, .07, 28), bulbG = new THREE.SphereGeometry(.145, 28, 18);
+const sockM = new THREE.MeshStandardMaterial({ color: '#1d1e21', metalness: .9, roughness: .35 });
+P.forEach(([x, y]) => {
+  const s = new THREE.Mesh(sockG, sockM); s.rotation.x = Math.PI / 2; s.position.set(x, y, ZF + .03); A.add(s);
+  const m = new THREE.MeshStandardMaterial({ color: '#fff6e8', emissive: '#ffb04a', emissiveIntensity: 0, roughness: .2, metalness: 0 });
+  const b = new THREE.Mesh(bulbG, m); b.position.set(x, y, ZF + .11); A.add(b); bulbs.push(b);
+});
+/* підлога, світло, пил */
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(80, 80), new THREE.MeshStandardMaterial({ color: '#0b0c10', metalness: .35, roughness: .5 }));
+floor.rotation.x = -Math.PI / 2; floor.position.y = -.035; scene.add(floor);
+scene.add(new THREE.HemisphereLight('#9fb3d9', '#0a0a0c', .12));
+const key = new THREE.SpotLight('#dfe6ff', 0, 30, .5, .7, 1.2); key.position.set(-5, 9, 6); key.target.position.set(0, 1.5, 0); scene.add(key, key.target);
+const rim = new THREE.SpotLight('#8fb0ff', 0, 30, .6, .8, 1.2); rim.position.set(6, 6, -6); rim.target.position.set(0, 2, 0); scene.add(rim, rim.target);
+const warm = new THREE.PointLight('#ffae55', 0, 7, 2); warm.position.set(0, 2.1, 2.6); scene.add(warm);
+const NP = 500, pg = new THREE.BufferGeometry(), pp = new Float32Array(NP * 3);
+for (let i = 0; i < NP; i++) { pp[i * 3] = (Math.random() - .5) * 16; pp[i * 3 + 1] = Math.random() * 7; pp[i * 3 + 2] = (Math.random() - .5) * 12; }
+pg.setAttribute('position', new THREE.BufferAttribute(pp, 3));
+const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: '#ffd9a8', size: .018, transparent: true, opacity: .55, depthWrite: false }));
+scene.add(dust);
+
+/* ── пост-обробка: світіння ─────────────────────────────── */
+const comp = new EffectComposer(R); comp.addPass(new RenderPass(scene, cam));
+const bloom = new UnrealBloomPass(new THREE.Vector2(512, 512), .55, .45, .92); comp.addPass(bloom); comp.addPass(new OutputPass());
+
+/* ── камера: стани слайдів ─────────────────────────────── */
+const wide = () => innerWidth / innerHeight > 1;
+const SHOTS = [
+  () => wide() ? { p: [-.4, 2.5, 8.6], t: [-2.1, 2.05, 0], rot: -.32 } : { p: [.6, 2.2, 12], t: [.1, .6, 0], rot: -.25 },
+  () => ({ p: [.55, 3.5, ZF + 2.1], t: [-.15, 3.35, ZF], rot: -.18 }),
+  () => wide() ? { p: [7.4, 3.3, 6.2], t: [-1.2, 1.9, 0], rot: .25 } : { p: [5.6, 4.2, 8.4], t: [0, 2.8, 0], rot: .2 },
+  () => ({ p: [0, 1.2, 22], t: [0, 5.3, 0], rot: 0 })
+];
+const st = { p: new THREE.Vector3(), t: new THREE.Vector3(), rot: 0, bloom: .55, key: 0, exp: 1 };
+const setShot = s => { st.p.set(...s.p); st.t.set(...s.t); st.rot = s.rot; };
+let cur = -1, busy = null;
+const nav = [...document.querySelectorAll('.nav i')], secs = [...document.querySelectorAll('.sl')];
+let splits = [];
+const mkSplits = () => splits = secs.map(sec => [...sec.querySelectorAll('h1,h2,q,.n')].map(el => new SplitText(el, { type: 'lines,words', linesClass: 'ln', mask: 'lines' })));
+
+function textIn(i, delay = 0) {
+  const sec = secs[i]; sec.classList.add('on');
+  const words = splits[i].flatMap(s => s.words);
+  const tl = gsap.timeline({ delay });
+  tl.fromTo(words, { yPercent: 110, opacity: 0 }, { yPercent: 0, opacity: 1, duration: RM ? .01 : 1.0, ease: 'expo.out', stagger: RM ? 0 : .045 })
+    .fromTo(sec.querySelectorAll('p,small,.drag'), { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: RM ? .01 : .8, ease: 'power3.out', stagger: .08 }, '-=.6');
+  return tl;
+}
+function textOut(i) {
+  const sec = secs[i];
+  return gsap.to(sec.querySelectorAll('.tx, .drag'), { opacity: 0, y: -14, filter: 'blur(6px)', duration: RM ? .01 : .45, ease: 'power2.in', onComplete: () => { sec.classList.remove('on'); gsap.set(sec.querySelectorAll('.tx, .drag'), { opacity: 1, y: 0, filter: 'none' }); } });
+}
+const lightsOn = (dur = 2.2) => {
+  const tl = gsap.timeline();
+  tl.to(st, { key: 1, duration: dur, ease: 'power2.out' }, 0);
+  /* мерехтіння: кожна лампочка вмикається по-своєму */
+  bulbs.forEach((b, k) => {
+    const d = .25 + k * .12 + Math.random() * .15;
+    tl.to(b.material, { emissiveIntensity: 1.4, duration: .05 }, d).to(b.material, { emissiveIntensity: .3, duration: .06 }, d + .07)
+      .to(b.material, { emissiveIntensity: 1.7, duration: .08 }, d + .16 + Math.random() * .1);
+  });
+  tl.to(warm, { intensity: .7, duration: 1.4, ease: 'power2.out' }, .5);
+  return tl;
+};
+function go(i, instant) {
+  if (i < 0 || i >= SHOTS.length || i === cur) return;
+  if (busy) { busy.progress(1); busy = null; }
+  const prev = cur; cur = i; nav.forEach((n, k) => n.classList.toggle('on', k === i));
+  const s = SHOTS[i](), d = instant || RM ? 0 : (prev === -1 ? 3.4 : 2.4);
+  busy = gsap.timeline({ onComplete: () => { busy = null; } });
+  if (prev >= 0) busy.add(textOut(prev), 0);
+  if (prev === -1 && !instant) { setShot({ p: [-.2, 2.2, 12.5], t: s.t, rot: -.6 }); busy.add(lightsOn(), .2); }
+  else if (prev === -1) { bulbs.forEach(b => b.material.emissiveIntensity = 1.7); warm.intensity = .7; st.key = 1; setShot(s); }
+  busy.to(st.p, { x: s.p[0], y: s.p[1], z: s.p[2], duration: d, ease: 'power3.inOut' }, prev === -1 ? 0 : .15)
+      .to(st.t, { x: s.t[0], y: s.t[1], z: s.t[2], duration: d, ease: 'power3.inOut' }, '<')
+      .to(st, { rot: s.rot, duration: d, ease: 'power3.inOut' }, '<')
+      .to(st, { bloom: i === 1 ? .9 : .55, exp: i === 1 ? .62 : 1, duration: d, ease: 'power2.inOut' }, '<');
+  busy.add(textIn(i), instant ? 0 : Math.max(.2, d - .9));
+  gsap.to('.lbl', { opacity: 0, duration: .3 });
+  if (i === 2) gsap.to('.lbl', { opacity: 1, duration: .8, stagger: .15, delay: instant ? 0 : d - .2 });
+  if (prev === -1) gsap.to('.top', { opacity: 1, duration: 1, delay: instant ? 0 : 1.6 });
+}
+addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
+
+/* перетягування літери на слайді «Будова» + дотик для гортання */
+let drag = null, spin = 0;
+addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, r: spin, moved: false }; });
+addEventListener('pointermove', e => { mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; if (!drag) return; const dx = e.clientX - drag.x; if (Math.abs(dx) > 6) drag.moved = true; if (cur === 2 && drag.moved) spin = drag.r + dx * .008; });
+addEventListener('pointerup', e => {
+  if (!drag) return; const dx = e.clientX - drag.x, moved = drag.moved; drag = null;
+  if (cur === 2 && moved) { gsap.to({ v: spin }, { v: 0, duration: 1.6, ease: 'elastic.out(1,.6)', delay: 1.2, onUpdate() { spin = this.targets()[0].v; } }); return; }
+  if (moved && Math.abs(dx) > 50) return go(cur + (dx < 0 ? 1 : -1));
+  if (!moved) go(cur + (e.clientX > innerWidth / 3 ? 1 : -1));
+});
+let mx = 0, my = 0, sx = 0, sy = 0;
+
+/* мітки «Лице / Борт / Основа», привʼязані до точок літери */
+const LB = [['l1', new THREE.Vector3(1.05, 2.4, ZF)], ['l2', new THREE.Vector3(1.32, 1.0, 0)], ['l3', new THREE.Vector3(.95, .35, -D / 2)]].map(([id, v]) => [document.getElementById(id), v]);
+const tmp = new THREE.Vector3();
+
+function size() { const w = innerWidth, h = innerHeight; R.setSize(w, h, false); comp.setSize(w, h); cam.aspect = w / h; cam.fov = w / h > 1 ? 32 : 46; cam.updateProjectionMatrix(); bloom.resolution.set(w / 2, h / 2); }
+addEventListener('resize', () => { size(); if (cur >= 0 && !busy) { const s = SHOTS[cur](); st.p.set(...s.p); st.t.set(...s.t); } }); size();
+
+const clk = new THREE.Timer();
+R.setAnimationLoop(() => {
+  clk.update(); const t = clk.getElapsed();
+  sx += (mx - sx) * .04; sy += (my - sy) * .04;
+  const drift = RM ? 0 : 1;
+  cam.position.set(st.p.x + (Math.sin(t * .23) * .12 + sx * .6) * drift, st.p.y + (Math.sin(t * .31) * .06 - sy * .3) * drift, st.p.z);
+  cam.lookAt(st.t); A.rotation.y = st.rot + spin; A.updateMatrixWorld();
+  key.intensity = st.key * 70; rim.intensity = st.key * 30; bloom.strength = st.bloom; R.toneMappingExposure = st.exp;
+  if (st.key > .9) bulbs.forEach((b, k) => { b.material.emissiveIntensity = 1.6 + Math.sin(t * 7 + k * 1.7) * .08 + (Math.random() < .002 ? -1.2 : 0); });
+  dust.rotation.y = t * .01; dust.position.y = Math.sin(t * .2) * .1;
+  if (cur === 2) LB.forEach(([el, v]) => { tmp.copy(v).applyMatrix4(A.matrixWorld).project(cam); el.style.transform = `translate(${(tmp.x * .5 + .5) * innerWidth - 5}px,${(-tmp.y * .5 + .5) * innerHeight - 14}px)`; });
+  comp.render();
+});
+const q = +new URLSearchParams(location.search).get('s');
+document.fonts.ready.then(() => { mkSplits(); go(q ? q - 1 : 0, !!q); });
+</script>
+</body></html>
