@@ -33,6 +33,19 @@ import re
 src = re.sub(r'<!--NOIG-->.*?<!--/NOIG-->\n?', '', src, flags=re.S)   # «Для всіх → Ігри»: три гри замість старої плитки бінго (03.11.2026 — і на сайті)
 IG_F = ROB / 'ihry-vyh' / 'ihry.enc.json'   # «Ігри» виховників — лише зашифровані (див. _robota/ihry-vyh/ihry.py)
 src = re.sub(r'/\*IHRY_VYH\*/.*?/\*/IHRY_VYH\*/', lambda m: json.dumps(json.loads(IG_F.read_text(encoding='utf-8')) if IG_F.exists() else {'v': 1, 'salt': '', 'it': 1, 'ihry': []}, ensure_ascii=False, separators=(',', ':')), src, count=1, flags=re.S)
+# готові ігри з гутірок (не секретні — ті самі питання є в гутірках): «Потужний СКОБ!» з вікторини кожної гутірки, бінго «Кераміка України»
+def _gotovi(prefix):
+    out = []
+    for g in ('keramika-uk', 'keramika-1', 'budova-la-1'):
+        js = "global.window={}; require(process.argv[1]); const L=window.LA; console.log(JSON.stringify({t:L.title||L.nazva||null, q:(L.kviz||[]).map(x=>x.why?[x.q,x.a,x.ok,x.why]:[x.q,x.a,x.ok])}))"
+        d = json.loads(subprocess.run(['node', '-e', js, str(ROB / 'gutirky' / g / 'dani.js')], capture_output=True, text=True, check=True).stdout)
+        if not d['q']: continue
+        raw = json.dumps({'v': 1, 't': d['t'], 'T': 20, 'm': 1, 'q': d['q']}, ensure_ascii=False, separators=(',', ':')).encode()
+        link = 'j' + base64.urlsafe_b64encode(raw).decode().rstrip('=')
+        out.append({'id': 'skob-' + g, 'gra': 'skob', 'nazva': d['t'], 'opys': str(len(d['q'])) + ' питань', 'dzh': 'з гутірки', 'url': '../skob-hra/' + prefix + '#g=' + link})
+    out.append({'id': 'bingo-keramika', 'gra': 'bingo', 'nazva': 'Кераміка України', 'opys': 'слова з гутірки, картка 4×4', 'dzh': 'з гутірки', 'url': '../bingo/?' + (prefix[1:] + '&' if prefix else '') + 'gra=keramika'})
+    return out
+src = src.replace('/*IHRY_GOT*/[]/*/IHRY_GOT*/', json.dumps(_gotovi('?dyz=3'), ensure_ascii=False, separators=(',', ':')), 1)
 if len(sys.argv) > 1 and sys.argv[1] == 'sait':
     # справжній сайт: без смужки «макет»; нові гутірки й матеріали до них — поки сховані (додамо після перевірки)
     # тимчасова смужка «Чернетка» (з 22.10.2026, за рішенням власника; щоб прибрати — замінити на '')

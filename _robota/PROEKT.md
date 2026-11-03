@@ -487,3 +487,5 @@ gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs --jq '.workflow_runs[0
   - Разом із головною перезібрались гутірки — у них уже був код стилю 3 СКОБ (`S3` у skob.js), він вмикається лише з `?dyz=3`, на звичайні гутірки не впливає.
   - Як оновлювати ігри далі: `python3 _robota/proby/svoya-hra/zibraty.py sait`, `…/opytuvannia/zibraty.py sait`, `…/bingo/zibraty.py`, `…/skob-hra/zibraty.py skob-hra` (+ без аргументу для проби), головна — `…/vhody/zibraty.py sait`.
   - Нова підготовлена гра: `IHRY_KOD=1912 python3 _robota/ihry-vyh/ihry.py dodaty gra.json` → `vhody/zibraty.py sait` і `vhody/zibraty.py` → commit/push.
+
+**03.11.2026, ≈ 06:55 — «Виховники → Ігри»: готові ігри з гутірок** (власник: «в нас уже є СКОБ і бінго до теми»). `vhody/zibraty.py` бере вікторину `LA.kviz` з `gutirky/{keramika-uk,keramika-1,budova-la-1}/dani.js` → картки «Потужний СКОБ!» (8 / 15 / 15 питань, «з гутірки»), «Грати» відкриває `/skob-hra/#g=j…` (гра в посиланні, як «Вам надіслали гру» → «Грати»), і бінго «Кераміка України» (`/bingo/?gra=keramika`). Не шифруються — ті самі питання є в гутірках. Нова гутірка з `kviz` — додати її теку в `_gotovi()`.

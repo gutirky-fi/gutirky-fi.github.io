@@ -895,7 +895,7 @@ function backToRow() {
 function renderVyh() {
   const inn = isIn();
   $('#lockbox').hidden = inn; $('#vyh-in').hidden = !inn; $('#vstats').hidden = !inn;
-  if (inn) { $('#t-g-n').textContent = GUT.length; $('#t-k-n').textContent = SKILLS.length; /*IG*/$('#t-i-n').textContent = IHRY.ihry.length;/*/IG*/ }
+  if (inn) { $('#t-g-n').textContent = GUT.length; $('#t-k-n').textContent = SKILLS.length; /*IG*/$('#t-i-n').textContent = IHRY.ihry.length + GOT.length;/*/IG*/ }
   $('#lk').innerHTML = inn ? OPEN : LOCK;
   if (!inn) return;
   renderFeatAll();
@@ -996,9 +996,10 @@ $('#gcards').addEventListener('click', e => {
    Підготовлені ігри лежать на сайті ЗАШИФРОВАНІ кодом виховників (_robota/ihry-vyh/ihry.py; PBKDF2 → AES-GCM).
    Код, який виховник ввів на вході, памʼятається на пристрої (K_KOD) і розшифровує ігри. «Грати» — передає питання Змагу через localStorage. */
 const IHRY = /*IHRY_VYH*/{ v: 1, salt: '', it: 1, ihry: [] }/*/IHRY_VYH*/;
+const GOT = /*IHRY_GOT*/[]/*/IHRY_GOT*/;   /* готові ігри з гутірок — збирає zibraty.py (не зашифровані: ті самі питання є в гутірках) */
 const K_KOD = 'proba-vhody:kod', K_GRANO = 'proba-vhody:ihry-vidkryvaly';
 const IG_URL = { zmag: '../svoya-hra/?dyz=3' };
-const IG_NAME = { zmag: 'Інтелектуальний змаг' };
+const IG_NAME = { zmag: 'Інтелектуальний змаг', skob: 'Потужний СКОБ!', bingo: 'Пластове бінго' };
 const IG_IC = {
   zmag: '<svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg>',
   bingo: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>',
@@ -1017,7 +1018,7 @@ async function igOpen(kod) {
 async function renderIhry() {
   const box = $('#ig-box');
   $('#ig-own').innerHTML = IG_OWN.map(([g, u, n, d]) => `<a href="${u}">${IG_IC[g]}<span>${esc(n)}<small>${esc(d)}</small></span></a>`).join('');
-  if (!IHRY.ihry.length) { box.innerHTML = '<p class="ig-empty">Поки що підготовлених ігор немає. Порожні ігри — у <a href="#vsi">«Для всіх» → «Ігри»</a>.</p>'; return; }
+  if (!IG && !IHRY.ihry.length) IG = [];
   if (!IG) {
     const kod = store.get(K_KOD);
     if (kod) { box.innerHTML = '<p class="ig-empty">Відкриваємо ігри…</p>'; try { IG = await igOpen(String(kod)); } catch (e) { IG = null; } }
@@ -1029,8 +1030,10 @@ async function renderIhry() {
     }
   }
   const was = store.get(K_GRANO) || {};
+  const gotH = GOT.map(g => `<div class="ig"><div class="lg">${IG_IC[g.gra] || ''}</div><div><b>${esc(g.nazva)}</b><span class="m">${esc([IG_NAME[g.gra], g.opys].join(' · '))}</span><span class="tg">${esc(g.dzh)}</span></div>
+    <div class="act"><a class="go" href="${esc(g.url)}" data-got="${esc(g.id)}">${PLAY} Грати</a><span class="igph">Грати — з ноутбука, який показує на екран</span></div></div>`).join('');
   box.innerHTML = '<div class="ig-list">' + IG.map((g, i) => `<div class="ig"><div class="lg">${IG_IC[g.gra] || ''}</div><div><b>${esc(g.nazva)}</b><span class="m">${esc([IG_NAME[g.gra], g.opys, g.vik].filter(Boolean).join(' · '))}</span>${was[g.id] ? `<span class="tg">Відкривали ${esc(was[g.id])}</span>` : '<span class="tg new">Нова</span>'}</div>
-    <div class="act"><a class="go" href="${IG_URL[g.gra]}" data-ig="${i}">${PLAY} Грати</a><a href="${IG_URL[g.gra]}" data-ig="${i}" data-druk="1" target="_blank" rel="noopener">Друк відповідей</a><span class="igph">Грати — з ноутбука, який показує на екран</span></div></div>`).join('') + '</div>';
+    <div class="act"><a class="go" href="${IG_URL[g.gra]}" data-ig="${i}">${PLAY} Грати</a><a href="${IG_URL[g.gra]}" data-ig="${i}" data-druk="1" target="_blank" rel="noopener">Друк відповідей</a><span class="igph">Грати — з ноутбука, який показує на екран</span></div></div>`).join('') + gotH + '</div>';
 }
 $('#ig-box').addEventListener('click', e => {
   const a = e.target.closest('[data-ig]'); if (!a || !IG) return;
