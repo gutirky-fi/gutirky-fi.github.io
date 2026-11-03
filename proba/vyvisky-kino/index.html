@@ -78,10 +78,10 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
 #s2 small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
 #s2 h2{font:800 clamp(38px,6vw,86px)/.98 Wix;letter-spacing:-.03em}
 /* 3 — думка */
-#s3 .ph{filter:blur(22px) brightness(.38);transform:scale(1.1)}
-#s3 .sh{background:radial-gradient(55% 60% at 50% 50%,rgba(255,170,80,.14),transparent 70%)}
-#s3 .tx{inset:0;display:grid;place-content:center;text-align:center;padding:0 6vw}
-#s3 q{display:block;quotes:none;font:700 clamp(34px,5.4vw,78px)/1.06 Wix;letter-spacing:-.025em;max-width:15ch;margin:0 auto;text-wrap:balance}
+#s3 .ph{background-image:url(k9.webp);background-position:100% 50%}
+#s3 .sh{background:linear-gradient(90deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,.35) 35%,transparent 55%),linear-gradient(180deg,rgba(5,5,5,.35),transparent 35%)}
+#s3 .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(560px,82vw)}
+#s3 q{display:block;quotes:none;font:800 clamp(34px,4.8vw,70px)/1.02 Wix;letter-spacing:-.03em;max-width:13ch;text-wrap:balance}
 #s3 p{margin-top:22px;font:400 clamp(15px,1.35vw,20px)/1.5 Golos;opacity:.78}
 .nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;z-index:9}
 .nav i{width:26px;height:3px;border-radius:2px;background:rgba(246,239,227,.22);transition:background .4s}.nav i.on{background:var(--pap)}
@@ -94,7 +94,7 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
   <div class="tx"><small>Частина перша</small><h2>Знак,<br>що говорить</h2><p>Скільки вивісок ви бачили сьогодні дорогою сюди? А яку запамʼятали?</p></div></section>
 <section class="sl" id="sk" data-o="64% 55%"><div class="ph" style="background-image:url(k3.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина друга</small><h2>Хороший<br>знак</h2><p>Простий. Впізнаваний. Видно здалеку. Працює в одному кольорі.</p></div></section>
-<section class="sl" id="s3"><div class="ph"></div><div class="sh"></div>
+<section class="sl" id="s3" data-o="80.5% 38.5%"><div class="ph"></div><div class="sh"></div>
   <div class="tx"><q>Хороший знак упізнають за секунду — навіть здалеку.</q><p>Тому в ньому мало деталей і великі прості форми.</p></div></section>
 <section class="sl" id="sl" data-o="75.5% 49.5%"><div class="ph" style="background-image:url(k4.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина третя</small><h2>Як роблять<br>вивіску</h2><p>Верстат вирізає деталі точно за векторним файлом — лінія в лінію.</p></div></section>
@@ -214,6 +214,19 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
      .to(B.querySelectorAll('.mark *'), { strokeDashoffset: 0, duration: 1.6, ease: 'power1.inOut', stagger: .35 }, '-=.2');
     return t;
   }
+  /* «від ескізу до вивіски»: камера влітає в намальоване коло — і відʼїжджає вже від світного знака на будинку */
+  function zoomMatch(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b], pa = A.querySelectorAll('.ph'), pb = B.querySelectorAll('.ph');
+    gsap.set(pa, { transformOrigin: A.dataset.o }); gsap.set(pb, { transformOrigin: B.dataset.o });
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .4 })
+     .to(pa, { scale: 6, duration: 1.4, ease: 'expo.in' }, .1)
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); }, 1.05)
+     .fromTo(B, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'none' }, 1.05)
+     .fromTo(pb, { scale: 6 }, { scale: 1.02, duration: 2.6, ease: 'expo.out' }, 1.05)
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(pa, { scale: 1 }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), 2.2);
+    return t;
+  }
   /* 2 → 3 і назад: «фокусування» — один кадр розмивається, інший проявляється з туману */
   function focus(a, b) {
     const t = gsap.timeline();
@@ -230,7 +243,7 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: 1 }); tl = textIn(i); drift(i); return; }
     const key = S[a] ? S[a].id + '>' + S[i].id : '';
     tl = a === -1 ? intro() : key === 's1>sv' ? whip(a, i, 1) : key === 'sv>s1' ? whip(a, i, -1) : key === 'sv>sk' ? whip(a, i, 1, 'y') : key === 'sk>sv' ? whip(a, i, -1, 'y')
-      : key === 'sk>s3' ? into(a, i, '#050505') : key === 's3>sl' ? laser(a, i) : key === 'sl>sz' ? match(a, i) : key === 'sz>s2' ? into(a, i, '#ffcf8f') : key === 's2>se' ? ledOn(a, i) : key === 'sm>st' ? iris(a, i) : key === 'se>sm' ? whip(a, i, -1, 'y') : key === 'sm>se' ? whip(a, i, 1, 'y') : focus(a, i);
+      : key === 'sk>s3' ? zoomMatch(a, i) : key === 's3>sl' ? laser(a, i) : key === 'sl>sz' ? match(a, i) : key === 'sz>s2' ? into(a, i, '#ffcf8f') : key === 's2>se' ? ledOn(a, i) : key === 'sm>st' ? iris(a, i) : key === 'se>sm' ? whip(a, i, -1, 'y') : key === 'sm>se' ? whip(a, i, 1, 'y') : focus(a, i);
   }
   addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
   let x0 = null;
