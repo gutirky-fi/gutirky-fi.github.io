@@ -2,6 +2,7 @@
     python3 _robota/proby/svoya-hra/zibraty.py   -> proba/svoya-hra/index.html, proba/svoya-hra/hravets/index.html
 Вбудовує _robota/src/qr.js і zvyazok.js (звʼязок PeerJS + запасні канали)."""
 import os, sys
+DYZ3 = '<meta charset="utf-8">\n<script>/* на сайті нові ігри — завжди стиль 3 (?dyz=3), так само й посилання для телефонів */ if (!/[?&]dyz=/.test(location.search)) history.replaceState(null, \'\', location.pathname + (location.search ? location.search + \'&\' : \'?\') + \'dyz=3\' + location.hash);</script>'
 H = os.path.dirname(os.path.abspath(__file__)); ROB = os.path.dirname(os.path.dirname(H)); ROOT = os.path.dirname(ROB)
 qr = open(os.path.join(ROB, 'src', 'qr.js'), encoding='utf8').read()
 z = open(os.path.join(ROB, 'src', 'zvyazok.js'), encoding='utf8').read()
@@ -18,6 +19,7 @@ for d in DIRS:
         if src == 'hravets.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'ihry-tel3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # телефон, стиль 3
         if src == 'ekran.html': s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.css'), encoding='utf8').read() + '\n</style>\n<script>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # стиль 3 (?dyz=3)
         s = s.replace('url({{EMBLEM3}})', 'none')   # у Змагу своя фонова лілея (body.st-plast)
+        if not d.startswith('proba/'): s = s.replace('<meta charset="utf-8">', DYZ3, 1)
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
         assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s
         p = os.path.join(ROOT, out); os.makedirs(os.path.dirname(p), exist_ok=True)

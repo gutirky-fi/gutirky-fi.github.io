@@ -2,6 +2,7 @@
 <html lang="uk">
 <head>
 <meta charset="utf-8">
+<script>/* на сайті нові ігри — завжди стиль 3 (?dyz=3), так само й посилання для телефонів */ if (!/[?&]dyz=/.test(location.search)) history.replaceState(null, '', location.pathname + (location.search ? location.search + '&' : '?') + 'dyz=3' + location.hash);</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1b1d21">
@@ -57,8 +58,207 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .skob button:disabled{background:var(--card2);color:var(--mut)}
 .msg{margin-top:10px;padding:12px 14px;border-radius:14px;font-weight:700;text-align:center}
 .msg.no{background:rgba(229,83,75,.15);color:#ffb3aa}.msg.win{background:rgba(255,194,71,.18);color:var(--gd);font-size:20px}.msg.oth{background:var(--card);color:#cfd5dc}
+/*FAM*/
+body.fam .logo{display:none}
+body.fam .top .fm-logo{font-size:26px}
+body.fam #join .fm-logo{font-size:52px;margin:8px 0 14px}
+body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
+body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
+body.fam .ball{border:0;background:#22262b}
+body.fam .ball small{color:#9aa3ad}
+body.fam .card button{border:0;background:#22262b;border-radius:14px}
+body.fam .card button.e{background:none;border:1px dashed #3b4048}
+body.fam .card button.on{background:#2e8f55;color:#fff}
+body.fam .card button.w{background:#ffc247;color:#16130a}
+body.fam .skob button{border-radius:99px;letter-spacing:.08em}
+body.fam .skob{background:linear-gradient(180deg,rgba(21,23,27,0),#15171b 35%)}
+/*/FAM*/
+</style>
+<style>
+/* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
+   Вмикається класом body.fam (поки проба: ?dyz=fam). Кожна гра має своє «обличчя» — логотип .fm-logo:
+     .sq — квадратні плитки (СКОБ), .balls — кульки (бінго), .board — клітинки табла (змаг), .stovp — стовпчики (опитування).
+   Вбудовується в сторінки ігор їхніми zibraty.py. */
+body.fam{--bg:#15171b;--card:#22262b;--card2:#272b31;--ln:#3b4048;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--ok:#3ee08f;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;
+  background:radial-gradient(80% 70% at 50% 40%,#232a33,#15171b 75%) fixed #15171b;color:var(--ink);font-family:var(--txt)}
+body.fam::before{display:none}
+
+/* ---- логотип гри ---- */
+.fm-logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-family:var(--disp);vertical-align:middle}
+.fm-logo small{font:600 .34em/1 var(--disp);letter-spacing:.32em;text-transform:uppercase;color:#ffc247;margin:0 0 .2em .06em;white-space:nowrap}
+.fm-lt{display:flex;gap:.08em;align-items:center}
+.fm-lt i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.fm-lt i.c0{background:#d64541}.fm-lt i.c1{background:#2f6fd0}.fm-lt i.c2{background:#e8b02a;color:#1d1606}.fm-lt i.c3{background:#2e8f55}.fm-lt i.c4{background:#8a5bd1}
+.fm-lt b{font:600 .9em/1 var(--disp);color:#ffc247;margin-left:.06em}
+.fm-logo.balls .fm-lt i{border-radius:50%;box-shadow:inset -.07em -.09em 0 rgba(0,0,0,.2),inset .05em .06em 0 rgba(255,255,255,.18)}
+.fm-logo.board .fm-lt i{background:#22262b;box-shadow:inset 0 0 0 .045em #ffc247;color:#ffc247;border-radius:.14em}
+.fm-logo.board .fm-lt i.on{background:#ffc247;color:#1d1606;box-shadow:none}
+.fm-logo.stovp .fm-lt{align-items:flex-end;gap:.06em}
+.fm-logo.stovp .fm-lt i{width:.3em;border-radius:.07em}
+.fm-logo.stovp .fm-lt span{font:600 .78em/1 var(--disp);letter-spacing:.02em;margin-left:.16em;text-transform:uppercase;color:#fff}
+.fm-logo.sm{font-size:30px}.fm-logo.sm small{display:none}
+
+/* ---- шапка й кнопки-«пігулки» ---- */
+body.fam .top{background:none;border:0;padding:max(10px,env(safe-area-inset-top)) 14px 0 18px}
+body.fam .chip{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 15px var(--txt);gap:8px}
+body.fam .chip:hover{border-color:var(--gd)}
+body.fam .chip .dot{width:9px;height:9px;background:#6b7480}body.fam .chip .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+body.fam .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 16px var(--txt)}
+body.fam .btn:hover:not(:disabled){border-color:var(--gd)}
+body.fam .btn.main{min-height:54px;padding:0 28px;background:var(--gd);border-color:var(--gd);color:#16130a;font-size:18px;font-weight:700}
+body.fam .btn.ok{background:#2e8f55;border-color:#2e8f55;color:#fff}
+body.fam .btn.no{background:#d64541;border-color:#d64541;color:#fff}
+
+/* ---- підписи як у СКОБ ---- */
+.fm-hand{font:500 clamp(1.3rem,2vw,2.1rem)/1.1 Caveat,'Segoe Print',cursive;color:#2fd2c0}
+.fm-lbl{margin:10px 0 4px;color:#a0a8b2;font:600 14px var(--txt);letter-spacing:.12em;text-transform:uppercase}
+.fm-or{display:flex;align-items:center;gap:12px;margin:12px 0 8px;color:#6b7480;font-size:14px}
+.fm-or::before,.fm-or::after{content:"";flex:1;height:1px;background:#383d44}
+.fm-h3{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;font:600 20px var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.fm-h3 span{color:#ffc247}
+
+/* ---- вікно «Запросити гравців» (як лобі СКОБ) ---- */
+.fm-ov{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,12,15,.9)}
+.fm-box{position:relative;width:min(1060px,100%);max-height:100%;overflow:auto;padding:24px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;box-shadow:0 24px 90px #000a;text-align:left}
+.fm-box .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
+.fm-box .fm-logo{font-size:clamp(44px,6vw,66px)}
+.fm-join{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
+.fm-join .qr{width:min(380px,46vh,70vw);aspect-ratio:1;border-radius:20px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+.fm-join .qr svg{width:100%;height:100%}
+.fm-s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 var(--txt);color:#fff}
+.fm-url{font:600 clamp(1.4rem,2.6vw,2.2rem)/1.1 var(--disp);color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+.fm-code{font:600 clamp(2.6rem,6vw,4.8rem)/1 var(--disp);letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.fm-join{grid-template-columns:1fr}.fm-join .qr{margin:0 auto}}
+
+/* ---- пʼєдестал: золото, срібло, бронза (як у СКОБ) ---- */
+body.fam .pod .bl{color:#16130a;text-shadow:none;border:0;border-radius:14px 14px 0 0;box-shadow:none;background:#d9925b}
+body.fam .pod .p[data-pl="1"] .bl{background:#ffc247}
+body.fam .pod .p[data-pl="2"] .bl{background:#cfd5dc}
+body.fam .pod .nm{font:700 clamp(1rem,2vw,1.8rem) var(--txt);text-transform:none;letter-spacing:0;color:#fff}
+body.fam .pod .nm::before{content:"";display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--c);margin-right:.35em;vertical-align:.08em}
+body.fam .pod .sc2{font:600 clamp(.9rem,1.5vw,1.4rem) var(--disp);color:#cfd5dc;margin-bottom:8px}
+
+/* ---- телефон ---- */
+body.fam .in>.top{padding:0}
+body.fam input{border-radius:14px;background:#22262b;border:1px solid var(--ln)}
+body.fam input:focus{border-color:var(--gd);outline:0}
+
+/* ---- лобі (варіант Б): панель ведучого ліворуч, запрошення праворуч ---- */
+body.fam.lob .top{display:none}
+body.fam #lobby{padding:0;display:block}
+body.fam .l3{display:grid;grid-template-columns:minmax(340px,400px) 1fr;height:100%}
+body.fam .pn{display:flex;flex-direction:column;padding:22px 26px 20px;background:#1f2328;border-right:1px solid #33383f;overflow:auto}
+body.fam .pn-h{display:flex;align-items:center;gap:14px}
+body.fam .pn-b{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid #33383f;color:#cfd5dc}
+body.fam .pn-b:hover{border-color:var(--gd)}
+body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
+body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
+body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
+body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
+body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
+body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+body.fam .pn .team input{flex:1;min-width:0;width:auto;border:0;background:none;padding:6px 2px;font:700 18px var(--txt);color:#f2f4f6;border-radius:6px}
+body.fam .pn .team input:focus{background:#1f2328}
+body.fam .pn .team small{display:block;font:600 14px var(--txt);color:#3ee08f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+body.fam .pn .team button{width:32px;height:32px;border:0;background:none;color:#6b7480;border-radius:8px}
+body.fam .pn .team button:hover{color:#fff;background:#33383f}
+body.fam .pn-a{align-self:flex-start;margin-top:10px;border:0;background:none;padding:2px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .pn-a:hover,body.fam .pn-k button:hover{color:#fff}
+body.fam .pn .modes{display:flex;gap:0;margin:0;padding:4px;border-radius:12px;background:#15171b;border:1px solid #33383f}
+body.fam .pn .modes button{flex:auto;min-height:0;border:0;background:none;border-radius:9px;padding:9px 10px;font:600 14px var(--txt);color:#9aa3ad;white-space:nowrap}
+body.fam .pn .modes button small{display:none}
+body.fam .pn .modes button[aria-pressed=true]{background:#33383f;color:#fff}
+body.fam .pn .mdesc{margin:8px 0 0;color:#9aa3ad;font-size:14px}
+body.fam .pn-sp{flex:1;min-height:22px}
+body.fam .pn #start{width:100%;min-height:60px;border-radius:12px;font-size:20px}
+body.fam .pn-k{display:flex;justify-content:space-between;margin-top:14px}
+body.fam .pn-k button{border:0;background:none;padding:4px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .rt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;overflow:auto}
+body.fam .rt .qr{width:min(320px,44vh);aspect-ratio:1;border-radius:20px;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+body.fam .rt-s{margin:24px 0 4px;font:600 20px var(--txt);color:#f2f4f6}
+body.fam .rt-u{font:600 clamp(1.5rem,2.4vw,2.1rem)/1.15 var(--disp);color:#fff;overflow-wrap:anywhere}
+body.fam .rt-c{margin-top:6px;font:600 clamp(4rem,8vw,6.4rem)/1 var(--disp);letter-spacing:.06em;color:#ffc247;font-variant-numeric:tabular-nums}
+body.fam .rt-pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:14px;min-height:34px}
+body.fam .rt-pl span{padding:5px 14px;border-radius:99px;background:#22262b;font-weight:600;font-size:15px}
+body.fam .rt-pl em{font-style:normal;color:#9aa3ad;font-size:15px}
+body.fam .rt .resume{position:absolute;left:28px;right:28px;top:22px;width:auto;margin:0;border-radius:14px;background:#2b2618;border:1px solid #6b5520;text-align:left}
+body.fam .rt .resume .btn{min-height:44px;border-radius:12px}
+body.fam .ved{margin-top:0}
+body.fam .fm-ov .opt{margin-top:14px}
+body.fam .fm-ov .sub{margin:12px 0 0}
+@media (max-width:860px){body.fam .l3{grid-template-columns:1fr;height:auto}body.fam #lobby{overflow:auto}body.fam .pn{border-right:0}}
+
+/* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
+   Вмикається класом body.s2 (проба: ?dyz=2). Шапка з логотипом Пласту, заголовок ліворуч, налаштування під ним,
+   праворуч картка з QR-кодом, унизу розкривний блок «Для ведучого». Вбудовується zibraty.py бінго й опитування. */
+body.s2{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--pad:max(24px,calc(50vw - 620px));background:var(--bg)}
+body.s2 .top{padding:14px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln);gap:12px}
+body.s2 .logo{display:flex;align-items:center;gap:14px;font:600 22px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+body.s2 .logo i,body.s2 .logo svg{display:none}
+body.s2 .logo .plast{height:38px;width:auto;display:block}
+body.s2 .logo .nm{padding-left:14px;border-left:1px solid var(--ln)}
+body.s2 .chip{min-height:38px;padding:6px 12px;font:600 14px var(--txt);background:transparent;color:var(--mut);border-radius:12px}
+body.s2 .chip b{color:var(--ink)}
+body.s2 #home{width:38px;justify-content:center;padding:0;color:var(--ink)}
+body.s2 main{padding:92px var(--pad) 24px}
+body.s2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 16px var(--txt);border-radius:12px;min-height:46px;padding:10px 18px;border:1px solid var(--ln);background:var(--card);color:var(--ink)}
+body.s2 .btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+body.s2 #lobby{display:block;overflow:auto}
+body.s2 #lobby .l2{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start}
+body.s2 .eyb{margin:0 0 6px;font:600 14px var(--txt);letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+body.s2 #lobby h1{margin:0;font:600 clamp(3rem,6vw,5rem)/.95 var(--disp);text-transform:uppercase;letter-spacing:.005em}
+body.s2 .hand{margin:8px 0 22px;font:500 clamp(1.5rem,2.4vw,2rem)/1.1 Caveat,cursive;color:var(--hand)}
+body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
+body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
+body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 13px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
+body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
+body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
+body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+body.s2 .s2a .btn{min-height:54px;font-size:18px;padding:12px 24px}
+body.s2 .s2j{position:sticky;top:0;padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd);text-align:center}
+body.s2 .s2j h2{margin:0;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
+body.s2 .s2j p{margin:2px 0 14px;color:var(--mut);font-size:15px}
+body.s2 .s2j .qr{width:100%;max-width:260px;margin:0 auto;box-shadow:none;border-radius:14px}
+body.s2 .s2j .url{margin-top:12px;font:600 15px var(--txt);color:var(--body);word-break:break-all;letter-spacing:0}
+body.s2 .s2j .s2l{margin:14px 0 2px}
+body.s2 .s2j .code{font:600 54px/1 var(--disp);letter-spacing:.06em;color:var(--gd)}
+body.s2 .s2j .pl{justify-content:center;margin-top:14px;min-height:0}
+body.s2 .s2x{width:100%;margin-top:34px;border-top:1px solid var(--ln);padding-top:14px;color:var(--mut)}
+body.s2 .s2x summary{cursor:pointer;font:700 15px var(--txt);list-style:none}
+body.s2 .s2x summary::-webkit-details-marker{display:none}
+body.s2 .s2x summary::before{content:"▸ "}body.s2 .s2x[open] summary::before{content:"▾ "}
+body.s2 .s2xi{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:14px;color:var(--body)}
+body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:12px}
+@media (max-width:900px){body.s2 #lobby .l2{grid-template-columns:1fr}body.s2 .s2j{position:static}}
 
 </style>
+<script>
+/* «Стиль 3» на телефоні (?dyz=3): логотип гри «значок + назва» вгорі й на першому екрані. Виклик: IHRY_TEL3('zmag'|'bingo'|'opyt') */
+window.IHRY_TEL3 = function (gra) {
+  if (!/dyz=3/.test(location.search)) return;
+  const Z = {
+    skob: ['Потужний', 'СКОБ!', '<svg viewBox="0 0 40 40"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>'],
+    zmag: ['Інтелектуальний', 'Змаг', '<svg viewBox="0 0 40 40"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg>'],
+    bingo: ['Пластове', 'Бінго', '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>'],
+    opyt: ['Швидке', 'Опитування', '<svg viewBox="0 0 40 40"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg>']
+  };
+  const z = Z[gra]; if (!z) return;
+  document.body.classList.add('s3t');
+  const st = document.createElement('style');
+  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:8px}body.s3t .t3 svg{width:24px;height:24px;flex:none}body.s3t .t3 b{font:600 20px/1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#f2f4f6}' +
+    'body.s3t .j3{display:flex;flex-direction:column;align-items:flex-start;margin:14px 0 10px}body.s3t .j3 small{font:600 13px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 9px 1px}body.s3t .j3 .w{display:flex;align-items:center;gap:12px}body.s3t .j3 svg{width:40px;height:40px;flex:none}body.s3t .j3 b{font:600 48px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:2px}' +
+    'body.s3t .qn{font:700 14px "Source Sans 3",sans-serif;text-transform:none;letter-spacing:.02em;color:#a0a8b2}body.s3t #play h1,body.s3t #play h2{text-transform:none}body.s3t .btn{border-radius:12px}body.s3t .top .logo,body.s3t .top>b:not(.t3){display:none}';
+  document.head.append(st);
+  const top = document.querySelector('.top');
+  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<b>' + z[1] + '</b></span>');
+  const h = document.querySelector('#join h1');
+  if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+};
+
+</script>
 </head>
 <body>
 <div class="in">
@@ -295,8 +495,17 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 <script>
 (function () {
 'use strict';
-
-
+/*FAM*/if (window.IHRY_TEL3) IHRY_TEL3('bingo');/*/FAM*/
+/*FAM*/
+const FAM = /dyz=(fam|2)/.test(location.search);
+if (FAM) {   /* родина ігор: кнопка «БІНГО!», логотип-кульки */
+  document.body.classList.add('fam');
+  const T = '<span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span>';
+  document.querySelector('.top .logo').insertAdjacentHTML('afterend', '<span class="fm-logo balls sm" aria-label="Бінго">' + T + '</span>');
+  document.querySelector('#join h1').outerHTML = '<span class="fm-logo balls" aria-label="Пластове бінго"><small>Пластове</small>' + T + '</span>';
+  document.getElementById('skob').textContent = 'БІНГО!';
+}
+/*/FAM*/
 const SKOB = /dyz=(fam|2|3)/.test(location.search) ? 'БІНГО' : 'СКОБ';
 if (SKOB === 'БІНГО') document.getElementById('skob').textContent = 'БІНГО!';
 const $ = s => document.querySelector(s);

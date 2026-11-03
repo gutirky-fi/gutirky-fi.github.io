@@ -560,6 +560,11 @@ body.s3:not(.st-plast)::before{content:"";display:block;position:fixed;right:-6v
 
 </style>
 <script>
+/* Стрілка «назад» у грі: туди, звідки прийшли (сторінка сайту) — інакше на «Для всіх → Ігри» (03.11.2026) */
+window.IHRY_BACK = function (a) {
+  a.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vsi'; a.setAttribute('aria-label', 'Назад');
+  a.addEventListener('click', e => { try { const r = document.referrer && new URL(document.referrer); if (r && r.origin === location.origin && r.pathname !== location.pathname && history.length > 1) { e.preventDefault(); history.back(); } } catch (x) { /* звичайне посилання */ } });
+};
 /* «Стиль 3» ігор (проба ?dyz=3): логотип «значок + назва», картка QR ліворуч, «Ведучому» в шапці, лінійні значки.
    Викликається з гри: IHRY_S3({gra, m (блок із заголовком), x (розкривний блок ведучого або null), knopky: {id: 'значок'}}) */
 window.IHRY_S3 = function (o) {
@@ -593,6 +598,7 @@ window.IHRY_S3 = function (o) {
   Object.entries(o.knopky || {}).forEach(([id, n]) => { const b = document.getElementById(id); if (!b) return; [...b.childNodes].forEach(c => { if (c.nodeType === 3) c.textContent = c.textContent.replace(/^[\s▶✎+🖨]+/, ''); }); b.querySelectorAll('i.ic').forEach(e => e.remove()); b.insertAdjacentHTML('afterbegin', ic(n)); });
   /* кнопка «назад» — значок, як у Змагу */
   const home = document.getElementById('home'); if (home && !home.querySelector('i')) home.innerHTML = ic('back');
+  if (home) IHRY_BACK(home);
   /* картка QR: «або відкрийте адресу й введіть код» — під кодом, як у Змагу */
   const jc = document.querySelector('.s2j'); if (jc) { const l = [...jc.querySelectorAll('.s2l')].find(e => /відкрийте/.test(e.textContent)), cd = jc.querySelector('.code'); if (l && cd) cd.after(l); }
   /* стрілки «→ ←» з підписів кнопок прибираємо (кнопки й так кажуть, що станеться) */
