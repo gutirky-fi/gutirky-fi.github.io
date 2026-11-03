@@ -11,6 +11,51 @@
      Дані: window.GUT_DANI (у збереженому файлі) або localStorage «konstruktor.pokaz» (перегляд з конструктора). -->
 <style>
 /*STYLE*/
+
+/* ---------- стилі гутірки (D.styl) ---------- */
+body.st-pryroda{--gd:#9bd67f;--ac:#ffd166;--sky:#6cbf63;--ol:#c9b87a;--tint:#1f2c23;--chip:#2f5a37}
+body.st-nebo{--gd:#74c6ff;--ac:#ffc247;--sky:#74c6ff;--ol:#9fb7d1;--tint:#1b2738;--chip:#2f5f8f}
+body.st-glyna{--gd:#eb9a62;--ac:#f3cf94;--sky:#eb9a62;--ol:#d2a98a;--tint:#2c2019;--chip:#6a3f27}
+body.st-plast{--tint:#232a33;--chip:#2f5f8f}
+body[class*="st-"] #pres{background:radial-gradient(70% 60% at 30% 45%,var(--tint),var(--bg) 75%)}
+body[class*="st-"] .ttl .meta span{border-color:var(--chip)}
+body.st-pryroda .door.main,body.st-nebo .door.main,body.st-glyna .door.main{background:var(--gd);border-color:var(--gd)}
+.tlily{position:fixed;right:4vw;top:50%;transform:translateY(-50%);height:min(70vh,56vw);opacity:.07;pointer-events:none}
+.big.short blockquote{font:600 clamp(2.2rem,5vw,5.2rem)/1.05 var(--disp);text-transform:uppercase;letter-spacing:.02em;border-left-width:6px}
+/* слайд без картинки — текст більший і по центру, з акцентною рискою */
+#pres.noart #stage{grid-template-columns:minmax(0,1040px)}
+#pres.noart #panel{padding-left:28px;border-left:4px solid var(--gd)}
+#pres.noart .hh{font-size:clamp(2.2rem,4.4vw,4.6rem)}
+#pres.noart .pp,#pres.noart .pts li{font-size:clamp(1.15rem,1.8vw,1.95rem)}
+/* велика картинка на весь екран */
+.vel{position:fixed;inset:0;background:var(--img) center/cover no-repeat}
+.vel.noimg{background:repeating-linear-gradient(45deg,#22262b 0 20px,#1e2226 20px 40px)}.vel .ph{position:absolute;inset:0;display:grid;place-items:center;font:600 clamp(1.2rem,2vw,2rem) var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+.vel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,17,20,0) 40%,rgba(15,17,20,.85) 82%,rgba(15,17,20,.95))}
+.vel .cap{position:absolute;z-index:1;left:4vw;right:4vw;bottom:7vh;max-width:1100px}
+.vel .cap .hh{font-size:clamp(2.2rem,4.6vw,5rem);margin:6px 0 8px;text-shadow:0 2px 20px rgba(0,0,0,.5)}
+.vel .cap .pp{color:#e3e7eb;max-width:900px}
+#pres.full #stage{padding:0}#pres.full #panel{max-height:none;height:100%;width:100%;overflow:visible;position:relative}
+/* факт */
+.fakt{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(24px,4vw,70px);align-items:center;max-width:min(1200px,92vw)}
+.fakt .fv{font:600 clamp(5rem,15vw,13rem)/.85 var(--disp);color:var(--gd);letter-spacing:-.01em;max-width:46vw;overflow-wrap:anywhere}
+.fakt .k{margin-bottom:4px}
+@media (max-aspect-ratio:1/1){.fakt{grid-template-columns:1fr}}
+/* цитата */
+.tsyt{margin:0;max-width:min(1100px,90vw)}
+.tsyt::before{content:"“";display:block;font:600 clamp(6rem,14vw,12rem)/.6 var(--disp);color:var(--gd);height:.45em}
+.tsyt blockquote{margin:0;font:600 clamp(2rem,4.2vw,4.4rem)/1.12 var(--disp);letter-spacing:.01em;text-wrap:balance}
+.tsyt figcaption{margin-top:22px;font:500 clamp(1.4rem,2.4vw,2.4rem) var(--hand);color:var(--ac)}
+/* порівняння */
+.dvi{max-width:min(1300px,94vw);width:100%}
+.dvi .cols{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,28px);margin-top:14px}
+.dvi .col{padding:clamp(16px,2vw,28px);border-radius:20px;background:rgba(255,255,255,.04);border:1px solid var(--ln);border-top:6px solid var(--gd)}
+.dvi .col+.col{border-top-color:var(--ac)}
+.dvi .col h3{margin:0 0 10px;font:600 clamp(1.4rem,2.4vw,2.4rem)/1.1 var(--disp);text-transform:uppercase;color:var(--gd)}
+.dvi .col+.col h3{color:var(--ac)}
+.dvi .col ul{margin:0;padding:0;list-style:none}
+.dvi .col li{font-size:clamp(1rem,1.5vw,1.6rem);line-height:1.4;padding:6px 0 6px 26px;position:relative}
+.dvi .col li::before{content:"";position:absolute;left:4px;top:.75em;width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.5}
+
 /* конструктор: власні картинки замість малюнків */
 #art img.ki{max-width:100%;max-height:72vh;border-radius:18px;object-fit:contain;box-shadow:0 20px 60px -20px rgba(0,0,0,.7)}
 .ttl .vy,.big .vy{color:var(--ol)}
@@ -86,11 +131,16 @@ function build() {
   D.slaidy.forEach((s, src) => {
     if (s.t === 'rozdil') SL.push({ t: 'sec', src, n: ++n, of: secN, h: s.h || '', say: s.say || '' });
     else if (s.t === 'pyt') { const a = (s.a || []).filter(Boolean); if (s.q && a.length >= 2) SL.push({ t: 'q', src, q: s.q, a, ok: Math.min(s.ok || 0, a.length - 1), why: s.why || '', n }); }
+    else if (s.t === 'velyka') { if (s.img || window.top !== window) SL.push({ t: 'velyka', src, k: s.k || '', h: s.h || '', p: s.p || '', img: s.img, say: s.say || '' }); }
+    else if (s.t === 'fakt') SL.push({ t: 'fakt', src, k: s.k || '', v: s.v || '', h: s.h || '', p: s.p || '', say: s.say || '' });
+    else if (s.t === 'tsytata') SL.push({ t: 'tsytata', src, p: s.p || '', avtor: s.avtor || '', say: s.say || '' });
+    else if (s.t === 'dvi') SL.push({ t: 'dvi', src, k: s.k || '', h: s.h || '', l: { h: (s.l || {}).h || '', pts: ((s.l || {}).pts || []).filter(Boolean) }, r: { h: (s.r || {}).h || '', pts: ((s.r || {}).pts || []).filter(Boolean) }, say: s.say || '' });
     else SL.push({ t: 'card', src, k: s.k || '', h: s.h || '', p: s.p || '', pts: (s.pts || []).filter(Boolean), ask: s.ask || '', img: s.img || '', say: s.say || '' });
   });
   if (kviz().length) SL.push({ t: 'kintro' });
   SL.push({ t: 'end', say: D.kinets || '' });
   document.title = D.nazva || 'Гутірка';
+  document.body.className = document.body.className.replace(/\bst-\S+/g, '').trim(); document.body.classList.add('st-' + (['pryroda', 'nebo', 'glyna'].includes(D.styl) ? D.styl : 'plast'));
   $('#cm-t').textContent = $('#s-h').textContent = $('#p-h').textContent = D.nazva || 'Гутірка';
   $('#s-eb').textContent = D.pidpys || 'Гутірка';
   $('#mode-label').textContent = 'Гутірка' + (D.chas ? ' · ' + D.chas : '');
@@ -109,12 +159,16 @@ function render() {
   const s = SL[idx]; let h = '', a = '', wide = false, quiz = false, hint = '';
   tot = steps(s); rev = Math.min(rev, tot);
   switch (s.t) {
-    case 'title': wide = true; h = `<div class="ttl"><span class="vy">${esc(D.pidpys || 'Гутірка')}</span><h2>${esc(D.nazva || '')}</h2><p>гутірка для юнацтва</p>
+    case 'title': wide = !D.img; a = D.img ? `<img class="ki" src="${esc(D.img)}" alt="">` : ''; if (!D.img) h = `<img class="tlily" src="{{EMBLEM}}" alt="" aria-hidden="true">`; h += `<div class="ttl"><span class="vy">${esc(D.pidpys || 'Гутірка')}</span><h2>${esc(D.nazva || '')}</h2><p>гутірка для юнацтва</p>
       <div class="meta">${SL.filter(x => x.t === 'sec').length ? `<span><b>${SL.filter(x => x.t === 'sec').length}</b> ${pl(SL.filter(x => x.t === 'sec').length, ['розділ', 'розділи', 'розділів'])}</span>` : ''}${D.chas ? `<span>${esc(D.chas)}</span>` : ''}${kviz().length ? '<span>гра з телефонів</span>' : ''}</div></div>`;
       hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
-    case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ ${s.of}</small></div><span class="vy">Розділ</span><blockquote>${rich(s.h)}</blockquote></div>`; break;
+    case 'sec': wide = true; h = `<div class="big${s.h.length <= 48 ? ' short' : ''}"><div class="n">${s.n}<small>/ ${s.of}</small></div><span class="vy">Розділ</span><blockquote>${rich(s.h)}</blockquote></div>`; break;
     case 'card': a = s.img ? `<img class="ki" src="${esc(s.img)}" alt="">` : '';
       h = `${s.k ? `<div class="k">${esc(s.k)}</div>` : ''}<h2 class="hh">${rich(s.h)}</h2>${s.p ? `<p class="pp">${rich(s.p)}</p>` : ''}${s.pts.length ? `<ul class="pts">${s.pts.map(p => `<li>${rich(p)}</li>`).join('')}</ul>` : ''}${s.ask ? `<p class="ask kask">${rich(s.ask)}</p>` : ''}`; break;
+    case 'velyka': wide = true; h = `<div class="vel${s.img ? '' : ' noimg'}" style="--img:url('${esc(s.img)}')">${s.img ? '' : '<div class="ph">Тут буде велика картинка — додайте її в конструкторі</div>'}<div class="cap">${s.k ? `<div class="k">${esc(s.k)}</div>` : ''}${s.h ? `<h2 class="hh">${rich(s.h)}</h2>` : ''}${s.p ? `<p class="pp">${rich(s.p)}</p>` : ''}</div></div>`; break;
+    case 'fakt': wide = true; h = `<div class="fakt"><div class="fv">${esc(s.v)}</div><div>${s.k ? `<div class="k">${esc(s.k)}</div>` : ''}<h2 class="hh">${rich(s.h)}</h2>${s.p ? `<p class="pp">${rich(s.p)}</p>` : ''}</div></div>`; break;
+    case 'tsytata': wide = true; h = `<figure class="tsyt"><blockquote>${rich(s.p)}</blockquote>${s.avtor ? `<figcaption>— ${esc(s.avtor)}</figcaption>` : ''}</figure>`; break;
+    case 'dvi': wide = true; h = `<div class="dvi">${s.k ? `<div class="k">${esc(s.k)}</div>` : ''}<h2 class="hh">${rich(s.h)}</h2><div class="cols">${[s.l, s.r].map(c => `<div class="col"><h3>${esc(c.h)}</h3><ul>${c.pts.map(x => `<li>${rich(x)}</li>`).join('')}</ul></div>`).join('')}</div></div>`; break;
     case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
       hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
     case 'kintro': wide = true; h = `<div class="big kin">${SKOB.logo()}<blockquote>Гра-вікторина: ${kviz().length} ${pl(kviz().length, ['запитання', 'запитання', 'запитань'])} про все, що ми сьогодні говорили. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</blockquote>
@@ -122,7 +176,7 @@ function render() {
       hint = 'Далі — почати гру'; break;
     case 'end': wide = true; h = `<div class="big"><span class="vy">Кінець</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Дякую!</div><blockquote>${D.kinets ? rich(D.kinets) : 'Запитання? Обговорімо.'}</blockquote></div>`; break;
   }
-  P.classList.toggle('wide', wide); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.remove('hero');
+  P.classList.toggle('wide', wide); P.classList.toggle('full', s.t === 'velyka'); P.classList.toggle('quiz', quiz); P.classList.toggle('noart', !a && !wide && !quiz); P.classList.toggle('hero', s.t === 'title' && !!D.img);
   artEl.innerHTML = a; artEl.hidden = !a;
   panel.innerHTML = h; panel.scrollTop = 0;
   if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s, { label: 'Перевірка' + (s.n ? ' · розділ ' + s.n : ''), T: 20,
@@ -163,7 +217,7 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 /* пульт на телефоні (pult-host-file.js) */
 let T0 = 0;
 const strip = h => String(h || '').replace(/\*\*/g, '');
-const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Розділ ' + s.n + ': ' + strip(s.h) : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const titleOf = s => !s ? '' : s.t === 'tsytata' ? 'Цитата' : s.t === 'fakt' ? 'Факт: ' + s.v : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Розділ ' + s.n + ': ' + strip(s.h) : s.t === 'q' ? 'Перевірка: ' + s.q : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
 const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.` : s.t === 'kintro' ? 'Гра-вікторина «Потужний СКОБ!». Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.' : (s.say || '');
 const SECTIONS = () => SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const mins = (() => { const m = String(D.chas || '').match(/\d+/); return m ? +m[0] : 30; })();
@@ -216,6 +270,7 @@ function renderPlan() {
     if (s.t === 'q') { h += `<div class="row"><div class="t">Перевірка<small>20 секунд</small></div><div class="s"><em>${esc(s.q)}</em> — правильна відповідь: «${esc(s.a[s.ok])}». ${esc(s.why)}</div></div>`; return; }
     if (s.t === 'kintro') { h += `<h2>Гра<small>«Потужний СКОБ!», ${kviz().length} запитань</small></h2>`; kviz().forEach((q, i) => { h += `<div class="row"><div class="t">Запитання ${i + 1}</div><div class="s"><em>${esc(q.q)}</em> — «${esc(q.a[q.ok])}». ${esc(q.why)}</div></div>`; }); return; }
     if (s.t === 'end') { h += `<h2>Завершення</h2><div class="row"><div class="t">Останній слайд</div><div class="s">${esc(D.kinets || 'Подякуйте й дайте час на запитання.')}</div></div>`; return; }
+    if (s.t !== 'card') { h += `<div class="row"><div class="t">${esc(s.t === 'tsytata' ? 'Цитата' : s.t === 'fakt' ? s.v + ' — ' + strip(s.h) : strip(s.h))}<small>${s.t === 'velyka' ? 'велика картинка' : s.t === 'fakt' ? 'факт' : s.t === 'dvi' ? 'порівняння' : ''}</small></div><div class="s">${esc(s.say) || '<span style="color:var(--mut)">—</span>'}</div></div>`; return; }
     h += `<div class="row"><div class="t">${esc(strip(s.h))}${s.pts.length ? `<small>${s.pts.length} ${pl(s.pts.length, ['пункт', 'пункти', 'пунктів'])}</small>` : ''}</div><div class="s">${esc(s.say) || '<span style="color:var(--mut)">—</span>'}${s.ask ? `<br><em>Запитання гуртку:</em> ${esc(strip(s.ask))}` : ''}</div></div>`;
   });
   $('#plan-box').innerHTML = h;

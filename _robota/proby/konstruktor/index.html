@@ -89,6 +89,8 @@ button{cursor:pointer}
 .ans label.ok input[type=text]{border-color:var(--hand)}
 .img{display:flex;align-items:center;gap:12px}
 .img img{width:120px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--ln)}
+.styl{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.styl button{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:#14171a;font-weight:700;font-size:14px}.styl button[aria-pressed=true]{border-color:var(--gd);background:var(--card2)}.styl i{width:18px;height:18px;border-radius:50%;flex:none}
+.kart{margin-top:8px;padding:10px 12px;border-radius:10px;background:#1d2024;border:1px dashed var(--ln);font-size:14px;color:var(--body)}.kart b{color:var(--hand)}
 .kq{margin-top:14px;padding:14px;border-radius:14px;background:#1d2024;border:1px solid var(--ln)}
 .kq .hd{display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 14px var(--disp);letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
 .del{border:0;background:none;color:var(--mut);font-weight:700;font-size:14px;padding:4px 8px;border-radius:8px}
@@ -149,6 +151,10 @@ button{cursor:pointer}
       <button type="button" class="btn sm" data-add="rozdil">+ Розділ</button>
       <button type="button" class="btn sm" data-add="slaid">+ Слайд</button>
       <button type="button" class="btn sm" data-add="pyt">+ Перевірка</button>
+      <button type="button" class="btn sm" data-add="velyka">+ Велика картинка</button>
+      <button type="button" class="btn sm" data-add="fakt">+ Факт</button>
+      <button type="button" class="btn sm" data-add="tsytata">+ Цитата</button>
+      <button type="button" class="btn sm" data-add="dvi">+ Порівняння</button>
     </div>
   </div>
   <div class="col"><div class="ed" id="ed"></div></div>
@@ -231,7 +237,7 @@ function paintList() {
   G.slaidy.forEach((s, i) => {
     if (s.t === 'rozdil') h += row(i, 'sec', ++sec, s.h || 'Розділ без назви', true);
     else if (s.t === 'pyt') h += row(i, 'q ind', '?', s.q || 'Перевірка', true);
-    else h += row(i, 'ind', ++n, (s.h || 'Слайд').replace(/\*\*/g, ''), true);
+    else h += row(i, 'ind', ++n, ({ velyka: 'Картинка: ', fakt: 'Факт: ', tsytata: 'Цитата: ', dvi: 'Порівняння: ' }[s.t] || '') + (s.t === 'fakt' ? (s.v || '') + ' ' + (s.h || '') : s.t === 'tsytata' ? (s.p || '') : (s.h || (s.t === 'slaid' ? 'Слайд' : ''))).replace(/\*\*/g, ''), true);
   });
   h += row('kviz', 'sk', SKI, 'Гра «Потужний СКОБ!» · ' + G.kviz.length, false);
   h += row('end', '', '✓', 'Кінець', false);
@@ -246,7 +252,7 @@ $('#list').addEventListener('click', e => {
 });
 $$('[data-add]').forEach(b => b.addEventListener('click', () => {
   const t = b.dataset.add, at = typeof sel === 'number' ? sel + 1 : G.slaidy.length;
-  const s = t === 'rozdil' ? { t, h: '', say: '' } : t === 'pyt' ? { t, q: '', a: ['', '', '', ''], ok: 0, why: '' } : { t, k: '', h: '', p: '', pts: [], ask: '', say: '' };
+  const s = t === 'rozdil' ? { t, h: '', say: '' } : t === 'pyt' ? { t, q: '', a: ['', '', '', ''], ok: 0, why: '' } : t === 'fakt' ? { t, k: '', v: '', h: '', p: '', say: '' } : t === 'tsytata' ? { t, p: '', avtor: '', say: '' } : t === 'dvi' ? { t, k: '', h: '', l: { h: '', pts: [] }, r: { h: '', pts: [] }, say: '' } : t === 'velyka' ? { t, k: '', h: '', p: '', img: '', kartynka: '', say: '' } : { t, k: '', h: '', p: '', pts: [], ask: '', kartynka: '', say: '' };
   G.slaidy.splice(at, 0, s); sel = at; paintAll(); persist();
   const f = $('#ed input[type=text], #ed textarea'); if (f) f.focus();
 }));
@@ -259,7 +265,9 @@ function paintEd() {
   if (sel === 'title') {
     h = `<h2>Титульний слайд</h2><p class="why">Назва й загальне про гутірку.</p>
       ${fld('nazva', 'Назва гутірки', G.nazva, { max: 60 })}${fld('pidpys', 'Над назвою', G.pidpys, { ph: 'напр. «Мистецька вмілість · проба 1» або «Тема сходин»', max: 60 })}
-      ${fld('chas', 'Тривалість', G.chas, { ph: 'напр. 30 хв', max: 20 })}${fld('vstup', 'Що сказати на початку', G.vstup, { area: true, small: 'лише для вас — у плані й на пульті' })}
+      ${fld('chas', 'Тривалість', G.chas, { ph: 'напр. 30 хв', max: 20 })}
+      <div class="f"><span>Стиль гутірки<small>кольори під тему</small></span><div class="styl">${[['plast', 'Пласт', '#ffc247', '#2fd2c0'], ['pryroda', 'Природа', '#9bd67f', '#ffd166'], ['nebo', 'Небо', '#74c6ff', '#ffc247'], ['glyna', 'Глина', '#eb9a62', '#f3cf94']].map(([k, n, a, b]) => `<button type="button" data-styl="${k}" aria-pressed="${(G.styl || 'plast') === k}"><i style="background:linear-gradient(135deg,${a} 50%,${b} 50%)"></i>${n}</button>`).join('')}</div></div>
+      ${imgBox(G.img, 'Картинка на титульному слайді')}${fld('vstup', 'Що сказати на початку', G.vstup, { area: true, small: 'лише для вас — у плані й на пульті' })}
       ${fld('materialy', 'Що підготувати', (G.materialy || []).join('\n'), { area: true, small: 'кожне з нового рядка' })}`;
   } else if (sel === 'kviz') {
     h = `<h2>Гра «Потужний СКОБ!»</h2><p class="why">Вікторина в кінці гутірки: запитання на екрані, юнаки відповідають з телефонів. Краще 8–15 запитань.</p>` +
@@ -276,20 +284,25 @@ function paintEd() {
       ${fld('p', 'Текст', s.p, { area: true, small: 'не обовʼязково' })}
       ${fld('pts', 'Пункти', (s.pts || []).join('\n'), { area: true, tall: true, small: 'кожен з нового рядка — зʼявляються по одному', hint: 'Короткі: до 12–15 слів. 2–5 пунктів на слайд.' })}
       ${fld('ask', 'Запитання гуртку', s.ask, { ph: 'не обовʼязково — зʼявиться в жовтій рамці', max: 140 })}
-      <div class="f"><span>Картинка<small>не обовʼязково</small></span><div class="img">${s.img ? `<img src="${esc(s.img)}" alt=""><button type="button" class="btn sm" id="img-del">Прибрати</button>` : ''}<button type="button" class="btn sm" id="img-add">${s.img ? 'Замінити' : 'Додати картинку'}</button></div></div>
+      ${imgBox(s.img, 'Картинка', s.kartynka)}
       ${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас — у плані й на пульті' })}`;
+    if (s.t === 'velyka') h = `<h2>Велика картинка</h2><p class="why">Картинка на весь екран, унизу — заголовок і рядок.</p>${imgBox(s.img, 'Картинка', s.kartynka)}${fld('k', 'Рукописний підпис', s.k, { max: 40 })}${fld('h', 'Заголовок', s.h, { max: 80 })}${fld('p', 'Рядок під заголовком', s.p, { max: 160 })}${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас' })}`;
+    if (s.t === 'fakt') h = `<h2>Факт</h2><p class="why">Величезна цифра чи слово — і пояснення поруч.</p>${fld('v', 'Цифра або коротке слово', s.v, { ph: 'напр. 7000, 1912, 90 %', max: 12 })}${fld('k', 'Рукописний підпис', s.k, { ph: 'напр. «цікаво»', max: 40 })}${fld('h', 'Що це', s.h, { ph: 'напр. «років тому»', max: 60 })}${fld('p', 'Пояснення', s.p, { max: 200 })}${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас' })}`;
+    if (s.t === 'tsytata') h = `<h2>Цитата</h2><p class="why">Великі слова на весь екран.</p>${fld('p', 'Цитата', s.p, { area: true })}${fld('avtor', 'Чиї слова', s.avtor, { max: 80 })}${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас' })}`;
+    if (s.t === 'dvi') h = `<h2>Порівняння</h2><p class="why">Дві колонки поруч — «так і так», «тоді й тепер».</p>${fld('k', 'Рукописний підпис', s.k, { ph: 'напр. «порівняймо»', max: 40 })}${fld('h', 'Заголовок', s.h, { max: 80 })}${fld('lh', 'Ліва колонка — назва', (s.l || {}).h, { max: 40 })}${fld('lpts', 'Ліва колонка — пункти', ((s.l || {}).pts || []).join('\n'), { area: true, small: 'кожен з нового рядка' })}${fld('rh', 'Права колонка — назва', (s.r || {}).h, { max: 40 })}${fld('rpts', 'Права колонка — пункти', ((s.r || {}).pts || []).join('\n'), { area: true, small: 'кожен з нового рядка' })}${fld('say', 'Що казати', s.say, { area: true, small: 'лише для вас' })}`;
     h += `<div class="adds" style="justify-content:flex-end;margin-top:18px"><button type="button" class="del" id="sdel">Видалити цей ${s.t === 'rozdil' ? 'розділ' : s.t === 'pyt' ? 'слайд-перевірку' : 'слайд'}</button></div>`;
   }
   E.innerHTML = h;
 }
+function imgBox(img, label, kart) { return `<div class="f"><span>${label || 'Картинка'}<small>не обовʼязково</small></span><div class="img">${img ? `<img src="${esc(img)}" alt=""><button type="button" class="btn sm" id="img-del">Прибрати</button>` : ''}<button type="button" class="btn sm" id="img-add">${img ? 'Замінити' : 'Додати картинку'}</button></div>${kart ? `<div class="kart"><b>Що намалювати (підказка для ChatGPT):</b> ${esc(kart)} <button type="button" class="btn sm" id="kart-copy">Скопіювати</button></div>` : ''}</div>`; }
 const lines = v => v.split('\n').map(x => x.trim()).filter(Boolean);
 $('#ed').addEventListener('input', e => {
   const k = e.target.dataset.k; if (!k) return; const v = e.target.value;
   if (sel === 'title') { if (k === 'materialy') G.materialy = lines(v); else G[k] = v; }
   else if (sel === 'end') G.kinets = v;
   else if (sel === 'kviz') { const m = k.match(/^k(\d+)(q|why|ok|a(\d))$/); if (!m) return; const q = G.kviz[+m[1]]; if (m[2] === 'q') q.q = v; else if (m[2] === 'why') q.why = v; else if (m[2] === 'ok') q.ok = +v; else q.a[+m[3]] = v; if (m[2] === 'ok') paintEd(); }
-  else { const s = G.slaidy[sel]; if (k === 'pts') s.pts = lines(v); else if (k === 'ok') { s.ok = +v; paintEd(); } else if (/^a\d$/.test(k)) s.a[+k[1]] = v; else s[k] = v; }
-  if (['nazva', 'h', 'q'].includes(k) || /^k\d+q$/.test(k)) paintList();
+  else { const s = G.slaidy[sel]; if (k === 'lh' || k === 'rh') { s[k[0]] = s[k[0]] || { h: '', pts: [] }; s[k[0]].h = v; } else if (k === 'lpts' || k === 'rpts') { s[k[0]] = s[k[0]] || { h: '', pts: [] }; s[k[0]].pts = lines(v); } else if (k === 'pts') s.pts = lines(v); else if (k === 'ok') { s.ok = +v; paintEd(); } else if (/^a\d$/.test(k)) s.a[+k[1]] = v; else s[k] = v; }
+  if (['nazva', 'h', 'q', 'v', 'p'].includes(k) || /^k\d+q$/.test(k)) paintList();
   persist();
 });
 $('#ed').addEventListener('click', e => {
@@ -297,7 +310,9 @@ $('#ed').addEventListener('click', e => {
   if (b.id === 'kadd') { G.kviz.push({ q: '', a: ['', '', '', ''], ok: 0, why: '' }); paintAll(); persist(); const t = $$('#ed .kq'); t[t.length - 1].querySelector('input').focus(); }
   else if (b.dataset.kdel != null) { G.kviz.splice(+b.dataset.kdel, 1); paintAll(); persist(); }
   else if (b.id === 'sdel') { if (!confirm('Видалити цей слайд?')) return; G.slaidy.splice(sel, 1); sel = Math.min(sel, G.slaidy.length - 1); if (sel < 0) sel = 'title'; paintAll(); persist(); }
-  else if (b.id === 'img-del') { G.slaidy[sel].img = ''; paintEd(); persist(); }
+  else if (b.dataset.styl) { G.styl = b.dataset.styl; paintEd(); persist(); }
+  else if (b.id === 'kart-copy') { const s = G.slaidy[sel]; try { navigator.clipboard.writeText('Намалюй картинку для слайда гутірки для підлітків (горизонтальна, 16:9, без тексту на картинці): ' + s.kartynka); toast('Скопійовано — вставте в ChatGPT, потім збережіть картинку й додайте сюди'); } catch (x) { /* ok */ } }
+  else if (b.id === 'img-del') { if (sel === 'title') G.img = ''; else G.slaidy[sel].img = ''; paintEd(); persist(); }
   else if (b.id === 'img-add') pickImg();
 });
 /* картинка: зменшуємо до 1400 px і стискаємо, щоб гутірка не важила забагато */
@@ -306,7 +321,7 @@ function pickImg() {
   inp.onchange = () => { const f = inp.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { const im = new Image(); im.onload = () => {
     const k = Math.min(1, 1400 / Math.max(im.width, im.height)), c = document.createElement('canvas'); c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
     c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); let d = c.toDataURL('image/webp', 0.8); if (!d.startsWith('data:image/webp')) d = c.toDataURL('image/jpeg', 0.82);
-    G.slaidy[sel].img = d; paintEd(); persist(); }; im.onerror = () => toast('Не вдалося відкрити картинку'); im.src = r.result; }; r.readAsDataURL(f); };
+    if (sel === 'title') G.img = d; else G.slaidy[sel].img = d; paintEd(); persist(); }; im.onerror = () => toast('Не вдалося відкрити картинку'); im.src = r.result; }; r.readAsDataURL(f); };
   inp.click();
 }
 
@@ -372,9 +387,14 @@ const PROMPT = `Ти допомагаєш виховникові Пласту (�
   "materialy": ["що підготувати", "..."],
   "slaidy": [
     { "t": "rozdil", "h": "Назва розділу", "say": "Порада виховникові + час, напр. ≈ 7 хв" },
-    { "t": "slaid", "k": "рукописний підпис 1–2 слова", "h": "Заголовок слайда (до 7 слів)", "p": "одне речення або порожньо", "pts": ["пункт до 15 слів", "..."], "ask": "запитання гуртку або порожньо", "say": "що виховникові сказати на цьому слайді" },
+    { "t": "slaid", "k": "рукописний підпис 1–2 слова", "h": "Заголовок слайда (до 7 слів)", "p": "одне речення або порожньо", "pts": ["пункт до 15 слів", "..."], "ask": "запитання гуртку або порожньо", "kartynka": "опис картинки або порожньо", "say": "що виховникові сказати на цьому слайді" },
+    { "t": "fakt", "k": "цікаво", "v": "велика цифра або 1 слово, напр. 1912", "h": "що це означає (2–4 слова)", "p": "одне речення пояснення", "say": "..." },
+    { "t": "tsytata", "p": "коротка цитата або прислівʼя", "avtor": "чиї слова", "say": "..." },
+    { "t": "dvi", "k": "порівняймо", "h": "Заголовок", "l": { "h": "Ліва колонка", "pts": ["...", "..."] }, "r": { "h": "Права колонка", "pts": ["...", "..."] }, "say": "..." },
+    { "t": "velyka", "k": "подивіться", "h": "Підпис до великої картинки", "p": "одне речення", "kartynka": "опис картинки, яку варто намалювати", "say": "..." },
     { "t": "pyt", "q": "Запитання-перевірка", "a": ["правильна", "хибна", "хибна", "хибна"], "ok": 0, "why": "коротке пояснення" }
   ],
+  "styl": "plast | pryroda | nebo | glyna — вибери за темою (природа, небо/повітря/вода, ремесло/глина/історія, решта — plast)",
   "kviz": [
     { "q": "Запитання для гри", "a": ["варіант", "варіант", "варіант", "варіант"], "ok": 0, "why": "пояснення" }
   ],
@@ -385,6 +405,8 @@ const PROMPT = `Ти допомагаєш виховникові Пласту (�
 - 3–5 розділів ("rozdil"); після кожного розділу — 2–4 слайди ("slaid") і 1 перевірка ("pyt").
 - У слайді 2–5 пунктів ("pts"), кожен до 15 слів. Можна виділити слово так: **слово**.
 - Хоча б у кожному другому слайді — "ask": запитання, щоб юнаки думали й говорили.
+- Роби гутірку різноманітною: на всю гутірку 1–2 "fakt" (лише справжні, перевірені цифри!), 1 "tsytata", 1 "dvi", 1–2 "velyka". Решта — "slaid".
+- Для "velyka" і для кожного другого "slaid" додай "kartynka" — короткий опис картинки, яку виховник намалює в ChatGPT (без тексту на картинці).
 - "kviz" — 8–12 запитань по всій гутірці, по 4 варіанти; "ok" — номер правильної відповіді, рахуючи з 0. Правильну ставити на різні місця.
 - Загальний час — як у "chas".
 
@@ -408,9 +430,14 @@ function norm(g) {
     if (!s || typeof s !== 'object') return null;
     if (s.t === 'rozdil') return { t: 'rozdil', h: str(s.h), say: str(s.say) };
     if (s.t === 'pyt') { const a = ans(s.a); return { t: 'pyt', q: str(s.q), a, ok: okN(s.ok, a), why: str(s.why) }; }
-    return { t: 'slaid', k: str(s.k), h: str(s.h), p: str(s.p), pts: (Array.isArray(s.pts) ? s.pts : []).map(str).filter(Boolean), ask: str(s.ask), img: typeof s.img === 'string' && s.img.startsWith('data:image/') ? s.img : '', say: str(s.say) };
+    const img = typeof s.img === 'string' && s.img.startsWith('data:image/') ? s.img : '';
+    if (s.t === 'fakt') return { t: 'fakt', k: str(s.k), v: str(s.v), h: str(s.h), p: str(s.p), say: str(s.say) };
+    if (s.t === 'tsytata') return { t: 'tsytata', p: str(s.p), avtor: str(s.avtor), say: str(s.say) };
+    if (s.t === 'dvi') { const col = c => ({ h: str(c && c.h), pts: (Array.isArray(c && c.pts) ? c.pts : []).map(str).filter(Boolean) }); return { t: 'dvi', k: str(s.k), h: str(s.h), l: col(s.l), r: col(s.r), say: str(s.say) }; }
+    if (s.t === 'velyka') return { t: 'velyka', k: str(s.k), h: str(s.h), p: str(s.p), img, kartynka: str(s.kartynka), say: str(s.say) };
+    return { t: 'slaid', kartynka: str(s.kartynka), k: str(s.k), h: str(s.h), p: str(s.p), pts: (Array.isArray(s.pts) ? s.pts : []).map(str).filter(Boolean), ask: str(s.ask), img: typeof s.img === 'string' && s.img.startsWith('data:image/') ? s.img : '', say: str(s.say) };
   }).filter(Boolean);
-  return { nazva: str(g.nazva) || 'Гутірка', pidpys: str(g.pidpys), chas: str(g.chas), vstup: str(g.vstup), materialy: (Array.isArray(g.materialy) ? g.materialy : []).map(str).filter(Boolean),
+  return { nazva: str(g.nazva) || 'Гутірка', pidpys: str(g.pidpys), chas: str(g.chas), styl: ['plast', 'pryroda', 'nebo', 'glyna'].includes(g.styl) ? g.styl : 'plast', img: typeof g.img === 'string' && g.img.startsWith('data:image/') ? g.img : '', vstup: str(g.vstup), materialy: (Array.isArray(g.materialy) ? g.materialy : []).map(str).filter(Boolean),
     slaidy: sl, kviz: (Array.isArray(g.kviz) ? g.kviz : []).map(q => { const a = ans(q && q.a); return { q: str(q && q.q), a, ok: okN(q && q.ok, a), why: str(q && q.why) }; }).filter(q => q.q), kinets: str(g.kinets) };
 }
 
