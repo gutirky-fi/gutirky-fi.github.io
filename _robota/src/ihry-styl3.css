@@ -23,6 +23,10 @@ body.s3 .s3o .bx{position:relative;width:min(820px,100%);padding:22px 24px;borde
 body.s3 .s3o h3{margin:0 0 14px;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
 body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center}
 body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
+body.s3 .s3o h4{margin:20px 0 10px;font:700 14px var(--txt);color:var(--mut)}
+body.s3 .s3o h4:first-of-type{margin-top:4px}
+body.s3 .s3o .ved{margin:0;border:1px solid var(--ln);background:var(--card);border-radius:14px}
+body.s3 .s3o .s3row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 @media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}
 /* шапка однаково в усіх іграх (як у Змагу): круглі мітки й кнопка «назад» */
 body.s3 .top .chip,body.s3 #home{border-radius:99px}

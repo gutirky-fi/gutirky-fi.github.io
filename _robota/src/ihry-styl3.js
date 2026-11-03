@@ -32,6 +32,8 @@ window.IHRY_S3 = function (o) {
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 's3v'; btn.innerHTML = ic('gear') + 'Ведучому';
     const top = document.querySelector('.top'); const snd = document.getElementById('snd'); if (snd) snd.after(btn); else top.append(btn);
     btn.addEventListener('click', () => { ov.hidden = false; });
+    /* кнопка у вікні, що відкриває інше вікно (редактор питань, друк), спершу закриває «Ведучому» — інакше воно лишається поверх */
+    ov.addEventListener('click', e => { const b = e.target.closest('button'); if (b && (o.zakryvaty || []).includes(b.id)) ov.hidden = true; });
     /* Змаг: окрема мітка «Ведучий» у шапці зайва — її роль тепер у «Ведучому»; галочка «пульт підключено» переходить сюди */
     const vc = document.getElementById('vedc');
     if (vc) { const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; }; sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true }); }

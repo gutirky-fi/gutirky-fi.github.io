@@ -514,7 +514,7 @@ if (['2', '3'].includes(QS.get('dyz'))) {
   xi.append($('.paper'), q('rules')); x.append(xi);
   const L = el('div', 'l2'); L.append(m, j); lb.before(L); L.after(x); lb.hidden = true;   /* lb лишається: paint() оновлює #pln2 */
   $('#winov h2').textContent = 'БІНГО!';
-  if (QS.get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'bingo', m, x, knopky: { start: 'play', print: 'print' }, strilky: ['next'] });   /* стиль 3 */
+  if (QS.get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'bingo', m, x, knopky: { start: 'play', print: 'print' }, strilky: ['next'], zakryvaty: ['print'] });   /* стиль 3 */
 }
 /*/FAM*/
 paint(); startNet();

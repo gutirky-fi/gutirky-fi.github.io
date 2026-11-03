@@ -868,7 +868,28 @@ async function importLink() {
     if (confirm('Завантажити питання з посилання? Теми: ' + d.c.map(C => C.n).join(', ') + '. Ваші теперішні питання заміняться.')) { CATS = d.c; try { localStorage.setItem(LS, JSON.stringify(CATS)); } catch (x) { /* ok */ } toast('Питання завантажено'); paintLobby(); }
   } catch (e) { toast('Посилання з питаннями пошкоджене'); }
 }
+function printSheet3() {   /* стиль 3: як друковані матеріали бібліотеки (шапка з лілеєю, теми з золотою рискою, підвал) */
+  const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
+  const n = CATS.reduce((s, C) => s + C.q.filter(Q => Q[0]).length, 0);
+  const row = (Q, r) => { if (!Q[0]) return ''; const [a, d] = splitA(Q[1]), wr = Array.isArray(Q[2]) ? Q[2].filter(Boolean) : [];
+    return `<div class="r"><b class="v">${VALS[r]}</b><div class="q">${esc(Q[0])}${wr.length ? `<small>варіанти: ${esc(wr.join(' · '))}</small>` : ''}</div><div class="a">${esc(a)}${d ? `<small>${esc(d)}</small>` : ''}</div></div>`; };
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Інтелектуальний змаг — відповіді</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Source+Sans+3:wght@400;600;700&display=swap"><style>
+@page{size:A4;margin:11mm 13mm 12mm}*{box-sizing:border-box}body{margin:0;color:#1d2125;font:10.5pt/1.4 'Source Sans 3',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+header{position:relative}.k,h1{padding-right:22mm}header::after{content:"";position:absolute;right:0;top:0;width:15mm;height:17.5mm;background:url("{{LILY}}") right top/contain no-repeat}
+.k{display:flex;align-items:center;gap:7px;font:700 10.5pt 'Source Sans 3',sans-serif;color:#b07a00}.k i{font:700 8pt 'Source Sans 3',sans-serif;font-style:normal;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873}
+h1{margin:.6mm 0 0;font:600 24pt/1.02 Oswald,'Arial Narrow',sans-serif;letter-spacing:.01em;text-transform:uppercase}
+.sub{margin:1mm 0 4.5mm;padding:0 0 3mm;border-bottom:2.2pt solid #e8a321;color:#5f6873}
+h2{margin:5mm 0 1.6mm;padding:0 0 0 2.6mm;border-left:2.2pt solid #e8a321;font:600 12.5pt/1.15 Oswald,sans-serif;letter-spacing:.015em;text-transform:uppercase;break-after:avoid}
+.r{display:grid;grid-template-columns:13mm minmax(0,1fr) 52mm;gap:1mm 4mm;padding:1.6mm 0;border-top:.6pt solid #cfd5dc;break-inside:avoid}
+.v{font:600 11pt Oswald,sans-serif;color:#b07a00}.a{font-weight:700}small{display:block;font-weight:400;font-size:8.5pt;color:#5f6873}
+footer{margin-top:6mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873}
+</style></head><body><header><div class="k">Інтелектуальний змаг <i>для ведучого</i></div><h1>Відповіді</h1><div class="sub">${n} питань · ${CATS.length} тем · юнакам не показувати</div></header>
+${CATS.map(C => `<section><h2>${esc(C.n)}</h2>${C.q.map(row).join('')}</section>`).join('')}
+<footer><b>Пласт у Фінляндії</b> · бібліотека гутірок</footer><script>setTimeout(()=>print(),500)<\/script></body></html>`);
+  w.document.close();
+}
 function printSheet() {
+  if (/[?&]dyz=3(&|$)/.test(location.search)) return printSheet3();
   const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
   w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Інтелектуальний змаг — шпаргалка ведучому</title><style>@page{size:A4;margin:12mm}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;font-size:10.5pt}h1{font:700 18pt Oswald,Arial,sans-serif;margin:0 0 2mm}p{margin:0 0 4mm;color:#555}h2{font:700 12pt Oswald,Arial,sans-serif;margin:4mm 0 1mm;text-transform:uppercase;border-bottom:1pt solid #1d2125}table{width:100%;border-collapse:collapse}td{padding:1.2mm 1.5mm;border-bottom:.5pt solid #ccc;vertical-align:top}td:first-child{width:12mm;font-weight:700}td:last-child{width:38%;font-weight:700}</style></head><body><h1>Інтелектуальний змаг — відповіді</h1><p>Лише для ведучого.</p>${CATS.map(C => `<h2>${esc(C.n)}</h2><table>${C.q.map((Q, r) => Q[0] ? `<tr><td>${VALS[r]}</td><td>${esc(Q[0])}</td><td>${esc(splitA(Q[1])[0])}${splitA(Q[1])[1] ? `<br><span style="font-weight:400;color:#666">довідка: ${esc(splitA(Q[1])[1])}</span>` : ''}</td></tr>` : '').join('')}</table>`).join('')}<script>setTimeout(()=>print(),300)<\/script></body></html>`);
   w.document.close();
@@ -894,7 +915,17 @@ if (V2) {
   xr.append(q('edit'), q('print')); const side = el('div'); side.append(xr, q('minus').closest('label'), q('sndi').parentNode);
   xi.append(q('ved'), side); x.append(xi);
   lb.replaceChildren(m, j); lb.after(x);
-  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' } });   /* стиль 3: дизайн-система «Ігри Пласту» */
+  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) {   /* стиль 3: дизайн-система «Ігри Пласту» */
+    const minus = q('minus').closest('label'), snd = q('sndi').parentNode, ved = q('ved');
+    m.querySelector('#modes').after(minus); minus.style.marginTop = '12px';   /* правило гри — поруч із «Як граємо» */
+    [...snd.childNodes].forEach(n => { if (n.nodeType === 3 && /версія/.test(n.textContent)) n.textContent = n.textContent.replace(/·\s*версія.*$/, ''); });
+    IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' }, zakryvaty: ['edit', 'print'] });
+    const bx = document.querySelector('.s3o .bx'), row = document.createElement('div'); row.className = 's3row'; row.append(q('edit'), q('print'));
+    const h = t => { const e = document.createElement('h4'); e.textContent = t; return e; };
+    bx.querySelectorAll('.l2xi').forEach(e => e.remove());
+    bx.append(h('Пульт на вашому телефоні'), ved, h('Питання'), row, h('Звук'), snd);
+    q('edit').lastChild.textContent = ' Змінити питання';
+  }
   $('#turn').dataset.l = 'Відповідає';
 }
 /* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, гравців запрошуємо окремим вікном */
