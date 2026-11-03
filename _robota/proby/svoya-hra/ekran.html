@@ -767,7 +767,7 @@ let paintTop = function () {
 function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey + ((location.search.match(/dyz=(fam|3)/) || [])[0] ? '&' + location.search.match(/dyz=(fam|3)/)[0] : ''), q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; $('#vqr').innerHTML = window.qrSvg(vu, 112); } }
 let paintLobby = function () {
   const url = PURL + '?k=' + code + ((location.search.match(/dyz=(fam|3)/) || [])[0] ? '&' + location.search.match(/dyz=(fam|3)/)[0] : '');
-  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, Object.assign({ eye: '#ffc247' }, window.IHRY_QRMARK)); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   paintVq();

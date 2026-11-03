@@ -739,7 +739,7 @@ let paint = function () {
   $('#nett').textContent = { on: 'Можна підключатися', starting: 'Вмикаємо звʼязок…', off: 'Відновлюємо звʼязок…', error: 'Немає звʼязку' }[net] || '';
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   const url = PURL + '?k=' + code + (QS.get('dyz') ? '&dyz=' + QS.get('dyz') : '');
-  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
+  if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 300, Object.assign({ eye: '#ffc247' }, window.IHRY_QRMARK)); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   $('#modes').innerHTML = ORDER.map(k => [k, SETS[k]]).map(([k, s]) => `<button type="button" data-m="${k}" aria-pressed="${k === mode}">${esc(s.name)}<small>${esc(s.sub)}</small></button>`).join('');

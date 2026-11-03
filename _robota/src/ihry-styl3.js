@@ -11,6 +11,9 @@ window.IHRY_S3 = function (o) {
     opyt: ['Швидке', 'Опитування', '<svg viewBox="0 0 40 40"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg>']
   }[o.gra];
   document.body.classList.add('s3');
+  /* QR-код гравців: у центрі — знак гри (правило 03.11.2026: «гра — свій знак, усе інше — лілея»; пульт ведучого лишається з лілеєю) */
+  { const svg = Z[2]; window.IHRY_QRMARK = { logo: '', mark: (c, R) => { const w = R * 1.25; return svg.replace(/^<svg[^>]*>/, '<g transform="translate(' + (c - w / 2).toFixed(2) + ' ' + (c - w / 2).toFixed(2) + ') scale(' + (w / 40).toFixed(4) + ')">').replace(/<\/svg>$/, '</g>'); }   /* <g>, а не вкладений <svg> — щоб CSS сторінки («#qr svg{width:…}») його не розтягував */ };
+    const qe = document.getElementById('qr'); if (qe && qe.dataset.u && window.qrSvg) { const old = qe.querySelector('svg'); qe.innerHTML = window.qrSvg(qe.dataset.u, old ? +old.getAttribute('width') : 280, Object.assign({ eye: '#ffc247' }, window.IHRY_QRMARK)); } }
   /* логотип замість заголовка */
   const h1 = o.m.querySelector('h1');
   if (h1) { const d = document.createElement('div'); d.className = 's3lg'; d.setAttribute('role', 'heading'); d.setAttribute('aria-level', '1'); d.setAttribute('aria-label', Z[0] + ' ' + Z[1]); d.innerHTML = '<small>' + Z[0] + '</small><div class="w">' + Z[2] + '<b>' + Z[1] + '</b></div>'; h1.replaceWith(d); }
