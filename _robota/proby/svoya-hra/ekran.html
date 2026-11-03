@@ -843,7 +843,24 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') toBoard();
 });
 setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? left : 'Час!'; e.style.setProperty('--k', left / 30); if (left && left <= 10 && cur.tk !== left) { cur.tk = left; beep(left <= 3 ? 'tick!' : 'tick'); } if (!left && !cur.tbeep) { cur.tbeep = true; beep(SND.time); } }, 250);
+function draw3() {   /* стиль 3: спокійне жеребкування — картка посередині, кольори команд, після результату тихо зникає (або клік) */
+  const o = $('#drw'), n = $('#drn'), sm = $('#drs'), win = Math.floor(Math.random() * teams.length);
+  let k = 0, d = 60, done = false, t = 0;
+  const close = () => { if (o.hidden) return; clearTimeout(t); o.classList.add('out'); setTimeout(() => { o.hidden = true; o.classList.remove('out'); }, 320); };
+  o.onclick = () => { if (done) close(); };
+  o.hidden = false; o.className = 'drw s3d'; sm.textContent = 'крутимо…';
+  const step = () => {
+    const i = k % teams.length; n.textContent = teams[i].n; n.style.background = teamColor(i); k++; beep('wheel');
+    if (d > 380 && i === win) {
+      done = true; beep('tada'); o.classList.add('won'); chooser = win; drew = true; sm.textContent = 'вибирає перше питання';
+      paintLobby(); bcast(); t = setTimeout(close, 2200); return;
+    }
+    d *= 1.12; setTimeout(step, d);
+  };
+  step();
+}
 function draw() {
+  if (document.body.classList.contains('s3')) return draw3();
   const o = $('#drw'), n = $('#drn'), sm = $('#drs'), win = Math.floor(Math.random() * teams.length);
   o.hidden = false; o.className = 'drw'; sm.textContent = ''; let k = 0, d = 60;
   const step = () => {
