@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>План сходин</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «План сходин» — інструмент виховника: програма сходин і великий таймер на екрані.
+     Джерело: _robota/proby/plan-skhodyn/ (zibraty.py підставляє логотип і лілею). Зберігається лише в цьому браузері (localStorage). -->
+<style>
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--red:#ff7a6b;--ok:#3daf6e;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--pad:max(24px,calc(50vw - 620px))}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.45 var(--txt);overflow:hidden}
+body::before{content:"";position:fixed;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:url({{EMBLEM3}}) center/contain no-repeat;opacity:.04;pointer-events:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.li{width:20px;height:20px;flex:none}
+
+/* шапка — як в іграх */
+.top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:14px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln)}
+.top .sp{flex:1}
+.top .pl{height:38px;width:auto;display:block}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;min-width:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt);color:var(--ink);text-decoration:none}
+.chip.ic{padding:0;width:40px}
+.chip:hover{border-color:#5a616b}
+
+main{position:absolute;inset:0;padding:96px var(--pad) 28px;overflow:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font:700 16px var(--txt);color:var(--ink)}
+.btn:hover{border-color:#5a616b}
+.btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+.btn.main:hover{background:#ffd06b}
+.btn:disabled{opacity:.4;cursor:default}
+
+/* редактор */
+.ed{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:48px;align-items:start}
+.lg small{display:block;font:600 18px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 12px 2px}
+.lg .w{display:flex;align-items:center;gap:17px}
+.lg svg{width:56px;height:56px;flex:none}
+.lg b{font:600 72px/.8 var(--disp);text-transform:uppercase;padding-top:3px}
+.hand{margin:16px 0 26px;font:500 32px/1.1 Caveat,'Segoe Print',cursive;color:var(--hand)}
+.lbl{margin:22px 0 10px;font-weight:700;font-size:14px;color:var(--mut)}
+.tpl{display:flex;flex-wrap:wrap;gap:8px}
+.tpl button{min-height:0;padding:9px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font:700 15px var(--txt);text-align:left}
+.tpl button small{display:block;color:var(--mut);font-weight:600;font-size:13px}
+.tpl button:hover{border-color:var(--gd)}
+.rows{display:flex;flex-direction:column;gap:8px}
+.row{display:grid;grid-template-columns:28px minmax(0,1fr) 96px 34px 34px 34px;gap:8px;align-items:center;padding:8px 8px 8px 12px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.row .n{font:600 18px var(--disp);color:var(--mut);text-align:center}
+.row input{min-height:42px;padding:6px 12px;border-radius:10px;border:1px solid var(--ln);background:#14171a}
+.row .min{display:flex;align-items:center;gap:6px;color:var(--mut);font-size:14px}
+.row .min input{width:60px;text-align:center;font-weight:700;color:var(--ink);padding:6px}
+.row button{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);padding:0}
+.row button:hover:not(:disabled){color:var(--ink);border-color:#5a616b}
+.row button:disabled{opacity:.3;cursor:default}
+.row button .li{width:16px;height:16px}
+.add{margin-top:10px}
+.sum{position:sticky;top:0;padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
+.sum h2{margin:0 0 4px;font:600 22px var(--disp);text-transform:uppercase;letter-spacing:.03em}
+.sum .big{font:600 64px/1 var(--disp);color:var(--gd);margin:10px 0 2px}
+.sum p{margin:0;color:var(--mut)}
+.sum .btn{width:100%;margin-top:20px;min-height:54px;font-size:18px}
+.sum .tip{margin-top:16px;font-size:14px;color:var(--mut)}
+.sum kbd{display:inline-block;min-width:22px;padding:0 5px;border-radius:5px;border:1px solid var(--ln);background:#14171a;font:700 12px var(--txt);text-align:center;color:var(--body)}
+
+/* під час сходин */
+.run{height:100%;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:40px}
+.cur{display:flex;flex-direction:column;justify-content:center;min-height:0}
+.cur .k{font:600 18px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd)}
+.cur h1{margin:10px 0 0;font:600 clamp(2.6rem,6vw,5.4rem)/1 var(--disp);text-transform:uppercase;overflow-wrap:anywhere}
+.clock{margin:18px 0 0;font:600 clamp(6rem,19vw,15rem)/.9 var(--disp);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.clock.last{color:var(--gd)}
+.clock.over{color:var(--red)}
+.clock.pause{opacity:.45}
+.bar{height:10px;border-radius:99px;background:var(--card2);overflow:hidden;margin-top:18px;max-width:900px}
+.bar i{display:block;height:100%;width:0;background:var(--gd);border-radius:99px;transition:width .4s linear}
+.bar.over i{background:var(--red)}
+.nx{margin-top:22px;color:var(--mut);font-size:20px}
+.nx b{color:var(--body)}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.ctl .btn{min-height:54px}
+.side{align-self:center;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.side h3{margin:0 0 12px;font:600 16px var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+.side ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
+.side li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-radius:10px;color:var(--mut)}
+.side li i{width:10px;height:10px;border-radius:50%;border:2px solid #5a616b}
+.side li.done{color:#6b737d;text-decoration:line-through}
+.side li.done i{background:#5a616b;border-color:#5a616b}
+.side li.on{background:var(--card2);color:var(--ink);font-weight:700}
+.side li.on i{border-color:var(--gd);background:var(--gd)}
+.side li span:last-child{font-variant-numeric:tabular-nums;font-size:15px}
+.side .end{margin-top:14px;padding-top:12px;border-top:1px solid var(--ln);font-size:15px;color:var(--mut)}
+.side .end b{color:var(--ink)}
+
+/* кінець */
+.fin{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.fin h1{margin:0;font:600 clamp(3rem,8vw,6rem)/1 var(--disp);text-transform:uppercase}
+.fin p{margin:14px 0 0;color:var(--body);font-size:20px}
+.fin .ctl{justify-content:center}
+
+@media (max-width:900px){
+  body{overflow:auto}
+  .ed,.run{grid-template-columns:1fr;gap:28px}.lg b{font-size:52px}.lg svg{width:40px;height:40px}
+  .row{grid-template-columns:24px minmax(0,1fr) 84px 30px 30px 30px;gap:6px}.row button{width:30px;height:30px}
+  .side{align-self:start}
+}
+@media (max-width:600px){#full span{display:none}#full{padding:0;width:40px}.row{grid-template-columns:24px minmax(0,1fr) 30px 30px 30px}.row input[data-n]{grid-column:2/-1}.row .min{grid-column:2}.clock{font-size:28vw}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="top">
+  <a class="chip ic" href="/" id="home" aria-label="Назад"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
+  <img class="pl" src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії">
+  <span class="sp"></span>
+  <button type="button" class="chip ic" id="snd" aria-label="Звук увімкнено" title="Звук"></button>
+  <button type="button" class="chip" id="full"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
+</div>
+
+<main id="v-ed">
+  <div class="ed">
+    <div>
+      <div class="lg" role="heading" aria-level="1" aria-label="План сходин"><small>План</small><div class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="21" r="16.5" fill="none" stroke="#2fd2c0" stroke-width="3"/><path d="M20 4.5a16.5 16.5 0 0 1 14.3 24.75" fill="none" stroke="#ffc247" stroke-width="3" stroke-linecap="round"/><path d="M20 12v9l6 4" fill="none" stroke="#f2f4f6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><rect x="16" y="0" width="8" height="3.2" rx="1.6" fill="#cfd5dc"/></svg><b>Сходин</b></div></div>
+      <p class="hand">програма й таймер на великому екрані</p>
+      <div class="lbl">Почати з готового</div>
+      <div class="tpl" id="tpl"></div>
+      <div class="lbl">Пункти сходин — назва й хвилини</div>
+      <div class="rows" id="rows"></div>
+      <button type="button" class="btn add" id="add"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Пункт</button>
+    </div>
+    <aside class="sum">
+      <h2>Разом</h2>
+      <div class="big" id="tot">0 хв</div>
+      <p id="till"></p>
+      <button type="button" class="btn main" id="go"><svg class="li" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>Почати сходини</button>
+      <p class="tip">Під час сходин: <kbd>Пробіл</kbd> — пауза, <kbd>→</kbd> — наступний пункт, <kbd>+</kbd> — ще хвилина. За хвилину до кінця пункту й наприкінці — тихий сигнал. План запамʼятовується на цьому компʼютері.</p>
+    </aside>
+  </div>
+</main>
+
+<main id="v-run" hidden>
+  <div class="run">
+    <div class="cur">
+      <div class="k" id="r-k">Зараз</div>
+      <h1 id="r-h"></h1>
+      <div class="clock" id="r-c" role="timer" aria-live="off">00:00</div>
+      <div class="bar" id="r-bar"><i></i></div>
+      <div class="nx" id="r-nx"></div>
+      <div class="ctl">
+        <button type="button" class="btn" id="prev"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Назад</button>
+        <button type="button" class="btn" id="pause"></button>
+        <button type="button" class="btn" id="plus">+1 хв</button>
+        <button type="button" class="btn main" id="next">Далі<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <aside class="side">
+      <h3>Програма</h3>
+      <ol id="r-list"></ol>
+      <div class="end" id="r-end"></div>
+      <button type="button" class="btn" id="stop" style="width:100%;margin-top:14px">Завершити сходини</button>
+    </aside>
+  </div>
+</main>
+
+<main id="v-fin" hidden>
+  <div class="fin">
+    <h1>Сходини завершено</h1>
+    <p id="f-p"></p>
+    <div class="ctl"><button type="button" class="btn main" id="again">До плану</button></div>
+  </div>
+</main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ok */ } } };
+const K_PLAN = 'plan.skhodyn', K_RUN = 'plan.skhodyn.run', K_SND = 'plan.skhodyn.snd';
+const TPL = [
+  ['Звичайні сходини', [['Збірка й привітання', 5], ['Гутірка', 20], ['Гра', 15], ['Пісня', 5], ['Новини й завершення', 5]]],
+  ['Сходини з мандрівкою', [['Збірка', 5], ['Мандрівка', 60], ['Ватра й пісні', 15], ['Підсумок', 5]]],
+  ['Коротко — 30 хв', [['Привітання', 3], ['Головне', 20], ['Завершення', 7]]],
+  ['Порожній', [['', 10]]]
+];
+let plan = store.get(K_PLAN);
+if (!Array.isArray(plan) || !plan.length) plan = TPL[0][1].map(([n, m]) => ({ n, m }));
+let run = store.get(K_RUN);   // {i, left(мс на момент pausedAt або на момент t0), t0, paused, start, extra:[хв]}
+let sound = store.get(K_SND) !== false;
+const total = () => plan.reduce((s, p) => s + (+p.m || 0), 0);
+const hm = d => d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+const mmss = ms => { const s = Math.ceil(Math.abs(ms) / 1000); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ':' + String(m).padStart(2, '0') : String(m).padStart(2, '0')) + ':' + String(x).padStart(2, '0'); };
+const IC = {
+  up: '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>',
+  down: '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
+  x: '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+  pause: '<svg class="li" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
+  play: '<svg class="li" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>',
+  vol: '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>',
+  mute: '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M17 10l4 4M21 10l-4 4"/></svg>'
+};
+
+/* ---------- звук: тихий «дзинь» (без файлів) ---------- */
+let ac = null;
+function ding(n) {
+  if (!sound) return;
+  try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume();
+    for (let k = 0; k < n; k++) { const t = ac.currentTime + k * 0.32, o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = 880; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6); o.connect(g).connect(ac.destination); o.start(t); o.stop(t + 0.65); }
+  } catch (e) { /* без звуку */ }
+}
+function paintSnd() { $('#snd').innerHTML = sound ? IC.vol : IC.mute; $('#snd').setAttribute('aria-label', sound ? 'Звук увімкнено' : 'Звук вимкнено'); }
+
+/* ---------- редактор ---------- */
+function paintEd() {
+  $('#tpl').innerHTML = TPL.map(([n, it], i) => `<button type="button" data-tpl="${i}">${esc(n)}<small>${it.length > 1 ? it.reduce((s, x) => s + x[1], 0) + ' хв · ' + it.length + ' пункти' : 'почати з нуля'}</small></button>`).join('');
+  if (!document.activeElement || !document.activeElement.closest('#rows')) {
+    $('#rows').innerHTML = plan.map((p, i) => `<div class="row"><span class="n">${i + 1}</span><input data-n="${i}" value="${esc(p.n)}" maxlength="40" placeholder="Що робимо" aria-label="Пункт ${i + 1}"><label class="min"><input data-m="${i}" type="number" inputmode="numeric" min="1" max="240" value="${p.m}" aria-label="Хвилин для пункту ${i + 1}">хв</label><button type="button" data-up="${i}" aria-label="Вище"${i ? '' : ' disabled'}>${IC.up}</button><button type="button" data-down="${i}" aria-label="Нижче"${i < plan.length - 1 ? '' : ' disabled'}>${IC.down}</button><button type="button" data-del="${i}" aria-label="Прибрати пункт"${plan.length > 1 ? '' : ' disabled'}>${IC.x}</button></div>`).join('');
+  }
+  paintSum();
+}
+function paintSum() {
+  const t = total(); $('#tot').textContent = t >= 60 ? Math.floor(t / 60) + ' год ' + (t % 60 ? t % 60 + ' хв' : '') : t + ' хв';
+  $('#till').textContent = 'Якщо почати зараз — до ' + hm(new Date(Date.now() + t * 60000));
+  $('#go').disabled = !plan.some(p => +p.m > 0);
+}
+const save = () => store.set(K_PLAN, plan);
+$('#rows').addEventListener('input', e => {
+  const n = e.target.dataset.n, m = e.target.dataset.m;
+  if (n != null) plan[+n].n = e.target.value;
+  if (m != null) plan[+m].m = Math.max(0, Math.min(240, parseInt(e.target.value, 10) || 0));
+  save(); paintSum();
+});
+$('#rows').addEventListener('focusout', () => setTimeout(() => { if (!document.activeElement || !document.activeElement.closest('#rows')) paintEd(); }, 0));
+setInterval(() => { if (!$('#v-ed').hidden) paintSum(); }, 30000);
+
+/* ---------- сходини ---------- */
+const leftNow = () => run.paused ? run.left : run.left - (Date.now() - run.t0);
+const curM = i => (+plan[i].m || 0) + (run.extra[i] || 0);
+function begin() {
+  plan = plan.filter(p => +p.m > 0).map(p => ({ n: p.n.trim() || 'Пункт', m: +p.m })); save();
+  run = { i: 0, left: plan[0].m * 60000, t0: Date.now(), paused: false, start: Date.now(), extra: [], warned: false, rang: false };
+  store.set(K_RUN, run); show('run'); tick(); ding(1);
+}
+function goTo(i) {
+  if (i < 0 || i >= plan.length) return;
+  run.i = i; run.left = curM(i) * 60000; run.t0 = Date.now(); run.warned = false; run.rang = false; store.set(K_RUN, run); tick();
+}
+function finish() { const d = Date.now() - run.start; $('#f-p').textContent = 'Тривали ' + mmss(d) + ' · за планом ' + total() + ' хв'; run = null; try { localStorage.removeItem(K_RUN); } catch (e) { /* ok */ } show('fin'); ding(2); }
+function tick() {
+  if (!run || $('#v-run').hidden) return;
+  const P = plan[run.i], l = leftNow(), full = curM(run.i) * 60000, over = l < 0;
+  $('#r-k').textContent = (over ? 'Час вийшов' : run.paused ? 'Пауза' : 'Зараз') + ' · ' + (run.i + 1) + ' / ' + plan.length;   /* «з» у великих літерах Oswald схоже на «3» */
+  if ($('#r-h').textContent !== P.n) $('#r-h').textContent = P.n;
+  const c = $('#r-c'); c.textContent = (over ? '+' : '') + mmss(l); c.className = 'clock' + (over ? ' over' : l <= 60000 ? ' last' : '') + (run.paused ? ' pause' : '');
+  $('#r-bar').className = 'bar' + (over ? ' over' : ''); $('#r-bar i').style.width = (over ? 100 : Math.min(100, (1 - l / full) * 100)) + '%';
+  const N = plan[run.i + 1]; $('#r-nx').innerHTML = N ? 'Далі: <b>' + esc(N.n) + '</b> · ' + N.m + ' хв' : 'Це останній пункт';
+  $('#pause').innerHTML = run.paused ? IC.play + 'Продовжити' : IC.pause + 'Пауза';
+  $('#prev').disabled = run.i === 0; $('#next').lastChild.previousSibling.textContent = N ? 'Далі' : 'Завершити';
+  /* кінець сходин за планом з урахуванням перевищення й доданих хвилин */
+  const restMs = plan.slice(run.i + 1).reduce((s, p, k) => s + curM(run.i + 1 + k) * 60000, 0), endAt = new Date(Date.now() + Math.max(0, l) + restMs);
+  $('#r-end').innerHTML = 'Кінець сходин: <b>' + hm(endAt) + '</b>' + (run.extra.some(Boolean) || over ? '' : '');
+  $('#r-list').innerHTML = plan.map((p, i) => `<li class="${i < run.i ? 'done' : i === run.i ? 'on' : ''}"><i></i><span>${esc(p.n)}</span><span>${curM(i)} хв</span></li>`).join('');
+  if (!run.paused) {
+    if (!run.warned && l <= 60000 && l > 0 && full > 120000) { run.warned = true; ding(1); store.set(K_RUN, run); }
+    if (!run.rang && over) { run.rang = true; ding(3); store.set(K_RUN, run); }
+  }
+  document.title = (over ? '+' : '') + mmss(l) + ' · ' + P.n;
+}
+function show(v) { ['ed', 'run', 'fin'].forEach(k => { $('#v-' + k).hidden = k !== v; }); if (v === 'ed') { document.title = 'План сходин'; paintEd(); } }
+setInterval(tick, 250);
+
+/* ---------- кнопки ---------- */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  if (b.dataset.tpl != null) { const T = TPL[+b.dataset.tpl][1]; if (plan.some(p => p.n.trim()) && !confirm('Замінити ваш план на «' + TPL[+b.dataset.tpl][0] + '»?')) return; plan = T.map(([n, m]) => ({ n, m })); save(); $('#rows').innerHTML = ''; paintEd(); return; }
+  if (b.dataset.up != null) { const i = +b.dataset.up; [plan[i - 1], plan[i]] = [plan[i], plan[i - 1]]; save(); b.blur(); paintEd(); return; }
+  if (b.dataset.down != null) { const i = +b.dataset.down; [plan[i + 1], plan[i]] = [plan[i], plan[i + 1]]; save(); b.blur(); paintEd(); return; }
+  if (b.dataset.del != null) { plan.splice(+b.dataset.del, 1); save(); b.blur(); paintEd(); return; }
+  switch (b.id) {
+    case 'add': plan.push({ n: '', m: 10 }); save(); paintEd(); { const ins = document.querySelectorAll('#rows input[data-n]'); ins[ins.length - 1].focus(); } break;
+    case 'go': begin(); break;
+    case 'pause': if (run.paused) { run.t0 = Date.now(); run.paused = false; } else { run.left = leftNow(); run.paused = true; } store.set(K_RUN, run); tick(); break;
+    case 'plus': run.extra[run.i] = (run.extra[run.i] || 0) + 1; run.left += 60000; if (leftNow() > 0) run.rang = false; if (leftNow() > 60000) run.warned = false; store.set(K_RUN, run); tick(); break;
+    case 'next': if (run.i < plan.length - 1) goTo(run.i + 1); else finish(); break;
+    case 'prev': goTo(run.i - 1); break;
+    case 'stop': if (confirm('Завершити сходини?')) finish(); break;
+    case 'again': show('ed'); break;
+    case 'snd': sound = !sound; store.set(K_SND, sound); paintSnd(); if (sound) ding(1); break;
+    case 'full': if (document.fullscreenElement) document.exitFullscreen(); else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {}); break;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (!run || $('#v-run').hidden || e.target.matches('input')) return;
+  if (e.key === ' ') { e.preventDefault(); $('#pause').click(); }
+  else if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); $('#next').click(); }
+  else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); $('#prev').click(); }
+  else if (e.key === '+' || e.key === '=') $('#plus').click();
+});
+document.addEventListener('fullscreenchange', () => { $('#full span').textContent = document.fullscreenElement ? 'Вийти з повного екрана' : 'На весь екран'; });
+/* назад — туди, звідки прийшли (як в іграх) */
+{ const a = $('#home'); a.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vyh';
+  a.addEventListener('click', e => { try { const r = document.referrer && new URL(document.referrer); if (r && r.origin === location.origin && r.pathname !== location.pathname && history.length > 1) { e.preventDefault(); history.back(); } } catch (x) { /* ok */ } }); }
+
+paintSnd();
+if (run && Array.isArray(run.extra) && plan[run.i] && Date.now() - run.start < 12 * 3600e3) show('run'); else { run = null; show('ed'); }
+</script>
+</body>
+</html>
