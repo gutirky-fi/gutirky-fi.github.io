@@ -316,14 +316,13 @@ body.s3 i.s3i{display:inline-flex;width:20px;height:20px;flex:none}body.s3 i.s3i
 body.s3 .s3v{display:inline-flex;align-items:center;gap:8px;min-height:38px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:600 14px var(--txt);cursor:pointer}
 body.s3 .s3v:hover{border-color:var(--gd)}
 body.s3 .l2x,body.s3 .s2x{display:none}
-body.s3 .s3o{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px;background:rgba(10,12,15,.8);overflow:auto}
+body.s3 .s3o{position:fixed;inset:0;z-index:19;display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 16px;background:rgba(10,12,15,.8);overflow:auto}
 body.s3 .s3o .bx{position:relative;width:min(820px,100%);padding:22px 24px;border-radius:18px;background:#1f2328;border:1px solid var(--ln)}
 body.s3 .s3o h3{margin:0 0 14px;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
 body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--ink);cursor:pointer;display:grid;place-items:center}
 body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
 body.s3 .s3o h4{margin:20px 0 10px;font:700 14px var(--txt);color:var(--mut)}
 body.s3 .s3o h4:first-of-type{margin-top:4px}
-body.s3 .s3o .ved{margin:0;border:1px solid var(--ln);background:var(--card);border-radius:14px}
 body.s3 .s3o .s3row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 @media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}
 /* шапка однаково в усіх іграх (як у Змагу): круглі мітки й кнопка «назад» */
@@ -396,8 +395,6 @@ window.IHRY_S3 = function (o) {
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 's3v'; btn.innerHTML = ic('gear') + 'Ведучому';
     const top = document.querySelector('.top'); const snd = document.getElementById('snd'); if (snd) snd.after(btn); else top.append(btn);
     btn.addEventListener('click', () => { ov.hidden = false; });
-    /* кнопка у вікні, що відкриває інше вікно (редактор питань, друк), спершу закриває «Ведучому» — інакше воно лишається поверх */
-    ov.addEventListener('click', e => { const b = e.target.closest('button'); if (b && (o.zakryvaty || []).includes(b.id)) ov.hidden = true; });
     /* Змаг: окрема мітка «Ведучий» у шапці зайва — її роль тепер у «Ведучому»; галочка «пульт підключено» переходить сюди */
     const vc = document.getElementById('vedc');
     if (vc) { const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; }; sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true }); }
@@ -1170,7 +1167,7 @@ if (['2', '3'].includes(QS.get('dyz'))) {
   xi.append($('.paper'), q('rules')); x.append(xi);
   const L = el('div', 'l2'); L.append(m, j); lb.before(L); L.after(x); lb.hidden = true;   /* lb лишається: paint() оновлює #pln2 */
   $('#winov h2').textContent = 'БІНГО!';
-  if (QS.get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'bingo', m, x, knopky: { start: 'play', print: 'print' }, strilky: ['next'], zakryvaty: ['print'] });   /* стиль 3 */
+  if (QS.get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'bingo', m, x, knopky: { start: 'play', print: 'print' }, strilky: ['next'] });   /* стиль 3 */
 }
 /*/FAM*/
 paint(); startNet();
