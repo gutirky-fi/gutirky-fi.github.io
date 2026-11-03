@@ -962,7 +962,7 @@ if (V2) {
       const n = teams.length;
       document.querySelectorAll('#teams .team').forEach((el, i) => {
         const pos = drew ? (i - chooser + n) % n : i;
-        el.style.order = pos; el.dataset.pos = drew ? pos + 1 : '';
+        el.style.order = pos;   /* лише порядок, без номерів (власник) */
       });
       q('teams').classList.toggle('s3ord', drew);
     };

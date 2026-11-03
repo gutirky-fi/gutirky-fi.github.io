@@ -65,9 +65,6 @@ body.s3 .s3dw .res{min-height:32px;font:600 clamp(1.1rem,1.8vw,1.5rem) var(--txt
 body.s3 .s3dw .res b{display:inline;margin:0;padding:0;border-radius:0;background:none;animation:none;font:600 1.3em var(--disp);text-transform:uppercase;color:var(--c)}
 body.s3 .drw.s3d:has(.won){cursor:pointer}
 @media (prefers-reduced-motion:reduce){body.s3 .drw.s3d,body.s3 .s3dw .t{transition:none}}
-/* порядок ходів після жеребкування (Змаг): номер на картці команди */
-body.s3 #teams.s3ord .team{position:relative}
-body.s3 #teams.s3ord .team::after{content:attr(data-pos);position:absolute;left:-8px;top:-10px;display:grid;place-items:center;width:24px;height:24px;border-radius:99px;background:#ffc247;color:#1d1606;font:600 14px var(--disp);box-shadow:0 0 0 3px var(--bg)}
 /* ---- екрани самої гри ---- */
 /* Бінго: кулька з мʼяким відблиском, що не наїжджає на число; витягнуті числа — великі кружечки */
 body.s3 #ball{width:min(330px,40vh);background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.45) 0 7%,rgba(255,255,255,0) 22%),radial-gradient(circle at 50% 50%,var(--bc,#3daf6e) 0 60%,color-mix(in srgb,var(--bc,#3daf6e) 70%,#000) 100%);box-shadow:0 18px 44px #0007}
