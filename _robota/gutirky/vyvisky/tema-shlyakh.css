@@ -1,0 +1,19 @@
+/* Стиль «Шлях знаку» (варіант А): смужка шляху внизу і слайди-зупинки. */
+#pres.t-sh .sh-bar{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:4;pointer-events:none;width:min(820px,calc(100% - 40px))}
+#pres.t-sh .sh-bar[hidden]{display:none}
+#pres.t-sh .sh-row{display:flex;align-items:center}
+#pres.t-sh .sh-st{display:flex;align-items:center;gap:8px;color:#6f7a87;font:600 clamp(11px,1.05vw,15px) var(--disp);letter-spacing:.04em;white-space:nowrap}
+#pres.t-sh .sh-st i{display:grid;place-items:center;width:clamp(22px,2.1vw,30px);height:clamp(22px,2.1vw,30px);border-radius:50%;border:2px solid #3a4450;font-style:normal;font-size:.85em}
+#pres.t-sh .sh-st.done{color:#9aa6b2}#pres.t-sh .sh-st.done i{border-color:var(--gd);color:var(--gd)}
+#pres.t-sh .sh-st.on{color:var(--gd)}#pres.t-sh .sh-st.on i{border-color:var(--gd);background:var(--gd);color:#16130a;box-shadow:0 0 18px rgba(255,194,71,.55)}
+#pres.t-sh .sh-st.on i svg{width:72%;height:72%}
+#pres.t-sh .sh-ln{flex:1;height:2px;margin:0 10px;background:repeating-linear-gradient(90deg,#3a4450 0 6px,transparent 6px 12px)}
+#pres.t-sh #stage{padding-bottom:58px}
+#pres.t-sh .sh-sec .vy{font:600 clamp(12px,1.1vw,16px) var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--ac,#2fd2c0)}
+#pres.t-sh .sh-sec h2{font:700 clamp(3rem,7.5vw,7rem)/1 var(--disp);text-transform:uppercase;margin:.15em 0 .1em;color:var(--gd)}
+#pres.t-sh .sh-sec .sh-sub{font-size:clamp(1.05rem,1.6vw,1.6rem);color:var(--mut);margin:0 0 1em}
+#pres.t-sh .sh-sec blockquote{margin:0;padding-left:.8em;border-left:4px solid var(--gd);font-size:clamp(1.1rem,1.7vw,1.8rem)}
+#pres.t-sh .sh-mini{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 4px;font:600 clamp(12px,1.05vw,15px) var(--disp);color:var(--mut);letter-spacing:.05em}
+#pres.t-sh .sh-mini i{width:22px;height:2px;background:var(--gd);opacity:.6}
+#pres.t-sh .sh-mini span:last-child{color:var(--gd)}
+@media (max-width:700px){#pres.t-sh .sh-st b{display:none}#pres.t-sh .sh-st.on b{display:inline}}

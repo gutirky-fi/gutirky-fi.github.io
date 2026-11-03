@@ -5,7 +5,7 @@
    yunakam/… — сторінка для юнаків (лише «Вивчай сам» і «Перевір себе», без гутірки й плану); посилання на неї — у виховника → «Для юнаків» і QR на останньому слайді
                                                                    (КОРІНЬ: proba/sait — копія для показу; . — справжній сайт)"""
 import pathlib, sys, base64, json
-TEMA = (pathlib.Path(__file__).parent / 'tema.css').exists()   # свій стиль гутірки — коли буде tema.css + tema.js
+TEMA = None   # свій стиль гутірки: назва → tema-<назва>.css + tema-<назва>.js (показ варіантів — режим pokaz)
 TUT = pathlib.Path(__file__).parent
 ROB = TUT.parent.parent
 SITE = ROB.parent
@@ -34,9 +34,9 @@ def page(skob_rel, yun_rel=None, home=None, tema=False):
                       ('<script src="../../src/pult-host-file.js"></script>', host)]:
         src = rep(src, tag, inl(text))
     if tema:   # стиль «Креслення» (19.10.2026) — поки лише в макетах
-        src = rep(src, '</style>', (TUT / 'tema.css').read_text(encoding='utf-8') + '\n</style>')
+        src = rep(src, '</style>', (TUT / f'tema-{tema}.css').read_text(encoding='utf-8') + '\n</style>')
         mal = inl((TUT / 'maliunky.js').read_text(encoding='utf-8'))
-        src = src.replace(mal, mal + '\n' + inl((TUT / 'tema.js').read_text(encoding='utf-8')), 1)
+        src = src.replace(mal, mal + '\n' + inl((TUT / f'tema-{tema}.js').read_text(encoding='utf-8')), 1)
     src = src.replace('{{EMBLEM}}', emblem)
     # друк плану — спільний паперовий стиль (_robota/druk/plan-druk.css), колір гутірки #2f6fb3
     _dr = D.parent / 'druk'
@@ -64,6 +64,9 @@ if __name__ == '__main__':
         write(root / 'gutirky' / 'vyvisky' / 'index.html', page('../../skob/', '../../yunakam/vyvisky/', ('../../#vyh', 'Виховники'), tema=TEMA))
         write(root / 'yunakam' / 'vyvisky' / 'index.html', page('../../skob/', None, ('../../#yun', 'Юнацтво'), tema=TEMA))
         write(root / 'skob' / 'index.html', gr)
+    elif mode == 'pokaz':   # 3.11.2026: два варіанти вільної теми для власника — А «Шлях знаку», Б той самий вигляд без вмілісного
+        write(SITE / 'proba' / 'vyvisky-a' / 'index.html', page('../skob/', './', tema='shlyakh'))
+        write(SITE / 'proba' / 'vyvisky-b' / 'index.html', page('../skob/', './'))
     elif mode == 'proba':
         write(SITE / 'proba' / 'vyvisky' / 'index.html', page('../skob/', '../yunakam/vyvisky/', tema=TEMA))
         write(SITE / 'proba' / 'yunakam' / 'vyvisky' / 'index.html', page('../../skob/', tema=TEMA))

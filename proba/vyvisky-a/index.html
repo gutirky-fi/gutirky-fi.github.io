@@ -288,6 +288,26 @@ html body #pult-ask{border-color:var(--vyh)}
 .prog .tr.sg i.pr{background:repeating-linear-gradient(-45deg,rgba(255,125,153,.6) 0 3px,var(--card2) 3px 7px)}
 .prog .tr.sg i.on{background:var(--upyu)}
 .pnote{margin:4px 0 0;color:var(--mut);font-size:14px}.pnote b{color:var(--upyu-t)}
+/* Стиль «Шлях знаку» (варіант А): смужка шляху внизу і слайди-зупинки. */
+#pres.t-sh .sh-bar{position:absolute;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:4;pointer-events:none;width:min(820px,calc(100% - 40px))}
+#pres.t-sh .sh-bar[hidden]{display:none}
+#pres.t-sh .sh-row{display:flex;align-items:center}
+#pres.t-sh .sh-st{display:flex;align-items:center;gap:8px;color:#6f7a87;font:600 clamp(11px,1.05vw,15px) var(--disp);letter-spacing:.04em;white-space:nowrap}
+#pres.t-sh .sh-st i{display:grid;place-items:center;width:clamp(22px,2.1vw,30px);height:clamp(22px,2.1vw,30px);border-radius:50%;border:2px solid #3a4450;font-style:normal;font-size:.85em}
+#pres.t-sh .sh-st.done{color:#9aa6b2}#pres.t-sh .sh-st.done i{border-color:var(--gd);color:var(--gd)}
+#pres.t-sh .sh-st.on{color:var(--gd)}#pres.t-sh .sh-st.on i{border-color:var(--gd);background:var(--gd);color:#16130a;box-shadow:0 0 18px rgba(255,194,71,.55)}
+#pres.t-sh .sh-st.on i svg{width:72%;height:72%}
+#pres.t-sh .sh-ln{flex:1;height:2px;margin:0 10px;background:repeating-linear-gradient(90deg,#3a4450 0 6px,transparent 6px 12px)}
+#pres.t-sh #stage{padding-bottom:58px}
+#pres.t-sh .sh-sec .vy{font:600 clamp(12px,1.1vw,16px) var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--ac,#2fd2c0)}
+#pres.t-sh .sh-sec h2{font:700 clamp(3rem,7.5vw,7rem)/1 var(--disp);text-transform:uppercase;margin:.15em 0 .1em;color:var(--gd)}
+#pres.t-sh .sh-sec .sh-sub{font-size:clamp(1.05rem,1.6vw,1.6rem);color:var(--mut);margin:0 0 1em}
+#pres.t-sh .sh-sec blockquote{margin:0;padding-left:.8em;border-left:4px solid var(--gd);font-size:clamp(1.1rem,1.7vw,1.8rem)}
+#pres.t-sh .sh-mini{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin:14px 0 4px;font:600 clamp(12px,1.05vw,15px) var(--disp);color:var(--mut);letter-spacing:.05em}
+#pres.t-sh .sh-mini i{width:22px;height:2px;background:var(--gd);opacity:.6}
+#pres.t-sh .sh-mini span:last-child{color:var(--gd)}
+@media (max-width:700px){#pres.t-sh .sh-st b{display:none}#pres.t-sh .sh-st.on b{display:inline}}
+
 </style>
 </head>
 <body>
@@ -299,11 +319,11 @@ html body #pult-ask{border-color:var(--vyh)}
   <h1>Від знаку до вивіски</h1>
   <p class="hand for-v">гутірка, гра і матеріали для юнаків</p>
   <p class="hand for-y">усе головне з гутірки — щоб повторити</p>
-  <div class="req"><b>Про що гутірка — 5 розділів</b><p class="req-sum" id="req-sum" hidden></p><ol id="req"></ol></div>
+  <div class="req" id="req-box"><b>Про що гутірка — 5 розділів</b><p class="req-sum" id="req-sum" hidden></p><ol id="req"></ol></div>
   <div class="doors for-v">
     <a class="door main" href="#hutirka"><i>Виховнику</i><b>Гутірка</b><span>30–35 хв, на весь екран. Гортати: пробіл / стрілки, на телефоні — дотик.</span></a>
     <a class="door" href="#plan"><i>Виховнику</i><b>План гутірки</b><span>Що робити й казати на кожному слайді, час, матеріали. Можна роздрукувати.</span></a>
-    <a class="door yun" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
+    <a class="door yun" id="d-yun" href="#yunakam"><i>Після гутірки</i><b>Для юнаків</b><span>«Вивчай сам» і «Перевір себе» — посилання й QR-код. Без презентації.</span></a>
   </div>
   <p class="kh for-v">Наприкінці гутірки — гра «Потужний СКОБ!»: запитання на екрані, юнаки відповідають зі своїх телефонів через QR-код.</p>
   <div class="doors for-y">
@@ -390,7 +410,7 @@ html body #pult-ask{border-color:var(--vyh)}
   <div><button class="y" type="button" data-save="1">Так, зберігати</button><button type="button" data-save="0">Ні</button></div>
 </div>
 
-<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL("../skob/", location.href).href;window.GUTIRKA_YUN_URL = "../yunakam/vyvisky/";</script>
+<script>window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL("../skob/", location.href).href;window.GUTIRKA_YUN_URL = "./";</script>
 <script>
 /* Мінімальний генератор QR-коду (режим Byte, рівні L/M, версії 1–10, до ~170 байт).
    Без зовнішніх бібліотек. Використання: qrSvg("https://…", 240) → рядок <svg>. */
@@ -1335,12 +1355,81 @@ html body #pult-ask{border-color:var(--vyh)}
 
 </script>
 <script>
+/* Стиль «Шлях знаку» (3.11.2026, варіант А для вільної теми): одна нитка через усю гутірку —
+   знак вигаданого гуртка «Вовки» проходить 5 зупинок: Ідея → Ескіз → Майстерня → Світло → Табір.
+   Внизу кожного слайда — смужка шляху (де ми зараз); слайд частини — великий малюнок знаку на цій зупинці. */
+(function () {
+  'use strict';
+  const STOPS = [['Ідея', 'Що ми хочемо сказати знаком'], ['Ескіз', 'Малюємо й перевіряємо правилами'], ['Майстерня', 'Файл, матеріали, різання, збірка'], ['Світло', 'Як знак починає світитися'], ['Табір', 'Наш знак — на нашому таборі']];
+  const G = '#ffc247', T = '#2fd2c0', INK = '#e9edf2', MUT = '#8b96a3';
+  const sv = b => `<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"><defs>
+    <filter id="sh-gl" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="sh-br" width="80" height="40" patternUnits="userSpaceOnUse"><rect width="80" height="40" fill="#241d1b"/><path d="M0 0H80M0 20H80M40 0V20M0 20V40M80 20V40" stroke="#16110f" stroke-width="3"/></pattern></defs>${b}</svg>`;
+  /* знак гуртка «Вовки»: коло й гострий трикутник-гора */
+  const mark = (x, y, r, c, w = 8, extra = '') => `<g ${extra}><circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="${c}" stroke-width="${w}"/><path d="M${x - r * .55} ${y + r * .38}L${x} ${y - r * .5}L${x + r * .55} ${y + r * .38}Z" fill="none" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/></g>`;
+  const tx = (x, y, s, t, c = INK, a = 'middle', w = 700) => `<text x="${x}" y="${y}" font-size="${s}" fill="${c}" text-anchor="${a}" font-family="Oswald,sans-serif" font-weight="${w}">${t}</text>`;
+  const hand = (x, y, s, t, c = MUT) => `<text x="${x}" y="${y}" font-size="${s}" fill="${c}" text-anchor="middle" font-family="Caveat,cursive">${t}</text>`;
+  const ART = {
+    1: () => sv(`<path d="M400 120c-80 0-130 55-130 120 0 50 30 75 50 100 15 20 20 40 20 60h120c0-20 5-40 20-60 20-25 50-50 50-100 0-65-50-120-130-120z" fill="none" stroke="${G}" stroke-width="8"/>
+      <path d="M350 430h100M360 460h80" stroke="${G}" stroke-width="8" stroke-linecap="round"/>${mark(400, 245, 55, G, 6, 'opacity=".9" stroke-dasharray="14 10"')}
+      ${hand(150, 170, 40, 'назва?')}${hand(650, 160, 40, 'тварина?')}${hand(140, 420, 40, 'наше місце?')}${hand(660, 430, 40, 'що нас обʼєднує?')}`),
+    2: () => sv(`<g transform="rotate(-3 400 300)"><rect x="150" y="90" width="500" height="420" rx="10" fill="#f5f1e6"/>
+      ${mark(255, 200, 50, '#5a5a5a', 4)}<g stroke="#5a5a5a" stroke-width="4" fill="none"><path d="M390 240l40-80 40 80zM405 215l25-35"/><path d="M520 200c20-40 70-40 80 0s-50 60-80 0"/></g>
+      <path d="M548 228l10-20 10 20" stroke="#5a5a5a" stroke-width="3" fill="none"/>
+      ${mark(400, 390, 75, '#1d1d1d', 10)}<ellipse cx="400" cy="390" rx="120" ry="108" fill="none" stroke="#d64541" stroke-width="5" stroke-dasharray="10 0"/>
+      <text x="560" y="480" font-size="40" fill="#d64541" text-anchor="start" font-family="Caveat,cursive">цей!</text></g>
+      <path d="M640 140l70-70 22 22-70 70-30 8z" fill="${G}"/><path d="M710 70l22 22" stroke="#d64541" stroke-width="10"/>`),
+    3: () => sv(`<path d="M180 470l80-260h420l-80 260z" fill="#9fd6ff" opacity=".22" stroke="#9fd6ff" stroke-width="3"/>
+      ${mark(430, 345, 85, T, 5, 'stroke-dasharray="12 9" transform="skewX(-17) translate(105 0)"')}
+      <rect x="250" y="70" width="440" height="22" rx="8" fill="#59636f"/><rect x="410" y="92" width="50" height="70" rx="8" fill="#8b96a3"/><path d="M435 162v80" stroke="#ff4d4d" stroke-width="4"/>
+      <circle cx="435" cy="250" r="9" fill="#ff4d4d" filter="url(#sh-gl)"/>${tx(400, 550, 30, 'верстат ріже за векторним файлом', MUT, 'middle', 500)}`),
+    4: () => sv(`<rect width="800" height="600" fill="url(#sh-br)" rx="24"/><rect width="800" height="600" fill="#0d1218" opacity=".35" rx="24"/>
+      <g filter="url(#sh-gl)">${mark(400, 250, 110, G, 12)}${tx(400, 470, 92, 'ВОВКИ', G)}</g>`),
+    5: () => sv(`<rect width="800" height="600" rx="24" fill="#0f1a26"/><circle cx="660" cy="110" r="40" fill="#f5e6b0"/>
+      <path d="M0 470h800v130H0z" fill="#16241b"/><path d="M60 470l140-210 140 210z" fill="#2e6b45"/><path d="M200 260v210" stroke="#1d4a30" stroke-width="5"/>
+      <path d="M100 200q150 60 300 10t300 20" fill="none" stroke="#59636f" stroke-width="2"/>${[130, 190, 250, 310, 370, 430, 490, 550, 610, 670].map((x, i) => `<circle cx="${x}" cy="${215 + Math.sin(i) * 12}" r="7" fill="${[G, T, '#ff7a9a'][i % 3]}" filter="url(#sh-gl)"/>`).join('')}
+      <path d="M520 470V330" stroke="#6b4a2b" stroke-width="12"/><rect x="420" y="250" width="200" height="110" rx="12" fill="#1b1410" stroke="#6b4a2b" stroke-width="6"/>
+      <g filter="url(#sh-gl)">${mark(470, 305, 32, G, 6)}${tx(560, 320, 38, 'ВОВКИ', G)}</g>`)
+  };
+  const stopOf = (SL, idx) => { for (let k = idx; k >= 0; k--) { const x = SL[k]; if (x.t === 'sec') return x.n; if (x.t === 'kintro' || x.t === 'end') return 6; } return 0; };
+  function strip(cur) {
+    return `<div class="sh-row">${STOPS.map(([n], i) => `<span class="sh-st${i + 1 < cur ? ' done' : ''}${i + 1 === cur ? ' on' : ''}"><i>${i + 1 === cur ? '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="13" fill="none" stroke="currentColor" stroke-width="3.5"/><path d="M13 25L20 12L27 25Z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/></svg>' : i + 1 < cur ? '✓' : i + 1}</i><b>${n}</b></span>`).join('<span class="sh-ln"></span>')}</div>`;
+  }
+  function on() {
+    const p = document.getElementById('pres');
+    if (p && !p.querySelector('.sh-bar')) { p.classList.add('t-sh'); p.insertAdjacentHTML('beforeend', '<div class="sh-bar" aria-hidden="true"></div>'); }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', on); else on();
+  window.GUT_TEMA = {
+    title(s, D) {
+      return { a: ART[4](), h: `<div class="ttl"><span class="vy">Гутірка для юнацтва · 12–17 років</span><h2>Від знаку<br>до вивіски</h2><p>шлях одного знаку — від ідеї до світла</p>
+        <div class="sh-mini">${STOPS.map(([n]) => `<span>${n}</span>`).join('<i></i>')}</div><div class="meta"><span>${D.chas}</span><span>гра з телефонів</span></div></div>` };
+    },
+    sec(s) {
+      const [n, sub] = STOPS[s.n - 1] || ['', ''];
+      return { wide: false, a: ART[s.n] ? ART[s.n]() : '', h: `<div class="sh-sec"><span class="vy">Зупинка ${s.n} з 5</span><h2>${n}</h2><p class="sh-sub">${sub}</p><blockquote>${s.h}</blockquote></div>` };
+    },
+    after(s, idx, SL) {
+      on();
+      const b = document.querySelector('#pres .sh-bar'); if (!b) return;
+      const cur = stopOf(SL, idx);
+      b.hidden = s.t === 'title' || s.t === 'q' || s.t === 'kintro' || s.t === 'end';
+      b.innerHTML = strip(cur);
+    }
+  };
+})();
+
+</script>
+<script>
 /* Гутірка «Від знаку до вивіски» — зміст (3.11.2026). Вільна тема (вмілості немає), 12–17 років, 30–35 хв.
    Основа — матеріал власника з ChatGPT «Від логотипа до вивіски» (13.10.2026, istoriya/arkhiv/vyvisky-2-prezentatsiia.html):
    7 етапів виготовлення, типи вивісок, будова літери, підсвічування. Додано пластове: знак гуртка, правила хорошого знаку, практика.
    Рушій — той самий, що в «Будові ЛА» (index.html), «розділи» стоять на місці «вимог». Чужих логотипів і торгових марок немає. */
 window.LA = {
   id: 'vyvisky',
+  vilna: true,   // вільна (загальнорозвиваюча) тема: не вмілість — без вимог, конспекту, тесту й сторінки для юнаків
+  kinets_h: 'Дякую!',
+  kinets: 'На наступні сходини принесіть чисту версію знаку свого гуртка — виберемо найкращий і зробимо з нього вивіску для табору.',
   nazva: 'Від знаку до вивіски',
   riven: '',
   spec: '',
@@ -1366,13 +1455,13 @@ window.LA = {
     ], note: 'Наприкінці кожен намалює знак свого гуртка — і пограємо в «Потужний СКОБ!».' },
 
     /* розділ 1 */
-    { t: 'sec', n: 1 },
-    { t: 'card', n: 1, k: 'Розділ 1', h: 'Знак, символ, вивіска', art: 'znak', ask: 'Які знаки ви бачили сьогодні дорогою сюди?', pts: [
+    { t: 'sec', n: 1, k: 'Частина', h: 'Знак, що говорить' },
+    { t: 'card', n: 1, k: 'Частина 1', h: 'Знак, символ, вивіска', art: 'znak', ask: 'Які знаки ви бачили сьогодні дорогою сюди?', pts: [
       '<b>Логотип</b> — знак або напис, за яким упізнають організацію, команду, гурток.',
       '<b>Символ</b> — знак зі змістом. Лілея — знак скаутів у всьому світі.',
       '<b>Вивіска</b> — знак «у матеріалі»: на стіні, над дверима, на наметі.'
     ] },
-    { t: 'card', n: 1, k: 'Розділ 1', h: 'Навіщо знак', art: 'navishcho', pts: [
+    { t: 'card', n: 1, k: 'Частина 1', h: 'Навіщо знак', art: 'navishcho', pts: [
       '<b>Упізнають за секунду</b> — навіть без слів і здалеку.',
       '<b>Обʼєднує</b>: той самий знак на прапорі, однострої, наметі.',
       '<b>Розповідає</b>, хто ти і що для тебе важливо.'
@@ -1381,8 +1470,8 @@ window.LA = {
       why: 'Логотип — знак або напис, за яким упізнають організацію, команду чи гурток.' },
 
     /* розділ 2 */
-    { t: 'sec', n: 2 },
-    { t: 'card', n: 2, k: 'Розділ 2', h: 'Пʼять правил хорошого знаку', art: 'pravyla', ask: 'Який знак ви змогли б намалювати з памʼяті за 10 секунд?', pts: [
+    { t: 'sec', n: 2, k: 'Частина', h: 'Хороший знак' },
+    { t: 'card', n: 2, k: 'Частина 2', h: 'Пʼять правил хорошого знаку', art: 'pravyla', ask: 'Який знак ви змогли б намалювати з памʼяті за 10 секунд?', pts: [
       '<b>Простий</b> — легко намалювати з памʼяті.',
       '<b>Впізнаваний</b> — не схожий на інші знаки.',
       '<b>Видно здалеку</b> — великі форми, мало дрібниць.',
@@ -1399,8 +1488,8 @@ window.LA = {
       why: 'Печатка, футболка, ксерокопія, вишивка — часто лише один колір. Хороший знак не зникає і тоді.' },
 
     /* розділ 3 */
-    { t: 'sec', n: 3 },
-    { t: 'card', n: 3, k: 'Розділ 3', h: 'Сім етапів', art: 'etapy', pts: [
+    { t: 'sec', n: 3, k: 'Частина', h: 'Як роблять вивіску' },
+    { t: 'card', n: 3, k: 'Частина 3', h: 'Сім етапів', art: 'etapy', pts: [
       '<b>Заміри</b> — фото й розміри стіни, де висітиме вивіска.',
       '<b>Дизайн</b> — макет: розміри, кольори, світло.',
       '<b>Матеріали</b> — акрил, алюміній, пластик.',
@@ -1409,12 +1498,12 @@ window.LA = {
       '<b>Світло</b> — світлодіоди всередині, перевірка.',
       '<b>Монтаж</b> — фахівці кріплять вивіску на фасад.'
     ] },
-    { t: 'card', n: 3, k: 'Розділ 3', h: 'Чому потрібен вектор', art: 'vektor', ask: 'Що буде, якщо маленьке фото знаку збільшити до двох метрів?', pts: [
+    { t: 'card', n: 3, k: 'Частина 3', h: 'Чому потрібен вектор', art: 'vektor', ask: 'Що буде, якщо маленьке фото знаку збільшити до двох метрів?', pts: [
       '<b>Растр</b> (фото, знімок екрана) — з крапок-пікселів. Збільшиш — розпливеться.',
       '<b>Вектор</b> — з ліній і кривих. Можна збільшити хоч до розміру будинку.',
       'За <b>векторним файлом</b> верстат вирізає деталі вивіски.'
     ] },
-    { t: 'card', n: 3, k: 'Розділ 3', h: 'Матеріали й різання', art: 'materialy', pts: [
+    { t: 'card', n: 3, k: 'Частина 3', h: 'Матеріали й різання', art: 'materialy', pts: [
       '<b>Акрил</b> пропускає й розсіює світло — з нього лице світної літери.',
       '<b>Алюміній</b> і композитні панелі — міцні, для бортів і основи.',
       'Верстат ріже <b>точно за контуром</b> з файлу; краї потім зачищають.'
@@ -1423,18 +1512,18 @@ window.LA = {
       why: 'Векторні лінії можна збільшувати без втрати якості — за ними верстат ріже деталі.' },
 
     /* розділ 4 */
-    { t: 'sec', n: 4 },
-    { t: 'card', n: 4, k: 'Розділ 4', h: 'Три типи світлових вивісок', art: 'typy', ask: 'Що б ви обрали для кавʼярні? А для табору?', pts: [
+    { t: 'sec', n: 4, k: 'Частина', h: 'Світлові вивіски' },
+    { t: 'card', n: 4, k: 'Частина 4', h: 'Три типи світлових вивісок', art: 'typy', ask: 'Що б ви обрали для кавʼярні? А для табору?', pts: [
       '<b>Обʼємні літери</b> — кожна літера окрема, може світитися.',
       '<b>Лайтбокс</b> — світловий короб із картинкою чи написом.',
       '<b>LED-неон</b> — гнучка світна лінія для написів і малюнків.'
     ] },
-    { t: 'card', n: 4, k: 'Розділ 4', h: 'Будова обʼємної літери', art: 'litera', pts: [
+    { t: 'card', n: 4, k: 'Частина 4', h: 'Будова обʼємної літери', art: 'litera', pts: [
       '<b>Лице</b> — з акрилу, крізь нього видно світло.',
       '<b>Борт</b> — боковина: дає глибину й міцність.',
       '<b>Основа</b> — тримає світлодіоди, дроти й кріплення.'
     ] },
-    { t: 'card', n: 4, k: 'Розділ 4', h: 'Як світиться вивіска', art: 'svitlo', pts: [
+    { t: 'card', n: 4, k: 'Частина 4', h: 'Як світиться вивіска', art: 'svitlo', pts: [
       'Усередині — маленькі <b>світлодіоди</b> (LED). Їх ставлять рівно, щоб не було темних плям.',
       '<b>Блок живлення</b> перетворює напругу з мережі на низьку для світлодіодів.',
       'Підключає й монтує <b>лише фахівець</b> — це електрика.'
@@ -1443,7 +1532,7 @@ window.LA = {
       why: 'Лице роблять з акрилу — він пропускає й рівно розсіює світло світлодіодів.' },
 
     /* розділ 5 */
-    { t: 'sec', n: 5 },
+    { t: 'sec', n: 5, k: 'Частина', h: 'Наш знак' },
     { t: 'prac', n: 5, k: 'Практика', h: 'Знак нашого гуртка', art: 'praktyka', pts: [
       'Що обʼєднує ваш гурток? Назва, тварина, улюблене місце?',
       'За 3 хвилини — 3 різні ескізи.',
@@ -1477,69 +1566,32 @@ window.LA = {
     { n: 4, q: 'Гнучка світна лінія для написів — це…', a: ['LED-неон', 'лайтбокс', 'акрил', 'борт'], ok: 0, why: 'LED-неон — гнучка трубка зі світлодіодами.' },
     { n: 4, q: 'Що дає обʼємній літері глибину?', a: ['Борт', 'Лице', 'Світлодіоди', 'Фарба'], ok: 0, why: 'Борт — боковина літери: глибина й міцність.' },
     { n: 4, q: 'Хто підключає вивіску до мережі?', a: ['Лише фахівець', 'Будь-хто з гуртка', 'Найменший юнак', 'Ніхто — вона без струму'], ok: 0, why: 'Це електрика 230 В — працює тільки фахівець.' }
-  ],
-
-  /* конспект для юнаків */
-  konspekt: [
-    { n: 1, h: 'Знак, символ, вивіска', art: 'znak', t: [
-      '<b>Логотип</b> — знак або напис, за яким упізнають організацію, команду, гурток.',
-      '<b>Символ</b> — знак зі змістом. Лілея — знак скаутів у всьому світі; знак Пласту — лілея з тризубом.',
-      '<b>Вивіска</b> — знак «у матеріалі»: на стіні, над дверима, на наметі.',
-      'Знак упізнають за секунду, він обʼєднує й розповідає, хто ти.'
-    ], znaty: 'Поясни різницю між логотипом, символом і вивіскою — і наведи по прикладу.' },
-    { n: 2, h: 'Хороший знак', art: 'pravyla', t: [
-      '<b>Простий</b> — легко намалювати з памʼяті.',
-      '<b>Впізнаваний</b> — не схожий на інші.',
-      '<b>Видно здалеку</b> — великі форми, мало дрібниць.',
-      '<b>Працює в одному кольорі</b> — печатка, футболка, ксерокопія.',
-      '<b>Добрий і великим, і малим</b> — прапор і значок.',
-      'Перевірки: розміром з ніготь, з пʼяти кроків, чорно-біла копія.',
-      'Типові помилки: дрібні деталі, багато кольорів, довгий текст, нечитабельний шрифт, слабкий контраст.'
-    ], znaty: 'Назви 5 правил і 3 перевірки знаку.' },
-    { n: 3, h: 'Сім етапів виготовлення', art: 'etapy', t: [
-      '<b>Заміри</b> → <b>дизайн</b> → <b>матеріали</b> → <b>різання</b> → <b>збірка</b> → <b>світло</b> → <b>монтаж</b>.',
-      '<b>Растр</b> (фото) з пікселів розпливається при збільшенні; <b>вектор</b> з ліній — ні.',
-      'За векторним файлом верстат ріже деталі.',
-      '<b>Акрил</b> пропускає світло, <b>алюміній</b> — міцний для бортів і основи.'
-    ], znaty: 'Назви сім етапів по порядку і поясни, чому для вивіски потрібен вектор.' },
-    { n: 4, h: 'Світлові вивіски', art: 'litera', t: [
-      '<b>Обʼємні літери</b>, <b>лайтбокс</b> (світловий короб), <b>LED-неон</b> (гнучка світна лінія).',
-      'Обʼємна літера: <b>лице</b> (акрил, пропускає світло), <b>борт</b> (глибина), <b>основа</b> (світлодіоди, дроти, кріплення).',
-      'Світлодіоди живить <b>блок живлення</b>: з мережі — низька напруга.',
-      'Підключає й монтує лише фахівець — це електрика.'
-    ], znaty: 'Назви три типи вивісок і три частини обʼємної літери.' },
-    { n: 5, h: 'Знак свого гуртка', art: 'praktyka', pr: true, t: [
-      'Подумай, що обʼєднує твій гурток.',
-      'Намалюй 3 різні ескізи за 3 хвилини.',
-      'Вибери найкращий і перевір 5 правилами та 3 перевірками.',
-      'Перемалюй чисто одним кольором і покажи виховникові.'
-    ], znaty: 'Намалюй знак гуртка, перевір його й покажи виховникові.' }
   ]
 };
 /* що казати на кожному слайді (видно на пульті й у плані) — у тому ж порядку, що й slides */
 window.LA.say = [
   'Привітайтеся. Запитайте: «Хто знає знаки, які впізнає без слів?» Назвіть тему. Якщо гратимете з телефонів — меню в куті → «Потужний СКОБ!»: нехай юнаки підключаються. ≈ 2 хв.',
   'Коротко пройдіться по пʼяти кроках. Скажіть, що наприкінці кожен намалює знак свого гуртка. ≈ 1 хв.',
-  'Розділ 1: знак, що говорить. ≈ 5 хв.',
+  'Частина 1: знак, що говорить. ≈ 5 хв.',
   'Відкривайте пункти по одному. На запитання — дайте 2–3 відповіді вголос: дорожні знаки, вивіски крамниць, емблеми на одязі.',
   'Покажіть свій пластовий знак на однострої чи прапорі. Запитайте, що в ньому «каже», хто ми.',
   '',
-  'Розділ 2: хороший знак. ≈ 8 хв.',
+  'Частина 2: хороший знак. ≈ 8 хв.',
   'По черзі пункти. На запитання — хтось малює знак з памʼяті на папері чи дошці.',
   'Якщо є час — зробіть перевірки з будь-яким знаком у кімнаті: з пʼяти кроків, розміром з ніготь.',
   'Гра на 5 невдалих знаків. Без телефонів: група радиться, хтось один натискає відповідь. Правильно — далі само, неправильно — прочитайте пояснення.',
   '',
-  'Розділ 3: від логотипа до вивіски. ≈ 7 хв.',
+  'Частина 3: від логотипа до вивіски. ≈ 7 хв.',
   'Сім етапів — коротко, по пункту. Наголос: усе починається із замірів і макета.',
   'На запитання: «розпливеться на квадратики». Покажіть на телефоні — збільште маленьку картинку.',
   'Якщо є шматок прозорого пластику — покажіть, як він розсіює світло ліхтарика.',
   '',
-  'Розділ 4: світлові вивіски. ≈ 6 хв.',
+  'Частина 4: світлові вивіски. ≈ 6 хв.',
   'На запитання — нехай кожен обере тип і скаже чому.',
   'Покажіть на малюнку три шари літери.',
   'Наголосіть про безпеку: з мережею працюють лише фахівці.',
   '',
-  'Розділ 5: практика. ≈ 8 хв. Роздайте папір і маркери.',
+  'Частина 5: практика. ≈ 8 хв. Роздайте папір і маркери.',
   'Засічіть 3 хвилини на ескізи. Потім — перевірка правилами й чиста версія.',
   'Кілька юнаків показують знаки групі. Похваліть за простоту й ідею.',
   'Фінальна гра: 15 запитань, ≈ 6 хв. Якщо телефони ще не підключені — «Підключити телефони», зачекайте, поки всі ввійдуть.',
@@ -1554,6 +1606,7 @@ window.LA.materialy = ['ноутбук (за можливості — проєк
 'use strict';
 const D = window.LA, $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 /* практичні точки — ті, що юнак виконує сам (konspekt[].pr); решту вивчає тут */
+if (!D.konspekt) D.konspekt = [];
 const PRN = D.konspekt.filter(k => k.pr).map(k => k.n), THN = D.konspekt.filter(k => !k.pr).map(k => k.n);
 const nList = a => (a.length === 1 ? 'розділ ' : 'розділи ') + (a.length === 1 ? a[0] : a.slice(0, -1).join(', ') + ' і ' + a[a.length - 1]);
 const ptW = n => n % 10 === 1 && n % 100 !== 11 ? 'розділ' : n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? 'розділи' : 'розділів';
@@ -1602,10 +1655,10 @@ function render() {
   const note = s.note ? `<p class="note">${s.note}</p>` : '';
   switch (s.t) {
     case 'title': a = art('title'); h = `<div class="ttl"><span class="vy">Гутірка для юнацтва · 12–17 років</span><h2>Від знаку<br>до вивіски</h2><p>гутірка для юнацтва</p>
-      <div class="meta"><span><b>5</b> розділів</span><span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
+      <div class="meta">${D.vilna ? '' : '<span><b>5</b> розділів</span>'}<span>${D.chas}</span><span>гра з телефонів</span></div></div>`;
       hint = (matchMedia('(pointer:coarse)').matches || matchMedia('(hover:none)').matches) ? 'Торкніться праворуч, щоб почати' : 'Натисніть пропуск, щоб почати'; break;
     case 'plan': a = art('types'); h = `<div class="k">${s.k}</div><h2 class="hh">${s.h}</h2>${pts}${note}`; break;
-    case 'sec': wide = true; h = `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Розділ</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
+    case 'sec': wide = true; h = D.vilna ? `<div class="big"><div class="n">${s.n}</div><span class="vy">${s.k || 'Частина'}</span><blockquote>${s.h}</blockquote></div>` : `<div class="big"><div class="n">${s.n}<small>/ 5</small></div><span class="vy">Розділ</span><blockquote>${D.vymogy[s.n - 1]}</blockquote></div>`; break;
     case 'card': case 'prac': a = s.art ? art(s.art) : '';
       h = `${s.t === 'prac' ? `<span class="badge">${s.k}</span>` : `<div class="k">${s.k}</div>`}<h2 class="hh">${s.h}</h2>${s.p ? `<p class="pp">${s.p}</p>` : ''}${pts}${s.ask ? `<p class="ask">${s.ask}</p>` : ''}${note}`; break;
     case 'scheme': a = art('scheme:' + s.s); h = `<div class="k">Точка 5 · схема</div><h2 class="hh">${s.h}</h2>${pts}<p class="ex"><b>Приклади:</b> ${s.ex}</p>${LA_ART.has(s.s) ? `<div class="note exph">${LA_ART.photo(s.s)}</div>` : ''}`; break;
@@ -1617,7 +1670,8 @@ function render() {
       hint = 'Далі — почати гру'; break;
     case 'q': quiz = true; h = '<div class="qwrap" id="qhost"></div>';
       hint = SKOB.count() ? '' : 'Натисніть на відповідь: правильно — далі само, неправильно — пояснення'; break;
-    case 'end': wide = true; h = `<div class="big endq"><div><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
+    case 'end': wide = true; if (D.vilna) { h = `<div class="big"><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">${D.kinets_h || 'Дякую!'}</div><blockquote style="margin-top:.6em">${D.kinets}</blockquote></div>`; break; }
+      h = `<div class="big endq"><div><span class="vy">Що далі</span><div class="n" style="font-size:clamp(3rem,9vw,7rem)">Готові?</div>
       <blockquote>Повторіть усе на сторінці «Вивчай сам», пройдіть «Перевір себе» — і покажіть виховникові знак свого гуртка.</blockquote></div>
       <figure><div>${window.qrSvg ? window.qrSvg(YUN_URL, 240, { eye: '#ff7a9a' }) : ''}</div><figcaption>Відскануйте, щоб повторити</figcaption></figure></div>`; break;
   }
@@ -1631,7 +1685,7 @@ function render() {
   else if (s.t === 'title') stop3d = LA_ART.mount3D(artEl, { hero: true });
   LA_ART.fit(artEl);
   panel.innerHTML = h; panel.scrollTop = 0;
-  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Що тут не так? · ${s.guess} з 5` : `Перевірка · розділ ${s.n}`, T: 20,
+  if (s.t === 'q') qctl = SKOB.ask($('#qhost'), s.img ? Object.assign({}, s, { img: art(s.img) }) : s, { label: s.guess ? `Що тут не так? · ${s.guess} з 5` : D.vilna ? 'Запитання' : `Перевірка · розділ ${s.n}`, T: 20,
     auto: () => { if (SL[idx] === s && !P.hidden) go(idx + 1); }, onPhase: ph => { $('#hint').textContent = ph === 'rev' ? 'Далі — наступний слайд' : SKOB.count() ? '' : 'Далі — показати відповідь'; } });
   if (window.GUT_TEMA && GUT_TEMA.after) GUT_TEMA.after(s, idx, SL);
   showRev(); $('#hint').textContent = hint;
@@ -1686,7 +1740,7 @@ $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,
 /* пульт на телефоні (pult-host-file.js) керує гутіркою через window.GUTIRKA */
 let T0 = 0;
 const strip = h => String(h || '').replace(/<[^>]+>/g, '');
-const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'gintro' ? 'Гра «Що тут не так?»' : s.t === 'q' ? (s.guess ? 'Що тут не так? ' + s.guess + ' з 5' : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
+const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? (D.vilna ? (s.k || 'Частина') + ' ' + s.n + ': ' + strip(s.h) : 'Розділ ' + s.n) : s.t === 'gintro' ? 'Гра «Що тут не так?»' : s.t === 'q' ? (s.guess ? 'Що тут не так? ' + s.guess + ' з 5' : (D.vilna ? 'Запитання: ' : 'Перевірка: ') + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
 const noteFor = s => !s ? '' : s.t === 'q' ? `${s.guess ? 'Знак: ' + s.a[s.ok] + '. ' : ''}Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.`
   : s.t === 'gintro' ? D.say[D.slides.findIndex(x => x.t === 'guess')] : s.t === 'kintro' ? D.say[D.slides.findIndex(x => x.t === 'gra')] : (s.say || '');
 /* пульт: підказки по кроках, як у «Кераміці України» (3.11.2026): 📺 на екрані · 🗣 скажи · ❓ запитай · ✔ відповідь */
@@ -1700,7 +1754,7 @@ const noteRich = s => !s ? '' : s.t === 'q' ? '❓ ' + plainN(s.q) + '\n✔ ' + 
   : s.t === 'kintro' ? '🗣 ' + plainN(noteFor(s)) + '\n✋ Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.'
   : (s.h && !['title', 'sec', 'end'].includes(s.t) ? '📺 ' + plainN(s.h) + '\n' : '') + (noteFor(s) ? '🗣 ' + plainN(noteFor(s)) : '');
 const ixFor = s => s && s.t === 'kintro' ? { v: 'btns', h: 'Гра «Потужний СКОБ!»', b: [['game', 'Почати гру'], ['lobby', 'Підключити телефони'], ['skip', 'Пропустити гру']] } : null;
-const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
+const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? (D.vilna ? strip(s.h) : 'Розділ ' + s.n) : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
 const API = { id: 'vyvisky', title: 'Від знаку до вивіски',
   state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteRich(SL[idx]), ns: nsFor(SL[idx]), ix: window.SKOB && SKOB.active() ? undefined : ixFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
@@ -1745,7 +1799,7 @@ $('#b-fs').addEventListener('click', fs);
 $('#b-toc').addEventListener('click', () => {
   const secs = SL.map((s, i) => [s, i]).filter(([s]) => s.t === 'sec' || s.t === 'kintro' || s.t === 'title' || s.t === 'gintro');
   if (window.GUT_TEMA && GUT_TEMA.toc) { $('#toc-list').innerHTML = GUT_TEMA.toc(SL, idx, D, 'Що тут не так?'); $('#toc').hidden = false; const c = $('#toc .on'); if (c) try { c.scrollIntoView({ block: 'center' }); } catch (e) {} return; }
-  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? esc(D.vymogy[s.n - 1]) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Що тут не так?»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
+  $('#toc-list').innerHTML = secs.map(([s, i]) => `<button class="j" type="button" data-go="${i}"><b>${s.t === 'sec' ? s.n : s.t === 'title' ? '·' : '?'}</b><span>${s.t === 'sec' ? (D.vilna ? esc(s.h) : esc(D.vymogy[s.n - 1])) : s.t === 'title' ? 'Початок' : s.t === 'gintro' ? 'Гра «Що тут не так?»' : 'Гра «Потужний СКОБ!»'}</span></button>`).join('');
   $('#toc').hidden = false;
 });
 $('#toc').addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { go(+b.dataset.go); $('#toc').hidden = true; } });
@@ -1827,8 +1881,8 @@ function renderPlan() {
   let h = `<div class="mat"><b>Що підготувати</b><ul>${D.materialy.map(m => `<li>${esc(m)}</li>`).join('')}</ul></div>
     <div class="mat"><b>Як керувати</b><ul><li>Далі — пробіл, стрілка → або дотик правої частини екрана; назад — стрілка ← або дотик лівої третини.</li><li>Меню — у правому верхньому куті: зміст, «Потужний СКОБ!», пульт з телефона, повний екран.</li><li>Пункти на слайді з’являються по одному — розповідайте до кожного.</li><li>Ці нотатки й правильні відповіді видно лише вам — на телефоні-пульті (меню → «Пульт»). На спільному екрані їх немає.</li></ul></div>`;
   D.slides.forEach((s, i) => {
-    if (s.t === 'sec') { const m = secT(s.n); h += `<h2>Розділ ${s.n}${m ? `<small>${m[0]}</small>` : ''}</h2><p style="margin:0 0 6px;color:var(--mut)">${esc(D.vymogy[s.n - 1])}</p>`; return; }
-    const name = s.t === 'title' ? 'Титульний слайд' : s.t === 'q' ? 'Перевірка' : s.t === 'guess' ? 'Гра «Що тут не так?»' : s.t === 'gra' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Підсумок' : (s.h || '').replace(/<[^>]+>/g, '');
+    if (s.t === 'sec') { const m = secT(s.n); h += D.vilna ? `<h2>${esc(s.k || 'Частина')} ${s.n}. ${esc(s.h)}${m ? `<small>${m[0]}</small>` : ''}</h2>` : `<h2>Розділ ${s.n}${m ? `<small>${m[0]}</small>` : ''}</h2><p style="margin:0 0 6px;color:var(--mut)">${esc(D.vymogy[s.n - 1])}</p>`; return; }
+    const name = s.t === 'title' ? 'Титульний слайд' : s.t === 'q' ? (D.vilna ? 'Запитання' : 'Перевірка') : s.t === 'guess' ? 'Гра «Що тут не так?»' : s.t === 'gra' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Підсумок' : (s.h || '').replace(/<[^>]+>/g, '');
     const kind = s.t === 'prac' ? (s.k || 'Практика') : s.t === 'q' ? '20 секунд' : s.t === 'scheme' ? 'Схема' : '';
     const say = s.t === 'q' ? `<em>${esc(s.q)}</em> — правильна відповідь: «${esc(s.a[s.ok])}». ${esc(s.why)}` : esc(D.say[i] || '');
     if (s.t === 'title') h += '<h2>Початок<small>≈ 3 хв</small></h2>';
@@ -1871,8 +1925,14 @@ function route() {
   if (h === 'yunakam') { renderYun(); scrollTo(0, 0); }
   if (h === 'test') { if (!T || T.i >= T.order.length) newTest(); scrollTo(0, 0); }
 }
+if (D.vilna) {   /* вільна тема (не вмілість): на старті — лише зміст частин, без вимог і без сторінки для юнаків */
+  $('#req-box b').textContent = 'Про що гутірка';
+  $('#req').innerHTML = SL.filter(s => s.t === 'sec').map(s => `<li>${s.h}</li>`).join('');
+  $('#d-yun').remove();
+  $$('.for-v .door span, #start .kh.for-v').forEach(e => { e.innerHTML = e.innerHTML.replace('30–35 хв', D.chas); });
+} else
 $('#req').innerHTML = D.vymogy.map((v, i) => `<li>${esc(v)}${PRN.includes(i + 1) ? `<span class="pr">${YUN ? 'практика — зроби сам' : 'практика — юнак робить сам'}</span>` : ''}</li>`).join('');
-if (PRN.length) {
+if (PRN.length && !D.vilna) {
   const seg = `<span class="mseg" aria-hidden="true">${D.konspekt.map(k => `<i class="${k.pr ? 'pr' : ''}"></i>`).join('')}</span>`;
   $('#req-sum').innerHTML = seg + (YUN ? `<span>${THN.length} ${ptW(THN.length)} вивчиш тут, ${PRN.length} — зробиш власноруч (${nList(PRN)})</span>`
     : `<span>Матеріал повний: ${THN.length} ${ptW(THN.length)} — у гутірці, ${PRN.length} — практика, юнак робить сам (${nList(PRN)})</span>`);
