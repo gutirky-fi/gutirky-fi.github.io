@@ -61,6 +61,15 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
 #sm small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
 #sm h2{font:800 clamp(42px,6.2vw,90px)/.95 Wix;letter-spacing:-.035em}
 #sm p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:380px;opacity:.9}
+/* табір */
+#st .sh{background:linear-gradient(90deg,rgba(5,5,5,.55) 0%,transparent 40%)}
+#st .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(460px,80vw)}
+#st small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#st h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#st p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:360px;opacity:.9}
+.mark{position:absolute;left:64.6%;top:33.4%;width:19%;transform:rotate(-7deg) skewY(-3deg);fill:none;stroke:#2b1709;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;opacity:.82;mix-blend-mode:multiply}
+.mark *{stroke-dasharray:400;stroke-dashoffset:400}
+@media (max-aspect-ratio:1/1){.mark{display:none}}
 /* 2 — «всередині світла» */
 #s2 .ph{background-size:620%;background-position:81% 56%;filter:blur(5px) brightness(.9) saturate(1.15)}
 #s2 .sh{background:radial-gradient(80% 90% at 60% 40%,transparent 20%,rgba(5,5,5,.7)),linear-gradient(0deg,rgba(5,5,5,.75),transparent 55%)}
@@ -97,9 +106,11 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
   <div class="tx"><small>Частина четверта · світло</small><h2>Світло<br>всередині</h2><p>Рівні ряди світлодіодів світять крізь акрилове лице літери. Струм дає блок живлення — підключає лише фахівець.</p></div></section>
 <section class="sl" id="sm"><div class="ph" style="background-image:url(k7.webp)"></div><div class="sh"></div>
   <div class="tx"><small>Частина четверта · монтаж</small><h2>Останній<br>крок</h2><p>Фахівці на підйомнику кріплять літери до фасаду й підключають світло. Тепер знак бачить уся вулиця.</p></div></section>
+<section class="sl" id="st"><div class="ph" style="background-image:url(k8.webp)"><svg class="mark" viewBox="0 0 200 120" aria-hidden="true"><circle cx="60" cy="60" r="42"/><path d="M28 82 58 34 72 56 80 46 96 82"/><path d="M114 52h44M114 72h30"/></svg></div><div class="sh"></div>
+  <div class="tx"><small>Частина пʼята · практика</small><h2>Наш знак</h2><p>Придумайте знак свого гуртка — і зробіть з нього вивіску для табору.</p></div></section>
 <div class="top"><b>Пласт у Фінляндії</b><b>Гутірка для юнацтва · 12–17 років</b></div>
 <div class="bar t"></div><div class="bar b"></div><div class="flash"></div><div class="beam"></div><div class="grain"></div>
-<div class="nav"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
+<div class="nav"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
 <script src="../../lib/gsap-3/gsap.min.js"></script>
 <script src="../../lib/gsap-3/SplitText.min.js"></script>
 <script>
@@ -192,6 +203,17 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
      .add(textIn(b), '-=.5');
     return t;
   }
+  /* «вогонь»: новий кадр розкривається колом від вогнища, потім на табличці «випалюється» знак */
+  function iris(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .35 })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); gsap.set(B.querySelectorAll('.mark *'), { strokeDashoffset: 400 }); })
+     .fromTo(B, { clipPath: 'circle(0% at 33% 84%)' }, { clipPath: 'circle(150% at 33% 84%)', duration: 1.8, ease: 'power2.inOut' })
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(B, { clipPath: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), '-=.7')
+     .to(B.querySelectorAll('.mark *'), { strokeDashoffset: 0, duration: 1.6, ease: 'power1.inOut', stagger: .35 }, '-=.2');
+    return t;
+  }
   /* 2 → 3 і назад: «фокусування» — один кадр розмивається, інший проявляється з туману */
   function focus(a, b) {
     const t = gsap.timeline();
@@ -208,7 +230,7 @@ html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,syst
     if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: 1 }); tl = textIn(i); drift(i); return; }
     const key = S[a] ? S[a].id + '>' + S[i].id : '';
     tl = a === -1 ? intro() : key === 's1>sv' ? whip(a, i, 1) : key === 'sv>s1' ? whip(a, i, -1) : key === 'sv>sk' ? whip(a, i, 1, 'y') : key === 'sk>sv' ? whip(a, i, -1, 'y')
-      : key === 'sk>s3' ? into(a, i, '#050505') : key === 's3>sl' ? laser(a, i) : key === 'sl>sz' ? match(a, i) : key === 'sz>s2' ? into(a, i, '#ffcf8f') : key === 's2>se' ? ledOn(a, i) : key === 'se>sm' ? whip(a, i, -1, 'y') : key === 'sm>se' ? whip(a, i, 1, 'y') : focus(a, i);
+      : key === 'sk>s3' ? into(a, i, '#050505') : key === 's3>sl' ? laser(a, i) : key === 'sl>sz' ? match(a, i) : key === 'sz>s2' ? into(a, i, '#ffcf8f') : key === 's2>se' ? ledOn(a, i) : key === 'sm>st' ? iris(a, i) : key === 'se>sm' ? whip(a, i, -1, 'y') : key === 'sm>se' ? whip(a, i, 1, 'y') : focus(a, i);
   }
   addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
   let x0 = null;
