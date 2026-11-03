@@ -480,6 +480,17 @@ body.s3 .s3o .x{position:absolute;right:12px;top:12px;width:40px;height:40px;bor
 body.s3 .s3o .l2xi,body.s3 .s3o .s2xi{margin:0}
 body.s3 .s3o h4{margin:20px 0 10px;font:700 14px var(--txt);color:var(--mut)}
 body.s3 .s3o h4:first-of-type{margin-top:4px}
+body.s3 .ved .s3okm{display:none}
+body.s3 .ved.s3ok:not(.s3show)>*:not(.s3okm){display:none}
+body.s3 .ved.s3ok:not(.s3show) .s3okm{display:flex;flex-direction:column;gap:4px;padding:6px 4px}
+body.s3 .s3okm b{color:#3ee08f;font-size:18px}body.s3 .s3okm span{color:var(--mut);font-size:15px}
+body.s3 .s3okb{align-self:flex-start;margin-top:4px;padding:0;border:0;background:none;color:var(--mut);font:600 14px var(--txt);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* підказка при першому запуску */
+body.s3 .s3tip{display:flex;align-items:flex-start;gap:14px;margin:0 0 20px;padding:12px 14px 12px 16px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+body.s3 .s3tip ol{flex:1;display:flex;flex-wrap:wrap;gap:6px 22px;margin:0;padding:0;list-style:none;counter-reset:k}
+body.s3 .s3tip li{counter-increment:k;display:flex;align-items:center;gap:8px;font-weight:600;color:var(--body)}
+body.s3 .s3tip li::before{content:counter(k);display:grid;place-items:center;width:24px;height:24px;border-radius:99px;background:#ffc247;color:#1d1606;font:600 14px var(--disp)}
+body.s3 .s3tip button{border:0;background:none;color:var(--mut);font:600 14px var(--txt);text-decoration:underline;text-underline-offset:3px;cursor:pointer;white-space:nowrap}
 body.s3 .s3o .s3row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 @media (max-width:900px){body.s3.v2 #lobby .lb,body.s3 #lobby .l2{grid-template-columns:1fr}body.s3 .s3lg b{font-size:52px}body.s3 .s3lg .w svg{height:40px;width:40px}}
 /* шапка однаково в усіх іграх (як у Змагу): круглі мітки й кнопка «назад» */
@@ -534,6 +545,16 @@ window.IHRY_S3 = function (o) {
   /* логотип замість заголовка */
   const h1 = o.m.querySelector('h1');
   if (h1) { const d = document.createElement('div'); d.className = 's3lg'; d.setAttribute('role', 'heading'); d.setAttribute('aria-level', '1'); d.setAttribute('aria-label', Z[0] + ' ' + Z[1]); d.innerHTML = '<small>' + Z[0] + '</small><div class="w">' + Z[2] + '<b>' + Z[1] + '</b></div>'; h1.replaceWith(d); }
+  /* підказка при першому запуску на цьому компʼютері */
+  if (o.kroky) {
+    const K = 'ihry.pidkazka.' + o.gra; let seen = false; try { seen = localStorage.getItem(K) === '1'; } catch (e) { /* ok */ }
+    if (!seen) {
+      const t = document.createElement('div'); t.className = 's3tip'; t.setAttribute('role', 'note');
+      t.innerHTML = '<ol>' + o.kroky.map(k => '<li>' + k + '</li>').join('') + '</ol><button type="button">Зрозуміло</button>';
+      t.querySelector('button').addEventListener('click', () => { t.remove(); try { localStorage.setItem(K, '1'); } catch (e) { /* ok */ } });
+      o.m.prepend(t);
+    }
+  }
   /* значки в кнопках замість символів ▶ ✎ + */
   Object.entries(o.knopky || {}).forEach(([id, n]) => { const b = document.getElementById(id); if (!b) return; [...b.childNodes].forEach(c => { if (c.nodeType === 3) c.textContent = c.textContent.replace(/^[\s▶✎+🖨]+/, ''); }); b.querySelectorAll('i.ic').forEach(e => e.remove()); b.insertAdjacentHTML('afterbegin', ic(n)); });
   /* кнопка «назад» — значок, як у Змагу */
@@ -554,7 +575,12 @@ window.IHRY_S3 = function (o) {
     btn.addEventListener('click', () => { ov.hidden = false; });
     /* Змаг: окрема мітка «Ведучий» у шапці зайва — її роль тепер у «Ведучому»; галочка «пульт підключено» переходить сюди */
     const vc = document.getElementById('vedc');
-    if (vc) { const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; }; sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true }); }
+    if (vc) {
+      const vd = ov.querySelector('.ved');
+      if (vd) { vd.insertAdjacentHTML('beforeend', '<div class="s3okm"><b>Пульт підключено ✓</b><span>Відповіді й кнопки ✓ / ✕ — на вашому телефоні.</span><button type="button" class="s3okb">Показати код ще раз</button></div>'); vd.querySelector('.s3okb').addEventListener('click', () => vd.classList.add('s3show')); }
+      const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; if (vd) { vd.classList.toggle('s3ok', ok); if (!ok) vd.classList.remove('s3show'); } };
+      sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true });
+    }
     ov.querySelector('.x').addEventListener('click', () => { ov.hidden = true; });
     ov.addEventListener('click', e => { if (e.target === ov) ov.hidden = true; });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') ov.hidden = true; });
@@ -1524,7 +1550,13 @@ if (V2) {
   xr.append(q('edit'), q('print')); const side = el('div'); side.append(xr, q('minus').closest('label'), q('sndi').parentNode);
   xi.append(q('ved'), side); x.append(xi);
   lb.replaceChildren(m, j); lb.after(x);
-  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' } });   /* стиль 3: дизайн-система «Ігри Пласту» */
+  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) {   /* стиль 3: дизайн-система «Ігри Пласту» */
+    IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' },
+      kroky: ['Капітани сканують QR-код', 'Оберіть, хто починає', 'Почати гру'] });
+    /* «Хто починає?» не потрібна, коли є незакінчена гра — її продовжують */
+    const rs = document.getElementById('resume'), dr = q('draw'), f = () => { dr.hidden = !rs.hidden; };
+    f(); new MutationObserver(f).observe(rs, { attributes: true, attributeFilter: ['hidden'] });
+  }
   $('#turn').dataset.l = 'Відповідає';
 }
 /* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, гравців запрошуємо окремим вікном */

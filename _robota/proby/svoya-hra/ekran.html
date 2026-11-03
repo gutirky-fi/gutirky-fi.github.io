@@ -915,7 +915,13 @@ if (V2) {
   xr.append(q('edit'), q('print')); const side = el('div'); side.append(xr, q('minus').closest('label'), q('sndi').parentNode);
   xi.append(q('ved'), side); x.append(xi);
   lb.replaceChildren(m, j); lb.after(x);
-  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' } });   /* стиль 3: дизайн-система «Ігри Пласту» */
+  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) {   /* стиль 3: дизайн-система «Ігри Пласту» */
+    IHRY_S3({ gra: 'zmag', m, x, knopky: { start: 'play', draw: 'dice', edit: 'edit', tadd: 'plus', print: 'print' },
+      kroky: ['Капітани сканують QR-код', 'Оберіть, хто починає', 'Почати гру'] });
+    /* «Хто починає?» не потрібна, коли є незакінчена гра — її продовжують */
+    const rs = document.getElementById('resume'), dr = q('draw'), f = () => { dr.hidden = !rs.hidden; };
+    f(); new MutationObserver(f).observe(rs, { attributes: true, attributeFilter: ['hidden'] });
+  }
   $('#turn').dataset.l = 'Відповідає';
 }
 /* РОДИНА ІГОР (?dyz=fam): заставка як у СКОБ, гравців запрошуємо окремим вікном */

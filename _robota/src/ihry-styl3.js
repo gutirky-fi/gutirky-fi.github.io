@@ -14,6 +14,16 @@ window.IHRY_S3 = function (o) {
   /* логотип замість заголовка */
   const h1 = o.m.querySelector('h1');
   if (h1) { const d = document.createElement('div'); d.className = 's3lg'; d.setAttribute('role', 'heading'); d.setAttribute('aria-level', '1'); d.setAttribute('aria-label', Z[0] + ' ' + Z[1]); d.innerHTML = '<small>' + Z[0] + '</small><div class="w">' + Z[2] + '<b>' + Z[1] + '</b></div>'; h1.replaceWith(d); }
+  /* підказка при першому запуску на цьому компʼютері */
+  if (o.kroky) {
+    const K = 'ihry.pidkazka.' + o.gra; let seen = false; try { seen = localStorage.getItem(K) === '1'; } catch (e) { /* ok */ }
+    if (!seen) {
+      const t = document.createElement('div'); t.className = 's3tip'; t.setAttribute('role', 'note');
+      t.innerHTML = '<ol>' + o.kroky.map(k => '<li>' + k + '</li>').join('') + '</ol><button type="button">Зрозуміло</button>';
+      t.querySelector('button').addEventListener('click', () => { t.remove(); try { localStorage.setItem(K, '1'); } catch (e) { /* ok */ } });
+      o.m.prepend(t);
+    }
+  }
   /* значки в кнопках замість символів ▶ ✎ + */
   Object.entries(o.knopky || {}).forEach(([id, n]) => { const b = document.getElementById(id); if (!b) return; [...b.childNodes].forEach(c => { if (c.nodeType === 3) c.textContent = c.textContent.replace(/^[\s▶✎+🖨]+/, ''); }); b.querySelectorAll('i.ic').forEach(e => e.remove()); b.insertAdjacentHTML('afterbegin', ic(n)); });
   /* кнопка «назад» — значок, як у Змагу */
@@ -34,7 +44,12 @@ window.IHRY_S3 = function (o) {
     btn.addEventListener('click', () => { ov.hidden = false; });
     /* Змаг: окрема мітка «Ведучий» у шапці зайва — її роль тепер у «Ведучому»; галочка «пульт підключено» переходить сюди */
     const vc = document.getElementById('vedc');
-    if (vc) { const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; }; sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true }); }
+    if (vc) {
+      const vd = ov.querySelector('.ved');
+      if (vd) { vd.insertAdjacentHTML('beforeend', '<div class="s3okm"><b>Пульт підключено ✓</b><span>Відповіді й кнопки ✓ / ✕ — на вашому телефоні.</span><button type="button" class="s3okb">Показати код ще раз</button></div>'); vd.querySelector('.s3okb').addEventListener('click', () => vd.classList.add('s3show')); }
+      const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; if (vd) { vd.classList.toggle('s3ok', ok); if (!ok) vd.classList.remove('s3show'); } };
+      sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true });
+    }
     ov.querySelector('.x').addEventListener('click', () => { ov.hidden = true; });
     ov.addEventListener('click', e => { if (e.target === ov) ov.hidden = true; });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') ov.hidden = true; });
