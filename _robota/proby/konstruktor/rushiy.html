@@ -235,7 +235,7 @@ const noteFor = s => !s ? '' :
   : s.t === 'velyka' ? '📺 Велика картинка' + (s.h ? ': ' + plain(s.h) : '') + (s.p ? '\n• ' + plain(s.p) : '') + sayL(s.say)
   : '📺 ' + plain(s.h) + (s.p ? '\n• ' + plain(s.p) : '') + sayL(s.say);
 /* слайд з пунктами: підказка на кожен крок (пункт за пунктом) */
-const nsFor = s => !s || s.t !== 'card' || !steps(s) ? null : [[null, noteFor(s)], ...s.pts.map(p => [short(p), '📺 ' + plain(p)]), ...(s.ask ? [['запитання', '❓ ' + plain(s.ask)]] : [])];
+const nsFor = s => !s || s.t !== 'card' || !steps(s) ? null : [[null, noteFor(s)], ...s.pts.map((p, k) => ['пункт ' + (k + 1), '📺 ' + plain(p)]), ...(s.ask ? [['запитання', '❓ ' + plain(s.ask)]] : [])];
 const ixFor = s => s && s.t === 'kintro' ? { v: 'btns', h: 'Гра «Потужний СКОБ!»', b: [['game', 'Почати гру'], ['lobby', 'Підключити телефони'], ['skip', 'Пропустити гру']] } : null;
 const SECTIONS = () => SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Розділ ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const mins = (() => { const m = String(D.chas || '').match(/\d+/); return m ? +m[0] : 30; })();
