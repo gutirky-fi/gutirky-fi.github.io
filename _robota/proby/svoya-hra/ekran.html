@@ -755,7 +755,7 @@ let paintLobby = function () {
   paintVq();
   $('#draw span').textContent = drew && teams[chooser] ? 'Починають: ' + teams[chooser].n : 'Хто починає?';
   $('#modes').innerHTML = Object.entries(MODES).map(([k, [n, d]]) => `<button type="button" data-mode="${k}" aria-pressed="${k === mode}">${n}<small>${d}</small></button>`).join('');
-  if (document.activeElement && document.activeElement.closest('#teams')) return;   // не заважати друкувати назву
+  if (document.activeElement && document.activeElement.matches('#teams input')) return;   // не заважати друкувати назву (лише поле; кнопка ✕ теж буває у фокусі — тоді перемальовуємо)
   const cnt = i => [...players.values()].filter(P => P.team === i).length;
   $('#teams').innerHTML = teams.map((t, i) => `<span class="team" style="--c:${teamColor(i)}"><input data-t="${i}" value="${esc(t.n)}" maxlength="16" aria-label="Назва команди ${i + 1}"><small>${cnt(i) ? '📱 ' + cnt(i) : ''}</small>${teams.length > 2 ? `<button type="button" data-tx="${i}" aria-label="Прибрати команду">✕</button>` : ''}</span>`).join('');
   $('#tadd').disabled = teams.length >= 6;
@@ -808,7 +808,7 @@ document.addEventListener('click', e => {
   if (b.dataset.c != null) { if (!vedOn()) openQ(+b.dataset.c, +b.dataset.r); return; }   /* з пультом — питання вибирає ведучий на телефоні */
   if (b.dataset.pick != null) { buzz('T' + b.dataset.pick); return; }
   if (b.dataset.adj != null) { teams[+b.dataset.adj].s += +b.dataset.d; paintBoard(); bcast(); return; }
-  if (b.dataset.tx != null) { const i = +b.dataset.tx; teams.splice(i, 1); players.forEach(P => { if (P.team === i) P.team = -1; else if (P.team > i) P.team--; }); paintLobby(); bcast(); return; }
+  if (b.dataset.tx != null) { const i = +b.dataset.tx; b.blur(); teams.splice(i, 1); if (chooser === i) { drew = false; chooser = 0; } else if (chooser > i) chooser--;   /* жеребкування стосувалось прибраної команди — скидаємо */ players.forEach(P => { if (P.team === i) P.team = -1; else if (P.team > i) P.team--; }); paintLobby(); bcast(); return; }
   switch (b.id) {
     case 'print': printSheet(); break;
     case 'vedc': $('#vov').hidden = false; $('#local').hidden = false; break;
