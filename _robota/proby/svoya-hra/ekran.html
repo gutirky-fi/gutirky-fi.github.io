@@ -950,6 +950,17 @@ if (V2) {
     /* «Хто починає?» не потрібна, коли є незакінчена гра — її продовжують */
     const rs = document.getElementById('resume'), dr = q('draw'), f = () => { dr.hidden = !rs.hidden; };
     f(); new MutationObserver(f).observe(rs, { attributes: true, attributeFilter: ['hidden'] });
+    /* після жеребкування команди стоять у порядку ходів: хто починає — перший, далі по колу (так само, як гра передає хід) */
+    const pL = paintLobby;
+    paintLobby = function () {
+      pL();
+      const n = teams.length;
+      document.querySelectorAll('#teams .team').forEach((el, i) => {
+        const pos = drew ? (i - chooser + n) % n : i;
+        el.style.order = pos; el.dataset.pos = drew ? pos + 1 : '';
+      });
+      q('teams').classList.toggle('s3ord', drew);
+    };
   }
   $('#turn').dataset.l = 'Відповідає';
 }
