@@ -496,13 +496,24 @@ const strip = h => String(h || '').replace(/<[^>]+>/g, '');
 const titleOf = s => !s ? '' : s.t === 'title' ? 'Титульний слайд' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'gintro' ? 'Гра «' + GN + '»' : s.t === 'q' ? (s.guess ? GN + ' ' + s.guess + ' з ' + GUESS.length : 'Перевірка: ' + s.q) : s.t === 'kintro' ? 'Гра «Потужний СКОБ!»' : s.t === 'end' ? 'Завершення' : strip(s.h);
 const noteFor = s => !s ? '' : s.t === 'q' ? `Правильна відповідь: «${s.a[s.ok]}». ${s.why} Без телефонів — група радиться, хтось один натискає; правильно — далі само.`
   : s.t === 'gintro' ? D.say[D.slides.findIndex(x => x.t === 'guess')] : s.t === 'kintro' ? D.say[D.slides.findIndex(x => x.t === 'gra')] : (s.say || '');
+/* пульт: підказки по кроках, як у «Кераміці України» (3.11.2026): 📺 на екрані · 🗣 скажи · ❓ запитай · ✔ відповідь */
+const plainN = x => strip(x).replace(/\s+/g, ' ').trim();
+const nsFor = s => {
+  if (!s || s.t === 'q' || !s.pts || !s.pts.length) return null;
+  const head = (s.h ? '📺 ' + plainN(s.h) + '\n' : '') + (noteFor(s) ? '🗣 ' + plainN(noteFor(s)) : '');
+  return [[null, head], ...s.pts.map((p, k) => ['пункт ' + (k + 1), '📺 ' + plainN(p)])].concat(s.ask ? [] : []);
+};
+const noteRich = s => !s ? '' : s.t === 'q' ? '❓ ' + plainN(s.q) + '\n✔ ' + plainN(s.a[s.ok]) + (s.why ? '\n• ' + plainN(s.why) : '') + '\n(Без телефонів — група радиться, хтось один натискає; правильно — далі само.)'
+  : s.t === 'kintro' ? '🗣 ' + plainN(noteFor(s)) + '\n✋ Юнаки сканують QR-код і відповідають з телефонів; без телефонів — уголос.'
+  : (s.h && !['title', 'sec', 'end'].includes(s.t) ? '📺 ' + plainN(s.h) + '\n' : '') + (noteFor(s) ? '🗣 ' + plainN(noteFor(s)) : '');
+const ixFor = s => s && s.t === 'kintro' ? { v: 'btns', h: 'Гра «Потужний СКОБ!»', b: [['game', 'Почати гру'], ['lobby', 'Підключити телефони'], ['skip', 'Пропустити гру']] } : null;
 const SECTIONS = SL.map((s, i) => [s, i]).filter(([s]) => ['title', 'sec', 'kintro', 'end'].includes(s.t)).map(([s, i]) => [s.t === 'title' ? 'Початок' : s.t === 'sec' ? 'Вимога ' + s.n : s.t === 'kintro' ? 'Гра' : 'Кінець', i]);
 const gameKey = k => SKOB.key(new KeyboardEvent('keydown', { key: k }));
 const API = { id: D.id, title: D.title,
-  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
+  state: () => ({ mode: 'full', index: idx, total: SL.length, title: titleOf(SL[idx]), next: idx < SL.length - 1 ? titleOf(SL[idx + 1]) : '', note: noteRich(SL[idx]), ns: nsFor(SL[idx]), ix: window.SKOB && SKOB.active() ? undefined : ixFor(SL[idx]), step: Math.min(rev, tot), steps: tot,
     elapsed: T0 ? Math.floor((Date.now() - T0) / 1000) : 0, running: !!T0, target: (parseInt(D.chas) || 45) * 60, sections: SECTIONS }),
   next: () => SKOB.active() ? gameKey('ArrowRight') : adv(1), prev: () => SKOB.active() ? null : adv(-1),
-  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
+  jump: i => { if (!SKOB.active() && i >= 0 && i < SL.length) go(i); }, act: id => { if (SL[idx].t !== 'kintro') return; if (id === 'game') startGame(); else if (id === 'lobby') SKOB.lobby(); else if (id === 'skip') go(idx + 1); }, resetTimer: () => { T0 = idx > 0 ? Date.now() : 0; } };
 const slideEvt = () => document.dispatchEvent(new CustomEvent('gutirka:slide'));
 
 SKOB.on(() => { const n = SKOB.count(); $('#skob-n').textContent = n ? String(n) : ''; });
