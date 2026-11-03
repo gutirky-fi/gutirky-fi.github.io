@@ -505,14 +505,18 @@ body.s3 .s2j .pl{font-size:15px}
 /* жеребкування «Хто починає?» (Змаг): картки команд, як на першому екрані */
 body.s3 .drw.s3d{background:rgba(10,12,15,.86);opacity:1;transition:opacity .3s}
 body.s3 .drw.s3d.out{opacity:0}
-body.s3 .s3dw{width:min(640px,92vw);padding:24px 28px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;text-align:center;transition:border-color .2s,box-shadow .2s}
+body.s3 .s3dw{width:min(680px,94vw);overflow:hidden;padding:24px 28px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;text-align:center;transition:border-color .2s,box-shadow .2s}
 body.s3 .s3dw .lbl{font:700 14px var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-body.s3 .s3dw .tms{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:18px 0 16px}
-body.s3 .s3dw .t{flex:1 1 150px;max-width:190px;height:96px;padding:0 10px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c);display:grid;place-items:center;font:600 clamp(1.4rem,2.6vw,1.9rem)/1.05 var(--disp);text-transform:uppercase;color:var(--c);transition:transform .1s,background .1s,box-shadow .1s,opacity .25s;overflow-wrap:anywhere}
-body.s3 .s3dw .t.on{background:color-mix(in srgb,var(--c) 18%,var(--card));border-color:var(--c);transform:translateY(-3px);box-shadow:0 8px 24px -10px var(--c)}
+body.s3 .s3dw .reel{position:relative;margin:18px -28px 16px;height:118px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+body.s3 .s3dw .strip{position:absolute;left:0;top:11px;display:flex;gap:12px;will-change:transform}
+body.s3 .s3dw .t{flex:none;width:180px;height:96px;padding:0 10px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c);display:grid;place-items:center;font:600 clamp(1.4rem,2.4vw,1.8rem)/1.05 var(--disp);text-transform:uppercase;color:var(--c);overflow-wrap:anywhere;transition:opacity .3s,box-shadow .3s,transform .3s}
+body.s3 .s3dw .mk{position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;border-radius:2px;background:#ffc247;box-shadow:0 0 14px rgba(255,194,71,.7)}
+body.s3 .s3dw .mk::before,body.s3 .s3dw .mk::after{content:"";position:absolute;left:50%;width:0;height:0;border:9px solid transparent;transform:translateX(-50%)}
+body.s3 .s3dw .mk::before{top:0;border-top-color:#ffc247}body.s3 .s3dw .mk::after{bottom:0;border-bottom-color:#ffc247}
 body.s3 .s3dw.won{border-color:#ffc247;box-shadow:0 0 0 4px rgba(255,194,71,.16),0 0 60px -12px rgba(255,194,71,.5)}
 body.s3 .s3dw.won .t{opacity:.35}
-body.s3 .s3dw.won .t.on{opacity:1;transform:scale(1.06);box-shadow:0 0 0 3px #ffc247,0 10px 30px -8px var(--c)}
+body.s3 .s3dw.won .t.on{opacity:1;background:color-mix(in srgb,var(--c) 18%,var(--card));box-shadow:0 0 0 3px #ffc247,0 10px 30px -8px var(--c)}
+body.s3 .s3dw.won .mk{opacity:0;transition:opacity .3s}
 body.s3 .s3dw .res{min-height:26px;font:600 18px var(--txt);color:var(--body)}
 body.s3 .s3dw .res b{display:inline;margin:0;padding:0;border-radius:0;background:none;animation:none;font:600 22px var(--disp);text-transform:uppercase;color:var(--c)}
 body.s3 .drw.s3d:has(.won){cursor:pointer}
@@ -1493,24 +1497,33 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') toBoard();
 });
 setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? left : 'Час!'; e.style.setProperty('--k', left / 30); if (left && left <= 10 && cur.tk !== left) { cur.tk = left; beep(left <= 3 ? 'tick!' : 'tick'); } if (!left && !cur.tbeep) { cur.tbeep = true; beep(SND.time); } }, 250);
-function draw3() {   /* стиль 3: жеребкування картками команд (як на першому екрані), «вогник» перебігає, переможець — золота рамка; потім плавно зникає */
-  const o = $('#drw'), win = Math.floor(Math.random() * teams.length);
-  let k = 0, d = 60, done = false, t = 0;
-  o.innerHTML = `<div class="s3dw"><div class="lbl">Хто починає?</div><div class="tms">${teams.map((T, i) => `<div class="t" style="--c:${teamColor(i)}">${esc(T.n)}</div>`).join('')}</div><div class="res">крутимо…</div></div>`;
-  const tiles = [...o.querySelectorAll('.t')], res = o.querySelector('.res'), box = o.firstElementChild;
+function draw3() {   /* стиль 3: рулетка-стрічка — картки команд їдуть убік і сповільнюються, зупиняються під золотою позначкою */
+  const o = $('#drw'), N = teams.length, win = Math.floor(Math.random() * N), REPS = 14, TARGET = (REPS - 3) * N + win;
+  let done = false, t = 0;
+  const cards = Array.from({ length: REPS * N }, (_, k) => { const i = k % N; return `<div class="t" style="--c:${teamColor(i)}">${esc(teams[i].n)}</div>`; }).join('');
+  o.innerHTML = `<div class="s3dw"><div class="lbl">Хто починає?</div><div class="reel"><div class="strip">${cards}</div><i class="mk" aria-hidden="true"></i></div><div class="res">крутимо…</div></div>`;
+  const box = o.firstElementChild, reel = o.querySelector('.reel'), strip = o.querySelector('.strip'), res = o.querySelector('.res');
   const close = () => { if (o.hidden) return; clearTimeout(t); o.classList.add('out'); setTimeout(() => { o.hidden = true; o.classList.remove('out'); }, 320); };
   o.onclick = () => { if (done) close(); };
   o.hidden = false; o.className = 'drw s3d';
-  const step = () => {
-    const i = k % teams.length; tiles.forEach((e, j) => e.classList.toggle('on', j === i)); k++; beep('wheel');
-    if (d > 380 && i === win) {
-      done = true; beep('tada'); box.classList.add('won'); chooser = win; drew = true;
-      res.innerHTML = `<b style="--c:${teamColor(win)}">${esc(teams[win].n)}</b> вибирають перше питання`;
-      paintLobby(); bcast(); t = setTimeout(close, 2400); return;
-    }
-    d *= 1.12; setTimeout(step, d);
-  };
-  step();
+  const W = strip.children[0].getBoundingClientRect().width, G = parseFloat(getComputedStyle(strip).columnGap) || 12, STEP = W + G;
+  const center = reel.clientWidth / 2, jitter = (Math.random() - .5) * W * .5;
+  const end = center - (TARGET * STEP + W / 2) - jitter;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches, DUR = reduce ? 0 : 4200;
+  strip.style.transform = `translateX(${center - W / 2}px)`; strip.getBoundingClientRect();
+  strip.style.transition = `transform ${DUR}ms cubic-bezier(.1,.7,.15,1)`; strip.style.transform = `translateX(${end}px)`;
+  /* тикання: щоразу, коли під позначку заїжджає нова картка */
+  let last = -1; const tick = () => {
+    if (done || o.hidden) return;
+    const x = new DOMMatrix(getComputedStyle(strip).transform).m41, idx = Math.floor((center - x) / STEP);
+    if (idx !== last) { last = idx; beep('wheel'); }
+    requestAnimationFrame(tick);
+  }; if (!reduce) requestAnimationFrame(tick);
+  setTimeout(() => {
+    done = true; beep('tada'); box.classList.add('won'); strip.children[TARGET].classList.add('on'); chooser = win; drew = true;
+    res.innerHTML = `<b style="--c:${teamColor(win)}">${esc(teams[win].n)}</b> вибирають перше питання`;
+    paintLobby(); bcast(); t = setTimeout(close, 2600);
+  }, DUR + 80);
 }
 function draw() {
   if (document.body.classList.contains('s3')) return draw3();

@@ -50,14 +50,18 @@ body.s3 .s2j .pl{font-size:15px}
 /* жеребкування «Хто починає?» (Змаг): картки команд, як на першому екрані */
 body.s3 .drw.s3d{background:rgba(10,12,15,.86);opacity:1;transition:opacity .3s}
 body.s3 .drw.s3d.out{opacity:0}
-body.s3 .s3dw{width:min(640px,92vw);padding:24px 28px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;text-align:center;transition:border-color .2s,box-shadow .2s}
+body.s3 .s3dw{width:min(680px,94vw);overflow:hidden;padding:24px 28px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;text-align:center;transition:border-color .2s,box-shadow .2s}
 body.s3 .s3dw .lbl{font:700 14px var(--txt);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-body.s3 .s3dw .tms{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:18px 0 16px}
-body.s3 .s3dw .t{flex:1 1 150px;max-width:190px;height:96px;padding:0 10px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c);display:grid;place-items:center;font:600 clamp(1.4rem,2.6vw,1.9rem)/1.05 var(--disp);text-transform:uppercase;color:var(--c);transition:transform .1s,background .1s,box-shadow .1s,opacity .25s;overflow-wrap:anywhere}
-body.s3 .s3dw .t.on{background:color-mix(in srgb,var(--c) 18%,var(--card));border-color:var(--c);transform:translateY(-3px);box-shadow:0 8px 24px -10px var(--c)}
+body.s3 .s3dw .reel{position:relative;margin:18px -28px 16px;height:118px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+body.s3 .s3dw .strip{position:absolute;left:0;top:11px;display:flex;gap:12px;will-change:transform}
+body.s3 .s3dw .t{flex:none;width:180px;height:96px;padding:0 10px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c);display:grid;place-items:center;font:600 clamp(1.4rem,2.4vw,1.8rem)/1.05 var(--disp);text-transform:uppercase;color:var(--c);overflow-wrap:anywhere;transition:opacity .3s,box-shadow .3s,transform .3s}
+body.s3 .s3dw .mk{position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;border-radius:2px;background:#ffc247;box-shadow:0 0 14px rgba(255,194,71,.7)}
+body.s3 .s3dw .mk::before,body.s3 .s3dw .mk::after{content:"";position:absolute;left:50%;width:0;height:0;border:9px solid transparent;transform:translateX(-50%)}
+body.s3 .s3dw .mk::before{top:0;border-top-color:#ffc247}body.s3 .s3dw .mk::after{bottom:0;border-bottom-color:#ffc247}
 body.s3 .s3dw.won{border-color:#ffc247;box-shadow:0 0 0 4px rgba(255,194,71,.16),0 0 60px -12px rgba(255,194,71,.5)}
 body.s3 .s3dw.won .t{opacity:.35}
-body.s3 .s3dw.won .t.on{opacity:1;transform:scale(1.06);box-shadow:0 0 0 3px #ffc247,0 10px 30px -8px var(--c)}
+body.s3 .s3dw.won .t.on{opacity:1;background:color-mix(in srgb,var(--c) 18%,var(--card));box-shadow:0 0 0 3px #ffc247,0 10px 30px -8px var(--c)}
+body.s3 .s3dw.won .mk{opacity:0;transition:opacity .3s}
 body.s3 .s3dw .res{min-height:26px;font:600 18px var(--txt);color:var(--body)}
 body.s3 .s3dw .res b{display:inline;margin:0;padding:0;border-radius:0;background:none;animation:none;font:600 22px var(--disp);text-transform:uppercase;color:var(--c)}
 body.s3 .drw.s3d:has(.won){cursor:pointer}
