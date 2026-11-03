@@ -581,7 +581,7 @@ function saveGame() {
   const c = cur && Object.assign({}, cur, { wrong: [...cur.wrong] });
   try { localStorage.setItem(GS, JSON.stringify({ t: Date.now(), code, vkey, phase, mode, chooser, drew, teams, used: [...used], cur: c, trusted: [...trusted], minus: $('#minus').checked })); } catch (e) { /* ok */ }
 }
-function loadGame() { try { const g = JSON.parse(localStorage.getItem('svoya.game') || 'null'); return g && Date.now() - g.t < 12 * 3600e3 && g.phase !== 'lobby' ? g : null; } catch (e) { return null; } }
+function loadGame() { try { const g = JSON.parse(localStorage.getItem('svoya.game') || 'null'); return g && Date.now() - g.t < 12 * 3600e3 && g.phase !== 'lobby' && g.phase !== 'fin' ? g : null;   /* гру, дійдену до переможців, не пропонуємо продовжити (власник 03.11.2026) */ } catch (e) { return null; } }
 function dropGame() { try { localStorage.removeItem(GS); } catch (e) { /* ok */ } }
 function resumeGame(g) {
   teams = g.teams; used = new Set(g.used); mode = g.mode; chooser = g.chooser; drew = g.drew; $('#minus').checked = g.minus !== false;
