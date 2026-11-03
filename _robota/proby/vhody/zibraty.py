@@ -51,6 +51,7 @@ if len(sys.argv) > 1 and sys.argv[1] == 'sait':
         subprocess.run([sys.executable, str(ROB / 'gutirky' / g / 'zibraty.py'), 'sait', '.'], check=True)
     sys.exit(0)
 import re
+src = re.sub(r'<!--NOIG-->.*?<!--/NOIG-->\n?', '', src, flags=re.S)   # макет: старі плитки замість «Ігор» не потрібні
 IG_F = ROB / 'ihry-vyh' / 'ihry.enc.json'   # «Ігри» виховників — лише зашифровані (див. _robota/ihry-vyh/ihry.py)
 src = re.sub(r'/\*IHRY_VYH\*/.*?/\*/IHRY_VYH\*/', lambda m: json.dumps(json.loads(IG_F.read_text(encoding='utf-8')) if IG_F.exists() else {'v': 1, 'salt': '', 'it': 1, 'ihry': []}, ensure_ascii=False, separators=(',', ':')), src, count=1, flags=re.S)
 out = SITE / 'proba' / 'vhody' / 'index.html'

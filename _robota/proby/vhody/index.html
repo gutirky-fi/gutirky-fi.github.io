@@ -422,7 +422,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 .ig .act a.go{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}
 .ig .act a.go:hover{background:#4cc07d}
 .ig .igph{display:none;flex-basis:100%;text-align:right;color:var(--mut);font-size:13px}
-.ig-own{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ig-own{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
 .ig-own a{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;background:var(--card);border:1px solid var(--ln);text-decoration:none;color:var(--ink);font-weight:700}
 .ig-own a:hover{border-color:#62cf93}
 .ig-own a svg{width:28px;height:28px;flex:none}.ig-own a small{display:block;color:var(--mut);font-weight:600;font-size:13px}
@@ -432,6 +432,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
 .ig-empty{color:var(--mut);margin:0 0 40px}
 @media (max-width:700px){.ig{grid-template-columns:44px 1fr;gap:12px}.ig .lg{width:44px;height:44px}.ig .lg svg{width:26px;height:26px}.ig .act{grid-column:1/-1}.ig .act a.go{flex:1}.ig .igph{display:block;text-align:left}.ig-own{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.vtabs.v3{grid-template-columns:repeat(3,1fr)}.vtabs.v3 button{padding:0 6px}}
+.tiles.gm .tile b{display:flex;align-items:center;gap:10px}.tiles.gm .tile b svg{width:28px;height:28px;flex:none}
 /*/IG*/
 </style>
 </head>
@@ -484,8 +485,9 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
       <p class="hand">юнацтву, новацтву, виховникам і гостям</p>
     </section>
     <section class="sec" aria-labelledby="h-games">
-      <h2 id="h-games">Ігри<small>для сходин, ватри й таборів</small></h2>
-      <div class="tiles"><a class="tile" href="bingo/" style="--a:#ffc247;--ab:#ffc247"><b>Пластове бінго</b><span>Ведучий тягне кульки на великому екрані, гравці — з телефонів або паперових карток. Числа або слова з гутірки.</span><span class="go">Грати</span></a></div>
+      <h2 id="h-games">Ігри<small>для сходин, ватри й таборів<!--IG--> — грати або скласти свою<!--/IG--></small></h2>
+      <!--NOIG--><div class="tiles"><a class="tile" href="bingo/" style="--a:#ffc247;--ab:#ffc247"><b>Пластове бінго</b><span>Ведучий тягне кульки на великому екрані, гравці — з телефонів або паперових карток. Числа або слова з гутірки.</span><span class="go">Грати</span></a></div><!--/NOIG-->
+      <!--IG--><div class="tiles gm"><a class="tile" href="../svoya-hra/?dyz=3" style="--a:#ffc247;--ab:#ffc247"><b><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg>Інтелектуальний змаг</b><span>Табло з темами й балами, команди відповідають з телефонів. Свої питання — або приклад.</span><span class="go">Грати</span></a><a class="tile" href="../bingo/?dyz=3" style="--a:#ffc247;--ab:#ffc247"><b><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>Пластове бінго</b><span>Ведучий тягне кульки на великому екрані, гравці — з телефонів або паперових карток. Числа або слова з гутірки.</span><span class="go">Грати</span></a><a class="tile" href="../skob-hra/?dyz=3" style="--a:#ffc247;--ab:#ffc247"><b><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>Потужний СКОБ!</b><span>Вікторина: питання на екрані, відповіді з телефонів. Склади свою — або візьми готову з гутірки.</span><span class="go">Грати</span></a></div><!--/IG-->
     </section>
     <section class="sec" aria-labelledby="h-tips">
       <h2 id="h-tips">Швидкі підказки<small>натисни — і бачиш, як робити</small></h2>
@@ -580,7 +582,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
       <!--IG--><section class="sec" id="p-i" role="tabpanel" aria-labelledby="t-i" hidden>
         <h2 id="h-i">Ігри<small>підготовлені для вашого гуртка — відкриваються одразу з питаннями</small></h2>
         <div id="ig-box"></div>
-        <h2>Скласти свою гру<small>з нуля, своїми питаннями — це бачать і юнаки</small></h2>
+        <h2>Для виховника<small>інструменти, не гра</small></h2>
         <div class="ig-own" id="ig-own"></div>
       </section><!--/IG-->
       <section class="sec" aria-labelledby="h-also">
@@ -1003,7 +1005,7 @@ const IG_IC = {
   opyt: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg>',
   skob: '<svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>'
 };
-const IG_OWN = [['zmag', '../svoya-hra/?dyz=3', 'Змаг', 'свої теми й питання'], ['bingo', '../bingo/?dyz=3', 'Бінго', 'числа або слова'], ['opyt', '../opytuvannia/?dyz=3', 'Опитування', 'питання до гуртка'], ['skob', '../skob-hra/?dyz=3', 'Потужний СКОБ!', 'є в кожній гутірці']];
+const IG_OWN = [['opyt', '../opytuvannia/?dyz=3', 'Швидке опитування', 'питання до гуртка — відповіді анонімно з телефонів']];   /* порожні ігри (Змаг, Бінго, СКОБ) — у «Для всіх → Ігри» */
 const PLAY = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 5v14l12-7z"/></svg>';
 let IG = null;   // розшифровані ігри
 const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
@@ -1015,7 +1017,7 @@ async function igOpen(kod) {
 async function renderIhry() {
   const box = $('#ig-box');
   $('#ig-own').innerHTML = IG_OWN.map(([g, u, n, d]) => `<a href="${u}">${IG_IC[g]}<span>${esc(n)}<small>${esc(d)}</small></span></a>`).join('');
-  if (!IHRY.ihry.length) { box.innerHTML = '<p class="ig-empty">Поки що підготовлених ігор немає.</p>'; return; }
+  if (!IHRY.ihry.length) { box.innerHTML = '<p class="ig-empty">Поки що підготовлених ігор немає. Порожні ігри — у <a href="#vsi">«Для всіх» → «Ігри»</a>.</p>'; return; }
   if (!IG) {
     const kod = store.get(K_KOD);
     if (kod) { box.innerHTML = '<p class="ig-empty">Відкриваємо ігри…</p>'; try { IG = await igOpen(String(kod)); } catch (e) { IG = null; } }
