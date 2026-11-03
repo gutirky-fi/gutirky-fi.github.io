@@ -10,6 +10,7 @@ for src, out in [('ekran.html', 'proba/bingo/index.html'), ('gravets.html', 'pro
     import re
     if out.startswith('proba/'):   # «родина ігор» (?dyz=fam) — лише в пробі
         s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-rodyna.css'), encoding='utf8').read() + '\n' + open(os.path.join(ROB, 'src', 'ihry-styl2.css'), encoding='utf8').read() + '\n</style>\n</head>', 1)
+        if src == 'gravets.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'ihry-tel3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # телефон, стиль 3
         if src == 'ekran.html': s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.css'), encoding='utf8').read() + '\n</style>\n<script>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # стиль 3 (?dyz=3)
         import base64; s = s.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'logo.png'), 'rb').read()).decode())
     else:

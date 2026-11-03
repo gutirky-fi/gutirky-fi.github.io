@@ -322,7 +322,7 @@ let paintTop = function () {
   if (phase === 'run') paintRun();
 };
 function paintLobby() {
-  const url = PURL + '?k=' + code + ((location.search.match(/dyz=(fam|2)/) || [''])[0] ? '&' + location.search.match(/dyz=(fam|2)/)[0] : '');
+  const url = PURL + '?k=' + code + ((location.search.match(/dyz=(fam|2|3)/) || [''])[0] ? '&' + location.search.match(/dyz=(fam|2|3)/)[0] : '');
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, { eye: '#ffc247' }); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
@@ -456,7 +456,7 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
   const j = el('aside', 's2j', '<h2>Учасникам</h2><p>Скануйте QR-код — і відповідайте. Анонімно.</p>');
   j.append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'));
   const L = el('div', 'l2'); L.append(m, j); lb.replaceWith(L);
-  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'opyt', m, x: null, knopky: { start: 'play', edit: 'edit', new: 'plus' } });   /* стиль 3 */
+  if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'opyt', m, x: null, knopky: { start: 'play', edit: 'edit', new: 'plus' }, strilky: ['prev', 'next'] });   /* стиль 3 */
 }
 /*/FAM*/
 paintLobby(); paintTop(); startNet();

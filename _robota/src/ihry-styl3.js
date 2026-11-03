@@ -20,6 +20,9 @@ window.IHRY_S3 = function (o) {
   const home = document.getElementById('home'); if (home && !home.querySelector('i')) home.innerHTML = ic('back');
   /* картка QR: «або відкрийте адресу й введіть код» — під кодом, як у Змагу */
   const jc = document.querySelector('.s2j'); if (jc) { const l = [...jc.querySelectorAll('.s2l')].find(e => /відкрийте/.test(e.textContent)), cd = jc.querySelector('.code'); if (l && cd) cd.after(l); }
+  /* стрілки «→ ←» з підписів кнопок прибираємо (кнопки й так кажуть, що станеться) */
+  const tidy = b => { if (!b) return; const f = () => { [...b.childNodes].forEach(c => { if (c.nodeType === 3 && /[→←]/.test(c.textContent)) c.textContent = c.textContent.replace(/\s*[→←]\s*/g, ' ').trim(); }); }; f(); new MutationObserver(f).observe(b, { childList: true, characterData: true, subtree: true }); };
+  (o.strilky || []).forEach(id => tidy(document.getElementById(id)));
   /* «Ведучому» в шапці: відкриває вікно з інструментами */
   if (o.x) {
     const ov = document.createElement('div'); ov.className = 's3o'; ov.hidden = true;
@@ -29,6 +32,9 @@ window.IHRY_S3 = function (o) {
     const btn = document.createElement('button'); btn.type = 'button'; btn.className = 's3v'; btn.innerHTML = ic('gear') + 'Ведучому';
     const top = document.querySelector('.top'); const snd = document.getElementById('snd'); if (snd) snd.after(btn); else top.append(btn);
     btn.addEventListener('click', () => { ov.hidden = false; });
+    /* Змаг: окрема мітка «Ведучий» у шапці зайва — її роль тепер у «Ведучому»; галочка «пульт підключено» переходить сюди */
+    const vc = document.getElementById('vedc');
+    if (vc) { const sync = () => { const ok = /✓/.test(vc.textContent); btn.lastChild.textContent = ok ? 'Ведучому ✓' : 'Ведучому'; }; sync(); new MutationObserver(sync).observe(vc, { childList: true, characterData: true, subtree: true }); }
     ov.querySelector('.x').addEventListener('click', () => { ov.hidden = true; });
     ov.addEventListener('click', e => { if (e.target === ov) ov.hidden = true; });
     document.addEventListener('keydown', e => { if (e.key === 'Escape') ov.hidden = true; });

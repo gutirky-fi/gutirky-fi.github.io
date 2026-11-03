@@ -4,69 +4,74 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#15171b">
+<meta name="theme-color" content="#1b1d21">
 <title>Ігри для сходин — проба</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&family=Caveat:wght@500&display=swap">
-<!-- Проба «родини ігор»: усі ігри в одному стилі (як «Потужний СКОБ!»). Джерело: _robota/proby/ihry/ (zibraty.py). -->
+<!-- Проба: усі ігри за дизайн-системою «Ігри Пласту» (стиль 3, ?dyz=3). Джерело: _robota/proby/ihry/ (zibraty.py). -->
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%}
-body{font:18px/1.45 var(--txt);min-height:100vh}
-a{color:inherit}
-.in{width:min(1120px,100%);margin:0 auto;padding:22px max(16px,3vw) 40px}
-.top{display:flex;align-items:center;gap:10px}
-.top .sp{flex:1}
-.chip{display:inline-flex;align-items:center;text-decoration:none}
-.hd{text-align:center;margin:26px 0 30px}
-.hd h1{margin:0;font:600 clamp(2.4rem,6vw,4.4rem)/1 var(--disp);letter-spacing:.04em;text-transform:uppercase}
-.hd .fm-hand{margin:8px 0 0}
-.hd p.d{margin:12px auto 0;max-width:58ch;color:#cfd5dc}
-.g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.c{display:flex;flex-direction:column;gap:14px;padding:26px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;text-decoration:none;transition:border-color .15s,transform .15s}
-.c:hover{border-color:#ffc247;transform:translateY(-2px)}
-.c:focus-visible{outline:3px solid #ffc247;outline-offset:3px}
-.c .fm-logo{font-size:clamp(38px,4.6vw,54px);min-height:1.5em;justify-content:flex-end}
-.c p{margin:0;color:#cfd5dc}
-.c .who{margin-top:auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#a0a8b2;font-size:15px}
-.c .who .btn{pointer-events:none}
-.new{display:inline-block;margin-left:8px;padding:2px 10px;border-radius:99px;background:#2fd2c0;color:#06201d;font:700 12px var(--txt);vertical-align:middle;letter-spacing:.04em}
-.note{margin:28px auto 0;max-width:70ch;padding:16px 20px;border-radius:18px;background:rgba(34,38,43,.7);color:#cfd5dc;font-size:16px}
-.note b{color:#fff}
-@media (max-width:760px){.g{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.c{transition:none}.c:hover{transform:none}}
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--pad:max(24px,calc(50vw - 620px));color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.45 var(--txt);min-height:100vh}
+.top{display:flex;align-items:center;gap:12px;padding:12px var(--pad);border-bottom:1px solid var(--ln)}
+.top a.b{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:99px;border:1px solid var(--ln);color:var(--ink)}
+.top a.b:hover{border-color:var(--gd)}.top img{height:38px;display:block}.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;height:38px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);font:600 14px var(--txt)}
+main{padding:34px var(--pad) 48px}
+h1{margin:0;font:600 clamp(2.4rem,5vw,3.8rem)/1 var(--disp);text-transform:uppercase;letter-spacing:.01em}
+.hand{margin:10px 0 0;font:500 30px/1.1 Caveat,cursive;color:var(--hand)}
+.lede{margin:12px 0 0;max-width:62ch;color:var(--body)}
+h2{margin:36px 0 14px;font:700 14px var(--txt);color:var(--mut)}
+.g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.g.one{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c{display:flex;flex-direction:column;gap:14px;padding:22px 22px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);color:inherit;text-decoration:none;transition:border-color .15s}
+.c:hover{border-color:var(--gd)}.c:focus-visible{outline:3px solid var(--gd);outline-offset:3px}
+.lg{display:flex;flex-direction:column;align-items:flex-start}
+.lg small{font:600 13px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 9px 1px}
+.lg .w{display:flex;align-items:center;gap:12px}.lg svg{width:40px;height:40px;flex:none}
+.lg b{font:600 46px/.8 var(--disp);text-transform:uppercase;padding-top:2px}
+.c p{margin:0;color:var(--body);font-size:16px}
+.who{margin-top:auto;color:var(--mut);font-size:14px}
+.note{margin:34px 0 0;max-width:72ch;color:var(--mut);font-size:15px}
+.note b{color:var(--ink)}
+@media (max-width:980px){.g,.g.one{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.g,.g.one{grid-template-columns:1fr}.lg b{font-size:38px}.chip{display:none}}
+@media (prefers-reduced-motion:reduce){.c{transition:none}}
 </style>
 </head>
-<body class="fam">
-<div class="in">
-  <div class="top"><a class="chip" href="../../" aria-label="На головну сайту">← Сайт</a><span class="sp"></span><span class="chip">проба · не на сайті</span></div>
-  <header class="hd">
-    <h1>Ігри для сходин</h1>
-    <p class="d">Екран гри — на ноутбуці чи проекторі, юнаки грають з телефонів (QR-код). Відкрийте будь-яку й поклацайте.</p>
-  </header>
+<body>
+<div class="top"><a class="b" href="../../" aria-label="На головну сайту"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a><img src="{{LOGO}}" alt="Пласт"><span class="sp"></span><span class="chip">проба · ще не на сайті</span></div>
+<main>
+  <h1>Ігри для сходин</h1>
+  <p class="hand">екран на проекторі — гра з телефонів</p>
+  <p class="lede">Відкрийте гру на ноутбуці чи проекторі. Юнаки сканують QR-код і грають з телефонів. Можна й без телефонів — усе клацається з екрана.</p>
+  <h2>Ігри</h2>
   <div class="g">
-    <a class="c" href="../skob-hra/">
-      <span class="fm-logo" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="fm-lt"><i class="c0">С</i><i class="c1">К</i><i class="c2">О</i><i class="c3">Б</i><b>!</b></span></span>
-      <p>Вікторина на швидкість: питання на екрані, кожен відповідає зі свого телефона. Бали за правильність і швидкість.</p>
-      <div class="who"><span class="btn main">Відкрити</span>зразок стилю — вже знайома</div>
+    <a class="c" href="../skob-hra/?dyz=3">
+      <span class="lg" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>
+      <p>Вікторина на швидкість: кожен відповідає зі свого телефона. Свої запитання складаєте самі.</p>
+      <span class="who">кожен сам · бали за швидкість</span>
     </a>
     <a class="c" href="../svoya-hra/?dyz=3">
-      <span class="fm-logo board" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small><span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span></span>
-      <p>Табло з темами й балами. Команди по черзі вибирають питання, капітан відповідає. Є підказка «Варіанти» і пʼєдестал наприкінці.</p>
-      <div class="who"><span class="btn main">Відкрити</span>команди · капітани з телефонами</div>
+      <span class="lg" aria-label="Інтелектуальний Змаг"><small>Інтелектуальний</small><span class="w"><svg viewBox="0 0 40 40"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg><b>Змаг</b></span></span>
+      <p>Табло з темами й балами. Команди по черзі вибирають питання, капітан відповідає.</p>
+      <span class="who">команди · капітани з телефонами</span>
     </a>
     <a class="c" href="../bingo/?dyz=3">
-      <span class="fm-logo balls" aria-label="Пластове бінго"><small>Пластове</small><span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span></span>
-      <p>Ведучий тягне кульки, гравці закривають клітинки — на телефоні або на паперовій картці. Пʼять варіантів, від «Швидкого» для менших до «Кераміки України».</p>
-      <div class="who"><span class="btn main">Відкрити</span>кожен сам · телефон або папір</div>
-    </a>
-    <a class="c" href="../opytuvannia/?dyz=3">
-      <span class="fm-logo stovp" aria-label="Швидке опитування"><small>Швидке</small><span class="fm-lt"><i style="height:.5em;background:#2fd2c0"></i><i style="height:.95em;background:#ffc247"></i><i style="height:.7em;background:#cfd5dc"></i><span>Опитування</span></span></span>
-      <p>Анонімне опитування: як пройшли сходини, куди йдемо в мандрівку, яку гру граємо. Результати зʼявляються стовпчиками наживо.</p>
-      <div class="who"><span class="btn main">Відкрити</span>анонімно · без імен</div>
+      <span class="lg" aria-label="Пластове Бінго"><small>Пластове</small><span class="w"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg><b>Бінго</b></span></span>
+      <p>Ведучий тягне кульки, гравці закривають клітинки — на телефоні або на паперовій картці.</p>
+      <span class="who">кожен сам · телефон або папір</span>
     </a>
   </div>
-  <p class="note"><b>Як спробувати самому:</b> відкрийте гру на компʼютері, натисніть «Запросити гравців» і відскануйте QR-код телефоном. Можна грати й без телефонів — усе клацається з екрана.</p>
-</div>
+  <h2>Для виховника</h2>
+  <div class="g one">
+    <a class="c" href="../opytuvannia/?dyz=3">
+      <span class="lg" aria-label="Швидке Опитування"><small>Швидке</small><span class="w"><svg viewBox="0 0 40 40"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg><b>Опитування</b></span></span>
+      <p>Анонімне опитування: як пройшли сходини, куди йдемо в мандрівку. Результати стовпчиками наживо.</p>
+      <span class="who">анонімно · без імен</span>
+    </a>
+  </div>
+  <p class="note"><b>Як спробувати самому:</b> відкрийте гру на компʼютері й відскануйте QR-код телефоном. Якщо бачите старий вигляд — натисніть Ctrl+Shift+R.</p>
+</main>
 </body>
 </html>

@@ -101,6 +101,7 @@ body.fam .skob{background:linear-gradient(180deg,rgba(21,23,27,0),#15171b 35%)}
 <script>
 (function () {
 'use strict';
+/*FAM*/if (window.IHRY_TEL3) IHRY_TEL3('bingo');/*/FAM*/
 /*FAM*/
 const FAM = /dyz=(fam|2)/.test(location.search);
 if (FAM) {   /* родина ігор: кнопка «БІНГО!», логотип-кульки */
@@ -111,7 +112,8 @@ if (FAM) {   /* родина ігор: кнопка «БІНГО!», логот�
   document.getElementById('skob').textContent = 'БІНГО!';
 }
 /*/FAM*/
-const SKOB = typeof FAM !== 'undefined' && FAM ? 'БІНГО' : 'СКОБ';
+const SKOB = /dyz=(fam|2|3)/.test(location.search) ? 'БІНГО' : 'СКОБ';
+if (SKOB === 'БІНГО') document.getElementById('skob').textContent = 'БІНГО!';
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const KEY = 'bingo.ses', COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];

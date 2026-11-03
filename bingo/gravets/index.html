@@ -296,7 +296,9 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 (function () {
 'use strict';
 
-const SKOB = typeof FAM !== 'undefined' && FAM ? 'БІНГО' : 'СКОБ';
+
+const SKOB = /dyz=(fam|2|3)/.test(location.search) ? 'БІНГО' : 'СКОБ';
+if (SKOB === 'БІНГО') document.getElementById('skob').textContent = 'БІНГО!';
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const KEY = 'bingo.ses', COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];

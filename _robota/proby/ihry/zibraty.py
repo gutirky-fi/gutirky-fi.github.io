@@ -3,6 +3,7 @@ import os
 H = os.path.dirname(os.path.abspath(__file__)); ROB = os.path.dirname(os.path.dirname(H)); ROOT = os.path.dirname(ROB)
 s = open(os.path.join(H, 'index.html'), encoding='utf8').read()
 s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-rodyna.css'), encoding='utf8').read() + '\n</style>\n</head>', 1)
-assert 'noindex' in s
+import base64; s = s.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'logo.png'), 'rb').read()).decode())
+assert 'noindex' in s and '{{LOGO}}' not in s
 p = os.path.join(ROOT, 'proba', 'ihry', 'index.html'); os.makedirs(os.path.dirname(p), exist_ok=True)
 open(p, 'w', encoding='utf8').write(s); print('proba/ihry/index.html', len(s))
