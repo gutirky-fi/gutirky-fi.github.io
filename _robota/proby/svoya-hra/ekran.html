@@ -843,17 +843,20 @@ document.addEventListener('keydown', e => {
   else if (e.key === 'Backspace') toBoard();
 });
 setInterval(() => { const e = $('#tm'); if (phase !== 'q' || !deadline || !cur || cur.done) { e.textContent = ''; return; } const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000)); e.className = 'tm' + (left <= 5 ? ' low' : ''); e.textContent = left ? left : 'Час!'; e.style.setProperty('--k', left / 30); if (left && left <= 10 && cur.tk !== left) { cur.tk = left; beep(left <= 3 ? 'tick!' : 'tick'); } if (!left && !cur.tbeep) { cur.tbeep = true; beep(SND.time); } }, 250);
-function draw3() {   /* стиль 3: спокійне жеребкування — картка посередині, кольори команд, після результату тихо зникає (або клік) */
-  const o = $('#drw'), n = $('#drn'), sm = $('#drs'), win = Math.floor(Math.random() * teams.length);
+function draw3() {   /* стиль 3: жеребкування картками команд (як на першому екрані), «вогник» перебігає, переможець — золота рамка; потім плавно зникає */
+  const o = $('#drw'), win = Math.floor(Math.random() * teams.length);
   let k = 0, d = 60, done = false, t = 0;
+  o.innerHTML = `<div class="s3dw"><div class="lbl">Хто починає?</div><div class="tms">${teams.map((T, i) => `<div class="t" style="--c:${teamColor(i)}">${esc(T.n)}</div>`).join('')}</div><div class="res">крутимо…</div></div>`;
+  const tiles = [...o.querySelectorAll('.t')], res = o.querySelector('.res'), box = o.firstElementChild;
   const close = () => { if (o.hidden) return; clearTimeout(t); o.classList.add('out'); setTimeout(() => { o.hidden = true; o.classList.remove('out'); }, 320); };
   o.onclick = () => { if (done) close(); };
-  o.hidden = false; o.className = 'drw s3d'; sm.textContent = 'крутимо…';
+  o.hidden = false; o.className = 'drw s3d';
   const step = () => {
-    const i = k % teams.length; n.textContent = teams[i].n; n.style.background = teamColor(i); k++; beep('wheel');
+    const i = k % teams.length; tiles.forEach((e, j) => e.classList.toggle('on', j === i)); k++; beep('wheel');
     if (d > 380 && i === win) {
-      done = true; beep('tada'); o.classList.add('won'); chooser = win; drew = true; sm.textContent = 'вибирає перше питання';
-      paintLobby(); bcast(); t = setTimeout(close, 2200); return;
+      done = true; beep('tada'); box.classList.add('won'); chooser = win; drew = true;
+      res.innerHTML = `<b style="--c:${teamColor(win)}">${esc(teams[win].n)}</b> вибирають перше питання`;
+      paintLobby(); bcast(); t = setTimeout(close, 2400); return;
     }
     d *= 1.12; setTimeout(step, d);
   };
