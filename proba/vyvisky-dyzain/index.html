@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Від знаку до вивіски — проба дизайну</title>
+<style>
+@font-face{font-family:Wix;src:url(wix.ttf);font-weight:400 800;font-display:block}
+@font-face{font-family:Golos;src:url(golos.ttf);font-weight:400 900;font-display:block}
+:root{--pap:#f3ede2;--warm:#ffd79a}
+*{margin:0;box-sizing:border-box}
+html,body{height:100%;background:#07080b;color:var(--pap);font-family:Golos,system-ui,sans-serif;overflow:hidden}
+.sl{position:fixed;inset:0;opacity:0;visibility:hidden;transition:opacity .9s ease,visibility 0s .9s}
+.sl.on{opacity:1;visibility:visible;transition:opacity .9s ease}
+.bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.sl.on .bg{animation:kb 14s ease-out both}
+@keyframes kb{from{transform:scale(1.08)}to{transform:scale(1)}}
+.shade{position:absolute;inset:0}
+.grain{position:absolute;inset:0;pointer-events:none;opacity:.16;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E")}
+.top{position:absolute;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);top:clamp(18px,4.5vh,44px);display:flex;justify-content:space-between;font:500 clamp(11px,1.05vw,15px)/1.2 Golos;opacity:.75}
+.rv{opacity:0;transform:translateY(24px)}
+.sl.on .rv{animation:up .9s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(var(--d,0) * 1s + .5s)}
+@keyframes up{to{opacity:1;transform:none}}
+
+/* 1 — титул: знак «вмикається» */
+#s1 .bg{background-image:url(a.jpg);background-size:auto 108%;background-repeat:no-repeat;background-position:calc(100% + 18vw) 40%;-webkit-mask-image:linear-gradient(90deg,transparent 24%,#000 46%);mask-image:linear-gradient(90deg,transparent 24%,#000 46%)}
+#s1.on .bg{animation:kb 14s ease-out both,power 2.6s steps(1,end) .2s both}
+@keyframes power{0%{filter:brightness(.18) contrast(1.1)}18%{filter:brightness(.6)}22%{filter:brightness(.22)}34%{filter:brightness(.85)}38%{filter:brightness(.4)}50%,100%{filter:brightness(1) contrast(1.05)}}
+#s1 .shade{background:linear-gradient(90deg,rgba(7,8,11,.94) 0%,rgba(7,8,11,.82) 34%,rgba(7,8,11,.25) 62%,rgba(7,8,11,0) 80%),linear-gradient(0deg,rgba(7,8,11,.6),transparent 40%)}
+#s1 .tx{position:absolute;left:clamp(20px,5vw,72px);bottom:clamp(40px,12vh,110px);max-width:min(640px,88vw)}
+#s1 h1{font:800 clamp(52px,8.6vw,124px)/.95 Wix;letter-spacing:-.035em}
+#s1 p{margin-top:clamp(16px,3vh,28px);font:400 clamp(16px,1.55vw,22px)/1.5 Golos;max-width:440px;opacity:.88}
+.glow{position:absolute;inset:0;pointer-events:none;background:radial-gradient(40% 55% at 72% 45%,rgba(255,200,120,.16),transparent 70%);mix-blend-mode:screen}
+
+/* 2 — розділ: макро лампочки на весь екран */
+#s2 .bg{background-image:url(a-lampa.jpg);filter:blur(1.5px) brightness(.85)}
+#s2 .shade{background:radial-gradient(70% 90% at 50% 50%,transparent 20%,rgba(7,8,11,.8)),linear-gradient(0deg,rgba(7,8,11,.85),transparent 55%)}
+#s2 .tx{position:absolute;left:clamp(20px,5vw,72px);right:clamp(20px,5vw,72px);bottom:clamp(40px,10vh,96px);display:flex;align-items:flex-end;gap:clamp(18px,3vw,44px)}
+#s2 .n{font:800 clamp(110px,19vw,260px)/.78 Wix;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px var(--pap)}
+#s2 h2{font:800 clamp(40px,6.2vw,88px)/.98 Wix;letter-spacing:-.03em}
+#s2 small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.75;margin-bottom:12px}
+
+/* 3 — думка: велике речення поверх розмитого фото */
+#s3 .bg{background-image:url(a.jpg);filter:blur(26px) brightness(.3);transform:scale(1.15)}
+#s3.on .bg{animation:none}
+#s3 .shade{background:radial-gradient(55% 65% at 50% 48%,rgba(255,186,100,.22),transparent 72%)}
+#s3 .tx{position:absolute;inset:0;display:grid;place-content:center;text-align:center;padding:0 6vw}
+#s3 q{display:block;quotes:none;font:700 clamp(36px,5.6vw,80px)/1.08 Wix;letter-spacing:-.025em;max-width:16ch;margin:0 auto;text-wrap:balance}
+#s3 p{margin-top:28px;font:400 clamp(15px,1.4vw,20px)/1.5 Golos;opacity:.75}
+
+.nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;z-index:5}
+.nav i{width:28px;height:3px;border-radius:2px;background:rgba(243,237,226,.25)}.nav i.on{background:var(--pap)}
+.hint{position:fixed;right:20px;bottom:12px;font:500 12px Golos;opacity:.45;z-index:5}
+@media (prefers-reduced-motion:reduce){.sl,.sl.on{transition:none}.sl.on .bg,#s1.on .bg{animation:none}.rv,.sl.on .rv{animation:none;opacity:1;transform:none}}
+@media (max-aspect-ratio:1/1){#s1 .bg{background-size:cover;background-position:62% 50%;-webkit-mask-image:none;mask-image:none}#s1 .shade{background:linear-gradient(0deg,rgba(7,8,11,.95) 0%,rgba(7,8,11,.75) 45%,rgba(7,8,11,.1) 75%)}}
+</style></head><body>
+
+<section class="sl on" id="s1"><div class="bg"></div><div class="glow"></div><div class="shade"></div><div class="grain"></div>
+  <div class="top rv" style="--d:1.4"><span>Пласт у Фінляндії</span><span>Гутірка для юнацтва · 12–17 років</span></div>
+  <div class="tx"><h1 class="rv" style="--d:1.6">Від знаку<br>до вивіски</h1><p class="rv" style="--d:1.9">Як простий малюнок стає знаком, а знак — вивіскою, що світиться на стіні.</p></div></section>
+
+<section class="sl" id="s2"><div class="bg"></div><div class="shade"></div><div class="grain"></div>
+  <div class="top rv"><span>Від знаку до вивіски</span><span>Частина 4 з 5</span></div>
+  <div class="tx"><div class="n rv" style="--d:.1">04</div><div><small class="rv" style="--d:.3">Частина четверта</small><h2 class="rv" style="--d:.4">Як вивіска<br>починає світитися</h2></div></div></section>
+
+<section class="sl" id="s3"><div class="bg"></div><div class="shade"></div><div class="grain"></div>
+  <div class="top rv"><span>Від знаку до вивіски</span><span>Частина 2 · Хороший знак</span></div>
+  <div class="tx"><q class="rv" style="--d:.1">Хороший знак упізнають за секунду — навіть здалеку.</q><p class="rv" style="--d:.4">Тому в ньому мало деталей і великі прості форми.</p></div></section>
+
+<div class="nav"><i class="on"></i><i></i><i></i></div><div class="hint">← → або дотик</div>
+<script>
+(() => {
+  const S = [...document.querySelectorAll('.sl')], N = [...document.querySelectorAll('.nav i')]; let i = 0;
+  const go = k => { k = Math.max(0, Math.min(S.length - 1, k)); if (k === i) return; S[i].classList.remove('on'); N[i].classList.remove('on'); i = k; void S[i].offsetWidth; S[i].classList.add('on'); N[i].classList.add('on'); };
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(i + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(i - 1); });
+  addEventListener('click', e => go(e.clientX > innerWidth / 3 ? i + 1 : i - 1));
+  const k = +new URLSearchParams(location.search).get('s'); if (k) { S[0].classList.remove('on'); N[0].classList.remove('on'); i = k - 1; S[i].classList.add('on'); N[i].classList.add('on'); }
+})();
+</script>
+</body></html>
