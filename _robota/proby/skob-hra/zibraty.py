@@ -22,7 +22,7 @@ def page(skob_rel):
                       ('<script src="pryklad.js"></script>', (TUT / 'pryklad.js').read_text(encoding='utf-8'))]:
         src = rep(src, tag, inl(text))
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
-    pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
+    pre = "window.SKOB_URL = " + "(location.hostname === 'gutirky-fi.github.io' ? (location.pathname.startsWith('/proba/') ? 'https://gutirky-fi.github.io/proba/skob/' : 'https://gutirky-fi.github.io/skob/') : " + "new URL(" + json.dumps(skob_rel) + ", location.href).href);"   # проба → пробна сторінка гравця (4.11.2026)
     import base64; pre += " window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "'; window.SKOB_LILY = 'data:image/webp;base64," + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode() + "';"   # емблема для шапки стилю 3 (?dyz=3)
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
     import sys; sys.path.insert(0, str(D)); import pult_ihry; src = pult_ihry.inject(src)   # пульт ведучого (4.11.2026)
