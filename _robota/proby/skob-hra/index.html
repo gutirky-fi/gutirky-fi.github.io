@@ -76,6 +76,12 @@ code{font:14px/1.4 var(--mono);background:#0f1114;padding:2px 6px;border-radius:
 /* редактор */
 .ebar{display:flex;align-items:center;gap:8px;padding-top:12px}
 .ebar .sk-logo{font-size:30px}.ebar .sk-logo small{display:none}
+.sk3l{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1}
+.sk3l small{font:600 18px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 12px 2px}
+.sk3l .w{display:flex;align-items:center;gap:.24em;font-size:clamp(64px,10vw,92px)}
+.sk3l svg{width:.78em;height:.78em;flex:none}
+.sk3l b{font:600 1em/.8 var(--disp);text-transform:uppercase;color:#f2f4f6;padding-top:.04em}
+.ebar .sk3l .w{font-size:30px}.ebar .sk3l small{display:none}
 .edit{padding-bottom:130px}
 .gtitle{display:block;width:100%;margin:14px 0 6px;padding:8px 2px;border:0;border-bottom:2px solid var(--ln);border-radius:0;background:none;font:600 clamp(28px,5.4vw,42px)/1.15 var(--disp);letter-spacing:.01em}
 .gtitle:focus{outline:none;border-color:var(--gd)}
@@ -209,7 +215,10 @@ const LET = ['С', 'К', 'О', 'Б'], TIMES = [10, 20, 30, 60], KEY = 'skob-hra:
 const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };
 const nQ = n => n + ' ' + plural(n, 'запитання', 'запитання', 'запитань');
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-const LOGO = cls => `<span class="sk-logo ${cls || ''}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
+const LOGO_OLD = cls => `<span class="sk-logo ${cls || ''}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
+/* стиль 3 (4.11.2026, власник: логотип скрізь «значок + назва», як у Змагу й Бінго; плитки з буквами — лише в старому вигляді) */
+const S3L = /[?&]dyz=3(&|$)/.test(location.search);
+const LOGO = cls => !S3L ? LOGO_OLD(cls) : `<span class="sk3l ${cls || ''}" role="img" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>`;
 const MINI = '<span class="mini" aria-hidden="true"><i class="c0"></i><i class="c1"></i><i class="c2"></i><i class="c3"></i></span>';
 const IC = {
   up: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5"/></svg>',
