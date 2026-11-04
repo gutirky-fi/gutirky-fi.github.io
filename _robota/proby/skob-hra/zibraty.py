@@ -27,6 +27,7 @@ def page(skob_rel):
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
     src = src.replace('</head>', '<script>\n' + (D / 'repetytsiia.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # «Репетиція» (екран ведучого)
     src = src.replace('</head>', '<script>\n' + (D / 'zvuk-ihor.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # звуки (як у Змагу)
+    src = src.replace('</head>', '<script>\n' + (D / 'jak-provesty.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # «Як провести гру»
     import sys; sys.path.insert(0, str(D)); import pult_ihry; src = pult_ihry.inject(src)   # пульт ведучого (4.11.2026)
     assert 'noindex' in src and 'src="../../' not in src
     return src

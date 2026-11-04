@@ -974,7 +974,8 @@ if (V2) {
   const j = el('aside', 'l2j', '<h2 id="jh">Капітанам</h2><p>Скануйте QR-код телефоном</p>'); j.append(q('qr'), q('url'), el('div', 'lbl', 'або відкрийте адресу й введіть код'), q('code'));
   j.insertBefore(j.querySelector('.lbl'), q('url'));
   const x = el('details', 'l2x', '<summary>Для ведучого: пульт з відповідями, питання, шпаргалка, звук</summary>'), xi = el('div', 'l2xi'), xr = el('div', 'row');
-  xr.append(q('edit'), q('print')); const side = el('div'); side.append(xr, q('minus').closest('label'), q('sndi').parentNode);
+  xr.append(q('edit'), q('print'));
+  if (window.JAK_PROVESTY) { const jb = el('button', 'btn', 'Памʼятка ведучому (A4)'); jb.type = 'button'; jb.style.cssText = 'min-height:40px;padding:6px 14px;font-size:15px'; jb.addEventListener('click', () => JAK_PROVESTY('zmag')); xr.append(jb); }   /* «Як провести гру» (4.11.2026) */ const side = el('div'); side.append(xr, q('minus').closest('label'), q('sndi').parentNode);
   if (window.REPETYTSIIA) {   /* «Репетиція» (4.11.2026): тестові капітани — по одному на команду */
     const rp = el('div', 'l2rp', '<h4 style="margin:16px 0 8px">Репетиція</h4><button type="button" class="btn" id="rep" style="min-height:40px;padding:6px 14px;font-size:15px">Додати тестових капітанів</button><p class="s2l" id="repn" style="margin:8px 0 0;color:var(--mut);font-size:14px">Прожени гру сам: тестові капітани входять, вибирають команди й тиснуть «Відповідаю!».</p>');
     rp.querySelector('#rep').addEventListener('click', e => { const r = REPETYTSIIA(() => { const q = document.getElementById('qr'); return q && q.dataset.u ? q.dataset.u : null; }, Math.max(1, teams.length));

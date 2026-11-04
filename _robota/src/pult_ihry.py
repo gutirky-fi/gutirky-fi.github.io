@@ -68,6 +68,11 @@ VED = r"""
   const tools = document.createElement('div'); tools.className = 'vd-t';
   const g = document.createElement('div'); g.className = 'vd-g'; g.append(card, tools); box.appendChild(g);
   /* інструменти гри з її старого вікна «Ведучому» (Бінго, Змаг) — сюди; стару кнопку й вікно прибираємо */
+  /* «Як провести гру» — аркуш A4 (4.11.2026) */
+  { const gk = { bingo: 'bingo', opytuvannia: 'opyt', 'skob-hra': 'skob' }[(window.GUTIRKA && window.GUTIRKA.id) || ''];
+    if (gk && window.JAK_PROVESTY) { const jp = document.createElement('div'); jp.className = 'vd-rp vd-jp';
+      jp.innerHTML = '<h4>Як провести гру</h4><div class="s3row"><button type="button" class="pd-b">Памʼятка ведучому (A4)</button></div>';
+      jp.querySelector('button').addEventListener('click', () => window.JAK_PROVESTY(gk)); tools.appendChild(jp); } }
   /* «Репетиція»: тестові гравці (4.11.2026) */
   if (window.REPETYTSIIA && window.GUTIRKA_BOT_URL) {
     const rp = document.createElement('div'); rp.className = 'vd-rp';
@@ -82,7 +87,7 @@ VED = r"""
   }
   function merge() {
     const old = document.querySelector('.s3o'), oldBtn = document.querySelector('.s3v');
-    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); const rp = tools.querySelector('.vd-rp'); if (rp) tools.appendChild(rp); }
+    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); tools.querySelectorAll('.vd-rp').forEach(x => tools.appendChild(x)); }
     if (oldBtn) oldBtn.remove();
     g.classList.toggle('one', !tools.children.length); dlg.classList.toggle('one', !tools.children.length); tools.hidden = !tools.children.length;
     const top = document.querySelector('.top'); if (top && btn.parentNode === top) top.appendChild(btn);
