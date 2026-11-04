@@ -26,6 +26,9 @@
   const QR_MARK = (c, R) => { const t = R * 0.74, g = t * 0.077, x0 = c - t - g / 2, fs = t * 0.75, rx = t * 0.154;
     return LET.map((l, i) => { const x = x0 + (i % 2) * (t + g), y = x0 + Math.floor(i / 2) * (t + g);
       return '<rect x="' + x.toFixed(2) + '" y="' + y.toFixed(2) + '" width="' + t.toFixed(2) + '" height="' + t.toFixed(2) + '" rx="' + rx.toFixed(2) + '" fill="' + QR_COL[i][0] + '"/><text x="' + (x + t / 2).toFixed(2) + '" y="' + (y + t / 2).toFixed(2) + '" style="font:600 ' + fs.toFixed(2) + 'px Oswald,\'Arial Narrow\',sans-serif;fill:' + QR_COL[i][1] + ';fill-opacity:1;stroke:none;text-anchor:middle;dominant-baseline:central;letter-spacing:0">' + l + '</text>'; }).join(''); };
+  /* стиль 3: у QR — значок із затвердженого логотипа (4 квадрати без літер), як знаки Змагу й Бінго в їхніх QR */
+  const QR_MARK3 = (c, R) => { const w = R * 1.25, k = w / 40, x0 = c - w / 2;
+    return [[0, 0, '#d64541'], [21.5, 0, '#2f6fd0'], [0, 21.5, '#e8a321'], [21.5, 21.5, '#2e8f55']].map(([x, y, f]) => '<rect x="' + (x0 + x * k).toFixed(2) + '" y="' + (x0 + y * k).toFixed(2) + '" width="' + (18.5 * k).toFixed(2) + '" height="' + (18.5 * k).toFixed(2) + '" rx="' + (4 * k).toFixed(2) + '" fill="' + f + '"/>').join(''); };
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   /* стиль 3 (проба ?dyz=3, дизайн-система «Ігри Пласту»): екран перед грою як у Змагу — картка QR ліворуч. Без ?dyz=3 нічого не змінюється. */
@@ -585,7 +588,7 @@
     if (!L || L.hidden) return;
     const url = playerUrl(), full = code ? url + '?k=' + code : '';
     const qr = L.querySelector('.qr');
-    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247', logo: '', mark: QR_MARK }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
+    if (full && window.qrSvg) { if (qrFor !== full) { qr.innerHTML = window.qrSvg(full, 250, { eye: '#ffc247', logo: '', mark: S3 ? QR_MARK3 : QR_MARK }); qrFor = full; } } else if (!full) { qr.innerHTML = '<span style="color:#555">…</span>'; qrFor = ''; }
     L.querySelector('.url').textContent = window.SKOB_SHORT || url.replace(/^https?:\/\//, '').replace(/\/$/, '');   // SKOB_SHORT — коротка адреса, якщо є
     L.querySelector('.code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '··· ···';
     L.querySelector('.st').textContent = { on: '● Можна підключатися.', starting: 'Вмикаємо звʼязок…', retry: 'Відновлюємо звʼязок…', error: netMsg || 'Помилка звʼязку.', off: 'Звʼязок вимкнено.' }[net] || '';
