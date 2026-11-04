@@ -60,6 +60,7 @@ main{position:absolute;inset:0;padding:78px 28px 24px;display:flex;flex-directio
 .stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:28px;align-items:center}
 .ballw{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
 .ball{position:relative;width:min(300px,34vh);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff 0 6%,var(--bc,#3daf6e) 7% 62%,#0005 100%);box-shadow:0 20px 50px #0008,inset 0 -18px 30px #0004}
+.ball b.hl{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.06em}.ball b .bl{font-size:.42em;line-height:1;letter-spacing:.04em;color:#6b737c}
 .ball b{display:grid;place-items:center;width:58%;aspect-ratio:1;border-radius:50%;background:#fff;color:#1d2125;font:600 clamp(2rem,6vh,3.6rem)/1 var(--disp)}
 .ball.pop{animation:pop .55s cubic-bezier(.2,1.6,.4,1)}
 @keyframes pop{0%{transform:scale(.2) rotate(-90deg);opacity:0}100%{transform:none;opacity:1}}
@@ -508,7 +509,7 @@ window.IHRY_S3 = function (o) {
       /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
       const card = document.querySelectorAll('#card button[data-k]');
       if (card.length) {
-        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') && $('#bn').lastChild ? $('#bn').lastChild.textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
         const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
         if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
         const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
@@ -1243,7 +1244,10 @@ function paintBall(pop) {
   if (themed()) {
     $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + ' · ЩО ЦЕ?</small>' + esc(it[1]);
     const a = $('#ans'); a.className = 'ans' + (shown ? '' : ' hid'); a.textContent = shown ? it[0] : 'Хто знає? Відповідь — кнопкою «Показати відповідь»';
-  } else { $('#bn').textContent = it[0]; $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>' + (it[2] ? esc(it[2]) : ''); $('#ans').textContent = ''; }
+  } else { const L = /^(\S) \d+$/.exec(it[2] || '');   /* 4.11: класичне — літера на самій кульці (як у справжньому бінго), під кулькою — де шукати */
+    if (L) $('#bn').innerHTML = '<span class="bl">' + L[1] + '</span>' + esc(it[0]); else $('#bn').textContent = it[0];
+    $('#bn').classList.toggle('hl', !!L);
+    $('#hint').innerHTML = '<small>КУЛЬКА ' + drawn.length + '</small>' + (L ? 'Колонка ' + L[1] : it[2] ? esc(it[2]) : ''); $('#ans').textContent = ''; }
   if (pop) { b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop'); }
 }
 let paint = function () {
