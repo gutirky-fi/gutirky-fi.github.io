@@ -598,7 +598,7 @@ h2{margin:0 0 2.5mm;padding:0 0 0 2.6mm;border-left:2.2pt solid #e8a321;font:600
 ol,ul{margin:0;padding-left:5.5mm}li{margin:0 0 1.4mm}li::marker{color:#b07a00;font-weight:700}
 section{break-inside:avoid}
 footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873;display:flex;justify-content:space-between}
-</style></head><body><header><div class="lg">${lg}<div><small>${esc(g.lg[0])}</small><b>${esc(g.lg[1])}</b></div></div><div class="ttl"><i>для ведучого</i><h1>Як провести гру</h1></div></header>
+</style><\/head><body><header><div class="lg">${lg}<div><small>${esc(g.lg[0])}</small><b>${esc(g.lg[1])}</b></div></div><div class="ttl"><i>для ведучого</i><h1>Як провести гру</h1></div></header>
 <p class="meta">${esc(g.meta)}</p><div class="g">${g.S.map(([h, L], i) => `<section><h2>${esc(h)}</h2>${i === 1 ? '<ol>' : '<ul>'}${L.map(x => '<li>' + esc(x) + '</li>').join('')}${i === 1 ? '</ol>' : '</ul>'}</section>`).join('')}</div>
 <footer><span>Порада: прожени гру сам заздалегідь — «Ведучому» → «Репетиція».</span><b>Пласт у Фінляндії</b></footer><script>(document.fonts ? document.fonts.ready : Promise.resolve()).then(()=>setTimeout(()=>print(),300))<\/script></body></html>`);
     w.document.close();
