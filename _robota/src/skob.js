@@ -65,6 +65,7 @@
 #skob .sk3-r .sk-btn.main svg{width:18px;height:18px}
 #skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:10px 16px;margin:0 0 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
 #skob .sk3-steps span{display:flex;align-items:center;gap:9px}
+#skob .sk3-steps button{all:unset;margin-left:auto;cursor:pointer;color:#a0a8b2;font:600 14px 'Source Sans 3',sans-serif;text-decoration:underline;text-underline-offset:3px}#skob .sk3-steps button:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
 #skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
 #skob .sk3-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 #skob .sk3-pick .pk{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border:1px solid #383d44;border-radius:12px;background:#22262b;min-width:0}
@@ -478,6 +479,7 @@
     }
     if (k === 'quit' || k === 'done') closeGame();
     else if (k === 'start' || k === 'next') gNext();
+    else if (k === 'tipok') { try { localStorage.setItem(TIPK, '1'); } catch (e) {} if (G.ph === 'intro') gIntro(); }
     else if (k.startsWith('x-')) { if (G.o.onCmd) G.o.onCmd(k.slice(2)); }
     else if (k.startsWith('opt-') && G.ph === 'intro') {   /* «Як граємо»: справжні налаштування гри */
       const [o, v] = k.slice(4).split(':');
@@ -496,7 +498,7 @@
       /* права панель заповнена, як у Змагу й Бінго (власник 4.11: «пусто, багато вільного місця»): кроки, логотип, назва, картки «як граємо», кнопка */
       const N = G.list.length, T = G.o.T || 20;
       st.innerHTML = `<div class="sk3-in"><div class="sk3-j"></div><div class="sk3-r">
-        <div class="sk3-steps"><span><i>1</i>Гравці сканують QR-код</span><span><i>2</i>Пишуть своє імʼя</span><span><i>3</i>Почати гру</span></div>
+        ${tipSeen() ? '' : `<div class="sk3-steps"><span><i>1</i>Гравці сканують QR-код</span><span><i>2</i>Пишуть своє імʼя</span><span><i>3</i>Почати гру</span><button type="button" data-k="tipok">Зрозуміло</button></div>`}
         ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.pick ? pickHtml(G.o.pick) : G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
         <span class="sk3-lb">Як граємо</span>
         <div class="sk3-opts">
@@ -513,6 +515,9 @@
     hint('');
   }
   /* вибір вікторини прямо на екрані гри (o.pick = { items:[{id,title,sub}], cur }) — кнопки x-… віддаються в o.onCmd */
+  /* смужка «1-2-3» — підказка при першому запуску, як у Змагу (той самий ключ ihry.pidkazka.<гра>) */
+  const TIPK = 'ihry.pidkazka.skob';
+  const tipSeen = () => { try { return localStorage.getItem(TIPK) === '1'; } catch (e) { return false; } };
   const optN = all => [[0, `Усі (${all})`]].concat([5, 10, 15].filter(v => v < all).map(v => [v, String(v)]));
   function relist() { const src = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.list = G.o.limit ? src.slice(0, G.o.limit) : src; }
   function pickHtml(P) {
