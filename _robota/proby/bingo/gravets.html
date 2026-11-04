@@ -160,6 +160,7 @@ function onData(d) {
   else if (d.t === 'kick') { stop(); chip(false, 'Ведучий прибрав тебе з гри'); }
 }
 function msg(k, t) { const m = $('#msg'); m.className = 'msg ' + k; m.textContent = t; }
+function fitCells(root, min) { (root || document).querySelectorAll(':scope>div:not(.hd),:scope>button:not(.hd)').forEach(d => { d.style.fontSize = ''; let s = parseFloat(getComputedStyle(d).fontSize), n = 0; while ((d.scrollWidth > d.clientWidth + 1 || d.scrollHeight > d.clientHeight + 1) && s > (min || 8) && n++ < 40) { s -= 0.5; d.style.fontSize = s + 'px'; } }); }   /* довге слово не вилазить за клітинку — шрифт зменшується, доки не влізе (4.11.2026) */
 function render() {
   $('#join').hidden = true; $('#play').hidden = false; $('#skobw').hidden = false;
   const sig = st.mode + '|' + st.no + '|' + st.card.join(',');
@@ -179,6 +180,7 @@ function render() {
   const W = st.wins || [], line = W.find(L => L.every(k => marks.has(k) || free.has(k)));
   const c = $('#card'); c.className = 'card' + (num ? ' num' : '') + (st.cols === 9 ? ' n9' : ''); c.style.setProperty('--gc', st.cols || 4);
   c.innerHTML = (st.head ? st.head.map(h => `<span class="hd">${esc(h)}</span>`).join('') : '') + st.card.map((w, k) => blank.has(k) ? `<button type="button" class="e" disabled aria-hidden="true"></button>` : free.has(k) ? `<button type="button" class="${line && line.includes(k) ? 'w' : 'fr'}" disabled aria-label="Вільна клітинка">★</button>` : `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
+  fitCells(c, 9);
   $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «' + SKOB + '!»';
   $('#skob').disabled = !line || st.ph !== 'game' || !!(st.win && st.win.no === st.no);   /* уже виграв — вдруге не треба */
   if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? (/dyz=3/.test(location.search) ? '' : '🎉 ') + SKOB + '! Ти виграв(-ла)!' : SKOB + '! ' + st.win.name + ' виграв(-ла)'); }
