@@ -1079,7 +1079,7 @@ noscript{display:block;padding:20px}
       const rev = v.r === 'rev', tap = !v.mp && v.r === 'ans';
       h = G.sc(v.top) + G.meta('Запитання ' + (v.i + 1) + ' / ' + v.n, v.r === 'ans' ? '⏱' : rev ? 'відповідь на екрані' : 'читаємо', v.r === 'ans' ? 'skt' : '') + (v.r === 'ans' ? '<div class="g-tb"><i id="skbar"></i></div>' : '')
         + '<p class="g-q">' + esc(v.q) + '</p>'
-        + G.qa(rev ? 'Правильна відповідь · уже на екрані' : 'Правильна відповідь · бачите лише ви', '<i>' + LET[v.ok] + '</i>' + esc(v.a[v.ok]), rev ? v.why : '', SKC[v.ok], v.ok === 2 ? '#1d1606' : '');
+        + G.qa(rev ? 'Правильна відповідь · уже на екрані' : 'Правильна відповідь · бачите лише ви', '<i style="background:' + SKC[v.ok] + ';color:' + (v.ok === 2 ? '#1d1606' : '#fff') + '">' + LET[v.ok] + '</i>' + esc(v.a[v.ok]), rev ? v.why : '');
       if (v.mp) {
         h += rev ? G.pr('Правильно відповіли: ' + ((v.cnt || [])[v.ok] || 0) + ' з ' + v.ans, (v.cnt || [])[v.ok] || 0, v.ans, 'ok') : G.pr('Відповіли: ' + v.ans + ' з ' + Math.max(v.on, v.ans), v.ans, Math.max(v.on, v.ans));
         if (v.r !== 'read' && v.cnt) h += G.lb('Хто що вибрав') + '<div class="g-bars">' + v.a.map((t, k) => '<div' + (rev && k === v.ok ? ' class="ok"' : '') + ' style="--w:' + (v.cnt[k] / Math.max(1, v.ans) * 100).toFixed(0) + '%"><span><i style="--c:' + SKC[k] + '">' + LET[k] + '</i>' + esc(t) + '</span><b>' + v.cnt[k] + '</b></div>').join('') + '</div>';
