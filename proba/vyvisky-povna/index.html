@@ -402,7 +402,7 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
 #skob.s3 .sk-top [data-k=x]{display:none}
 #skob.s3 .sk3-bk{width:38px;height:38px;min-height:0;padding:0;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;margin-right:12px}
 #skob.s3 .sk3-bk svg{width:18px;height:18px}
-#skob.s3 .sk-top [data-k=lobby]{border-radius:99px}
+#skob.s3 .sk-top [data-k=lobby]{border-radius:99px;display:inline-flex;align-items:center;gap:7px}#skob.s3 .sk-top [data-k=lobby] svg{width:16px;height:16px}#skob.s3 .sk3-net{border-radius:99px;margin-right:8px;cursor:default;color:#a0a8b2;font-weight:600;display:inline-flex;align-items:center;gap:8px;min-height:38px;padding-top:0;padding-bottom:0}#skob.s3 .sk3-net .dot{margin:0}#skob.s3 .sk3-net:hover{filter:none}
 #skob.s3 .sk-top #phone-mode{border-radius:99px;display:inline-flex;align-items:center;gap:7px;margin-right:8px}#skob.s3 .sk-top #phone-mode svg{width:16px;height:16px}
 #skob.s3::before{content:"";position:absolute;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:var(--sk3-lily,none) center/contain no-repeat;opacity:.05;pointer-events:none}
 #skob.s3 .sk-top .sk-btn{border-radius:99px}
@@ -822,7 +822,7 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
       <button type="button" class="sk-btn" data-k="x" aria-label="Завершити гру">✕</button></div><div class="sk-stage"></div><div class="sk-hint"></div><button type="button" class="sk-btn sk-next" data-k="next">Далі →</button>`;
     document.body.appendChild(gEl);
-    if (S3) { const pm = document.getElementById('phone-mode'); if (pm) { pmHome = [pm.parentNode, pm.nextSibling]; gEl.querySelector('.sk-top [data-k=lobby]').before(pm); } }   /* «Пульт» — у шапці гри, як в інших іграх */
+    if (S3) { const pm = document.getElementById('phone-mode'); if (pm) { pmHome = [pm.parentNode, pm.nextSibling]; const lb = gEl.querySelector('.sk-top [data-k=lobby]'); lb.after(pm); lb.insertAdjacentHTML('beforebegin', '<span class="sk-btn sk3-net" role="status"><span class="dot"></span><span class="t"></span></span>'); pm.style.marginRight = '0'; lb.style.marginRight = '8px'; } }   /* шапка як в інших іграх (4.11.2026): стан звʼязку · 📱 гравці (запросити) · Ведучому */   /* «Пульт» — у шапці гри, як в інших іграх */
     gEl.addEventListener('click', e => {
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
@@ -940,6 +940,13 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
   function paintTop() {
     if (!gEl) return;
     const b = gEl.querySelector('[data-k=lobby]'), n = online().length, w = [...players.values()].filter(P => P.pending).length;
+    const ns = gEl.querySelector('.sk3-net');
+    if (S3 && ns) {
+      ns.querySelector('.dot').className = 'dot ' + (net === 'on' ? 'ok' : net === 'off' ? '' : 'wait');
+      ns.querySelector('.t').textContent = net === 'on' ? 'Можна підключатися' : net === 'starting' ? 'Вмикаємо звʼязок…' : 'Відновлюємо звʼязок…';
+      b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><b>' + n + '</b>' + (w ? ' · чекають: ' + w : '');
+      b.title = 'Гравці на звʼязку — натисніть, щоб запросити ще'; b.setAttribute('aria-label', 'Гравців: ' + n + '. Запросити гравців');
+    } else
     b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}${w ? ` · чекають: ${w}` : ''}`;
   }
   const plural = (n, a, b, c) => { const m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c; };

@@ -140,7 +140,7 @@ body.fam .toast{border-radius:99px}
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
   <button type="button" class="chip" id="phone-mode" aria-label="Пульт ведучого на телефоні"></button>
   <button type="button" class="chip" id="patc" hidden title="Змінити мету">Мета: <b id="patn"></b></button>
-  <button type="button" class="chip" id="plc" hidden>Гравці: <b id="pln">0</b></button>
+  <button type="button" class="chip" id="plc" title="Гравців на звʼязку" aria-label="Гравці на звʼязку"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg> <b id="pln">0</b></button>
 </div>
 
 <main id="lobby">
@@ -403,7 +403,6 @@ let paint = function () {
   $('#rules').textContent = 'Картка ' + (S.loto ? '3×9: у кожному рядку 5 чисел' : S.cols + '×' + S.rows + (S.head ? ', центр вільний' : '')) + ', кульок ' + S.items.length + '. Виграє той, хто перший ' + PATS[pat].d.replace('закрий', 'закрив') + '. Мету можна змінити й під час гри (кнопка «Мета» вгорі). Телефони й папір можна змішувати: паперові картки мають номер, і ведучий перевіряє їх кнопкою «Перевірити картку».';
   const all = [...players.values()];
   $('#pln').textContent = all.filter(P => P.on).length; $('#pln2').textContent = all.length ? '· ' + all.length : '';
-  $('#plc').hidden = phase === 'lobby';
   $('#pl').innerHTML = all.length ? all.map(P => `<span class="${P.on ? '' : 'off'}">${esc(P.name)} <small>№${P.no}</small><button type="button" data-x="${esc(P.tok)}" aria-label="Прибрати ${esc(P.name)}">✕</button></span>`).join('') : '<span class="empty">Поки нікого. Можна грати й лише з паперовими картками.</span>';
   $('#reveal').hidden = !themed(); $('#reveal').disabled = cur < 0 || shown;
   $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
