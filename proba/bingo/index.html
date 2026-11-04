@@ -1659,36 +1659,40 @@ window.GUTIRKA = {
   const box = dlg.querySelector('.pd-box');
   document.head.insertAdjacentHTML('beforeend', '<style>' +
     '#pult-dlg.vd{align-items:flex-start;padding:70px 16px 16px;background:rgba(10,12,15,.8)}' +
-    '#pult-dlg.vd .pd-box{width:min(860px,100%);border-left:1px solid #3b4048;padding:22px 24px}' +
+    '#pult-dlg.vd .pd-box{width:min(780px,100%);border-left:1px solid #3b4048;padding:22px 24px}' +
     '#pult-dlg.vd h2{font-size:24px;letter-spacing:.02em;margin:0 50px 16px 0}' +
     '#pult-dlg.vd .pd-x{border-radius:99px;width:40px;height:40px;right:12px;top:12px}' +
-    '#pult-dlg.vd .vd-g{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:18px 26px;align-items:start}' +
+    '#pult-dlg.vd .vd-g{display:grid;grid-template-columns:320px minmax(0,1fr);gap:14px 24px;align-items:start}' +
     '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,420px)}' +
-    '#pult-dlg.vd .vd-p{padding:16px;border-radius:16px;background:#22262b;border:1px solid #383d44}' +
-    '#pult-dlg.vd .vd-p>b{display:block;font-weight:700;font-size:17px;margin-bottom:4px}' +
-    '#pult-dlg.vd .vd-p>p{margin:0 0 12px;color:#a0a8b2;font-size:14px;line-height:1.45}' +
-    '#pult-dlg.vd .pd-main{margin:12px 0 0}#pult-dlg.vd .pd-qr{box-shadow:none}#pult-dlg.vd .pd-code{font-size:34px;color:#f2f4f6}' +
-    '#pult-dlg.vd .pd-row{margin-top:12px}#pult-dlg.vd .pd-b{font-size:14px;padding:8px 12px}' +
     '#pult-dlg.vd .vd-t h4{margin:0 0 10px;font:700 14px "Source Sans 3",system-ui,sans-serif;color:#a0a8b2}' +
     '#pult-dlg.vd .vd-t .l2xi,#pult-dlg.vd .vd-t .s2xi{margin:0;display:block}' +
-    /* компактна картка, як у Змагу: невеликий QR ліворуч, текст і код праворуч */
-    '#pult-dlg.vd .vd-p{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;align-items:start}' +
-    '#pult-dlg.vd .vd-p>*{grid-column:2}' +
-    '#pult-dlg.vd .vd-p:has(.pd-main[hidden]){grid-template-columns:minmax(0,1fr)}#pult-dlg.vd .vd-p:has(.pd-main[hidden])>*{grid-column:1}' +
-    '#pult-dlg.vd .vd-p .pd-main{grid-column:1;grid-row:1/span 9;margin:0;text-align:center}' +
-    '#pult-dlg.vd .pd-qr svg{width:132px;height:132px;display:block}#pult-dlg.vd .pd-qr{border-radius:12px;overflow:hidden}' +
-    '#pult-dlg.vd .pd-or{display:none}#pult-dlg.vd .pd-code{font-size:20px;letter-spacing:.1em;color:#a0a8b2;margin-top:6px}' +
-    '#pult-dlg.vd .pd-status{padding:7px 10px;font-size:14px;margin-top:2px}' +
-    '#pult-dlg.vd .pd-det{grid-column:1/-1;margin-top:8px;font-size:13px;color:#98a1ac}' +
-    '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,1fr)}#pult-dlg.vd.one .pd-box{width:min(560px,100%)}' +
+    /* картка точно як у Змагу (.ved): QR 112 px ліворуч, заголовок і пояснення праворуч; службове (стан, код, кнопки) — сховано */
+    '#pult-dlg.vd .vd-p{display:flex;gap:14px;align-items:center;padding:12px;border-radius:14px;background:#22262b;border:1px solid #383d44}' +
+    '#pult-dlg.vd .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}' +
+    '#pult-dlg.vd .vq .pd-qr{display:block;border-radius:0;box-shadow:none;line-height:0}#pult-dlg.vd .vq svg{width:112px!important;height:112px!important;display:block}' +
+    '#pult-dlg.vd .vd-tx b{display:block;font-size:17px;line-height:1.35}#pult-dlg.vd .vd-tx span{display:block;color:#a0a8b2;font-size:15px;line-height:1.45}' +
+    '#pult-dlg.vd .vd-ok{display:none;flex-direction:column;gap:4px;padding:6px 4px}#pult-dlg.vd .vd-ok b{color:#3ee08f;font-size:18px}#pult-dlg.vd .vd-ok span{color:#a0a8b2;font-size:15px}' +
+    '#pult-dlg.vd .vd-ok button{align-self:flex-start;margin-top:4px;padding:0;border:0;background:none;color:#a0a8b2;font:600 14px "Source Sans 3",system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}' +
+    '#pult-dlg.vd[data-st=connected]:not(.more) .vd-p>.vq,#pult-dlg.vd[data-st=connected]:not(.more) .vd-p>.vd-tx{display:none}#pult-dlg.vd[data-st=connected]:not(.more) .vd-ok{display:flex}' +
+    '#pult-dlg.vd .vd-hid{display:none}#pult-dlg.vd .pd-site:not([hidden]){display:block}' +
+    '#pult-dlg.vd[data-st=error] .vd-tx span::after{content:" Немає звʼязку — перевірте інтернет.";color:#ff9a8a}' +
+    '#phone-mode .pd-dot{display:none}#phone-mode.ok span::after{content:" ✓"}' +
+    '#pult-dlg.vd.one .pd-box{min-width:0;width:min(520px,100%)}#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,1fr)}' +
     '@media (max-width:760px){#pult-dlg.vd .vd-g{grid-template-columns:1fr}}' +
     '</style>');
   dlg.classList.add('vd');
   dlg.querySelector('#pd-ttl').textContent = 'Ведучому';
   /* картка пульта: усе, що було у вікні пульта, крім заголовка й хрестика */
   const card = document.createElement('div'); card.className = 'vd-p';
-  card.innerHTML = '<b>Пульт на вашому телефоні</b><p>Скануйте код своїм телефоном: там будуть правильні відповіді й кнопки гри. Юнакам його не показуйте.</p>';
-  [...box.children].forEach(el => { if (!el.matches('.pd-x,#pd-ttl')) card.appendChild(el); });
+  card.innerHTML = '<div class="vq"></div><div class="vd-tx"><b>Ведучому — пульт на вашому телефоні</b><span>Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки гри. Юнакам його не показуйте.</span></div>'
+    + '<div class="vd-ok"><b>Пульт підключено ✓</b><span>Відповіді й кнопки гри — на вашому телефоні.</span><button type="button">Показати QR-код ще раз</button></div><div class="vd-hid"></div>';
+  card.querySelector('.vq').appendChild(box.querySelector('.pd-qr'));
+  const site = box.querySelector('.pd-site'); if (site) card.querySelector('.vd-tx').appendChild(site);   /* лише якщо невідома адреса пульта (файл з компʼютера) */
+  [...box.children].forEach(el => { if (!el.matches('.pd-x,#pd-ttl')) card.querySelector('.vd-hid').appendChild(el); });
+  card.querySelector('.vd-ok button').addEventListener('click', () => { const m = dlg.querySelector('#pd-more'); if (m) m.click(); });
+  /* ✓ на кнопці «Ведучому», коли телефон підключено (як у Змагу) */
+  const sync = () => btn.classList.toggle('ok', dlg.dataset.st === 'connected');
+  new MutationObserver(sync).observe(dlg, { attributes: true, attributeFilter: ['data-st'] }); sync();
   const tools = document.createElement('div'); tools.className = 'vd-t';
   const g = document.createElement('div'); g.className = 'vd-g'; g.append(card, tools); box.appendChild(g);
   /* інструменти гри з її старого вікна «Ведучому» (Бінго, Змаг) — сюди; стару кнопку й вікно прибираємо */
