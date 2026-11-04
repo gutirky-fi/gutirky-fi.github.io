@@ -418,6 +418,10 @@ if (/dyz=fam/.test(location.search)) {   /* родина ігор */
   const tb = document.querySelector('.top b'); if (tb) tb.insertAdjacentHTML('afterend', '<span class="fm-logo board sm" aria-label="Інтелектуальний змаг">' + T + '</span>');
   const h = document.querySelector('#join h1'); if (h) h.outerHTML = '<span class="fm-logo board" aria-label="Інтелектуальний змаг"><small>Інтелектуальний</small>' + T + '</span>';
 }
+if (S3T) {   /* стиль 3: затверджений логотип «значок + назва» (як у пульті інших ігор) */
+  const tb = document.querySelector('.top b'); if (tb) tb.outerHTML = '<span class="g3" aria-label="Інтелектуальний змаг"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg><span><small>Інтелектуальний</small><b>Змаг</b></span></span>';
+  document.head.insertAdjacentHTML('beforeend', '<style>.g3{display:inline-flex;align-items:center;gap:9px}.g3 svg{width:34px;height:34px;flex:none}.g3>span{display:flex;flex-direction:column}.g3 small{font:600 10px/1 var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--gd);margin-bottom:3px}.g3 b{font:600 24px/.9 var(--disp);text-transform:uppercase;color:var(--ink)}</style>');
+}
 (function () {
 'use strict';
 const $ = s => document.querySelector(s);
