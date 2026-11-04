@@ -617,6 +617,9 @@ window.GUTIRKA = { id: 'skob-hra', title: 'Потужний СКОБ!',
   next() {}, prev() {}, jump() {} };
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
+<script>/* «Репетиція» в СКОБ: тестові гравці входять за кодом гри; ведучий пускає їх сам */
+window.GUTIRKA_BOT_URL = () => { const c = window.SKOB && SKOB._debug().code; if (!c) { if (window.SKOB) SKOB.lobby(); return null; } return (window.SKOB_URL || (location.origin + '/skob/')) + '?k=' + c; };
+setInterval(() => { if (!window.SKOB || !window.REPETYTSIIA_ON || !REPETYTSIIA_ON()) return; try { SKOB.view().pend.forEach(([n, t]) => { if (/^Тест /.test(n)) SKOB.cmd('ok:' + t); }); } catch (e) { /* ok */ } }, 1500);</script>
 <script>/*PULT*/</script>
 </body>
 </html>

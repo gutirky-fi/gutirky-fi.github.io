@@ -477,6 +477,78 @@ window.IHRY_S3 = function (o) {
 };
 
 </script>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
+
+</script>
 </head>
 <body>
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
@@ -1211,6 +1283,7 @@ window.GUTIRKA = {
 })();
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
+<script>window.GUTIRKA_BOT_URL = () => { const q = document.getElementById('qr'); return q && q.dataset.u ? q.dataset.u : null; };   /* «Репетиція»: куди входять тестові гравці */</script>
 <script>
 /* shared/pult-host.js — пульт на боці ведучого (ноутбук).
    Підключається в кінці сторінки гутірки, після її основного скрипта і shared/qr.js.
@@ -1603,7 +1676,7 @@ window.GUTIRKA = {
     '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,420px)}' +
     '#pult-dlg.vd .vd-t h4{margin:0 0 10px;font:700 14px "Source Sans 3",system-ui,sans-serif;color:#a0a8b2}' +
     '#pult-dlg.vd .vd-t .l2xi,#pult-dlg.vd .vd-t .s2xi{margin:0;display:block}' +
-    '#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
+    '#pult-dlg.vd .vd-rp{margin-top:18px}#pult-dlg.vd .vd-t>.vd-rp:first-child{margin-top:0}#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
     /* картка точно як у Змагу (.ved): QR 112 px ліворуч, заголовок і пояснення праворуч; службове (стан, код, кнопки) — сховано */
     '#pult-dlg.vd .vd-p{display:flex;gap:14px;align-items:center;padding:12px;border-radius:14px;background:#22262b;border:1px solid #383d44}' +
     '#pult-dlg.vd .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}' +
@@ -1636,9 +1709,21 @@ window.GUTIRKA = {
   const tools = document.createElement('div'); tools.className = 'vd-t';
   const g = document.createElement('div'); g.className = 'vd-g'; g.append(card, tools); box.appendChild(g);
   /* інструменти гри з її старого вікна «Ведучому» (Бінго, Змаг) — сюди; стару кнопку й вікно прибираємо */
+  /* «Репетиція»: тестові гравці (4.11.2026) */
+  if (window.REPETYTSIIA && window.GUTIRKA_BOT_URL) {
+    const rp = document.createElement('div'); rp.className = 'vd-rp';
+    rp.innerHTML = '<h4>Репетиція</h4><div class="s3row"><button type="button" class="pd-b" id="vd-rep">Додати 4 тестових гравців</button></div><p class="vd-n" id="vd-repn">Прожени гру сам, без юнаків: тестові гравці входять і грають самі. Імена — «Тест …».</p>';
+    rp.querySelector('#vd-rep').addEventListener('click', e => {
+      const r = window.REPETYTSIIA(window.GUTIRKA_BOT_URL, 4), b = e.currentTarget, n = rp.querySelector('#vd-repn');
+      if (r === null) { n.textContent = 'Гра ще вмикає звʼязок — спробуйте за кілька секунд.'; return; }
+      b.textContent = r ? 'Прибрати тестових гравців' : 'Додати 4 тестових гравців';
+      n.textContent = r ? 'Тестові гравці підключаються (кілька секунд). Почніть гру як звичайно.' : 'Тестових гравців прибрано.';
+    });
+    tools.appendChild(rp);
+  }
   function merge() {
     const old = document.querySelector('.s3o'), oldBtn = document.querySelector('.s3v');
-    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); }
+    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); const rp = tools.querySelector('.vd-rp'); if (rp) tools.appendChild(rp); }
     if (oldBtn) oldBtn.remove();
     g.classList.toggle('one', !tools.children.length); dlg.classList.toggle('one', !tools.children.length); tools.hidden = !tools.children.length;
     const top = document.querySelector('.top'); if (top && btn.parentNode === top) top.appendChild(btn);

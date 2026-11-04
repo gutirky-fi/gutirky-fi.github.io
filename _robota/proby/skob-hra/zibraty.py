@@ -25,6 +25,7 @@ def page(skob_rel):
     pre = "window.SKOB_URL = " + "(location.hostname === 'gutirky-fi.github.io' ? (location.pathname.startsWith('/proba/') ? 'https://gutirky-fi.github.io/proba/skob/' : 'https://gutirky-fi.github.io/skob/') : " + "new URL(" + json.dumps(skob_rel) + ", location.href).href);"   # проба → пробна сторінка гравця (4.11.2026)
     import base64; pre += " window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "'; window.SKOB_LILY = 'data:image/webp;base64," + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode() + "';"   # емблема для шапки стилю 3 (?dyz=3)
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
+    src = src.replace('</head>', '<script>\n' + (D / 'repetytsiia.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # «Репетиція» (екран ведучого)
     import sys; sys.path.insert(0, str(D)); import pult_ihry; src = pult_ihry.inject(src)   # пульт ведучого (4.11.2026)
     assert 'noindex' in src and 'src="../../' not in src
     return src
@@ -37,6 +38,8 @@ def write(path, text):
 if __name__ == '__main__':
     where = sys.argv[1] if len(sys.argv) > 1 else 'proba/skob-hra'
     gr = (D / 'skob-gravets.html').read_text(encoding='utf-8')
+    REP = '<script>\n' + (D / 'repetytsiia.js').read_text(encoding='utf-8') + '\n</script>\n</head>'   # «Репетиція»: тестові гравці (4.11.2026)
+    gr = gr.replace('</head>', REP, 1)
     if where == 'proba/skob-hra':
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
     depth = len(pathlib.PurePosixPath(where).parts)

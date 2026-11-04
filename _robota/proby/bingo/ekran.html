@@ -576,6 +576,7 @@ window.GUTIRKA = {
 })();
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
+<script>window.GUTIRKA_BOT_URL = () => { const q = document.getElementById('qr'); return q && q.dataset.u ? q.dataset.u : null; };   /* «Репетиція»: куди входять тестові гравці */</script>
 <script>/*PULT*/</script>
 </body>
 </html>

@@ -15,6 +15,7 @@ for src, out in [('ekran.html', 'proba/bingo/index.html'), ('gravets.html', 'pro
         if src == 'gravets.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'ihry-tel3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # телефон, стиль 3
         if src == 'ekran.html': s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.css'), encoding='utf8').read() + '\n</style>\n<script>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # стиль 3 (?dyz=3)
         import base64; s = s.replace('{{LOGO}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'logo.png'), 'rb').read()).decode())
+    s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'repetytsiia.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # «Репетиція»: тестові гравці (4.11.2026)
     if not out.startswith('proba/'): s = s.replace('<meta charset="utf-8">', DYZ3, 1)
     import base64; s = s.replace('{{EMBLEM3}}', 'data:image/webp;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'emblem.webp'), 'rb').read()).decode())   # фонова лілея (стиль 3)
     s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')

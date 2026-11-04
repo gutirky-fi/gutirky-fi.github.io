@@ -19,6 +19,7 @@ for d in DIRS:
         if src == 'hravets.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'ihry-tel3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # телефон, стиль 3
         if src == 'ekran.html': s = s.replace('</head>', '<style>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.css'), encoding='utf8').read() + '\n</style>\n<script>\n' + open(os.path.join(ROB, 'src', 'ihry-styl3.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # стиль 3 (?dyz=3)
         s = s.replace('url({{EMBLEM3}})', 'none')   # у Змагу своя фонова лілея (body.st-plast)
+        s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'repetytsiia.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # «Репетиція»: тестові гравці (4.11.2026)
         if not d.startswith('proba/'): s = s.replace('<meta charset="utf-8">', DYZ3, 1)
         s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
         assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s

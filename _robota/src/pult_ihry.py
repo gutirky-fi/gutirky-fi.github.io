@@ -35,7 +35,7 @@ VED = r"""
     '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,420px)}' +
     '#pult-dlg.vd .vd-t h4{margin:0 0 10px;font:700 14px "Source Sans 3",system-ui,sans-serif;color:#a0a8b2}' +
     '#pult-dlg.vd .vd-t .l2xi,#pult-dlg.vd .vd-t .s2xi{margin:0;display:block}' +
-    '#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
+    '#pult-dlg.vd .vd-rp{margin-top:18px}#pult-dlg.vd .vd-t>.vd-rp:first-child{margin-top:0}#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
     /* картка точно як у Змагу (.ved): QR 112 px ліворуч, заголовок і пояснення праворуч; службове (стан, код, кнопки) — сховано */
     '#pult-dlg.vd .vd-p{display:flex;gap:14px;align-items:center;padding:12px;border-radius:14px;background:#22262b;border:1px solid #383d44}' +
     '#pult-dlg.vd .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}' +
@@ -68,9 +68,21 @@ VED = r"""
   const tools = document.createElement('div'); tools.className = 'vd-t';
   const g = document.createElement('div'); g.className = 'vd-g'; g.append(card, tools); box.appendChild(g);
   /* інструменти гри з її старого вікна «Ведучому» (Бінго, Змаг) — сюди; стару кнопку й вікно прибираємо */
+  /* «Репетиція»: тестові гравці (4.11.2026) */
+  if (window.REPETYTSIIA && window.GUTIRKA_BOT_URL) {
+    const rp = document.createElement('div'); rp.className = 'vd-rp';
+    rp.innerHTML = '<h4>Репетиція</h4><div class="s3row"><button type="button" class="pd-b" id="vd-rep">Додати 4 тестових гравців</button></div><p class="vd-n" id="vd-repn">Прожени гру сам, без юнаків: тестові гравці входять і грають самі. Імена — «Тест …».</p>';
+    rp.querySelector('#vd-rep').addEventListener('click', e => {
+      const r = window.REPETYTSIIA(window.GUTIRKA_BOT_URL, 4), b = e.currentTarget, n = rp.querySelector('#vd-repn');
+      if (r === null) { n.textContent = 'Гра ще вмикає звʼязок — спробуйте за кілька секунд.'; return; }
+      b.textContent = r ? 'Прибрати тестових гравців' : 'Додати 4 тестових гравців';
+      n.textContent = r ? 'Тестові гравці підключаються (кілька секунд). Почніть гру як звичайно.' : 'Тестових гравців прибрано.';
+    });
+    tools.appendChild(rp);
+  }
   function merge() {
     const old = document.querySelector('.s3o'), oldBtn = document.querySelector('.s3v');
-    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); }
+    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); const rp = tools.querySelector('.vd-rp'); if (rp) tools.appendChild(rp); }
     if (oldBtn) oldBtn.remove();
     g.classList.toggle('one', !tools.children.length); dlg.classList.toggle('one', !tools.children.length); tools.hidden = !tools.children.length;
     const top = document.querySelector('.top'); if (top && btn.parentNode === top) top.appendChild(btn);
