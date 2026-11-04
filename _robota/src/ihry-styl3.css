@@ -11,7 +11,7 @@ body.s3 .s3lg small{font:600 18px/1 var(--disp);letter-spacing:.3em;text-transfo
 body.s3 .s3lg .w{display:flex;align-items:center;gap:17px}
 body.s3 .s3lg .w svg{height:56px;width:56px;flex:none;display:block}
 body.s3 .s3lg b{font:600 72px/.8 var(--disp);letter-spacing:.01em;text-transform:uppercase;color:var(--ink);padding-top:3px}
-body.s3 .hand{margin:16px 0 20px}
+body.s3 .hand{margin:8px 0 20px;font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Segoe Print',cursive;color:#2fd2c0}
 /* лінійні значки в кнопках */
 body.s3 i.s3i{display:inline-flex;width:20px;height:20px;flex:none}body.s3 i.s3i svg{width:100%;height:100%;display:block}
 /* кнопка «Ведучому» і вікно */

@@ -59,7 +59,7 @@
 #skob .sk3-lg .w{display:flex;align-items:center;gap:17px}
 #skob .sk3-lg svg{width:56px;height:56px;flex:none}
 #skob .sk3-lg b{font:600 72px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:3px}
-#skob .sk3-r .sk3-hand{margin:16px 0 0;font:500 32px/1.1 Caveat,'Segoe Print',cursive;color:#2fd2c0}
+#skob .sk3-r .sk3-hand{margin:16px 0 0;font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Segoe Print',cursive;color:#2fd2c0}/* 4.11: рукопис — точно як на сайті */
 #skob .sk3-r h2{margin:26px 0 0;font:600 34px/1.1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.01em}
 #skob .sk3-r p{margin:8px 0 0;color:#a0a8b2;font-size:17px;max-width:56ch}
 #skob .sk3-r .btns{display:flex;gap:10px;margin-top:26px;justify-content:flex-start}
