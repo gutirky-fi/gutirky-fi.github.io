@@ -1255,6 +1255,7 @@ window.GUTIRKA = {
     if (num) { ix.gridH = 'Витягнуто ' + drawn.length + ' / ' + tot; ix.grid = it.map((x, i) => { const k = drawn.indexOf(i); return [x[0], k < 0 ? 0 : COLORS[(k + 1) % COLORS.length], i === cur ? 1 : 0]; }); }
     else if (drawn.length > 1) { ix.chipsH = 'Уже були · ' + (drawn.length - 1); ix.chips = drawn.slice(0, -1).reverse().map(ballT); }
     ix.hint = on ? 'На звʼязку телефонів: ' + on + '.' : '';
+    ix.end = ['end', '✕ Завершити', 'Завершити гру й повернутися до запрошення?'];
     return { mode: 'full', gra: true, glogo: 'bingo', noPrev: true, nextL: ask ? 'Показати відповідь' : 'Наступна кулька', index: Math.max(0, drawn.length - 1), total: tot,
       title: ix.meta[0], next: '', note: '', ix, sections: [] };
   },
@@ -1263,6 +1264,7 @@ window.GUTIRKA = {
   act(id) {
     if (id === 'start' && phase !== 'game') startGame();
     else if (id === 'next') this.next();
+    else if (id === 'end' && phase === 'game') { phase = 'lobby'; drawn = []; cur = -1; winners = []; pultChk = null; $('#chkov').hidden = true; $('#winov').hidden = true; document.body.classList.remove('playing'); $('#game').hidden = true; $('#lobby').hidden = false; paint(); bcast(); }
     else if (id.startsWith('check:') && phase === 'game') {   // перевірити паперову картку з телефона — і показати результат на екрані
       $('#chkov').hidden = false; $('#chkn').value = id.slice(6); checkNo();
       const v = $('#verd'); pultChk = [v.textContent || '', v.classList.contains('ok')];
