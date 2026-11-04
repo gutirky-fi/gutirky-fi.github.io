@@ -23,7 +23,7 @@ def page(skob_rel):
         src = rep(src, tag, inl(text))
     # на сайті — коротка адреса гравця gutirky-fi.github.io/skob; локально (перевірка) — поруч
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL(" + json.dumps(skob_rel) + ", location.href).href;"
-    import base64; pre += " window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "';"   # емблема для шапки стилю 3 (?dyz=3)
+    import base64; pre += " window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "'; window.SKOB_LILY = 'data:image/webp;base64," + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode() + "';"   # емблема для шапки стилю 3 (?dyz=3)
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
     assert 'noindex' in src and 'src="../../' not in src
     return src
