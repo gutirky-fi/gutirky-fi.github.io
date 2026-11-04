@@ -75,7 +75,7 @@ footer{display:flex;justify-content:space-between;align-items:center;gap:10px;mi
 
 /* родина ігор (4.11.2026): шапка «значок + назва», як у Бінго, Опитуванні й Змагу; звичайний шрифт замість рукописного */
 .bar{margin-bottom:6px}
-.t3{display:inline-flex;align-items:center;gap:8px}.t3 svg{width:24px;height:24px;flex:none}.t3 b{font:600 20px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--ink)}
+.t3{display:inline-flex;align-items:center;gap:9px}.t3 svg{width:34px;height:34px;flex:none}.t3>span{display:flex;flex-direction:column}.t3 small{font:600 10px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--gd);margin-bottom:3px}.t3 b{font:600 24px/.9 var(--disp);text-transform:uppercase;color:var(--ink)}
 .chip{padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px;color:var(--ink)}.chip i{width:8px;height:8px;flex:none}.chip span{max-width:38vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .me{font-size:15px}.me small{font-size:16px}
 .j3{display:flex;flex-direction:column;align-items:flex-start;margin:8px 0 2px}.j3 small{font:600 13px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 9px 1px}.j3 .w{display:flex;align-items:center;gap:12px}.j3 svg{width:46px;height:46px;flex:none}.j3 b{font:600 52px/.85 var(--disp);text-transform:uppercase;color:var(--ink);padding-top:4px}
@@ -91,7 +91,7 @@ main{justify-content:flex-start;padding-top:6px}
 </head>
 <body>
 <div id="app">
-  <div class="bar"><span class="t3" aria-label="Потужний СКОБ!"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span><span class="sp"></span><span class="me" id="me" hidden></span><span class="chip" id="chip" data-s=""><i></i><span id="chiptxt">…</span></span></div>
+  <div class="bar"><span class="t3" aria-label="Потужний СКОБ!"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><span><small>Потужний</small><b>СКОБ!</b></span></span><span class="sp"></span><span class="me" id="me" hidden></span><span class="chip" id="chip" data-s=""><i></i><span id="chiptxt">…</span></span></div>
   <main>
     <!-- вхід -->
     <form class="scr" id="s-join" autocomplete="off" novalidate>

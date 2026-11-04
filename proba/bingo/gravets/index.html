@@ -247,12 +247,12 @@ window.IHRY_TEL3 = function (gra) {
   const z = Z[gra]; if (!z) return;
   document.body.classList.add('s3t');
   const st = document.createElement('style');
-  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:8px}body.s3t .t3 svg{width:24px;height:24px;flex:none}body.s3t .t3 b{font:600 20px/1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#f2f4f6}' +
+  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:9px}body.s3t .t3 svg{width:34px;height:34px;flex:none}body.s3t .t3>span{display:flex;flex-direction:column}body.s3t .t3 small{font:600 10px/1 Oswald,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ffc247;margin-bottom:3px}body.s3t .t3 b{font:600 24px/.9 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6}body.s3t .t3 b.ln{font-size:19px}' +
     'body.s3t .j3{display:flex;flex-direction:column;align-items:flex-start;margin:14px 0 10px}body.s3t .j3 small{font:600 13px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 9px 1px}body.s3t .j3 .w{display:flex;align-items:center;gap:12px}body.s3t .j3 svg{width:40px;height:40px;flex:none}body.s3t .j3 b{font:600 48px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:2px}' +
     'body.s3t .qn{font:700 14px "Source Sans 3",sans-serif;text-transform:none;letter-spacing:.02em;color:#a0a8b2}body.s3t #play h1,body.s3t #play h2{text-transform:none}body.s3t .btn{border-radius:12px}body.s3t .top .logo,body.s3t .top>b:not(.t3){display:none}';
   document.head.append(st);
   const top = document.querySelector('.top');
-  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<b>' + z[1] + '</b></span>');
+  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
   const h = document.querySelector('#join h1');
   if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
 };
