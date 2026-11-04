@@ -1206,9 +1206,9 @@ function next() {
   const left = set().items.map((_, i) => i).filter(i => !drawn.includes(i));
   if (!left.length) { toast('Кульки закінчились'); return; }
   cur = left[Math.floor(Math.random() * left.length)]; drawn.push(cur); shown = !themed();
-  paintBall(true); paint(); bcast(); ZV('roll');
+  paintBall(true); paint(); bcast();   /* без звуку на кожну кульку — власнику набридало (4.11.2026) */
 }
-function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); ZV('open'); }
+function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
 function claim(P) {
   const L = lineOf(P.c, known());
   if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «' + CALL + '!», але мету ще не виконано'); ZV('no'); return; }
