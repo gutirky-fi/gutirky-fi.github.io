@@ -1,0 +1,39 @@
+<!doctype html><html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>3D-літера — проба</title>
+<style>*{margin:0}html,body{height:100%;background:#060606;overflow:hidden;color:#f3ede2;font-family:system-ui,sans-serif}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.bg{position:fixed;inset:0;background:radial-gradient(60% 70% at 55% 45%,#2a1a0c,#060606 70%)}
+.h{position:fixed;left:20px;bottom:16px;font-size:13px;opacity:.55}#ld{position:fixed;inset:0;display:grid;place-items:center;font-size:15px;opacity:.7}</style></head><body>
+<div class="bg"></div><canvas id="c"></canvas><div id="ld">Завантаження 3D-літери…</div><div class="h">Потягніть, щоб покрутити</div>
+<script type="importmap">{"imports":{"three":"../../lib/three-0.187/three.module.js","three/addons/":"../../lib/three-0.187/addons/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { SparkRenderer, SplatMesh } from '../../lib/spark-2.4.0/spark.module.js';
+const cv = document.getElementById('c');
+const R = new THREE.WebGLRenderer({ canvas: cv, antialias: false, alpha: true }); R.setPixelRatio(Math.min(devicePixelRatio, 2));
+const scene = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(35, 1, .01, 100); cam.position.set(0, 0, 2.6);
+scene.add(new SparkRenderer({ renderer: R }));
+const g = new THREE.Group(); scene.add(g);
+const m = new SplatMesh({ url: 'litera.spz' });
+/* модель з Idol: вісь y вниз, лице літери дивиться в бік −x → перевертаємо й повертаємо лицем до камери */
+m.quaternion.copy(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), Math.PI)));
+g.add(m);
+m.initialized.then(() => {
+  const box = m.getBoundingBox ? m.getBoundingBox() : null;
+  if (box) { const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3()); m.position.copy(c).multiplyScalar(-1).applyQuaternion(m.quaternion); window.SIZE = [s.x, s.y, s.z]; }
+  document.getElementById('ld').remove(); window.READY = true;
+}).catch(e => { document.getElementById('ld').textContent = 'Не вдалося завантажити: ' + e; });
+const size = () => { R.setSize(innerWidth, innerHeight, false); cam.aspect = innerWidth / innerHeight; cam.updateProjectionMatrix(); }; addEventListener('resize', size); size();
+let drag = null, rot = 0, vel = 0;
+cv.addEventListener('pointerdown', e => { drag = e.clientX; cv.setPointerCapture(e.pointerId); });
+cv.addEventListener('pointermove', e => { if (drag === null) return; vel = (e.clientX - drag) * .008; rot += vel; drag = e.clientX; });
+cv.addEventListener('pointerup', () => drag = null);
+const STILL = new URLSearchParams(location.search).get('still');
+if (STILL) { rot = +STILL; }
+R.setAnimationLoop(t => {
+  if (STILL) { if (window.READY) { g.rotation.y = rot; R.render(scene, cam); window.DRAWN = (window.DRAWN || 0) + 1; } return; }
+  if (drag === null) { vel *= .95; rot += vel; rot += (Math.sin(t / 2600) * .35 - rot) * .01; }
+  g.rotation.y = rot; R.render(scene, cam);
+});
+</script></body></html>
