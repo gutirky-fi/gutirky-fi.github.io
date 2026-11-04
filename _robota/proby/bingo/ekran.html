@@ -142,6 +142,7 @@ body.fam .toast{border-radius:99px}
   <button type="button" class="chip" id="phone-mode" aria-label="Пульт ведучого на телефоні"></button>
   <button type="button" class="chip" id="patc" hidden title="Змінити мету">Мета: <b id="patn"></b></button>
   <button type="button" class="chip" id="plc" title="Гравців на звʼязку" aria-label="Гравці на звʼязку"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg> <b id="pln">0</b></button>
+  <button type="button" class="chip" id="snd" hidden></button>
 </div>
 
 <main id="lobby">
@@ -345,25 +346,26 @@ setInterval(() => { const now = Date.now(); players.forEach(P => { if (P.on && n
 
 /* ---------- дії ведучого ---------- */
 function startGame() { document.body.classList.add('playing'); phase = 'game'; drawn = []; cur = -1; shown = false; winners = []; $('#lobby').hidden = true; $('#game').hidden = false; paintBall(); paint(); bcast(); }
+const ZV = k => { if (window.IHRY_ZVUK) IHRY_ZVUK.play(k); };   /* звуки (4.11.2026) */
 function next() {
   if (phase !== 'game') return;
   if (cur >= 0 && themed() && !shown) { reveal(); return; }   // спершу назвати відповідь попередньої кульки
   const left = set().items.map((_, i) => i).filter(i => !drawn.includes(i));
   if (!left.length) { toast('Кульки закінчились'); return; }
   cur = left[Math.floor(Math.random() * left.length)]; drawn.push(cur); shown = !themed();
-  paintBall(true); paint(); bcast();
+  paintBall(true); paint(); bcast(); ZV('roll');
 }
-function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
+function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); ZV('open'); }
 function claim(P) {
   const L = lineOf(P.c, known());
-  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «' + CALL + '!», але мету ще не виконано'); return; }
+  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «' + CALL + '!», але мету ще не виконано'); ZV('no'); return; }
   if (!winners.some(w => w.no === P.no)) winners.push({ name: P.name, no: P.no });
   showWin(P.name, P.no, P.c, L); bcast();
 }
 function showWin(name, no, c, L) {
   $('#wint').textContent = name + ' · картка №' + no;
   gridEl($('#wgrid')).innerHTML = gridHtml(c, L);
-  $('#winov').hidden = false; fitCells($('#wgrid'), 10);
+  $('#winov').hidden = false; fitCells($('#wgrid'), 10); ZV('win');
 }
 function gridHtml(c, L) { const ok = known(), S = set(); return (S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '') + c.map((id, k) => `<div class="${id === -1 ? 'e' : L && L.includes(k) ? 'w' : (id === -2 || ok.has(id)) ? 'c' : ''}">${esc(cellT(id))}</div>`).join(''); }
 function gridEl(el) { el.style.setProperty('--gc', set().cols); el.classList.toggle('n9', set().cols === 9); el.classList.toggle('th', themed()); return el; }
@@ -576,6 +578,7 @@ window.GUTIRKA = {
 })();
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
+<script>if (window.IHRY_ZVUK) { const b = document.getElementById('snd'); b.hidden = false; IHRY_ZVUK.chip(b); }</script>
 <script>window.GUTIRKA_BOT_URL = () => { const q = document.getElementById('qr'); return q && q.dataset.u ? q.dataset.u : null; };   /* «Репетиція»: куди входять тестові гравці */</script>
 <script>/*PULT*/</script>
 </body>

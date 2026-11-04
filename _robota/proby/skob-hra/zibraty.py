@@ -26,6 +26,7 @@ def page(skob_rel):
     import base64; pre += " window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "'; window.SKOB_LILY = 'data:image/webp;base64," + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode() + "';"   # емблема для шапки стилю 3 (?dyz=3)
     src = src.replace('<script>\n', '<script>' + pre + '</script>\n<script>\n', 1)
     src = src.replace('</head>', '<script>\n' + (D / 'repetytsiia.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # «Репетиція» (екран ведучого)
+    src = src.replace('</head>', '<script>\n' + (D / 'zvuk-ihor.js').read_text(encoding='utf-8') + '\n</script>\n</head>', 1)   # звуки (як у Змагу)
     import sys; sys.path.insert(0, str(D)); import pult_ihry; src = pult_ihry.inject(src)   # пульт ведучого (4.11.2026)
     assert 'noindex' in src and 'src="../../' not in src
     return src

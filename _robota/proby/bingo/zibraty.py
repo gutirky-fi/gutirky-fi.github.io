@@ -19,6 +19,7 @@ for src, out in [('ekran.html', 'proba/bingo/index.html'), ('gravets.html', 'pro
     if not out.startswith('proba/'): s = s.replace('<meta charset="utf-8">', DYZ3, 1)
     import base64; s = s.replace('{{EMBLEM3}}', 'data:image/webp;base64,' + base64.b64encode(open(os.path.join(ROB, 'src', 'img', 'emblem.webp'), 'rb').read()).decode())   # фонова лілея (стиль 3)
     s = s.replace('<script>/*QR*/</script>', '<script>\n' + qr + '\n</script>').replace('<script>/*ZVYAZOK*/</script>', '<script>\n' + z + '\n</script>')
+    if src == 'ekran.html': s = s.replace('</head>', '<script>\n' + open(os.path.join(ROB, 'src', 'zvuk-ihor.js'), encoding='utf8').read() + '\n</script>\n</head>', 1)   # звуки (як у Змагу)
     if src == 'ekran.html':   # пульт ведучого з телефона (4.11.2026)
         import sys; sys.path.insert(0, os.path.join(ROB, 'src')); import pult_ihry; s = pult_ihry.inject(s)
     assert '/*QR*/' not in s and '/*ZVYAZOK*/' not in s and 'noindex' in s
