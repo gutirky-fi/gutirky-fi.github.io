@@ -921,22 +921,21 @@ async function importLink() {
     if (confirm('Завантажити питання з посилання? Теми: ' + d.c.map(C => C.n).join(', ') + '. Ваші теперішні питання заміняться.')) { CATS = d.c; try { localStorage.setItem(LS, JSON.stringify(CATS)); } catch (x) { /* ok */ } toast('Питання завантажено'); paintLobby(); }
   } catch (e) { toast('Посилання з питаннями пошкоджене'); }
 }
-function printSheet3() {   /* стиль 3: як друковані матеріали бібліотеки (шапка з лілеєю, теми з золотою рискою, підвал) */
+function printSheet3() {   /* стиль 3: шапка з логотипом гри (4.11.2026 — замість лілеї; усі друковані матеріали ігор однакові), теми з золотою рискою, підвал */
   const w = PRINT_SELF ? window : window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
   const n = CATS.reduce((s, C) => s + C.q.filter(Q => Q[0]).length, 0);
   const row = (Q, r) => { if (!Q[0]) return ''; const [a, d] = splitA(Q[1]), wr = Array.isArray(Q[2]) ? Q[2].filter(Boolean) : [];
     return `<div class="r"><b class="v">${VALS[r]}</b><div class="q">${esc(Q[0])}${wr.length ? `<small>варіанти: ${esc(wr.join(' · '))}</small>` : ''}</div><div class="a">${esc(a)}${d ? `<small>${esc(d)}</small>` : ''}</div></div>`; };
   w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Інтелектуальний змаг — відповіді</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Source+Sans+3:wght@400;600;700&display=swap"><style>
 @page{size:A4;margin:11mm 13mm 12mm}*{box-sizing:border-box}body{margin:0;color:#1d2125;font:10.5pt/1.4 'Source Sans 3',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-header{position:relative}.k,h1{padding-right:22mm}header::after{content:"";position:absolute;right:0;top:0;width:15mm;height:17.5mm;background:url("{{LILY}}") right top/contain no-repeat}
-.k{display:flex;align-items:center;gap:7px;font:700 10.5pt 'Source Sans 3',sans-serif;color:#b07a00}.k i{font:700 8pt 'Source Sans 3',sans-serif;font-style:normal;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873}
-h1{margin:.6mm 0 0;font:600 24pt/1.02 Oswald,'Arial Narrow',sans-serif;letter-spacing:.01em;text-transform:uppercase}
-.sub{margin:1mm 0 4.5mm;padding:0 0 3mm;border-bottom:2.2pt solid #e8a321;color:#5f6873}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:6mm;padding:0 0 3mm;margin:0 0 4.5mm;border-bottom:2.2pt solid #e8a321}
+.lg{display:flex;align-items:center;gap:2.6mm}.lg svg{width:11mm;height:11mm;flex:none}.lg small{display:block;font:600 6.5pt/1 Oswald,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#b07a00;margin-bottom:.8mm}.lg b{display:block;font:600 20pt/.9 Oswald,'Arial Narrow',sans-serif;text-transform:uppercase}
+.ttl{text-align:right}.ttl i{display:inline-block;font:700 8pt 'Source Sans 3',sans-serif;font-style:normal;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873;margin-bottom:1.2mm}.ttl h1{margin:0;font:600 17pt/1.05 Oswald,'Arial Narrow',sans-serif;text-transform:uppercase}.ttl div{color:#5f6873;font-size:9pt;margin-top:.8mm}
 h2{margin:5mm 0 1.6mm;padding:0 0 0 2.6mm;border-left:2.2pt solid #e8a321;font:600 12.5pt/1.15 Oswald,sans-serif;letter-spacing:.015em;text-transform:uppercase;break-after:avoid}
 .r{display:grid;grid-template-columns:13mm minmax(0,1fr) 52mm;gap:1mm 4mm;padding:1.6mm 0;border-top:.6pt solid #cfd5dc;break-inside:avoid}
 .v{font:600 11pt Oswald,sans-serif;color:#b07a00}.a{font-weight:700}small{display:block;font-weight:400;font-size:8.5pt;color:#5f6873}
 footer{margin-top:6mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873}
-</style></head><body><header><div class="k">Інтелектуальний змаг <i>для ведучого</i></div><h1>Відповіді</h1><div class="sub">${n} питань · ${CATS.length} тем · юнакам не показувати</div></header>
+</style></head><body><header><div class="lg"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg><div><small>Інтелектуальний</small><b>Змаг</b></div></div><div class="ttl"><i>для ведучого</i><h1>Відповіді</h1><div>${n} питань · ${CATS.length} тем · гравцям не показувати</div></div></header>
 ${CATS.map(C => `<section><h2>${esc(C.n)}</h2>${C.q.map(row).join('')}</section>`).join('')}
 <footer><b>Пласт у Фінляндії</b> · бібліотека гутірок</footer><script>setTimeout(()=>print(),500)<\/script></body></html>`);
   w.document.close();
