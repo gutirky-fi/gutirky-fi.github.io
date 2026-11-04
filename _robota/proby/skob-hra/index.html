@@ -604,8 +604,7 @@ ${qs.map((q, i) => `<div class="r"><b class="n">${i + 1}</b><div>${esc(q.q)}<sma
 <footer><b>Пласт у Фінляндії</b> · бібліотека гутірок</footer><script>setTimeout(()=>print(),500)<\/script></body></html>`);
   w.document.close();
 }
-document.body.insertAdjacentHTML('beforeend', '<div class="s3o" hidden><div class="bx"><h3>Ведучому</h3><h4>Без телефона</h4><div class="s3row"><button type="button" class="pd-b" id="skob-print">Шпаргалка з відповідями</button></div><p class="vd-n">Аркуш A4: усі запитання поточної вікторини й правильні відповіді — щоб вести гру з папірцем.</p></div></div>');
-document.getElementById('skob-print').addEventListener('click', printSkob);
+window.GUTIRKA_VED_EXTRA = [['Шпаргалка з відповідями', printSkob, 'Аркуш A4: усі запитання й правильні відповіді — щоб вести гру з папірцем']];   /* кнопка в «Ведучому» */
 route(true);
 })();
 </script>
