@@ -55,7 +55,7 @@ body.cherha .bz{display:none}body.cherha .st{flex:1;display:flex;align-items:cen
 .vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr b{color:var(--gd);margin-right:8px}
 .hn{display:block;width:100%;min-height:48px;margin-top:10px;border-radius:14px;border:1px solid var(--gd);background:rgba(255,194,71,.12);color:var(--gd);font-weight:700;font-size:17px}
 body.finph .st{display:none}body.finph #vr{flex:1;display:flex;align-items:center}body.finph .fin1{flex:1}
-.fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
+.fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}body.s3t .fin1{background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c)}body.s3t .fin1.p1{border-color:#ffc247;border-top-color:var(--c);box-shadow:0 0 0 1px #ffc247,0 12px 50px rgba(255,194,71,.18)}/* 4.11: не червона «помилка» — колір команди лише смужкою, 1-ше місце — золото */.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
 .tbl{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .tbl span{padding:4px 10px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:14px}
 /* родина ігор (?dyz=fam) — телефон */
@@ -68,6 +68,7 @@ body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
 body.fam .tp button{border-radius:99px;border:1px solid var(--ln);border-left:1px solid var(--ln);display:flex;align-items:center;gap:10px;padding:6px 18px}
 body.fam .tp button::before{content:"";width:14px;height:14px;border-radius:50%;background:var(--c);flex:none}
 
+body.s3t .q b{color:var(--ink)}body.s3t .hn{border-color:var(--ln);background:var(--card);color:var(--ink)}body.s3t .hn svg{color:var(--gd)}body.s3t .tbl span{font-size:15px;padding:6px 12px;border-left:0;display:inline-flex;align-items:center;gap:7px}body.s3t .tbl span::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
 svg.li{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}.fin1 svg.li{width:64px;height:64px;color:#ffc247}.fin1 .md.m2 svg.li{color:#cfd5dc}.fin1 .md.m3 svg.li{color:#d9925b}
 </style>
 <style>
@@ -200,15 +201,90 @@ window.IHRY_TEL3 = function (gra) {
   const z = Z[gra]; if (!z) return;
   document.body.classList.add('s3t');
   const st = document.createElement('style');
-  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:8px}body.s3t .t3 svg{width:24px;height:24px;flex:none}body.s3t .t3 b{font:600 20px/1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#f2f4f6}' +
+  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:9px}body.s3t .t3 svg{width:34px;height:34px;flex:none}body.s3t .t3>span{display:flex;flex-direction:column}body.s3t .t3 small{font:600 10px/1 Oswald,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ffc247;margin-bottom:3px}body.s3t .t3 b{font:600 24px/.9 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6}body.s3t .t3 b.ln{font-size:19px}' +
     'body.s3t .j3{display:flex;flex-direction:column;align-items:flex-start;margin:14px 0 10px}body.s3t .j3 small{font:600 13px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 9px 1px}body.s3t .j3 .w{display:flex;align-items:center;gap:12px}body.s3t .j3 svg{width:40px;height:40px;flex:none}body.s3t .j3 b{font:600 48px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:2px}' +
     'body.s3t .qn{font:700 14px "Source Sans 3",sans-serif;text-transform:none;letter-spacing:.02em;color:#a0a8b2}body.s3t #play h1,body.s3t #play h2{text-transform:none}body.s3t .btn{border-radius:12px}body.s3t .top .logo,body.s3t .top>b:not(.t3){display:none}';
   document.head.append(st);
   const top = document.querySelector('.top');
-  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<b>' + z[1] + '</b></span>');
+  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
   const h = document.querySelector('#join h1');
   if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+
+  /* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+  setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 };
+
+</script>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
 
 </script>
 </head>
@@ -533,7 +609,7 @@ function render() {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
     if (st.ph === 'fin') {   /* фінал і на телефоні: місце команди */
       const pl = st.teams.filter(t => t.s > T.s).length + 1;
-      $('#vr').innerHTML = '<div class="fin1" style="--c:' + T.c + '"><b>' + (S3T ? (pl === 1 ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>' : pl <= 3 ? '<span class="md m' + pl + '"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 7 3-7"/></svg></span>' : '') : (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏')) + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
+      $('#vr').innerHTML = '<div class="fin1' + (pl === 1 ? ' p1' : '') + '" style="--c:' + T.c + '"><b>' + (S3T ? (pl === 1 ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>' : pl <= 3 ? '<span class="md m' + pl + '"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 7 3-7"/></svg></span>' : '') : (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏')) + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
       b.disabled = true; $('#q').textContent = 'Гру завершено'; s.textContent = ''; $('#ans').textContent = ''; document.body.classList.add('cherha', 'finph');
       $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join(''); return;
     }

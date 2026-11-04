@@ -58,6 +58,7 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 body.fam .top b{display:none}
 body.fam .top .fm-logo{font-size:24px}
 body.fam #join .fm-logo{font-size:46px;margin:8px 0 14px}
+body.s3t #send,body.fam #send{border-radius:99px;background:var(--gd);color:#16130a}body.s3t #send.sec,body.fam #send.sec{background:var(--card2);color:var(--ink);border:1px solid var(--ln)}body.s3t #send:disabled,body.fam #send:disabled{background:var(--card2);color:var(--mut)}/* 4.11: «Надіслати» — жовта головна дія, «Змінити» — тиха */
 body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
 body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
 body.fam .opts button{border-radius:99px;border-width:1px;padding:10px 22px}
@@ -241,15 +242,90 @@ window.IHRY_TEL3 = function (gra) {
   const z = Z[gra]; if (!z) return;
   document.body.classList.add('s3t');
   const st = document.createElement('style');
-  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:8px}body.s3t .t3 svg{width:24px;height:24px;flex:none}body.s3t .t3 b{font:600 20px/1 Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em;color:#f2f4f6}' +
+  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:9px}body.s3t .t3 svg{width:34px;height:34px;flex:none}body.s3t .t3>span{display:flex;flex-direction:column}body.s3t .t3 small{font:600 10px/1 Oswald,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ffc247;margin-bottom:3px}body.s3t .t3 b{font:600 24px/.9 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6}body.s3t .t3 b.ln{font-size:19px}' +
     'body.s3t .j3{display:flex;flex-direction:column;align-items:flex-start;margin:14px 0 10px}body.s3t .j3 small{font:600 13px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 9px 1px}body.s3t .j3 .w{display:flex;align-items:center;gap:12px}body.s3t .j3 svg{width:40px;height:40px;flex:none}body.s3t .j3 b{font:600 48px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:2px}' +
     'body.s3t .qn{font:700 14px "Source Sans 3",sans-serif;text-transform:none;letter-spacing:.02em;color:#a0a8b2}body.s3t #play h1,body.s3t #play h2{text-transform:none}body.s3t .btn{border-radius:12px}body.s3t .top .logo,body.s3t .top>b:not(.t3){display:none}';
   document.head.append(st);
   const top = document.querySelector('.top');
-  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<b>' + z[1] + '</b></span>');
+  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
   const h = document.querySelector('#join h1');
   if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+
+  /* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+  setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 };
+
+</script>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
 
 </script>
 </head>
@@ -537,7 +613,7 @@ function render() {
   const Q = st.q, dis = st.open ? '' : ' disabled';
   let h = `<div class="qn">Питання ${st.i + 1} з ${st.n}</div><h1 class="qt">${esc(Q.q)}</h1>`;
   if (Q.k === 'ots') h += `<div class="stars">${FACES.map((f, j) => `<button type="button" data-v="${j}" aria-pressed="${st.my === j}" aria-label="${j + 1} з 5"${dis}>${f}<small>${j + 1}</small></button>`).join('')}</div>`;
-  else if (Q.k === 'slovo') h += `<input id="w" maxlength="30" placeholder="Твоя відповідь" value="${esc(draft || st.my || '')}"${dis}><button type="button" class="btn" id="send"${dis}>${st.my ? 'Змінити відповідь' : 'Надіслати'}</button>`;
+  else if (Q.k === 'slovo') h += `<input id="w" maxlength="30" placeholder="Твоя відповідь" value="${esc(draft || st.my || '')}"${dis}><button type="button" class="btn${st.my ? ' sec' : ''}" id="send"${dis}>${st.my ? 'Змінити відповідь' : 'Надіслати'}</button>`;
   else h += `<div class="opts">${Q.o.map((o, j) => `<button type="button" data-v="${j}" aria-pressed="${st.my === j}"${dis}>${esc(o)}</button>`).join('')}</div>`;
   if (st.my !== null && st.open) h += '<div class="ok">✓ Голос прийнято. Можна змінити, поки голосування відкрите.</div>';
   if (!st.open) h += `<div class="ok">${st.my !== null ? '✓ Твій голос враховано. ' : ''}Голосування закрите.</div>`;

@@ -46,6 +46,6 @@ if __name__ == '__main__':
         write(SITE / 'proba' / 'skob' / 'index.html', gr)
     depth = len(pathlib.PurePosixPath(where).parts)
     html = page('../' * depth + ('proba/skob/' if where.startswith('proba/') else 'skob/'))
-    if not where.startswith('proba/'):   # на сайті — завжди новий дизайн (стиль 3), 03.11.2026
-        html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script>if (!/[?&]dyz=/.test(location.search)) history.replaceState(null, \'\', location.pathname + (location.search ? location.search + \'&\' : \'?\') + \'dyz=3\' + location.hash);</script>', 1)
+    if not where.startswith('proba/'):   # на сайті — завжди новий дизайн (стиль 3), 03.11.2026; і варіант Б «як у Змагу» (v=b), 04.11.2026
+        html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<script>{ let q = location.search; if (!/[?&]dyz=/.test(q)) q += (q ? \'&\' : \'?\') + \'dyz=3\'; if (!/[?&]v=/.test(q)) q += \'&v=b\'; if (q !== location.search) history.replaceState(null, \'\', location.pathname + q + location.hash); }</script>', 1)
     write(SITE / where / 'index.html', html)

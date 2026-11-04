@@ -70,12 +70,12 @@ body.s3 .opt{margin-top:14px}
 .bar .n{text-align:right;color:#cfd5dc}
 .bar .n small{display:block;font-size:.6em;color:var(--mut)}
 .avg{display:flex;align-items:center;gap:28px;margin-bottom:22px}
-.ots{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
-.sum .ots{display:block}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
+.ots{display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+.sum .ots{display:block}.ots .avg .wt{font-size:clamp(1rem,1.3vw,1.25rem);line-height:1.35}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
 .avg b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--gd)}
 .avg span{color:var(--mut);font-size:20px}
 .cloud{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;justify-content:center;max-width:1100px;margin:0 auto}
-.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}
+.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}.cloud sup{margin-left:4px;font:700 15px var(--txt);color:var(--mut,#9aa3ad);vertical-align:super}/* 4.11: «×2» тихо, а не «похід²» */
 .hid{display:grid;place-items:center;gap:6px;text-align:center;color:var(--mut);font-size:22px}
 .hid b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--ac)}
 .bar2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -377,7 +377,7 @@ body.s3 .drw.s3d:has(.won){cursor:pointer}
 /* Бінго: кулька з мʼяким відблиском, що не наїжджає на число; витягнуті числа — великі кружечки */
 body.s3 #ball{width:min(330px,40vh);background:radial-gradient(circle at 30% 24%,rgba(255,255,255,.45) 0 7%,rgba(255,255,255,0) 22%),radial-gradient(circle at 50% 50%,var(--bc,#3daf6e) 0 60%,color-mix(in srgb,var(--bc,#3daf6e) 70%,#000) 100%);box-shadow:0 18px 44px #0007}
 body.s3 #ball b{width:56%;font:600 clamp(2.4rem,7vh,4rem)/1 var(--disp);box-shadow:inset 0 -4px 0 rgba(0,0,0,.08)}
-body.s3 #game .hint small{font:700 14px/1.2 var(--txt);letter-spacing:.06em;color:var(--mut);text-transform:uppercase;margin-bottom:8px}
+body.s3 #game .hint small{font:700 clamp(14px,1.35vw,20px)/1.2 var(--txt);letter-spacing:.06em;color:var(--mut);text-transform:uppercase;margin-bottom:8px}
 body.s3 #game .side h2{display:flex;gap:10px;align-items:baseline;margin:0 0 12px;font:600 22px var(--disp);letter-spacing:.04em;color:var(--ink)}
 body.s3 #game .side h2 span{color:#ffc247}
 body.s3 .called{gap:10px;max-height:56vh}
@@ -385,8 +385,8 @@ body.s3 .called span{display:grid;place-items:center;min-width:58px;height:58px;
 body.s3 .called span.cur{background:#ffc247;color:#1d1606}
 body.s3 #game .bar .btn,body.s3 #run .bar2 .btn{min-height:50px}
 /* Опитування: підпис, смужка й число поруч, без розриву */
-body.s3 #run .qn{font:700 15px var(--txt);letter-spacing:.02em;text-transform:none;color:var(--mut)}
-body.s3 #run .cnt{font-weight:600;color:var(--mut)}
+body.s3 #run .qn{font:700 clamp(15px,1.5vw,22px) var(--txt);letter-spacing:.02em;text-transform:none;color:var(--mut)}
+body.s3 #run .cnt{font-weight:600;color:var(--mut);font-size:clamp(15px,1.5vw,22px)}
 body.s3 .bars{display:grid;grid-template-columns:fit-content(40%) minmax(0,1fr) 76px;gap:14px 18px;align-items:center;width:min(1000px,100%)}
 body.s3 .bars .bar{display:contents}
 body.s3 .bars .bar .tr{border:0;background:var(--card);border-radius:99px}
@@ -478,11 +478,114 @@ window.IHRY_S3 = function (o) {
 };
 
 </script>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
+
+</script>
+<script>
+/* «Як провести гру» (4.11.2026): аркуш A4 для ведучого — що підготувати, як почати, під час гри, якщо щось не так.
+   window.JAK_PROVESTY('skob'|'bingo'|'opyt'|'zmag') — відкриває аркуш і друк. Шапка — як у всіх друкованих матеріалах ігор. */
+(function () {
+  'use strict';
+  const D = {"skob": {"lg": ["Потужний", "СКОБ!", "<svg viewBox=\"0 0 40 40\"><rect width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#d64541\"/><rect x=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2f6fd0\"/><rect y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#e8a321\"/><rect x=\"21.5\" y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2e8f55\"/></svg>"], "meta": "10–20 хв · від 2 гравців · кожен зі свого телефона (або вголос, без телефонів)", "S": [["Що підготувати", ["Ноутбук і проектор або великий екран.", "Інтернет на ноутбуці й телефонах.", "Вікторину: «Приклад» або свою («Нова вікторина»).", "За бажанням — «Ведучому» → «Шпаргалка з відповідями»."]], ["Як почати", ["Відкрийте гру й виберіть вікторину.", "У «Як граємо» виберіть час, кількість запитань і порядок.", "Юнаки сканують QR-код «Гравцям» і пишуть справжнє імʼя.", "Ваш телефон: «Ведучому» → відскануйте QR-код пульта.", "«Почати гру»."]], ["Під час гри", ["Запитання на екрані, юнаки тиснуть кольорову кнопку. Швидше — більше балів.", "На пульті правильну відповідь бачите лише ви; жовта кнопка — наступний крок.", "Після кожного запитання — лідери.", "«Завершити» вгорі пульта — одразу переможці."]], ["Якщо щось не так", ["Телефон не підключається — перевірте інтернет або введіть код з екрана вручну.", "Немає інтернету — грайте вголос: юнаки називають, ви тикаєте відповідь на екрані.", "Хтось випав — нехай відкриє ту саму сторінку на тому ж телефоні, бали лишаться."]]], "nm": "Потужний СКОБ!"}, "bingo": {"lg": ["Пластове", "Бінго", "<svg viewBox=\"0 0 40 40\"><circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"#ffc247\"/><circle cx=\"20\" cy=\"20\" r=\"11.5\" fill=\"#fff\"/><path d=\"M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z\" fill=\"#1d1606\"/></svg>"], "meta": "10–30 хв · від 2 гравців · телефони або паперові картки (можна разом)", "S": [["Що підготувати", ["Ноутбук і проектор або великий екран.", "Варіант гри: Числа 1–40 (швидко), Класичне 1–75, Лото 1–90 або Кераміка (слова з гутірки).", "Паперові картки: «Ведучому» → кількість → «Надрукувати», розрізати по пунктиру.", "Ручки чи олівці для паперових карток."]], ["Як почати", ["Виберіть варіант і «Як виграти» (ряд, кути, уся картка).", "Юнаки сканують QR-код «Гравцям» або беруть паперову картку.", "Ваш телефон: «Ведучому» → відскануйте QR-код пульта.", "«Почати гру»."]], ["Під час гри", ["«Наступна кулька» (або пробіл). У Кераміці спершу підказка — юнаки шукають слово, потім «Показати відповідь».", "Хто закрив мету — тисне «БІНГО!» на телефоні. Якщо зарано — гра сама скаже «ще ні».", "Паперову картку — «Перевірити картку» і її номер."]], ["Якщо щось не так", ["Немає інтернету — грайте лише паперовими картками, екран працює без інтернету.", "Кульки закінчились — «Завершити» і «Нова гра»."]]], "nm": "Пластове бінго"}, "opyt": {"lg": ["Швидке", "Опитування", "<svg viewBox=\"0 0 40 40\"><rect y=\"18\" width=\"11\" height=\"22\" rx=\"3\" fill=\"#2fd2c0\"/><rect x=\"14.5\" width=\"11\" height=\"40\" rx=\"3\" fill=\"#ffc247\"/><rect x=\"29\" y=\"10\" width=\"11\" height=\"30\" rx=\"3\" fill=\"#cfd5dc\"/></svg>"], "meta": "2–5 хв · від 3 учасників · анонімно, кожен зі свого телефона", "S": [["Що підготувати", ["Ноутбук і екран.", "Опитування: готове або своє («Змінити питання», «Нове опитування»).", "Типи питань: оцінка 1–5, варіанти, так / ні, одне слово."]], ["Як почати", ["Юнаки сканують QR-код «Учасникам». Імена не потрібні.", "Вирішіть, чи показувати результати одразу.", "«Почати»."]], ["Під час", ["Юнаки відповідають на телефоні, результати рахуються самі.", "«Сховати з екрана / Показати на екрані» — якщо хочете показати пізніше.", "«Закрити голосування» → «Далі». Наприкінці — підсумок усіх питань."]], ["Порада", ["Обговоріть підсумок: що здивувало, що змінити на наступних сходинах.", "Без інтернету опитування не працює — тоді просто попросіть підняти руки."]]], "nm": "Швидке опитування"}, "zmag": {"lg": ["Інтелектуальний", "Змаг", "<svg viewBox=\"0 0 40 40\"><g fill=\"none\" stroke=\"#ffc247\" stroke-width=\"2.4\"><rect x=\"1.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/></g><rect x=\"13.5\" y=\"13.5\" width=\"13\" height=\"13\" rx=\"3\" fill=\"#ffc247\"/></svg>"], "meta": "30–45 хв · 2–5 команд по 3–6 юнаків · один телефон на команду (капітан)", "S": [["Що підготувати", ["Ноутбук, проектор і звук.", "Питання: приклад або свої («Ведучому» → «Питання», 5 тем × 5 питань).", "«Шпаргалка з відповідями» — на випадок, якщо без телефона.", "Назви команд."]], ["Як почати", ["Капітани сканують QR-код «Капітанам» і вибирають команду.", "Ваш телефон: «Ведучому» → відскануйте QR-код пульта.", "Виберіть «Як граємо»: хто вибрав — той відповідає, хто швидше, або кожен сам.", "«Хто починає?» — жеребкування, потім «Почати гру»."]], ["Під час гри", ["Команда називає тему й бали — ви тиснете цю клітинку на пульті.", "Відповідають — ✓ «Правильно» або ✗ «Неправильно».", "«Дати варіанти» — за половину балів. «До табла» — далі.", "«Завершити» вгорі пульта — переможці з феєрверком."]], ["Якщо щось не так", ["Немає інтернету — команди відповідають уголос, ви тиснете ✓ / ✗ на ноутбуці.", "Звук вмикається й вимикається кнопкою з динаміком у шапці."]]], "nm": "Інтелектуальний змаг"}};
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  window.JAK_PROVESTY = function (k) {
+    const g = D[k]; if (!g) return;
+    const w = window.open('', '_blank'); if (!w) { alert('Дозвольте спливні вікна, щоб надрукувати'); return; }
+    const lg = g.lg[2].replace('<svg viewBox="0 0 40 40"', '<svg viewBox="0 0 40 40" aria-hidden="true"');
+    w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>${esc(g.nm)} — як провести гру</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Source+Sans+3:wght@400;600;700&display=swap"><style>
+@page{size:A4;margin:12mm 14mm}*{box-sizing:border-box}body{margin:0;color:#1d2125;font:12pt/1.45 'Source Sans 3',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:6mm;padding:0 0 3mm;margin:0 0 3mm;border-bottom:2.2pt solid #e8a321}
+.lg{display:flex;align-items:center;gap:2.6mm}.lg svg{width:11mm;height:11mm;flex:none}.lg small{display:block;font:600 6.5pt/1 Oswald,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#b07a00;margin-bottom:.8mm}.lg b{display:block;font:600 20pt/.9 Oswald,'Arial Narrow',sans-serif;text-transform:uppercase}
+.ttl{text-align:right}.ttl i{display:inline-block;font:700 8pt 'Source Sans 3',sans-serif;font-style:normal;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873;margin-bottom:1.2mm}.ttl h1{margin:0;font:600 17pt/1.05 Oswald,'Arial Narrow',sans-serif;text-transform:uppercase}
+.meta{margin:0 0 6mm;color:#5f6873;font-size:11pt}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8mm 10mm}
+h2{margin:0 0 2.5mm;padding:0 0 0 2.6mm;border-left:2.2pt solid #e8a321;font:600 14pt/1.15 Oswald,sans-serif;text-transform:uppercase}
+ol,ul{margin:0;padding-left:5.5mm}li{margin:0 0 1.4mm}li::marker{color:#b07a00;font-weight:700}
+section{break-inside:avoid}
+footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873;display:flex;justify-content:space-between}
+</style><\/head><body><header><div class="lg">${lg}<div><small>${esc(g.lg[0])}</small><b>${esc(g.lg[1])}</b></div></div><div class="ttl"><i>для ведучого</i><h1>Як провести гру</h1></div></header>
+<p class="meta">${esc(g.meta)}</p><div class="g">${g.S.map(([h, L], i) => `<section><h2>${esc(h)}</h2>${i === 1 ? '<ol>' : '<ul>'}${L.map(x => '<li>' + esc(x) + '</li>').join('')}${i === 1 ? '</ol>' : '</ul>'}</section>`).join('')}</div>
+<footer><span>Порада: прожени гру сам заздалегідь — «Ведучому» → «Репетиція».</span><b>Пласт у Фінляндії</b></footer><script>(document.fonts ? document.fonts.ready : Promise.resolve()).then(()=>setTimeout(()=>print(),300))<\/script></body></html>`);
+    w.document.close();
+  };
+})();
+
+</script>
 </head>
 <body>
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
   <span class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="17" width="6" height="12" rx="2" fill="#2fd2c0"/><rect x="13" y="7" width="6" height="22" rx="2" fill="#ffc247"/><rect x="23" y="12" width="6" height="17" rx="2" fill="#2fd2c0"/></svg>Опитування</span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <button type="button" class="chip" id="phone-mode" aria-label="Пульт ведучого на телефоні"></button>
   <span class="chip" title="Учасників на звʼязку"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg><span class="sr">На звʼязку:</span> <b id="pn">0</b></span>
 </div>
 
@@ -1028,9 +1131,9 @@ function resHtml(r) {
   if (r.k === 'slovo') {
     if (!r.w.length) return '<div class="hid">Поки жодного слова</div>';
     const mx = r.w[0][1], cols = ['#2fd2c0', '#ffc247', '#cfd5dc', '#62cf93', '#ff9a8a'];
-    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup> ${c}</sup>` : ''}</span>`).join('') + '</div>';
+    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup>×${c}</sup>` : ''}</span>`).join('') + '</div>';
   }
-  if (r.k === 'ots') return `<div class="ots"><div class="avg"><b>${r.n ? r.avg.toFixed(1).replace('.', ',') : '—'}</b><span>середня оцінка з 5 ${r.n ? FACES[Math.max(0, Math.round(r.avg) - 1)] : ''}</span></div>${barsHtml(r)}</div>`;
+  if (r.k === 'ots') return `<div class="ots"><div class="avg">${r.n ? `<b>${r.avg.toFixed(1).replace('.', ',')}</b><span>середня оцінка з 5 ${FACES[Math.max(0, Math.round(r.avg) - 1)]}</span>` : '<span class="wt">Середня оцінка зʼявиться з першими голосами</span>'}</div>${barsHtml(r)}</div>`;
   return barsHtml(r);
 }
 
@@ -1181,6 +1284,493 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
 /*/FAM*/
 paintLobby(); paintTop(); startNet();
 window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? votes[qi].size : 0, res: phase === 'run' ? resOf(qi) : null }) };
+/* ---------- пульт ведучого з телефона (4.11.2026): та сама сторінка пульта, що й у гутірках (/pult/) ---------- */
+window.GUTIRKA = {
+  id: 'opytuvannia', title: 'Швидке опитування',
+  state() {   /* пульт за зразком змагу: питання, скільки відповіли, живі смужки (ведучий бачить раніше за зал), кнопки внизу */
+    const all = [...players.values()], on = all.filter(P => P.on).length, N = poll().qs.length;
+    const base = { mode: 'full', gra: true, glogo: 'opyt', note: '', next: '', sections: [] };
+    if (!$('#lobby').hidden) return Object.assign(base, { noPrev: true, nextL: 'Почати', index: 0, total: N + 1, title: 'Збираємо учасників',
+      ix: { v: 'gra', meta: [N + ' ' + (N % 10 >= 1 && N % 10 <= 4 && (N % 100 < 11 || N % 100 > 14) ? 'питання' : 'питань'), 'анонімно'], big: String(on), sub: 'на звʼязку', hint: 'Учасники сканують QR-код на екрані. Імена не потрібні — відповіді анонімні.' } });
+    if (!$('#end').hidden) return Object.assign(base, { noPrev: true, canNext: false, nextL: 'Кінець', index: N, total: N + 1, title: 'Підсумок',
+      ix: { v: 'gra', h: 'Підсумок', hint: 'На екрані — підсумок усіх питань. Можна обговорити, що здивувало.' } });
+    const r = resOf(qi);
+    const ix = { v: 'gra', meta: ['Питання ' + (qi + 1) + ' / ' + N, shown ? 'видно на екрані' : 'бачите лише ви'], q: q().q,
+      who: [(r.n === 1 ? 'Відповів 1' : 'Відповіли: ' + r.n) + (on ? ' з ' + on : ''), open ? '' : 'no', r.n, Math.max(on, r.n)] };
+    if (!open) ix.who[0] += ' · голосування закрите';
+    if (r.k === 'slovo') { ix.chipsH = r.w.length ? 'Слова' : ''; ix.chips = r.w.map(([w, c]) => w + (c > 1 ? ' ×' + c : '')); if (!r.w.length) ix.hint = 'Слова зʼявляться тут, щойно хтось відповість.'; }
+    else if (r.k === 'ots') { ix.cols = r.o.map((t, j) => [t, r.c[j]]); const n = r.c.reduce((a, c) => a + c, 0); if (n) ix.colsH = 'Середня оцінка: ' + (r.c.reduce((a, c, j) => a + c * (j + 1), 0) / n).toFixed(1).replace('.', ','); }
+    else { ix.bars = r.o.map((t, j) => [t, r.c[j]]); }
+    ix.end = ['finish', '✕ Завершити', 'Завершити опитування й показати підсумок?'];
+    ix.b = [['reveal', shown ? 'Сховати з екрана' : 'Показати на екрані'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']];
+    return Object.assign(base, { canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: ix.meta[0], ix });
+  },
+  next() { if (!$('#lobby').hidden) $('#start').click(); else if (!$('#run').hidden) $('#next').click(); },
+  prev() { if (!$('#run').hidden && qi > 0) $('#prev').click(); },
+  jump() {},
+  act(id) { if (id === 'finish') { if (!$('#run').hidden) finish(); return; } const b = $('#' + id); if (b && !b.disabled && (id !== 'start' || !$('#lobby').hidden)) b.click(); }
+};
+{ let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
+})();
+</script>
+<script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
+<script>window.GUTIRKA_BOT_URL = () => { const q = document.getElementById('qr'); return q && q.dataset.u ? q.dataset.u : null; };   /* «Репетиція»: куди входять тестові гравці */</script>
+<script>
+/* shared/pult-host.js — пульт на боці ведучого (ноутбук).
+   Підключається в кінці сторінки гутірки, після її основного скрипта і shared/qr.js.
+   Гутірка має віддати об'єкт window.GUTIRKA:
+     { id, title,
+       state()  -> { index, total, title, next, note, elapsed, target, sections:[[назва, індекс],…] },
+       next(), prev(), jump(i), resetTimer()? }
+   і викликати подію  document.dispatchEvent(new CustomEvent('gutirka:slide'))  після зміни слайда. */
+(function () {
+  'use strict';
+  const API = () => window.GUTIRKA;
+  const PEER_LIBS = [
+    'https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js',
+    'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js',
+    'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'
+  ].filter(Boolean);
+  const STORE = 'gutirka.host', SITE_KEY = 'gutirka.site';
+
+  const MSG = {
+    idle: 'Пульт вимкнено.',
+    starting: 'Створюємо підключення…',
+    waiting: 'Очікуємо телефон. Скануйте QR-код або введіть код.',
+    pending: 'Телефон просить доступ. Підтвердіть нижче.',
+    connected: 'Телефон підключено. Можна керувати!',
+    lost: 'Телефон відключився. Він підключиться сам, щойно з’явиться зв’язок.',
+    offline: 'Немає зв’язку із сервером. Пробуємо знову…',
+    error: 'Помилка пульта.'
+  };
+
+  let Peer = null, peer = null, code = '', key = '', stopped = true, status = 'idle', statusMsg = '';
+  let ctrl = null, pending = null, retryT = 0, attempts = 0, seq = 0, wl = null, hbT = 0, slideT = 0, qrKey = '';
+  const tokens = new Set(), unapproved = [];
+
+  /* ---------- допоміжне ---------- */
+  const rnd = n => { const b = new Uint32Array(1); crypto.getRandomValues(b); return b[0] % n; };
+  const genCode = () => String(rnd(1000000)).padStart(6, '0');
+  const genKey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
+  const send = (rec, m) => { try { if (rec && rec.c && rec.c.open) rec.c.send(m); } catch (e) { /* ігноруємо */ } };
+  const peerOpts = () => window.GUTIRKA_PEER_OPTS || {};
+  function loadScript(src) {
+    return new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = src; s.async = true;
+      s.onload = res; s.onerror = () => { s.remove(); rej(new Error('load ' + src)); };
+      document.head.appendChild(s);
+    });
+  }
+  async function loadPeer() {
+    try { if (window.parent !== window && window.parent.GUTIRKA_LOCAL_PEER) return window.parent.GUTIRKA_LOCAL_PEER; } catch (e) { /* інший сайт */ }   // «Репетиція»: пульт і гутірка в одній сторінці, звʼязок без інтернету
+    if (!window.Peer) for (const u of PEER_LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* пробуємо наступне джерело */ } }
+    if (window.GutirkaNet) return window.GutirkaNet(window.Peer || null);   // PeerJS + запасні канали (zvyazok.js)
+    if (window.Peer) return window.Peer;
+    throw new Error('Не вдалося завантажити бібліотеку зв’язку. Перевірте інтернет.');
+  }
+  const persist = () => {
+    try { sessionStorage.setItem(STORE, JSON.stringify({ on: !stopped, code, key, tokens: [...tokens] })); } catch (e) { /* ok */ }
+  };
+  /* Куди веде QR: 1) адреса пульта, яку ведучий вписав один раз; 2) вбудована адреса; 3) цей самий файл, якщо він на сайті. */
+  let editSite = false;
+  function pultSite() {
+    const baked = window.GUTIRKA_PULT_URL || '';
+    if (/^https:\/\//.test(baked) && location.protocol !== 'file:') return { url: baked, self: false, stored: false };   // на сайті — завжди вбудована адреса (вписана вручну стара адреса більше не заважає)
+    try { const s = localStorage.getItem(SITE_KEY); if (s) return { url: s, self: false, stored: true }; } catch (e) { /* ok */ }
+    if (/^https:\/\//.test(baked)) return { url: baked, self: false, stored: false };
+    if (/^https?:$/.test(location.protocol)) return { url: location.origin + location.pathname, self: true, stored: false };
+    return null;
+  }
+  function pultBase() { const s = pultSite(); return s ? s.url : ''; }
+  async function wakeLock() {
+    try {
+      if (!stopped && ctrl && 'wakeLock' in navigator && !wl) {
+        wl = await navigator.wakeLock.request('screen');
+        wl.addEventListener('release', () => { wl = null; });
+      }
+    } catch (e) { wl = null; }
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wakeLock(); });
+
+  /* ---------- стан і інтерфейс ---------- */
+  let btn, dlg, ask;
+  const q = s => dlg && dlg.querySelector(s);
+  function setStatus(s, msg) { status = s; statusMsg = msg || ''; paint(); }
+  function paint() {
+    if (btn) { const d = btn.querySelector('.pd-dot'); d.className = 'pd-dot ' + ({ connected: 'ok', error: 'bad', idle: '' }[status] === undefined ? 'warn' : { connected: 'ok', error: 'bad', idle: '' }[status]); }
+    if (!dlg) return;
+    dlg.dataset.st = status;
+    const base = pultBase(), on = status !== 'idle' && status !== 'error';
+    q('.pd-status span').textContent = (status === 'waiting' && !base) ? 'Очікуємо телефон. Введіть на ньому код.' : (statusMsg || MSG[status] || '');
+    const url = base && code ? base + '?c=' + code + '&k=' + key : '';
+    const ps = pultSite();
+    const manual = base ? base.replace(/^https?:\/\//, '').replace(/\/$/, '') + (ps && ps.self ? '#pult' : '') : '';
+    const showQr = on && url && (status !== 'connected' || dlg.classList.contains('more'));
+    if (showQr && window.qrSvg) { if (qrKey !== url) { q('.pd-qr').innerHTML = window.qrSvg(url, 240); qrKey = url; } } else { q('.pd-qr').innerHTML = ''; qrKey = ''; }
+    q('.pd-main').hidden = !(on && (status !== 'connected' || dlg.classList.contains('more')));
+    q('.pd-or').innerHTML = base ? 'або відкрийте на телефоні <b class="pd-url"></b><br>і введіть код'
+      : 'На телефоні відкрийте цей самий файл <b>gutirky.html</b>,<br>натисніть «📱 Цей телефон — пульт» і введіть код:';
+    q('.pd-code').textContent = code ? code.slice(0, 3) + ' ' + code.slice(3) : '';
+    if (q('.pd-url')) q('.pd-url').textContent = manual;
+    q('.pd-site').hidden = !on || (!!base && !editSite);
+    q('#pd-site-edit').hidden = !on || !base || editSite || !(ps && !ps.self);
+    q('.pd-who').hidden = !(status === 'connected' && ctrl);
+    if (ctrl) q('.pd-who b').textContent = ctrl.name || 'Телефон';
+    q('#pd-more').hidden = status !== 'connected';
+    q('#pd-kick').hidden = !ctrl;
+    q('#pd-stop').hidden = status === 'idle';
+    q('#pd-go').hidden = status !== 'idle' && status !== 'error';
+  }
+  function showAsk(rec) {
+    ask.querySelector('b').textContent = rec.name || 'Телефон';
+    ask.hidden = false;
+  }
+  const hideAsk = () => { if (ask) ask.hidden = true; };
+
+  const CSS = `
+#phone-mode .pd-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:7px;background:#6b7480;vertical-align:1px}
+#phone-mode .pd-dot.ok{background:#3ee08f;box-shadow:0 0 8px #3ee08f}#phone-mode .pd-dot.warn{background:#ffc247}#phone-mode .pd-dot.bad{background:#ff5d5d}
+#pult-dlg{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(10,12,15,.88);font:16px/1.5 'Source Sans 3',system-ui,sans-serif;color:#f2f4f6}
+#pult-dlg.on{display:flex}
+#pult-dlg .pd-box{position:relative;width:min(460px,100%);max-height:96vh;overflow:auto;background:#1f2328;border:1px solid #3b4048;border-left:4px solid #2fd2c0;border-radius:18px;padding:22px 22px 18px;box-shadow:0 24px 90px #000a}
+#pult-dlg h2{font:600 22px/1.15 Oswald,'Arial Narrow',sans-serif;letter-spacing:.06em;text-transform:uppercase;margin:0 36px 12px 0}
+#pult-dlg .pd-x{position:absolute;right:12px;top:10px;width:38px;height:38px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
+#pult-dlg .pd-status{display:flex;gap:10px;align-items:center;padding:9px 14px;border-radius:12px;background:#272b31;border:1px solid #3b4048;font-weight:600;font-size:15px}
+#pult-dlg .pd-status i{flex:none;width:10px;height:10px;border-radius:50%;background:#6b7480}
+#pult-dlg[data-st=connected] .pd-status i{background:#3ee08f;box-shadow:0 0 8px #3ee08f}
+#pult-dlg[data-st=waiting] .pd-status i,#pult-dlg[data-st=pending] .pd-status i,#pult-dlg[data-st=starting] .pd-status i,#pult-dlg[data-st=lost] .pd-status i,#pult-dlg[data-st=offline] .pd-status i{background:#ffc247;animation:pdp 1.2s infinite}
+#pult-dlg[data-st=error] .pd-status i{background:#ff5d5d}
+@keyframes pdp{50%{opacity:.35}}
+#pult-dlg .pd-main{text-align:center;margin:14px 0 4px}
+#pult-dlg .pd-qr{display:inline-block;line-height:0;border-radius:18px;box-shadow:0 0 0 1px rgba(98,207,147,.35),0 0 28px -6px rgba(61,175,110,.45)}
+#pult-dlg .pd-qr:empty{display:none}
+#pult-dlg .pd-or{font-size:14px;color:#b7bfc9;margin:10px 0 2px}
+#pult-dlg .pd-or b{color:#f2f4f6;word-break:break-all}
+#pult-dlg .pd-code{font:600 44px/1.1 Oswald,'Arial Narrow',sans-serif;letter-spacing:.14em;color:#62cf93}
+#pult-dlg .pd-link{display:block;margin:8px auto 0;background:none;border:0;color:#98a1ac;text-decoration:underline;font:14px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+#pult-dlg .pd-site{margin:12px 0;font-size:14px;color:#b7bfc9}
+#pult-dlg .pd-site input{display:block;width:100%;margin:6px 0;padding:10px 12px;border-radius:10px;border:1px solid #4a515b;background:#14171a;color:#fff;font-size:15px}
+#pult-dlg .pd-who{margin:14px 0 4px;padding:12px 14px;border-radius:12px;background:#1d3a35;border:1px solid #2c6a5e}
+#pult-dlg .pd-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+#pult-dlg .pd-b{padding:10px 14px;border-radius:12px;border:1px solid #4a515b;background:#2b3037;color:#fff;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+#pult-dlg .pd-b.go{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}
+#pult-dlg .pd-b:hover{filter:brightness(1.15)}
+#pult-dlg .pd-tip{font-size:13px;color:#98a1ac;margin:8px 0 0}
+#pult-dlg .pd-det{margin-top:12px;font-size:13px;color:#98a1ac}
+#pult-dlg .pd-det summary{cursor:pointer;width:max-content}
+#pult-dlg .pd-det .pd-link{margin:6px 0 0}
+#pult-dlg .pd-main{margin:18px 0 6px}
+#pult-dlg .pd-or{margin:14px 0 2px}
+#pult-ask{position:fixed;z-index:70;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(520px,calc(100% - 24px));padding:14px 16px;border-radius:16px;background:#1f2328;border:1px solid #3daf6e;box-shadow:0 12px 50px #000c;color:#f2f4f6;font:16px/1.45 'Source Sans 3',system-ui,sans-serif}
+#pult-ask[hidden]{display:none}
+#pult-ask div{display:flex;gap:8px;margin-top:10px}
+#pult-ask button{flex:1;padding:11px;border-radius:12px;border:1px solid #4a515b;background:#2b3037;color:#fff;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer}
+#pult-ask button.ok{background:#3daf6e;border-color:#3daf6e;color:#0e1f15}`;
+
+  function buildUi() {
+    const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
+    btn = document.getElementById('phone-mode');
+    if (!btn) { btn = document.createElement('button'); btn.id = 'phone-mode'; btn.type = 'button'; (document.getElementById('app') || document.body).appendChild(btn); }
+    btn.innerHTML = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"7\" y=\"2.5\" width=\"10\" height=\"19\" rx=\"2.5\"/><path d=\"M11 18.5h2\"/></svg><span>\u041f\u0443\u043b\u044c\u0442</span><i class=\"pd-dot\"></i>";
+    btn.setAttribute('aria-label', 'Керування презентацією з телефона');
+    dlg = document.createElement('div'); dlg.id = 'pult-dlg'; dlg.setAttribute('role', 'dialog'); dlg.setAttribute('aria-modal', 'true'); dlg.setAttribute('aria-labelledby', 'pd-ttl');
+    dlg.innerHTML = `<div class="pd-box">
+      <button class="pd-x" type="button" aria-label="Закрити">×</button>
+      <h2 id="pd-ttl">Пульт ведучого на телефоні</h2>
+      <div class="pd-status"><i></i><span></span></div>
+      <div class="pd-who" hidden>Керує: <b></b></div>
+      <div class="pd-main" hidden>
+        <div class="pd-qr"></div>
+        <div class="pd-or">або відкрийте <b class="pd-url"></b> і введіть код</div>
+        <div class="pd-code"></div>
+      </div>
+      <div class="pd-site" hidden>Щоб зʼявився QR-код, вставте адресу сторінки пульта (зазвичай <b>https://gutirky-fi.github.io/pult/</b>):
+        <input type="url" id="pd-site" placeholder="https://gutirky-fi.github.io/pult/" autocomplete="off" spellcheck="false">
+        <button class="pd-b" id="pd-site-save" type="button">Зберегти адресу</button></div>
+      <div class="pd-row">
+        <button class="pd-b go" id="pd-go" type="button">Створити підключення</button>
+        <button class="pd-b" id="pd-more" type="button" hidden>Підключити інший телефон</button>
+        <button class="pd-b" id="pd-kick" type="button" hidden>Від’єднати телефон</button>
+        <button class="pd-b" id="pd-stop" type="button">Зупинити пульт</button>
+      </div>
+      <details class="pd-det"><summary>Докладніше</summary>
+        <p class="pd-tip">Потрібен інтернет на ноутбуці й телефоні (для самої гутірки інтернет не потрібен). Не закривайте цю вкладку під час гутірки.</p>
+        <button class="pd-link" id="pd-site-edit" type="button" hidden>Змінити адресу пульта</button></details></div>`;
+    document.body.appendChild(dlg);
+    ask = document.createElement('div'); ask.id = 'pult-ask'; ask.hidden = true; ask.setAttribute('role', 'alertdialog');
+    ask.innerHTML = '<span>Телефон «<b></b>» просить доступ до пульта. Це ваш телефон?</span><div><button class="ok" type="button" data-a="y">Дозволити</button><button type="button" data-a="n">Відхилити</button></div>';
+    document.body.appendChild(ask);
+
+    btn.addEventListener('click', openDlg);
+    dlg.addEventListener('click', e => { if (e.target === dlg) closeDlg(); });
+    dlg.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); });
+    q('.pd-x').addEventListener('click', closeDlg);
+    q('#pd-go').addEventListener('click', () => start(true));
+    q('#pd-stop').addEventListener('click', stop);
+    q('#pd-kick').addEventListener('click', () => { if (ctrl) { send(ctrl, { t: 'deny', r: 'kicked' }); const c = ctrl; ctrl = null; try { c.c.close(); } catch (e) { /* ok */ } setStatus('waiting'); } });
+    q('#pd-site-edit').addEventListener('click', () => { editSite = true; const s = pultSite(); q('#pd-site').value = s && !s.self ? s.url : ''; paint(); });
+    q('#pd-more').addEventListener('click', () => { dlg.classList.add('more'); paint(); });
+    q('#pd-site-save').addEventListener('click', () => {
+      const v = q('#pd-site').value.trim();
+      if (!/^https:\/\/[^\s/]+/i.test(v)) { q('#pd-site').style.borderColor = '#ff5d5d'; return; }
+      let u = v.replace(/[?#].*$/, ''); if (/^https:\/\/[^/]+$/i.test(u)) u += '/';
+      try { localStorage.setItem(SITE_KEY, u); } catch (e) { /* ok */ }
+      editSite = false;
+      qrKey = ''; paint();
+    });
+    ask.addEventListener('click', e => {
+      const a = e.target.closest('button'); if (!a || !pending) return;
+      const rec = pending;
+      if (a.dataset.a === 'y') accept(rec); else { pending = null; hideAsk(); deny(rec, 'declined'); setStatus(ctrl ? 'connected' : 'waiting'); }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && dlg.classList.contains('on')) { e.stopImmediatePropagation(); e.preventDefault(); closeDlg(); }
+      else if (dlg.classList.contains('on') && !dlg.contains(e.target)) { e.stopImmediatePropagation(); }
+    }, true);
+    paint();
+  }
+  function openDlg() { dlg.classList.add('on'); dlg.classList.remove('more'); if (status === 'idle') start(true); paint(); }
+  function closeDlg() { dlg.classList.remove('on'); }
+
+  /* ---------- сигнальне з'єднання (PeerJS) ---------- */
+  async function start(fresh) {
+    if (peer && !peer.destroyed) { paint(); return; }
+    stopped = false; setStatus('starting');
+    try { Peer = await loadPeer(); } catch (e) { setStatus('error', e.message); return; }
+    if (stopped) return;
+    if (fresh || !code) { code = genCode(); key = genKey(); tokens.clear(); }
+    persist(); create();
+  }
+  function retryLater(fn, base) {
+    clearTimeout(retryT);
+    const d = Math.min(15000, (base || 1000) * Math.pow(1.6, attempts++));
+    retryT = setTimeout(() => { if (!stopped) fn(); }, d);
+  }
+  function create() {
+    let p;
+    window.GUTIRKA_NET_KEY = key;   // для шифрування запасного каналу
+    try { p = new Peer('gutirka-' + code, peerOpts()); } catch (e) { setStatus('error', 'Не вдалося створити підключення: ' + e.message); return; }
+    peer = p;
+    p.on('open', () => { if (peer !== p) return; attempts = 0; setStatus(ctrl ? 'connected' : 'waiting'); persist(); });
+    p.on('connection', c => { if (peer === p) onConn(c); });
+    p.on('disconnected', () => {
+      if (peer !== p || stopped) return;
+      setStatus('offline');
+      retryLater(() => { if (peer === p && !p.destroyed) { try { p.reconnect(); } catch (e) { peer = null; create(); } } });
+    });
+    p.on('close', () => { if (peer !== p || stopped) return; peer = null; setStatus('offline'); retryLater(create); });
+    p.on('error', err => {
+      if (peer !== p || stopped) return;
+      const ty = err && err.type;
+      if (ty === 'unavailable-id') {
+        try { p.destroy(); } catch (e) { /* ok */ }
+        peer = null;
+        if (tokens.size && attempts < 4) { retryLater(create, 1500); return; }   // після перезавантаження сторінки старий код ще може бути зайнятий
+        if (attempts > 8) { setStatus('error', 'Не вдалося зайняти код. Натисніть «Створити підключення».'); return; }
+        attempts++; code = genCode(); key = genKey(); tokens.clear(); persist(); setTimeout(create, 200); return;
+      }
+      if (ty === 'browser-incompatible') { setStatus('error', 'Цей браузер не підтримує пульт. Скористайтеся Chrome.'); return; }
+      setStatus('offline', ty ? 'Помилка зв’язку (' + ty + '). Пробуємо знову…' : '');
+      retryLater(() => {
+        if (peer === p && !p.destroyed) { if (p.disconnected) { try { p.reconnect(); } catch (e) { /* ok */ } } }
+        else if (!peer) create();
+      });
+    });
+  }
+  function stop() {
+    stopped = true; clearTimeout(retryT); clearInterval(hbT); hbT = 0;
+    const c = ctrl; ctrl = null; pending = null; hideAsk();
+    if (c) { send(c, { t: 'deny', r: 'stopped' }); try { c.c.close(); } catch (e) { /* ok */ } }
+    try { if (peer) peer.destroy(); } catch (e) { /* ok */ }
+    peer = null; tokens.clear(); code = ''; key = ''; qrKey = ''; attempts = 0;
+    try { if (wl) wl.release(); } catch (e) { /* ok */ } wl = null;
+    try { sessionStorage.removeItem(STORE); } catch (e) { /* ok */ }
+    if (dlg) dlg.classList.remove('more');
+    setStatus('idle');
+  }
+
+  /* ---------- підключення телефонів ---------- */
+  function onConn(c) {
+    const rec = { c, authed: false, waiting: false, t: Date.now(), name: '', tmo: 0 };
+    rec.tmo = setTimeout(() => { if (!rec.authed && !rec.waiting) { try { c.close(); } catch (e) { /* ok */ } } }, 10000);
+    c.on('data', d => onData(rec, d));
+    c.on('close', () => gone(rec));
+    c.on('error', () => gone(rec));
+  }
+  function deny(rec, r) { send(rec, { t: 'deny', r }); clearTimeout(rec.tmo); setTimeout(() => { try { rec.c.close(); } catch (e) { /* ok */ } }, 250); }
+  function onData(rec, d) {
+    if (!d || typeof d !== 'object') return;
+    if (d.t === 'hello') return hello(rec, d);
+    if (!rec.authed) return;
+    rec.t = Date.now();
+    if (d.t === 'ping') send(rec, { t: 'pong', n: d.n });
+    else if (d.t === 'sync') pushState(rec);
+    else if (d.t === 'cmd') command(rec, d);
+  }
+  function hello(rec, d) {
+    if (rec.authed || rec.waiting) return;
+    if (d.v !== 1) return deny(rec, 'version');
+    rec.name = String(d.name || 'Телефон').slice(0, 60);
+    if ((d.token && tokens.has(d.token)) || (d.key && d.key === key)) return accept(rec, d.token);
+    const now = Date.now(); while (unapproved.length && now - unapproved[0] > 60000) unapproved.shift();
+    if (unapproved.length >= 5 || (pending && pending !== rec)) return deny(rec, 'busy');
+    unapproved.push(now);
+    pending = rec; rec.waiting = true; clearTimeout(rec.tmo);
+    send(rec, { t: 'wait' });
+    if (status !== 'connected') setStatus('pending');
+    showAsk(rec);
+  }
+  function accept(rec, tok) {
+    clearTimeout(rec.tmo); rec.authed = true; rec.waiting = false; rec.t = Date.now();
+    if (pending === rec) { pending = null; hideAsk(); }
+    const token = tok && tokens.has(tok) ? tok : Array.from(crypto.getRandomValues(new Uint8Array(12)), b => (b % 36).toString(36)).join('');
+    tokens.add(token); persist();
+    if (ctrl && ctrl !== rec) { send(ctrl, { t: 'deny', r: 'replaced' }); const o = ctrl; ctrl = null; try { o.c.close(); } catch (e) { /* ok */ } }
+    ctrl = rec;
+    send(rec, { t: 'welcome', token, g: { id: 'library', title: 'Бібліотека гутірок' } });
+    setStatus('connected'); pushState(rec); wakeLock();
+    if (!hbT) hbT = setInterval(heartbeat, 5000);
+  }
+  function gone(rec) {
+    clearTimeout(rec.tmo);
+    if (pending === rec) { pending = null; hideAsk(); if (status === 'pending') setStatus(ctrl ? 'connected' : 'waiting'); }
+    if (ctrl === rec) { ctrl = null; if (!stopped) setStatus('lost'); }
+  }
+  function heartbeat() {
+    if (ctrl && Date.now() - ctrl.t > 14000) { const c = ctrl; ctrl = null; try { c.c.close(); } catch (e) { /* ok */ } if (!stopped) setStatus('lost'); }
+    else if (ctrl) pushState();
+  }
+  function pushState(rec) {
+    rec = rec || ctrl; if (!rec) return;
+    const a = API();
+    if (!a) { send(rec, { t: 'state', n: ++seq, idle: true }); return; }
+    let s; try { s = a.state(); } catch (e) { return; }
+    const SK = window.SKOB;   // «Потужний СКОБ!» відкрито — пульт керує грою
+    try { if (SK && SK.view && SK.active()) s = Object.assign({}, s, { ix: { v: 'skob', s: SK.view() } }); } catch (e) { /* ok */ }
+    send(rec, Object.assign({ t: 'state', n: ++seq, gtitle: a.title }, s));
+  }
+  function command(rec, d) {
+    if (rec !== ctrl) return;
+    const a = API(); if (!a) { pushState(rec); return; }
+    if (d.a === 'timer-reset') { if (a.resetTimer) a.resetTimer(); pushState(); return; }
+    if (d.a === 'asset' && typeof d.id === 'string' && a.asset) {   // картинки для пульта (міні-карта, мініатюри фото): надсилаємо на запит телефона
+      Promise.resolve(a.asset(d.id)).then(v => { if (v != null) send(rec, { t: 'asset', id: d.id, v }); }).catch(() => {}); return;
+    }
+    const SK = window.SKOB;
+    if (SK && SK.cmd && ((d.a === 'act' && typeof d.id === 'string' && d.id.startsWith('skob:')) || ((d.a === 'next' || d.a === 'prev') && SK.active()))) {
+      if (d.a === 'act') SK.cmd(d.id.slice(5)); else if (d.a === 'next') SK.cmd('next');   // «Назад» під час гри нічого не робить
+      clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40); return;
+    }
+    let cur = -1; try { cur = a.state().index; } catch (e) { /* ok */ }
+    if (typeof d.from === 'number' && d.from !== cur) { pushState(rec); return; }   // застаріла команда: телефон відстав
+    if (d.a === 'next') a.next(); else if (d.a === 'prev') a.prev();
+    else if (d.a === 'jump' && Number.isInteger(d.i)) a.jump(d.i);
+    else if (d.a === 'act' && typeof d.id === 'string' && a.act) a.act(d.id);   // інтерактив гутірки: області, точки, фото (якщо гутірка вміє)
+    clearTimeout(slideT); slideT = setTimeout(() => pushState(), 40);
+  }
+  document.addEventListener('gutirka:slide', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
+  document.addEventListener('skob:state', () => { clearTimeout(slideT); slideT = setTimeout(() => pushState(), 30); });
+  addEventListener('online', () => {
+    if (stopped) return;
+    attempts = 0;
+    if (!peer) create(); else if (peer.disconnected && !peer.destroyed) { try { peer.reconnect(); } catch (e) { /* ok */ } }
+  });
+  addEventListener('pagehide', () => { try { if (peer) peer.destroy(); } catch (e) { /* ok */ } });
+
+  /* ---------- запуск ---------- */
+  function init() {
+    buildUi();
+    window.GutirkaPult = { open: openDlg, close: closeDlg, start, stop, get status() { return status; }, get code() { return code; }, get key() { return key; } };
+    let saved = null; try { saved = JSON.parse(sessionStorage.getItem(STORE) || 'null'); } catch (e) { /* ok */ }
+    if (saved && saved.on && /^\d{6}$/.test(saved.code || '')) {   // сторінку перезавантажили під час гутірки: пульт відновлюється сам
+      code = saved.code; key = saved.key || genKey(); (saved.tokens || []).forEach(t => tokens.add(t));
+      start(false);
+    }
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+</script>
+<script>
+(function () {
+  'use strict';
+  function run() {
+  const dlg = document.getElementById('pult-dlg'), btn = document.getElementById('phone-mode');
+  if (!dlg || !btn) return;
+  const box = dlg.querySelector('.pd-box');
+  document.head.insertAdjacentHTML('beforeend', '<style>' +
+    '#pult-dlg.vd{align-items:flex-start;padding:70px 16px 16px;background:rgba(10,12,15,.8)}' +
+    '#pult-dlg.vd .pd-box{width:min(840px,100%);border-left:1px solid #3b4048;padding:22px 24px}' +
+    '#pult-dlg.vd h2{font-size:24px;letter-spacing:.02em;margin:0 50px 16px 0}' +
+    '#pult-dlg.vd .pd-x{border-radius:99px;width:40px;height:40px;right:12px;top:12px}' +
+    '#pult-dlg.vd .vd-g{display:grid;grid-template-columns:370px minmax(0,1fr);gap:14px 24px;align-items:start}' +
+    '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,420px)}' +
+    '#pult-dlg.vd .vd-t h4{margin:0 0 10px;font:700 14px "Source Sans 3",system-ui,sans-serif;color:#a0a8b2}' +
+    '#pult-dlg.vd .vd-t .l2xi,#pult-dlg.vd .vd-t .s2xi{margin:0;display:block}' +
+    '#pult-dlg.vd .vd-f{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:16px;padding-top:14px;border-top:1px solid #383d44}#pult-dlg.vd .vd-f .pd-b.on{border-color:#3daf6e;color:#7fe0a8}#pult-dlg.vd .vd-st{color:#a0a8b2;font-size:13px}' +
+    '#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
+    /* картка точно як у Змагу (.ved): QR 112 px ліворуч, заголовок і пояснення праворуч; службове (стан, код, кнопки) — сховано */
+    '#pult-dlg.vd .vd-p{display:flex;gap:14px;align-items:center;padding:12px;border-radius:14px;background:#22262b;border:1px solid #383d44}' +
+    '#pult-dlg.vd .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}' +
+    '#pult-dlg.vd .vq .pd-qr{display:block;border-radius:0;box-shadow:none;line-height:0}#pult-dlg.vd .vq svg{width:112px!important;height:112px!important;display:block}' +
+    '#pult-dlg.vd .vd-tx b{display:block;font-size:17px;line-height:1.35}#pult-dlg.vd .vd-tx span{display:block;color:#a0a8b2;font-size:15px;line-height:1.45}' +
+    '#pult-dlg.vd .vd-ok{display:none;flex-direction:column;gap:4px;padding:6px 4px}#pult-dlg.vd .vd-ok b{color:#3ee08f;font-size:18px}#pult-dlg.vd .vd-ok span{color:#a0a8b2;font-size:15px}' +
+    '#pult-dlg.vd .vd-ok button{align-self:flex-start;margin-top:4px;padding:0;border:0;background:none;color:#a0a8b2;font:600 14px "Source Sans 3",system-ui,sans-serif;text-decoration:underline;text-underline-offset:3px;cursor:pointer}' +
+    '#pult-dlg.vd[data-st=connected]:not(.more) .vd-p>.vq,#pult-dlg.vd[data-st=connected]:not(.more) .vd-p>.vd-tx{display:none}#pult-dlg.vd[data-st=connected]:not(.more) .vd-ok{display:flex}' +
+    '#pult-dlg.vd .vd-hid{display:none}#pult-dlg.vd .pd-site:not([hidden]){display:block}' +
+    '#pult-dlg.vd[data-st=error] .vd-tx span::after{content:" Немає звʼязку — перевірте інтернет.";color:#ff9a8a}' +
+    '#phone-mode .pd-dot{display:none}#phone-mode.ok span::after{content:" ✓"}' +
+    '#pult-dlg.vd.one .pd-box{min-width:0;width:min(700px,100%)}#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,1fr)}' +
+    '@media (max-width:760px){#pult-dlg.vd .vd-g{grid-template-columns:1fr}}' +
+    '</style>');
+  dlg.classList.add('vd');
+  dlg.querySelector('#pd-ttl').textContent = 'Ведучому';
+  /* картка пульта: усе, що було у вікні пульта, крім заголовка й хрестика */
+  const card = document.createElement('div'); card.className = 'vd-p';
+  const id = (window.GUTIRKA && window.GUTIRKA.id) || '';
+  const what = { bingo: 'щойно витягнута кулька, перевірка карток і кнопка «Далі»', opytuvannia: 'результати (раніше, ніж на екрані) і кнопки керування', 'skob-hra': 'правильна відповідь, лідери й кнопка «Далі»' }[id] || 'те, що бачите лише ви, і кнопки керування';
+  card.innerHTML = '<div class="vq"></div><div class="vd-tx"><b>Пульт на вашому телефоні</b><span>Наведіть камеру телефона на цей код — він стане пультом: ' + what + '. Учасникам код не показуйте.</span></div>'
+    + '<div class="vd-ok"><b>Пульт підключено ✓</b><span>Відповіді й кнопки гри — на вашому телефоні.</span><button type="button">Показати QR-код ще раз</button></div><div class="vd-hid"></div>';
+  card.querySelector('.vq').appendChild(box.querySelector('.pd-qr'));
+  const site = box.querySelector('.pd-site'); if (site) card.querySelector('.vd-tx').appendChild(site);   /* лише якщо невідома адреса пульта (файл з компʼютера) */
+  [...box.children].forEach(el => { if (!el.matches('.pd-x,#pd-ttl')) card.querySelector('.vd-hid').appendChild(el); });
+  card.querySelector('.vd-ok button').addEventListener('click', () => { const m = dlg.querySelector('#pd-more'); if (m) m.click(); });
+  /* ✓ на кнопці «Ведучому», коли телефон підключено (як у Змагу) */
+  const sync = () => btn.classList.toggle('ok', dlg.dataset.st === 'connected');
+  new MutationObserver(sync).observe(dlg, { attributes: true, attributeFilter: ['data-st'] }); sync();
+  const tools = document.createElement('div'); tools.className = 'vd-t';
+  const g = document.createElement('div'); g.className = 'vd-g'; g.append(card, tools); box.appendChild(g);
+  /* інструменти гри з її старого вікна «Ведучому» (Бінго, Змаг) — сюди; стару кнопку й вікно прибираємо */
+  /* нижній рядок (4.11.2026, власник: «щоб вікно було вузькою планочкою»): дрібні дії — кнопками в один рядок, без пояснень */
+  const foot = document.createElement('div'); foot.className = 'vd-f';
+  const fb = (label, fn, title) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'pd-b'; b.textContent = label; if (title) b.title = title; b.addEventListener('click', fn); foot.appendChild(b); return b; };
+  (window.GUTIRKA_VED_EXTRA || []).forEach(([l, f, t]) => fb(l, f, t));   /* напр. СКОБ: «Шпаргалка з відповідями» */
+  { const gk = { bingo: 'bingo', opytuvannia: 'opyt', 'skob-hra': 'skob' }[(window.GUTIRKA && window.GUTIRKA.id) || ''];
+    if (gk && window.JAK_PROVESTY) fb('Памʼятка ведучому (A4)', () => window.JAK_PROVESTY(gk), 'Аркуш: що підготувати, як почати, що робити, якщо щось не так'); }
+  if (window.REPETYTSIIA && window.GUTIRKA_BOT_URL) {
+    const st = document.createElement('span'); st.className = 'vd-st';
+    const b = fb('Репетиція: 4 тестові гравці', () => {
+      const r = window.REPETYTSIIA(window.GUTIRKA_BOT_URL, 4);
+      if (r === null) { st.textContent = 'Звʼязок ще вмикається — спробуйте за кілька секунд'; return; }
+      b.textContent = r ? 'Прибрати тестових гравців' : 'Репетиція: 4 тестові гравці'; b.classList.toggle('on', !!r);
+      st.textContent = r ? 'Тестові гравці входять — почніть гру як звичайно' : '';
+    }, 'Прогнати гру самому: тестові гравці входять і грають самі (імена «Тест …»)');
+    foot.appendChild(st);
+  }
+  if (foot.children.length) box.appendChild(foot);
+  function merge() {
+    const old = document.querySelector('.s3o'), oldBtn = document.querySelector('.s3v');
+    if (old) { const ob = old.querySelector('.bx'); [...ob.children].forEach(el => { if (!el.matches('h3,.x')) tools.appendChild(el); }); old.remove(); }
+    if (oldBtn) oldBtn.remove();
+    g.classList.toggle('one', !tools.children.length); dlg.classList.toggle('one', !tools.children.length); tools.hidden = !tools.children.length;
+    const top = document.querySelector('.top'); if (top && btn.parentNode === top) top.appendChild(btn);
+  }
+  merge(); setTimeout(merge, 600); setTimeout(merge, 2000);
+  /* кнопка в шапці */
+  btn.innerHTML = "<svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M4 7h10M18 7h2M4 17h4M12 17h8\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"10\" cy=\"17\" r=\"2\"/></svg>" + '<span>Ведучому</span><i class="pd-dot"></i>';
+  btn.setAttribute('aria-label', 'Ведучому: пульт на телефоні й інструменти гри');
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();   /* після того, як пульт збудував своє вікно */
 })();
 </script>
 </body>

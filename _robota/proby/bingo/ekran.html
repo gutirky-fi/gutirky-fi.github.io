@@ -358,7 +358,7 @@ function next() {
 function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
 function claim(P) {
   const L = lineOf(P.c, known());
-  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «' + CALL + '!», але мету ще не виконано'); ZV('no'); return; }
+  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ': «' + CALL + '!» — але мету ще не виконано'); ZV('no'); return; }
   if (!winners.some(w => w.no === P.no)) winners.push({ name: P.name, no: P.no });
   showWin(P.name, P.no, P.c, L); bcast();
 }
@@ -553,7 +553,7 @@ window.GUTIRKA = {
     if (cur < 0) Object.assign(ix, { big: '?', ball: true, sub: 'натисніть «Наступна кулька»' });
     else if (th) Object.assign(ix, { q: it[cur][1], ok: it[cur][0], okL: shown ? 'Відповідь · уже на екрані' : 'Відповідь · бачите лише ви' });
     else Object.assign(ix, { big: ballT(cur), ball: true, bc: COLORS[drawn.length % COLORS.length], sub: 'щойно витягнута' });
-    if (winners.length) ix.who = ['🏆 Бінго: ' + winners.map(w => w.name + ' №' + w.no).join(', '), 'ok'];
+    if (winners.length) ix.who = ['🏆 Бінго: ' + winners.map(w => /^Картка №/.test(w.name) ? w.name : w.name + ' №' + w.no).join(', '), 'ok'];
     ix.inp = { id: 'check', lb: 'Перевірити картку', ph: '№ картки', btn: 'Перевірити', res: pultChk ? pultChk[0] : '', ok: pultChk && pultChk[1] };
     if (num) { ix.gridH = 'Витягнуто ' + drawn.length + ' / ' + tot; ix.grid = it.map((x, i) => { const k = drawn.indexOf(i); return [x[0], k < 0 ? 0 : COLORS[(k + 1) % COLORS.length], i === cur ? 1 : 0]; }); }
     else if (drawn.length > 1) { ix.chipsH = 'Уже були · ' + (drawn.length - 1); ix.chips = drawn.slice(0, -1).reverse().map(ballT); }

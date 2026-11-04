@@ -74,7 +74,7 @@ body.s3 .opt{margin-top:14px}
 .avg b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--gd)}
 .avg span{color:var(--mut);font-size:20px}
 .cloud{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;justify-content:center;max-width:1100px;margin:0 auto}
-.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}
+.cloud span{font:600 var(--s,24px)/1.1 var(--disp);color:var(--c,#cfd5dc)}.cloud sup{margin-left:4px;font:700 15px var(--txt);color:var(--mut,#9aa3ad);vertical-align:super}/* 4.11: «×2» тихо, а не «похід²» */
 .hid{display:grid;place-items:center;gap:6px;text-align:center;color:var(--mut);font-size:22px}
 .hid b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--ac)}
 .bar2{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -312,7 +312,7 @@ function resHtml(r) {
   if (r.k === 'slovo') {
     if (!r.w.length) return '<div class="hid">Поки жодного слова</div>';
     const mx = r.w[0][1], cols = ['#2fd2c0', '#ffc247', '#cfd5dc', '#62cf93', '#ff9a8a'];
-    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup> ${c}</sup>` : ''}</span>`).join('') + '</div>';
+    return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup>×${c}</sup>` : ''}</span>`).join('') + '</div>';
   }
   if (r.k === 'ots') return `<div class="ots"><div class="avg">${r.n ? `<b>${r.avg.toFixed(1).replace('.', ',')}</b><span>середня оцінка з 5 ${FACES[Math.max(0, Math.round(r.avg) - 1)]}</span>` : '<span class="wt">Середня оцінка зʼявиться з першими голосами</span>'}</div>${barsHtml(r)}</div>`;
   return barsHtml(r);

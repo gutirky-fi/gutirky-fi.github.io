@@ -556,6 +556,9 @@ function gotScreen(o) { clearInterval(askT); show('s-got'); const t = $('#g-tile
 $('#ft').textContent = '';
 if ((ses.code || '').length === 6 && ses.name && ses.tok) { tries = 0; connect(); } else showJoin();
 })();
+
+/* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 </script>
 </body>
 </html>

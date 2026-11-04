@@ -72,16 +72,103 @@ input:focus{border-color:var(--gd);outline:none}
 .place small{font-size:.35em;color:var(--mut)}
 ol.top{margin:0;padding-left:28px;text-align:left;font-weight:700}ol.top li{margin:4px 0}ol.top li span{color:var(--mut);font-weight:600}
 footer{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:36px;margin-top:10px}
+
+/* родина ігор (4.11.2026): шапка «значок + назва», як у Бінго, Опитуванні й Змагу; звичайний шрифт замість рукописного */
+.bar{margin-bottom:6px}
+.t3{display:inline-flex;align-items:center;gap:9px}.t3 svg{width:34px;height:34px;flex:none}.t3>span{display:flex;flex-direction:column}.t3 small{font:600 10px/1 var(--disp);letter-spacing:.2em;text-transform:uppercase;color:var(--gd);margin-bottom:3px}.t3 b{font:600 24px/.9 var(--disp);text-transform:uppercase;color:var(--ink)}
+.chip{padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px;color:var(--ink)}.chip i{width:8px;height:8px;flex:none}.chip span{max-width:38vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.me{font-size:15px}.me small{font-size:16px}
+.j3{display:flex;flex-direction:column;align-items:flex-start;margin:8px 0 2px}.j3 small{font:600 13px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 9px 1px}.j3 .w{display:flex;align-items:center;gap:12px}.j3 svg{width:46px;height:46px;flex:none}.j3 b{font:600 52px/.85 var(--disp);text-transform:uppercase;color:var(--ink);padding-top:4px}
+main{justify-content:flex-start;padding-top:6px}
+#leave{min-height:40px;padding:6px 16px;border:1px solid var(--ln);border-radius:99px;text-decoration:none;color:var(--mut);font-size:15px}#leave:hover{border-color:var(--gd);color:var(--ink)}
+.res{margin:auto 0}
+.lbl{font:700 15px/1.2 var(--txt);color:var(--mut)}
+.qq{font:700 23px/1.25 var(--txt)}
+.tbar{height:6px}.tbar i{background:#cfd5dc}
+/* «з» в Oswald схоже на «3» — у місці й балах звичайний шрифт */
+.stat span b{font:700 19px var(--txt)}.place small{font:600 30px var(--txt)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
+
+</script>
 </head>
 <body>
 <div id="app">
-  <div class="bar"><span class="chip" id="chip" data-s=""><i></i><span id="chiptxt">Не підключено</span></span><span class="sp"></span><span class="me" id="me" hidden></span></div>
+  <div class="bar"><span class="t3" aria-label="Потужний СКОБ!"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><span><small>Потужний</small><b>СКОБ!</b></span></span><span class="sp"></span><span class="me" id="me" hidden></span><span class="chip" id="chip" data-s=""><i></i><span id="chiptxt">…</span></span></div>
   <main>
     <!-- вхід -->
     <form class="scr" id="s-join" autocomplete="off" novalidate>
-      <span class="logo" aria-label="Потужний СКОБ!"><small>Потужний</small><span><i>С</i><i>К</i><i>О</i><i>Б</i><b>!</b></span></span>
+      <div class="j3" role="heading" aria-level="1" aria-label="Потужний СКОБ!"><small>Потужний</small><div class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></div></div>
       <p>Гра-вікторина: запитання — на великому екрані, відповіді — тут.</p>
       <div id="codebox"><label for="f-code">Код гри з екрана</label><input id="f-code" inputmode="numeric" pattern="[0-9 ]*" maxlength="7" placeholder="000 000"></div>
       <div class="codeline" id="codeknown" hidden><span>Код гри:</span><b id="codeval"></b><button type="button" class="btn link" id="codechg">змінити</button></div>
@@ -337,7 +424,7 @@ let Peer = null, peer = null, conn = null, att = 0, tries = 0, retryT = 0, hbT =
 
 const SCR = ['s-join', 's-msg', 's-wait', 's-read', 's-ask', 's-got', 's-res', 's-lead', 's-end'];
 function show(id) { SCR.forEach(s => { $('#' + s).hidden = s !== id; }); $('#leave').hidden = id === 's-join' || !ses.code; }
-const chip = (s, t) => { $('#chip').dataset.s = s; $('#chiptxt').textContent = t; };
+const chip = (s, t) => { $('#chip').dataset.s = s; $('#chiptxt').textContent = t; $('#chip').title = t; };
 function me() { const m = $('#me'); if (ses.name && joined) { m.hidden = false; m.innerHTML = ''; m.append(ses.name); if (cur && cur.score != null) { const sm = document.createElement('small'); sm.textContent = num(cur.score); m.append(sm); } } else m.hidden = true; }
 const ICL = {"👀": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/></svg>", "📡": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0\"/><path d=\"M1.5 9a15 15 0 0 1 21 0\"/><circle cx=\"12\" cy=\"19.5\" r=\".6\" fill=\"currentColor\"/></svg>", "⚠️": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 3 2 20h20L12 3z\"/><path d=\"M12 10v4M12 17.2v.3\"/></svg>", "🔍": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M20 20l-3.5-3.5\"/></svg>", "✋": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 3h10M7 21h10M8 3v4l4 5-4 5v4M16 3v4l-4 5 4 5v4\"/></svg>", "👋": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4\"/><path d=\"M10 16l-4-4 4-4M6 12h10\"/></svg>", "🙈": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"9\" cy=\"8\" r=\"3.2\"/><path d=\"M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6\"/><circle cx=\"17\" cy=\"9\" r=\"2.5\"/><path d=\"M17 14c2.5 0 4.5 2 4.5 5\"/></svg>", "🏁": "<svg class=\"li\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M5 21V4\"/><path d=\"M5 4h12l-2.5 4L17 12H5\"/></svg>"};   /* лінійні значки замість емодзі (власник 03.11.2026: один стиль значків в усіх іграх) */
 function msg(big, h, p, retry, nw) { show('s-msg'); if (ICL[big]) $('#m-big').innerHTML = ICL[big]; else $('#m-big').textContent = big; $('#m-h').textContent = h; $('#m-p').textContent = p || ''; $('#m-retry').hidden = !retry; $('#m-new').hidden = !nw; }
@@ -460,7 +547,7 @@ function askScreen(d) {
   d.a.forEach((t, i) => { const b = document.createElement('button'); b.type = 'button'; b.dataset.o = i; const ii = document.createElement('i'); ii.textContent = LET[i]; const sp = document.createElement('span'); sp.textContent = t; b.append(ii, sp); b.setAttribute('aria-label', LET[i] + ': ' + t); box.append(b); });
   box.onclick = e => { const b = e.target.closest('button'); if (!b) return; const o = +b.dataset.o; try { conn.send({ t: 'ans', id: d.id, o }); } catch (err) { /* ok */ } buzz(25); gotScreen(o); };
   const end = Date.now() + (d.left || 0), T = (d.T || 20) * 1000, bar = $('#a-bar');
-  const draw = () => { const left = Math.max(0, end - Date.now()); bar.style.transform = 'scaleX(' + (left / T) + ')'; bar.style.background = left < 5000 ? 'var(--no)' : 'var(--gd)'; };
+  const draw = () => { const left = Math.max(0, end - Date.now()); bar.style.transform = 'scaleX(' + (left / T) + ')'; bar.style.background = left < 5000 ? 'var(--no)' : '#cfd5dc'; };
   draw(); askT = setInterval(draw, 150); buzz(40);
 }
 function gotScreen(o) { clearInterval(askT); show('s-got'); const t = $('#g-tile'); t.textContent = LET[o] || '?'; t.style.background = 'var(--c' + (o >= 0 && o < 4 ? o : 0) + ')'; t.style.color = o === 2 ? '#1d1606' : '#fff'; }
@@ -469,6 +556,9 @@ function gotScreen(o) { clearInterval(askT); show('s-got'); const t = $('#g-tile
 $('#ft').textContent = '';
 if ((ses.code || '').length === 6 && ses.name && ses.tok) { tries = 0; connect(); } else showJoin();
 })();
+
+/* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 </script>
 </body>
 </html>

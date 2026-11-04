@@ -183,7 +183,7 @@ function render() {
   fitCells(c, 9);
   $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «' + SKOB + '!»';
   $('#skob').disabled = !line || st.ph !== 'game' || !!(st.win && st.win.no === st.no);   /* уже виграв — вдруге не треба */
-  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? (/dyz=3/.test(location.search) ? '' : '🎉 ') + SKOB + '! Ти виграв(-ла)!' : SKOB + '! ' + st.win.name + ' виграв(-ла)'); }
+  if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? (/dyz=3/.test(location.search) ? '' : '🎉 ') + SKOB + '! Перемога твоя!' : SKOB + '! Перемога — ' + st.win.name); }
   else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) { $('#msg').className = ''; $('#msg').textContent = ''; }
 }
 $('#card').addEventListener('click', e => {

@@ -57,6 +57,7 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 body.fam .top b{display:none}
 body.fam .top .fm-logo{font-size:24px}
 body.fam #join .fm-logo{font-size:46px;margin:8px 0 14px}
+body.s3t #send,body.fam #send{border-radius:99px;background:var(--gd);color:#16130a}body.s3t #send.sec,body.fam #send.sec{background:var(--card2);color:var(--ink);border:1px solid var(--ln)}body.s3t #send:disabled,body.fam #send:disabled{background:var(--card2);color:var(--mut)}/* 4.11: «Надіслати» — жовта головна дія, «Змінити» — тиха */
 body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
 body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
 body.fam .opts button{border-radius:99px;border-width:1px;padding:10px 22px}
@@ -248,6 +249,9 @@ window.IHRY_TEL3 = function (gra) {
   if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
   const h = document.querySelector('#join h1');
   if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+
+  /* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+  setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 };
 
 </script>
@@ -608,7 +612,7 @@ function render() {
   const Q = st.q, dis = st.open ? '' : ' disabled';
   let h = `<div class="qn">Питання ${st.i + 1} з ${st.n}</div><h1 class="qt">${esc(Q.q)}</h1>`;
   if (Q.k === 'ots') h += `<div class="stars">${FACES.map((f, j) => `<button type="button" data-v="${j}" aria-pressed="${st.my === j}" aria-label="${j + 1} з 5"${dis}>${f}<small>${j + 1}</small></button>`).join('')}</div>`;
-  else if (Q.k === 'slovo') h += `<input id="w" maxlength="30" placeholder="Твоя відповідь" value="${esc(draft || st.my || '')}"${dis}><button type="button" class="btn" id="send"${dis}>${st.my ? 'Змінити відповідь' : 'Надіслати'}</button>`;
+  else if (Q.k === 'slovo') h += `<input id="w" maxlength="30" placeholder="Твоя відповідь" value="${esc(draft || st.my || '')}"${dis}><button type="button" class="btn${st.my ? ' sec' : ''}" id="send"${dis}>${st.my ? 'Змінити відповідь' : 'Надіслати'}</button>`;
   else h += `<div class="opts">${Q.o.map((o, j) => `<button type="button" data-v="${j}" aria-pressed="${st.my === j}"${dis}>${esc(o)}</button>`).join('')}</div>`;
   if (st.my !== null && st.open) h += '<div class="ok">✓ Голос прийнято. Можна змінити, поки голосування відкрите.</div>';
   if (!st.open) h += `<div class="ok">${st.my !== null ? '✓ Твій голос враховано. ' : ''}Голосування закрите.</div>`;

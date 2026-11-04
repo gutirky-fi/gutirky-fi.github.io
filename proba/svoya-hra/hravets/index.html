@@ -54,7 +54,7 @@ body.cherha .bz{display:none}body.cherha .st{flex:1;display:flex;align-items:cen
 .vr{display:grid;gap:6px;margin-top:10px}.vr div{padding:8px 12px;border-radius:10px;background:var(--card);font-weight:700}.vr b{color:var(--gd);margin-right:8px}
 .hn{display:block;width:100%;min-height:48px;margin-top:10px;border-radius:14px;border:1px solid var(--gd);background:rgba(255,194,71,.12);color:var(--gd);font-weight:700;font-size:17px}
 body.finph .st{display:none}body.finph #vr{flex:1;display:flex;align-items:center}body.finph .fin1{flex:1}
-.fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
+.fin1{margin:20px 0;padding:26px 14px;border-radius:20px;background:color-mix(in srgb,var(--c) 22%,var(--card));border:2px solid var(--c);text-align:center;font:600 34px/1.1 var(--disp);text-transform:uppercase}body.s3t .fin1{background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c)}body.s3t .fin1.p1{border-color:#ffc247;border-top-color:var(--c);box-shadow:0 0 0 1px #ffc247,0 12px 50px rgba(255,194,71,.18)}/* 4.11: не червона «помилка» — колір команди лише смужкою, 1-ше місце — золото */.fin1 b{display:block;font-size:72px;margin-bottom:8px}.fin1 small{display:block;margin-top:8px;font:700 16px var(--txt);text-transform:none;color:var(--mut)}
 .tbl{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .tbl span{padding:4px 10px;border-radius:99px;background:var(--card);border-left:5px solid var(--c);font-weight:700;font-size:14px}
 /* родина ігор (?dyz=fam) — телефон */
@@ -208,6 +208,9 @@ window.IHRY_TEL3 = function (gra) {
   if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
   const h = document.querySelector('#join h1');
   if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+
+  /* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+  setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
 };
 
 </script>
@@ -605,7 +608,7 @@ function render() {
     $('#q').textContent = st.ph === 'fin' ? 'Гру завершено' : st.ph === 'board' ? 'Табло' : 'Чекаємо початку';
     if (st.ph === 'fin') {   /* фінал і на телефоні: місце команди */
       const pl = st.teams.filter(t => t.s > T.s).length + 1;
-      $('#vr').innerHTML = '<div class="fin1" style="--c:' + T.c + '"><b>' + (S3T ? (pl === 1 ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>' : pl <= 3 ? '<span class="md m' + pl + '"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 7 3-7"/></svg></span>' : '') : (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏')) + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
+      $('#vr').innerHTML = '<div class="fin1' + (pl === 1 ? ' p1' : '') + '" style="--c:' + T.c + '"><b>' + (S3T ? (pl === 1 ? '<svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1a3 3 0 0 0 3 3M16 6h3v1a3 3 0 0 1-3 3M12 13v4M8.5 20h7M10 17h4"/></svg>' : pl <= 3 ? '<span class="md m' + pl + '"><svg class="li" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="15" r="5"/><path d="M9 3l3 7 3-7"/></svg></span>' : '') : (pl === 1 ? '🏆' : pl === 2 ? '🥈' : pl === 3 ? '🥉' : '👏')) + '</b>' + (pl === 1 ? 'Ви перемогли!' : pl + '-е місце') + '<small>' + esc(T.n) + ' · ' + T.s + ' балів</small></div>';
       b.disabled = true; $('#q').textContent = 'Гру завершено'; s.textContent = ''; $('#ans').textContent = ''; document.body.classList.add('cherha', 'finph');
       $('#tbl').innerHTML = st.teams.map(t => `<span style="--c:${t.c}">${esc(t.n)} ${t.s}</span>`).join(''); return;
     }

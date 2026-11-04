@@ -260,6 +260,7 @@ body.v2 #qv .qh .vl{font:600 clamp(15px,1.5vw,22px) var(--txt);letter-spacing:.1
 body.v2 #qv .qh .vl::before{content:"·  ";color:var(--mut)}
 body.v2 .qt{max-width:24ch;font:700 clamp(2.2rem,4.6vw,3.8rem)/1.16 var(--txt);letter-spacing:-.01em}
 body.v2 .turn{background:none !important;border:0;min-height:0;padding:0;font:600 clamp(2rem,4vw,3rem)/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--c,var(--mut));animation:none}
+body.v2 .turn .tok{color:var(--ok,#3fb37f)}
 body.v2 .turn::before{content:attr(data-l);display:block;margin-bottom:8px;font:600 14px var(--txt);letter-spacing:.16em;color:var(--mut)}
 body.v2 .tm{--k:1;position:relative;width:64px;height:64px;min-height:0;border-radius:50%;display:grid;place-items:center;font:600 24px var(--disp);color:var(--ink);background:conic-gradient(var(--gd) calc(var(--k)*360deg),var(--ln) 0)}
 body.v2 .tm::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--bg);z-index:-1}
@@ -677,7 +678,7 @@ function judge(ok) {
   if (!cur || !cur.buzz.length || cur.done) return;
   const ti = teamOf(cur.buzz[0]), v = VALS[cur.r];
   deadline = 0;
-  if (ok) { const g = worth(); teams[ti].s += g; cur.gain = g; cur.done = true; cur.ans = true; cur.win = ti; toast('+' + g + ' · ' + teams[ti].n); beep(SND.ok); }
+  if (ok) { const g = worth(); teams[ti].s += g; cur.gain = g; cur.done = true; cur.ans = true; cur.win = ti; if (!V2) toast('+' + g + ' · ' + teams[ti].n); beep(SND.ok); }   /* у V2 це вже видно великим — тост лише закривав відповідь */
   else { beep(SND.no); if ($('#minus').checked) teams[ti].s -= v; cur.wrong.add(ti); cur.buzz = []; if (cur.wrong.size >= teams.length) { cur.done = true; cur.ans = true; }
     else if (mode === 'cherha') { let n = ti; do { n = (n + 1) % teams.length; } while (cur.wrong.has(n)); cur.buzz = ['T' + n]; deadline = Date.now() + 30000; cur.tbeep = false; cur.tk = 0; }
     toast(($('#minus').checked ? '−' + v + ' · ' : '') + teams[ti].n + ' — ні. ' + (cur.done ? 'Ніхто не відповів' : mode === 'cherha' ? 'Відповідає ' + teams[teamOf(cur.buzz[0])].n : 'Інші можуть відповісти')); }
@@ -802,7 +803,7 @@ function paintQ() {
   const first = cur.buzz[0], t = $('#turn');
   if (first) { const w = whoOf(first); t.className = 'turn on'; t.style.setProperty('--c', w.c); t.textContent = (V2 ? '' : 'Відповідає: ') + w.tn + (w.name ? ' · ' + w.name : ''); t.dataset.l = 'Відповідає'; }
   else { t.className = 'turn'; t.dataset.l = ''; t.style.removeProperty('--c'); t.textContent = cur.done ? (cur.wrong.size >= teams.length ? 'Ніхто не відповів правильно' : 'Правильно!') : cur.wrong.size ? 'Інші команди — тисніть «Відповідаю!»' : 'Хто знає — тисніть «Відповідаю!»'; }
-  if (cur.done && first) t.textContent = '✓ ' + whoOf(first).tn + ' +' + (cur.gain || VALS[cur.r]);
+  if (cur.done && first) { if (V2) { t.dataset.l = 'Правильно'; t.innerHTML = '<span class="tok">✓</span> ' + esc(whoOf(first).tn) + ' <span class="tok">+' + (cur.gain || VALS[cur.r]) + '</span>'; } else t.textContent = '✓ ' + whoOf(first).tn + ' +' + (cur.gain || VALS[cur.r]); }   /* 4.11: правильно — зелений ✓ і бали, назва — колір команди */
   $('#picks').innerHTML = cur.done || first || mode === 'cherha' ? '' : teams.map((tm, i) => `<button type="button" data-pick="${i}" style="--c:${teamColor(i)}"${cur.wrong.has(i) ? ' disabled' : ''}>${esc(tm.n)} відповідає</button>`).join('');
   { const [m, n] = splitA(Q[1]); $('#qa').innerHTML = cur.ans ? esc(m) + (n ? `<small style="display:block;font:600 20px var(--txt);text-transform:none;color:var(--mut);margin-top:6px">${esc(n)}</small>` : '') : ''; }
   $('#ans').disabled = cur.ans;
