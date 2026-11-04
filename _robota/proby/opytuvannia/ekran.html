@@ -69,8 +69,8 @@ body.s3 .opt{margin-top:14px}
 .bar .n{text-align:right;color:#cfd5dc}
 .bar .n small{display:block;font-size:.6em;color:var(--mut)}
 .avg{display:flex;align-items:center;gap:28px;margin-bottom:22px}
-.ots{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
-.sum .ots{display:block}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
+.ots{display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center;width:min(1100px,100%)}.ots .avg{flex-direction:column;align-items:flex-start;gap:6px;margin:0}
+.sum .ots{display:block}.ots .avg .wt{font-size:clamp(1rem,1.3vw,1.25rem);line-height:1.35}.sum .ots .avg{flex-direction:row;align-items:center;margin-bottom:10px}
 .avg b{font:600 clamp(4rem,10vw,7rem)/1 var(--disp);color:var(--gd)}
 .avg span{color:var(--mut);font-size:20px}
 .cloud{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;justify-content:center;max-width:1100px;margin:0 auto}
@@ -314,7 +314,7 @@ function resHtml(r) {
     const mx = r.w[0][1], cols = ['#2fd2c0', '#ffc247', '#cfd5dc', '#62cf93', '#ff9a8a'];
     return '<div class="cloud">' + r.w.map(([w, c], j) => `<span style="--s:${Math.round(22 + (c / mx) * 52)}px;--c:${cols[j % cols.length]}">${esc(w)}${c > 1 ? `<sup> ${c}</sup>` : ''}</span>`).join('') + '</div>';
   }
-  if (r.k === 'ots') return `<div class="ots"><div class="avg"><b>${r.n ? r.avg.toFixed(1).replace('.', ',') : '—'}</b><span>середня оцінка з 5 ${r.n ? FACES[Math.max(0, Math.round(r.avg) - 1)] : ''}</span></div>${barsHtml(r)}</div>`;
+  if (r.k === 'ots') return `<div class="ots"><div class="avg">${r.n ? `<b>${r.avg.toFixed(1).replace('.', ',')}</b><span>середня оцінка з 5 ${FACES[Math.max(0, Math.round(r.avg) - 1)]}</span>` : '<span class="wt">Середня оцінка зʼявиться з першими голосами</span>'}</div>${barsHtml(r)}</div>`;
   return barsHtml(r);
 }
 
