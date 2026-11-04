@@ -152,7 +152,7 @@ async function connect() {
 function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
 
 /* ---------- гра ---------- */
-let marks = new Set(ses.marks || []), lastSig = '';
+let marks = new Set(ses.marks || []), lastSig = '', lastBall = -1;
 function onData(d) {
   if (!d) return;
   if (d.t === 'st') { st = d; render(); }
@@ -164,6 +164,8 @@ function render() {
   $('#join').hidden = true; $('#play').hidden = false; $('#skobw').hidden = false;
   const sig = st.mode + '|' + st.no + '|' + st.card.join(',');
   if (sig !== lastSig) { if (lastSig) marks = new Set(); lastSig = sig; }
+  { const bn = st.cur ? st.cur.n : 0; if (bn !== lastBall) { lastBall = bn; if ($('#msg').className.includes('no')) { $('#msg').className = ''; $('#msg').textContent = ''; } } }   /* нова кулька — «Ще ні» зникає */
+  if (st.ph !== 'game' && marks.size) { marks = new Set(); ses.marks = []; save(ses); }   /* гру завершили — картка чиста для наступної */
   $('#me').textContent = ses.name + ' · картка №' + st.no; $('#setn').textContent = st.set;
   const num = !st.th, b = $('#ball'), free = new Set(st.free || []), blank = new Set(st.blank || []);
   if (st.ph !== 'game' || !st.cur) { $('#bn').textContent = '…'; $('#bk').textContent = st.ph === 'game' ? 'ГРА ПОЧАЛАСЯ' : 'ЧЕКАЄМО ПОЧАТКУ'; $('#bh').textContent = 'Ведучий скоро потягне першу кульку'; $('#ba').textContent = ''; }
@@ -178,9 +180,9 @@ function render() {
   const c = $('#card'); c.className = 'card' + (num ? ' num' : '') + (st.cols === 9 ? ' n9' : ''); c.style.setProperty('--gc', st.cols || 4);
   c.innerHTML = (st.head ? st.head.map(h => `<span class="hd">${esc(h)}</span>`).join('') : '') + st.card.map((w, k) => blank.has(k) ? `<button type="button" class="e" disabled aria-hidden="true"></button>` : free.has(k) ? `<button type="button" class="${line && line.includes(k) ? 'w' : 'fr'}" disabled aria-label="Вільна клітинка">★</button>` : `<button type="button" data-k="${k}" class="${line && line.includes(k) ? 'w' : marks.has(k) ? 'on' : ''}${w.length > 9 ? ' long' : ''}" aria-pressed="${marks.has(k)}">${esc(w)}</button>`).join('');
   $('#tip').textContent = (num ? 'Тисни на число, коли ведучий його назве.' : 'Тисни на клітинку, коли знайшов відповідь.') + ' Мета: ' + (st.goal || 'Ряд') + ' — ' + (st.gd || 'закрий рядок, стовпчик або діагональ') + '. Тоді тисни «' + SKOB + '!»';
-  $('#skob').disabled = !line || st.ph !== 'game';
+  $('#skob').disabled = !line || st.ph !== 'game' || !!(st.win && st.win.no === st.no);   /* уже виграв — вдруге не треба */
   if (st.win) { const me = st.win.no === st.no; msg(me ? 'win' : 'oth', me ? (/dyz=3/.test(location.search) ? '' : '🎉 ') + SKOB + '! Ти виграв(-ла)!' : SKOB + '! ' + st.win.name + ' виграв(-ла)'); }
-  else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) $('#msg').className = '';
+  else if ($('#msg').className.includes('win') || $('#msg').className.includes('oth')) { $('#msg').className = ''; $('#msg').textContent = ''; }
 }
 $('#card').addEventListener('click', e => {
   const b = e.target.closest('button[data-k]'); if (!b || !st) return;

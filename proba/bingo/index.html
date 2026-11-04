@@ -129,6 +129,7 @@ body.fam .box{border-radius:22px;background:#1f2328;border-color:#3b4048}
 body.fam .box h2{font:600 clamp(2.2rem,5vw,3.6rem)/1 var(--disp);letter-spacing:.04em}
 body.fam .win .big{display:none}
 body.fam .grid div{border-radius:12px;border:0;background:#22262b}
+.box .grid div{font-size:clamp(18px,2.4vw,30px)}.box .grid.n9 div{font-size:clamp(14px,1.6vw,20px)}
 body.fam .grid div.c{background:#2e5a43}
 body.fam .chk input{border-radius:99px}
 body.fam .toast{border-radius:99px}
@@ -971,6 +972,7 @@ let pat = 'ryad';
 const COLORS = ['#d64541', '#2f6fd0', '#e3a922', '#3daf6e', '#8a5bd1', '#e8925b'];
 const QS = new URLSearchParams(location.search), QM = QS.get('gra') || QS.get('tema');
 let mode = ORDER.includes(QM) ? QM : 'chysla';   // за замовчуванням — просте бінго з числами 1–40
+const CALL = /dyz=(fam|2|3)/.test(location.search) ? 'БІНГО' : 'СКОБ';   /* що кричать, коли закрили ряд (у новому стилі — «БІНГО!») */
 const set = () => SETS[mode];
 const themed = () => !!set().themed;
 if (!patsFor().includes(pat)) pat = patsFor()[0];
@@ -1070,7 +1072,7 @@ function next() {
 function reveal() { if (cur < 0 || shown) return; shown = true; paintBall(); paint(); bcast(); }
 function claim(P) {
   const L = lineOf(P.c, known());
-  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «СКОБ!», але мету ще не виконано'); return; }
+  if (!L) { try { P.conn.send({ t: 'no' }); } catch (e) { /* ok */ } toast(P.name + ' натиснув «' + CALL + '!», але мету ще не виконано'); return; }
   if (!winners.some(w => w.no === P.no)) winners.push({ name: P.name, no: P.no });
   showWin(P.name, P.no, P.c, L); bcast();
 }
@@ -1120,7 +1122,7 @@ let paint = function () {
   const all = [...players.values()];
   $('#pln').textContent = all.filter(P => P.on).length; $('#pln2').textContent = all.length ? '· ' + all.length : '';
   $('#pl').innerHTML = all.length ? all.map(P => `<span class="${P.on ? '' : 'off'}">${esc(P.name)} <small>№${P.no}</small><button type="button" data-x="${esc(P.tok)}" aria-label="Прибрати ${esc(P.name)}">✕</button></span>`).join('') : '<span class="empty">Поки нікого. Можна грати й лише з паперовими картками.</span>';
-  $('#reveal').hidden = !themed(); $('#reveal').disabled = cur < 0 || shown;
+  $('#reveal').hidden = true;   /* «Показати відповідь» робить головна кнопка (вона сама міняє підпис) — друга така сама кнопка лише плутала (4.11.2026); клавіша В працює */
   $('#next').textContent = (cur >= 0 && themed() && !shown) ? 'Показати відповідь →' : 'Наступна кулька →';
   const ok = known(); $('#ncl').textContent = ok.size;
   $('#called').innerHTML = drawn.filter(id => ok.has(id)).slice().reverse().map(id => `<span class="${id === cur ? 'cur' : ''}">${esc(ballT(id))}</span>`).join('');
@@ -1130,7 +1132,7 @@ let paint = function () {
 function printCards() {
   const n = Math.max(1, Math.min(60, parseInt($('#np').value, 10) || 6));
   const S = set(), lo = !!S.loto, hd = S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '';
-  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c${lo ? ' lo' : ''}"><header><b>БІНГО</b><span>${esc(S.name)}</span><em>Картка №${no}</em></header><div class="g">${hd}${card(no).map(id => { const w = cellT(id); return `<div class="${id === -1 ? 'e' : w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>${themed() ? 'Закресли слово, коли ведучий прочитає підказку.' : 'Закресли число, коли ведучий його назве.'} Мета: ${esc(PATS[pat].d)} — і кричи «СКОБ!»</footer></section>`).join('');
+  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c${lo ? ' lo' : ''}"><header><b>БІНГО</b><span>${esc(S.name)}</span><em>Картка №${no}</em></header><div class="g">${hd}${card(no).map(id => { const w = cellT(id); return `<div class="${id === -1 ? 'e' : w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>${themed() ? 'Закресли слово, коли ведучий прочитає підказку.' : 'Закресли число, коли ведучий його назве.'} Мета: ${esc(PATS[pat].d)} — і кричи «${CALL}!»</footer></section>`).join('');
   const w = window.open('', '_blank');
   if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
   w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Бінго — паперові картки</title><style>
