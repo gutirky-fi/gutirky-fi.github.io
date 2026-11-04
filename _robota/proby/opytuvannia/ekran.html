@@ -148,6 +148,7 @@ svg.li{width:1.05em;height:1.05em;vertical-align:-.16em;flex:none}svg.fc{width:1
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
   <span class="logo"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="3" y="17" width="6" height="12" rx="2" fill="#2fd2c0"/><rect x="13" y="7" width="6" height="22" rx="2" fill="#ffc247"/><rect x="23" y="12" width="6" height="17" rx="2" fill="#2fd2c0"/></svg>Опитування</span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <button type="button" class="chip" id="phone-mode" aria-label="Пульт ведучого на телефоні"></button>
   <span class="chip" title="Учасників на звʼязку"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg><span class="sr">На звʼязку:</span> <b id="pn">0</b></span>
 </div>
 
@@ -464,7 +465,27 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
 /*/FAM*/
 paintLobby(); paintTop(); startNet();
 window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? votes[qi].size : 0, res: phase === 'run' ? resOf(qi) : null }) };
+/* ---------- пульт ведучого з телефона (4.11.2026): та сама сторінка пульта, що й у гутірках (/pult/) ---------- */
+window.GUTIRKA = {
+  id: 'opytuvannia', title: 'Швидке опитування',
+  state() {
+    const on = [...players.values()].filter(P => P.on).length, N = poll().qs.length;
+    if (!$('#lobby').hidden) return { mode: 'full', index: 0, total: N + 1, title: 'Збираємо учасників', next: 'Почати опитування', note: '🗣 Учасники сканують QR-код на екрані.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати».', ix: { v: 'btns', h: 'Опитування', b: [['start', 'Почати']] }, sections: [] };
+    if (!$('#end').hidden) return { mode: 'full', index: N, total: N + 1, title: 'Підсумок', next: '', note: '📺 Підсумок усіх питань', ix: null, sections: [] };
+    const r = resOf(qi);
+    return { mode: 'full', index: qi, total: N + 1, title: q().q, next: qi < N - 1 ? poll().qs[qi + 1].q : 'Підсумок',
+      note: '📺 ' + q().q + '\n• Відповіли ' + r.n + (on ? ' з ' + on : '') + (open ? '' : ' · голосування закрите') + (shown ? '' : '\n(Результати поки сховані від екрана)'),
+      ix: { v: 'btns', h: 'Питання ' + (qi + 1) + ' / ' + N, b: [['reveal', shown ? 'Сховати результати' : 'Показати результати'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']] }, sections: [] };
+  },
+  next() { if (!$('#lobby').hidden) $('#start').click(); else if (!$('#run').hidden) $('#next').click(); },
+  prev() { if (!$('#run').hidden && qi > 0) $('#prev').click(); },
+  jump() {},
+  act(id) { const b = $('#' + id); if (b && !b.disabled && (id !== 'start' || !$('#lobby').hidden)) b.click(); }
+};
+{ let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
 })();
 </script>
+<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>/*PULT*/</script>
 </body>
 </html>

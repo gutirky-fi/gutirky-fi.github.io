@@ -41,6 +41,7 @@
 #skob.s3 .sk3-bk{width:38px;height:38px;min-height:0;padding:0;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;margin-right:12px}
 #skob.s3 .sk3-bk svg{width:18px;height:18px}
 #skob.s3 .sk-top [data-k=lobby]{border-radius:99px}
+#skob.s3 .sk-top #phone-mode{border-radius:99px;display:inline-flex;align-items:center;gap:7px;margin-right:8px}#skob.s3 .sk-top #phone-mode svg{width:16px;height:16px}
 #skob.s3::before{content:"";position:absolute;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:var(--sk3-lily,none) center/contain no-repeat;opacity:.05;pointer-events:none}
 #skob.s3 .sk-top .sk-btn{border-radius:99px}
 #skob.s3 .sk-stage{padding-left:max(24px,calc(50vw - 620px));padding-right:max(24px,calc(50vw - 620px))}
@@ -458,6 +459,7 @@
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
       <button type="button" class="sk-btn" data-k="x" aria-label="Завершити гру">✕</button></div><div class="sk-stage"></div><div class="sk-hint"></div><button type="button" class="sk-btn sk-next" data-k="next">Далі →</button>`;
     document.body.appendChild(gEl);
+    if (S3) { const pm = document.getElementById('phone-mode'); if (pm) { pmHome = [pm.parentNode, pm.nextSibling]; gEl.querySelector('.sk-top [data-k=lobby]').before(pm); } }   /* «Пульт» — у шапці гри, як в інших іграх */
     gEl.addEventListener('click', e => {
       const b = e.target.closest('[data-k]');
       if (b) { e.stopPropagation(); const k = b.dataset.k;
@@ -563,9 +565,11 @@
     gStage().innerHTML = `<div class="sk-end">${h}<div class="btns"><button type="button" class="sk-btn main" data-k="done">Завершити</button><button type="button" class="sk-btn" data-k="again">Зіграти ще раз</button></div></div>`;
     hint('');
   }
+  let pmHome = null;
   function closeGame(silent) {
     if (!G) return;
     const o = G.o; if (G.ctl) G.ctl.stop(); G = null;
+    if (pmHome) { const pm = document.getElementById('phone-mode'); if (pm) pmHome[0].insertBefore(pm, pmHome[1]); pmHome = null; }
     if (gEl) gEl.remove(); gEl = null;
     phoneView = { t: 'wait' }; bcast();
     if (!silent && o.onClose) o.onClose();
@@ -654,12 +658,13 @@
       if (R.ph === 'rev') v.why = R.q.why || '';
     }
     if (G.ph === 'lead' || G.ph === 'end') v.top = ranked().slice(0, G.ph === 'end' ? 10 : 5).map(P => [P.name, P.score]);
-    v.nx = L && !L.hidden ? 'Готово' : G.ph === 'intro' ? 'Почати гру' : G.ph === 'q' ? (R && R.ph === 'read' ? 'Показати варіанти' : R && R.ph === 'ans' ? 'Показати відповідь' : G.pl ? 'Лідери' : G.i + 1 < G.list.length ? 'Наступне запитання' : 'Підсумок') : G.ph === 'lead' ? (G.i + 1 < G.list.length ? 'Наступне запитання' : 'Переможці') : '';
+    const lbOpen = L && !L.hidden && !L.classList.contains('inl');   /* вбудоване лобі (стиль 3) — не «вікно», «Далі» запускає гру */
+    v.nx = lbOpen ? 'Готово' : G.ph === 'intro' ? 'Почати гру' : G.ph === 'q' ? (R && R.ph === 'read' ? 'Показати варіанти' : R && R.ph === 'ans' ? 'Показати відповідь' : G.pl ? 'Лідери' : G.i + 1 < G.list.length ? 'Наступне запитання' : 'Підсумок') : G.ph === 'lead' ? (G.i + 1 < G.list.length ? 'Наступне запитання' : 'Переможці') : '';
     return v;
   }
   function cmd(k) {
     k = String(k || '');
-    if (k === 'next') { if (L && !L.hidden) closeLobby(); else gNext(); }
+    if (k === 'next') { if (L && !L.hidden && !L.classList.contains('inl')) closeLobby(); else gNext(); }
     else if (k === 'lobby') lobby();
     else if (k === 'lobby-close') closeLobby();
     else if (k === 'off') { stopNet(); closeLobby(); }

@@ -206,7 +206,7 @@ if (/[?&]dyz=3(&|$)/.test(location.search)) {
   const st = document.createElement('style');
   st.textContent = 'body.s3 .top3{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;padding:12px max(24px,calc(50vw - 620px));background:#1b1d21;border-bottom:1px solid #383d44}body.s3 .top3 a{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:99px;border:1px solid #383d44;color:#f2f4f6}body.s3 .top3 a:hover{border-color:#ffc247}body.s3 .top3 img{height:38px;width:auto;display:block}body.s3 .hero{padding-top:28px}';
   document.head.append(st);
-  app.insertAdjacentHTML('beforebegin', '<div class="top3"><a href="../ihry/" id="sk3back" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>' + (window.SKOB_PLAST ? '<img src="' + window.SKOB_PLAST + '" alt="Пласт">' : '') + '</div>');
+  app.insertAdjacentHTML('beforebegin', '<div class="top3"><a href="../ihry/" id="sk3back" aria-label="Назад"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>' + (window.SKOB_PLAST ? '<img src="' + window.SKOB_PLAST + '" alt="Пласт">' : '') + '<span style="flex:1"></span><button type="button" id="phone-mode" class="sk-btn" aria-label="Пульт ведучого на телефоні"></button></div>');
   { const a = document.getElementById('sk3back'); a.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vsi';   /* назад — туди, звідки прийшли, інакше «Для всіх → Ігри» */
     a.addEventListener('click', e => { try { const r = document.referrer && new URL(document.referrer); if (r && r.origin === location.origin && r.pathname !== location.pathname && history.length > 1) { e.preventDefault(); history.back(); } } catch (x) { /* ok */ } }); }
 }
@@ -586,5 +586,13 @@ addEventListener('pagehide', () => { if (saveT) persist(); });
 route(true);
 })();
 </script>
+<script>
+/* пульт ведучого з телефона (4.11.2026): поки гра відкрита — пульт керує нею (ix «skob» у pult-host-file.js), інакше — підказка */
+window.GUTIRKA = { id: 'skob-hra', title: 'Потужний СКОБ!',
+  state: () => ({ mode: 'full', index: 0, total: 2, title: 'Потужний СКОБ!', next: 'Гра', note: '🗣 Відкрийте вікторину на ноутбуці — і керуйте грою звідси.', sections: [] }),
+  next() {}, prev() {}, jump() {} };
+</script>
+<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>/*PULT*/</script>
 </body>
 </html>

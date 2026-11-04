@@ -138,6 +138,7 @@ body.fam .toast{border-radius:99px}
 <body>
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a><span class="logo" aria-label="Бінго"><i>Б</i><i>І</i><i>Н</i><i>Г</i><i>О</i></span><span class="sp"></span>
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
+  <button type="button" class="chip" id="phone-mode" aria-label="Пульт ведучого на телефоні"></button>
   <button type="button" class="chip" id="patc" hidden title="Змінити мету">Мета: <b id="patn"></b></button>
   <button type="button" class="chip" id="plc" hidden>Гравці: <b id="pln">0</b></button>
 </div>
@@ -519,7 +520,26 @@ if (['2', '3'].includes(QS.get('dyz'))) {
 /*/FAM*/
 paint(); startNet();
 window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
+/* ---------- пульт ведучого з телефона (4.11.2026): та сама сторінка пульта, що й у гутірках (/pult/) ---------- */
+window.GUTIRKA = {
+  id: 'bingo', title: 'Пластове бінго',
+  state() {
+    const S = set(), tot = S.items.length, on = [...players.values()].filter(P => P.on).length;
+    if (phase !== 'game') return { mode: 'full', index: 0, total: 2, title: 'Збираємо гравців', next: 'Почати гру', note: '🗣 Гравці сканують QR-код на екрані й отримують картку.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати гру».', ix: { v: 'btns', h: 'Бінго', b: [['start', 'Почати гру']] }, sections: [] };
+    const nm = cur >= 0 ? ballT(cur) : '';
+    const ask = cur >= 0 && themed() && !shown;
+    return { mode: 'full', index: Math.max(0, drawn.length - 1), total: tot, title: cur >= 0 ? 'Кулька ' + drawn.length + ': ' + nm : 'Гра почалась', next: ask ? 'Показати відповідь' : 'Наступна кулька',
+      note: (cur >= 0 ? '📺 ' + nm + (themed() ? '\n✔ ' + ($('#ans').textContent || '') : '') + '\n' : '') + '• Витягнуто ' + drawn.length + ' з ' + tot + ' · на звʼязку ' + on + (winners.length ? '\n• Переможці: ' + winners.map(w => w.name).join(', ') : ''),
+      ix: { v: 'btns', h: 'Бінго', b: [['next', ask ? 'Показати відповідь' : 'Наступна кулька']] }, sections: [] };
+  },
+  next() { if (phase !== 'game') startGame(); else next(); },
+  prev() {}, jump() {},
+  act(id) { if (id === 'start' && phase !== 'game') startGame(); else if (id === 'next') this.next(); }
+};
+{ let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
 })();
 </script>
+<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>/*PULT*/</script>
 </body>
 </html>
