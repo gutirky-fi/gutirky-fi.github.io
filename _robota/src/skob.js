@@ -29,7 +29,7 @@
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   /* стиль 3 (проба ?dyz=3, дизайн-система «Ігри Пласту»): екран перед грою як у Змагу — картка QR ліворуч. Без ?dyz=3 нічого не змінюється. */
-  const S3 = /[?&]dyz=3(&|$)/.test(location.search);
+  const S3 = !!window.SKOB_S3 || /[?&]dyz=3(&|$)/.test(location.search);   /* SKOB_S3 — сторінка сама вмикає стиль 3 (кіно-гутірка) */
   const LOGO3 = () => `<span class="sk3-lg" role="heading" aria-level="1" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>`;
   const CSS3 = `
 #skob.s3 .sk-top{padding:12px max(24px,calc(50vw - 620px));border-bottom:1px solid #383d44;background:#1b1d21}
