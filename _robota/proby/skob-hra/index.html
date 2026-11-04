@@ -590,7 +590,7 @@ route(true);
 /* пульт ведучого з телефона (4.11.2026): поки гра відкрита — пульт керує нею (ix «skob» у pult-host-file.js), інакше — підказка */
 const skobPhase = () => { try { const v = SKOB.active() ? SKOB.view() : null; if (!v || !v.g) return 'Відкрийте вікторину'; return v.g === 'intro' ? 'Перед грою' : v.g === 'q' ? 'Запитання ' + (v.i + 1) + ' / ' + v.n : v.g === 'lead' ? 'Лідери' : 'Переможці'; } catch (e) { return 'Потужний СКОБ!'; } };
 window.GUTIRKA = { id: 'skob-hra', title: 'Потужний СКОБ!',
-  state: () => ({ mode: 'full', gra: true, noPrev: true, canNext: false, index: 0, total: 2, title: skobPhase(), next: 'Гра', note: '🗣 Відкрийте вікторину на ноутбуці — і керуйте грою звідси.', sections: [] }),
+  state: () => ({ mode: 'full', gra: true, glogo: 'skob', ix: { v: 'gra', h: 'Виберіть вікторину', hint: 'Відкрийте вікторину на ноутбуці — далі керуйте грою звідси: запитання, правильна відповідь і лідери будуть тут.' }, noPrev: true, canNext: false, index: 0, total: 2, title: skobPhase(), next: 'Гра', note: '🗣 Відкрийте вікторину на ноутбуці — і керуйте грою звідси.', sections: [] }),
   next() {}, prev() {}, jump() {} };
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>

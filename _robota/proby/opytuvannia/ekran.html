@@ -468,17 +468,21 @@ window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? vot
 /* ---------- пульт ведучого з телефона (4.11.2026): та сама сторінка пульта, що й у гутірках (/pult/) ---------- */
 window.GUTIRKA = {
   id: 'opytuvannia', title: 'Швидке опитування',
-  state() {
+  state() {   /* пульт за зразком змагу: питання, скільки відповіли, живі смужки (ведучий бачить раніше за зал), кнопки внизу */
     const all = [...players.values()], on = all.filter(P => P.on).length, N = poll().qs.length;
-    if (!$('#lobby').hidden) return { mode: 'full', gra: true, noPrev: true, nextL: 'Почати', index: 0, total: N + 1, title: 'Збираємо учасників', next: 'Почати',
-      note: '🗣 Учасники сканують QR-код на екрані. Відповіді анонімні.', ix: { v: 'gra', big: String(on), sub: 'на звʼязку' }, sections: [] };
-    if (!$('#end').hidden) return { mode: 'full', gra: true, noPrev: true, canNext: false, nextL: 'Кінець', index: N, total: N + 1, title: 'Підсумок', next: '', note: '📺 На екрані — підсумок усіх питань', ix: null, sections: [] };
+    const base = { mode: 'full', gra: true, glogo: 'opyt', note: '', next: '', sections: [] };
+    if (!$('#lobby').hidden) return Object.assign(base, { noPrev: true, nextL: 'Почати', index: 0, total: N + 1, title: 'Збираємо учасників',
+      ix: { v: 'gra', meta: [N + ' ' + (N % 10 >= 1 && N % 10 <= 4 && (N % 100 < 11 || N % 100 > 14) ? 'питання' : 'питань'), 'анонімно'], big: String(on), sub: 'на звʼязку', hint: 'Учасники сканують QR-код на екрані. Імена не потрібні — відповіді анонімні.' } });
+    if (!$('#end').hidden) return Object.assign(base, { noPrev: true, canNext: false, nextL: 'Кінець', index: N, total: N + 1, title: 'Підсумок',
+      ix: { v: 'gra', h: 'Підсумок', hint: 'На екрані — підсумок усіх питань. Можна обговорити, що здивувало.' } });
     const r = resOf(qi);
-    const bars = r.k === 'slovo' ? null : r.o.map((t, j) => [t, r.c[j]]);
-    return { mode: 'full', gra: true, canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: 'Питання ' + (qi + 1) + ' / ' + N, next: '',
-      note: '📺 ' + q().q + (open ? '' : '\n• Голосування закрите') + (shown ? '' : '\n(Результати бачите лише ви — на екрані сховані)'),
-      ix: { v: 'gra', big: String(r.n), sub: (r.n === 1 ? 'відповідь' : 'відповідей') + (on ? ' · на звʼязку ' + on : ''), bars: bars || [], chipsH: r.k === 'slovo' && r.w.length ? 'Слова' : '', chips: r.k === 'slovo' ? r.w.map(([w, c]) => w + (c > 1 ? ' ×' + c : '')) : [],
-        b: [['reveal', shown ? 'Сховати результати з екрана' : 'Показати результати на екрані'], ['close', open ? 'Закрити голосування' : 'Відкрити голосування знову']] }, sections: [] };
+    const ix = { v: 'gra', meta: ['Питання ' + (qi + 1) + ' / ' + N, shown ? 'видно на екрані' : 'бачите лише ви'], q: q().q,
+      who: [(r.n === 1 ? 'Відповів 1' : 'Відповіли: ' + r.n) + (on ? ' з ' + on : ''), open ? '' : 'no'] };
+    if (!open) ix.who[0] += ' · голосування закрите';
+    if (r.k === 'slovo') { ix.chipsH = r.w.length ? 'Слова' : ''; ix.chips = r.w.map(([w, c]) => w + (c > 1 ? ' ×' + c : '')); if (!r.w.length) ix.hint = 'Слова зʼявляться тут, щойно хтось відповість.'; }
+    else { ix.barsH = 'Відповіді'; ix.bars = r.o.map((t, j) => [t, r.c[j]]); }
+    ix.b = [['reveal', shown ? 'Сховати з екрана' : 'Показати на екрані'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']];
+    return Object.assign(base, { canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: ix.meta[0], ix });
   },
   next() { if (!$('#lobby').hidden) $('#start').click(); else if (!$('#run').hidden) $('#next').click(); },
   prev() { if (!$('#run').hidden && qi > 0) $('#prev').click(); },

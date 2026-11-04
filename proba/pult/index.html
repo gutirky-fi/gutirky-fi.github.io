@@ -208,6 +208,94 @@ body.gra #pad{padding-bottom:110px}
 .nav button:disabled{opacity:.4}
 .skm .nav button.next{font-size:19px;background:#ffc247;border-color:#ffc247;color:#1d1606}
 body:not([data-v=pad]) .nav{display:none}
+/* ===== режим гри — за зразком пульта «Інтелектуального змагу» (4.11.2026):
+   шапка з логотипом гри, рахунок угорі, правильна відповідь у золотій рамці, великі кнопки внизу ===== */
+#glogo{display:none;margin-right:auto;align-items:center}
+body.gra .hd .logo{display:none}
+body.gra #glogo{display:inline-flex}
+body.gra .hd{border-bottom:0;padding-bottom:6px;margin-bottom:8px}
+body.gra #phd,body.gra .bar,body.gra #ptl,body.gra .notes{display:none!important}
+body.gra #pad{gap:10px}
+body.gra #ix{background:none;border:0;padding:0;overflow:visible;gap:12px}
+body.gra #ix.card.top::before{display:none}
+.fm-logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-family:var(--disp);vertical-align:middle;font-size:28px}
+.fm-lt{display:flex;gap:.08em;align-items:center}
+.fm-lt i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.fm-lt i.c0{background:#d64541}.fm-lt i.c1{background:#2f6fd0}.fm-lt i.c2{background:#e8b02a;color:#1d1606}.fm-lt i.c3{background:#2e8f55}.fm-lt i.c4{background:#8a5bd1}
+.fm-lt b{font:600 .9em/1 var(--disp);color:#ffc247;margin-left:.06em}
+.fm-logo.balls .fm-lt i{border-radius:50%;box-shadow:inset -.07em -.09em 0 rgba(0,0,0,.2),inset .05em .06em 0 rgba(255,255,255,.18)}
+.fm-logo.board .fm-lt i{background:#22262b;box-shadow:inset 0 0 0 .045em #ffc247;color:#ffc247;border-radius:.14em}
+.fm-logo.board .fm-lt i.on{background:#ffc247;color:#1d1606;box-shadow:none}
+.fm-logo.stovp .fm-lt{align-items:flex-end;gap:.06em}
+.fm-logo.stovp .fm-lt i{width:.3em;border-radius:.07em}
+.fm-logo.stovp .fm-lt span{font:600 .78em/1 var(--disp);letter-spacing:.02em;margin-left:.16em;text-transform:uppercase;color:#fff}
+.g3{display:inline-flex;align-items:center;gap:8px}.g3 svg{width:26px;height:26px}.g3 b{font:600 27px/.8 var(--disp);text-transform:uppercase;padding-top:2px}
+/* рахунок / лідери */
+.g-sc{display:flex;gap:6px;flex-wrap:wrap}
+.g-sc span{flex:1;min-width:30%;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:var(--card);border-top:4px solid var(--c,var(--gd));font-weight:700;font-size:14px;min-width:0}
+.g-sc span em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.g-sc span b{font:600 18px var(--disp)}
+.g-sc span i{font-style:normal;color:var(--mut);font-size:12px}
+/* що зараз */
+.g-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;color:var(--mut);font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.04em}
+.g-meta b{color:var(--gd);font:600 20px var(--disp);letter-spacing:.02em;text-transform:none;white-space:nowrap}
+.g-h{margin:2px 0 0;font:600 26px/1.1 var(--disp);text-transform:uppercase}
+.g-q{margin:0;font:700 21px/1.3 var(--body)}
+.g-qa{padding:14px 16px;border-radius:16px;background:rgba(255,194,71,.12);border:2px solid var(--gd)}
+.g-qa small{display:block;color:var(--mut);font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.g-qa b{display:block;font:600 28px/1.15 var(--disp);color:var(--gd);margin-top:2px}
+.g-qa b i{font-style:normal;display:inline-grid;place-items:center;width:1.1em;height:1.1em;margin-right:.3em;border-radius:.2em;background:var(--gd);color:#1d1606;font-size:.8em;vertical-align:.08em}
+.g-qa .nt{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,194,71,.3);color:#cfd5dc;font-size:15px}
+.g-big{display:grid;justify-items:center;gap:6px;margin:4px 0}
+.g-big b{font:600 64px/1 var(--disp)}
+.g-big.ball b.s{font-size:36px}
+.g-big.ball b{display:grid;place-items:center;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0 37%,var(--bc,#ffc247) 38%);color:#1b1d21;font-size:46px;box-shadow:inset -10px -12px 0 rgba(0,0,0,.18)}
+.g-big span{color:var(--mut);font-weight:700}
+.g-who{padding:12px 14px;border-radius:14px;background:var(--card);border:2px solid var(--ln);font-weight:700;font-size:18px;text-align:center}
+.g-who.ok{background:rgba(61,175,110,.18);border-color:#3daf6e;color:#7fe0a8}
+.g-who.no{background:rgba(229,83,75,.14);border-color:#e5534b;color:#ff9a8a}
+.g-who.big{font-size:22px}
+.g-lb{margin:2px 2px -4px;color:var(--mut);font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+.g-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
+.g-grid span{display:grid;place-items:center;min-height:32px;border-radius:7px;background:var(--card);color:#59606a;font:600 15px var(--disp)}
+.g-grid span.on{background:#3a3f46;color:var(--ink)}
+.g-grid span.now{background:var(--gd);color:#1d1606}
+.g-chips{display:flex;flex-wrap:wrap;gap:6px}
+.g-chips span{padding:6px 11px;border-radius:99px;background:var(--card);border:1px solid var(--ln);font-weight:700;font-size:15px}
+.g-bars{display:grid;gap:8px}
+.g-bars div{position:relative;display:flex;justify-content:space-between;gap:10px;padding:11px 14px;border-radius:12px;background:var(--card);font-weight:700;overflow:hidden}
+.g-bars div::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--w);background:rgba(47,210,192,.22)}
+.g-bars div.ok::before{background:rgba(61,175,110,.32)}
+.g-bars div.ok{outline:2px solid #3daf6e}
+.g-bars span,.g-bars b{position:relative}
+.g-bars span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.g-bars span i{font-style:normal;display:inline-grid;place-items:center;width:24px;height:24px;margin-right:8px;border-radius:6px;background:var(--c,#555);color:#fff;font-size:14px}
+.g-bars b{font:600 19px var(--disp)}
+.g-opt{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g-opt button{display:flex;align-items:center;gap:8px;min-height:62px;padding:8px 10px;border:0;border-radius:14px;background:var(--c);color:#fff;font:700 16px/1.2 var(--body);text-align:left}
+.g-opt button i{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:7px;background:rgba(0,0,0,.22);font-style:normal}
+.g-hint{margin:0 2px;color:var(--mut);font-size:15px}
+.g-inp{display:grid;grid-template-columns:1fr auto;gap:8px}
+.g-inp input{min-width:0;width:100%;min-height:54px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);color:inherit;font:700 22px var(--body);padding:0 14px}
+.g-inp button{min-height:54px;padding:0 16px;border-radius:14px;border:1px solid var(--ln);background:var(--card2);font-weight:700}
+.g-code{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding:12px 14px;border-radius:14px;background:var(--card)}
+.g-code b{font:600 36px/1 var(--disp);letter-spacing:.08em;color:var(--gd);white-space:nowrap}.g-code small{min-width:0;overflow-wrap:anywhere}.g-code small{color:var(--mut);font-size:13px;text-align:right}
+.g-rk{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.g-rk li{display:flex;justify-content:space-between;padding:10px 14px;border-radius:12px;background:var(--card);border-left:6px solid var(--c,var(--ln));font-weight:700;font-size:19px}
+.g-rk li:first-child{--c:var(--gd)}
+.g-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.g-end{display:block;width:100%;min-height:46px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font-weight:700;font-size:16px}
+.g-end.wn{color:#ff9a8a}
+.g-go{display:block;width:100%;min-height:56px;border-radius:14px;border:0;background:var(--gd);color:#1d1606;font-weight:700;font-size:18px}
+/* кнопки внизу */
+#gact{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#gact:empty{display:none}
+#gact button{min-height:56px;border-radius:16px;border:1px solid var(--ln);background:var(--card2);font:700 16px/1.2 var(--body);text-transform:none;letter-spacing:0}
+#gact button:only-child{grid-column:1/-1}
+body.gra .nav button.next{background:var(--gd);border-color:var(--gd);color:#1d1606;font-size:22px}
+body.gra .nav #prev{font-size:17px}
+body.gra .nav button{min-height:68px}
+
 
 /* меню: розділи, таймер, відʼєднатись */
 #sheet{position:fixed;inset:0;z-index:9;background:rgba(10,11,13,.7);display:flex;align-items:flex-end}
@@ -231,6 +319,7 @@ noscript{display:block;padding:20px}
 <div id="app">
   <header class="hd">
     <img class="logo" src="data:image/webp;base64,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" alt="Пласт у Фінляндії">
+    <span id="glogo"></span>
     <span class="chip" id="chip" data-s="" role="status" aria-live="polite"><i></i><span id="chiptxt">…</span></span>
     <button class="mbtn" id="menu" type="button" aria-label="Меню: розділи, таймер, відʼєднатись"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </header>
@@ -264,12 +353,12 @@ noscript{display:block;padding:20px}
   </section>
 
   <section id="pad" hidden>
-    <div>
+    <div id="phd">
       <div class="gname" id="gname"></div>
       <div class="st"><div id="count">— <small>/ —</small></div><div id="steps"></div><div class="timer" id="timer"><span id="ttxt">00:00 / 00:00</span></div></div>
     </div>
     <div class="bar"><i id="barfill"></i></div>
-    <div>
+    <div id="ptl">
       <div id="stitle">…</div>
       <div id="snext"></div>
     </div>
@@ -279,6 +368,7 @@ noscript{display:block;padding:20px}
 </div>
 
 <nav class="nav" aria-label="Слайди"><div class="in">
+  <div id="gact"></div>
   <button id="prev" type="button" aria-label="Назад">‹ Назад</button>
   <button id="next" class="next" type="button" aria-label="Далі">Далі ›</button>
 </div></nav>
@@ -755,9 +845,11 @@ noscript{display:block;padding:20px}
     else $('#next').textContent = 'Далі ›';
     const gra = !!st.gra; document.body.classList.toggle('gra', gra); document.body.classList.toggle('noprev', gra && !!st.noPrev);
     $('#nhd').textContent = gra ? 'Що зараз' : 'Підказки';
+    const gl = gra ? (GLOGO[st.glogo] || '') : ''; if ($('#glogo').dataset.k !== (st.glogo || '')) { $('#glogo').dataset.k = st.glogo || ''; $('#glogo').innerHTML = gl; }
     if (gra) { document.title = (st.gtitle || '') + ' · Пульт'; if (!inG) { $('#next').textContent = (st.nextL || 'Далі') + ' ›'; $('#next').disabled = st.canNext === false; $('#prev').disabled = !st.canPrev; } }
-    drawTimer();
+    drawTimer(); padNav();
   }
+  function padNav() { const n = document.querySelector('.nav'); if (n) $('#app').style.paddingBottom = document.body.dataset.v === 'pad' ? (n.offsetHeight + 18) + 'px' : ''; }
   function drawTimer() {
     if (!st) return;
     const el = (st.elapsed || 0) + (st.running === false ? 0 : Math.floor((Date.now() - stAt) / 1000));
@@ -846,23 +938,52 @@ noscript{display:block;padding:20px}
     if (newSlide && cur === 0) window.scrollTo(0, 0);
     else if (curEl) keepInView(curEl, newSlide);
   }
+  const GLOGO = {   /* логотипи ігор — ті самі, що на екранах ігор */
+    bingo: '<span class="fm-logo balls" aria-label="Бінго"><span class="fm-lt"><i class="c0">Б</i><i class="c1">І</i><i class="c2">Н</i><i class="c3">Г</i><i class="c4">О</i></span></span>',
+    opyt: '<span class="fm-logo stovp" aria-label="Швидке опитування"><span class="fm-lt"><i style="height:.5em;background:#2fd2c0"></i><i style="height:.95em;background:#ffc247"></i><i style="height:.7em;background:#cfd5dc"></i><span>Опитування</span></span></span>',
+    skob: '<span class="g3" aria-label="Потужний СКОБ!"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span>',
+    zmag: '<span class="fm-logo board" aria-label="Інтелектуальний змаг"><span class="fm-lt"><i>З</i><i>М</i><i class="on">А</i><i>Г</i></span></span>'
+  };
+  let actSig = '';
+  function setAct(b) {   /* великі кнопки дій над «Далі» (як «Правильно / Неправильно» у змагу) */
+    const sig = JSON.stringify(b || []); if (sig === actSig) return; actSig = sig;
+    $('#gact').innerHTML = (b || []).map(([id, l, sure]) => '<button type="button" data-act="' + esc(id) + '"' + (sure ? ' data-sure="' + esc(sure) + '"' : '') + '>' + esc(l) + '</button>').join('');
+    padNav();
+  }
+  $('#gact').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; if (b.dataset.sure && !confirm(b.dataset.sure)) return; cmd('act', { id: b.getAttribute('data-act') }); });
+  /* спільні шматки «ігрового» пульта */
+  const G = {
+    sc: a => a && a.length ? '<div class="g-sc">' + a.map(([n, sc, c], k) => '<span' + (c ? ' style="--c:' + esc(c) + '"' : '') + '><i>' + (k + 1) + '</i><em>' + esc(n) + '</em><b>' + sc + '</b></span>').join('') + '</div>' : '',
+    meta: (l, r, id) => '<div class="g-meta"><span>' + esc(l || '') + '</span><b' + (id ? ' id="' + id + '"' : '') + '>' + esc(r || '') + '</b></div>',
+    qa: (lab, a, nt) => '<div class="g-qa"><small>' + esc(lab) + '</small><b>' + a + '</b>' + (nt ? '<div class="nt">' + esc(nt) + '</div>' : '') + '</div>',
+    who: (t, c) => t ? '<div class="g-who ' + (c || '') + '">' + esc(t) + '</div>' : '',
+    hint: t => t ? '<p class="g-hint">' + esc(t) + '</p>' : '',
+    lb: t => t ? '<div class="g-lb">' + esc(t) + '</div>' : ''
+  };
   let ixSig = '';
   function renderIx() {
     const box = $('#ix'), ix = st && st.ix;
+    if (!ix || ix.v !== 'gra') setAct(ix && ix.v === 'skob' ? skAct : null);
     if (!ix) { box.hidden = true; box.textContent = ''; ixSig = ''; return; }
     box.hidden = false;
     if (ix.v === 'skob') { box.classList.add('skb'); renderSkob(box, ix.s || {}); return; }
     box.classList.remove('skb');
-    if (ix.v === 'gra') {   // ігри (4.11.2026): велике число/слово, підпис, фішки, смужки результатів, гравці, кнопки, поле з номером
+    if (ix.v === 'gra') {   /* ігри (4.11.2026, за зразком пульта змагу): що зараз → відповідь у золотій рамці → стан → кнопки внизу */
       const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
-      let h = '';
-      if (ix.big != null) h += '<div class="gx-big' + (ix.ball ? ' ball' : '') + '"' + (ix.bc ? ' style="--bc:' + esc(ix.bc) + '"' : '') + '><b>' + esc(ix.big) + '</b></div>' + (ix.sub ? '<div class="gx-sub">' + esc(ix.sub) + '</div>' : '');
-      if (ix.ok) h += '<div class="gx-ok"><small>Відповідь</small>' + esc(ix.ok) + '</div>';
-      if (ix.bars && ix.bars.length) { const mx = Math.max(1, ...ix.bars.map(x => x[1])); h += '<div class="gx-bars">' + ix.bars.map(([l, n]) => '<div class="gb"><span>' + esc(l) + '</span><i><em style="width:' + (n / mx * 100).toFixed(0) + '%"></em></i><b>' + n + '</b></div>').join('') + '</div>'; }
-      if (ix.chips && ix.chips.length) h += (ix.chipsH ? '<h4 class="gx-h">' + esc(ix.chipsH) + '</h4>' : '') + '<div class="gx-chips">' + ix.chips.map((c, k) => '<span' + (k === 0 && ix.chip0 ? ' class="on"' : '') + '>' + esc(c) + '</span>').join('') + '</div>';
-      if (ix.b && ix.b.length) h += '<div class="gx-btns">' + ix.b.map(([id, l, cls]) => '<button type="button" class="pz' + (cls ? ' ' + esc(cls) : '') + '" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('') + '</div>';
-      if (ix.inp) h += '<form class="gx-inp" data-inp="' + esc(ix.inp.id) + '"><input type="number" inputmode="numeric" min="1" placeholder="' + esc(ix.inp.ph || '') + '" aria-label="' + esc(ix.inp.ph || '') + '"><button type="submit" class="pz">' + esc(ix.inp.btn || 'OK') + '</button></form>' + (ix.inp.res ? '<div class="gx-res ' + (ix.inp.ok ? 'ok' : 'no') + '">' + esc(ix.inp.res) + '</div>' : '');
-      box.innerHTML = h; return;
+      let h = G.sc(ix.sc);
+      if (ix.meta) h += G.meta(ix.meta[0], ix.meta[1]);
+      if (ix.h) h += '<h2 class="g-h">' + esc(ix.h) + '</h2>';
+      if (ix.q) h += '<p class="g-q">' + esc(ix.q) + '</p>';
+      if (ix.ok) h += G.qa(ix.okL || 'Правильна відповідь', esc(ix.ok), ix.okN);
+      if (ix.big != null) h += '<div class="g-big' + (ix.ball ? ' ball' : '') + '"' + (ix.bc ? ' style="--bc:' + esc(ix.bc) + '"' : '') + '><b' + (String(ix.big).length > 3 ? ' class="s"' : '') + '>' + esc(ix.big) + '</b>' + (ix.sub ? '<span>' + esc(ix.sub) + '</span>' : '') + '</div>';
+      if (ix.who) h += G.who(ix.who[0], ix.who[1]);
+      if (ix.inp) h += G.lb(ix.inp.lb) + '<form class="g-inp" data-inp="' + esc(ix.inp.id) + '"><input type="number" inputmode="numeric" min="1" placeholder="' + esc(ix.inp.ph || '') + '" aria-label="' + esc(ix.inp.ph || '') + '"><button type="submit">' + esc(ix.inp.btn || 'OK') + '</button></form>' + (ix.inp.res ? G.who(ix.inp.res, (ix.inp.ok ? 'ok' : 'no') + ' big') : '');
+      if (ix.bars && ix.bars.length) { const tot = Math.max(1, ix.bars.reduce((a, x) => a + x[1], 0)); h += G.lb(ix.barsH) + '<div class="g-bars">' + ix.bars.map(([l, n, ok]) => '<div' + (ok ? ' class="ok"' : '') + ' style="--w:' + (n / tot * 100).toFixed(0) + '%"><span>' + esc(l) + '</span><b>' + n + '</b></div>').join('') + '</div>'; }
+      if (ix.grid && ix.grid.length) h += G.lb(ix.gridH) + '<div class="g-grid">' + ix.grid.map(([l, on, now]) => '<span class="' + (now ? 'now' : on ? 'on' : '') + '">' + esc(l) + '</span>').join('') + '</div>';
+      if (ix.chips && ix.chips.length) h += G.lb(ix.chipsH) + '<div class="g-chips">' + ix.chips.map(c => '<span>' + esc(c) + '</span>').join('') + '</div>';
+      h += G.hint(ix.hint);
+      if (ix.end) h += '<button type="button" class="g-end" data-act="' + esc(ix.end[0]) + '"' + (ix.end[2] ? ' data-sure="' + esc(ix.end[2]) + '"' : '') + '>' + esc(ix.end[1]) + '</button>';
+      box.innerHTML = h; setAct(ix.b); return;
     }
     if (ix.v === 'btns') {   // прості кнопки дій (напр. «Почати гру»)
       const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
@@ -906,47 +1027,52 @@ noscript{display:block;padding:20px}
     }
     box.innerHTML = h;
   }
-  /* «Потужний СКОБ!»: те, що на екрані гри, — кнопками на телефоні */
-  const LET = ['С', 'К', 'О', 'Б'];
-  let skAt = 0, skLeft = 0;
+  /* «Потужний СКОБ!»: те, що на екрані гри, — на телефоні ведучого (4.11.2026 — за зразком пульта змагу):
+     угорі лідери, далі запитання й правильна відповідь у золотій рамці, скільки відповіли, внизу великі кнопки */
+  const LET = ['С', 'К', 'О', 'Б'], SKC = ['#d64541', '#2f6fd1', '#e3a922', '#2e8b57'];
+  let skAt = 0, skLeft = 0, skAct = null;
   function skPlayers(v) {
-    return (v.pend.length ? '<p class="mut">Чекають підтвердження — ✓ пустити, ✕ ні:</p><div class="chips">' + v.pend.map(([n, t]) => '<span class="wt">' + esc(n) + '<button type="button" data-act="skob:ok:' + esc(t) + '" aria-label="Пустити">✓</button><button type="button" data-act="skob:x:' + esc(t) + '" aria-label="Не пускати">✕</button></span>').join('') + '</div>' : '')
-      + (v.pl.length ? '<div class="chips">' + v.pl.map(([n, on]) => '<span class="' + (on ? '' : 'off') + '">' + esc(n) + '</span>').join('') + '</div>' : '');
+    return (v.pend.length ? G.lb('Чекають підтвердження') + '<div class="chips">' + v.pend.map(([n, t]) => '<span class="wt">' + esc(n) + '<button type="button" data-act="skob:ok:' + esc(t) + '" aria-label="Пустити">✓</button><button type="button" data-act="skob:x:' + esc(t) + '" aria-label="Не пускати">✕</button></span>').join('') + '</div>' : '')
+      + (v.pl.length ? G.lb('Гравці · ' + v.pl.length) + '<div class="chips">' + v.pl.map(([n, on]) => '<span class="' + (on ? '' : 'off') + '">' + esc(n) + '</span>').join('') + '</div>' : '');
   }
   function renderSkob(box, v) {
     skAt = Date.now(); skLeft = v.left || 0;
     const sig = JSON.stringify(Object.assign({}, v, { left: v.left ? 1 : 0 }));
     if (sig === ixSig) return; ixSig = sig;
-    const n = v.pl.length;
-    let h;
+    const n = v.pl.length, gra = !!(st && st.gra), nm = gra ? '' : 'Потужний СКОБ!';
+    let h = '', act = null;
+    const foot = (v.g && !v.lobby && v.g !== 'end') ? '<div class="g-row"><button type="button" class="g-end" data-act="skob:lobby">' + (n ? 'Гравці: ' + n : 'Запросити гравців') + '</button><button type="button" class="g-end wn" data-act="skob:quit" data-sure="Завершити гру?">✕ Завершити гру</button></div>' : '';
     if (v.lobby) {
-      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>Запросити гравців</b></div></div>'
-        + '<div class="scode"><b>' + (v.code ? esc(v.code.slice(0, 3) + ' ' + v.code.slice(3)) : '··· ···') + '</b><small>QR-код на екрані<br>або ' + esc(v.url) + '</small></div>'
-        + '<p class="mut">' + (n ? 'Гравців: ' + n : 'Поки нікого. Імена з’являться тут.') + '</p>' + skPlayers(v)
-        + '<button type="button" class="pz go" data-act="skob:lobby-close">Готово</button>'
-        + (n ? '' : '<p class="mut">Без телефонів теж можна: учасники відповідають уголос, ви тикаєте відповідь тут.</p>');
+      h = G.meta(nm || 'Запросити гравців', n ? 'Гравців: ' + n : '')
+        + '<div class="g-code"><b>' + (v.code ? esc(v.code.slice(0, 3) + ' ' + v.code.slice(3)) : '··· ···') + '</b><small>QR-код на екрані<br>або ' + esc(v.url) + '</small></div>'
+        + (n || v.pend.length ? skPlayers(v) : G.who('Поки нікого. Імена зʼявляться тут.'))
+        + G.hint(n ? '' : 'Без телефонів теж можна: учасники відповідають уголос, а ви тикаєте їхню відповідь тут.');
     } else if (!v.g) {
-      h = '<div class="ih"><div><b>Потужний СКОБ!</b></div></div><button type="button" class="pz go" data-act="skob">▶ Почати гру</button><button type="button" class="pz" data-act="skob:lobby">Запросити гравців</button>';
+      h = '<h2 class="g-h">Потужний СКОБ!</h2><button type="button" class="g-go" data-act="skob">▶ Почати гру</button><button type="button" class="g-end" data-act="skob:lobby">Запросити гравців</button>';
     } else if (v.g === 'intro') {
-      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>Гра готова</b></div></div>'
-        + '<p class="mut">' + v.n + ' запитань · по ' + v.T + ' с. ' + (v.on ? 'На зв’язку телефонів: ' + v.on + '.' : 'Телефонів немає — грайте вголос: ви тикаєте відповідь, яку назвали учасники.') + '</p>'
-        + '<button type="button" class="pz go" data-act="skob:next">▶ Почати</button><button type="button" class="pz" data-act="skob:lobby">' + (n ? 'Гравці: ' + n + ' · запросити ще' : 'Запросити гравців (QR на екрані)') + '</button>';
+      h = G.meta(nm || 'Гра готова', v.n + ' запитань · по ' + v.T + ' с')
+        + G.who(v.on ? 'На звʼязку телефонів: ' + v.on : 'Телефонів немає — грайте вголос', v.on ? 'ok' : '')
+        + (n ? skPlayers(v) : G.hint('Учасники відповідають уголос, а ви тикаєте відповідь, яку вони назвали.'))
+        + '<button type="button" class="g-end" data-act="skob:lobby">' + (n ? 'Запросити ще гравців' : 'Запросити гравців (QR на екрані)') + '</button>';
     } else if (v.g === 'q') {
       const rev = v.r === 'rev', tap = !v.mp && v.r === 'ans';
-      h = '<div class="ih"><div><small>Запитання ' + (v.i + 1) + ' з ' + v.n + '</small><b>' + (rev ? 'Відповідь' : v.r === 'read' ? 'Читаємо запитання' : (tap ? 'Тикни відповідь учасників' : 'Відповідають з телефонів')) + '</b></div>' + (v.r === 'ans' ? '<span class="skt" id="skt"></span>' : '') + '</div>'
-        + '<p class="sq">' + esc(v.q) + '</p>'
-        + (v.r === 'read' ? '' : '<div class="sa' + (rev ? ' rev' : '') + '">' + v.a.map((t, k) => '<button type="button" class="c' + k + (k === v.ok ? ' ok' : '') + (rev && k === v.pick && k !== v.ok ? ' bad' : '') + '"' + (tap ? ' data-act="skob:pick:' + k + '"' : ' disabled') + '><i>' + LET[k] + '</i>' + esc(t) + '</button>').join('') + '</div>')
-        + (v.mp && !rev ? '<p class="mut">Відповіли: ' + v.ans + ' з ' + Math.max(v.on, v.ans) + '</p>' : '')
-        + (tap ? '<p class="mut">✓ — правильна (бачите лише ви). Тикни те, що назвали учасники, або «Показати відповідь».</p>' : '')
-        + (rev ? '<p class="sw">' + (v.mp ? '' : v.pick < 0 ? '' : v.pick === v.ok ? '<b>Правильно!</b> ' : '<b>Не зовсім.</b> ') + esc(v.why || '') + '</p>' : '');
+      h = G.sc(v.top) + G.meta('Запитання ' + (v.i + 1) + ' / ' + v.n, v.r === 'ans' ? '⏱' : rev ? 'Відповідь на екрані' : 'Читаємо', v.r === 'ans' ? 'skt' : '')
+        + '<p class="g-q">' + esc(v.q) + '</p>'
+        + G.qa(rev ? 'Правильна відповідь · на екрані' : 'Правильна відповідь · бачите лише ви', '<i>' + LET[v.ok] + '</i>' + esc(v.a[v.ok]), rev ? v.why : '');
+      if (v.mp) {
+        h += G.who(rev ? 'Правильно відповіли: ' + ((v.cnt || [])[v.ok] || 0) + ' з ' + v.ans : 'Відповіли: ' + v.ans + ' з ' + Math.max(v.on, v.ans), rev ? 'ok' : '');
+        if (v.r !== 'read' && v.cnt) h += G.lb('Хто що вибрав') + '<div class="g-bars">' + v.a.map((t, k) => '<div' + (rev && k === v.ok ? ' class="ok"' : '') + ' style="--w:' + (v.cnt[k] / Math.max(1, v.ans) * 100).toFixed(0) + '%"><span><i style="--c:' + SKC[k] + '">' + LET[k] + '</i>' + esc(t) + '</span><b>' + v.cnt[k] + '</b></div>').join('') + '</div>';
+      } else if (tap) {
+        h += G.lb('Тикніть відповідь, яку назвали учасники') + '<div class="g-opt">' + v.a.map((t, k) => '<button type="button" style="--c:' + SKC[k] + '" data-act="skob:pick:' + k + '"><i>' + LET[k] + '</i>' + esc(t) + '</button>').join('') + '</div>';
+      } else if (rev && v.pick >= 0) h += G.who(v.pick === v.ok ? '✓ Правильно!' : '✗ Не зовсім: назвали «' + v.a[v.pick] + '»', v.pick === v.ok ? 'ok big' : 'no big');
+      h += foot;
     } else if (v.g === 'lead' || v.g === 'end') {
       const end = v.g === 'end';
-      h = '<div class="ih"><div><small>Потужний СКОБ!</small><b>' + (end ? (v.top.length ? 'Переможці' : 'Гру завершено') : 'Лідери') + '</b></div></div>'
-        + (v.top.length ? '<ol class="stop">' + v.top.map(([nm, sc], k) => '<li><span>' + (k + 1) + '. ' + esc(nm) + '</span><span>' + sc + '</span></li>').join('') + '</ol>' : '')
-        + (end ? '<button type="button" class="pz go" data-act="skob:done">Завершити гру</button><button type="button" class="pz" data-act="skob:again">Зіграти ще раз</button>' : '');
+      h = '<h2 class="g-h">' + (end ? (v.top && v.top.length ? 'Переможці' : 'Гру завершено') : 'Лідери') + '</h2>'
+        + (v.top && v.top.length ? '<ol class="g-rk">' + v.top.map(([nm, sc]) => '<li><span>' + esc(nm) + '</span><span>' + sc + '</span></li>').join('') + '</ol>' : '')
+        + (end ? '<button type="button" class="g-go" data-act="skob:done">Завершити гру</button><button type="button" class="g-end" data-act="skob:again">Зіграти ще раз</button>' : foot);
     }
-    if (v.g && !v.lobby && v.g !== 'intro' && v.g !== 'end') h += '<div class="row2"><button type="button" class="pz" data-act="skob:lobby">' + (n ? 'Гравці: ' + n : 'Запросити') + '</button><button type="button" class="pz wn" data-act="skob:quit" data-sure="Завершити гру?">✕ Завершити</button></div>';
-    box.innerHTML = h; skTick();
+    box.innerHTML = h; skAct = act; setAct(act); skTick();
   }
   function skTick() { const e = document.getElementById('skt'); if (e) e.textContent = '⏱ ' + Math.ceil(Math.max(0, skLeft - (Date.now() - skAt)) / 1000) + ' с'; }
   setInterval(skTick, 250);

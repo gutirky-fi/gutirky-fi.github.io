@@ -1231,10 +1231,11 @@ details[open]>summary::before{transform:rotate(90deg)}
     if (!G) return v;
     v.g = G.ph; v.i = G.i; v.n = G.list.length; v.T = G.o.T || 20;
     if (G.ph === 'q' && R) {
-      v.r = R.ph; v.q = R.q.q; v.a = R.q.a; v.ok = R.q.ok; v.pick = R.pick; v.mp = !!R.pl; v.ans = R.ans.size;
+      v.r = R.ph; v.q = R.q.q; v.a = R.q.a; v.ok = R.q.ok; v.pick = R.pick; v.mp = !!R.pl; v.ans = R.ans.size; v.cnt = [0, 0, 0, 0]; R.ans.forEach(x => { if (x.o >= 0 && x.o < 4) v.cnt[x.o]++; });
       if (R.ph === 'ans') v.left = Math.max(0, R.T * 1000 - (Date.now() - R.tA));
       if (R.ph === 'rev') v.why = R.q.why || '';
     }
+    if (G.ph === 'q' && accepted().length) v.top = ranked().slice(0, 3).map(P => [P.name, P.score]);   /* пульт: трійка лідерів під час гри */
     if (G.ph === 'lead' || G.ph === 'end') v.top = ranked().slice(0, G.ph === 'end' ? 10 : 5).map(P => [P.name, P.score]);
     const lbOpen = L && !L.hidden && !L.classList.contains('inl');   /* вбудоване лобі (стиль 3) — не «вікно», «Далі» запускає гру */
     v.nx = lbOpen ? 'Готово' : G.ph === 'intro' ? 'Почати гру' : G.ph === 'q' ? (R && R.ph === 'read' ? 'Показати варіанти' : R && R.ph === 'ans' ? 'Показати відповідь' : G.pl ? 'Лідери' : G.i + 1 < G.list.length ? 'Наступне запитання' : 'Підсумок') : G.ph === 'lead' ? (G.i + 1 < G.list.length ? 'Наступне запитання' : 'Переможці') : '';
@@ -1837,7 +1838,7 @@ route(true);
 /* пульт ведучого з телефона (4.11.2026): поки гра відкрита — пульт керує нею (ix «skob» у pult-host-file.js), інакше — підказка */
 const skobPhase = () => { try { const v = SKOB.active() ? SKOB.view() : null; if (!v || !v.g) return 'Відкрийте вікторину'; return v.g === 'intro' ? 'Перед грою' : v.g === 'q' ? 'Запитання ' + (v.i + 1) + ' / ' + v.n : v.g === 'lead' ? 'Лідери' : 'Переможці'; } catch (e) { return 'Потужний СКОБ!'; } };
 window.GUTIRKA = { id: 'skob-hra', title: 'Потужний СКОБ!',
-  state: () => ({ mode: 'full', gra: true, noPrev: true, canNext: false, index: 0, total: 2, title: skobPhase(), next: 'Гра', note: '🗣 Відкрийте вікторину на ноутбуці — і керуйте грою звідси.', sections: [] }),
+  state: () => ({ mode: 'full', gra: true, glogo: 'skob', ix: { v: 'gra', h: 'Виберіть вікторину', hint: 'Відкрийте вікторину на ноутбуці — далі керуйте грою звідси: запитання, правильна відповідь і лідери будуть тут.' }, noPrev: true, canNext: false, index: 0, total: 2, title: skobPhase(), next: 'Гра', note: '🗣 Відкрийте вікторину на ноутбуці — і керуйте грою звідси.', sections: [] }),
   next() {}, prev() {}, jump() {} };
 </script>
 <script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
