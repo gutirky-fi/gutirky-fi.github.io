@@ -615,6 +615,10 @@ details[open]>summary::before{transform:rotate(90deg)}
   const CSS3 = `
 #skob.s3 .sk-top{padding:12px max(24px,calc(50vw - 620px));border-bottom:1px solid #383d44;background:#1b1d21}
 #skob.s3 .sk3-pl{height:38px;width:auto;display:block}
+#skob.s3 .sk-top [data-k=x]{display:none}
+#skob.s3 .sk3-bk{width:38px;height:38px;min-height:0;padding:0;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;margin-right:12px}
+#skob.s3 .sk3-bk svg{width:18px;height:18px}
+#skob.s3 .sk-top [data-k=lobby]{border-radius:99px}
 #skob.s3::before{content:"";position:absolute;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:var(--sk3-lily,none) center/contain no-repeat;opacity:.05;pointer-events:none}
 #skob.s3 .sk-top .sk-btn{border-radius:99px}
 #skob.s3 .sk-stage{padding-left:max(24px,calc(50vw - 620px));padding-right:max(24px,calc(50vw - 620px))}
@@ -642,8 +646,6 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob .sk3-pick .pk small{display:block;margin-top:2px;font:400 13px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob .sk3-pact{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 #skob .sk3-pact .sk-btn{min-height:38px;padding:0 14px;font:600 14px 'Source Sans 3',sans-serif;border-radius:10px}
-#skob.pick[data-ph=intro] [data-k=x]{display:none}
-#skob.pick .sk3-hand{display:none}
 #skob .sk3-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 #skob .sk3-opts .row{padding:12px 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226}
 #skob .sk3-opts .nm{display:block;margin-bottom:9px;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
@@ -1021,7 +1023,7 @@ details[open]>summary::before{transform:rotate(90deg)}
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
     if (o.pick) gEl.classList.add('pick');
     if (S3) { gEl.classList.add('s3'); if (window.SKOB_LILY) gEl.style.setProperty('--sk3-lily', `url(${window.SKOB_LILY})`); }   /* бліда лілея на фоні, як у Змагу й Бінго */
-    gEl.innerHTML = `<div class="sk-top">${S3 ? (window.SKOB_PLAST ? `<img class="sk3-pl" src="${window.SKOB_PLAST}" alt="Пласт">` : '') : LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
+    gEl.innerHTML = `<div class="sk-top">${S3 ? `<button type="button" class="sk-btn sk3-bk" data-k="back" aria-label="Назад"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>` + (window.SKOB_PLAST ? `<img class="sk3-pl" src="${window.SKOB_PLAST}" alt="Пласт">` : '') : LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
       <button type="button" class="sk-btn" data-k="x" aria-label="Завершити гру">✕</button></div><div class="sk-stage"></div><div class="sk-hint"></div><button type="button" class="sk-btn sk-next" data-k="next">Далі →</button>`;
     document.body.appendChild(gEl);
@@ -1040,6 +1042,10 @@ details[open]>summary::before{transform:rotate(90deg)}
   function gCmd(k) {
     if (k === 'lobby') return lobby();
     if (!G) return;
+    if (k === 'back') {   /* стрілка «назад» у шапці (стиль 3, як в інших іграх): на заставці — вийти, під час гри — спитати */
+      if (G.ph === 'intro') { if (G.o.onBack) G.o.onBack(); else closeGame(); } else gEl.querySelector('.sk-sure').classList.toggle('on');
+      return;
+    }
     if (k === 'quit' || k === 'done') closeGame();
     else if (k === 'start' || k === 'next') gNext();
     else if (k.startsWith('x-')) { if (G.o.onCmd) G.o.onCmd(k.slice(2)); }
@@ -1618,6 +1624,7 @@ function playB(g, list) {
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', pick: { items, cur: g.id },
     onOpt: v => { g.T = v.T; g.mix = v.mix; persist(); const it = items.find(x => x.id === g.id); if (it) it.sub = it.sub.replace(/по \d+ с/, 'по ' + v.T + ' с'); },
     onClose: () => { if (!location.hash) playB(pickedGame()); },
+    onBack: () => { try { const rf = document.referrer && new URL(document.referrer); if (rf && rf.origin === location.origin && rf.pathname !== location.pathname && history.length > 1) return history.back(); } catch (e) {} location.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vsi'; },
     onCmd: k => {
       if (k.startsWith('pick:')) { const x = games.find(y => y.id === k.slice(5)); if (x) playB(x); }
       else if (k === 'new') { SKOB.close(); const n = norm({}); games.push(n); persist(); try { localStorage.setItem(PICK, n.id); } catch (e) {} go('gra-' + n.id); setTimeout(() => { const t = $('#g-title'); if (t) t.focus(); }, 30); }

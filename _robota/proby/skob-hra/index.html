@@ -395,6 +395,7 @@ function playB(g, list) {
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', pick: { items, cur: g.id },
     onOpt: v => { g.T = v.T; g.mix = v.mix; persist(); const it = items.find(x => x.id === g.id); if (it) it.sub = it.sub.replace(/по \d+ с/, 'по ' + v.T + ' с'); },
     onClose: () => { if (!location.hash) playB(pickedGame()); },
+    onBack: () => { try { const rf = document.referrer && new URL(document.referrer); if (rf && rf.origin === location.origin && rf.pathname !== location.pathname && history.length > 1) return history.back(); } catch (e) {} location.href = (location.pathname.startsWith('/proba/') ? '/proba/vhody/' : '/') + '#vsi'; },
     onCmd: k => {
       if (k.startsWith('pick:')) { const x = games.find(y => y.id === k.slice(5)); if (x) playB(x); }
       else if (k === 'new') { SKOB.close(); const n = norm({}); games.push(n); persist(); try { localStorage.setItem(PICK, n.id); } catch (e) {} go('gra-' + n.id); setTimeout(() => { const t = $('#g-title'); if (t) t.focus(); }, 30); }
