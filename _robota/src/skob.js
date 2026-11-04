@@ -53,6 +53,17 @@
 #skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:11px 16px;margin:0 0 20px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
 #skob .sk3-steps span{display:flex;align-items:center;gap:9px}
 #skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
+#skob .sk3-pick{display:flex;flex-wrap:wrap;gap:8px;max-width:760px}
+#skob .sk3-pick .pk{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border:1px solid #383d44;border-radius:12px;background:#22262b;min-width:150px;max-width:260px}
+#skob .sk3-pick .pk:hover{border-color:#5a616b}#skob .sk3-pick .pk:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
+#skob .sk3-pick .pk.on{border-color:#ffc247;box-shadow:inset 0 0 0 1px #ffc247}
+#skob .sk3-pick .pk b{display:block;font:700 16px 'Source Sans 3',sans-serif;color:#f2f4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#skob .sk3-pick .pk small{display:block;margin-top:2px;font:400 13px 'Source Sans 3',sans-serif;color:#a0a8b2}
+#skob .sk3-pact{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#skob .sk3-pact .sk-btn{min-height:38px;padding:0 14px;font:600 14px 'Source Sans 3',sans-serif;border-radius:10px}
+#skob.pick .sk3-cards .c:first-child{border-color:#383d44}
+#skob.pick .sk3-cards{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}#skob.pick .sk3-cards .c{padding:10px 13px}#skob.pick .sk3-cards b{font-size:15px}#skob.pick .sk3-cards small{display:none}#skob.pick .sk3-lb{margin-top:18px}
+#skob.pick[data-ph=intro] [data-k=x]{display:none}
 #skob .sk3-lb{display:block;margin:24px 0 8px;font:600 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob .sk3-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:720px}
 #skob .sk3-cards .c{padding:13px 15px;border:1px solid #383d44;border-radius:12px;background:#22262b}
@@ -425,6 +436,7 @@
     injectCss(); closeGame(true);
     G = { src: list, list: o.keepOrder ? list.slice() : shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
+    if (o.pick) gEl.classList.add('pick');
     if (S3) { gEl.classList.add('s3'); if (window.SKOB_LILY) gEl.style.setProperty('--sk3-lily', `url(${window.SKOB_LILY})`); }   /* бліда лілея на фоні, як у Змагу й Бінго */
     gEl.innerHTML = `<div class="sk-top">${S3 ? (window.SKOB_PLAST ? `<img class="sk3-pl" src="${window.SKOB_PLAST}" alt="Пласт">` : '') : LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
@@ -447,6 +459,7 @@
     if (!G) return;
     if (k === 'quit' || k === 'done') closeGame();
     else if (k === 'start' || k === 'next') gNext();
+    else if (k.startsWith('x-')) { if (G.o.onCmd) G.o.onCmd(k.slice(2)); }
     else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); }
   }
   function gStage() { gEl.dataset.ph = G.ph; return gEl.querySelector('.sk-stage'); }
@@ -460,7 +473,7 @@
       const N = G.list.length, T = G.o.T || 20;
       st.innerHTML = `<div class="sk3-in"><div class="sk3-j"></div><div class="sk3-r">
         <div class="sk3-steps"><span><i>1</i>Гравці сканують QR-код</span><span><i>2</i>Пишуть своє імʼя</span><span><i>3</i>Почати гру</span></div>
-        ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
+        ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.pick ? pickHtml(G.o.pick) : G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
         <span class="sk3-lb">Як граємо</span>
         <div class="sk3-cards">
           <div class="c"><b>${N} ${plural(N, 'запитання', 'запитання', 'запитань')}</b><small>на великому екрані; відповіді — С, К, О, Б</small></div>
@@ -474,6 +487,11 @@
     gStage().innerHTML = `<div class="sk-intro">${LOGO()}${G.o.title ? `<h2 class="sk-gt">${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.<br>${n ? `На звʼязку ${n} ${plural(n, 'телефон', 'телефони', 'телефонів')}.${had ? ' Бали з гутірки теж рахуються.' : ''}` : 'Грати можна з телефонами — або просто на екрані, відповідаючи вголос.'}</p>
       <div class="btns"><button type="button" class="sk-btn main" data-k="start">Почати</button><button type="button" class="sk-btn" data-k="lobby">Запросити гравців</button></div></div>`;
     hint('');
+  }
+  /* вибір вікторини прямо на екрані гри (o.pick = { items:[{id,title,sub}], cur }) — кнопки x-… віддаються в o.onCmd */
+  function pickHtml(P) {
+    return `<span class="sk3-lb">Вікторина</span><div class="sk3-pick">${P.items.map(it => `<button type="button" class="pk${it.id === P.cur ? ' on' : ''}" data-k="x-pick:${esc(it.id)}" aria-pressed="${it.id === P.cur}"><b>${esc(it.title)}</b><small>${esc(it.sub || '')}</small></button>`).join('')}</div>
+      <div class="sk3-pact"><button type="button" class="sk-btn" data-k="x-new">＋ Нова вікторина</button><button type="button" class="sk-btn" data-k="x-edit">Змінити цю</button><button type="button" class="sk-btn" data-k="x-open">Відкрити файл</button></div>`;
   }
   function gNext() {
     if (!G) return;

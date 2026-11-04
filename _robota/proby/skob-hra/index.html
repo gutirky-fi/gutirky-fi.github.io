@@ -275,6 +275,7 @@ async function route(force) {
     try { shared = await decode(h.slice(2)); renderShared(); }
     catch (e) { toast('Посилання пошкоджене або неповне. Попросіть надіслати його ще раз.'); go('', true); }
   } else if (h.startsWith('gra-') && games.some(g => g.id === h.slice(4))) { cur = games.find(g => g.id === h.slice(4)); renderEdit(); }
+  else if (V_B) { app.innerHTML = ''; playB(pickedGame()); }
   else renderList();
   scrollTo(0, 0);
 }
@@ -334,7 +335,7 @@ function renderEdit() {
   const g = cur;
   document.title = (g.title || 'Нова гра') + ' — Потужний СКОБ!';
   app.innerHTML = `
-  <header class="wrap ebar"><button type="button" class="btn ghost" data-k="home">← Мої ігри</button><span class="sp"></span>${LOGO()}</header>
+  <header class="wrap ebar"><button type="button" class="btn ghost" data-k="home">${V_B ? "← До гри" : "← Мої ігри"}</button><span class="sp"></span>${LOGO()}</header>
   <main class="wrap edit">
     <label class="vh" for="g-title">Назва гри</label>
     <input id="g-title" class="gtitle" maxlength="80" placeholder="Назва гри" value="${esc(g.title)}">
@@ -377,7 +378,28 @@ function play(g) {
     return;
   }
   if (!list.length) { toast('Додайте хоча б одне запитання.'); return; }
+  if (V_B && g !== shared) return playB(g, list);
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!' });
+}
+
+/* ---------- варіант Б (проба ?dyz=3&v=b, 4.11.2026): як у Змагу — без окремої головної, одразу екран гри з вибором вікторини ---------- */
+const V_B = S3L && /[?&]v=b(&|$)/.test(location.search);
+const PICK = 'skob.pick';
+function pickedGame() { let id = ''; try { id = localStorage.getItem(PICK) || ''; } catch (e) {} return games.find(g => g.id === id) || games.slice().sort((a, b) => b.upd - a.upd)[0]; }
+function playB(g, list) {
+  if (!g) { const n = norm({}); games.push(n); persist(); go('gra-' + n.id); return; }
+  try { localStorage.setItem(PICK, g.id); } catch (e) {}
+  if (!list) { list = []; g.qs.forEach(q => { if (!isEmpty(q) && !problem(q)) list.push(forGame(q)); }); }
+  const items = games.slice().sort((a, b) => b.upd - a.upd).map(x => { const n = x.qs.filter(q => !isEmpty(q)).length; return { id: x.id, title: x.title || 'Без назви', sub: `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'запитання' : 'запитань'} · по ${x.T} с` }; });
+  if (!list.length) list = [{ q: 'У цій вікторині ще немає готових запитань — натисніть «Змінити цю».', a: ['Гаразд', '—'], ok: 0, why: '' }];
+  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', pick: { items, cur: g.id },
+    onClose: () => { if (!location.hash) playB(pickedGame()); },
+    onCmd: k => {
+      if (k.startsWith('pick:')) { const x = games.find(y => y.id === k.slice(5)); if (x) playB(x); }
+      else if (k === 'new') { SKOB.close(); const n = norm({}); games.push(n); persist(); try { localStorage.setItem(PICK, n.id); } catch (e) {} go('gra-' + n.id); setTimeout(() => { const t = $('#g-title'); if (t) t.focus(); }, 30); }
+      else if (k === 'edit') { SKOB.close(); go('gra-' + g.id); }
+      else if (k === 'open') $('#file-in').click();
+    } });
 }
 
 /* ---------- гра з посилання ---------- */
