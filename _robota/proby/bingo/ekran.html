@@ -521,20 +521,33 @@ if (['2', '3'].includes(QS.get('dyz'))) {
 paint(); startNet();
 window.BINGO = { state: () => ({ phase, mode, pat, code, drawn: drawn.length, cur, shown, players: [...players.values()].map(P => ({ name: P.name, no: P.no, on: P.on })), winners }), card, next, reveal };
 /* ---------- пульт ведучого з телефона (4.11.2026): та сама сторінка пульта, що й у гутірках (/pult/) ---------- */
+let pultChk = null;   // результат перевірки картки з пульта
 window.GUTIRKA = {
   id: 'bingo', title: 'Пластове бінго',
   state() {
-    const S = set(), tot = S.items.length, on = [...players.values()].filter(P => P.on).length;
-    if (phase !== 'game') return { mode: 'full', index: 0, total: 2, gra: true, noPrev: true, nextL: 'Почати гру', title: 'Збираємо гравців', next: 'Почати гру', note: '🗣 Гравці сканують QR-код на екрані й отримують картку.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати гру».', ix: null, sections: [] };
-    const nm = cur >= 0 ? ballT(cur) : '';
-    const ask = cur >= 0 && themed() && !shown;
-    return { mode: 'full', index: Math.max(0, drawn.length - 1), total: tot, gra: true, noPrev: true, nextL: ask ? 'Показати відповідь' : 'Наступна кулька', title: cur >= 0 ? 'Кулька ' + drawn.length + ': ' + nm : 'Гра почалась', next: ask ? 'Показати відповідь' : 'Наступна кулька',
-      note: (cur >= 0 ? '📺 ' + nm + (themed() ? '\n✔ ' + ($('#ans').textContent || '') : '') + '\n' : '') + '• Витягнуто ' + drawn.length + ' з ' + tot + ' · на звʼязку ' + on + (winners.length ? '\n• Переможці: ' + winners.map(w => w.name).join(', ') : ''),
-      ix: null, sections: [] };
+    const S = set(), tot = S.items.length, all = [...players.values()], on = all.filter(P => P.on).length;
+    if (phase !== 'game') return { mode: 'full', gra: true, noPrev: true, nextL: 'Почати гру', index: 0, total: 2, title: 'Збираємо гравців', next: 'Почати гру',
+      note: '🗣 Гравці сканують QR-код на екрані й отримують картку. Можна грати й з паперовими картками.',
+      ix: { v: 'gra', big: String(on), sub: on === 1 ? 'гравець на звʼязку' : 'гравців на звʼязку', chipsH: all.length ? 'Гравці' : '', chips: all.map(P => P.name + ' №' + P.no) }, sections: [] };
+    const nm = cur >= 0 ? ballT(cur) : '—', ask = cur >= 0 && themed() && !shown;
+    return { mode: 'full', gra: true, noPrev: true, nextL: ask ? 'Показати відповідь' : 'Наступна кулька', index: Math.max(0, drawn.length - 1), total: tot,
+      title: cur >= 0 ? 'Кулька ' + drawn.length + ' / ' + tot : 'Гра почалась', next: ask ? 'Показати відповідь' : 'Наступна кулька',
+      note: '• Мета: ' + PATS[pat].name + ' · на звʼязку ' + on + (winners.length ? '\n✔ Переможці: ' + winners.map(w => w.name + ' №' + w.no).join(', ') : ''),
+      ix: { v: 'gra', big: nm, ball: true, bc: COLORS[drawn.length % COLORS.length], sub: cur >= 0 ? (themed() ? (shown ? 'відповідь уже на екрані' : 'відповідь ще не показана') : 'щойно витягнута') : 'натисніть «Наступна кулька»',
+        ok: themed() && cur >= 0 ? ($('#ans').textContent || '') : '',
+        chipsH: drawn.length > 1 ? 'Уже витягнуті · ' + drawn.length : '', chips: drawn.length > 1 ? drawn.slice().reverse().slice(1, 41).map(ballT) : [],
+        inp: { id: 'check', ph: '№ картки', btn: 'Перевірити картку', res: pultChk ? pultChk[0] : '', ok: pultChk && pultChk[1] } }, sections: [] };
   },
-  next() { if (phase !== 'game') startGame(); else next(); },
+  next() { if (phase !== 'game') startGame(); else { pultChk = null; $('#chkov').hidden = true; next(); } },
   prev() {}, jump() {},
-  act(id) { if (id === 'start' && phase !== 'game') startGame(); else if (id === 'next') this.next(); }
+  act(id) {
+    if (id === 'start' && phase !== 'game') startGame();
+    else if (id === 'next') this.next();
+    else if (id.startsWith('check:') && phase === 'game') {   // перевірити паперову картку з телефона — і показати результат на екрані
+      $('#chkov').hidden = false; $('#chkn').value = id.slice(6); checkNo();
+      const v = $('#verd'); pultChk = [v.textContent || '', v.classList.contains('ok')];
+    }
+  }
 };
 { let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
 })();

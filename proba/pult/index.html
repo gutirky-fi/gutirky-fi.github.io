@@ -82,7 +82,27 @@ body.gra #count,body.gra #steps,body.gra #timer,body.gra .bar,body.gra #snext,bo
 body.gra #gname{font:600 15px var(--body);color:var(--mut);text-transform:none}
 body.gra #stitle{font-size:30px;margin-top:2px}
 body.gra.noprev .nav #prev{display:none}
-body.gra.noprev .nav .in{grid-template-columns:1fr}body.gra .nav button.next{font-size:24px}
+body.gra.noprev .nav .in{grid-template-columns:1fr}
+body.gra #pad{padding-bottom:110px}
+.gx-big{display:grid;place-items:center;margin:4px auto 2px}
+.gx-big b{font:600 46px/1.05 var(--disp);text-align:center;word-break:break-word}
+.gx-big.ball b{display:grid;place-items:center;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0 38%,var(--bc,#ffc247) 39%);color:#1b1d21;font-size:44px;box-shadow:inset -8px -10px 0 rgba(0,0,0,.15)}
+.gx-sub{text-align:center;color:var(--mut);font-weight:600;margin-bottom:6px}
+.gx-ok{margin:4px 0;padding:10px 12px;border-radius:12px;background:rgba(62,224,143,.1);border:1px solid rgba(62,224,143,.4);font:700 18px var(--body)}
+.gx-ok small{display:block;font-size:12px;color:#3ee08f;text-transform:uppercase;letter-spacing:.08em}
+.gx-h{margin:8px 0 4px;font:600 13px var(--body);color:var(--mut)}
+.gx-chips{display:flex;flex-wrap:wrap;gap:6px}
+.gx-chips span{min-width:38px;padding:6px 10px;border-radius:99px;background:var(--card2);border:1px solid var(--ln);text-align:center;font-weight:700}
+.gx-chips span.on{background:#ffc247;border-color:#ffc247;color:#1d1606}
+.gx-bars{display:grid;gap:7px;margin:4px 0}
+.gx-bars .gb{display:grid;grid-template-columns:minmax(0,1.2fr) 1fr 30px;gap:8px;align-items:center;font-weight:600}
+.gx-bars .gb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gx-bars i{display:block;height:12px;border-radius:99px;background:var(--card2)}.gx-bars em{display:block;height:100%;border-radius:99px;background:#2fd2c0}
+.gx-bars b{text-align:right}
+.gx-btns{display:grid;gap:8px;margin-top:4px}
+.gx-inp{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:4px}
+.gx-inp input{min-width:0;width:100%;box-sizing:border-box;min-height:52px;border-radius:14px;border:1px solid var(--ln);background:#14171a;color:inherit;font:600 22px var(--body);padding:0 14px}
+.gx-res{font-weight:700;font-size:17px}.gx-res.ok{color:#3ee08f}.gx-res.no{color:#ff9a8a}body.gra .nav button.next{font-size:24px}
 #stitle{font:600 24px/1.15 var(--disp);text-transform:uppercase;letter-spacing:.01em;word-break:break-word}
 #snext{font-size:14px;color:var(--mut);margin-top:3px}
 #snext b{color:#d9dee4;font-weight:600}
@@ -833,6 +853,17 @@ noscript{display:block;padding:20px}
     box.hidden = false;
     if (ix.v === 'skob') { box.classList.add('skb'); renderSkob(box, ix.s || {}); return; }
     box.classList.remove('skb');
+    if (ix.v === 'gra') {   // ігри (4.11.2026): велике число/слово, підпис, фішки, смужки результатів, гравці, кнопки, поле з номером
+      const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
+      let h = '';
+      if (ix.big != null) h += '<div class="gx-big' + (ix.ball ? ' ball' : '') + '"' + (ix.bc ? ' style="--bc:' + esc(ix.bc) + '"' : '') + '><b>' + esc(ix.big) + '</b></div>' + (ix.sub ? '<div class="gx-sub">' + esc(ix.sub) + '</div>' : '');
+      if (ix.ok) h += '<div class="gx-ok"><small>Відповідь</small>' + esc(ix.ok) + '</div>';
+      if (ix.bars && ix.bars.length) { const mx = Math.max(1, ...ix.bars.map(x => x[1])); h += '<div class="gx-bars">' + ix.bars.map(([l, n]) => '<div class="gb"><span>' + esc(l) + '</span><i><em style="width:' + (n / mx * 100).toFixed(0) + '%"></em></i><b>' + n + '</b></div>').join('') + '</div>'; }
+      if (ix.chips && ix.chips.length) h += (ix.chipsH ? '<h4 class="gx-h">' + esc(ix.chipsH) + '</h4>' : '') + '<div class="gx-chips">' + ix.chips.map((c, k) => '<span' + (k === 0 && ix.chip0 ? ' class="on"' : '') + '>' + esc(c) + '</span>').join('') + '</div>';
+      if (ix.b && ix.b.length) h += '<div class="gx-btns">' + ix.b.map(([id, l, cls]) => '<button type="button" class="pz' + (cls ? ' ' + esc(cls) : '') + '" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('') + '</div>';
+      if (ix.inp) h += '<form class="gx-inp" data-inp="' + esc(ix.inp.id) + '"><input type="number" inputmode="numeric" min="1" placeholder="' + esc(ix.inp.ph || '') + '" aria-label="' + esc(ix.inp.ph || '') + '"><button type="submit" class="pz">' + esc(ix.inp.btn || 'OK') + '</button></form>' + (ix.inp.res ? '<div class="gx-res ' + (ix.inp.ok ? 'ok' : 'no') + '">' + esc(ix.inp.res) + '</div>' : '');
+      box.innerHTML = h; return;
+    }
     if (ix.v === 'btns') {   // прості кнопки дій (напр. «Почати гру»)
       const sig = JSON.stringify(ix); if (sig === ixSig) return; ixSig = sig;
       box.innerHTML = '<div class="ih"><div><b>' + esc(ix.h || '') + '</b></div></div>' + (ix.b || []).map(([id, l], k) => '<button type="button" class="' + (k ? 'pz' : 'pz go') + '" data-act="' + esc(id) + '">' + esc(l) + '</button>').join('');
@@ -919,6 +950,7 @@ noscript{display:block;padding:20px}
   }
   function skTick() { const e = document.getElementById('skt'); if (e) e.textContent = '⏱ ' + Math.ceil(Math.max(0, skLeft - (Date.now() - skAt)) / 1000) + ' с'; }
   setInterval(skTick, 250);
+  $('#ix').addEventListener('submit', e => { const f = e.target.closest('[data-inp]'); if (!f) return; e.preventDefault(); const v = f.querySelector('input').value.trim(); if (v) cmd('act', { id: f.dataset.inp + ':' + v }); f.querySelector('input').blur(); });
   $('#ix').addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (!b) return; if (b.dataset.sure && !confirm(b.dataset.sure)) return; cmd('act', { id: b.getAttribute('data-act') }); });
   $('#menu').addEventListener('click', () => { $('#sheet').hidden = false; });
   $('#shx').addEventListener('click', () => { $('#sheet').hidden = true; });

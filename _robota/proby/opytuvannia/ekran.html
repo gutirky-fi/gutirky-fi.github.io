@@ -469,13 +469,16 @@ window.OPYT = { state: () => ({ phase, code, qi, open, shown, n: votes[qi] ? vot
 window.GUTIRKA = {
   id: 'opytuvannia', title: 'Швидке опитування',
   state() {
-    const on = [...players.values()].filter(P => P.on).length, N = poll().qs.length;
-    if (!$('#lobby').hidden) return { mode: 'full', index: 0, total: N + 1, gra: true, noPrev: true, nextL: 'Почати', title: 'Збираємо учасників', next: 'Почати опитування', note: '🗣 Учасники сканують QR-код на екрані.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати».', ix: { v: 'btns', h: 'Опитування', b: [['start', 'Почати']] }, sections: [] };
-    if (!$('#end').hidden) return { mode: 'full', index: N, total: N + 1, gra: true, noPrev: false, canPrev: false, canNext: false, nextL: 'Кінець', title: 'Підсумок', next: '', note: '📺 Підсумок усіх питань', ix: null, sections: [] };
+    const all = [...players.values()], on = all.filter(P => P.on).length, N = poll().qs.length;
+    if (!$('#lobby').hidden) return { mode: 'full', gra: true, noPrev: true, nextL: 'Почати', index: 0, total: N + 1, title: 'Збираємо учасників', next: 'Почати',
+      note: '🗣 Учасники сканують QR-код на екрані. Відповіді анонімні.', ix: { v: 'gra', big: String(on), sub: 'на звʼязку' }, sections: [] };
+    if (!$('#end').hidden) return { mode: 'full', gra: true, noPrev: true, canNext: false, nextL: 'Кінець', index: N, total: N + 1, title: 'Підсумок', next: '', note: '📺 На екрані — підсумок усіх питань', ix: null, sections: [] };
     const r = resOf(qi);
-    return { mode: 'full', gra: true, canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: 'Питання ' + (qi + 1) + ' / ' + N, _q: q().q, next: qi < N - 1 ? poll().qs[qi + 1].q : 'Підсумок',
-      note: '📺 ' + q().q + '\n• Відповіли ' + r.n + (on ? ' з ' + on : '') + (open ? '' : ' · голосування закрите') + (shown ? '' : '\n(Результати поки сховані від екрана)'),
-      ix: { v: 'btns', h: 'Результати', b: [['reveal', shown ? 'Сховати результати' : 'Показати результати'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']] }, sections: [] };
+    const bars = r.k === 'slovo' ? null : r.o.map((t, j) => [t, r.c[j]]);
+    return { mode: 'full', gra: true, canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: 'Питання ' + (qi + 1) + ' / ' + N, next: '',
+      note: '📺 ' + q().q + (open ? '' : '\n• Голосування закрите') + (shown ? '' : '\n(Результати бачите лише ви — на екрані сховані)'),
+      ix: { v: 'gra', big: String(r.n), sub: (r.n === 1 ? 'відповідь' : 'відповідей') + (on ? ' · на звʼязку ' + on : ''), bars: bars || [], chipsH: r.k === 'slovo' && r.w.length ? 'Слова' : '', chips: r.k === 'slovo' ? r.w.map(([w, c]) => w + (c > 1 ? ' ×' + c : '')) : [],
+        b: [['reveal', shown ? 'Сховати результати з екрана' : 'Показати результати на екрані'], ['close', open ? 'Закрити голосування' : 'Відкрити голосування знову']] }, sections: [] };
   },
   next() { if (!$('#lobby').hidden) $('#start').click(); else if (!$('#run').hidden) $('#next').click(); },
   prev() { if (!$('#run').hidden && qi > 0) $('#prev').click(); },
