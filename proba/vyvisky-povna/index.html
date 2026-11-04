@@ -418,8 +418,8 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
 #skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:10px 16px;margin:0 0 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
 #skob .sk3-steps span{display:flex;align-items:center;gap:9px}
 #skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
-#skob .sk3-pick{display:flex;flex-wrap:wrap;gap:8px;max-width:760px}
-#skob .sk3-pick .pk{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border:1px solid #383d44;border-radius:12px;background:#22262b;min-width:150px;max-width:260px}
+#skob .sk3-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+#skob .sk3-pick .pk{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border:1px solid #383d44;border-radius:12px;background:#22262b;min-width:0}
 #skob .sk3-pick .pk:hover{border-color:#5a616b}#skob .sk3-pick .pk:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
 #skob .sk3-pick .pk.on{border-color:#ffc247;box-shadow:inset 0 0 0 1px #ffc247}
 #skob .sk3-pick .pk b{display:block;font:700 16px 'Source Sans 3',sans-serif;color:#f2f4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -428,10 +428,12 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
 #skob .sk3-pact .sk-btn{min-height:38px;padding:0 14px;font:600 14px 'Source Sans 3',sans-serif;border-radius:10px}
 #skob.pick[data-ph=intro] [data-k=x]{display:none}
 #skob.pick .sk3-hand{display:none}
-#skob .sk3-opts{display:grid;gap:8px}
-#skob .sk3-opts .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-#skob .sk3-opts .nm{min-width:150px;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
+#skob .sk3-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#skob .sk3-opts .row{padding:12px 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226}
+#skob .sk3-opts .nm{display:block;margin-bottom:9px;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
+#skob .sk3-opts .chs{display:flex;flex-wrap:wrap;gap:6px}
 #skob .sk3-opts .ch{all:unset;box-sizing:border-box;cursor:pointer;min-height:38px;padding:0 15px;display:inline-flex;align-items:center;border:1px solid #383d44;border-radius:10px;background:#22262b;font:600 15px 'Source Sans 3',sans-serif;color:#f2f4f6}
+#skob .sk3-opts .ch{flex:1 1 auto;justify-content:center;padding:0 10px}
 #skob .sk3-opts .ch:hover{border-color:#5a616b}#skob .sk3-opts .ch:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
 #skob .sk3-opts .ch.on{border-color:#ffc247;box-shadow:inset 0 0 0 1px #ffc247}
 #skob .sk3-note{max-width:none!important;margin-top:10px!important;font-size:15px!important;color:#a0a8b2}
@@ -846,9 +848,9 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
         ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.pick ? pickHtml(G.o.pick) : G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
         <span class="sk3-lb">Як граємо</span>
         <div class="sk3-opts">
-          <div class="row"><span class="nm">Час на відповідь</span>${[10, 20, 30, 60].map(t => `<button type="button" class="ch${t === T ? ' on' : ''}" data-k="opt-T:${t}" aria-pressed="${t === T}">${t} с</button>`).join('')}</div>
-          <div class="row"><span class="nm">Скільки запитань</span>${optN(G.src.length).map(([v, l]) => `<button type="button" class="ch${v === (G.o.limit || 0) ? ' on' : ''}" data-k="opt-n:${v}" aria-pressed="${v === (G.o.limit || 0)}">${l}</button>`).join('')}</div>
-          <div class="row"><span class="nm">Порядок</span><button type="button" class="ch${G.o.keepOrder ? '' : ' on'}" data-k="opt-mix:1" aria-pressed="${!G.o.keepOrder}">Перемішати</button><button type="button" class="ch${G.o.keepOrder ? ' on' : ''}" data-k="opt-mix:0" aria-pressed="${!!G.o.keepOrder}">Як у списку</button></div>
+          <div class="row"><span class="nm">Час на відповідь</span><div class="chs">${[10, 20, 30, 60].map(t => `<button type="button" class="ch${t === T ? ' on' : ''}" data-k="opt-T:${t}" aria-pressed="${t === T}">${t} с</button>`).join('')}</div></div>
+          <div class="row"><span class="nm">Скільки запитань</span><div class="chs">${optN(G.src.length).map(([v, l]) => `<button type="button" class="ch${v === (G.o.limit || 0) ? ' on' : ''}" data-k="opt-n:${v}" aria-pressed="${v === (G.o.limit || 0)}">${l}</button>`).join('')}</div></div>
+          <div class="row"><span class="nm">Порядок запитань</span><div class="chs"><button type="button" class="ch${G.o.keepOrder ? '' : ' on'}" data-k="opt-mix:1" aria-pressed="${!G.o.keepOrder}">Перемішати</button><button type="button" class="ch${G.o.keepOrder ? ' on' : ''}" data-k="opt-mix:0" aria-pressed="${!!G.o.keepOrder}">Як у списку</button></div></div>
         </div>
         <p class="sk3-note">${N} ${plural(N, 'запитання', 'запитання', 'запитань')} · швидше — більше балів${n ? ` · на звʼязку: ${n}${had ? ' (бали з гутірки теж рахуються)' : ''}` : ' · без телефонів — відповідайте вголос'}</p>
         <div class="btns"><button type="button" class="sk-btn main" data-k="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>Почати гру</button></div></div></div>`;
