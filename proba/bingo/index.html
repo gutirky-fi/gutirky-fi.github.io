@@ -1659,13 +1659,14 @@ window.GUTIRKA = {
   const box = dlg.querySelector('.pd-box');
   document.head.insertAdjacentHTML('beforeend', '<style>' +
     '#pult-dlg.vd{align-items:flex-start;padding:70px 16px 16px;background:rgba(10,12,15,.8)}' +
-    '#pult-dlg.vd .pd-box{width:min(780px,100%);border-left:1px solid #3b4048;padding:22px 24px}' +
+    '#pult-dlg.vd .pd-box{width:min(840px,100%);border-left:1px solid #3b4048;padding:22px 24px}' +
     '#pult-dlg.vd h2{font-size:24px;letter-spacing:.02em;margin:0 50px 16px 0}' +
     '#pult-dlg.vd .pd-x{border-radius:99px;width:40px;height:40px;right:12px;top:12px}' +
-    '#pult-dlg.vd .vd-g{display:grid;grid-template-columns:320px minmax(0,1fr);gap:14px 24px;align-items:start}' +
+    '#pult-dlg.vd .vd-g{display:grid;grid-template-columns:370px minmax(0,1fr);gap:14px 24px;align-items:start}' +
     '#pult-dlg.vd .vd-g.one{grid-template-columns:minmax(0,420px)}' +
     '#pult-dlg.vd .vd-t h4{margin:0 0 10px;font:700 14px "Source Sans 3",system-ui,sans-serif;color:#a0a8b2}' +
     '#pult-dlg.vd .vd-t .l2xi,#pult-dlg.vd .vd-t .s2xi{margin:0;display:block}' +
+    '#pult-dlg.vd .vd-t .s3row{display:flex;flex-wrap:wrap;gap:10px}#pult-dlg.vd .vd-t .vd-n{margin:8px 0 0;color:#a0a8b2;font-size:14px;line-height:1.45}' +
     /* картка точно як у Змагу (.ved): QR 112 px ліворуч, заголовок і пояснення праворуч; службове (стан, код, кнопки) — сховано */
     '#pult-dlg.vd .vd-p{display:flex;gap:14px;align-items:center;padding:12px;border-radius:14px;background:#22262b;border:1px solid #383d44}' +
     '#pult-dlg.vd .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}' +
@@ -1684,7 +1685,9 @@ window.GUTIRKA = {
   dlg.querySelector('#pd-ttl').textContent = 'Ведучому';
   /* картка пульта: усе, що було у вікні пульта, крім заголовка й хрестика */
   const card = document.createElement('div'); card.className = 'vd-p';
-  card.innerHTML = '<div class="vq"></div><div class="vd-tx"><b>Ведучому — пульт на вашому телефоні</b><span>Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки гри. Юнакам його не показуйте.</span></div>'
+  const id = (window.GUTIRKA && window.GUTIRKA.id) || '';
+  const what = { bingo: 'щойно витягнута кулька, перевірка карток і кнопка «Далі»', opytuvannia: 'результати (раніше, ніж на екрані) і кнопки керування', 'skob-hra': 'правильна відповідь, лідери й кнопка «Далі»' }[id] || 'те, що бачите лише ви, і кнопки керування';
+  card.innerHTML = '<div class="vq"></div><div class="vd-tx"><b>Пульт на вашому телефоні</b><span>Наведіть камеру телефона на цей код — він стане пультом: ' + what + '. Учасникам код не показуйте.</span></div>'
     + '<div class="vd-ok"><b>Пульт підключено ✓</b><span>Відповіді й кнопки гри — на вашому телефоні.</span><button type="button">Показати QR-код ще раз</button></div><div class="vd-hid"></div>';
   card.querySelector('.vq').appendChild(box.querySelector('.pd-qr'));
   const site = box.querySelector('.pd-site'); if (site) card.querySelector('.vd-tx').appendChild(site);   /* лише якщо невідома адреса пульта (файл з компʼютера) */

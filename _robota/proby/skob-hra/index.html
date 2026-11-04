@@ -378,6 +378,7 @@ function play(g) {
     return;
   }
   if (!list.length) { toast('Додайте хоча б одне запитання.'); return; }
+  window.SKOB_CUR = g;
   if (V_B && g !== shared) return playB(g, list);
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', onOpt: g === shared ? null : v => { g.T = v.T; g.mix = v.mix; persist(); } });
 }
@@ -387,6 +388,7 @@ const V_B = S3L && /[?&]v=b(&|$)/.test(location.search);
 const PICK = 'skob.pick';
 function pickedGame() { let id = ''; try { id = localStorage.getItem(PICK) || ''; } catch (e) {} return games.find(g => g.id === id) || games.slice().sort((a, b) => b.upd - a.upd)[0]; }
 function playB(g, list) {
+  if (g) window.SKOB_CUR = g;
   if (!g) { const n = norm({}); games.push(n); persist(); go('gra-' + n.id); return; }
   try { localStorage.setItem(PICK, g.id); } catch (e) {}
   if (!list) { list = []; g.qs.forEach(q => { if (!isEmpty(q) && !problem(q)) list.push(forGame(q)); }); }
@@ -583,6 +585,28 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => { if (e.target.id === 'g-mix' && cur) { cur.mix = e.target.checked; touch(); } });
 addEventListener('pagehide', () => { if (saveT) persist(); });
 
+/* «Ведучому» → шпаргалка з відповідями (4.11.2026, як у Змагу): аркуш A4 з усіма запитаннями поточної вікторини */
+function printSkob() {
+  const g = window.SKOB_CUR || (typeof pickedGame === 'function' ? pickedGame() : null); if (!g) return;
+  const qs = g.qs.filter(q => !isEmpty(q)), L = ['С', 'К', 'О', 'Б'], C = ['#d64541', '#2f6fd0', '#e8a321', '#2e8f55'];
+  const w = window.open('', '_blank'); if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Потужний СКОБ! — відповіді</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Source+Sans+3:wght@400;600;700&display=swap"><style>
+@page{size:A4;margin:11mm 13mm 12mm}*{box-sizing:border-box}body{margin:0;color:#1d2125;font:10.5pt/1.4 'Source Sans 3',Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+header{position:relative}.k,h1{padding-right:22mm}header::after{content:"";position:absolute;right:0;top:0;width:15mm;height:17.5mm;background:url("${window.SKOB_LILY || ''}") right top/contain no-repeat}
+.k{display:flex;align-items:center;gap:7px;font:700 10.5pt 'Source Sans 3',sans-serif;color:#b07a00}.k i{font:700 8pt 'Source Sans 3',sans-serif;font-style:normal;padding:.4mm 2.4mm;border-radius:99px;border:1pt solid #cfd5dc;color:#5f6873}
+h1{margin:.6mm 0 0;font:600 24pt/1.02 Oswald,'Arial Narrow',sans-serif;letter-spacing:.01em;text-transform:uppercase}
+.sub{margin:1mm 0 4.5mm;padding:0 0 3mm;border-bottom:2.2pt solid #e8a321;color:#5f6873}
+.r{display:grid;grid-template-columns:8mm minmax(0,1fr) 62mm;gap:1mm 4mm;padding:1.8mm 0;border-top:.6pt solid #cfd5dc;break-inside:avoid}
+.n{font:600 11pt Oswald,sans-serif;color:#b07a00}.a{font-weight:700}.a i{display:inline-block;width:5mm;height:5mm;margin-right:1.6mm;border-radius:1mm;color:#fff;font:700 8.5pt/5mm 'Source Sans 3',sans-serif;font-style:normal;text-align:center;vertical-align:.2mm}
+small{display:block;font-weight:400;font-size:8.5pt;color:#5f6873}
+footer{margin-top:6mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:8.5pt;color:#5f6873}
+</style></head><body><header><div class="k">Потужний СКОБ! <i>для ведучого</i></div><h1>${esc(g.title || 'Вікторина')}</h1><div class="sub">${qs.length} запитань · правильні відповіді · гравцям не показувати</div></header>
+${qs.map((q, i) => `<div class="r"><b class="n">${i + 1}</b><div>${esc(q.q)}<small>${q.a.map((t, k) => t ? L[k] + ' — ' + esc(t) : '').filter(Boolean).join(' · ')}</small></div><div class="a">${q.ok >= 0 ? `<i style="background:${C[q.ok]}${q.ok === 2 ? ';color:#1d1606' : ''}">${L[q.ok]}</i>${esc(q.a[q.ok])}` : '—'}${q.why ? `<small>${esc(q.why)}</small>` : ''}</div></div>`).join('')}
+<footer><b>Пласт у Фінляндії</b> · бібліотека гутірок</footer><script>setTimeout(()=>print(),500)<\/script></body></html>`);
+  w.document.close();
+}
+document.body.insertAdjacentHTML('beforeend', '<div class="s3o" hidden><div class="bx"><h3>Ведучому</h3><h4>Без телефона</h4><div class="s3row"><button type="button" class="pd-b" id="skob-print">Шпаргалка з відповідями</button></div><p class="vd-n">Аркуш A4: усі запитання поточної вікторини й правильні відповіді — щоб вести гру з папірцем.</p></div></div>');
+document.getElementById('skob-print').addEventListener('click', printSkob);
 route(true);
 })();
 </script>

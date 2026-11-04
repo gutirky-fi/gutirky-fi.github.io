@@ -660,7 +660,7 @@ window.IHRY_S3 = function (o) {
       <div class="modes" id="modes"></div>
       <label class="opt"><input type="checkbox" id="minus" checked> Неправильна відповідь знімає бали</label>
       <p class="sub" style="margin:8px 0 0;font-size:14px"><span id="sndi">звук: натисніть будь-де</span> · <a href="#" id="sndt" style="color:inherit">перевірити звук</a> · версія 03.11 12:00</p>
-      <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Ведучому — відповіді на вашому телефоні</b><span id="vst"></span>
+      <div class="ved" id="ved"><div class="vq" id="vqr"></div><div><b>Пульт на вашому телефоні</b><span id="vst"></span>
         <div style="margin-top:8px"><button type="button" class="btn" id="print" style="min-height:40px;padding:6px 14px;font-size:15px"><i class="ic ic-print" aria-hidden="true"></i> Шпаргалка з відповідями</button></div></div></div>
     </div>
   </div>
@@ -1433,7 +1433,7 @@ let paintTop = function () {
   $('#netc .dot').className = 'dot' + (net === 'on' ? ' on' : '');
   $('#pn').textContent = [...players.values()].filter(P => P.on).length;
   document.body.classList.toggle('vedon', vedOn());   /* пульт підключено — кнопки керування на табло ховаємо */
-  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Скануйте цей код своїм телефоном: там будуть правильні відповіді й кнопки ✓ і ✗. Юнакам його не показуйте.';
+  $('#ved').classList.toggle('on', veds.size > 0); $('#vst').textContent = veds.size ? '✓ Пульт ведучого підключено. Відповіді — на вашому телефоні.' : 'Наведіть камеру телефона на цей код — він стане пультом: правильна відповідь і кнопки ✓ / ✗. Учасникам код не показуйте.';
   $('#vedc span').textContent = veds.size ? 'Ведучий ✓' : 'Ведучий';
 }
 function paintVq() { const vu = VURL + '?k=' + code + '&v=' + vkey + ((location.search.match(/dyz=(fam|3)/) || [])[0] ? '&' + location.search.match(/dyz=(fam|3)/)[0] : ''), q = $('#vqr2'); if (window.qrSvg && q.dataset.u !== vu) { q.innerHTML = window.qrSvg(vu, 260); q.dataset.u = vu; $('#vqr').innerHTML = window.qrSvg(vu, 112); } }
