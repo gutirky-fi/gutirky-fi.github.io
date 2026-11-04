@@ -77,6 +77,12 @@ body[data-v=pad] .mbtn{display:grid}
 .timer.over{color:var(--bad)}
 .bar{height:4px;border-radius:9px;background:#30353c;overflow:hidden;margin-top:-6px}
 .bar i{display:block;height:100%;width:0;background:var(--vyh);transition:width .3s}
+/* режим гри (4.11.2026): пульт для ігор без «гутіркового» — без номерів слайдів, таймера, «Далі: …», легенди підказок і розділів */
+body.gra #count,body.gra #steps,body.gra #timer,body.gra .bar,body.gra #snext,body.gra #nleg,body.gra #secbox,body.gra .tmrow{display:none!important}
+body.gra #gname{font:600 15px var(--body);color:var(--mut);text-transform:none}
+body.gra #stitle{font-size:30px;margin-top:2px}
+body.gra.noprev .nav #prev{display:none}
+body.gra.noprev .nav .in{grid-template-columns:1fr}body.gra .nav button.next{font-size:24px}
 #stitle{font:600 24px/1.15 var(--disp);text-transform:uppercase;letter-spacing:.01em;word-break:break-word}
 #snext{font-size:14px;color:var(--mut);margin-top:3px}
 #snext b{color:#d9dee4;font-weight:600}
@@ -247,7 +253,7 @@ noscript{display:block;padding:20px}
       <div id="stitle">…</div>
       <div id="snext"></div>
     </div>
-    <div class="card top notes"><h3>Підказки <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · синє — що на екрані · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
+    <div class="card top notes"><h3><span id="nhd">Підказки</span> <span id="nleg" hidden>❓ запитай учасників · 🗣 скажи · ✋ зроби · (дужки) — лише для тебе · синє — що на екрані · ❯ натисни «Далі»</span></h3><div id="note" class="empty">Підказок для цього слайда немає.</div></div>
     <div id="ix" class="card top" hidden></div>
   </section>
 </div>
@@ -260,8 +266,8 @@ noscript{display:block;padding:20px}
 <div id="sheet" hidden><div class="in" role="dialog" aria-modal="true" aria-labelledby="sh-t">
   <div class="sh"><h2 id="sh-t">Меню</h2><button class="x" id="shx" type="button" aria-label="Закрити">✕</button></div>
   <div id="secbox"><h3>Перейти до розділу</h3><div id="secs"></div></div>
-  <h3>Таймер</h3>
-  <div class="row"><button class="btn" id="treset" type="button">↺ Почати відлік заново</button></div>
+  <h3 class="tmrow">Таймер</h3>
+  <div class="row tmrow"><button class="btn" id="treset" type="button">↺ Почати відлік заново</button></div>
   <h3>Телефон</h3>
   <div class="row"><button class="btn" id="leave" type="button">Відʼєднати цей телефон</button></div>
 </div></div>
@@ -727,6 +733,9 @@ noscript{display:block;padding:20px}
     document.body.classList.toggle('skm', inG);
     if (inG) { $('#next').disabled = !sk.lobby && sk.g === 'end'; $('#prev').disabled = true; $('#next').textContent = (sk.lobby ? 'Готово' : sk.nx || 'Далі') + ' ›'; }
     else $('#next').textContent = 'Далі ›';
+    const gra = !!st.gra; document.body.classList.toggle('gra', gra); document.body.classList.toggle('noprev', gra && !!st.noPrev);
+    $('#nhd').textContent = gra ? 'Що зараз' : 'Підказки';
+    if (gra) { document.title = (st.gtitle || '') + ' · Пульт'; if (!inG) { $('#next').textContent = (st.nextL || 'Далі') + ' ›'; $('#next').disabled = st.canNext === false; $('#prev').disabled = !st.canPrev; } }
     drawTimer();
   }
   function drawTimer() {

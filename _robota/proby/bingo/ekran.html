@@ -525,12 +525,12 @@ window.GUTIRKA = {
   id: 'bingo', title: 'Пластове бінго',
   state() {
     const S = set(), tot = S.items.length, on = [...players.values()].filter(P => P.on).length;
-    if (phase !== 'game') return { mode: 'full', index: 0, total: 2, title: 'Збираємо гравців', next: 'Почати гру', note: '🗣 Гравці сканують QR-код на екрані й отримують картку.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати гру».', ix: { v: 'btns', h: 'Бінго', b: [['start', 'Почати гру']] }, sections: [] };
+    if (phase !== 'game') return { mode: 'full', index: 0, total: 2, gra: true, noPrev: true, nextL: 'Почати гру', title: 'Збираємо гравців', next: 'Почати гру', note: '🗣 Гравці сканують QR-код на екрані й отримують картку.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати гру».', ix: null, sections: [] };
     const nm = cur >= 0 ? ballT(cur) : '';
     const ask = cur >= 0 && themed() && !shown;
-    return { mode: 'full', index: Math.max(0, drawn.length - 1), total: tot, title: cur >= 0 ? 'Кулька ' + drawn.length + ': ' + nm : 'Гра почалась', next: ask ? 'Показати відповідь' : 'Наступна кулька',
+    return { mode: 'full', index: Math.max(0, drawn.length - 1), total: tot, gra: true, noPrev: true, nextL: ask ? 'Показати відповідь' : 'Наступна кулька', title: cur >= 0 ? 'Кулька ' + drawn.length + ': ' + nm : 'Гра почалась', next: ask ? 'Показати відповідь' : 'Наступна кулька',
       note: (cur >= 0 ? '📺 ' + nm + (themed() ? '\n✔ ' + ($('#ans').textContent || '') : '') + '\n' : '') + '• Витягнуто ' + drawn.length + ' з ' + tot + ' · на звʼязку ' + on + (winners.length ? '\n• Переможці: ' + winners.map(w => w.name).join(', ') : ''),
-      ix: { v: 'btns', h: 'Бінго', b: [['next', ask ? 'Показати відповідь' : 'Наступна кулька']] }, sections: [] };
+      ix: null, sections: [] };
   },
   next() { if (phase !== 'game') startGame(); else next(); },
   prev() {}, jump() {},
@@ -539,7 +539,7 @@ window.GUTIRKA = {
 { let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
 })();
 </script>
-<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
 <script>/*PULT*/</script>
 </body>
 </html>

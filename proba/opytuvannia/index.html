@@ -1186,12 +1186,12 @@ window.GUTIRKA = {
   id: 'opytuvannia', title: 'Швидке опитування',
   state() {
     const on = [...players.values()].filter(P => P.on).length, N = poll().qs.length;
-    if (!$('#lobby').hidden) return { mode: 'full', index: 0, total: N + 1, title: 'Збираємо учасників', next: 'Почати опитування', note: '🗣 Учасники сканують QR-код на екрані.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати».', ix: { v: 'btns', h: 'Опитування', b: [['start', 'Почати']] }, sections: [] };
-    if (!$('#end').hidden) return { mode: 'full', index: N, total: N + 1, title: 'Підсумок', next: '', note: '📺 Підсумок усіх питань', ix: null, sections: [] };
+    if (!$('#lobby').hidden) return { mode: 'full', index: 0, total: N + 1, gra: true, noPrev: true, nextL: 'Почати', title: 'Збираємо учасників', next: 'Почати опитування', note: '🗣 Учасники сканують QR-код на екрані.\n• На звʼязку: ' + on + '\n✋ Коли всі зайшли — «Почати».', ix: { v: 'btns', h: 'Опитування', b: [['start', 'Почати']] }, sections: [] };
+    if (!$('#end').hidden) return { mode: 'full', index: N, total: N + 1, gra: true, noPrev: false, canPrev: false, canNext: false, nextL: 'Кінець', title: 'Підсумок', next: '', note: '📺 Підсумок усіх питань', ix: null, sections: [] };
     const r = resOf(qi);
-    return { mode: 'full', index: qi, total: N + 1, title: q().q, next: qi < N - 1 ? poll().qs[qi + 1].q : 'Підсумок',
+    return { mode: 'full', gra: true, canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: 'Питання ' + (qi + 1) + ' / ' + N, _q: q().q, next: qi < N - 1 ? poll().qs[qi + 1].q : 'Підсумок',
       note: '📺 ' + q().q + '\n• Відповіли ' + r.n + (on ? ' з ' + on : '') + (open ? '' : ' · голосування закрите') + (shown ? '' : '\n(Результати поки сховані від екрана)'),
-      ix: { v: 'btns', h: 'Питання ' + (qi + 1) + ' / ' + N, b: [['reveal', shown ? 'Сховати результати' : 'Показати результати'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']] }, sections: [] };
+      ix: { v: 'btns', h: 'Результати', b: [['reveal', shown ? 'Сховати результати' : 'Показати результати'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']] }, sections: [] };
   },
   next() { if (!$('#lobby').hidden) $('#start').click(); else if (!$('#run').hidden) $('#next').click(); },
   prev() { if (!$('#run').hidden && qi > 0) $('#prev').click(); },
@@ -1201,7 +1201,7 @@ window.GUTIRKA = {
 { let t = 0; new MutationObserver(() => { clearTimeout(t); t = setTimeout(() => document.dispatchEvent(new CustomEvent('gutirka:slide')), 120); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }
 })();
 </script>
-<script>window.GUTIRKA_PULT_URL = 'https://gutirky-fi.github.io/pult/';</script>
+<script>window.GUTIRKA_PULT_URL = location.pathname.startsWith('/proba/') ? location.origin + '/proba/pult/' : 'https://gutirky-fi.github.io/pult/';   /* у пробі — пробний пульт */</script>
 <script>
 /* shared/pult-host.js — пульт на боці ведучого (ноутбук).
    Підключається в кінці сторінки гутірки, після її основного скрипта і shared/qr.js.
