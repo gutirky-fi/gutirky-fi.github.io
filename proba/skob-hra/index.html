@@ -631,7 +631,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob .sk3-r .sk-btn{border-radius:12px}
 #skob .sk3-r .sk-btn.main{min-height:54px;padding:0 28px;font-size:18px;font-weight:700;display:inline-flex;align-items:center;gap:10px}
 #skob .sk3-r .sk-btn.main svg{width:18px;height:18px}
-#skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:11px 16px;margin:0 0 20px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
+#skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:10px 16px;margin:0 0 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
 #skob .sk3-steps span{display:flex;align-items:center;gap:9px}
 #skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
 #skob .sk3-pick{display:flex;flex-wrap:wrap;gap:8px;max-width:760px}
@@ -642,15 +642,16 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob .sk3-pick .pk small{display:block;margin-top:2px;font:400 13px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob .sk3-pact{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 #skob .sk3-pact .sk-btn{min-height:38px;padding:0 14px;font:600 14px 'Source Sans 3',sans-serif;border-radius:10px}
-#skob.pick .sk3-cards .c:first-child{border-color:#383d44}
-#skob.pick .sk3-cards{grid-template-columns:repeat(4,minmax(0,1fr));max-width:none}#skob.pick .sk3-cards .c{padding:10px 13px}#skob.pick .sk3-cards b{font-size:15px}#skob.pick .sk3-cards small{display:none}#skob.pick .sk3-lb{margin-top:18px}
 #skob.pick[data-ph=intro] [data-k=x]{display:none}
-#skob .sk3-lb{display:block;margin:24px 0 8px;font:600 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
-#skob .sk3-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:720px}
-#skob .sk3-cards .c{padding:13px 15px;border:1px solid #383d44;border-radius:12px;background:#22262b}
-#skob .sk3-cards .c:first-child{border-color:#ffc247}
-#skob .sk3-cards b{display:block;font:700 17px 'Source Sans 3',sans-serif;color:#f2f4f6}
-#skob .sk3-cards small{display:block;margin-top:3px;font:400 14px/1.35 'Source Sans 3',sans-serif;color:#a0a8b2}
+#skob.pick .sk3-hand{display:none}
+#skob .sk3-opts{display:grid;gap:8px}
+#skob .sk3-opts .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#skob .sk3-opts .nm{min-width:150px;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
+#skob .sk3-opts .ch{all:unset;box-sizing:border-box;cursor:pointer;min-height:38px;padding:0 15px;display:inline-flex;align-items:center;border:1px solid #383d44;border-radius:10px;background:#22262b;font:600 15px 'Source Sans 3',sans-serif;color:#f2f4f6}
+#skob .sk3-opts .ch:hover{border-color:#5a616b}#skob .sk3-opts .ch:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
+#skob .sk3-opts .ch.on{border-color:#ffc247;box-shadow:inset 0 0 0 1px #ffc247}
+#skob .sk3-note{max-width:none!important;margin-top:10px!important;font-size:15px!important;color:#a0a8b2}
+#skob .sk3-lb{display:block;margin:18px 0 8px;font:600 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob-lobby.inl{position:static;inset:auto;z-index:auto;display:block;padding:0;background:none}
 #skob-lobby.inl .box{width:340px;max-height:none;overflow:visible;padding:20px 22px;border-radius:18px;background:#1f2328;border:1px solid #383d44;border-top:4px solid #ffc247;box-shadow:none;text-align:center}
 #skob-lobby.inl .box::before{content:"Гравцям";display:block;font:600 24px Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em}
@@ -666,8 +667,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob-lobby.inl .steps::after{content:"або відкрийте адресу й введіть код";color:#a0a8b2;font-size:14px;margin-top:2px}
 #skob-lobby.inl h3{justify-content:center;font-size:16px;margin:16px 0 8px}
 #skob-lobby.inl .chips{justify-content:center;min-height:0}
-@media (max-width:900px){#skob .sk3-cards{grid-template-columns:1fr}#skob .sk3-in{grid-template-columns:1fr}#skob .sk3-lg b{font-size:52px}#skob-lobby.inl .box{width:100%}}
-`;
+@media (max-width:900px){`;
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
 
   const CSS = `
@@ -1015,7 +1015,7 @@ details[open]>summary::before{transform:rotate(90deg)}
   let G = null, gEl = null, lastPT = '';
   function game(list, o = {}) {
     injectCss(); closeGame(true);
-    G = { src: list, list: o.keepOrder ? list.slice() : shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
+    G = { src: list, list: [], i: -1, ph: 'intro', o, ctl: null, before: new Map() }; relist();
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
     if (o.pick) gEl.classList.add('pick');
     if (S3) { gEl.classList.add('s3'); if (window.SKOB_LILY) gEl.style.setProperty('--sk3-lily', `url(${window.SKOB_LILY})`); }   /* бліда лілея на фоні, як у Змагу й Бінго */
@@ -1041,7 +1041,12 @@ details[open]>summary::before{transform:rotate(90deg)}
     if (k === 'quit' || k === 'done') closeGame();
     else if (k === 'start' || k === 'next') gNext();
     else if (k.startsWith('x-')) { if (G.o.onCmd) G.o.onCmd(k.slice(2)); }
-    else if (k === 'again') { players.forEach(P => { P.score = 0; }); G.list = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.i = -1; G.ph = 'intro'; gNext(); }
+    else if (k.startsWith('opt-') && G.ph === 'intro') {   /* «Як граємо»: справжні налаштування гри */
+      const [o, v] = k.slice(4).split(':');
+      if (o === 'T') G.o.T = +v; else if (o === 'n') G.o.limit = +v; else if (o === 'mix') G.o.keepOrder = v === '0';
+      relist(); if (G.o.onOpt) G.o.onOpt({ T: G.o.T || 20, mix: !G.o.keepOrder, limit: G.o.limit || 0 }); gIntro();
+    }
+    else if (k === 'again') { players.forEach(P => { P.score = 0; }); relist(); G.i = -1; G.ph = 'intro'; gNext(); }
   }
   function gStage() { gEl.dataset.ph = G.ph; return gEl.querySelector('.sk-stage'); }
   function hint(t) { if (gEl) gEl.querySelector('.sk-hint').textContent = t || ''; }
@@ -1056,12 +1061,12 @@ details[open]>summary::before{transform:rotate(90deg)}
         <div class="sk3-steps"><span><i>1</i>Гравці сканують QR-код</span><span><i>2</i>Пишуть своє імʼя</span><span><i>3</i>Почати гру</span></div>
         ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.pick ? pickHtml(G.o.pick) : G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
         <span class="sk3-lb">Як граємо</span>
-        <div class="sk3-cards">
-          <div class="c"><b>${N} ${plural(N, 'запитання', 'запитання', 'запитань')}</b><small>на великому екрані; відповіді — С, К, О, Б</small></div>
-          <div class="c"><b>${T} секунд</b><small>на кожну відповідь; таймер — кільце вгорі</small></div>
-          <div class="c"><b>Швидше — більше балів</b><small>за правильну відповідь; після кожного запитання — лідери</small></div>
-          <div class="c"><b>${n ? `На звʼязку: ${n}` : 'Без телефонів теж можна'}</b><small>${n ? (had ? 'бали з гутірки теж рахуються' : 'інші ще можуть приєднатися') : 'відповідайте вголос, хтось один натискає'}</small></div>
+        <div class="sk3-opts">
+          <div class="row"><span class="nm">Час на відповідь</span>${[10, 20, 30, 60].map(t => `<button type="button" class="ch${t === T ? ' on' : ''}" data-k="opt-T:${t}" aria-pressed="${t === T}">${t} с</button>`).join('')}</div>
+          <div class="row"><span class="nm">Скільки запитань</span>${optN(G.src.length).map(([v, l]) => `<button type="button" class="ch${v === (G.o.limit || 0) ? ' on' : ''}" data-k="opt-n:${v}" aria-pressed="${v === (G.o.limit || 0)}">${l}</button>`).join('')}</div>
+          <div class="row"><span class="nm">Порядок</span><button type="button" class="ch${G.o.keepOrder ? '' : ' on'}" data-k="opt-mix:1" aria-pressed="${!G.o.keepOrder}">Перемішати</button><button type="button" class="ch${G.o.keepOrder ? ' on' : ''}" data-k="opt-mix:0" aria-pressed="${!!G.o.keepOrder}">Як у списку</button></div>
         </div>
+        <p class="sk3-note">${N} ${plural(N, 'запитання', 'запитання', 'запитань')} · швидше — більше балів${n ? ` · на звʼязку: ${n}${had ? ' (бали з гутірки теж рахуються)' : ''}` : ' · без телефонів — відповідайте вголос'}</p>
         <div class="btns"><button type="button" class="sk-btn main" data-k="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>Почати гру</button></div></div></div>`;
       lobby(st.querySelector('.sk3-j'));
     } else
@@ -1070,6 +1075,8 @@ details[open]>summary::before{transform:rotate(90deg)}
     hint('');
   }
   /* вибір вікторини прямо на екрані гри (o.pick = { items:[{id,title,sub}], cur }) — кнопки x-… віддаються в o.onCmd */
+  const optN = all => [[0, `Усі (${all})`]].concat([5, 10, 15].filter(v => v < all).map(v => [v, String(v)]));
+  function relist() { const src = G.o.keepOrder ? G.src.slice() : shuf(G.src); G.list = G.o.limit ? src.slice(0, G.o.limit) : src; }
   function pickHtml(P) {
     return `<span class="sk3-lb">Вікторина</span><div class="sk3-pick">${P.items.map(it => `<button type="button" class="pk${it.id === P.cur ? ' on' : ''}" data-k="x-pick:${esc(it.id)}" aria-pressed="${it.id === P.cur}"><b>${esc(it.title)}</b><small>${esc(it.sub || '')}</small></button>`).join('')}</div>
       <div class="sk3-pact"><button type="button" class="sk-btn" data-k="x-new">＋ Нова вікторина</button><button type="button" class="sk-btn" data-k="x-edit">Змінити цю</button><button type="button" class="sk-btn" data-k="x-open">Відкрити файл</button></div>`;
@@ -1593,7 +1600,7 @@ function play(g) {
   }
   if (!list.length) { toast('Додайте хоча б одне запитання.'); return; }
   if (V_B && g !== shared) return playB(g, list);
-  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!' });
+  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', onOpt: g === shared ? null : v => { g.T = v.T; g.mix = v.mix; persist(); } });
 }
 
 /* ---------- варіант Б (проба ?dyz=3&v=b, 4.11.2026): як у Змагу — без окремої головної, одразу екран гри з вибором вікторини ---------- */
@@ -1607,6 +1614,7 @@ function playB(g, list) {
   const items = games.slice().sort((a, b) => b.upd - a.upd).map(x => { const n = x.qs.filter(q => !isEmpty(q)).length; return { id: x.id, title: x.title || 'Без назви', sub: `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'запитання' : 'запитань'} · по ${x.T} с` }; });
   if (!list.length) list = [{ q: 'У цій вікторині ще немає готових запитань — натисніть «Змінити цю».', a: ['Гаразд', '—'], ok: 0, why: '' }];
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', pick: { items, cur: g.id },
+    onOpt: v => { g.T = v.T; g.mix = v.mix; persist(); const it = items.find(x => x.id === g.id); if (it) it.sub = it.sub.replace(/по \d+ с/, 'по ' + v.T + ' с'); },
     onClose: () => { if (!location.hash) playB(pickedGame()); },
     onCmd: k => {
       if (k.startsWith('pick:')) { const x = games.find(y => y.id === k.slice(5)); if (x) playB(x); }

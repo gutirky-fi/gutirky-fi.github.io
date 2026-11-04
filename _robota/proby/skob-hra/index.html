@@ -379,7 +379,7 @@ function play(g) {
   }
   if (!list.length) { toast('Додайте хоча б одне запитання.'); return; }
   if (V_B && g !== shared) return playB(g, list);
-  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!' });
+  SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', onOpt: g === shared ? null : v => { g.T = v.T; g.mix = v.mix; persist(); } });
 }
 
 /* ---------- варіант Б (проба ?dyz=3&v=b, 4.11.2026): як у Змагу — без окремої головної, одразу екран гри з вибором вікторини ---------- */
@@ -393,6 +393,7 @@ function playB(g, list) {
   const items = games.slice().sort((a, b) => b.upd - a.upd).map(x => { const n = x.qs.filter(q => !isEmpty(q)).length; return { id: x.id, title: x.title || 'Без назви', sub: `${n} ${n % 10 === 1 && n % 100 !== 11 ? 'запитання' : 'запитань'} · по ${x.T} с` }; });
   if (!list.length) list = [{ q: 'У цій вікторині ще немає готових запитань — натисніть «Змінити цю».', a: ['Гаразд', '—'], ok: 0, why: '' }];
   SKOB.game(list, { T: g.T, keepOrder: !g.mix, title: g.title || 'Вікторина', endText: 'Дякуємо за гру! СКОБ!', pick: { items, cur: g.id },
+    onOpt: v => { g.T = v.T; g.mix = v.mix; persist(); const it = items.find(x => x.id === g.id); if (it) it.sub = it.sub.replace(/по \d+ с/, 'по ' + v.T + ' с'); },
     onClose: () => { if (!location.hash) playB(pickedGame()); },
     onCmd: k => {
       if (k.startsWith('pick:')) { const x = games.find(y => y.id === k.slice(5)); if (x) playB(x); }
