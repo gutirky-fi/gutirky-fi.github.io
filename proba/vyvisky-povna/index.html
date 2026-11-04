@@ -842,6 +842,10 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
       if (G.ph === 'intro') { if (G.o.onBack) G.o.onBack(); else closeGame(); } else gEl.querySelector('.sk-sure').classList.toggle('on');
       return;
     }
+    if (k === 'finish') {   /* «Завершити» з пульта (4.11.2026): гра йде — одразу переможці; на заставці чи після кінця — закрити */
+      if (G.ph === 'intro' || G.ph === 'end') closeGame(); else { if (G.ctl) G.ctl.stop(true); gEnd(); }
+      return;
+    }
     if (k === 'quit' || k === 'done') closeGame();
     else if (k === 'start' || k === 'next') gNext();
     else if (k === 'tipok') { try { localStorage.setItem(TIPK, '1'); } catch (e) {} if (G.ph === 'intro') gIntro(); }

@@ -207,7 +207,7 @@ body.gra #pad{padding-bottom:110px}
 .nav button:active{transform:scale(.97);filter:brightness(1.12)}
 .nav button:disabled{opacity:.4}
 .skm .nav button.next{font-size:19px;background:#ffc247;border-color:#ffc247;color:#1d1606}
-body:not([data-v=pad]) .nav{display:none}
+body:not([data-v=pad]) .nav{display:none}body.skend .nav,body.nonav .nav{display:none}
 /* ===== режим гри — за зразком пульта «Інтелектуального змагу» (4.11.2026):
    шапка з логотипом гри, рахунок угорі, правильна відповідь у золотій рамці, великі кнопки внизу ===== */
 #gend{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font:700 14px var(--body);white-space:nowrap}
@@ -857,6 +857,8 @@ noscript{display:block;padding:20px}
     const sk = st.ix && st.ix.v === 'skob' && st.ix.s, inG = !!(sk && (sk.g || sk.lobby));
     $('#pad').classList.toggle('sk', !!sk);
     document.body.classList.toggle('skm', inG);
+    document.body.classList.toggle('skend', !!(sk && sk.g === 'end'));
+    document.body.classList.toggle('nonav', !!st.gra && st.canNext === false && !!st.noPrev && !inG);   /* гра скінчилась: неактивне «Далі» не показуємо */   /* кінець гри: кнопки «Завершити / Зіграти ще раз» на екрані, неактивне «Далі» не потрібне */
     if (inG) { $('#next').disabled = !sk.lobby && sk.g === 'end'; $('#prev').disabled = true; $('#next').textContent = (sk.lobby ? 'Готово' : sk.nx || 'Далі') + ' ›'; }
     else $('#next').textContent = 'Далі ›';
     const gra = !!st.gra; document.body.classList.toggle('gra', gra); document.body.classList.toggle('noprev', gra && !!st.noPrev);
@@ -1062,7 +1064,7 @@ noscript{display:block;padding:20px}
     const n = v.pl.length, gra = !!(st && st.gra), nm = gra ? '' : 'Потужний СКОБ!';
     let h = '', act = null;
     const foot = (v.g && !v.lobby && v.g !== 'end') ? '<button type="button" class="g-end" data-act="skob:lobby">' + (n ? 'Гравці: ' + n + ' · запросити ще' : 'Запросити гравців') + '</button>' : '';
-    setEnd(v.g && !v.lobby && v.g !== 'end' ? ['skob:quit', '✕ Завершити', 'Завершити гру зараз?'] : null);
+    setEnd(v.g && !v.lobby && v.g !== 'end' && v.g !== 'intro' ? ['skob:finish', '✕ Завершити', 'Завершити гру й показати переможців?'] : null);
     if (v.lobby) {
       h = G.meta(nm || 'Запросити гравців', n ? 'Гравців: ' + n : '')
         + '<div class="g-code"><b>' + (v.code ? esc(v.code.slice(0, 3) + ' ' + v.code.slice(3)) : '··· ···') + '</b><small>QR-код на екрані<br>або ' + esc(v.url) + '</small></div>'
