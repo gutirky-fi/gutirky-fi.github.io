@@ -273,9 +273,9 @@ body.v2 .vars div{border-radius:12px;font:600 clamp(1.1rem,2vw,1.5rem)/1.2 var(-
 body.v2 .vars div b{font:600 1.1em var(--disp);color:var(--gd)}
 /* фінал */
 body.v2 .fanno{font:600 clamp(2.4rem,5vw,4rem)/1 var(--disp);letter-spacing:.02em}
-body.v2 .fin .wk{font:500 clamp(1.8rem,3vw,2.6rem)/1 Caveat,cursive;letter-spacing:0;text-transform:none;color:var(--hand)}
+body.v2 .fin .wk{font:700 clamp(1.1rem,2vw,1.6rem)/1 var(--txt);letter-spacing:.14em;text-transform:uppercase;color:var(--gd)}/* 4.11: «Перемогли» — не рукописом (рукопис лише для прикраси), а як підписи родини; золото = 1-ше місце */
 body.v2 .fin h1{color:var(--ink);text-shadow:none;font:600 clamp(3.6rem,9vw,7rem)/1 var(--disp);letter-spacing:.01em}
-body.v2 .fin h1::after{content:"";display:block;width:min(260px,40%);height:6px;margin:14px auto 0;border-radius:3px;background:linear-gradient(90deg,#ffd23f 0 25%,#c8284a 0 50%,#3daf6e 0 75%,#b0773a 0)}
+body.v2 .fin h1::after{content:none}/* 4.11: різнокольорова смужка прибрана — її кольори нічого не означали */
 body.v2 .pod{gap:16px}
 body.v2 .pod .bl{background:var(--card);border:1px solid var(--ln);border-top:6px solid var(--c);border-radius:16px 16px 6px 6px;box-shadow:none;color:var(--c);text-shadow:none;font:600 clamp(3rem,7vw,5rem)/1 var(--disp);padding-top:14px}
 body.v2 .pod .p.first .bl{background:color-mix(in srgb,var(--c) 16%,var(--card));box-shadow:0 0 60px -10px color-mix(in srgb,var(--c) 60%,transparent)}
@@ -698,7 +698,7 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
       /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
       const card = document.querySelectorAll('#card button[data-k]');
       if (card.length) {
-        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') ? $('#bn').textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') && $('#bn').lastChild ? $('#bn').lastChild.textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
         const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
         if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
         const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
