@@ -253,7 +253,7 @@ body.gra #ix.card.top::before{display:none}
 .g-qa .nt{margin-top:8px;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--qc) 40%,transparent);color:#cfd5dc;font-size:15px}
 .g-big{display:grid;justify-items:center;gap:6px;margin:4px 0}
 .g-big b{font:600 64px/1 var(--disp)}
-.g-big.ball b.s{font-size:36px}
+.g-big.ball b.s{font-size:36px}.g-big.ball b.hl{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}.g-big.ball b.hl i{font-style:normal;font-size:17px;letter-spacing:.06em;color:#6b737c;margin-bottom:2px}/* 4.11: класичне бінго — літера над числом */
 .g-big.ball b{display:grid;place-items:center;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#fff 0 37%,var(--bc,#ffc247) 38%);color:#1b1d21;font-size:46px;box-shadow:inset -10px -12px 0 rgba(0,0,0,.18)}
 .g-big span{color:var(--mut);font-weight:700}
 .g-who{display:flex;align-items:center;gap:9px;padding:2px 2px;font-weight:700;font-size:17px;color:#d9dee4}
@@ -997,7 +997,7 @@ noscript{display:block;padding:20px}
       if (ix.h) h += '<h2 class="g-h">' + esc(ix.h) + '</h2>';
       if (ix.q) h += '<p class="g-q">' + esc(ix.q) + '</p>';
       if (ix.ok) h += G.qa(ix.okL || 'Правильна відповідь', esc(ix.ok), ix.okN);
-      if (ix.big != null) h += '<div class="g-big' + (ix.ball ? ' ball' : '') + '"' + (ix.bc ? ' style="--bc:' + esc(ix.bc) + '"' : '') + '><b' + (String(ix.big).length > 3 ? ' class="s"' : '') + '>' + esc(ix.big) + '</b>' + (ix.sub ? '<span>' + esc(ix.sub) + '</span>' : '') + '</div>';
+      if (ix.big != null) h += '<div class="g-big' + (ix.ball ? ' ball' : '') + '"' + (ix.bc ? ' style="--bc:' + esc(ix.bc) + '"' : '') + '>' + ((m => m && ix.ball ? '<b class="hl"><i>' + esc(m[1]) + '</i>' + esc(m[2]) + '</b>' : '<b' + (String(ix.big).length > 3 ? ' class="s"' : '') + '>' + esc(ix.big) + '</b>')(/^(\S) (\d+)$/.exec(String(ix.big)))) + (ix.sub ? '<span>' + esc(ix.sub) + '</span>' : '') + '</div>';
       if (ix.who) h += ix.who[2] != null ? G.pr(ix.who[0], ix.who[2], ix.who[3], ix.who[1]) : G.who(ix.who[0], ix.who[1]);
       if (ix.inp) h += G.lb(ix.inp.lb) + '<form class="g-inp" data-inp="' + esc(ix.inp.id) + '"><input type="number" inputmode="numeric" min="1" placeholder="' + esc(ix.inp.ph || '') + '" aria-label="' + esc(ix.inp.ph || '') + '"><button type="submit">' + esc(ix.inp.btn || 'OK') + '</button></form>' + (ix.inp.res ? G.who(ix.inp.res, 'box ' + (ix.inp.ok ? 'win' : '')) : '');
       if (ix.bars && ix.bars.length) { const tot = Math.max(1, ix.bars.reduce((a, x) => a + x[1], 0)); h += G.lb(ix.barsH) + '<div class="g-bars">' + ix.bars.map(([l, n, ok]) => '<div' + (ok ? ' class="ok"' : '') + ' style="--w:' + (n / tot * 100).toFixed(0) + '%"><span>' + esc(l) + '</span><b>' + n + '</b></div>').join('') + '</div>'; }
