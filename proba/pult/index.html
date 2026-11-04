@@ -211,8 +211,9 @@ body:not([data-v=pad]) .nav{display:none}
 /* ===== режим гри — за зразком пульта «Інтелектуального змагу» (4.11.2026):
    шапка з логотипом гри, рахунок угорі, правильна відповідь у золотій рамці, великі кнопки внизу ===== */
 #gend{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font:700 14px var(--body);white-space:nowrap}
-body.gra .chip{display:none}body.gra #menu{position:relative}body.gra #menu::after{content:"";position:absolute;top:-4px;right:-4px;width:12px;height:12px;border-radius:50%;border:2px solid var(--bg);background:#6b7480}body.gra #menu[data-s=ok]::after{background:var(--ok)}body.gra #menu[data-s=wait]::after{background:var(--gd)}body.gra #menu[data-s=bad]::after{background:var(--bad)}body.gra .chip span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-body.gra .hd{gap:6px}body.gra #gend{padding:0 10px}body.gra .g3 small{letter-spacing:.18em}body.gra .hd>*{flex:none}body.gra #glogo{flex:0 1 auto;min-width:0;overflow:hidden}
+/* шапка гри: логотип · «Завершити» (лише під час гри) · крапка звʼязку. Меню в іграх не потрібне */
+body.gra #menu{display:none!important}
+body.gra .chip{padding:0 0 0 6px;border:0;background:none;width:auto;height:38px}body.gra .chip i{width:11px;height:11px}body.gra .chip span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}body.gra .hd{gap:6px}body.gra #gend{padding:0 10px}body.gra .g3 small{letter-spacing:.18em}body.gra .hd>*{flex:none}body.gra #glogo{flex:0 1 auto;min-width:0;overflow:hidden}
 #glogo{display:none;margin-right:auto;align-items:center}
 body.gra .hd .logo{display:none}
 body.gra #glogo{display:inline-flex}
@@ -959,8 +960,6 @@ noscript{display:block;padding:20px}
     bingo: '<span class="g3" aria-label="Пластове Бінго"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg><span><small>Пластове</small><b>Бінго</b></span></span>',
     opyt: '<span class="g3" aria-label="Швидке Опитування"><svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg><span><small>Швидке</small><b class="ln">Опитування</b></span></span>'
   };
-  /* у режимі гри крапка звʼязку — значок на кнопці меню (менше кнопок у шапці) */
-  new MutationObserver(() => { $('#menu').dataset.s = $('#chip').dataset.s || ''; }).observe($('#chip'), { attributes: true, attributeFilter: ['data-s'] });
   let endSig = '';
   function setEnd(e) { const sig = JSON.stringify(e || null); if (sig === endSig) return; endSig = sig; const b = $('#gend'); b.hidden = !e; if (e) { b.dataset.act = e[0]; b.dataset.sure = e[2] || ''; b.textContent = e[1]; } }
   $('#gend').addEventListener('click', e => { const b = e.currentTarget; if (b.dataset.sure && !confirm(b.dataset.sure)) return; cmd('act', { id: b.dataset.act }); });
