@@ -210,7 +210,7 @@ body.gra #pad{padding-bottom:110px}
 body:not([data-v=pad]) .nav{display:none}
 /* ===== режим гри — за зразком пульта «Інтелектуального змагу» (4.11.2026):
    шапка з логотипом гри, рахунок угорі, правильна відповідь у золотій рамці, великі кнопки внизу ===== */
-#gend{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid rgba(255,106,106,.45);background:none;color:#ff9a8a;font:700 14px var(--body);white-space:nowrap}
+#gend{min-height:38px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:none;color:var(--mut);font:700 14px var(--body);white-space:nowrap}
 body.gra .chip{padding:0;width:38px;height:38px;justify-content:center;border-radius:12px}body.gra .chip span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 body.gra .hd{gap:8px}
 #glogo{display:none;margin-right:auto;align-items:center}
@@ -232,20 +232,20 @@ body.gra #ix.card.top::before{display:none}
 .fm-logo.stovp .fm-lt{align-items:flex-end;gap:.06em}
 .fm-logo.stovp .fm-lt i{width:.3em;border-radius:.07em}
 .fm-logo.stovp .fm-lt span{font:600 .78em/1 var(--disp);letter-spacing:.02em;margin-left:.16em;text-transform:uppercase;color:#fff}
-.g3{display:inline-flex;align-items:center;gap:9px}.g3 svg{width:34px;height:34px;flex:none}.g3>span{display:flex;flex-direction:column}.g3 small{font:600 10px/1 var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--gd);margin-bottom:3px}.g3 b{font:600 24px/.9 var(--disp);text-transform:uppercase}
+.g3{display:inline-flex;align-items:center;gap:9px}.g3 svg{width:34px;height:34px;flex:none}.g3>span{display:flex;flex-direction:column}.g3 small{font:600 10px/1 var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--gd);margin-bottom:3px}.g3 b{font:600 24px/.9 var(--disp);text-transform:uppercase}.g3 b.ln{font-size:20px}
 /* рахунок / лідери */
 .g-sc{display:flex;gap:6px;flex-wrap:wrap}
-.g-sc span{flex:1;min-width:30%;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:10px;background:var(--card);border-top:4px solid var(--c,#4a5059);font-weight:700;font-size:14px;min-width:0}
-.g-sc span em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
-.g-sc span b{font:600 18px var(--disp)}.g-sc span:first-child{--c:var(--gd)}
-.g-sc span i{font-style:normal;color:var(--mut);font-size:12px}
+.g-sc span{flex:1;min-width:30%;display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:7px;row-gap:2px;padding:8px 10px;border-radius:12px;background:var(--card);border-top:4px solid var(--c,#4a5059);font-weight:700;font-size:16px;min-width:0}
+.g-sc span em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.g-sc span b{grid-column:1/-1;font:600 24px/1 var(--disp)}.g-sc span:first-child{--c:var(--gd)}
+.g-sc span i{flex:none;display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--card2);font:700 13px var(--body);font-style:normal;color:#cfd5dc}.g-sc span:first-child i{background:var(--gd);color:#1d1606}
 /* що зараз */
 .g-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;color:var(--mut);font-weight:700;font-size:15px}
 .g-tb{height:6px;border-radius:9px;background:var(--card2);overflow:hidden;margin-top:-4px}.g-tb i{display:block;height:100%;width:100%;background:#cfd5dc;border-radius:9px;transition:width .25s linear,background .3s}.g-tb i.lo{background:#ff6a6a}.g-meta b.lo{color:#ff9a8a}
 .g-meta b{color:var(--ink);font:600 20px var(--disp);letter-spacing:.02em;text-transform:none;white-space:nowrap}
 .g-h{margin:2px 0 0;font:600 26px/1.1 var(--disp);text-transform:uppercase}
 .g-q{margin:0;font:700 21px/1.3 var(--body)}
-.g-qa{--qc:#3daf6e;padding:14px 16px;border-radius:16px;background:color-mix(in srgb,var(--qc) 15%,var(--bg));border:2px solid var(--qc);border-left-width:8px}
+.g-qa{--qc:#3daf6e;padding:14px 16px;border-radius:16px;background:color-mix(in srgb,var(--qc) 15%,var(--bg));border:2px solid var(--qc)}
 .g-qa small{display:block;color:#cfd5dc;font-weight:600;font-size:14px}
 .g-qa b{display:block;font:600 27px/1.15 var(--disp);color:#fff;margin-top:4px}
 .g-qa b i{font-style:normal;display:inline-grid;place-items:center;width:1.1em;height:1.1em;margin-right:.3em;border-radius:.2em;background:var(--qc);color:var(--qi,#fff);font-size:.8em;vertical-align:.08em}
@@ -264,6 +264,12 @@ body.gra #ix.card.top::before{display:none}
 .g-who.box.ok{background:rgba(61,175,110,.2);border-color:#3daf6e}.g-who.box.win{background:#3daf6e;border-color:#3daf6e;color:#0e1f15;font-size:24px}
 .g-who.big{font-size:20px}
 .g-lb{margin:4px 2px -4px;color:var(--mut);font-weight:600;font-size:14px}
+.g-cols{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:10px;padding:14px 12px 10px;border-radius:16px;background:var(--card)}
+.g-cols div{display:grid;grid-template-rows:auto 150px auto;justify-items:center;gap:6px}
+.g-cols b{font:600 20px var(--disp)}
+.g-cols i{display:flex;align-items:flex-end;width:100%;max-width:52px;background:var(--card2);border-radius:10px;overflow:hidden}
+.g-cols em{display:block;width:100%;min-height:4px;background:#2fd2c0;border-radius:10px;transition:height .3s}
+.g-cols span{font:600 20px var(--disp);color:var(--mut)}
 .g-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px}
 .g-grid span{display:grid;place-items:center;min-height:32px;border-radius:7px;background:var(--card);color:#59606a;font:600 15px var(--disp)}
 .g-grid span.on{background:var(--c,#3a3f46);color:#fff}
@@ -951,7 +957,7 @@ noscript{display:block;padding:20px}
     skob: '<span class="g3" aria-label="Потужний СКОБ!"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><span><small>Потужний</small><b>СКОБ!</b></span></span>',
     zmag: '<span class="g3" aria-label="Інтелектуальний Змаг"><svg viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg><span><small>Інтелектуальний</small><b>Змаг</b></span></span>',
     bingo: '<span class="g3" aria-label="Пластове Бінго"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg><span><small>Пластове</small><b>Бінго</b></span></span>',
-    opyt: '<span class="g3" aria-label="Швидке Опитування"><svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg><span><small>Швидке</small><b>Опитування</b></span></span>'
+    opyt: '<span class="g3" aria-label="Швидке Опитування"><svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg><span><small>Швидке</small><b class="ln">Опитування</b></span></span>'
   };
   let endSig = '';
   function setEnd(e) { const sig = JSON.stringify(e || null); if (sig === endSig) return; endSig = sig; const b = $('#gend'); b.hidden = !e; if (e) { b.dataset.act = e[0]; b.dataset.sure = e[2] || ''; b.textContent = e[1]; } }
@@ -992,6 +998,7 @@ noscript{display:block;padding:20px}
       if (ix.who) h += ix.who[2] != null ? G.pr(ix.who[0], ix.who[2], ix.who[3], ix.who[1]) : G.who(ix.who[0], ix.who[1]);
       if (ix.inp) h += G.lb(ix.inp.lb) + '<form class="g-inp" data-inp="' + esc(ix.inp.id) + '"><input type="number" inputmode="numeric" min="1" placeholder="' + esc(ix.inp.ph || '') + '" aria-label="' + esc(ix.inp.ph || '') + '"><button type="submit">' + esc(ix.inp.btn || 'OK') + '</button></form>' + (ix.inp.res ? G.who(ix.inp.res, 'box ' + (ix.inp.ok ? 'win' : '')) : '');
       if (ix.bars && ix.bars.length) { const tot = Math.max(1, ix.bars.reduce((a, x) => a + x[1], 0)); h += G.lb(ix.barsH) + '<div class="g-bars">' + ix.bars.map(([l, n, ok]) => '<div' + (ok ? ' class="ok"' : '') + ' style="--w:' + (n / tot * 100).toFixed(0) + '%"><span>' + esc(l) + '</span><b>' + n + '</b></div>').join('') + '</div>'; }
+      if (ix.cols && ix.cols.length) { const mx = Math.max(1, ...ix.cols.map(x => x[1])); h += G.lb(ix.colsH) + '<div class="g-cols">' + ix.cols.map(([l, n]) => '<div><b>' + n + '</b><i><em style="height:' + (n / mx * 100).toFixed(0) + '%"></em></i><span>' + esc(l) + '</span></div>').join('') + '</div>'; }
       if (ix.grid && ix.grid.length) h += G.lb(ix.gridH) + '<div class="g-grid">' + ix.grid.map(([l, on, now]) => '<span class="' + (now ? 'now' : on ? 'on' : '') + '"' + (typeof on === 'string' ? ' style="--c:' + esc(on) + '"' : '') + '>' + esc(l) + '</span>').join('') + '</div>';
       if (ix.chips && ix.chips.length) h += G.lb(ix.chipsH) + '<div class="g-chips">' + ix.chips.map(c => '<span>' + esc(c) + '</span>').join('') + '</div>';
       h += G.hint(ix.hint);

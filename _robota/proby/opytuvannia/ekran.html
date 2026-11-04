@@ -480,6 +480,7 @@ window.GUTIRKA = {
       who: [(r.n === 1 ? 'Відповів 1' : 'Відповіли: ' + r.n) + (on ? ' з ' + on : ''), open ? '' : 'no', r.n, Math.max(on, r.n)] };
     if (!open) ix.who[0] += ' · голосування закрите';
     if (r.k === 'slovo') { ix.chipsH = r.w.length ? 'Слова' : ''; ix.chips = r.w.map(([w, c]) => w + (c > 1 ? ' ×' + c : '')); if (!r.w.length) ix.hint = 'Слова зʼявляться тут, щойно хтось відповість.'; }
+    else if (r.k === 'ots') { ix.cols = r.o.map((t, j) => [t, r.c[j]]); const n = r.c.reduce((a, c) => a + c, 0); if (n) ix.colsH = 'Середня оцінка: ' + (r.c.reduce((a, c, j) => a + c * (j + 1), 0) / n).toFixed(1).replace('.', ','); }
     else { ix.bars = r.o.map((t, j) => [t, r.c[j]]); }
     ix.b = [['reveal', shown ? 'Сховати з екрана' : 'Показати на екрані'], ['close', open ? 'Закрити голосування' : 'Відкрити знову']];
     return Object.assign(base, { canPrev: qi > 0, nextL: qi < N - 1 ? 'Наступне питання' : 'Підсумок', index: qi, total: N + 1, title: ix.meta[0], ix });
