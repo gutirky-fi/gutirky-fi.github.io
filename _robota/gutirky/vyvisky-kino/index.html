@@ -65,11 +65,10 @@ button{font:inherit;color:inherit}
 .kbtn button.go{background:var(--gd);border-color:var(--gd);color:#1a1205}
 .kbtn button:focus-visible,.mi:focus-visible,#corner:focus-visible{outline:3px solid var(--gd);outline-offset:3px}
 /* гра «Потужний СКОБ!» і запитання — шрифти гутірки */
-.glogo small{display:block;font:600 clamp(13px,1.2vw,17px) Golos;letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin-bottom:10px}
-.glogo div{display:flex;gap:8px;align-items:center;justify-content:center}
-.glogo i{display:grid;place-items:center;width:clamp(56px,6vw,84px);aspect-ratio:1;border-radius:14px;font:800 clamp(34px,3.8vw,54px) Wix;font-style:normal;color:#fff;box-shadow:inset 0 -5px 0 rgba(0,0,0,.22)}
-.glogo .c0{background:#d64541}.glogo .c1{background:#2f6fd0}.glogo .c2{background:#e8a321}.glogo .c3{background:#2e8f55}
-.glogo b{font:800 clamp(50px,5.4vw,80px) Wix;color:var(--gd);margin-left:4px}
+.glogo{text-align:left}.glogo small{display:block;margin-left:2px;font:600 clamp(13px,1.2vw,17px) Golos;letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin-bottom:10px}
+.glogo div{display:flex;gap:16px;align-items:center;justify-content:center}
+.glogo svg{height:clamp(56px,6vw,86px);width:auto}
+.glogo b{font:800 clamp(62px,6.8vw,100px)/1 Wix;letter-spacing:-.02em;color:var(--pap)}
 html body .sk-lbl{font:600 clamp(13px,1.2vw,17px)/1.2 Golos,sans-serif;letter-spacing:.02em;color:var(--gd)}
 html body .sk-qq{font:800 clamp(28px,3.6vw,52px)/1.08 Wix,sans-serif;letter-spacing:-.02em}
 html body .sk-tile span{font-family:Golos,sans-serif}
@@ -218,7 +217,7 @@ window.KINO3D = (() => {
       case 'think': h = `${bg(s.bg)}<div class="sh lt"></div><div class="tx lt"><q>${s.q}</q><p>${s.p}</p></div>`; break;
       case 'q': h = `${bgb(s.bg)}<div class="qwrap"></div>`; break;
       case 'd3': h = `<div class="d3load">Завантаження 3D-літери…</div><div class="tx l"><small>${s.k}</small><h2>${s.h}</h2><ul class="parts">${s.parts.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join('')}</ul></div><div class="d3hint">Потягніть літеру, щоб покрутити</div>`; break;
-      case 'gra': h = `${bgb(s.bg)}<div class="gin"><div class="glogo"><small>Потужний</small><div>${['С', 'К', 'О', 'Б'].map((l, k) => `<i class="c${k}">${l}</i>`).join('')}<b>!</b></div></div><p>Гра-вікторина: ${D.kviz.length} запитань по всій гутірці. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</p>
+      case 'gra': h = `${bgb(s.bg)}<div class="gin"><div class="glogo"><small>Потужний</small><div><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></div></div><p>Гра-вікторина: ${D.kviz.length} запитань по всій гутірці. Юнаки відповідають зі своїх телефонів — або всі разом уголос.</p>
         <div class="kbtn"><button class="go" type="button" data-g="game">Почати гру</button><button type="button" data-g="lobby">Підключити телефони</button><button type="button" data-g="skip">Пропустити</button></div></div>`; break;
       case 'end': h = `${bg(s.bg)}<div class="sh lt"></div><div class="tx lt"><small>Що далі</small><h2>${s.h}</h2><p>${s.p}</p></div>`; break;
     }
