@@ -455,6 +455,7 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
 #skob-lobby.inl .steps::after{content:"або відкрийте адресу й введіть код";color:#a0a8b2;font-size:14px;margin-top:2px}
 #skob-lobby.inl h3{justify-content:center;font-size:16px;margin:16px 0 8px}
 #skob-lobby.inl .chips{justify-content:center;min-height:0}
+@media (max-height:700px){#skob .sk3-lg small{font-size:15px;margin-bottom:8px}#skob .sk3-lg b{font-size:56px}#skob .sk3-lg svg{width:44px;height:44px}#skob .sk3-r .sk3-hand{margin-top:8px;font-size:26px}#skob .sk3-steps{margin-bottom:10px;padding:8px 14px}#skob .sk3-lb{margin:12px 0 6px}#skob .sk3-opts .row{padding:9px 12px}#skob .sk3-pick .pk{padding:8px 12px}#skob .sk3-r .btns{margin-top:16px}#skob-lobby.inl .box{padding-top:14px;padding-bottom:14px}}
 @media (max-width:900px){`;
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
 
@@ -512,7 +513,8 @@ window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64,iVBORw0KGgoAAA
 .sk-btn.warn{border-color:#ff6b5e;color:#ffb3ab}
 .sk-btn .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#6b7480;margin-right:7px;vertical-align:1px}
 .sk-btn .dot.ok{background:#3ee08f;box-shadow:0 0 8px #3ee08f}.sk-btn .dot.wait{background:#ffc247}
-#skob .sk-stage{flex:1;min-height:0;overflow-y:auto;display:flex;align-items:center;justify-content:center;padding:14px max(16px,3vw) 46px}
+#skob .sk-stage{flex:1;min-height:0;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:14px max(16px,3vw) 46px}
+#skob .sk-stage>*{margin-top:auto;margin-bottom:auto}   /* «безпечне» центрування: коли вміст вищий за екран, верх не ховається під шапку, а сторінка прокручується вниз */
 #skob .sk-stage>*{animation:skup .4s both}
 @keyframes skup{from{opacity:0;transform:translateY(10px)}}
 #skob .sk-next{position:absolute;right:max(14px,env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom))}
