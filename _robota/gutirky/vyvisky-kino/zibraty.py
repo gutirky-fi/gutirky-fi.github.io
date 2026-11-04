@@ -29,7 +29,7 @@ def page():
     kviz = (TUT / 'kviz.json').read_text(encoding='utf-8')
     dani = rep(dani, '/*KVIZ*/[]', kviz)
     pre = "window.SKOB_URL = location.hostname === 'gutirky-fi.github.io' ? 'https://gutirky-fi.github.io/skob/' : new URL('../skob/', location.href).href;\n"
-    pre += "window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "';\n"
+    pre += "window.SKOB_S3 = true; window.SKOB_PLAST = 'data:image/png;base64," + base64.b64encode((D / 'img' / 'logo.png').read_bytes()).decode() + "'; window.SKOB_LILY = 'data:image/webp;base64," + base64.b64encode((D / 'img' / 'emblem.webp').read_bytes()).decode() + "';\n"
     s = rep(s, '<script>/*QR*/</script>', '<script>\n' + (D / 'qr.js').read_text(encoding='utf-8') + '\n</script>')
     s = rep(s, '<script>/*SKOB*/</script>', '<script>' + pre + '</script>\n<script>\n' + (D / 'skob.js').read_text(encoding='utf-8') + '\n</script>')
     s = rep(s, '<script>/*DANI*/</script>', '<script>\n' + dani + '\n</script>')

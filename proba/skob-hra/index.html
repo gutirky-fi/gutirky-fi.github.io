@@ -601,11 +601,12 @@ details[open]>summary::before{transform:rotate(90deg)}
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const num = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   /* стиль 3 (проба ?dyz=3, дизайн-система «Ігри Пласту»): екран перед грою як у Змагу — картка QR ліворуч. Без ?dyz=3 нічого не змінюється. */
-  const S3 = /[?&]dyz=3(&|$)/.test(location.search);
+  const S3 = !!window.SKOB_S3 || /[?&]dyz=3(&|$)/.test(location.search);   /* SKOB_S3 — сторінка сама вмикає стиль 3 (кіно-гутірка) */
   const LOGO3 = () => `<span class="sk3-lg" role="heading" aria-level="1" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>`;
   const CSS3 = `
 #skob.s3 .sk-top{padding:12px max(24px,calc(50vw - 620px));border-bottom:1px solid #383d44;background:#1b1d21}
 #skob.s3 .sk3-pl{height:38px;width:auto;display:block}
+#skob.s3::before{content:"";position:absolute;right:-6vh;bottom:-8vh;width:62vh;height:62vh;background:var(--sk3-lily,none) center/contain no-repeat;opacity:.05;pointer-events:none}
 #skob.s3 .sk-top .sk-btn{border-radius:99px}
 #skob.s3 .sk-stage{padding-left:max(24px,calc(50vw - 620px));padding-right:max(24px,calc(50vw - 620px))}
 #skob .sk3-in{width:100%;display:grid;grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:center;text-align:left}
@@ -619,7 +620,17 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob .sk3-r p{margin:8px 0 0;color:#a0a8b2;font-size:17px;max-width:56ch}
 #skob .sk3-r .btns{display:flex;gap:10px;margin-top:26px;justify-content:flex-start}
 #skob .sk3-r .sk-btn{border-radius:12px}
-#skob .sk3-r .sk-btn.main{min-height:54px;padding:0 28px;font-size:18px;font-weight:700}
+#skob .sk3-r .sk-btn.main{min-height:54px;padding:0 28px;font-size:18px;font-weight:700;display:inline-flex;align-items:center;gap:10px}
+#skob .sk3-r .sk-btn.main svg{width:18px;height:18px}
+#skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:11px 16px;margin:0 0 20px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
+#skob .sk3-steps span{display:flex;align-items:center;gap:9px}
+#skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
+#skob .sk3-lb{display:block;margin:24px 0 8px;font:600 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
+#skob .sk3-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:720px}
+#skob .sk3-cards .c{padding:13px 15px;border:1px solid #383d44;border-radius:12px;background:#22262b}
+#skob .sk3-cards .c:first-child{border-color:#ffc247}
+#skob .sk3-cards b{display:block;font:700 17px 'Source Sans 3',sans-serif;color:#f2f4f6}
+#skob .sk3-cards small{display:block;margin-top:3px;font:400 14px/1.35 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob-lobby.inl{position:static;inset:auto;z-index:auto;display:block;padding:0;background:none}
 #skob-lobby.inl .box{width:340px;max-height:none;overflow:visible;padding:20px 22px;border-radius:18px;background:#1f2328;border:1px solid #383d44;border-top:4px solid #ffc247;box-shadow:none;text-align:center}
 #skob-lobby.inl .box::before{content:"Гравцям";display:block;font:600 24px Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em}
@@ -635,7 +646,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob-lobby.inl .steps::after{content:"або відкрийте адресу й введіть код";color:#a0a8b2;font-size:14px;margin-top:2px}
 #skob-lobby.inl h3{justify-content:center;font-size:16px;margin:16px 0 8px}
 #skob-lobby.inl .chips{justify-content:center;min-height:0}
-@media (max-width:900px){#skob .sk3-in{grid-template-columns:1fr}#skob .sk3-lg b{font-size:52px}#skob-lobby.inl .box{width:100%}}
+@media (max-width:900px){#skob .sk3-cards{grid-template-columns:1fr}#skob .sk3-in{grid-template-columns:1fr}#skob .sk3-lg b{font-size:52px}#skob-lobby.inl .box{width:100%}}
 `;
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
 
@@ -986,7 +997,7 @@ details[open]>summary::before{transform:rotate(90deg)}
     injectCss(); closeGame(true);
     G = { src: list, list: o.keepOrder ? list.slice() : shuf(list), i: -1, ph: 'intro', o, ctl: null, before: new Map() };
     gEl = document.createElement('div'); gEl.id = 'skob'; gEl.setAttribute('role', 'dialog'); gEl.setAttribute('aria-label', 'Гра «Потужний СКОБ!»');
-    if (S3) gEl.classList.add('s3');
+    if (S3) { gEl.classList.add('s3'); if (window.SKOB_LILY) gEl.style.setProperty('--sk3-lily', `url(${window.SKOB_LILY})`); }   /* бліда лілея на фоні, як у Змагу й Бінго */
     gEl.innerHTML = `<div class="sk-top">${S3 ? (window.SKOB_PLAST ? `<img class="sk3-pl" src="${window.SKOB_PLAST}" alt="Пласт">` : '') : LOGO('sm')}<span class="sp"></span><button type="button" class="sk-btn" data-k="lobby"></button>
       <span class="sk-sure"><button type="button" class="sk-btn warn" data-k="quit">Так, завершити</button><button type="button" class="sk-btn" data-k="stay">Ні</button></span>
       <button type="button" class="sk-btn" data-k="x" aria-label="Завершити гру">✕</button></div><div class="sk-stage"></div><div class="sk-hint"></div><button type="button" class="sk-btn sk-next" data-k="next">Далі →</button>`;
@@ -1017,8 +1028,19 @@ details[open]>summary::before{transform:rotate(90deg)}
     const n = online().length, had = [...players.values()].some(P => P.score > 0);
     if (S3) {   /* стиль 3: картка «Гравцям» ліворуч, назва й «Почати» праворуч */
       const st = gStage();
-      st.innerHTML = `<div class="sk3-in"><div class="sk3-j"></div><div class="sk3-r">${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.${n ? '' : ' Без телефонів — відповідайте вголос.'}</p>
-        <div class="btns"><button type="button" class="sk-btn main" data-k="start">Почати</button></div></div></div>`;
+      /* права панель заповнена, як у Змагу й Бінго (власник 4.11: «пусто, багато вільного місця»): кроки, логотип, назва, картки «як граємо», кнопка */
+      const N = G.list.length, T = G.o.T || 20;
+      st.innerHTML = `<div class="sk3-in"><div class="sk3-j"></div><div class="sk3-r">
+        <div class="sk3-steps"><span><i>1</i>Гравці сканують QR-код</span><span><i>2</i>Пишуть своє імʼя</span><span><i>3</i>Почати гру</span></div>
+        ${LOGO3()}<p class="sk3-hand">вікторина на швидкість</p>${G.o.title ? `<h2>${esc(G.o.title)}</h2>` : ''}
+        <span class="sk3-lb">Як граємо</span>
+        <div class="sk3-cards">
+          <div class="c"><b>${N} ${plural(N, 'запитання', 'запитання', 'запитань')}</b><small>на великому екрані; відповіді — С, К, О, Б</small></div>
+          <div class="c"><b>${T} секунд</b><small>на кожну відповідь; таймер — кільце вгорі</small></div>
+          <div class="c"><b>Швидше — більше балів</b><small>за правильну відповідь; після кожного запитання — лідери</small></div>
+          <div class="c"><b>${n ? `На звʼязку: ${n}` : 'Без телефонів теж можна'}</b><small>${n ? (had ? 'бали з гутірки теж рахуються' : 'інші ще можуть приєднатися') : 'відповідайте вголос, хтось один натискає'}</small></div>
+        </div>
+        <div class="btns"><button type="button" class="sk-btn main" data-k="start"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>Почати гру</button></div></div></div>`;
       lobby(st.querySelector('.sk3-j'));
     } else
     gStage().innerHTML = `<div class="sk-intro">${LOGO()}${G.o.title ? `<h2 class="sk-gt">${esc(G.o.title)}</h2>` : ''}<p>${G.list.length} ${plural(G.list.length, 'запитання', 'запитання', 'запитань')} · по ${G.o.T || 20} секунд · за швидку правильну відповідь — більше балів.<br>${n ? `На звʼязку ${n} ${plural(n, 'телефон', 'телефони', 'телефонів')}.${had ? ' Бали з гутірки теж рахуються.' : ''}` : 'Грати можна з телефонами — або просто на екрані, відповідаючи вголос.'}</p>
