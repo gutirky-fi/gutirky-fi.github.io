@@ -624,6 +624,12 @@ details[open]>summary::before{transform:rotate(90deg)}
 #skob.s3 .sk-stage{padding-left:max(24px,calc(50vw - 620px));padding-right:max(24px,calc(50vw - 620px))}
 #skob .sk3-in{width:100%;display:grid;grid-template-columns:340px minmax(0,1fr);gap:48px;align-items:center;text-align:left}
 #skob .sk3-lg{display:flex;flex-direction:column;align-items:flex-start}
+#skob-lobby .box>.sk3-lg{display:inline-flex;flex-direction:column;align-items:flex-start;margin:0 auto 6px}
+#skob-lobby .sk3-lg small{font:600 14px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 8px 2px}
+#skob-lobby .sk3-lg .w{display:flex;align-items:center;gap:12px}
+#skob-lobby .sk3-lg svg{width:40px;height:40px;flex:none}
+#skob-lobby .sk3-lg b{font:600 52px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:3px}
+#skob-lobby.inl>.box>.sk3-lg{display:none}
 #skob .sk3-lg small{font:600 18px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 12px 2px}
 #skob .sk3-lg .w{display:flex;align-items:center;gap:17px}
 #skob .sk3-lg svg{width:56px;height:56px;flex:none}
@@ -1151,7 +1157,7 @@ details[open]>summary::before{transform:rotate(90deg)}
     injectCss(); startNet();
     if (!L) {
       L = document.createElement('div'); L.id = 'skob-lobby'; L.setAttribute('role', 'dialog'); L.setAttribute('aria-label', 'Підключити телефони');
-      L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${LOGO()}
+      L.innerHTML = `<div class="box"><button type="button" class="x" data-k="close" aria-label="Закрити">✕</button>${S3 ? LOGO3() : LOGO()}
         <div class="row"><div class="qr"></div><div class="steps">
           <p class="s1">Скануйте QR-код камерою телефона</p>
           <p class="or"><span>або</span></p>
