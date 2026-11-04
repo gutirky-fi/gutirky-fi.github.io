@@ -413,19 +413,33 @@ let paint = function () {
 };
 
 /* ---------- паперові картки ---------- */
-function printCards() {
+function printCards() {   /* 4.11.2026: картки на всю чверть аркуша (лото — на чверть по висоті), між ними пунктир «різати тут» — ріжеться двома прямими розрізами */
   const n = Math.max(1, Math.min(60, parseInt($('#np').value, 10) || 6));
-  const S = set(), lo = !!S.loto, hd = S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '';
-  const cards = Array.from({ length: n }, (_, i) => i + 1).map(no => `<section class="c${lo ? ' lo' : ''}"><header><b>БІНГО</b><span>${esc(S.name)}</span><em>Картка №${no}</em></header><div class="g">${hd}${card(no).map(id => { const w = cellT(id); return `<div class="${id === -1 ? 'e' : w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div><footer>${themed() ? 'Закресли слово, коли ведучий прочитає підказку.' : 'Закресли число, коли ведучий його назве.'} Мета: ${esc(PATS[pat].d)} — і кричи «${CALL}!»</footer></section>`).join('');
+  const S = set(), lo = !!S.loto, per = 4, hd = S.head ? S.head.map(h => `<div class="hd">${h}</div>`).join('') : '';
+  const LOGO = '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>';
+  const one = no => `<section class="c"><header><div class="lg">${LOGO}<div><small>Пластове</small><b>Бінго</b></div></div><div class="no"><small>${esc(S.name)}</small><b>№${no}</b></div></header>
+    <div class="g">${hd}${card(no).map(id => { const w = cellT(id); return `<div class="${id === -1 ? 'e' : id === -2 ? 'f' : w.length > 9 ? 'l' : ''}">${esc(w)}</div>`; }).join('')}</div>
+    <footer><span>${themed() ? 'Закресли слово, коли ведучий прочитає підказку.' : 'Закресли число, коли ведучий його назве.'} Мета: ${esc(PATS[pat].d)} — і кричи «${CALL}!»</span><b>Пласт у Фінляндії</b></footer></section>`;
+  const nums = Array.from({ length: n }, (_, i) => i + 1), pages = [];
+  for (let k = 0; k < nums.length; k += per) pages.push(nums.slice(k, k + per));
   const w = window.open('', '_blank');
   if (!w) { toast('Дозвольте спливні вікна, щоб надрукувати'); return; }
-  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Бінго — паперові картки</title><style>
-@page{size:A4;margin:10mm}*{box-sizing:border-box}body{margin:0;font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125}
-.wrap{display:grid;grid-template-columns:${lo ? '1fr' : '1fr 1fr'};gap:8mm}.c{border:1.2pt solid #1d2125;border-radius:4mm;padding:4mm;break-inside:avoid;height:${lo ? '62mm' : '128mm'};display:flex;flex-direction:column}
-header{display:flex;align-items:baseline;gap:3mm;border-bottom:1pt solid #1d2125;padding-bottom:2mm;margin-bottom:3mm}header b{font:700 18pt Oswald,Arial,sans-serif;letter-spacing:.06em}header span{flex:1;font-size:9pt;color:#555}header em{font-style:normal;font-weight:700;font-size:11pt}
-.g{flex:1;display:grid;grid-template-columns:repeat(${S.cols},minmax(0,1fr));grid-template-rows:${S.head ? 'auto ' : ''}repeat(${S.rows},minmax(0,1fr));gap:1.5mm}.g div.e{background:#e9ecef;border-color:#e9ecef}.g div.hd{border:0;font:700 18pt Oswald,Arial,sans-serif;padding:0}.g div{border:.8pt solid #9aa3ad;border-radius:2mm;display:grid;place-items:center;text-align:center;padding:1mm;font-weight:700;font-size:${themed() ? '10.5' : '20'}pt;line-height:1.1;overflow-wrap:normal;word-break:normal}.g div.l{font-size:8.6pt}
-footer{margin-top:2mm;font-size:8pt;color:#555;text-align:center}
-</style></head><body><div class="wrap">${cards}</div><script>setTimeout(()=>print(),300)<\/script></body></html>`);
+  w.document.write(`<!doctype html><html lang="uk"><head><meta charset="utf-8"><title>Бінго — паперові картки</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap"><style>
+@page{size:A4;margin:8mm}*{box-sizing:border-box}html,body{margin:0}body{font-family:'Source Sans 3',Arial,sans-serif;color:#1d2125;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.pg{position:relative;width:194mm;height:280mm;display:grid;${lo ? 'grid-template-rows:repeat(4,1fr)' : 'grid-template:1fr 1fr/1fr 1fr'};break-after:page;overflow:hidden}.pg:last-child{break-after:auto}
+/* лінії розрізу: тонкий пунктир через увесь аркуш + ножиці на краю */
+.cut{position:absolute;border:0 dashed #9aa3ad;pointer-events:none}.cut.v{left:50%;top:0;bottom:0;border-left-width:.6pt}.cut.h{left:0;right:0;border-top-width:.6pt}
+.cut i{position:absolute;font:normal 13pt 'Segoe UI Symbol','DejaVu Sans',Arial,sans-serif;color:#7d8590;background:#fff;line-height:1;padding:0 .6mm}.cut.v i{top:0;left:-2.3mm;transform:rotate(-90deg)}.cut.h i{left:0;top:-2.6mm}
+.c{display:flex;flex-direction:column;padding:${lo ? '5mm 7mm 4mm' : '8mm 8mm 6mm'};min-height:0}
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:4mm;padding-bottom:3mm;margin-bottom:${lo ? '2.5' : '4'}mm;border-bottom:1.6pt solid #e8a321}
+.lg{display:flex;align-items:center;gap:2.4mm}.lg svg{width:${lo ? '9' : '11'}mm;height:${lo ? '9' : '11'}mm}.lg small{display:block;font:600 6.5pt/1 Oswald,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#b07a00;margin-bottom:.8mm}.lg b{display:block;font:600 ${lo ? '17' : '21'}pt/.9 Oswald,'Arial Narrow',sans-serif;text-transform:uppercase}
+.no{text-align:right}.no small{display:block;font-size:7.5pt;color:#5f6873}.no b{font:600 ${lo ? '15' : '17'}pt/1 Oswald,sans-serif}
+.g{flex:1;display:grid;grid-template-columns:repeat(${S.cols},minmax(0,1fr));grid-template-rows:${S.head ? 'auto ' : ''}repeat(${S.rows},minmax(0,1fr));gap:${lo ? '1.2' : '1.8'}mm;min-height:0}
+.g div{border:.8pt solid #b9c0c8;border-radius:1.6mm;display:grid;place-items:center;text-align:center;padding:1mm;font:600 ${themed() ? '10.5pt/1.1 \'Source Sans 3\',sans-serif' : (lo ? '15pt/1 Oswald,sans-serif' : '22pt/1 Oswald,sans-serif')};overflow-wrap:normal;word-break:normal}
+.g div.l{font-size:8.6pt}.g div.e{border-color:#eef0f2;background:#f4f5f7}.g div.f{font-size:16pt;color:#b07a00;background:#fff7e3;border-color:#f1d692}.g div.hd{border:0;font:600 18pt/1 Oswald,sans-serif;color:#b07a00;padding:0 0 1mm}
+footer{display:flex;justify-content:space-between;align-items:flex-end;gap:4mm;margin-top:${lo ? '2' : '3'}mm;font-size:7.5pt;line-height:1.35;color:#5f6873}footer b{flex:none;color:#1d2125}
+@media screen{body{background:#e9ecef;padding:8mm}.pg{background:#fff;margin:0 auto 8mm;box-shadow:0 2px 12px rgba(0,0,0,.15)}}
+</style></head><body>${pages.map(pg => `<div class="pg">${pg.map(one).join('')}${lo ? '<div class="cut h" style="top:25%"><i>✂</i></div><div class="cut h" style="top:50%"><i>✂</i></div><div class="cut h" style="top:75%"><i>✂</i></div>' : '<div class="cut v"><i>✂</i></div><div class="cut h" style="top:50%"><i>✂</i></div>'}</div>`).join('')}<script>(document.fonts ? document.fonts.ready : Promise.resolve()).then(()=>setTimeout(()=>print(),300))<\/script></body></html>`);
   w.document.close();
 }
 
