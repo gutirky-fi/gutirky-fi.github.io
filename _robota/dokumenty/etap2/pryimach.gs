@@ -22,6 +22,7 @@ var PYSATY = ['План праці', 'Сходини', 'Відвідуваніс
 var CHYTATY = PYSATY.concat(['Учасники', 'Запас', 'Посади', 'Роки', 'Історія учасників']);
 var OCHYSTYTY = ['План праці', 'Сходини', 'Відвідуваність', 'Протоколи', 'Мандрівки'];  // «Новий рік» чистить цілком
 // Фінанси — залишок переноситься; Завдання — лишаються незроблені. Решта аркушів не чиститься ніколи.
+var PRYKHOVATY = ['Прізвище'];   // стовпці, яких сайт не отримує ніколи
 var VID = 'Відвідуваність', SLOT0 = 6, SLOTY = 16;     // стовпці F..U — імена
 
 // ---------- вебзастосунок ----------
@@ -71,11 +72,11 @@ function kodVirnyi(kod) {
 // ---------- читання ----------
 function imena() {
   var sh = SpreadsheetApp.getActive().getSheetByName('Учасники');
-  var n = sh.getMaxRows() - P + 1;
-  var v = sh.getRange(P, 1, n, 4).getDisplayValues();
+  var z = zaholovky(sh), ci = z.indexOf("Ім'я"), cs = z.indexOf('Статус');
+  var v = sh.getRange(P, 1, sh.getMaxRows() - P + 1, sh.getLastColumn()).getDisplayValues();
   var out = [];
-  v.forEach(function (r) {
-    if (r[1] && (r[3] === 'активний' || r[3] === 'кандидат')) out.push(r[1]);
+  v.forEach(function (r) {     // лише ім'я — прізвище сайт не отримує ніколи
+    if (r[ci] && (r[cs] === 'активний' || r[cs] === 'кандидат')) out.push(r[ci]);
   });
   return out;
 }
@@ -98,7 +99,10 @@ function zvit(arkush, vid, doo) {
     }
     ryadky.push(vse[i]);
   }
-  return {ok: true, arkush: arkush, zaholovky: zag, ryadky: ryadky};
+  // прізвища не видаємо: прибираємо стовпці «Прізвище» з будь-якого звіту
+  var bez = zag.map(function (h, k) { return PRYKHOVATY.indexOf(h) >= 0 ? -1 : k; }).filter(function (k) { return k >= 0; });
+  return {ok: true, arkush: arkush, zaholovky: bez.map(function (k) { return zag[k]; }),
+          ryadky: ryadky.map(function (r) { return bez.map(function (k) { return r[k]; }); })};
 }
 
 // ---------- запис ----------
@@ -271,7 +275,7 @@ function novyiRik() {
   var ist = ss.getSheetByName('Історія учасників');
   pidsumok.uchasnyky.forEach(function (u) {
     var ri = vilnyiRyadok(ist);
-    ist.getRange(ri, 1, 1, 11).setValues([u.concat([new Date()])]);
+    ist.getRange(ri, 1, 1, 12).setValues([u.concat([new Date()])]);
   });
   OCHYSTYTY.forEach(function (n) { zalyshyty(ss.getSheetByName(n), function () { return false; }); });
   var zav = ss.getSheetByName('Завдання');
@@ -322,12 +326,13 @@ function pidsumokRoku(ss, rik) {
     if (r[i(fn, 'Рух')] === 'надходження') nadh += s; else if (r[i(fn, 'Рух')] === 'видаток') vyd += s;
   });
   var kr = function (x) { return Math.round(x * 100) / 100; };
-  var aktyvni = uch.v.filter(function (r) { return r[1] && r[3] === 'активний'; });
+  var cI = i(uch, "Ім'я"), cP = i(uch, 'Прізвище'), cPo = i(uch, 'Посада'), cS = i(uch, 'Статус'), cPr = i(uch, 'Проба зараз');
+  var aktyvni = uch.v.filter(function (r) { return r[cI] && r[cS] === 'активний'; });
   var rikRow = [rik, aktyvni.length, vid.v.length, (prys + vids) ? prys / (prys + vids) : '', pr.length, vmz.length,
                 vruch.length, md.v.length, kr(nadh), kr(vyd), kr(nadh - vyd)];
-  var uchasnyky = uch.v.filter(function (r) { return r[1] && r[3] !== 'вибув'; }).map(function (r) {
-    var im = r[1], o = osoba[im] || {p: 0, n: 0};
-    return [rik, im, r[2], r[3], o.p, o.n ? o.p / o.n : '', r[5],
+  var uchasnyky = uch.v.filter(function (r) { return r[cI] && r[cS] !== 'вибув'; }).map(function (r) {
+    var im = r[cI], o = osoba[im] || {p: 0, n: 0};
+    return [rik, im, cP >= 0 ? r[cP] : '', r[cPo], r[cS], o.p, o.n ? o.p / o.n : '', r[cPr],
             pr.filter(function (x) { return x[0] === im; }).length,
             vmz.filter(function (x) { return x[0] === im; }).map(function (x) { return x[i(vm, 'Вмілість')]; }).join(', '),
             vruch.filter(function (x) { return x[0] === im; }).map(function (x) { return x[1]; }).join(', ')];

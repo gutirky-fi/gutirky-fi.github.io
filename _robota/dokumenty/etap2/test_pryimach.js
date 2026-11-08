@@ -62,6 +62,9 @@ ok(!post({ kod: 'lelekы-2026', dija: 'zapys', arkush: 'Учасники', dani:
 ok(!post({ kod: 'lelekы-2026', dija: 'zapys', arkush: 'Налаштування', dani: { a: 1 } }).ok, 'в «Налаштування» сайт не пише');
 const z = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Фінанси', vid: '2026-09-15', do: '2026-10-31' });
 ok(z.ok && z.ryadky.length === 3, 'звіт за датами: ' + z.ryadky.length + ' рядки');
+const zu = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Учасники' });
+ok(zu.ok && !zu.zaholovky.includes('Прізвище') && !JSON.stringify(zu).includes('Бондар'), 'звіт «Учасники» — без прізвищ');
+ok(!JSON.stringify(im).includes('Бондар'), 'список імен для форм — без прізвищ');
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
 const zal = fin0.reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
@@ -75,8 +78,10 @@ ok(ryad('Проби').length === proby0 && ryad('Вмілості').length === v
 const zv = ryad('Завдання'); ok(zv.length === 3 && zv.every(r => r[4] !== 'зроблено'), 'завдання: лишились 3 незроблені, стягнуті догори');
 const f1 = ryad('Фінанси'); ok(f1.length === 1 && Math.abs(f1[0][5] - zal) < 0.01 && f1[0][3] === 'Залишок з 2026/27', 'каса: один рядок «Залишок з 2026/27» = ' + zal);
 const rk = ryad('Роки'); ok(rk.length === 1 && rk[0][0] === '2026/27' && rk[0][2] === 8 && Math.abs(rk[0][10] - zal) < 0.01 && rk[0][11].includes('archiv'), 'Роки: ' + rk[0].slice(0, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
-const iu = ryad('Історія учасників'); const ol = iu.find(r => r[1] === 'Олесь');
-ok(iu.length === 7 && ol[4] === 8 && ol[8].includes('Приклад-вмілість А'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 10).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
+const iu = ryad('Історія учасників');
+const zi = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Історія учасників' });
+ok(zi.ok && zi.ryadky.length === 7 && !JSON.stringify(zi).includes('Бондар'), 'звіт «Історія учасників» — без прізвищ'); const ol = iu.find(r => r[1] === 'Олесь');
+ok(iu.length === 7 && ol[2] === 'Бондар' && ol[5] === 8 && ol[9].includes('Приклад-вмілість А'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
 ok(sheets['Налаштування']._f[4][21] === '2027/28', 'навчальний рік → 2027/28');
 ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посилання на архів записано');
 for (let i = 0; i < 20; i++) post({ kod: 'x', dija: 'perevirka' });
