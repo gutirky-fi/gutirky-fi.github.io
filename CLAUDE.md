@@ -8,5 +8,5 @@
 - Публікація: commit + `git push origin HEAD:main`, дочекатися GitHub Pages (`gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs`).
 - Зміни дизайну — спершу показати (знімки або копія), ставити на сайт лише після згоди власника.
 - Сайт прихований (noindex + robots.txt) — не прибирати.
-- Як працюємо (одна розмова — одна справа): `_robota/YAK-PRATSIUVATY.md`.
+- Як працюємо (одна розмова — одна справа; **першим рядком порадити модель** Opus/Sonnet): `_robota/YAK-PRATSIUVATY.md`.
 - Після помітних змін дописати запис у кінець `_robota/ZHURNAL.md` (без читання файлу) і оновити «0. Стан зараз» у `PROEKT.md`, додати подію в `_robota/istoriya/podii.json` і запустити `python3 _robota/istoriya/zibraty.py` (сторінка https://gutirky-fi.github.io/istoriya/ — внутрішня, не в меню).
