@@ -19,9 +19,9 @@ var H = 3;   // рядок заголовків
 var P = 4;   // перший рядок даних
 var PYSATY = ['План праці', 'Сходини', 'Відвідуваність', 'Проби', 'Вмілості', 'Відзначки',
               'Замовлення', 'Протоколи', 'Завдання', 'Фінанси', 'Майно', 'Мандрівки'];
-var CHYTATY = PYSATY.concat(['Учасники', 'Запас', 'Посади']);
-var ZBERIHATY = ['Учасники', 'Посади', 'Майно', 'Запас', 'Документи', 'Архів', 'Налаштування',
-                 'Головна', 'Інструкція', 'Джерела'];   // «Новий рік» їх не чистить
+var CHYTATY = PYSATY.concat(['Учасники', 'Запас', 'Посади', 'Роки', 'Історія учасників']);
+var OCHYSTYTY = ['План праці', 'Сходини', 'Відвідуваність', 'Протоколи', 'Мандрівки'];  // «Новий рік» чистить цілком
+// Фінанси — залишок переноситься; Завдання — лишаються незроблені. Решта аркушів не чиститься ніколи.
 var VID = 'Відвідуваність', SLOT0 = 6, SLOTY = 16;     // стовпці F..U — імена
 
 // ---------- вебзастосунок ----------
@@ -254,21 +254,118 @@ function perevirytyPryimach() {
 
 function novyiRik() {
   var ui = SpreadsheetApp.getUi(), ss = SpreadsheetApp.getActive();
-  var r = ui.alert('Новий рік', 'Буде зроблено копію всієї книги (архів), а в цій книзі очищено записи журналів. ' +
-    'Учасники, посади, майно, запас, документи й налаштування лишаються. Продовжити?', ui.ButtonSet.YES_NO);
+  var rik = String(ss.getSheetByName('Налаштування').getRange(5, 22).getDisplayValue() || '').trim() || String(new Date().getFullYear());
+  var r = ui.alert('Новий рік (' + rik + ' закінчується)',
+    'Що станеться:\n' +
+    '1) повна копія книги піде в архів;\n' +
+    '2) підсумок року допишеться в «Роки» і «Історію учасників» (ці аркуші не очищаються ніколи);\n' +
+    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться один рядок — залишок; із завдань — лише незроблені.\n' +
+    'Учасники, посади, проби, вмілості, відзначки, замовлення, запас, майно й документи лишаються.\n\nПродовжити?', ui.ButtonSet.YES_NO);
   if (r !== ui.Button.YES) return;
-  var nazva = ss.getName() + ' — архів ' + Utilities.formatDate(new Date(), ss.getSpreadsheetTimeZone(), 'yyyy-MM-dd');
-  var kopia = ss.copy(nazva);
-  ss.getSheets().forEach(function (sh) {
-    if (ZBERIHATY.indexOf(sh.getName()) >= 0 || sh.getMaxRows() < P) return;
-    var nc = sh.getLastColumn(), n = sh.getMaxRows() - P + 1;
-    var f = sh.getRange(P, 1, 1, nc).getFormulas()[0];
-    f.forEach(function (x, k) { if (!x) sh.getRange(P, k + 1, n, 1).clearContent(); });
+  var pidsumok = pidsumokRoku(ss, rik);               // рахуємо ДО очищення
+  var nazva = ss.getName() + ' — архів ' + rik.replace('/', '-');
+  var kopia = ss.copy(nazva), url = kopia.getUrl();
+  var roky = ss.getSheetByName('Роки');
+  var rr = vilnyiRyadok(roky);
+  roky.getRange(rr, 1, 1, 13).setValues([pidsumok.rik.concat([url, new Date()])]);
+  var ist = ss.getSheetByName('Історія учасників');
+  pidsumok.uchasnyky.forEach(function (u) {
+    var ri = vilnyiRyadok(ist);
+    ist.getRange(ri, 1, 1, 11).setValues([u.concat([new Date()])]);
   });
-  var a = ss.getSheetByName('Архів');
-  if (a) {
-    var rr = vilnyiRyadok(a);
-    a.getRange(rr, 1, 1, 4).setValues([[new Date().getFullYear(), 'Книга гуртка (архів)', 'копія перед новим роком', kopia.getUrl()]]);
+  OCHYSTYTY.forEach(function (n) { zalyshyty(ss.getSheetByName(n), function () { return false; }); });
+  var zav = ss.getSheetByName('Завдання');
+  var zst = kolonka(zav, 'Статус');
+  zalyshyty(zav, function (row) { return row[zst] !== 'зроблено'; });
+  var fin = ss.getSheetByName('Фінанси');
+  zalyshyty(fin, function () { return false; });
+  var zal = pidsumok.rik[10];
+  if (zal !== 0) {
+    var z = {}; z['Дата'] = new Date(); z['Рух'] = zal > 0 ? 'надходження' : 'видаток'; z['Категорія'] = 'інше';
+    z['Опис'] = 'Залишок з ' + rik; z['Сума, €'] = Math.abs(zal); z['Хто записав'] = 'Новий рік';
+    zapysatyObj(fin, P, z);
   }
-  ui.alert('Готово. Архівна копія: ' + nazva + '\nЇї посилання записано на аркуші «Архів».');
+  var arkh = ss.getSheetByName('Архів');
+  if (arkh) arkh.getRange(vilnyiRyadok(arkh), 1, 1, 4).setValues([[rik, 'Книга гуртка (архів)', 'повна книга року', url]]);
+  var m = /^(\d{4})\/(\d{2})$/.exec(rik);
+  if (m) ss.getSheetByName('Налаштування').getRange(5, 22).setValue((+m[1] + 1) + '/' + ('0' + ((+m[2] + 1) % 100)).slice(-2));
+  ui.alert('Готово.\nАрхівна копія: ' + nazva + '\nПідсумок — на аркушах «Роки» й «Історія учасників».' + (m ? '\nНавчальний рік у «Налаштуваннях» змінено на наступний.' : ''));
+}
+
+// підсумок року з даних журналів (рахує сам, не покладається на формули)
+function pidsumokRoku(ss, rik) {
+  var dani = function (n) { var sh = ss.getSheetByName(n); return {sh: sh, z: zaholovky(sh), v: ryadky(sh)}; };
+  var vid = dani(VID), skh = dani('Сходини'), pro = dani('Проби'), vm = dani('Вмілості'), vz = dani('Відзначки'),
+      md = dani('Мандрівки'), fn = dani('Фінанси'), uch = dani('Учасники');
+  var pochatok = null;   // початок року — найраніша дата сходин / відвідуваності
+  vid.v.concat(skh.v).forEach(function (r) { if (r[0] instanceof Date && (!pochatok || r[0] < pochatok)) pochatok = r[0]; });
+  var uRotsi = function (d) { return d instanceof Date && (!pochatok || d >= pochatok); };
+  var i = function (x, h) { return x.z.indexOf(h); };
+  var prys = 0, vids = 0, osoba = {};
+  vid.v.forEach(function (r) {
+    for (var c = SLOT0 - 1; c < SLOT0 - 1 + SLOTY; c++) {
+      var im = vid.z[c]; if (!im) continue;
+      osoba[im] = osoba[im] || {p: 0, n: 0};
+      if (r[c] === '+') { prys++; osoba[im].p++; osoba[im].n++; }
+      else if (r[c] === '−' || r[c] === 'в') { vids++; osoba[im].n++; }
+    }
+  });
+  var pr = pro.v.filter(function (r) { return r[i(pro, 'Статус')] === 'виконано' && uRotsi(r[i(pro, 'Дата виконання')]); });
+  var vmz = vm.v.filter(function (r) { return r[i(vm, 'Статус')] === 'здобуто' && uRotsi(r[i(vm, 'Дата здобуття')]); });
+  var vruch = vm.v.filter(function (r) { return r[i(vm, 'Відзнака')] === 'вручено' && uRotsi(r[i(vm, 'Вручено')]); })
+      .map(function (r) { return [r[0], r[i(vm, 'Вмілість')]]; })
+      .concat(vz.v.filter(function (r) { return r[i(vz, 'Статус')] === 'вручено' && uRotsi(r[i(vz, 'Дата вручення')]); })
+      .map(function (r) { return [r[0], r[i(vz, 'Відзнака')]]; }));
+  var nadh = 0, vyd = 0;
+  fn.v.forEach(function (r) {
+    var s = Number(r[i(fn, 'Сума, €')]) || 0;
+    if (r[i(fn, 'Рух')] === 'надходження') nadh += s; else if (r[i(fn, 'Рух')] === 'видаток') vyd += s;
+  });
+  var kr = function (x) { return Math.round(x * 100) / 100; };
+  var aktyvni = uch.v.filter(function (r) { return r[1] && r[3] === 'активний'; });
+  var rikRow = [rik, aktyvni.length, vid.v.length, (prys + vids) ? prys / (prys + vids) : '', pr.length, vmz.length,
+                vruch.length, md.v.length, kr(nadh), kr(vyd), kr(nadh - vyd)];
+  var uchasnyky = uch.v.filter(function (r) { return r[1] && r[3] !== 'вибув'; }).map(function (r) {
+    var im = r[1], o = osoba[im] || {p: 0, n: 0};
+    return [rik, im, r[2], r[3], o.p, o.n ? o.p / o.n : '', r[5],
+            pr.filter(function (x) { return x[0] === im; }).length,
+            vmz.filter(function (x) { return x[0] === im; }).map(function (x) { return x[i(vm, 'Вмілість')]; }).join(', '),
+            vruch.filter(function (x) { return x[0] === im; }).map(function (x) { return x[1]; }).join(', ')];
+  });
+  return {rik: rikRow, uchasnyky: uchasnyky};
+}
+
+function zaholovky(sh) { return sh.getRange(H, 1, 1, sh.getLastColumn()).getDisplayValues()[0]; }
+function ryadky(sh) {       // лише заповнені рядки (за ключем у першому стовпці)
+  return sh.getRange(P, 1, sh.getMaxRows() - P + 1, sh.getLastColumn()).getValues()
+    .filter(function (r) { return r[0] !== '' && r[0] !== null; });
+}
+function kolonka(sh, h) { return zaholovky(sh).indexOf(h); }
+
+// лишає в аркуші тільки рядки, для яких lyshyty(row) = true, і стягує їх догори; формули не чіпає
+function zalyshyty(sh, lyshyty) {
+  var nc = sh.getLastColumn(), n = sh.getMaxRows() - P + 1;
+  var f = sh.getRange(P, 1, 1, nc).getFormulas()[0];
+  var vsi = sh.getRange(P, 1, n, nc).getValues();
+  var lyshaiemo = vsi.filter(function (r) { return r[0] !== '' && r[0] !== null && lyshyty(r); });
+  f.forEach(function (x, k) {
+    if (x) return;
+    sh.getRange(P, k + 1, n, 1).clearContent();
+    if (lyshaiemo.length) sh.getRange(P, k + 1, lyshaiemo.length, 1).setValues(lyshaiemo.map(function (r) { return [r[k]]; }));
+  });
+}
+
+// вставляє об'єкт {заголовок: значення} у рядок r, лише в стовпці без формул; рядки нижче зсуває вниз
+function zapysatyObj(sh, r, obj) {
+  var nc = sh.getLastColumn(), z = zaholovky(sh);
+  var f = sh.getRange(P, 1, 1, nc).getFormulas()[0];
+  var n = sh.getMaxRows() - P + 1;
+  var vsi = sh.getRange(P, 1, n, nc).getValues().filter(function (x) { return x[0] !== '' && x[0] !== null; });
+  var novyi = z.map(function (h) { return obj.hasOwnProperty(h) ? obj[h] : ''; });
+  vsi.unshift(novyi);
+  f.forEach(function (x, k) {
+    if (x) return;
+    sh.getRange(P, k + 1, n, 1).clearContent();
+    sh.getRange(P, k + 1, vsi.length, 1).setValues(vsi.map(function (row) { return [row[k]]; }));
+  });
 }

@@ -11,18 +11,23 @@ function Sheet(name, d) {
   const isF = x => typeof x === 'string' && x.startsWith('=');
   const range = (r, c, nr = 1, ncc = 1) => ({
     getValues: () => [...Array(nr)].map((_, i) => [...Array(ncc)].map((_, k) => { const [F, V, j] = cell(r + i, c + k); return isF(F[j]) ? (V[j] ?? '') : (F[j] ?? ''); })),
+    getDisplayValue() { return this.getDisplayValues()[0][0]; },
     getDisplayValues() { return this.getValues().map(rr => rr.map(x => x instanceof Date ? x.toLocaleDateString('uk') : String(x))); },
     getFormulas: () => [...Array(nr)].map((_, i) => [...Array(ncc)].map((_, k) => { const [F, , j] = cell(r + i, c + k); return isF(F[j]) ? F[j] : ''; })),
     setValue: x => { const [F, V, j] = cell(r, c); if (isF(F[j])) throw Error('запис у формулу ' + name + ' ' + r + ':' + c); F[j] = x; V[j] = x; },
     setValues: a => a.forEach((rr, i) => rr.forEach((x, k) => range(r + i, c + k).setValue(x))),
     clearContent: () => { for (let i = 0; i < nr; i++) for (let k = 0; k < ncc; k++) { const [F, V, j] = cell(r + i, c + k); F[j] = ''; V[j] = ''; } },
   });
-  return { getName: () => name, getMaxRows: () => f.length, getLastColumn: () => nc, getMaxColumns: () => nc, getRange: range, _f: f };
+  return { getProtections: () => [], getName: () => name, getMaxRows: () => f.length, getLastColumn: () => nc, getMaxColumns: () => nc, getRange: range, _f: f };
 }
 const sheets = Object.fromEntries(Object.entries(dump).map(([n, d]) => [n, Sheet(n, d)]));
 const props = {}, cache = {};
 const ctx = {
-  SpreadsheetApp: { getActive: () => ({ getSheetByName: n => sheets[n] || null, getSheets: () => Object.values(sheets) }) },
+  SpreadsheetApp: {
+    getActive: () => ({ getSheetByName: n => sheets[n] || null, getSheets: () => Object.values(sheets), getName: () => 'Книга гуртка',
+      copy: n => ({ getUrl: () => 'https://docs.google.com/archiv' }), getSpreadsheetTimeZone: () => 'Europe/Helsinki' }),
+    getUi: () => ({ alert: () => 'YES', Button: { YES: 'YES' }, ButtonSet: {} }),
+  },
   PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k] || null, setProperty: (k, v) => props[k] = v }) },
   CacheService: { getScriptCache: () => ({ get: k => cache[k] || null, put: (k, v) => cache[k] = v }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
@@ -57,6 +62,23 @@ ok(!post({ kod: 'lelekы-2026', dija: 'zapys', arkush: 'Учасники', dani:
 ok(!post({ kod: 'lelekы-2026', dija: 'zapys', arkush: 'Налаштування', dani: { a: 1 } }).ok, 'в «Налаштування» сайт не пише');
 const z = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Фінанси', vid: '2026-09-15', do: '2026-10-31' });
 ok(z.ok && z.ryadky.length === 3, 'звіт за датами: ' + z.ryadky.length + ' рядки');
+// ---- Новий рік ----
+const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
+const zal = fin0.reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
+const proby0 = sheets['Проби']._f.slice(3).filter(r => r[0]).length, vm0 = sheets['Вмілості']._f.slice(3).filter(r => r[0]).length;
+const zam0 = sheets['Замовлення']._f.slice(3).filter(r => r[0]).length;
+ctx.novyiRik();
+const ryad = n => sheets[n]._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
+ok(ryad('Сходини').length === 0 && ryad('Відвідуваність').length === 0 && ryad('Протоколи').length === 0, 'сходини, відвідуваність, протоколи очищено');
+ok(sheets['Відвідуваність']._f[2][5] === 'Олесь', 'імена над відвідуваністю лишились');
+ok(ryad('Проби').length === proby0 && ryad('Вмілості').length === vm0 && ryad('Замовлення').length === zam0, 'проби, вмілості, замовлення — не чіпано');
+const zv = ryad('Завдання'); ok(zv.length === 3 && zv.every(r => r[4] !== 'зроблено'), 'завдання: лишились 3 незроблені, стягнуті догори');
+const f1 = ryad('Фінанси'); ok(f1.length === 1 && Math.abs(f1[0][5] - zal) < 0.01 && f1[0][3] === 'Залишок з 2026/27', 'каса: один рядок «Залишок з 2026/27» = ' + zal);
+const rk = ryad('Роки'); ok(rk.length === 1 && rk[0][0] === '2026/27' && rk[0][2] === 8 && Math.abs(rk[0][10] - zal) < 0.01 && rk[0][11].includes('archiv'), 'Роки: ' + rk[0].slice(0, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
+const iu = ryad('Історія учасників'); const ol = iu.find(r => r[1] === 'Олесь');
+ok(iu.length === 7 && ol[4] === 8 && ol[8].includes('Приклад-вмілість А'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 10).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
+ok(sheets['Налаштування']._f[4][21] === '2027/28', 'навчальний рік → 2027/28');
+ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посилання на архів записано');
 for (let i = 0; i < 20; i++) post({ kod: 'x', dija: 'perevirka' });
 ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 20 хибних спроб — пауза');
 console.log(bad ? `ПОМИЛОК: ${bad}` : 'Усе гаразд'); process.exit(bad ? 1 : 0);
