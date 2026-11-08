@@ -28,10 +28,10 @@ const ctx = {
       copy: n => ({ getUrl: () => 'https://docs.google.com/archiv' }), getSpreadsheetTimeZone: () => 'Europe/Helsinki' }),
     getUi: () => ({ alert: () => 'YES', Button: { YES: 'YES' }, ButtonSet: {} }),
   },
-  PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k] || null, setProperty: (k, v) => props[k] = v }) },
+  PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k] || null, setProperty: (k, v) => props[k] = v, getProperties: () => Object.assign({}, props), deleteProperty: k => { delete props[k]; } }) },
   CacheService: { getScriptCache: () => ({ get: k => cache[k] || null, put: (k, v) => cache[k] = v }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
-  Utilities: { sleep() {}, DigestAlgorithm: {}, Charset: {}, computeDigest: (a, s) => [...crypto.createHash('sha256').update(s, 'utf8').digest()].map(b => b > 127 ? b - 256 : b) },
+  Utilities: { sleep() {}, getUuid: () => crypto.randomUUID(), DigestAlgorithm: {}, Charset: {}, computeDigest: (a, s) => [...crypto.createHash('sha256').update(s, 'utf8').digest()].map(b => b > 127 ? b - 256 : b) },
   ContentService: { MimeType: { JSON: 1 }, createTextOutput: t => ({ setMimeType: () => JSON.parse(t) }) },
   console, Date,
 };
@@ -65,6 +65,30 @@ ok(z.ok && z.ryadky.length === 3, 'звіт за датами: ' + z.ryadky.leng
 const zu = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Учасники' });
 ok(zu.ok && !zu.zaholovky.includes('Прізвище') && !JSON.stringify(zu).includes('Бондар'), 'звіт «Учасники» — без прізвищ');
 ok(!JSON.stringify(im).includes('Бондар'), 'список імен для форм — без прізвищ');
+// ---- виправити / скасувати / перевірено / зміни ----
+const K = 'lelekы-2026', zm = () => sheets['Зміни']._f.slice(3).filter(x => x[0] instanceof Date);
+let q = post({ kod: K, dija: 'zapys', arkush: 'Майно', khto: 'Соломія', dani: { 'Річ': 'Казанок', 'Кількість': 2, 'Перевірено виховником': 'так' } });
+const rm = q.ryadok, mn = () => sheets['Майно']._f[rm - 1];
+ok(q.ok && typeof q.kvytok === 'string' && q.kvytok.length > 10, 'запис дає квиток для виправлення');
+ok(mn()[10] !== 'так', '«Перевірено» сайт сам не ставить');
+ok(zm().some(x => x[1] === 'запис' && x[2] === 'Майно' && x[3] === rm && String(x[5]).includes('Казанок')), '«Зміни»: запис видно (' + zm().length + ')');
+let w = post({ kod: K, dija: 'vypravyty', kvytok: q.kvytok, khto: 'Соломія', dani: { 'Річ': 'Казанок великий', 'Кількість': 1 } });
+ok(w.ok && w.ryadok === rm && mn()[0] === 'Казанок великий' && mn()[1] === 1, 'виправлення — у той самий рядок');
+ok(!post({ kod: K, dija: 'vypravyty', kvytok: 'вигаданий-квиток-123', dani: { 'Річ': 'x' } }).ok, 'чужий/вигаданий квиток — відмова');
+sheets['Майно']._f[rm - 1][10] = 'так';
+w = post({ kod: K, dija: 'vypravyty', kvytok: q.kvytok, dani: { 'Річ': 'Зіпсовано' } });
+ok(!w.ok && mn()[0] === 'Казанок великий', 'перевірений виховником рядок сайт не змінює');
+ok(!post({ kod: K, dija: 'skasuvaty', kvytok: q.kvytok }).ok, 'перевірений рядок сайт не скасує');
+sheets['Майно']._f[rm - 1][10] = '';
+w = post({ kod: K, dija: 'skasuvaty', kvytok: q.kvytok, khto: 'Соломія' });
+ok(w.ok && mn()[0] === '' && zm().some(x => x[1] === 'скасування' && String(x[5]).includes('Казанок великий')), 'скасування: рядок порожній, у «Змінах» — що було');
+ok(!post({ kod: K, dija: 'vypravyty', kvytok: q.kvytok, dani: { 'Річ': 'x' } }).ok, 'після скасування квиток більше не діє');
+const vr = sheets['Відвідуваність']._f.findIndex(x => x[0] instanceof Date && x[0].getTime() === new Date('2026-10-24T00:00:00').getTime());
+sheets['Відвідуваність']._f[vr][sheets['Відвідуваність']._f[2].indexOf('Перевірено виховником')] = 'так';
+w = post({ kod: K, dija: 'zapys', arkush: 'Відвідуваність', khto: 'Ярко', dani: { 'Дата': '2026-10-24', 'присутність': { 'Дана': '+' } } });
+ok(!w.ok && sheets['Відвідуваність']._f[vr][7] === 'в', 'перевірені сходини: відвідуваність заднім числом не змінити');
+const nv = post({ kod: K, dija: 'novi' });
+ok(nv.ok && nv.novi.length >= 4 && nv.novi[0][1] === 'скасування' && /^\d\d\.\d\d\.\d{4} \d\d:\d\d$/.test(nv.novi[0][0]), 'Що нового: ' + nv.novi.length + ' змін, найновіша — ' + nv.novi[0].slice(0, 3).join(' · '));
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
 const zal = fin0.reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);

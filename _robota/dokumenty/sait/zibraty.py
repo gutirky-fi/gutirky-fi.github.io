@@ -16,9 +16,25 @@ def uri(p, mime):
 
 SAIT = len(sys.argv) > 1 and sys.argv[1] == 'sait'
 SPILNE = (TUT / 'spilne.css').read_text(encoding='utf-8')
-import json
+import json, re, html
 FORMA = (TUT / 'forma.html').read_text(encoding='utf-8')
 FORMY = {k: v for k, v in json.loads((TUT / 'formy.json').read_text(encoding='utf-8')).items() if k != '_'}
+
+
+# підказки для полів (пошук під час введення; можна вписати й своє)
+def datalists():
+    shell = (ROB / 'src' / 'shell_file.js').read_text(encoding='utf-8')
+    hut = ['гутірка «' + m.group(1) + '»' for m in (re.search(r"title: '([^']+)'", ln) for ln in shell.splitlines() if '// proba' not in ln) if m]   # проби — ні
+    hut += ['гра «Потужний СКОБ!»', 'гра «Пластове Бінго»', 'гра «Інтелектуальний Змаг»', 'гра «Швидке Опитування»']
+    sk = (ROB / 'src' / 'skills_data.js').read_text(encoding='utf-8')
+    m = re.search(r'SKILL_LIST\s*=\s*(\[.*?\]);', sk, re.S)
+    vm = [x[0] for x in json.loads(m.group(1))]
+    vm = ['1-ша проба', '2-га проба', '3-тя проба'] + ['вмілість «' + v + '»' for v in vm]
+    dl = lambda i, l: f'<datalist id="dl-{i}">' + ''.join('<option value="' + html.escape(x, quote=True) + '">' for x in l) + '</datalist>'
+    return dl('gutirky', hut) + dl('vmilosti', vm)
+
+
+DL = datalists()
 
 
 def dzherelo(nazva):   # окрема сторінка або документ із заготовки forma.html (опис — formy.json)
@@ -32,6 +48,7 @@ for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku', *FO
     s = dzherelo(nazva)
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
+    s = s.replace('<!--DATALISTS-->', DL)
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s
     out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / ('' if nazva == 'index' else nazva) / 'index.html'
