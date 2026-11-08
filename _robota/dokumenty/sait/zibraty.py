@@ -1,5 +1,5 @@
 """Документи гуртка — сторінки сайту (Етап 3).
-   python3 _robota/dokumenty/sait/zibraty.py        -> проба  proba/dokumenty/vidviduvanist/  (зі смужкою «Проба»)
+   python3 _robota/dokumenty/sait/zibraty.py        -> проба  proba/dokumenty/ (картки посад) і proba/dokumenty/vidviduvanist/  (зі смужкою «Проба»)
    python3 _robota/dokumenty/sait/zibraty.py sait   -> сайт   dokumenty/vidviduvanist/        (лише після «так» власника)
    Проба з вигаданими іменами без мережі: додати до адреси ?demo (код 1234).
    Адресу приймача сторінка бере з посилання виховника (#p=…), не з репозиторію."""
@@ -15,12 +15,12 @@ def uri(p, mime):
 
 
 SAIT = len(sys.argv) > 1 and sys.argv[1] == 'sait'
-for nazva in ('vidviduvanist',):
+for nazva in ('index', 'vidviduvanist'):
     s = (TUT / (nazva + '.html')).read_text(encoding='utf-8')
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s
-    out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / nazva / 'index.html'
+    out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / ('' if nazva == 'index' else nazva) / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(s, encoding='utf-8')
     print('  ', out.relative_to(SITE), len(s) // 1024, 'КБ')
