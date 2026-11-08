@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Кераміка України — кіно (проба)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#0c0d10;--ink:#f1ece4;--mut:#9a948b;--gd:#ffc247;--ln:#2a2c31;--serif:'Playfair Display',Georgia,serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);overflow:hidden;font:400 17px/1.45 var(--txt)}
+#stage{position:fixed;inset:0;overflow:hidden;cursor:pointer;background:radial-gradient(ellipse 70% 60% at 62% 55%,#1b1712 0,var(--bg) 70%)}
+#glow{position:absolute;left:50%;top:0;width:140vmax;height:140vmax;margin-left:-70vmax;border-radius:50%;background:radial-gradient(circle,rgba(255,194,71,.14) 0,rgba(255,194,71,.04) 35%,transparent 62%);pointer-events:none}
+#map{position:absolute;left:0;top:0;width:612.5px;height:408px;transform-origin:0 0;overflow:visible;will-change:transform,filter}
+#map path{vector-effect:non-scaling-stroke;stroke-width:1.1;stroke-linejoin:round;transition:none}
+.town{pointer-events:none}
+.town circle.c{fill:var(--gd)}
+.town circle.p{fill:none;stroke:var(--gd);vector-effect:non-scaling-stroke;stroke-width:1.5}
+.town text{font:600 9px var(--txt);fill:var(--ink);paint-order:stroke;stroke:#0c0d10;stroke-width:3px}
+#ring{position:absolute;border-radius:50%;border:2px solid rgba(255,214,140,.95);box-shadow:0 0 18px rgba(255,194,71,.55),0 0 60px rgba(255,194,71,.25),inset 0 0 18px rgba(255,194,71,.35);pointer-events:none;opacity:0}
+#spot{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(255,226,170,.16) 0,transparent 65%);pointer-events:none;opacity:0}
+.item{position:absolute;max-width:none;pointer-events:none;filter:drop-shadow(0 30px 40px rgba(0,0,0,.65));opacity:0;will-change:transform,opacity,filter}
+#txt{position:absolute;left:max(6vw,24px);top:50%;transform:translateY(-50%);width:min(34vw,500px);pointer-events:none}
+#txt.mid{left:50%;transform:translate(-50%,-50%);width:min(80vw,900px);text-align:center;top:30%}
+.k{font:700 13px var(--txt);letter-spacing:.24em;text-transform:uppercase;color:var(--gd);margin:0 0 18px}
+.h{font:500 clamp(2.4rem,4.4vw,4.2rem)/1.04 var(--serif);margin:0;letter-spacing:-.005em;text-wrap:balance}
+#txt.mid .h{font-size:clamp(3.4rem,8vw,7.6rem)}
+.p{margin:22px 0 0;font:400 clamp(1.05rem,1.4vw,1.3rem)/1.5 var(--txt);color:#cfc8bd;max-width:34ch}
+#txt.mid .p{margin-left:auto;margin-right:auto}
+.l{list-style:none;margin:20px 0 0;padding:0;display:grid;gap:8px}
+.l li{font:400 clamp(1rem,1.25vw,1.2rem)/1.35 var(--txt);color:#cfc8bd;padding-left:18px;position:relative}
+.l li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:1px;background:var(--gd)}
+.w{display:inline-block;white-space:pre}
+#top{position:absolute;left:max(4vw,20px);right:max(4vw,20px);top:22px;display:flex;justify-content:space-between;align-items:center;font:700 12px var(--txt);letter-spacing:.2em;text-transform:uppercase;color:var(--mut);pointer-events:none}
+#top b{color:var(--ink);font-weight:700}
+#nav{position:absolute;left:max(4vw,20px);bottom:26px;display:flex;gap:6px}
+#nav i{display:block;width:18px;height:2px;background:#3a3c42;transition:background .4s,width .4s}
+#nav i.on{background:var(--gd);width:34px}
+#hint{position:absolute;right:max(4vw,20px);bottom:22px;font:600 12px var(--txt);letter-spacing:.06em;color:#6c6860;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="stage" aria-label="Кераміка України — натисніть, щоб далі">
+  <div id="glow"></div>
+  <svg id="map" viewBox="0 0 612.5 408" aria-hidden="true"><g id="obl"></g><g id="towns"></g></svg>
+  <div id="spot"></div>
+  <div id="ring"></div>
+  <div id="items"></div>
+  <div id="txt"></div>
+  <div id="top"><span><b>Пласт</b> · гутірка</span><span id="cnt">01 / 07</span></div>
+  <div id="nav"></div>
+  <div id="hint">клік, пробіл або → — далі · ← — назад</div>
+</div>
+<script src="../../lib/gsap-3/gsap.min.js"></script>
+<script>
+/*DANI*/
+(function () {
+  'use strict';
+  const $ = s => document.querySelector(s);
+  const NS = 'http://www.w3.org/2000/svg';
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const D = RM ? 0.35 : 1.4;                 /* тривалість перельоту */
+  const EASE = 'power3.inOut';
+  const map = $('#map'), obl = $('#obl'), towns = $('#towns');
+
+  /* ---------- карта ---------- */
+  const REG = DANI.R.map(() => []);
+  DANI.OB.forEach(([n, r, d]) => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); p.dataset.r = r; obl.appendChild(p); REG[r].push(p); });
+  const TOWN = {};
+  DANI.MK.forEach(([n, r, x, y]) => {
+    const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'town'); g.setAttribute('opacity', '0');
+    g.innerHTML = `<circle class="p" cx="${x}" cy="${y}" r="3"/><circle class="c" cx="${x}" cy="${y}" r="1.6"/><text x="${x + 4}" y="${y - 3}">${n}</text>`;
+    towns.appendChild(g); TOWN[n] = g;
+  });
+  const bboxR = r => { let a = [1e9, 1e9, -1e9, -1e9]; REG[r].forEach(p => { const b = p.getBBox(); a = [Math.min(a[0], b.x), Math.min(a[1], b.y), Math.max(a[2], b.x + b.width), Math.max(a[3], b.y + b.height)]; }); return a; };
+  const ALL = [0, 0, 612.5, 408];
+
+  /* камера: показати прямокутник b з центром у (cx, cy) частках екрана, висотою hf екрана (і не ширше wf) */
+  function cam(b, cx, cy, hf, wf) {
+    const W = innerWidth, H = innerHeight, bw = b[2] - b[0], bh = b[3] - b[1];
+    const s = Math.min(H * hf / bh, W * (wf || 1) / bw);
+    return { x: W * cx - s * (b[0] + bw / 2), y: H * cy - s * (b[1] + bh / 2), scale: s };
+  }
+
+  /* ---------- текст: слова випливають із розмиття ---------- */
+  const txt = $('#txt');
+  function words(s) { return String(s).split(/([ \n\t]+)/).map(w => /^[ \n\t]+$/.test(w) ? w : `<span class="w">${w}</span>`).join(''); }
+  function setText(t, mid) {
+    const old = txt.innerHTML;
+    const show = () => {
+      txt.className = mid ? 'mid' : '';
+      txt.innerHTML = (t.k ? `<p class="k">${words(t.k)}</p>` : '') + `<h1 class="h">${words(t.h)}</h1>` + (t.p ? `<p class="p">${words(t.p)}</p>` : '') + (t.l ? `<ul class="l">${t.l.map(x => `<li>${words(x)}</li>`).join('')}</ul>` : '');
+      gsap.fromTo(txt.querySelectorAll('.w'), { opacity: 0, y: 18, filter: 'blur(10px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: RM ? .3 : .9, ease: 'power2.out', stagger: RM ? 0 : .035 });
+    };
+    if (!old) { show(); return; }
+    gsap.to(txt.querySelectorAll('.w'), { opacity: 0, y: -10, filter: 'blur(8px)', duration: .35, stagger: .01, ease: 'power1.in', onComplete: show });
+  }
+
+  /* ---------- вироби ---------- */
+  const IT = {}; let curItem = null;
+  function itemEl(k) {
+    if (IT[k]) return IT[k];
+    const im = new Image(); im.className = 'item'; im.src = 'img/' + k + '.webp'; im.alt = ''; $('#items').appendChild(im); IT[k] = im; return im;
+  }
+  function placeItem(im) {   /* виріб — праворуч, по центру кільця */
+    const W = innerWidth, H = innerHeight, h = H * .62, cx = W * .66, cy = H * .53;
+    const r = (im.naturalWidth / im.naturalHeight) || 1, w = Math.min(h * r, W * .42), hh = w / r;
+    im.style.width = w + 'px'; im.style.height = hh + 'px'; im.style.left = (cx - w / 2) + 'px'; im.style.top = (cy - hh / 2) + 'px';
+  }
+  function showItem(k, dir) {
+    if (k === curItem) return;
+    const old = curItem ? IT[curItem] : null; curItem = k;
+    if (old) gsap.to(old, { x: dir < 0 ? 260 : -260, opacity: 0, rotationY: dir < 0 ? 35 : -35, filter: 'blur(14px) drop-shadow(0 30px 40px rgba(0,0,0,.65))', scale: .9, duration: D * .7, ease: 'power2.in' });
+    if (!k) return;
+    const im = itemEl(k);
+    const go = () => { placeItem(im); gsap.fromTo(im, old ? { x: dir < 0 ? -260 : 260, y: 0, opacity: 0, rotationY: dir < 0 ? -35 : 35, scale: .9, filter: 'blur(14px) drop-shadow(0 30px 40px rgba(0,0,0,.65))' } : { x: 0, y: 120, opacity: 0, rotationY: 0, scale: .82, filter: 'blur(14px) drop-shadow(0 30px 40px rgba(0,0,0,.65))' },
+      { x: 0, y: 0, opacity: 1, rotationY: 0, scale: 1, filter: 'blur(0px) drop-shadow(0 30px 40px rgba(0,0,0,.65))', duration: D, ease: 'power3.out', delay: old ? D * .35 : D * .3 }); };
+    im.complete && im.naturalWidth ? go() : im.onload = go;
+  }
+
+  /* ---------- кільце й світло ---------- */
+  function ringTo(on, rot) {
+    const W = innerWidth, H = innerHeight, d = Math.min(H * .7, W * .44), cx = W * .66, cy = H * .5;
+    const R = $('#ring'), S = $('#spot');
+    gsap.set(R, { width: d, height: d, left: cx - d / 2, top: cy - d / 2 });
+    gsap.set(S, { width: d * 1.9, height: d * 1.9, left: cx - d * .95, top: cy - d * .95 });
+    gsap.to(R, { opacity: on ? 1 : 0, scale: on ? 1 : .7, rotation: rot || 0, duration: D, ease: EASE });
+    gsap.to(S, { opacity: on ? 1 : 0, duration: D, ease: EASE });
+  }
+
+  /* ---------- кадри ---------- */
+  const R6 = DANI.R[6], R3 = DANI.R[3];
+  const F = [
+    { cam: () => cam(ALL, .5, .98, 1.15, 1.25), fill: 'dim', glow: 1, mid: true,
+      t: { k: 'Пластова гутірка', h: 'Кераміка України', p: 'Девʼять країв — девʼять способів перетворити глину на красу.' } },
+    { cam: () => cam(ALL, .69, .52, .74, .52), fill: 'all',
+      t: { k: 'Карта', h: 'Девʼять країв\u00a0— девʼять традицій', p: 'У кожного краю своя глина, свої кольори й свої улюблені звірі та птахи на посуді.' } },
+    { cam: () => cam(bboxR(6), .66, .5, .62, .5), fill: 6, towns: ['Опішня'],
+      t: { k: R6.n, h: 'Опішня', p: R6.t } },
+    { cam: () => cam(bboxR(6), .66, .5, 1.5, 1.2), fill: 6, blur: 6, dim: .22, ring: 1, item: '6-0',
+      t: { k: 'Опішня', h: DANI.P[6][0][2], l: R6.f } },
+    { cam: () => cam(bboxR(6), .62, .5, 1.6, 1.3), fill: 6, blur: 6, dim: .22, ring: 1, rot: 60, item: '6-1',
+      t: { k: 'Запитання гуртку', h: R6.q, p: R6.qa[0] } },
+    { cam: () => cam(bboxR(3), .66, .5, .62, .5), fill: 3, towns: ['Бубнівка', 'Бар'],
+      t: { k: R3.n, h: 'Бубнівка\u00a0— пташки й свищики', p: R3.t } },
+    { cam: () => cam(bboxR(3), .66, .5, 1.5, 1.2), fill: 3, blur: 6, dim: .22, ring: 1, rot: -40, item: '3-0',
+      t: { k: 'Бубнівка', h: DANI.P[3][0][2], p: 'Скільки чарок висить на боці глечика? Порахуйте разом — і подумайте, для чого вони там.' } }
+  ];
+  const nav = $('#nav'); F.forEach(() => nav.appendChild(document.createElement('i')));
+
+  let cur = -1, busy = false;
+  function regionStyle(f) {
+    obl.querySelectorAll('path').forEach(p => {
+      const r = +p.dataset.r, col = DANI.R[r].col;
+      let fill = col, fo = .16, st = col, so = .55;
+      if (f.fill === 'dim') { fill = '#1d1b18'; fo = 1; st = '#5a5248'; so = .8; }
+      else if (typeof f.fill === 'number') { if (r === f.fill) { fo = .32; so = 1; } else { fill = '#16161a'; fo = 1; st = '#33343a'; so = .7; } }
+      gsap.to(p, { attr: { fill, stroke: st, 'fill-opacity': fo, 'stroke-opacity': so }, duration: D * .8, ease: EASE });
+    });
+  }
+  function go(i) {
+    if (i < 0 || i >= F.length || i === cur) return;
+    const dir = i > cur ? 1 : -1, f = F[i]; cur = i;
+    const c = f.cam();
+    gsap.to(map, { x: c.x, y: c.y, scale: c.scale, duration: cur === 0 && dir > 0 && !map._s ? 0 : D, ease: EASE });
+    map._s = 1;
+    gsap.to(map, { filter: `blur(${f.blur || 0}px) brightness(${f.dim ? .55 : 1})`, opacity: f.dim ? f.dim * 3 : 1, duration: D, ease: EASE });
+    regionStyle(f);
+    Object.entries(TOWN).forEach(([n, g]) => gsap.to(g, { attr: { opacity: (f.towns || []).includes(n) ? 1 : 0 }, duration: D * .6, delay: (f.towns || []).includes(n) ? D * .6 : 0 }));
+    gsap.to('#glow', { opacity: f.glow ? 1 : .25, duration: D });
+    ringTo(!!f.ring, f.rot);
+    showItem(f.item || null, dir);
+    setTimeout(() => setText(f.t, f.mid), RM ? 0 : D * 380);
+    $('#cnt').textContent = String(i + 1).padStart(2, '0') + ' / ' + String(F.length).padStart(2, '0');
+    nav.querySelectorAll('i').forEach((x, k) => x.classList.toggle('on', k === i));
+  }
+  /* пульсація точок-осередків */
+  if (!RM) gsap.to('.town circle.p', { attr: { r: 9 }, opacity: 0, duration: 1.6, repeat: -1, ease: 'power1.out' });
+  /* легке «дихання» виробу — живий кадр, навіть коли ведучий говорить */
+  if (!RM) gsap.to('#items', { y: -8, duration: 3.2, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+
+  const next = () => go(cur + 1), prev = () => go(cur - 1);
+  $('#stage').addEventListener('click', next);
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); next(); } if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev(); } });
+  addEventListener('resize', () => { const i = cur; cur = -1; go(i); });
+  window.KINO = { go, next, prev, get cur() { return cur; }, n: F.length };
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => go(0));
+})();
+</script>
+</body>
+</html>
