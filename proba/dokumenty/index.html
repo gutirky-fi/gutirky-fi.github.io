@@ -71,6 +71,12 @@ a{color:inherit}
 .yu{--c:var(--yu);--ct:var(--yu-t)}
 .vy{--c:var(--vy);--ct:var(--vy-t)}
 .note{margin:-4px 0 18px;color:var(--mut);font-size:15px;max-width:70ch}
+.bk{display:flex;align-items:center;gap:16px;margin:-22px 0 44px;padding:16px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--yu);text-decoration:none}
+.bk:hover{border-color:#5a6573;border-left-color:var(--yu)}
+.bk svg{width:24px;height:24px;flex:none;color:var(--yu-t)}
+.bk b{display:block;font:600 19px/1.15 var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.bk span{font-size:15px;color:var(--mut)}
+.bk .go{margin-left:auto;width:20px;height:20px;color:var(--body)}
 .src{margin:8px 0 60px;color:var(--mut);font-size:14px;max-width:80ch}
 @media (max-width:980px){.roles{grid-template-columns:1fr 1fr}}
 @media (max-width:700px){
@@ -102,6 +108,8 @@ a{color:inherit}
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><p style="margin:0"><b>Бланк</b><span>для всіх: роздрукувати, зберегти PDF чи Word або заповнити на сторінці. Нічого нікуди не надсилається.</span></p></div>
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><p style="margin:0"><b>Заповнити й подати</b><span>за кодом гуртка: імена вже є, запис іде просто в книгу гуртка.</span></p></div>
   </div>
+
+  <a class="bk" href="knyha/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7M8 11h7"/></svg><p style="margin:0"><b>Книга гуртка</b><span>що це, з яких частин складається і хто що веде</span></p><svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
 
   <section class="sec" aria-labelledby="h-yu">
     <h2 id="h-yu">Посади юнацтва<small>у кожної посади — свої записи</small></h2>
