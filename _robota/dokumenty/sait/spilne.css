@@ -1,0 +1,98 @@
+/* Документи гуртка — спільні стилі сторінок (Д1); вставляє zibraty.py. */
+/* Документи гуртка → Відвідуваність (Етап 3, 08.11.2026). Стиль Д1, як головна бібліотеки. */
+:root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;
+  --d:#c8284a;--d-t:#ff7d99;--ok:#3daf6e;--ok-t:#62cf93;--a:#c9cfd6;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:17px/1.5 var(--txt);-webkit-tap-highlight-color:transparent}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--a);outline-offset:2px}
+[hidden]{display:none!important}
+.ribbon{padding:7px 14px;background:#cfd5dc;color:#16181c;text-align:center;font-weight:700;font-size:14px}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:max(16px,4vw)}
+.top{display:flex;align-items:center;gap:12px 16px;padding-block:22px 18px;border-bottom:1px solid var(--ln)}
+.logo{display:block;line-height:0;margin-right:auto}
+.logo img{height:64px;width:auto}
+.back{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);color:var(--body);font:700 15px var(--txt);text-decoration:none}
+.back:hover{color:var(--ink)}
+.back svg{width:16px;height:16px}
+
+.hero{position:relative;display:grid;gap:4px;padding-block:44px 28px}
+.hero .wm{position:absolute;right:20px;top:10px;height:300px;opacity:.06;pointer-events:none}
+.ey{font:500 14px var(--disp);letter-spacing:.28em;text-transform:uppercase;color:var(--mut)}
+.hero h1{position:relative;margin:6px 0 2px;font:600 clamp(2.6rem,7vw,4.8rem)/.95 var(--disp);letter-spacing:.02em;text-transform:uppercase;color:var(--a)}
+.hero h1::after{content:"";display:block;width:min(200px,40%);height:6px;margin-top:14px;border-radius:3px;background:var(--d)}
+.hand{position:relative;margin:10px 0 0;font:500 clamp(1.4rem,3vw,1.9rem)/1.15 var(--hand);color:var(--body)}
+.who{position:relative;margin:6px 0 0;color:var(--mut);font-size:16px;max-width:64ch}
+.who b{color:var(--body)}
+
+/* перемикач двох варіантів */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:640px;padding:5px;margin:4px 0 26px;border-radius:18px;background:#14171a;border:1px solid var(--ln)}
+.seg button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:11px 16px;border:1px solid transparent;border-radius:13px;background:none;color:var(--mut);text-align:left}
+.seg b{font:600 19px/1.15 var(--disp);letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.seg small{font-size:14px}
+.seg svg{width:15px;height:15px}
+.seg button[aria-selected=true]{background:var(--card2);border-color:var(--ln);color:var(--ink);box-shadow:inset 0 -3px 0 var(--d)}
+.seg button[aria-selected=true] small{color:var(--body)}
+
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:22px}
+.card h2{margin:0 0 14px;font:600 20px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.note{margin:0;color:var(--mut);font-size:15px}
+.f{display:grid;gap:5px;margin-bottom:14px}
+.f>span{font-size:14px;font-weight:600;color:var(--mut)}
+.in{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--ink);font-size:17px}
+.in:focus{border-color:#6b7480;outline:none}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;border-radius:13px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:16px;text-decoration:none}
+.btn:hover{border-color:#5a6573}
+.btn svg{width:18px;height:18px;flex:none}
+.btn.main{background:var(--d);border-color:var(--d);color:#fff}
+.btn.main:hover{background:#d8345a}
+.btn.ok{background:var(--ok);border-color:var(--ok);color:#0e1f15}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btns{display:grid;gap:10px}
+.chk{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:12px;background:#14171a;border:1px solid var(--ln);font-size:15px;color:var(--body);cursor:pointer;margin-bottom:14px}
+.chk input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--d)}
+
+/* ===== Заповнити й подати ===== */
+.podaty{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);gap:22px;align-items:start}
+.lock{max-width:520px}
+.lock .ico{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:rgba(200,40,74,.16);color:var(--d-t);margin-bottom:14px}
+.lock .ico svg{width:22px;height:22px}
+.codein{letter-spacing:.3em;font-size:22px;text-align:center}
+.err{margin:0 0 12px;padding:10px 13px;border-radius:12px;background:rgba(200,40,74,.14);color:#ffb3c3;font-size:15px}
+.side{display:grid;gap:14px}
+.side .card{padding:18px 20px}
+.side h3{margin:0 0 6px;font:600 16px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--body)}
+.side ul{margin:0;padding-left:18px;color:var(--mut);font-size:15px}
+.side li{margin:3px 0}
+
+.fhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.fhead h2{margin:0}
+.leave{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:99px;border:1px solid var(--ln);background:none;color:var(--mut);font-size:14px;font-weight:600}
+.leave svg{width:14px;height:14px}
+.cnt{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0 10px}
+.pill{padding:4px 11px;border-radius:99px;background:#14171a;border:1px solid var(--ln);font-size:14px;color:var(--body)}
+.pill b{color:var(--ink)}
+.pill.p b{color:var(--ok-t)}.pill.x b{color:var(--d-t)}.pill.v b{color:#f0c060}
+.all{margin-left:auto;padding:6px 12px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);font-size:14px;font-weight:700}
+.names{display:grid;gap:6px;margin:0 0 16px;padding:0;list-style:none}
+.names li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;padding:7px 7px 7px 14px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.names li.need{border-color:rgba(200,40,74,.7)}
+.names .nm{font-weight:700;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,auto);gap:4px}
+.tri button{min-width:52px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:15px;line-height:1.1}
+.tri button small{display:block;font-size:11px;font-weight:600}
+.tri button[aria-pressed=true][data-m="+"]{background:var(--ok);border-color:var(--ok);color:#0e1f15}
+.tri button[aria-pressed=true][data-m="−"]{background:var(--d);border-color:var(--d);color:#fff}
+.tri button[aria-pressed=true][data-m="в"]{background:#d9a640;border-color:#d9a640;color:#241800}
+.msg{margin:12px 0 0;font-size:15px;color:var(--mut);text-align:center}
+.done{text-align:center;padding:30px 22px}
+.done .big{width:64px;height:64px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:rgba(61,175,110,.18);color:var(--ok-t)}
+.done .big svg{width:32px;height:32px}
+.done h2{margin-bottom:6px}
+.done p{margin:0 0 18px;color:var(--body)}
+

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1b1d21">
+<title>Вхід виховника — Документи гуртка</title>
+<link rel="icon" href="{{EMBLEM}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/*SPILNE*/
+/* Вхід виховника: усе за подіями (Етап 3, 08.11.2026). Колір — виховницький зелений (PROEKT.md, п. 8). */
+:root{--d:#3daf6e;--d-t:#62cf93}
+.hero h1::after{background:var(--d)}
+.btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}
+.btn.main:hover{background:#4cc07f}
+.lock .ico{background:rgba(61,175,110,.16);color:var(--ok-t)}
+.chk input{accent-color:var(--d)}
+.bad{color:#ffb3c3!important}
+/* плитки подій */
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.tile{display:flex;flex-direction:column;gap:8px;min-height:150px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);text-align:left;color:inherit;font:inherit}
+button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
+.tile{transition:border-color .15s,transform .15s}
+.tile .ti{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:rgba(61,175,110,.14);color:var(--ok-t)}
+.tile .ti svg{width:22px;height:22px}
+.tile b{font:600 21px/1.1 var(--disp);letter-spacing:.05em;text-transform:uppercase}
+.tile span{font-size:15px;color:var(--mut)}
+.tile.main{grid-column:span 2;border-top:5px solid var(--d)}
+.tile.main b{font-size:26px;color:var(--ok-t)}
+.tile[disabled]{cursor:default;opacity:.62}
+.tile i{margin-top:auto;align-self:flex-start;font-style:normal;font-size:12.5px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mut)}
+.hubhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
+.hubhead h2{margin:0;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+/* форма «Після сходин» */
+.ps{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:22px;align-items:start}
+.step{margin:0 0 16px}
+.step>h3{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 19px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.step>h3 em{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--d);color:#0e1f15;font:600 14px var(--disp);font-style:normal}
+.step>h3 small{font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.row3{display:grid;grid-template-columns:1.3fr .7fr;gap:10px}
+.pay{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.pay li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.pay .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pay .sum{width:84px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);text-align:right;font-size:16px}
+.pay button{min-width:118px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:14.5px}
+.pay button[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#0e1f15}
+.pay .sum[disabled]{opacity:.35}
+.paybar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:0 0 10px}
+.paybar .f{margin:0;flex:0 0 130px}
+.paybar .tot{margin-left:auto;padding:6px 12px;border-radius:99px;background:#14171a;border:1px solid var(--ln);font-size:14px;color:var(--body)}
+.paybar .tot b{color:var(--ok-t)}
+.empty{margin:0;padding:12px 14px;border-radius:12px;border:1px dashed var(--ln);color:var(--mut);font-size:15px}
+.prog{display:grid;gap:6px;margin:14px 0 0;padding:0;list-style:none}
+.prog li{display:flex;align-items:center;gap:10px;font-size:15px;color:var(--mut)}
+.prog li::before{content:"";width:18px;height:18px;border-radius:50%;border:2px solid var(--ln);flex:none}
+.prog li.ok{color:var(--body)}.prog li.ok::before{background:var(--d);border-color:var(--d)}
+.prog li.go::before{border-color:var(--d);border-right-color:transparent;animation:sp 0.8s linear infinite}
+.prog li.no{color:#ffb3c3}.prog li.no::before{border-color:var(--yu,#c8284a);background:rgba(200,40,74,.3)}
+@keyframes sp{to{transform:rotate(360deg)}}
+.done ul{margin:0 auto 18px;padding:0;list-style:none;display:inline-grid;gap:4px;text-align:left;color:var(--body)}
+.done ul li::before{content:"✓  ";color:var(--ok-t);font-weight:700}
+@media (max-width:900px){.ps{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}}
+@media (max-width:600px){.tiles{grid-template-columns:1fr}.tile.main{grid-column:auto}.tile{min-height:0}.row3{grid-template-columns:1fr}
+  .pay li{grid-template-columns:minmax(0,1fr) auto;padding-left:12px}.pay .sum{grid-column:2;grid-row:1}.pay button{grid-column:1/-1;min-width:0}}
+</style>
+</head>
+<body>
+<!--RIBBON-->
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+    <a class="back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Документи гуртка</span></a>
+  </header>
+
+  <section class="hero">
+    <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+    <span class="ey">Документи гуртка</span>
+    <h1>Вхід виховника</h1>
+    <p class="hand">усе за подіями — без пошуку по посадах</p>
+    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за кодом гуртка — і кілька кнопок: що сталося, те й записуєте. Книга сама розкладе записи по своїх аркушах.</p>
+  </section>
+
+  <!-- вхід -->
+  <div class="podaty" id="v-lock-wrap">
+    <form class="card lock" id="z-lock" autocomplete="off">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+      <h2>Код гуртка</h2>
+      <p class="note" style="margin-bottom:16px">Той самий код, що й для діловодів. Сторінка не зберігає ні коду, ні записів.</p>
+      <p class="err" id="z-noaddr" hidden>Цю сторінку треба відкрити з <b>вашого посилання</b> — у ньому адреса книги гуртка.</p>
+      <p class="err" id="z-err" hidden></p>
+      <label class="f"><span>Код гуртка</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
+      <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
+    </form>
+    <aside class="side">
+      <div class="card"><h3>Що тут буде</h3><ul><li><b>Після сходин</b> — тема, хто був, хто заплатив внесок: одна форма, одне «Надіслати».</li><li>Новий учасник, проби й вмілості, гроші й майно, звіти — згодом.</li></ul></div>
+    </aside>
+  </div>
+
+  <!-- події -->
+  <section id="v-hub" hidden>
+    <div class="hubhead"><h2>Що сталося?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="tiles">
+      <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg></span><b>Новий учасник</b><span>Ім'я й статус «кандидат».</span><i>готується</i></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет.</span><i>готується</i></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіт</b><span>Відвідуваність за місяць, каса — для друку чи PDF.</span><i>готується</i></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span><i>згодом</i></button>
+    </div>
+  </section>
+
+  <!-- після сходин -->
+  <section id="v-ps" hidden>
+    <div class="ps">
+      <div class="card" id="ps-form">
+        <div class="fhead"><h2>Після сходин</h2><button class="leave" type="button" id="ps-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+
+        <div class="step"><h3><em>1</em>Сходини</h3>
+          <div class="row2">
+            <label class="f"><span>Дата</span><input class="in" id="s-data" type="date"></label>
+            <label class="f"><span>№ сходин</span><input class="in" id="s-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
+          </div>
+          <label class="f"><span>Тема</span><input class="in" id="s-tema" maxlength="80" placeholder="про що були сходини"></label>
+          <label class="f"><span>Програма коротко <small style="font-weight:400">— необов'язково</small></span><input class="in" id="s-prog" maxlength="160" placeholder="напр. вузли, гра, пісня"></label>
+          <div class="row3">
+            <label class="f"><span>Гутірка чи гра з бібліотеки</span><input class="in" id="s-gut" maxlength="60" placeholder="необов'язково"></label>
+            <label class="f"><span>Місце</span><input class="in" id="s-mis" maxlength="40" placeholder="домівка"></label>
+          </div>
+        </div>
+
+        <div class="step"><h3><em>2</em>Хто був</h3>
+          <div class="cnt">
+            <span class="pill p">був <b id="c-p">0</b></span><span class="pill x">не був <b id="c-x">0</b></span><span class="pill v">поважна <b id="c-v">0</b></span>
+            <button class="all" type="button" id="z-all">Усі були</button>
+          </div>
+          <ul class="names" id="z-names"></ul>
+        </div>
+
+        <div class="step"><h3><em>3</em>Внески <small>хто заплатив сьогодні</small></h3>
+          <div class="paybar">
+            <label class="f"><span>Внесок, €</span><input class="in" id="p-suma" inputmode="decimal" value="5" maxlength="6"></label>
+            <label class="f" style="flex:1 1 160px"><span>Квитанція № <small style="font-weight:400">— якщо є</small></span><input class="in" id="p-kv" maxlength="20"></label>
+            <span class="tot">разом <b id="p-tot">0 €</b></span>
+          </div>
+          <ul class="pay" id="p-list"></ul>
+        </div>
+
+        <div class="step"><h3><em>4</em>Примітка <small>необов'язково</small></h3>
+          <input class="in" id="s-prym" maxlength="160" placeholder="напр. наступні — у суботу о 12:00">
+        </div>
+
+        <button class="btn main" type="button" id="ps-send" style="width:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/></svg>Надіслати в книгу</button>
+        <p class="msg" id="ps-msg">Записано буде від імені «виховник».</p>
+        <ul class="prog" id="ps-prog" hidden></ul>
+      </div>
+
+      <div class="card done" id="ps-done" hidden>
+        <div class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg></div>
+        <h2>Сходини записано</h2>
+        <p id="ps-sum"></p>
+        <ul id="ps-what"></ul><br>
+        <button class="btn" type="button" id="ps-hub">До подій</button>
+      </div>
+
+      <aside class="side">
+        <div class="card"><h3>Куди це піде</h3><ul><li><b>Сходини</b> — дата, тема, програма, місце.</li><li><b>Відвідуваність</b> — хто був. Та сама дата ще раз — запис оновиться.</li><li><b>Фінанси</b> — кожен внесок окремим рядком з іменем.</li></ul></div>
+        <div class="card"><h3>Якщо зв'язок урветься</h3><ul><li>Нічого не загубиться: форма лишиться заповнена, а «Надіслати» дошле лише те, що не дійшло.</li></ul></div>
+      </aside>
+    </div>
+  </section>
+  <div class="gap" style="height:60px"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const DEMO = /[?&]demo\b/.test(location.search);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const KHTO = 'виховник';
+
+  /* адреса книги — з посилання виховника (#p=…), на пристрої лише адреса (як у «Відвідуваності») */
+  const KEY = 'dokumenty:pryimach';
+  let addr = '';
+  try { addr = localStorage.getItem(KEY) || ''; } catch (x) {}
+  const hm = /[#&]p=([^&]+)/.exec(location.hash);
+  if (hm) {
+    const u = decodeURIComponent(hm[1]);
+    if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { addr = u; try { localStorage.setItem(KEY, u); } catch (x) {} }
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+  if (!addr && !DEMO) $('z-noaddr').hidden = false;
+
+  const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
+  let demoRow = 13;
+  async function zapyt(t) {
+    if (DEMO) {
+      await new Promise(r => setTimeout(r, 450));
+      if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
+      if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
+      if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
+      return {ok: true};
+    }
+    const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
+    return r.json();
+  }
+  const ludsky = x => x && x.message && !/fetch|network|JSON/i.test(x.message) ? x.message : 'Немає зв\'язку з книгою гуртка. Перевірте інтернет.';
+
+  /* ---------- вхід / вихід ---------- */
+  let kod = '', imena = [];
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  $('z-lock').addEventListener('submit', async e => {
+    e.preventDefault();
+    const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
+    if (!addr && !DEMO) { $('z-noaddr').hidden = false; return; }
+    const b = $('z-in'); b.disabled = true; b.textContent = 'Перевіряю…'; $('z-err').hidden = true;
+    try {
+      const v = await zapyt({kod: k, dija: 'imena'});
+      if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
+      kod = k; imena = v.imena || []; $('z-kod').value = ''; ekran('v-hub');
+    } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
+    finally { b.disabled = false; b.textContent = 'Увійти'; }
+  });
+  function vyity() { kod = ''; imena = []; chysto(); ekran('v-lock-wrap'); }
+  document.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', vyity));
+  window.addEventListener('pagehide', () => { kod = ''; });
+  $('go-ps').addEventListener('click', () => { chysto(); ekran('v-ps'); });
+  $('ps-back').addEventListener('click', () => ekran('v-hub'));
+  $('ps-hub').addEventListener('click', () => { $('ps-done').hidden = true; $('ps-form').hidden = false; ekran('v-hub'); });
+
+  /* ---------- форма ---------- */
+  let prys = {}, plat = {}, sent = {};   // sent — що вже дійшло (щоб при повторі не задвоїти)
+  const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+  function chysto() {
+    prys = {}; plat = {}; sent = {};
+    $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
+    $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
+      <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
+      || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
+    $('ps-prog').hidden = true; $('ps-prog').innerHTML = ''; $('ps-msg').textContent = 'Записано буде від імені «виховник».'; $('ps-msg').classList.remove('bad');
+    onovyty();
+  }
+  const suma = () => { const v = parseFloat(String($('p-suma').value).replace(',', '.')); return isFinite(v) && v > 0 ? v : 0; };
+  const fmt = v => (Math.round(v * 100) / 100).toString().replace('.', ',') + ' €';
+  function onovyty() {
+    const v = Object.values(prys);
+    $('c-p').textContent = v.filter(x => x === '+').length; $('c-x').textContent = v.filter(x => x === '−').length; $('c-v').textContent = v.filter(x => x === 'в').length;
+    $('z-names').querySelectorAll('li[data-i]').forEach(li => {
+      const m = prys[imena[+li.dataset.i]];
+      li.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
+      if (m) li.classList.remove('need');
+    });
+    // внески — лише ті, хто був
+    const buly = imena.filter(im => prys[im] === '+');
+    Object.keys(plat).forEach(im => { if (!buly.includes(im)) delete plat[im]; });
+    const pl = $('p-list');
+    const vzhe = new Set([...pl.querySelectorAll('li[data-im]')].map(li => li.dataset.im));
+    if (buly.length !== vzhe.size || buly.some(im => !vzhe.has(im))) {
+      pl.innerHTML = buly.length ? buly.map(im => `<li data-im="${esc(im)}"><span class="nm">${esc(im)}</span><input class="sum" inputmode="decimal" aria-label="Сума для ${esc(im)}" maxlength="6"><button type="button" aria-pressed="false">заплатив</button></li>`).join('')
+        : '<li style="display:block"><p class="empty" style="border:0;padding:0">Спершу позначте, хто був, — тут з\'являться їхні імена.</p></li>';
+    }
+    pl.querySelectorAll('li[data-im]').forEach(li => {
+      const im = li.dataset.im, on = im in plat, inp = li.querySelector('.sum');
+      li.querySelector('button').setAttribute('aria-pressed', String(on));
+      li.querySelector('button').textContent = on ? '✓ заплатив' : 'заплатив';
+      inp.disabled = !on; inp.placeholder = String(suma()).replace('.', ',');
+      if (on && document.activeElement !== inp) inp.value = plat[im] === null ? '' : String(plat[im]).replace('.', ',');
+      if (!on) inp.value = '';
+    });
+    const tot = Object.values(plat).reduce((a, x) => a + (x === null ? suma() : x), 0);
+    $('p-tot').textContent = fmt(tot);
+  }
+  $('z-names').addEventListener('click', e => {
+    const b = e.target.closest('button[data-m]'); if (!b) return;
+    const im = imena[+b.closest('li').dataset.i];
+    if (prys[im] === b.dataset.m) delete prys[im]; else prys[im] = b.dataset.m;
+    onovyty();
+  });
+  $('z-all').addEventListener('click', () => { imena.forEach(im => { if (!prys[im]) prys[im] = '+'; }); onovyty(); });
+  $('p-list').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    const im = b.closest('li').dataset.im;
+    if (im in plat) delete plat[im]; else plat[im] = null;   // null = звичайний внесок
+    onovyty();
+  });
+  $('p-list').addEventListener('input', e => {
+    if (!e.target.classList.contains('sum')) return;
+    const im = e.target.closest('li').dataset.im, v = parseFloat(e.target.value.replace(',', '.'));
+    plat[im] = isFinite(v) && v > 0 ? v : null; onovyty();
+  });
+  $('p-suma').addEventListener('input', onovyty);
+
+  /* ---------- надсилання: кілька записів, повтор лише того, що не дійшло ---------- */
+  $('ps-send').addEventListener('click', async () => {
+    const msg = $('ps-msg'); msg.classList.remove('bad');
+    const stop = (t, el) => { msg.textContent = t; msg.classList.add('bad'); if (el) el.focus(); };
+    if (!$('s-data').value) return stop('Вкажіть дату сходин.', $('s-data'));
+    if (!$('s-tema').value.trim()) return stop('Вкажіть тему сходин.', $('s-tema'));
+    const brak = imena.filter(im => !prys[im]);
+    if (brak.length) {
+      $('z-names').querySelectorAll('li[data-i]').forEach(li => li.classList.toggle('need', !prys[imena[+li.dataset.i]]));
+      return stop('Позначте всіх у кроці 2: лишилось ' + brak.length + ' (' + brak.slice(0, 3).join(', ') + (brak.length > 3 ? '…' : '') + ').');
+    }
+    if (Object.keys(plat).length && !suma() && Object.values(plat).some(x => x === null)) return stop('Вкажіть суму внеску.', $('p-suma'));
+
+    const d = $('s-data').value, kv = $('p-kv').value.trim();
+    const zadachi = [
+      {id: 'vid', t: 'Відвідуваність', z: {arkush: 'Відвідуваність', dani: {'Дата': d, '№ сходин': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'присутність': Object.assign({}, prys)}}},
+      {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
+        'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
+    ].concat(Object.keys(plat).map(im => ({id: 'f:' + im, t: 'Внесок — ' + im + ', ' + fmt(plat[im] === null ? suma() : plat[im]),
+      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv}}})));
+
+    const pr = $('ps-prog'); pr.hidden = false;
+    pr.innerHTML = zadachi.map(z => `<li data-id="${esc(z.id)}" class="${sent[z.id] ? 'ok' : ''}">${esc(z.t)}</li>`).join('');
+    const b = $('ps-send'); b.disabled = true; msg.textContent = 'Надсилаю в книгу…';
+    let pomylky = 0, ostannya = '';
+    for (const z of zadachi) {
+      if (sent[z.id]) continue;
+      const li = pr.querySelector(`li[data-id="${CSS.escape(z.id)}"]`); li.className = 'go';
+      try {
+        const v = await zapyt(Object.assign({kod, dija: 'zapys', khto: KHTO}, z.z));
+        if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');
+        sent[z.id] = true; li.className = 'ok';
+      } catch (x) { pomylky++; ostannya = ludsky(x); li.className = 'no'; }
+    }
+    b.disabled = false;
+    if (pomylky) { stop('Не все дійшло (' + pomylky + '). ' + ostannya + ' Натисніть «Надіслати» ще раз — дошлеться лише червоне.'); return; }
+    const p = Object.values(prys).filter(x => x === '+').length, nv = Object.keys(plat).length;
+    const tot = Object.values(plat).reduce((a, x) => a + (x === null ? suma() : x), 0);
+    $('ps-sum').textContent = `${d.split('-').reverse().join('.')} · «${$('s-tema').value.trim()}»`;
+    $('ps-what').innerHTML = `<li>Сходини</li><li>Відвідуваність: був ${p} з ${imena.length}</li>` + (nv ? `<li>Внески: ${nv} — разом ${fmt(tot)}</li>` : '');
+    chysto(); $('ps-form').hidden = true; $('ps-done').hidden = false;
+  });
+
+  if (DEMO) {
+    const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Код для входу — 1234.';
+    document.body.prepend(n); $('z-noaddr').hidden = true;
+  }
+})();
+</script>
+</body>
+</html>
