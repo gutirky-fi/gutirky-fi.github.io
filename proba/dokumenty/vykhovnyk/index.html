@@ -148,6 +148,9 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 .pay .sum[disabled]{opacity:.35}
 .paybar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:0 0 10px}
 .paybar .f{margin:0;flex:0 0 130px}
+.yak{display:flex;gap:4px;padding:4px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
+.yak button{flex:1;padding:8px 6px;border:0;border-radius:9px;background:none;color:var(--mut);font-weight:700;font-size:14.5px}
+.yak button[aria-pressed=true]{background:var(--card2);color:var(--ink);box-shadow:inset 0 -2px 0 var(--d)}
 .paybar .tot{margin-left:auto;padding:6px 12px;border-radius:99px;background:#14171a;border:1px solid var(--ln);font-size:14px;color:var(--body)}
 .paybar .tot b{color:var(--ok-t)}
 .empty{margin:0;padding:12px 14px;border-radius:12px;border:1px dashed var(--ln);color:var(--mut);font-size:15px}
@@ -240,10 +243,11 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
         <div class="step"><h3><em>3</em>Внески <small>хто заплатив сьогодні</small></h3>
           <div class="paybar">
             <label class="f"><span>Внесок, €</span><input class="in" id="p-suma" inputmode="decimal" value="5" maxlength="6"></label>
-            <label class="f" style="flex:1 1 160px"><span>Квитанція № <small style="font-weight:400">— якщо є</small></span><input class="in" id="p-kv" maxlength="20"></label>
+            <div class="f" style="flex:1 1 260px"><span>Як платили</span><div class="yak" id="p-yak" role="group" aria-label="Як платили"><button type="button" data-y="готівка" aria-pressed="true">готівка</button><button type="button" data-y="MobilePay" aria-pressed="false">MobilePay</button><button type="button" data-y="переказ" aria-pressed="false">переказ</button></div></div>
             <span class="tot">разом <b id="p-tot">0 €</b></span>
           </div>
           <ul class="pay" id="p-list"></ul>
+          <label class="f" style="margin:10px 0 0"><span>№ квитанції <small style="font-weight:400">— лише якщо гурток видає паперові квитанції; інакше лиште порожнім</small></span><input class="in" id="p-kv" maxlength="20" style="max-width:220px"></label>
         </div>
 
         <div class="step"><h3><em>4</em>Примітка <small>необов'язково</small></h3>
@@ -264,7 +268,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       </div>
 
       <aside class="side">
-        <div class="card"><h3>Куди це піде</h3><ul><li><b>Сходини</b> — дата, тема, програма, місце.</li><li><b>Відвідуваність</b> — хто був. Та сама дата ще раз — запис оновиться.</li><li><b>Фінанси</b> — кожен внесок окремим рядком з іменем.</li></ul></div>
+        <div class="card"><h3>Куди це піде</h3><ul><li><b>Сходини</b> — дата, тема, програма, місце.</li><li><b>Відвідуваність</b> — хто був. Та сама дата ще раз — запис оновиться.</li><li><b>Фінанси</b> — кожен внесок окремим рядком: ім'я, сума, як платили.</li></ul></div>
         <div class="card"><h3>Якщо зв'язок урветься</h3><ul><li>Нічого не загубиться: форма лишиться заповнена, а «Надіслати» дошле лише те, що не дійшло.</li></ul></div>
       </aside>
     </div>
@@ -390,6 +394,8 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     plat[im] = isFinite(v) && v > 0 ? v : null; onovyty();
   });
   $('p-suma').addEventListener('input', onovyty);
+  let yak = 'готівка';
+  $('p-yak').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; yak = b.dataset.y; $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
 
   /* ---------- надсилання: кілька записів, повтор лише того, що не дійшло ---------- */
   $('ps-send').addEventListener('click', async () => {
@@ -410,7 +416,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
         'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
     ].concat(Object.keys(plat).map(im => ({id: 'f:' + im, t: 'Внесок — ' + im + ', ' + fmt(plat[im] === null ? suma() : plat[im]),
-      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv}}})));
+      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv, 'Примітка': yak}}})));
 
     const pr = $('ps-prog'); pr.hidden = false;
     pr.innerHTML = zadachi.map(z => `<li data-id="${esc(z.id)}" class="${sent[z.id] ? 'ok' : ''}">${esc(z.t)}</li>`).join('');
