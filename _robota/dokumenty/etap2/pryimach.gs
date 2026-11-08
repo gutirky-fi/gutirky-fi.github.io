@@ -10,6 +10,7 @@
  *   {kod, dija:"stan", arkush, dani:{Дата…}}        → чи є вже запис за цим ключем (дата), чи затверджено, що в ньому
  *   {kod, dija:"zatverdyty", arkush, ryadok, tak}   → (виховник) «Перевірено виховником» = так / зняти
  *   {kod, dija:"imena"}                             → {ok:true, imena:[...]}  (активні й кандидати)
+ *   {kod, dija:"spysok", arkush:"Майно"}            → {ok:true, spysok:[...]}  (назви вже записаних речей — підказка в полі «Річ»)
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
@@ -34,7 +35,8 @@ var VID = 'Відвідуваність', SLOT0 = 6, SLOTY = 16;     // стов
 var PER = 'Перевірено виховником', ZMINY = 'Зміни', DOBA = 24 * 3600 * 1000;
 var SLUZHBOVI = ['Хто записав', 'Записано', PER];
 // одна подія = один рядок: за цими стовпцями шукаємо наявний запис (дубля не буде)
-var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид']};
+var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид'], 'Майно': ['Річ']};
+var SPYSKY = ['Майно'];   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
 var LYSHE_V = ['novi', 'zatverdyty', 'zvit'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 
@@ -61,6 +63,7 @@ function doPost(e) {
   try {
     if (z.dija === 'perevirka') return vidpovid({ok: true, rol: rol});
     if (z.dija === 'imena') return vidpovid({ok: true, rol: rol, imena: imena()});
+    if (z.dija === 'spysok') return vidpovid(spysok(z.arkush));
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
     if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.tak !== false));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
@@ -104,6 +107,14 @@ function imena() {
     if (r[ci] && (r[cs] === 'активний' || r[cs] === 'кандидат')) out.push(r[ci]);
   });
   return out;
+}
+
+function spysok(arkush) {
+  if (SPYSKY.indexOf(arkush) < 0) return {ok: false, pomylka: 'Цей список не видається.'};
+  var sh = SpreadsheetApp.getActive().getSheetByName(arkush), n = sh.getMaxRows() - P + 1;
+  var v = sh.getRange(P, 1, n, 1).getDisplayValues(), out = [];
+  v.forEach(function (r) { var x = String(r[0]).trim(); if (x && out.indexOf(x) < 0) out.push(x); });
+  return {ok: true, spysok: out};
 }
 
 function zvit(arkush, vid, doo) {
@@ -215,7 +226,7 @@ function vypravyty(kv, dani, khto) {
     var ryad = sh.getRange(z.r, 1, 1, nc).getValues()[0];
     if (!dani.hasOwnProperty(z.zag[0]) || chyste(dani[z.zag[0]]) === '') return {ok: false, pomylka: 'Перше поле («' + z.zag[0] + '») не може бути порожнім.'};
     var inshyi = ryadokZaKliuchem(sh, z.zag, z.info.a, dani);
-    if (inshyi && inshyi !== z.r) return {ok: false, pomylka: 'За цю дату вже є інший запис — виберіть ту дату й виправте його.'};
+    if (inshyi && inshyi !== z.r) return {ok: false, pomylka: 'Такий запис уже є (' + z.info.a + ') — відкрийте його й виправте там.'};
     for (var c = 0; c < nc; c++) {
       var h = z.zag[c];
       if (!h || f[c] || h === PER) continue;
@@ -273,8 +284,8 @@ function opys(arkush, zag, ryad) {        // коротко, що в рядку 
 function novi() {
   var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(ZMINY); if (!sh) return {zapysy: [], chekaiut: 0};
   var n = sh.getMaxRows() - P + 1; if (n < 1) return {zapysy: [], chekaiut: 0};
-  var log = sh.getRange(P, 1, n, 6).getValues().filter(function (x) { return x[0] instanceof Date; });
-  log.sort(function (a, b) { return b[0] - a[0]; });
+  var log = sh.getRange(P, 1, n, 6).getValues().map(function (x, i) { x.i = i; return x; }).filter(function (x) { return x[0] instanceof Date; });
+  log.sort(function (a, b) { return (b[0] - a[0]) || (b.i - a.i); });   // той самий час — новіший нижче
   var bachyly = {}, out = [], chekaiut = 0, arkushi = {};
   for (var i = 0; i < log.length && out.length < 30; i++) {
     var x = log[i], a = String(x[2]), r = Number(x[3]) || 0, k = a + '#' + r;
@@ -306,7 +317,7 @@ function vilnyiRyadok(sh) {
   return ost + 1;
 }
 
-// рядок із тим самим ключем (дата; для протоколу — дата й вид) або null
+// рядок із тим самим ключем (дата; для протоколу — дата й вид; для майна — річ) або null
 function ryadokZaKliuchem(sh, zag, arkush, dani) {
   var kl = KLIUCH[arkush]; if (!kl || !dani) return null;
   var tsil = [];
