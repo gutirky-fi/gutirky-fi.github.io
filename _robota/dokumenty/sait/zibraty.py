@@ -16,8 +16,20 @@ def uri(p, mime):
 
 SAIT = len(sys.argv) > 1 and sys.argv[1] == 'sait'
 SPILNE = (TUT / 'spilne.css').read_text(encoding='utf-8')
-for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku'):
-    s = (TUT / (nazva + '.html')).read_text(encoding='utf-8')
+import json
+FORMA = (TUT / 'forma.html').read_text(encoding='utf-8')
+FORMY = {k: v for k, v in json.loads((TUT / 'formy.json').read_text(encoding='utf-8')).items() if k != '_'}
+
+
+def dzherelo(nazva):   # окрема сторінка або документ із заготовки forma.html (опис — formy.json)
+    if nazva not in FORMY:
+        return (TUT / (nazva + '.html')).read_text(encoding='utf-8')
+    k = FORMY[nazva]
+    return FORMA.replace('{{TITLE}}', k['t']).replace('/*KONFIG*/{}/*/KONFIG*/', json.dumps(k, ensure_ascii=False).replace('</', '<\\/'))
+
+
+for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku', *FORMY):
+    s = dzherelo(nazva)
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
