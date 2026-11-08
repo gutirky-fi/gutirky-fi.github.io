@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1b1d21">
+<title>Кінець року й передача посад — Документи гуртка</title>
+<link rel="icon" href="{{EMBLEM}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/*SPILNE*/
+/* Кінець року й передача посад — сторінка-пояснення (Етап 3, 08.11.2026). Без даних.
+   Дві позначки: «Правильник» (є в тексті, з пунктом) і «практика гуртка» (зі слів на вишколі; потребує перевірки). */
+.lead{position:relative;margin:6px 0 0;color:var(--mut);font-size:16px;max-width:66ch}
+.lead b{color:var(--body)}
+.sec{margin:0 0 46px}
+.sec>h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 16px;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.sec>h2 small{font:400 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.sec>p.note{margin:-6px 0 16px;max-width:72ch}
+
+/* легенда двох позначок */
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 40px}
+.legend div{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--card);border:1px solid var(--ln);font-size:15px;color:var(--body)}
+.legend p{margin:0}
+.legend b{color:var(--ink)}
+.tg{display:inline-block;flex:none;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:700;white-space:nowrap;border:1px solid}
+.tg.pr{color:var(--ok-t);border-color:#2f6b4a;background:rgba(61,175,110,.1)}
+.tg.pk{color:#f0c060;border-color:#6a5a2c;background:rgba(240,192,96,.08)}
+
+/* кроки */
+.steps{display:grid;gap:12px;margin:0;padding:0;list-style:none;counter-reset:s}
+.steps>li{position:relative;display:grid;grid-template-columns:44px 1fr;gap:4px 16px;padding:18px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.steps>li::before{counter-increment:s;content:counter(s);grid-row:1/4;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--d);color:#fff;font:600 18px var(--disp)}
+.steps h3{margin:0;display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:600 20px/1.2 var(--disp);letter-spacing:.05em;text-transform:uppercase}
+.steps p{margin:0;font-size:15.5px;color:var(--body);max-width:72ch}
+.steps .who{font-size:14px;color:var(--mut)}
+.steps .who b{color:var(--body)}
+
+/* хто що передає */
+.hand-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.hc{padding:18px 18px 14px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--d)}
+.hc.vy{border-top-color:var(--ok)}
+.hc h3{margin:0 0 2px;font:600 22px/1.1 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--d-t)}
+.hc.vy h3{color:var(--ok-t)}
+.hc .ps{margin:0 0 8px;font-size:13.5px;color:var(--mut)}
+.hc ul{margin:0;padding:8px 0 0 18px;border-top:1px solid var(--ln);font-size:15px;color:var(--body)}
+.hc li{margin:3px 0}
+
+/* питання до проводу */
+.q{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.q li{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--card);border:1px dashed #5a6573;font-size:15.5px;color:var(--body)}
+.q i{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#2a2f35;color:var(--a);font:600 15px var(--disp);font-style:normal}
+
+.go{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d);text-decoration:none}
+.go:hover{border-color:#5a6573;border-left-color:var(--d)}
+.go b{display:block;font:600 19px/1.15 var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.go span{font-size:15px;color:var(--mut)}
+.go svg{margin-left:auto;width:20px;height:20px;flex:none;color:var(--body)}
+.src{margin:8px 0 60px;color:var(--mut);font-size:14px;max-width:80ch}
+
+@media (max-width:980px){.hand-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:700px){
+  .top{padding-top:14px}.logo img{height:46px}
+  .back span{display:none}.back{padding:9px 12px}
+  .hero{padding-block:28px 22px}.hero .wm{height:180px;right:-10px}
+  .legend,.hand-grid{grid-template-columns:1fr}
+  .steps>li{grid-template-columns:1fr;padding:16px}
+  .steps>li::before{grid-row:auto;margin-bottom:6px}
+}
+</style>
+</head>
+<body>
+<!--RIBBON-->
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+    <a class="back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Документи гуртка</span></a>
+  </header>
+
+  <section class="hero">
+    <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+    <span class="ey">Документи гуртка · пояснення</span>
+    <h1>Кінець року<br>й передача посад</h1>
+    <p class="hand">підсумок, Гурткова рада, нові діловоди</p>
+    <p class="lead">Наприкінці року гурток підбиває підсумки, збирається на Гурткову раду, обирає провід на новий рік, і старі діловоди передають справи новим. <b>Не все з цього описане в Правильнику</b>, тому кожен крок позначено, звідки він.</p>
+  </section>
+
+  <div class="legend">
+    <div><span class="tg pr">Правильник</span><p><b>Є в тексті Правильника УПЮ.</b> Поруч — номер пункту. Це переказ, не дослівно.</p></div>
+    <div><span class="tg pk">практика гуртка</span><p><b>Так заведено на вишколі чи в куренях,</b> але в Правильнику цього немає. Потребує перевірки, поки не відповість провід.</p></div>
+  </div>
+
+  <section class="sec" aria-labelledby="h-steps">
+    <h2 id="h-steps">Що за чим<small>порядок кроків — наша пропозиція</small></h2>
+    <ol class="steps">
+      <li><h3>Кожен підбиває підсумок своєї книги <span class="tg pk">практика гуртка</span></h3>
+        <p>Діловод переглядає свою книгу за рік і пише короткий підсумок: що було, що не завершено, що передати далі. Форма вільна, поки провід не скаже іншого.</p>
+        <p class="who"><b>Хто:</b> кожен діловод</p></li>
+      <li><h3>Письмовий звіт гуртка <span class="tg pr">Правильник · п. 3.4.1 з</span></h3>
+        <p>Гуртковий виготовляє письмовий звіт про діяльність гуртка, узгоджує його з впорядником і передає до куреня «у встановленому реченці». Усно звітувати гуртковий має бути готовий на сходинах Ради гурткових (п. 3.4.1 д). Форму й строк звіту Правильник не називає.</p>
+        <p class="who"><b>Хто:</b> гуртковий з впорядником</p></li>
+      <li><h3>Гурткова рада <span class="tg pr">Правильник · п. 3.2.1</span></h3>
+        <p>Збирається щонайменше раз на рік. Вибирає гуртоковий провід (за п. 3.1.3 — гуртковий, заступник, писар, скарбник, за потреби господар, хронікар чи інші діловоди) і обговорює річний план праці. Рішення — явним голосуванням, більшістю голосів членів гуртка; чинні після згоди впорядника. Протокол веде писар (п. 3.4.3 а).</p>
+        <p class="who"><b>Хто:</b> усі члени гуртка</p></li>
+      <li><h3>Передача посад <span class="tg pk">практика гуртка</span></h3>
+        <p>Старий діловод передає новому свою книгу й усе, що до неї належить (див. нижче), і разом вони перевіряють, чи нічого не бракує. Правильник про передачу посад мовчить. Є лише правило, що книга гуртка після ліквідації гуртка йде в архів куреня (п. 3.2.5). Для передачі можна вести акт з датою й підписами.</p>
+        <p class="who"><b>Хто:</b> старий і новий діловод; присутній виховник</p></li>
+      <li><h3>«Новий рік» у книзі <span class="tg pk">наш робочий зразок</span></h3>
+        <p>Виховник у меню Таблиці натискає <i>Книга гуртка → Новий рік</i>. Робиться архівна копія книги, підсумок року лягає в «Роки» й «Історію учасників», журнали очищаються. Це про нашу Таблицю, а не вимога Пласту.</p>
+        <p class="who"><b>Хто:</b> виховник</p></li>
+    </ol>
+  </section>
+
+  <section class="sec" aria-labelledby="h-hand">
+    <h2 id="h-hand">Що кожен передає наступникові<small>з того, що посада веде за Правильником</small></h2>
+    <p class="note">Список випливає з обов'язків посади (п. 3.4). Сама передача — практика гуртка.</p>
+    <div class="hand-grid">
+      <div class="hc"><h3>Гуртковий</h3><p class="ps">п. 3.4.1</p><ul><li>книга гурткового;</li><li>план праці й письмовий звіт;</li><li>гурткові доручення, що лишилися;</li><li>гуртковий прапорець.</li></ul></div>
+      <div class="hc"><h3>Заступник</h3><p class="ps">п. 3.4.2</p><ul><li>книга присутності й осягів;</li><li>відкриті справи: відзначення, прийом, вибуття.</li></ul></div>
+      <div class="hc"><h3>Писар</h3><p class="ps">п. 3.4.3</p><ul><li>книга протоколів;</li><li>листування;</li><li>гуртковий архів.</li></ul></div>
+      <div class="hc"><h3>Скарбник</h3><p class="ps">п. 3.4.4</p><ul><li>книга скарбника й квитанції;</li><li>фінансовий план;</li><li>гроші в затвердженому місці (залишок звіряють разом);</li><li>внески, передані до куреня.</li></ul></div>
+      <div class="hc"><h3>Господар</h3><p class="ps">п. 3.4.5 · можна разом зі скарбником</p><ul><li>книга господаря;</li><li>майно й місце зберігання (звіряють за списком).</li></ul></div>
+      <div class="hc"><h3>Хронікар</h3><p class="ps">п. 3.4.6 · можна разом із писарем</p><ul><li>книга хроніки;</li><li>фото й матеріали подій, які ще не вклеєні.</li></ul></div>
+      <div class="hc vy"><h3>Впорядник</h3><p class="ps">п. 3.3 · призначає Зв'язковий КПС</p><ul><li>його не вибирає гурток, тож «передача» тут не діловодська;</li><li>як передати Таблицю й закриту папку 99 наступному виховнику — питання до проводу.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="h-q">
+    <h2 id="h-q">Чого ми ще не знаємо<small>питання до проводу Пласту Фінляндії</small></h2>
+    <ol class="q">
+      <li><i>1</i><span>Чи пише <b>кожен діловод</b> окремий річний звіт, чи лише гуртковий (так у Правильнику)?</span></li>
+      <li><i>2</i><span>Чи є <b>обов'язкова форма</b> письмового звіту гуртка й <b>строк</b>, до якого його подають до куреня?</span></li>
+      <li><i>3</i><span>Чи є <b>прийнятий спосіб передачі посад</b> (акт, зустріч, запис у протоколі)?</span></li>
+      <li><i>4</i><span>Коли <b>зазвичай збирається</b> Гурткова рада (початок чи кінець навчального року) і як це узгоджують із куренем?</span></li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <a class="go" href="../knyha/"><p style="margin:0"><b>Книга гуртка</b><span>з чого складається Таблиця й що робить «Новий рік»</span></p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  </section>
+
+  <p class="src">Переказ з <a href="https://plast.org/wp-content/uploads/2014/02/Pravylnyk-UPU-1-zminy-KUPO-2019.pdf" target="_blank" rel="noopener">Правильника УПЮ, ч. I</a> (5-те вид., зі змінами 2019): п. 3.2.1, 3.2.5, 3.3, 3.4.1–3.4.6. Згадка, що звітування гуртка входить у програму вишколу впорядників, — з Правильника Кадри Виховників УПЮ (2007). Якщо у вашому курені чи краї заведено інакше — питайте виховника.</p>
+</div>
+</body>
+</html>

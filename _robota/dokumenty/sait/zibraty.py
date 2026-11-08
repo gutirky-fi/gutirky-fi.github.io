@@ -16,7 +16,7 @@ def uri(p, mime):
 
 SAIT = len(sys.argv) > 1 and sys.argv[1] == 'sait'
 SPILNE = (TUT / 'spilne.css').read_text(encoding='utf-8')
-for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha'):
+for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku'):
     s = (TUT / (nazva + '.html')).read_text(encoding='utf-8')
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
