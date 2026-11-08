@@ -1,11 +1,12 @@
 # Бібліотека гутірок (gutirky-fi.github.io)
 
-**Спершу прочитайте `_robota/PROEKT.md`** (коротко: стан, будова сайту, рішення власника). Повна історія — `_robota/ZHURNAL.md`: **не читати цілком**, лише шукати за темою (grep). Не читати зібрані сторінки (`*/index.html`, `proba/`) — вони величезні; правити й читати джерела в `_robota/` і як збирати й публікувати.
+**Спершу прочитайте `_robota/PROEKT.md`** (коротко: стан, будова сайту, рішення власника). Повна історія — `_robota/ZHURNAL.md`: **не читати цілком**, лише шукати за темою (grep). Не читати зібрані сторінки (`*/index.html`, `proba/`) — вони величезні; правити й читати джерела в `_robota/`. Перевірка ігор і кіно-проб (знімки, відео): `_robota/perevirka/ihry/README.md`.
 
 Коротко:
 - Власник — пластовий виховник (Пласт у Фінляндії), не програміст. Відповідати українською, просто, покроково, з готовими посиланнями.
-- `index.html` і `biblioteka/index.html` не правити руками. З 19.10.2026 сайт — «кілька входів»: `python3 _robota/proby/vhody/zibraty.py sait` збирає головну `index.html` і (через `_robota/build.py`) бібліотеку `biblioteka/index.html`. Перевірка: `python3 _robota/perevirka/perevirka.py`. Стара версія сайту — гілка `stara-versiya-19-10` (як повернути — у `_robota/PROEKT.md`, журнал 19.10).
+- `index.html` і `biblioteka/index.html` не правити руками. З 19.10.2026 сайт — «кілька входів»: `python3 _robota/proby/vhody/zibraty.py sait` збирає головну `index.html` і (через `_robota/build.py`) бібліотеку `biblioteka/index.html`. Перевірка: `python3 _robota/perevirka/perevirka.py`. Стара версія сайту — гілка `stara-versiya-19-10` (як повернути — `grep -n "19.10" _robota/ZHURNAL.md`).
 - Публікація: commit + `git push origin HEAD:main`, дочекатися GitHub Pages (`gh api repos/gutirky-fi/gutirky-fi.github.io/actions/runs`).
 - Зміни дизайну — спершу показати (знімки або копія), ставити на сайт лише після згоди власника.
 - Сайт прихований (noindex + robots.txt) — не прибирати.
+- Як працюємо (одна розмова — одна справа): `_robota/YAK-PRATSIUVATY.md`.
 - Після помітних змін дописати запис у кінець `_robota/ZHURNAL.md` (без читання файлу) і оновити «0. Стан зараз» у `PROEKT.md`, додати подію в `_robota/istoriya/podii.json` і запустити `python3 _robota/istoriya/zibraty.py` (сторінка https://gutirky-fi.github.io/istoriya/ — внутрішня, не в меню).
