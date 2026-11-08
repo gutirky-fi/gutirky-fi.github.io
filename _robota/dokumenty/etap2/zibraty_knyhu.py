@@ -331,6 +331,11 @@ def kolory(wb):
     wb["Мандрівки"].conditional_formatting.add(f"G{P}:H{RYADKY}", CellIsRule(operator="equal", formula=['"ні"'], fill=roz))
     wb["Учасники"].conditional_formatting.add(f"I{P}:I63", FormulaRule(formula=[f'AND(ISNUMBER($I{P}),$I{P}<0.6)'], fill=bur))
     wb["Фінанси"].conditional_formatting.add(f"H{P}:H{RYADKY}", FormulaRule(formula=[f'AND(ISNUMBER($H{P}),$H{P}<0)'], font=chr))
+    # затверджене виховником — увесь рядок ледь зелений (правило після інших, щоб позначки «+/−/в» лишались своїми кольорами)
+    for nm, d in ARKUSHI.items():
+        if d["c"][-1] is PER:
+            k = L(len(d["c"]))
+            wb[nm].conditional_formatting.add(f"A{P}:{k}{RYADKY}", FormulaRule(formula=[f'${k}{P}="так"'], fill=fill("E6F4EA")))
 
 
 def nalashtuvannia(ws):

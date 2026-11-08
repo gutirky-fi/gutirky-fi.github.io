@@ -35,15 +35,33 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 .hubhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
 .hubhead h2{margin:0;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 /* форма «Після сходин» */
+.nvc{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:12px 14px;border-radius:14px;font-weight:700;font-size:16px}
+.nvc.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
+.nvc.ok{background:rgba(61,175,110,.14);border:1px solid rgba(61,175,110,.5);color:var(--ok-t)}
+.nvc b{font:600 26px/1 var(--disp)}
 .nv{display:grid;gap:8px;margin:0;padding:0;list-style:none}
-.nv li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;padding:12px 14px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.nv li{border-radius:14px;background:#14171a;border:1px solid var(--ln);overflow:hidden}
+.nv li.zt{border-color:rgba(61,175,110,.55)}
+.nv li.blk{border-color:rgba(200,40,74,.7)}
+.nv .row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:start;width:100%;padding:12px 14px;border:0;background:none;color:inherit;text-align:left;font:inherit}
 .nv .k{grid-row:span 2;font-size:13px;color:var(--mut);white-space:nowrap;padding-top:2px}
 .nv .k b{display:block;font-size:15px;color:var(--body)}
 .nv .t{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-weight:700}
-.nv .s{color:var(--body);font-size:15px;overflow-wrap:anywhere}
+.nv .s{grid-column:2/4;color:var(--body);font-size:15px;overflow-wrap:anywhere}
 .nv .d{font-size:12.5px;font-weight:700;padding:1px 9px;border-radius:99px;background:rgba(61,175,110,.16);color:var(--ok-t)}
-.nv .d.vy,.nv .d.on{background:rgba(217,166,64,.16);color:#f0c060}.nv .d.sk{background:rgba(200,40,74,.18);color:#ff9db2}
+.nv .d.vy,.nv .d.on{background:rgba(217,166,64,.16);color:#f0c060}.nv .d.sk,.nv .d.bl{background:rgba(200,40,74,.18);color:#ff9db2}.nv .d.zt{background:rgba(160,168,178,.16);color:var(--body)}
 .nv .h{font-weight:400;color:var(--mut);font-size:14px}
+.nv .st{font-size:13px;font-weight:700;white-space:nowrap;padding:3px 10px;border-radius:99px}
+.nv .st.ch{background:rgba(217,166,64,.16);color:#f0c060}.nv .st.ok{background:rgba(61,175,110,.18);color:var(--ok-t)}.nv .st.no{background:#22262b;color:var(--mut)}
+.nv .more{padding:2px 14px 14px;border-top:1px dashed var(--ln)}
+.nv .pl{width:100%;border-collapse:collapse;margin:10px 0 12px;font-size:15px}
+.nv .pl th{width:38%;padding:5px 10px 5px 0;text-align:left;font-weight:600;color:var(--mut);vertical-align:top}
+.nv .pl td{padding:5px 0;color:var(--ink);overflow-wrap:anywhere}
+.nv .pr{display:grid;gap:4px;margin:0 0 12px;font-size:15px}
+.nv .pr b{display:inline-block;min-width:92px;color:var(--mut);font-weight:600}
+.nv .act{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.nv .act .btn{padding:10px 16px}
+.nv .act small{color:var(--mut);font-size:13px}
 .ps{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:22px;align-items:start}
 .step{margin:0 0 16px}
 .step>h3{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 19px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
@@ -93,18 +111,18 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     <span class="ey">Документи гуртка</span>
     <h1>Вхід виховника</h1>
     <p class="hand">усе за подіями — без пошуку по посадах</p>
-    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за кодом гуртка — і кілька кнопок: що сталося, те й записуєте. Книга сама розкладе записи по своїх аркушах.</p>
+    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за вашим кодом виховника — і кілька кнопок: що сталося, те й записуєте. Книга сама розкладе записи по своїх аркушах.</p>
   </section>
 
   <!-- вхід -->
   <div class="podaty" id="v-lock-wrap">
     <form class="card lock" id="z-lock" autocomplete="off">
       <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-      <h2>Код гуртка</h2>
-      <p class="note" style="margin-bottom:16px">Той самий код, що й для діловодів. Сторінка не зберігає ні коду, ні записів.</p>
+      <h2>Код виховника</h2>
+      <p class="note" style="margin-bottom:16px">Ваш особистий код — не той, що в юнаків. Сторінка не зберігає ні коду, ні записів.</p>
       <p class="err" id="z-noaddr" hidden>Цю сторінку треба відкрити з <b>вашого посилання</b> — у ньому адреса книги гуртка.</p>
       <p class="err" id="z-err" hidden></p>
-      <label class="f"><span>Код гуртка</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
+      <label class="f"><span>Код виховника</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
       <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
     </form>
     <aside class="side">
@@ -130,12 +148,13 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     <div class="ps">
       <div class="card">
         <div class="fhead"><h2>Що нового</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
-        <p class="note" style="margin-bottom:14px">Усе, що діловоди надіслали, виправили чи скасували з сайту — найновіше вгорі.</p>
+        <p class="note" style="margin-bottom:14px">Кожен запис з сайту — один раз, найновіший угорі. Натисніть на запис, щоб побачити його повністю й затвердити.</p>
+        <p class="nvc" id="nv-cnt" hidden></p>
         <ul class="nv" id="nv-list"></ul>
         <button class="btn" type="button" id="nv-re" style="width:100%;margin-top:14px">Оновити</button>
       </div>
       <aside class="side">
-        <div class="card"><h3>Усе гаразд?</h3><ul><li>Відкрийте книгу й поставте <b>«так»</b> у стовпці «Перевірено виховником» — тоді сайт цей рядок уже не змінить і не скасує.</li></ul></div>
+        <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li></ul></div>
         <div class="card"><h3>Щось не так?</h3><ul><li>Виправте рядок просто в книзі.</li><li>Зіпсували багато — «Файл → Історія версій» у Google Таблиці поверне будь-який попередній стан.</li><li>Повна історія — аркуш «Зміни».</li></ul></div>
       </aside>
     </div>
@@ -226,19 +245,26 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
   if (!addr && !DEMO) $('z-noaddr').hidden = false;
 
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
+  const DNV = [   // проба «Що нового»
+    {koly: '08.11.2026 19:42', dija: 'скасування', arkush: 'Фінанси', ryadok: 17, khto: 'Дана', shcho: 'було: 08.11.2026 · надходження · внески · внесок за листопад', porozhnio: true},
+    {koly: '08.11.2026 19:40', dija: 'виправлення', arkush: 'Сходини', ryadok: 12, khto: 'Олесь', shcho: '08.11.2026 · 12 · Вузли · відкриття · гутірка · гра', zatverdzheno: false,
+     pola: [['Дата', '08.11.2026'], ['№', '12'], ['Тема', 'Вузли'], ['Програма (коротко)', 'відкриття · гутірка · гра «Потужний СКОБ!» · завершення'], ['Гутірка / гра з бібліотеки', 'гра «Потужний СКОБ!»'], ['Проба / вмілість (якщо стосується)', 'вмілість «Мандрівник»'], ['Відповідальний', 'Олесь'], ['Місце', 'домівка'], ['Присутніх', '6']]},
+    {koly: '08.11.2026 19:30', dija: 'оновлення', arkush: 'Відвідуваність', ryadok: 12, khto: 'Ярко', shcho: '08.11.2026 · присутні 6 з 7', zatverdzheno: false,
+     pola: [['Дата', '08.11.2026'], ['№ сходин', '12'], ['Тема', 'Вузли'], ['Присутні', '6'], ['Відсутні', '1']], prys: {'Олесь': '+', 'Мирося': '+', 'Дана': '+', 'Ярко': '+', 'Соломія': 'в', 'Остап': '+', 'Зоряна': '+'}},
+    {koly: '07.11.2026 23:14', dija: 'блокування', arkush: '—', ryadok: '', khto: '', shcho: '5 неправильних кодів поспіль — вхід закрито на годину. Якщо це не юнаки помилялись — змініть код гуртка.'},
+    {koly: '01.11.2026 20:05', dija: 'запис', arkush: 'Сходини', ryadok: 11, khto: 'Олесь', shcho: '01.11.2026 · 10 · Мапа й компас', zatverdzheno: true,
+     pola: [['Дата', '01.11.2026'], ['№', '10'], ['Тема', 'Мапа й компас'], ['Відповідальний', 'Олесь'], ['Місце', 'парк'], ['Присутніх', '6']]}];
   let demoRow = 13;
   async function zapyt(t) {
     if (DEMO) {
       await new Promise(r => setTimeout(r, 450));
-      if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
-      if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
+      const rol = t.kod === '123456' ? 'v' : t.kod === '1234' ? 'd' : null;
+      if (!rol) return {ok: false, pomylka: 'Невірний код.'};
+      if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
+      if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
       if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
-      if (t.dija === 'novi') return {ok: true, novi: [
-        ['08.11.2026 19:42', 'скасування', 'Фінанси', 17, 'Дана', 'було: 08.11.2026 · надходження · внески · внесок за листопад'],
-        ['08.11.2026 19:40', 'виправлення', 'Сходини', 12, 'Олесь', '08.11.2026 · 12 · Вузли · відкриття · гутірка · гра'],
-        ['08.11.2026 19:31', 'запис', 'Сходини', 12, 'Олесь', '08.11.2026 · 12 · Вузол · відкриття · гутірка'],
-        ['08.11.2026 19:30', 'оновлення', 'Відвідуваність', 12, 'Ярко', '08.11.2026 · присутні 6 з 7'],
-        ['08.11.2026 19:05', 'запис', 'Відвідуваність', 12, 'Ярко', '08.11.2026 · присутні 5 з 7']]};
+      if (t.dija === 'zatverdyty') { const x = DNV.find(y => y.arkush === t.arkush && y.ryadok === t.ryadok); if (x) x.zatverdzheno = t.tak !== false; return {ok: true, zatverdzheno: t.tak !== false}; }
+      if (t.dija === 'novi') return {ok: true, novi: JSON.parse(JSON.stringify(DNV)), chekaiut: DNV.filter(x => x.pola && !x.zatverdzheno).length};
       return {ok: true};
     }
     const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
@@ -257,6 +283,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     try {
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
+      if (v.rol !== 'v') throw new Error('Це вхід виховника — потрібен код виховника, а не код юнаків.');
       kod = k; imena = v.imena || []; $('z-kod').value = ''; ekran('v-hub');
     } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
     finally { b.disabled = false; b.textContent = 'Увійти'; }
@@ -267,18 +294,55 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
   $('go-ps').addEventListener('click', () => { chysto(); ekran('v-ps'); });
   $('ps-back').addEventListener('click', () => ekran('v-hub'));
   // ---- що нового (журнал «Зміни» з книги) ----
-  const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk'};
+  const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk', 'блокування': 'bl', 'затвердження': 'zt', 'зняття затвердження': 'zt'};
+  const ZN = {'+': 'був', '−': 'не був', 'в': 'поважна'};
+  let NV = [];
+  function lichylnyk() {
+    const n = NV.filter(x => x.pola && !x.zatverdzheno).length, c = $('nv-cnt');
+    c.className = 'nvc ' + (n ? 'ye' : 'ok');
+    c.innerHTML = n ? `<b>${n}</b> ${n === 1 ? 'запис чекає' : n < 5 ? 'записи чекають' : 'записів чекають'} затвердження` : '✓ Усе затверджено';
+  }
+  function punkt(x, i, vidkr) {
+    const [d, t] = String(x.koly).split(' ');
+    const st = x.porozhnio ? '<span class="st no">скасовано</span>' : x.pola ? (x.zatverdzheno ? '<span class="st ok">✓ затверджено</span>' : '<span class="st ch">чекає</span>') : '';
+    let more = '';
+    if (x.pola) {
+      const gr = {}; Object.entries(x.prys || {}).forEach(([im, m]) => { (gr[m] = gr[m] || []).push(im); });
+      more = `<div class="more"${vidkr ? '' : ' hidden'}><table class="pl">${x.pola.map(p => `<tr><th>${esc(p[0])}</th><td>${esc(p[1])}</td></tr>`).join('')}</table>`
+        + (Object.keys(gr).length ? `<div class="pr">${['+', '−', 'в'].filter(m => gr[m]).map(m => `<div><b>${ZN[m]}:</b> ${gr[m].map(esc).join(', ')}</div>`).join('')}</div>` : '')
+        + `<div class="act">${x.zatverdzheno
+            ? `<button class="btn" type="button" data-z="0" data-i="${i}">Зняти затвердження</button><small>Тоді діловод знову зможе виправити.</small>`
+            : `<button class="btn ok" type="button" data-z="1" data-i="${i}">✓ Затвердити</button><small>Після цього сайт запис уже не змінить.</small>`}</div></div>`;
+    }
+    return `<li class="${x.zatverdzheno ? 'zt' : ''}${x.dija === 'блокування' ? ' blk' : ''}" data-i="${i}"><button class="row" type="button"${x.pola ? ` aria-expanded="${!!vidkr}"` : ' disabled'}><span class="k"><b>${esc(t || '')}</b>${esc(d)}</span><span class="t"><span class="d ${DIJA[x.dija] || ''}">${esc(x.dija)}</span>${x.arkush !== '—' ? esc(x.arkush) + `<span class="h">· ${esc(x.khto || '—')}</span>` : ''}</span>${st}<span class="s">${esc(x.shcho)}</span></button>${more}</li>`;
+  }
   async function novi() {
-    const l = $('nv-list'); l.innerHTML = '<li><span class="s">Завантажую…</span></li>';
+    const l = $('nv-list'); l.innerHTML = '<li><span class="row"><span class="s">Завантажую…</span></span></li>'; $('nv-cnt').hidden = true;
     try {
       const v = await zapyt({kod, dija: 'novi'});
       if (!v.ok) throw new Error(v.pomylka);
-      l.innerHTML = (v.novi || []).map(x => {
-        const [d, t] = String(x[0]).split(' ');
-        return `<li><span class="k"><b>${esc(t || '')}</b>${esc(d)}</span><span class="t"><span class="d ${DIJA[x[1]] || ''}">${esc(x[1])}</span>${esc(x[2])}<span class="h">· ${esc(x[4] || '—')} · рядок ${esc(x[3])}</span></span><span class="s">${esc(x[5])}</span></li>`;
-      }).join('') || '<li><span class="s">З сайту ще нічого не надсилали.</span></li>';
-    } catch (x) { l.innerHTML = `<li><span class="s">${esc(ludsky(x))}</span></li>`; }
+      NV = v.novi || [];
+      l.innerHTML = NV.map((x, i) => punkt(x, i)).join('') || '<li><span class="row"><span class="s">З сайту ще нічого не надсилали.</span></span></li>';
+      $('nv-cnt').hidden = false; lichylnyk();
+    } catch (x) { l.innerHTML = `<li><span class="row"><span class="s">${esc(ludsky(x))}</span></span></li>`; }
   }
+  $('nv-list').addEventListener('click', async e => {
+    const z = e.target.closest('button[data-z]');
+    if (z) {
+      const i = +z.dataset.i, x = NV[i], tak = z.dataset.z === '1';
+      z.disabled = true; z.textContent = tak ? 'Затверджую…' : 'Знімаю…';
+      try {
+        const v = await zapyt({kod, dija: 'zatverdyty', arkush: x.arkush, ryadok: x.ryadok, tak});
+        if (!v.ok) throw new Error(v.pomylka);
+        x.zatverdzheno = tak;
+        z.closest('li').outerHTML = punkt(x, i, true); lichylnyk();
+      } catch (er) { z.disabled = false; z.textContent = ludsky(er); }
+      return;
+    }
+    const b = e.target.closest('button.row'); if (!b || b.disabled) return;
+    const m = b.nextElementSibling; if (!m) return;
+    m.hidden = !m.hidden; b.setAttribute('aria-expanded', String(!m.hidden));
+  });
   $('go-nv').addEventListener('click', () => { ekran('v-nv'); novi(); });
   $('nv-back').addEventListener('click', () => ekran('v-hub'));
   $('nv-re').addEventListener('click', novi);
@@ -393,7 +457,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код для входу — 1234.';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Код виховника — 123456 (код юнаків 1234 сюди не пускає).';
     document.body.prepend(n); $('z-noaddr').hidden = true;
   }
 })();

@@ -146,6 +146,11 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 .tri button[aria-pressed=true][data-m="+"]{background:var(--ok);border-color:var(--ok);color:#0e1f15}
 .tri button[aria-pressed=true][data-m="−"]{background:var(--d);border-color:var(--d);color:#fff}
 .tri button[aria-pressed=true][data-m="в"]{background:#d9a640;border-color:#d9a640;color:#241800}
+.stan{margin:0 0 14px;padding:11px 14px;border-radius:12px;font-size:15px;line-height:1.4}
+.stan.chk{background:#14171a;border:1px solid var(--ln);color:var(--mut)}
+.stan.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
+.stan.zt{background:rgba(61,175,110,.14);border:1px solid rgba(61,175,110,.5);color:var(--ok-t)}
+.names.lock{opacity:.6;pointer-events:none}
 .msg{margin:12px 0 0;font-size:15px;color:var(--mut);text-align:center}
 .done{text-align:center;padding:30px 22px}
 .done .big{width:64px;height:64px;margin:0 auto 14px;display:grid;place-items:center;border-radius:50%;background:rgba(61,175,110,.18);color:var(--ok-t)}
@@ -246,6 +251,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
           <label class="f"><span>№ сходин</span><input class="in" id="z-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
         </div>
         <label class="f"><span>Тема</span><input class="in" id="z-tema" maxlength="80" placeholder="про що були сходини"></label>
+        <p class="stan" id="z-stan" hidden></p>
         <div class="cnt">
           <span class="pill p">був <b id="c-p">0</b></span><span class="pill x">не був <b id="c-x">0</b></span><span class="pill v">поважна <b id="c-v">0</b></span>
           <button class="all" type="button" id="z-all">Усі були</button>
@@ -388,12 +394,21 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 
   let kod = '', imena = [];
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
+  // проба: одна дата вже записана, одна — затверджена
+  const DDB = {'2026-11-05': {khto: 'Ярко', koly: '05.11.2026 19:30', dani: {'№ сходин': '11', 'Тема': 'Вузли'}, prys: {'Олесь': '+', 'Мирося': '+', 'Дана': '−', 'Ярко': '+', 'Соломія': 'в', 'Остап': '+', 'Зоряна': '+'}},
+               '2026-11-01': {khto: 'Ярко', koly: '01.11.2026 19:10', zatv: true, dani: {'№ сходин': '10', 'Тема': 'Мапа й компас'}, prys: {'Олесь': '+', 'Мирося': '+', 'Дана': '+', 'Ярко': '+', 'Соломія': '+', 'Остап': '−', 'Зоряна': '+'}}};
   async function zapyt(t) {
     if (DEMO) {
-      await new Promise(r => setTimeout(r, 650));
+      await new Promise(r => setTimeout(r, t.dija === 'stan' ? 300 : 650));
       if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
       if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
-      if (t.dija === 'zapys') return {ok: true, ryadok: 14};
+      if (t.dija === 'stan') { const x = DDB[t.dani['Дата']]; return x ? {ok: true, ye: true, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: x.dani, prys: x.prys} : {ok: true, ye: false}; }
+      if (t.dija === 'zapys') {
+        const d = t.dani['Дата'], x = DDB[d];
+        if (x && x.zatv) return {ok: false, zatverdzheno: true, pomylka: 'Ці сходини вже затвердив виховник — змінити може лише він.'};
+        DDB[d] = {khto: t.khto, koly: 'щойно', dani: {'№ сходин': t.dani['№ сходин'], 'Тема': t.dani['Тема']}, prys: Object.assign({}, t.dani['присутність'])};
+        return {ok: true, ryadok: 14, onovleno: !!x};
+      }
       return {ok: true};
     }
     const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
@@ -425,8 +440,34 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
       <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
       || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
     $('z-khto').innerHTML = '<option value="">— виберіть —</option>' + imena.map(im => `<option>${esc(im)}</option>`).join('') + '<option>виховник</option>';
-    lichba(); $('z-msg').textContent = 'Якщо ці сходини (та сама дата) вже записані — запис оновиться.';
+    lichba(); $('z-msg').textContent = 'Одні сходини — один запис: якщо ця дата вже записана, ви побачите це вище й зможете виправити.';
+    zatv = false; zamok(false); $('z-stan').hidden = true; if (kod) setTimeout(perevirStan, 0);
   }
+  // ---- одна дата — один запис: щойно вибрали дату — питаємо книгу ----
+  let zatv = false, zapovn = false, stanN = 0;
+  function zamok(tak) {
+    $('z-names').classList.toggle('lock', tak); ['z-all', 'z-send', 'z-khto', 'z-nr', 'z-tema'].forEach(id => { $(id).disabled = tak; });
+  }
+  async function perevirStan() {
+    const b = $('z-stan'), d = $('z-data').value; if (!d) { b.hidden = true; return; }
+    const moye = ++stanN; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
+    let v; try { v = await zapyt({kod, dija: 'stan', arkush: 'Відвідуваність', dani: {'Дата': d}}); } catch (x) { v = null; }
+    if (moye !== stanN) return;
+    if (!v || !v.ok || !v.ye) {
+      b.hidden = true; zatv = false; zamok(false);
+      if (zapovn) { prys = {}; $('z-nr').value = ''; $('z-tema').value = ''; lichba(); zapovn = false; }
+      $('z-send').lastChild.textContent = 'Надіслати в книгу'; return;
+    }
+    const dd = d.split('-').reverse().join('.');
+    prys = Object.assign({}, v.prys || {}); $('z-nr').value = (v.dani || {})['№ сходин'] || ''; $('z-tema').value = (v.dani || {})['Тема'] || '';
+    lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv);
+    if (zatv) { b.className = 'stan zt'; b.innerHTML = `✓ <b>Сходини ${esc(dd)} затвердив виховник.</b> Змінити відвідуваність може лише він.`; }
+    else {
+      b.className = 'stan ye'; b.innerHTML = `<b>Відвідуваність за ${esc(dd)} уже записано</b>${v.khto ? ' (' + esc(v.khto) + (v.koly ? ', ' + esc(v.koly) : '') + ')' : ''}. Нижче — що записано. Виправте й надішліть — зміни ляжуть у той самий запис.`;
+      $('z-send').lastChild.textContent = 'Надіслати виправлення';
+    }
+  }
+  $('z-data').addEventListener('change', perevirStan);
   function lichba() {
     const v = Object.values(prys);
     $('c-p').textContent = v.filter(x => x === '+').length; $('c-x').textContent = v.filter(x => x === '−').length; $('c-v').textContent = v.filter(x => x === 'в').length;
@@ -446,6 +487,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 
   $('z-send').addEventListener('click', async () => {
     const msg = $('z-msg'); msg.style.color = '';
+    if (zatv) { msg.textContent = 'Ці сходини вже затверджено — змінити може лише виховник.'; msg.style.color = 'var(--d-t)'; return; }
     if (!$('z-data').value) { msg.textContent = 'Вкажіть дату сходин.'; msg.style.color = 'var(--d-t)'; return $('z-data').focus(); }
     const brak = imena.filter(im => !prys[im]);
     if (brak.length) {
@@ -459,7 +501,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
       const v = await zapyt({kod, dija: 'zapys', arkush: 'Відвідуваність', dani, khto: $('z-khto').value});
       if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');
       const p = Object.values(prys).filter(x => x === '+').length, d = $('z-data').value.split('-').reverse().join('.');
-      $('z-sum').textContent = `Сходини ${d}: присутні ${p} з ${imena.length}.` + (v.ryadok ? ` Рядок у книзі — ${v.ryadok}.` : '');
+      $('z-sum').textContent = (v.onovleno ? 'Виправлено. ' : '') + `Сходини ${d}: присутні ${p} з ${imena.length}.` + (v.ryadok ? ` Рядок у книзі — ${v.ryadok}.` : '');
       formaChysta(); $('z-form').hidden = true; $('z-done').hidden = false;
     } catch (x) {
       msg.style.color = 'var(--d-t)';
@@ -472,7 +514,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код для входу — 1234.';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Код юнаків — 1234. Спробуйте дати 05.11.2026 (уже записано) і 01.11.2026 (затверджено).';
     document.body.prepend(n); $('z-noaddr').hidden = true;
   }
 })();

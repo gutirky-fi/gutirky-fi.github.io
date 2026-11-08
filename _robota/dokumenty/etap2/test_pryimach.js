@@ -40,7 +40,8 @@ vm.runInContext(fs.readFileSync(path.join(__dirname, 'pryimach.gs'), 'utf8'), ct
 const post = o => ctx.doPost({ postData: { contents: JSON.stringify(o) } });
 let bad = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if (!c) bad++; };
 
-props.KOD = ctx.vidbytok('lelekы-2026');
+props.KOD_V = ctx.vidbytok('lelekы-2026');   // виховник (у тестах — основний)
+props.KOD = ctx.vidbytok('2468');           // юнаки
 ok(!post({ kod: 'хибний', dija: 'perevirka' }).ok, 'хибний код відхилено');
 ok(post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'правильний код приймається');
 const im = post({ kod: 'lelekы-2026', dija: 'imena' }); ok(im.imena.length === 7 && im.imena[0] === 'Олесь', 'імена: ' + im.imena.join(', '));
@@ -88,7 +89,33 @@ sheets['Відвідуваність']._f[vr][sheets['Відвідуваніст
 w = post({ kod: K, dija: 'zapys', arkush: 'Відвідуваність', khto: 'Ярко', dani: { 'Дата': '2026-10-24', 'присутність': { 'Дана': '+' } } });
 ok(!w.ok && sheets['Відвідуваність']._f[vr][7] === 'в', 'перевірені сходини: відвідуваність заднім числом не змінити');
 const nv = post({ kod: K, dija: 'novi' });
-ok(nv.ok && nv.novi.length >= 4 && nv.novi[0][1] === 'скасування' && /^\d\d\.\d\d\.\d{4} \d\d:\d\d$/.test(nv.novi[0][0]), 'Що нового: ' + nv.novi.length + ' змін, найновіша — ' + nv.novi[0].slice(0, 3).join(' · '));
+ok(nv.ok && nv.novi.length >= 3 && nv.novi[0].dija === 'скасування' && nv.novi[0].porozhnio && /^\d\d\.\d\d\.\d{4} \d\d:\d\d$/.test(nv.novi[0].koly), 'Що нового: ' + nv.novi.length + ' записів, чекають ' + nv.chekaiut + '; найновіше — ' + nv.novi[0].dija + ' · ' + nv.novi[0].arkush);
+const sx = nv.novi.find(x => x.arkush === 'Сходини');
+ok(sx && sx.pola.some(p => p[0] === 'Тема' && p[1] === 'Орієнтування') && sx.zatverdzheno === false, 'Що нового: повний вміст запису й стан «чекає»');
+const vx = nv.novi.find(x => x.arkush === 'Відвідуваність');
+ok(vx && vx.prys['Олесь'] === '+' && vx.zatverdzheno === true, 'Що нового: відвідуваність — хто був, затверджено');
+// ---- одна дата — один запис; два коди; затвердження ----
+const J = '2468';
+let x = post({ kod: J, dija: 'imena' }); ok(x.ok && x.rol === 'd' && post({ kod: K, dija: 'perevirka' }).rol === 'v', 'два коди: юнаки «d», виховник «v»');
+ok(!post({ kod: J, dija: 'novi' }).ok && !post({ kod: J, dija: 'zvit', arkush: 'Фінанси' }).ok && !post({ kod: J, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11 }).ok, 'кодом юнаків не прочитати звітів і «Що нового», не затвердити');
+const skhN = () => sheets['Сходини']._f.slice(3).filter(r => r[0] instanceof Date).length, n0 = skhN();
+x = post({ kod: J, dija: 'zapys', arkush: 'Сходини', khto: 'Дана', dani: { 'Дата': '2026-10-24', 'Тема': 'Орієнтування й компас', 'Місце': '' } });
+ok(x.ok && x.ryadok === 11 && skhN() === n0 && sheets['Сходини']._f[10][2] === 'Орієнтування й компас', 'та сама дата — той самий рядок, дубля немає');
+x = post({ kod: J, dija: 'stan', arkush: 'Сходини', dani: { 'Дата': '2026-10-24' } });
+ok(x.ok && x.ye && !x.zatverdzheno && x.khto === 'Дана' && x.dani['Тема'] === 'Орієнтування й компас' && x.dani['Дата'] === '2026-10-24', 'stan: запис є, хто записав, що в ньому');
+ok(post({ kod: J, dija: 'stan', arkush: 'Сходини', dani: { 'Дата': '2027-01-01' } }).ye === false, 'stan: нової дати ще немає');
+x = post({ kod: K, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11 });
+ok(x.ok && sheets['Сходини']._f[10][12] === 'так', 'виховник затвердив — «так» у книзі');
+x = post({ kod: J, dija: 'zapys', arkush: 'Сходини', khto: 'Дана', dani: { 'Дата': '2026-10-24', 'Тема': 'Зіпсовано' } });
+ok(!x.ok && x.zatverdzheno && sheets['Сходини']._f[10][2] === 'Орієнтування й компас', 'затверджене не змінити й не продублювати');
+ok(post({ kod: J, dija: 'stan', arkush: 'Сходини', dani: { 'Дата': '2026-10-24' } }).zatverdzheno === true, 'stan: юнак бачить «затверджено»');
+x = post({ kod: K, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11, tak: false });
+ok(x.ok && sheets['Сходини']._f[10][12] === '' && post({ kod: J, dija: 'zapys', arkush: 'Сходини', khto: 'Дана', dani: { 'Дата': '2026-10-24', 'Тема': 'Орієнтування' } }).ok, 'зняв затвердження — знову можна виправити');
+const pn = () => sheets['Протоколи']._f.slice(3).filter(r => r[0] instanceof Date).length, p0 = pn();
+post({ kod: J, dija: 'zapys', arkush: 'Протоколи', khto: 'Мирося', dani: { 'Дата': '2026-11-07', 'Вид': 'сходини', 'Питання': 'а' } });
+post({ kod: J, dija: 'zapys', arkush: 'Протоколи', khto: 'Мирося', dani: { 'Дата': '2026-11-07', 'Вид': 'гурткова рада', 'Питання': 'б' } });
+post({ kod: J, dija: 'zapys', arkush: 'Протоколи', khto: 'Мирося', dani: { 'Дата': '2026-11-07', 'Вид': 'сходини', 'Питання': 'в' } });
+ok(pn() === p0 + 2, 'протоколи: та сама дата, різний вид — 2 записи; той самий вид — без дубля');
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
 const zal = fin0.reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
@@ -108,6 +135,7 @@ ok(zi.ok && zi.ryadky.length === 7 && !JSON.stringify(zi).includes('Бондар
 ok(iu.length === 7 && ol[2] === 'Бондар' && ol[5] === 8 && ol[9].includes('Приклад-вмілість А'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
 ok(sheets['Налаштування']._f[4][21] === '2027/28', 'навчальний рік → 2027/28');
 ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посилання на архів записано');
-for (let i = 0; i < 20; i++) post({ kod: 'x', dija: 'perevirka' });
-ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 20 хибних спроб — пауза');
+for (let i = 0; i < 5; i++) post({ kod: 'x', dija: 'perevirka' });
+ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 5 хибних спроб — вхід закрито');
+ok(sheets['Зміни']._f.slice(3).some(r => r[1] === 'блокування'), 'блокування записано в «Зміни»');
 console.log(bad ? `ПОМИЛОК: ${bad}` : 'Усе гаразд'); process.exit(bad ? 1 : 0);

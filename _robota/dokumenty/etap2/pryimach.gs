@@ -4,7 +4,11 @@
  * Розширення → Apps Script → вставити цей файл → Розгорнути як вебзастосунок (див. INSTRUKTSIIA.md).
  *
  * Що вміє (сайт надсилає POST з JSON, Content-Type: text/plain):
- *   {kod, dija:"perevirka"}                         → {ok:true}
+ *   Два коди: код гуртка (юнаки, ≥4 знаки) — записувати й виправляти своє незатверджене;
+ *            код виховника (≥6) — ще «Що нового», затвердження, звіти.
+ *   {kod, dija:"perevirka"}                         → {ok:true, rol:"d"|"v"}
+ *   {kod, dija:"stan", arkush, dani:{Дата…}}        → чи є вже запис за цим ключем (дата), чи затверджено, що в ньому
+ *   {kod, dija:"zatverdyty", arkush, ryadok, tak}   → (виховник) «Перевірено виховником» = так / зняти
  *   {kod, dija:"imena"}                             → {ok:true, imena:[...]}  (активні й кандидати)
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
@@ -14,7 +18,7 @@
  *
  * Безпека: код гуртка НЕ записаний тут — лише його відбиток (SHA-256) у «Властивостях скрипта»,
  * виставляється з меню «Книга гуртка → Встановити код». Писати можна лише в аркуші зі списку PYSATY,
- * лише в стовпці без формул; рядок із «Перевірено = так» сайт не змінює. Після 20 хибних кодів за 10 хвилин приймач тимчасово мовчить.
+ * лише в стовпці без формул; рядок із «Перевірено = так» сайт не змінює. Після 5 хибних кодів приймач на годину закриває вхід (і пише це в «Зміни»).
  * Це захист «для гуртка», не банківський.
  */
 
@@ -29,6 +33,10 @@ var PRYKHOVATY = ['Прізвище'];   // стовпці, яких сайт н
 var VID = 'Відвідуваність', SLOT0 = 6, SLOTY = 16;     // стовпці F..U — імена
 var PER = 'Перевірено виховником', ZMINY = 'Зміни', DOBA = 24 * 3600 * 1000;
 var SLUZHBOVI = ['Хто записав', 'Записано', PER];
+// одна подія = один рядок: за цими стовпцями шукаємо наявний запис (дубля не буде)
+var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид']};
+var LYSHE_V = ['novi', 'zatverdyty', 'zvit'];   // лише з кодом виховника
+var ZLI_MAX = 5, ZLI_CHAS = 3600;
 
 // ---------- вебзастосунок ----------
 function doGet() {
@@ -41,19 +49,24 @@ function doPost(e) {
   catch (x) { return vidpovid({ok: false, pomylka: 'Незрозумілий запит.'}); }
   var cache = CacheService.getScriptCache();
   var zli = Number(cache.get('zli') || 0);
-  if (zli >= 20) return vidpovid({ok: false, pomylka: 'Забагато спроб. Спробуйте за 10 хвилин.'});
-  if (!kodVirnyi(z.kod)) {
-    cache.put('zli', String(zli + 1), 600);
+  if (zli >= ZLI_MAX) return vidpovid({ok: false, pomylka: 'Забагато неправильних кодів — вхід закрито на годину.'});
+  var rol = rolKodu(z.kod);
+  if (!rol) {
+    cache.put('zli', String(zli + 1), ZLI_CHAS);
+    if (zli + 1 === ZLI_MAX) try { zminy('блокування', '—', '', '', ZLI_MAX + ' неправильних кодів поспіль — вхід закрито на годину. Якщо це не юнаки помилялись — змініть код гуртка.'); } catch (x) {}
     Utilities.sleep(800);
-    return vidpovid({ok: false, pomylka: 'Невірний код гуртка.'});
+    return vidpovid({ok: false, pomylka: 'Невірний код.'});
   }
+  if (LYSHE_V.indexOf(z.dija) >= 0 && rol !== 'v') return vidpovid({ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'});
   try {
-    if (z.dija === 'perevirka') return vidpovid({ok: true});
-    if (z.dija === 'imena') return vidpovid({ok: true, imena: imena()});
+    if (z.dija === 'perevirka') return vidpovid({ok: true, rol: rol});
+    if (z.dija === 'imena') return vidpovid({ok: true, rol: rol, imena: imena()});
+    if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
+    if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.tak !== false));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto));
     if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto));
-    if (z.dija === 'novi') return vidpovid({ok: true, novi: novi()});
+    if (z.dija === 'novi') { var nv = novi(); return vidpovid({ok: true, novi: nv.zapysy, chekaiut: nv.chekaiut}); }
     if (z.dija === 'zvit') return vidpovid(zvit(z.arkush, z.vid, z['do']));
     return vidpovid({ok: false, pomylka: 'Невідома дія.'});
   } catch (x) {
@@ -71,11 +84,15 @@ function vidbytok(t) {
   return b.map(function (x) { return ('0' + (x & 255).toString(16)).slice(-2); }).join('');
 }
 
-function kodVirnyi(kod) {
-  var v = PropertiesService.getScriptProperties().getProperty('KOD');
-  if (!v || !kod || String(kod).length > 100) return false;
-  return vidbytok(kod) === v;
+function rolKodu(kod) {          // 'v' — виховник, 'd' — діловоди (код гуртка), null — ні
+  var pr = PropertiesService.getScriptProperties();
+  if (!kod || String(kod).length > 100) return null;
+  var h = vidbytok(kod), v = pr.getProperty('KOD_V'), d = pr.getProperty('KOD');
+  if (v && h === v) return 'v';
+  if (d && h === d) return 'd';
+  return null;
 }
+function kodVirnyi(kod) { return !!rolKodu(kod); }
 
 // ---------- читання ----------
 function imena() {
@@ -124,12 +141,9 @@ function zapys(arkush, dani, khto) {
     var sh = SpreadsheetApp.getActive().getSheetByName(arkush);
     var nc = sh.getLastColumn();
     var zag = sh.getRange(H, 1, 1, nc).getDisplayValues()[0];
-    var r;
-    if (arkush === VID) {
-      r = ryadokZaDatoyu(sh, dani['Дата']);
-      zag = imenaVZaholovok(sh, zag, dani['присутність'] || {});
-    }
-    if (r && perevireno(sh, zag, r)) return {ok: false, pomylka: 'Ці сходини вже перевірив виховник — змінити їх може лише він.'};
+    var r = ryadokZaKliuchem(sh, zag, arkush, dani);
+    if (r && perevireno(sh, zag, r)) return {ok: false, zatverdzheno: true, pomylka: 'Цей запис уже затвердив виховник — змінити його може лише він.'};
+    if (arkush === VID) zag = imenaVZaholovok(sh, zag, dani['присутність'] || {});
     var novyi = !r;
     if (!r) r = vilnyiRyadok(sh);
     var formuly = sh.getRange(r, 1, 1, nc).getFormulas()[0];
@@ -156,7 +170,7 @@ function zapys(arkush, dani, khto) {
       if (!formuly[k]) sh.getRange(r, k + 1).setValue(ryad[k]);
     }
     zminy(novyi ? 'запис' : 'оновлення', arkush, r, khto, opys(arkush, zag, ryad));
-    return {ok: true, arkush: arkush, ryadok: r, kvytok: datyKvytok(arkush, r, ryad[0])};
+    return {ok: true, arkush: arkush, ryadok: r, onovleno: !novyi, kvytok: datyKvytok(arkush, r, ryad[0])};
   } finally {
     lock.releaseLock();
   }
@@ -200,6 +214,8 @@ function vypravyty(kv, dani, khto) {
     var sh = z.sh, nc = z.zag.length, f = sh.getRange(z.r, 1, 1, nc).getFormulas()[0];
     var ryad = sh.getRange(z.r, 1, 1, nc).getValues()[0];
     if (!dani.hasOwnProperty(z.zag[0]) || chyste(dani[z.zag[0]]) === '') return {ok: false, pomylka: 'Перше поле («' + z.zag[0] + '») не може бути порожнім.'};
+    var inshyi = ryadokZaKliuchem(sh, z.zag, z.info.a, dani);
+    if (inshyi && inshyi !== z.r) return {ok: false, pomylka: 'За цю дату вже є інший запис — виберіть ту дату й виправте його.'};
     for (var c = 0; c < nc; c++) {
       var h = z.zag[c];
       if (!h || f[c] || h === PER) continue;
@@ -253,20 +269,28 @@ function opys(arkush, zag, ryad) {        // коротко, що в рядку 
   return out.join(' · ');
 }
 
+// «Що нового»: останні змінені записи (кожен рядок один раз), найновіші вгорі, з повним вмістом і станом
 function novi() {
-  var sh = SpreadsheetApp.getActive().getSheetByName(ZMINY); if (!sh) return [];
-  var n = sh.getMaxRows() - P + 1; if (n < 1) return [];
-  var sire = sh.getRange(P, 1, n, 6).getValues(), out = [];
-  sire.forEach(function (x) {
-    if (!(x[0] instanceof Date)) return;
-    out.push([x[0].getTime(), String(x[1]), String(x[2]), Number(x[3]) || '', String(x[4]), String(x[5])]);
-  });
-  out.sort(function (a, b) { return b[0] - a[0]; });
-  return out.slice(0, 40).map(function (x) {
-    var d = new Date(x[0]);
-    x[0] = dd(d) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-    return x;
-  });
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName(ZMINY); if (!sh) return {zapysy: [], chekaiut: 0};
+  var n = sh.getMaxRows() - P + 1; if (n < 1) return {zapysy: [], chekaiut: 0};
+  var log = sh.getRange(P, 1, n, 6).getValues().filter(function (x) { return x[0] instanceof Date; });
+  log.sort(function (a, b) { return b[0] - a[0]; });
+  var bachyly = {}, out = [], chekaiut = 0, arkushi = {};
+  for (var i = 0; i < log.length && out.length < 30; i++) {
+    var x = log[i], a = String(x[2]), r = Number(x[3]) || 0, k = a + '#' + r;
+    if (bachyly[k]) continue; bachyly[k] = true;
+    var d = x[0], z = {koly: dd(d) + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2),
+                       dija: String(x[1]), arkush: a, ryadok: r, khto: String(x[4]), shcho: String(x[5])};
+    var ark = PYSATY.indexOf(a) >= 0 && r ? (arkushi[a] = arkushi[a] || {sh: ss.getSheetByName(a)}) : null;
+    if (ark && ark.sh) {
+      if (!ark.zag) ark.zag = ark.sh.getRange(H, 1, 1, ark.sh.getLastColumn()).getDisplayValues()[0];
+      var kl = ark.sh.getRange(r, 1, 1, 1).getValues()[0][0];
+      if (kl === '' || kl === null) z.porozhnio = true;
+      else { var m = vmist(ark.sh, ark.zag, a, r); z.pola = m.pola; z.prys = m.prys; z.zatverdzheno = m.zatverdzheno; if (!m.zatverdzheno) chekaiut++; }
+    }
+    out.push(z);
+  }
+  return {zapysy: out, chekaiut: chekaiut};
 }
 
 function vilnyiRyadok(sh) {
@@ -282,14 +306,68 @@ function vilnyiRyadok(sh) {
   return ost + 1;
 }
 
-function ryadokZaDatoyu(sh, d) {   // одні сходини = один рядок: та сама дата → оновлюємо
-  var t = data(d); if (!t) return null;
+// рядок із тим самим ключем (дата; для протоколу — дата й вид) або null
+function ryadokZaKliuchem(sh, zag, arkush, dani) {
+  var kl = KLIUCH[arkush]; if (!kl || !dani) return null;
+  var tsil = [];
+  for (var j = 0; j < kl.length; j++) {
+    var c = zag.indexOf(kl[j]); if (c < 0) return null;
+    var x = kl[j] === 'Дата' ? data(dani[kl[j]]) : String(dani[kl[j]] === undefined ? '' : dani[kl[j]]).trim().toLowerCase();
+    if (!x) return null;
+    tsil.push([c, x]);
+  }
   var n = sh.getMaxRows() - P + 1;
-  var v = sh.getRange(P, 1, n, 1).getValues();
+  var v = sh.getRange(P, 1, n, zag.length).getValues();
   for (var i = 0; i < n; i++) {
-    if (v[i][0] instanceof Date && v[i][0].getTime() === t.getTime()) return P + i;
+    var tak = tsil.every(function (t) {
+      var y = v[i][t[0]];
+      return t[1] instanceof Date ? (y instanceof Date && y.getTime() === t[1].getTime()) : String(y).trim().toLowerCase() === t[1];
+    });
+    if (tak) return P + i;
   }
   return null;
+}
+
+function iso(v) { return v instanceof Date ? v.getFullYear() + '-' + ('0' + (v.getMonth() + 1)).slice(-2) + '-' + ('0' + v.getDate()).slice(-2) : v; }
+
+// що вже записано в рядку: {pola:[[заголовок, значення]], dani:{…для форми}, prys:{ім'я: позначка}}
+function vmist(sh, zag, arkush, r) {
+  var v = sh.getRange(r, 1, 1, zag.length).getValues()[0], d = sh.getRange(r, 1, 1, zag.length).getDisplayValues()[0];
+  var out = {pola: [], dani: {}, prys: {}, khto: '', koly: '', zatverdzheno: perevireno(sh, zag, r)};
+  for (var c = 0; c < zag.length; c++) {
+    var h = zag[c]; if (!h || PRYKHOVATY.indexOf(h) >= 0 || h === PER) continue;
+    if (h === 'Хто записав') { out.khto = d[c]; continue; }
+    if (h === 'Записано') { out.koly = d[c]; continue; }
+    if (arkush === VID && c >= SLOT0 - 1 && c < SLOT0 - 1 + SLOTY) { if (v[c] !== '' && v[c] !== null) out.prys[h] = String(v[c]); continue; }
+    if (d[c] === '') continue;
+    out.pola.push([h, v[c] instanceof Date ? dd(v[c]) : d[c]]);
+    out.dani[h] = iso(v[c]);
+  }
+  return out;
+}
+
+function stan(arkush, dani) {
+  if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'Невідомий аркуш.'};
+  var sh = SpreadsheetApp.getActive().getSheetByName(arkush);
+  var zag = sh.getRange(H, 1, 1, sh.getLastColumn()).getDisplayValues()[0];
+  var r = ryadokZaKliuchem(sh, zag, arkush, dani);
+  if (!r) return {ok: true, ye: false};
+  var m = vmist(sh, zag, arkush, r);
+  return {ok: true, ye: true, ryadok: r, zatverdzheno: m.zatverdzheno, khto: m.khto, koly: m.koly, dani: m.dani, prys: m.prys};
+}
+
+function zatverdyty(arkush, ryadok, tak) {
+  if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'Невідомий аркуш.'};
+  var r = Number(ryadok);
+  var sh = SpreadsheetApp.getActive().getSheetByName(arkush);
+  if (!(r >= P && r <= sh.getMaxRows() && r % 1 === 0)) return {ok: false, pomylka: 'Невідомий рядок.'};
+  var zag = sh.getRange(H, 1, 1, sh.getLastColumn()).getDisplayValues()[0], c = zag.indexOf(PER);
+  if (c < 0) return {ok: false, pomylka: 'В аркуші немає стовпця «' + PER + '».'};
+  var kl = sh.getRange(r, 1, 1, 1).getValues()[0][0];
+  if (kl === '' || kl === null) return {ok: false, pomylka: 'Цей рядок порожній (запис скасовано).'};
+  sh.getRange(r, c + 1).setValue(tak ? 'так' : '');
+  zminy(tak ? 'затвердження' : 'зняття затвердження', arkush, r, 'виховник', opys(arkush, zag, sh.getRange(r, 1, 1, zag.length).getValues()[0]));
+  return {ok: true, ryadok: r, zatverdzheno: tak};
 }
 
 function imenaVZaholovok(sh, zag, prys) {
@@ -325,7 +403,8 @@ function chyste(v) {               // текст без формул і без �
 // ---------- меню виховника ----------
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Книга гуртка')
-    .addItem('Встановити код гуртка', 'vstanovytyKod')
+    .addItem('Встановити код гуртка (для юнаків)', 'vstanovytyKod')
+    .addItem('Встановити код виховника (лише ваш)', 'vstanovytyKodV')
     .addItem('Налаштувати (захист формул)', 'nalashtuvaty')
     .addItem('Перевірити приймач', 'perevirytyPryimach')
     .addSeparator()
@@ -333,14 +412,18 @@ function onOpen() {
     .addToUi();
 }
 
-function vstanovytyKod() {
+function vstanovytyKod() { novyiKod('KOD', 'KOD_V', 4, 'Код гуртка (для юнаків)', 'Новий код гуртка — його знатимуть діловоди. Щонайменше 4 знаки (можна 4 цифри). Старий код перестане діяти.'); }
+function vstanovytyKodV() { novyiKod('KOD_V', 'KOD', 6, 'Код виховника', 'Ваш особистий код: «Що нового», затвердження, звіти. Щонайменше 6 знаків; не такий, як код гуртка. Нікому не давайте.'); }
+
+function novyiKod(kliuch, inshyi, min, nazva, poiasn) {
   var ui = SpreadsheetApp.getUi();
-  var r = ui.prompt('Код гуртка', 'Новий код (щонайменше 6 знаків; його знатимуть діловоди). Старий код перестане діяти.', ui.ButtonSet.OK_CANCEL);
+  var r = ui.prompt(nazva, poiasn, ui.ButtonSet.OK_CANCEL);
   if (r.getSelectedButton() !== ui.Button.OK) return;
-  var k = r.getResponseText().trim();
-  if (k.length < 6) { ui.alert('Закороткий код — потрібно щонайменше 6 знаків.'); return; }
-  PropertiesService.getScriptProperties().setProperty('KOD', vidbytok(k));
-  ui.alert('Код збережено. У таблиці його не видно — лише в налаштуваннях приймача.');
+  var k = r.getResponseText().trim(), pr = PropertiesService.getScriptProperties();
+  if (k.length < min) { ui.alert('Закороткий код — потрібно щонайменше ' + min + ' знаків.'); return; }
+  if (pr.getProperty(inshyi) === vidbytok(k)) { ui.alert('Код гуртка й код виховника мають бути різними.'); return; }
+  pr.setProperty(kliuch, vidbytok(k));
+  ui.alert(nazva + ' збережено. У таблиці його не видно — лише відбиток у налаштуваннях приймача.');
 }
 
 function nalashtuvaty() {
@@ -367,9 +450,9 @@ function nalashtuvaty() {
 
 function perevirytyPryimach() {
   var ui = SpreadsheetApp.getUi();
-  var maKod = !!PropertiesService.getScriptProperties().getProperty('KOD');
+  var pr = PropertiesService.getScriptProperties(), maKod = !!pr.getProperty('KOD'), maKodV = !!pr.getProperty('KOD_V');
   var brak = PYSATY.concat(['Учасники']).filter(function (a) { return !SpreadsheetApp.getActive().getSheetByName(a); });
-  ui.alert('Код гуртка: ' + (maKod ? 'встановлено' : 'НЕ встановлено') +
+  ui.alert('Код гуртка (юнаки): ' + (maKod ? 'встановлено' : 'НЕ встановлено') + '\nКод виховника: ' + (maKodV ? 'встановлено' : 'НЕ встановлено') +
            '\nАркуші: ' + (brak.length ? 'бракує ' + brak.join(', ') : 'усі на місці') +
            '\nУчасників для форм: ' + imena().length);
 }

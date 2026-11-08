@@ -61,6 +61,12 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 .btn.warn{border-color:rgba(200,40,74,.7);color:#ffb3c3}
 .btn.warn.sure{background:var(--d);border-color:var(--d);color:#fff}
 .done .mini{margin:14px auto 0;max-width:420px;color:var(--mut);font-size:14px}
+.stan{margin:-4px 0 14px;padding:11px 14px;border-radius:12px;font-size:15px;line-height:1.4}
+.stan b{font-weight:700}
+.stan.chk{background:#14171a;border:1px solid var(--ln);color:var(--mut)}
+.stan.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
+.stan.zt{background:rgba(61,175,110,.14);border:1px solid rgba(61,175,110,.5);color:var(--ok-t)}
+.in:disabled{opacity:.55}
 .fixing{margin:-4px 0 14px;padding:9px 13px;border-radius:12px;background:rgba(217,166,64,.14);color:#f0c060;font-size:15px}
 @media (max-width:1000px){.bar{grid-template-columns:1fr 1fr .6fr}.bar .btns{grid-column:1/-1;grid-template-columns:1fr 1fr}}
 @media (max-width:900px){.podaty{grid-template-columns:1fr}.desk{padding:12px}}
@@ -143,6 +149,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       <form class="card" id="z-form" hidden novalidate autocomplete="off">
         <div class="fhead"><h2 id="z-h"></h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
         <p class="fixing" id="z-fixing" hidden>Виправляєте щойно надісланий запис — зміни ляжуть у той самий рядок книги.</p>
+        <p class="stan" id="z-stan" hidden></p>
         <div id="z-polia"></div>
         <p class="auto" id="z-auto" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span></span></p>
         <label class="f"><span>Хто записав <em>*</em></span><select class="in" id="z-khto"></select></label>
@@ -267,12 +274,22 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 
   let kod = '', imena = [];
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
+  // проба без мережі: маленька «книга» в пам'яті (дати з K.demo: одна записана, одна затверджена)
+  const DDB = {};
+  Object.entries(K.demo || {}).forEach(([d, x]) => { DDB[d] = Object.assign({koly: d.split('-').reverse().join('.') + ' 19:30'}, x); });
   async function zapyt(t) {
     if (DEMO) {
+      if (t.dija === 'stan') { await new Promise(r => setTimeout(r, 300)); const x = DDB[t.dani['Дата']]; return x ? {ok: true, ye: true, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: x.dani} : {ok: true, ye: false}; }
+      if (t.dija === 'zapys' && t.kod === '1234') {
+        await new Promise(r => setTimeout(r, 650));
+        const d = t.dani['Дата'], x = DDB[d];
+        if (x && x.zatv) return {ok: false, zatverdzheno: true, pomylka: 'Цей запис уже затвердив виховник — змінити його може лише він.'};
+        DDB[d] = {khto: t.khto, koly: 'щойно', dani: Object.assign({}, t.dani)};
+        return {ok: true, ryadok: 11, onovleno: !!x, kvytok: 'demo-kvytok-1'};
+      }
       await new Promise(r => setTimeout(r, 650));
       if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
       if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
-      if (t.dija === 'zapys') return {ok: true, ryadok: 11, kvytok: 'demo-kvytok-1'};
       if (t.dija === 'vypravyty' || t.dija === 'skasuvaty') return {ok: true, ryadok: 11};
       return {ok: true};
     }
@@ -312,15 +329,61 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     else w = `<input class="in" id="${id}" maxlength="120"${ph}${p.dl ? ' autocomplete="off"' : ''}>`;
     return `<label class="f" data-i="${i}"><span>${esc(p.l || p.h)}${p.req ? ' <em>*</em>' : ''}</span>${w}${p.pidk ? `<small>${esc(p.pidk)}</small>` : ''}</label>`;
   }
+  // ---- одна подія = один запис: щойно вибрали дату — питаємо книгу, чи вже є ----
+  const KL = K.kliuch || [];
+  const idx = h => K.polia.findIndex(p => p.h === h);
+  let zSt = null, zapovneno = false, stanN = 0;
+  function zamok(tak) {   // затверджене — форму закрито (крім дати)
+    K.polia.forEach((p, i) => { if (!KL.includes(p.h)) $('z-p' + i).disabled = tak; });
+    $('z-khto').disabled = tak; $('z-send').disabled = tak;
+  }
+  function chystyNekliuchovi() { K.polia.forEach((p, i) => { if (!KL.includes(p.h)) $('z-p' + i).value = ''; }); }
+  async function perevirStan() {
+    if (!KL.length || fixing) return;
+    const b = $('z-stan'), kl = {};
+    for (const h of KL) { const v = $('z-p' + idx(h)).value.trim(); if (!v) { b.hidden = true; zamok(false); return; } kl[h] = v; }
+    const moye = ++stanN; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи це вже записано…';
+    let v; try { v = await zapyt({kod, dija: 'stan', arkush: K.arkush, dani: kl}); } catch (x) { v = null; }
+    if (moye !== stanN) return;
+    if (!v || !v.ok) { b.hidden = true; zamok(false); return; }
+    const dd = kl['Дата'] ? kl['Дата'].split('-').reverse().join('.') : '';
+    zSt = v.ye ? v : null;
+    if (!v.ye) {
+      b.hidden = true; zamok(false);
+      if (zapovneno) { chystyNekliuchovi(); zapovneno = false; }
+      $('z-send').lastChild.textContent = 'Надіслати в книгу';
+      return;
+    }
+    if (v.zatverdzheno) {
+      b.className = 'stan zt'; b.innerHTML = `✓ <b>${esc(K.forma || K.t)} за ${esc(dd)} затвердив виховник.</b> Змінити їх може лише він.`;
+    } else {
+      b.className = 'stan ye'; b.innerHTML = `<b>${esc(K.forma || K.t)} за ${esc(dd)} уже записано</b>${v.khto ? ' (' + esc(v.khto) + (v.koly ? ', ' + esc(v.koly) : '') + ')' : ''}. Нижче — те, що записано. Виправте й надішліть — зміни ляжуть у той самий запис, другого не буде.`;
+      $('z-send').lastChild.textContent = 'Надіслати виправлення';
+    }
+    K.polia.forEach((p, i) => {
+      if (KL.includes(p.h)) return;
+      const el = $('z-p' + i), x = v.dani && v.dani[p.h] != null ? String(v.dani[p.h]) : '';
+      if (el.tagName === 'SELECT' && x && ![...el.options].some(o => o.value === x)) el.add(new Option(x, x));
+      el.value = x;
+    });
+    if (v.khto && !v.zatverdzheno) { const kh = $('z-khto'); if (![...kh.options].some(o => o.value === v.khto)) kh.add(new Option(v.khto, v.khto)); }
+    zapovneno = true; zamok(!!v.zatverdzheno);
+  }
+  $('z-polia').addEventListener('change', e => { const f = e.target.closest('.f'); if (f && KL.includes(K.polia[+f.dataset.i].h)) perevirStan(); });
+
   function formaChysta() {
     let h = '', P = K.polia;
     for (let i = 0; i < P.length; i++) {   // поля з "para" стають поруч
       if (P[i].para && P[i + 1]) { h += `<div class="row2">${pole(P[i], i)}${pole(P[i + 1], i + 1)}</div>`; i++; } else h += pole(P[i], i);
     }
+    $('z-polia').before($('z-stan'));   // спершу виносимо повідомлення, щоб не стерти
     $('z-polia').innerHTML = h;
+    { const kf = KL.length && $('z-p' + idx(KL[KL.length - 1])); const blok = kf && (kf.closest('.row2') || kf.closest('.f')); if (blok) blok.after($('z-stan')); }
     K.polia.forEach((p, i) => { if (p.typ === 'date') $('z-p' + i).value = den(); });
     $('z-khto').innerHTML = opts(imena.concat(['виховник']), '— виберіть —');
     const m = $('z-msg'); m.style.color = ''; m.textContent = K.povtor || ''; $('z-fixing').hidden = true;
+    zSt = null; zapovneno = false; $('z-stan').hidden = true; zamok(false); $('z-send').lastChild.textContent = 'Надіслати в книгу';
+    if (kod) setTimeout(perevirStan, 0);
   }
   $('z-form').addEventListener('input', e => {
     const f = e.target.closest('.f'); if (f) f.classList.remove('need');
@@ -336,8 +399,9 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     const bad = K.polia.map((p, i) => [p, i]).find(([p, i]) => p.typ === 'num' && $('z-p' + i).value.trim() && !/^\d+([.,]\d+)?$/.test($('z-p' + i).value.trim()));
     if (bad) { msg.textContent = '«' + (bad[0].l || bad[0].h) + '» — лише число.'; return $('z-p' + bad[1]).focus(); }
     if (!$('z-khto').value) { msg.textContent = 'Виберіть, хто записав.'; return $('z-khto').focus(); }
+    if (zSt && zSt.zatverdzheno) { msg.textContent = 'Цей запис уже затверджено — змінити може лише виховник.'; return; }
     const dani = {};
-    K.polia.forEach((p, i) => { const v = $('z-p' + i).value.trim(); if (v) dani[p.h] = v; });
+    K.polia.forEach((p, i) => { dani[p.h] = $('z-p' + i).value.trim(); });   // порожнє теж: щоб виправлення могло стерти
     const b = $('z-send'), khto = $('z-khto').value; b.disabled = true; msg.style.color = ''; msg.textContent = 'Надсилаю в книгу…';
     try {
       const v = await zapyt(ost && fixing ? {kod, dija: 'vypravyty', kvytok: ost.kvytok, dani, khto} : {kod, dija: 'zapys', arkush: K.arkush, dani, khto});
@@ -345,7 +409,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       const vypr = fixing; fixing = false;
       if (!vypr) ost = v.kvytok ? {kvytok: v.kvytok} : null;
       if (ost) { ost.dani = dani; ost.khto = khto; }
-      gotovo(vypr ? 'Виправлено в книзі' : 'Записано в книгу', !!ost);
+      gotovo(vypr || v.onovleno ? 'Виправлено в книзі' : 'Записано в книгу', !!ost);
       const d = dani[K.polia[0].h] || '', dd = /^\d{4}-\d\d-\d\d$/.test(d) ? d.split('-').reverse().join('.') : d;
       $('z-sum').textContent = `${K.forma || K.t}: ${dd}${dani[K.pidsumok] ? ' · ' + dani[K.pidsumok] : ''}.` + (v.ryadok ? ` Рядок у книзі — ${v.ryadok}.` : '');
       formaChysta(); $('z-form').hidden = true; $('z-done').hidden = false;
@@ -362,7 +426,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   }
   $('z-fix').addEventListener('click', () => {
     if (!ost) return;
-    formaChysta(); fixing = true; $('z-fixing').hidden = false;
+    fixing = true; formaChysta(); $('z-fixing').hidden = false;
     K.polia.forEach((p, i) => { $('z-p' + i).value = ost.dani[p.h] || ''; });
     $('z-khto').value = ost.khto; $('z-msg').textContent = '';
     $('z-done').hidden = true; $('z-form').hidden = false; $('z-p0').focus();
@@ -388,7 +452,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код для входу — 1234.';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Код юнаків — 1234.' + (K.demo ? ' Спробуйте дати ' + Object.entries(K.demo).map(([d, x]) => d.split('-').reverse().join('.') + (x.zatv ? ' (затверджено)' : ' (уже записано)')).join(' і ') + '.' : '');
     document.body.prepend(n); $('z-noaddr').hidden = true;
   }
 })();
