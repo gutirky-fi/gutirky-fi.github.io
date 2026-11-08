@@ -14,6 +14,7 @@
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
+ *   {kod, dija:"vnesky"}                            → внески з аркуша «Внески» і хто скільки сплатив за кожен: {vnesky:[{n,suma,termin,osobl}], splacheno:{ім'я:{внесок:€}}}
  *   {kod, dija:"den", arkush:"Фінанси", dani:{Дата}} → усі рядки за цю дату: {ryadok, dani, khto, koly, zatverdzheno, versiya}
  *   vypravyty / skasuvaty з {arkush, ryadok, versiya} замість квитка — будь-який незатверджений рядок аркушів DEN;
  *   «versiya» — відбиток рядка: якщо хтось змінив його тим часом, зміна не пройде («оновіть список»).
@@ -71,6 +72,7 @@ function doPost(e) {
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
     if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.tak !== false));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
+    if (z.dija === 'vnesky') return vidpovid(vnesky());
     if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
     if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto, z));
     if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto, z));
@@ -154,7 +156,37 @@ function perevirkaKasy(arkush, dani) {
   if (!/^\d+(\.\d{1,2})?$/.test(s) || Number(s) <= 0) return 'Сума — додатне число, до центів (напр. 10 або 12,50).';
   if (['надходження', 'видаток'].indexOf(String(dani['Рух'] || '')) < 0) return 'Рух — «надходження» або «видаток».';
   if (!data(dani['Дата'])) return 'Потрібна дата.';
+  var vn = vnesky().vnesky.map(function (x) { return x.n; }), v = String(dani['Внесок'] || '').trim();
+  if (v && vn.indexOf(v) < 0) return 'Внеску «' + v + '» немає в аркуші «Внески» — виберіть зі списку.';
+  if (!v && vn.length && dani['Категорія'] === 'внески' && String(dani["Ім'я (для внеску)"] || '').trim()) return 'Виберіть, за який внесок цей платіж.';
   return '';
+}
+
+// ---------- внески: скільки треба і хто скільки сплатив ----------
+var VNESKY = 'Внески';
+function osoblyvi(t) {            // «Остап 10; Дана 0» → {Остап:10, Дана:0}
+  var o = {};
+  String(t || '').split(/[;\n]/).forEach(function (x) {
+    var m = /^\s*(.+?)\s*[:—–-]?\s*(\d+(?:[.,]\d{1,2})?)\s*€?\s*$/.exec(x); if (m) o[m[1]] = Number(m[2].replace(',', '.'));
+  });
+  return o;
+}
+function vnesky() {
+  var ss = SpreadsheetApp.getActive(), vs = ss.getSheetByName(VNESKY);
+  if (!vs) return {ok: true, vnesky: [], splacheno: {}};
+  var z = zaholovky(vs), out = [];
+  ryadky(vs).forEach(function (r) {
+    var n = String(r[z.indexOf('Внесок')]).trim(); if (!n) return;
+    out.push({n: n, suma: Number(r[z.indexOf('Сума, €')]) || 0, termin: iso(r[z.indexOf('Термін')]) || '', osobl: osoblyvi(r[z.indexOf('Особливі суми')])});
+  });
+  var fs = ss.getSheetByName('Фінанси'), fz = zaholovky(fs), sp = {};
+  var ci = fz.indexOf("Ім'я (для внеску)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух');
+  if (cv >= 0) ryadky(fs).forEach(function (r) {
+    var im = String(r[ci]).trim(), v = String(r[cv]).trim(); if (!im || !v) return;
+    var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
+    sp[im] = sp[im] || {}; sp[im][v] = Math.round(((sp[im][v] || 0) + x) * 100) / 100;
+  });
+  return {ok: true, vnesky: out, splacheno: sp};
 }
 
 function zapys(arkush, dani, khto) {
@@ -527,7 +559,7 @@ function novyiRik() {
     'Що станеться:\n' +
     '1) повна копія книги піде в архів;\n' +
     '2) підсумок року допишеться в «Роки» і «Історію учасників» (ці аркуші не очищаються ніколи);\n' +
-    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться один рядок — залишок; із завдань — лише незроблені.\n' +
+    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться один рядок — залишок; у внесках — один рядок «Борг з …» (хто недоплатив); із завдань — лише незроблені.\n' +
     'Учасники, посади, проби, вмілості, відзначки, замовлення, запас, майно й документи лишаються.\n\nПродовжити?', ui.ButtonSet.YES_NO);
   if (r !== ui.Button.YES) return;
   var pidsumok = pidsumokRoku(ss, rik);               // рахуємо ДО очищення
@@ -541,7 +573,13 @@ function novyiRik() {
     var ri = vilnyiRyadok(ist);
     ist.getRange(ri, 1, 1, 12).setValues([u.concat([new Date()])]);
   });
+  var borgy = borhyRoku();                              // хто недоплатив — до очищення каси
   OCHYSTYTY.forEach(function (n) { zalyshyty(ss.getSheetByName(n), function () { return false; }); });
+  var vs = ss.getSheetByName(VNESKY);
+  if (vs) {
+    zalyshyty(vs, function () { return false; });
+    if (borgy) zapysatyObj(vs, P, {'Внесок': 'Борг з ' + rik, 'Сума, €': 0, 'Особливі суми': borgy, 'Примітка': 'перенесено «Новим роком»: хто недоплатив внески минулого року'});
+  }
   var zav = ss.getSheetByName('Завдання');
   var zst = kolonka(zav, 'Статус');
   zalyshyty(zav, function (row) { return row[zst] !== 'зроблено'; });
@@ -558,6 +596,18 @@ function novyiRik() {
   var m = /^(\d{4})\/(\d{2})$/.exec(rik);
   if (m && rikK) rikK.setValue((+m[1] + 1) + '/' + ('0' + ((+m[2] + 1) % 100)).slice(-2));
   ui.alert('Готово.\nАрхівна копія: ' + nazva + '\nПідсумок — на аркушах «Роки» й «Історія учасників».' + (m ? '\nНавчальний рік у «Налаштуваннях» змінено на наступний.' : ''));
+}
+
+// хто скільки недоплатив за всі внески року → «Мирося 10; Ярко 20» (для рядка «Борг з …»)
+function borhyRoku() {
+  var v = vnesky(), out = [];
+  if (!v.vnesky.length) return '';
+  imena().forEach(function (im) {
+    var b = 0;
+    v.vnesky.forEach(function (x) { var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma; b += treba - ((v.splacheno[im] || {})[x.n] || 0); });
+    b = Math.round(b * 100) / 100; if (b > 0) out.push(im + ' ' + String(b).replace('.', ','));
+  });
+  return out.join('; ');
 }
 
 // клітинка «Навчальний рік» у «Налаштуваннях» — шукаємо за назвою (стовпець залежить від кількості списків)
