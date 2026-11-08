@@ -17,7 +17,7 @@ def uri(p, mime):
 SAIT = len(sys.argv) > 1 and sys.argv[1] == 'sait'
 for nazva in ('vidviduvanist',):
     s = (TUT / (nazva + '.html')).read_text(encoding='utf-8')
-    s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{EMBLEM_D}}', uri(IMG / 'emblem-qr.webp', 'image/webp'))
+    s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s
     out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / nazva / 'index.html'

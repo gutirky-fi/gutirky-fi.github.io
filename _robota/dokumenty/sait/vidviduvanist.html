@@ -77,31 +77,35 @@ button{cursor:pointer}
 .bar2 .chk{margin:0;flex:1 1 360px}
 .bar2 .note{flex:1 1 260px}
 .desk{position:relative;padding:22px;border-radius:20px;background:#14171a;border:1px solid var(--ln);overflow:auto}
-.sheet{--pi:#1b1d21;--pl:#8b9097;width:100%;min-width:860px;max-width:1080px;margin:0 auto;aspect-ratio:297/210;padding:3.2% 3.4%;background:#fbfaf7;color:var(--pi);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.45);font:13px/1.3 var(--txt);display:flex;flex-direction:column}
-.sh-top{display:flex;align-items:flex-start;gap:16px;padding-bottom:10px;border-bottom:2px solid var(--pi)}
-.sh-top h3{margin:0;font:600 26px/1 var(--disp);letter-spacing:.06em;text-transform:uppercase}
-.sh-top .sub{margin-top:4px;font-size:12px;color:#555b62}
-.stamp{margin-left:auto;display:flex;align-items:center;gap:8px;font:600 11px/1.15 var(--disp);letter-spacing:.14em;text-transform:uppercase;color:#3a3f45;text-align:right}
-.stamp img{height:38px;width:auto}
-.sh-f{display:flex;gap:22px;margin:10px 0 8px;font-size:13px}
+/* аркуш — спільний паперовий стиль друку бібліотеки (_robota/druk/shablon.py): шапка «вид · назва · підзаголовок · лілея», лінія кольору, підвал «Пласт у Фінляндії» */
+.sheet{--pi:#1d2125;--pm:#5f6873;--pl:#cfd5dc;--acc:#c8284a;--tint:#f9e6ea;width:100%;min-width:860px;max-width:1080px;margin:0 auto;aspect-ratio:297/210;padding:3.6% 4.4% 2.6%;background:#fff;color:var(--pi);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.45);font:13px/1.35 var(--txt);display:flex;flex-direction:column}
+.hd{display:flex;align-items:flex-end;gap:20px;padding-bottom:10px;border-bottom:3px solid var(--acc);margin-bottom:10px}
+.hl{flex:1;min-width:0}
+.kind{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;color:var(--acc)}
+.for{font-weight:700;font-size:10.5px;padding:1px 9px;border-radius:99px;border:1px solid var(--pl);color:var(--pm)}
+.hd h3{margin:2px 0 0;font:600 30px/1.02 var(--disp);letter-spacing:.01em;text-transform:uppercase}
+.hd .sub{margin-top:3px;color:var(--pm);font-size:13px}
+.hd img{height:58px;width:auto;flex:none}
+.sh-f{display:flex;gap:22px;margin:2px 0 10px;font-size:13px}
 .sh-f span{display:flex;align-items:flex-end;gap:6px;flex:1;min-width:0}
-.sh-f i{font-style:normal;color:#555b62;white-space:nowrap}
+.sh-f i{font-style:normal;color:var(--pm);white-space:nowrap}
 .sh-f u{flex:1;min-height:18px;border-bottom:1px solid var(--pl);text-decoration:none;font-weight:600;padding:0 3px}
 .grid{width:100%;border-collapse:collapse;table-layout:fixed;flex:1}
 .grid th,.grid td{border:1px solid var(--pl);padding:0 3px;text-align:center;vertical-align:middle;height:1px}
-.grid thead th{font-weight:700;font-size:11px;background:#efede6}
-.grid thead tr.d th{font-weight:400;color:#555b62;height:22px}
+.grid thead th{font-weight:700;font-size:12px;background:var(--tint)}
+.grid thead tr.d th{font-weight:400;color:var(--pm);height:22px;background:#fff}
 .grid thead tr.d th:empty::before{content:"дата";color:#b3b7bc;font-size:9.5px;letter-spacing:.04em}
-.grid td.n{color:#555b62;font-size:11px}
+.grid td.n{color:var(--pm);font-size:11px}
 .grid td.nm{text-align:left;font-weight:600}
-.grid tfoot td{font-weight:700;background:#efede6;font-size:12px}
+.grid tfoot td{font-weight:700;background:var(--tint);font-size:12px}
 .grid tfoot td.l{text-align:right;padding-right:6px}
-.grid .tot{background:#f4f2ec;font-weight:700}
-.sh-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-top:9px;font-size:11.5px;color:#555b62}
-.sh-foot .leg b{color:var(--pi);font-size:13px}
-.sh-foot .sig{display:flex;gap:18px}
-.sh-foot .sig span{display:inline-block;width:130px;border-bottom:1px solid var(--pl)}
-.src{margin-top:6px;font-size:10px;color:#80858b}
+.grid .tot{background:#f3f4f6;font-weight:700}
+.sh-sig{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-top:9px;font-size:12px;color:var(--pm)}
+.sh-sig .leg b{color:var(--pi);font-size:13px}
+.sh-sig .sig{display:flex;gap:18px}
+.sh-sig .sig span{display:inline-block;width:130px;border-bottom:1px solid var(--pl)}
+.ft{margin-top:9px;padding-top:7px;display:flex;justify-content:space-between;gap:12px;color:var(--pm);font-size:11px;border-top:1px solid var(--pl)}
+.ft b{color:var(--pi);font-weight:600}
 /* заповнення на сторінці */
 .sheet.edit [contenteditable]{outline:none;cursor:text;background:#fff7d6}
 .sheet.edit [contenteditable]:focus{background:#ffefa8}
@@ -173,7 +177,6 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   .desk{padding:0;border:0;border-radius:0;background:none;overflow:visible}
   .sheet{min-width:0;max-width:none;width:100%;aspect-ratio:auto;height:186mm;padding:0;box-shadow:none;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sheet.edit [contenteditable],.sheet.edit td.m:hover{background:none}
-  .sheet{background:#fff}
 }
 </style>
 </head>
@@ -276,7 +279,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   'use strict';
   const $ = id => document.getElementById(id);
   const DEMO = /*DEMO*/false/*/DEMO*/ || /[?&]demo\b/.test(location.search);
-  const EMB = '{{EMBLEM_D}}';
+  const EMB = '{{LILY}}';
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 
   /* ---------- перемикач ---------- */
@@ -304,8 +307,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     const n = +$('b-skh').value, R = +$('b-ryad').value, ed = $('b-edit').checked;
     const ce = ed ? ' contenteditable="true" spellcheck="false"' : '';
     const hur = esc($('b-hur').value.trim()), rik = esc($('b-rik').value.trim());
-    let h = `<div class="sh-top"><div><h3>Відвідуваність сходин</h3><div class="sub">Юнацький гурток · «+» був · «−» не був · «в» — поважна причина</div></div>
-      <div class="stamp"><span>Пласт<br>у Фінляндії</span><img src="${EMB}" alt=""></div></div>
+    let h = `<header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде заступник</span></div><h3>Відвідуваність сходин</h3><div class="sub">Юнацький гурток · «+» був · «−» не був · «в» — відсутній з поважної причини</div></div><img src="${EMB}" alt="Пластова лілея"></header>
       <div class="sh-f"><span><i>Гурток</i><u>${hur}</u></span><span><i>Курінь</i><u></u></span><span><i>Рік / місяці</i><u>${rik}</u></span></div>
       <table class="grid"><colgroup><col style="width:4%"><col style="width:17%">${'<col>'.repeat(n)}<col style="width:6%"></colgroup>
       <thead><tr><th rowspan="2">№</th><th rowspan="2" style="text-align:left;padding-left:6px">Ім'я</th>`;
@@ -321,9 +323,9 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     h += `</tbody><tfoot><tr><td colspan="2" class="l">Присутні</td>`;
     for (let c = 0; c < n; c++) h += `<td data-s="${c}"></td>`;
     h += `<td></td></tr></tfoot></table>
-      <div class="sh-foot"><div class="leg">Позначки: <b>+</b> був · <b>−</b> не був · <b>в</b> — поважна причина</div>
+      <div class="sh-sig"><div class="leg">Позначки: <b>+</b> був · <b>−</b> не був · <b>в</b> — поважна причина</div>
       <div class="sig"><div>Записав <span></span></div><div>Перевірив виховник <span></span></div></div></div>
-      <div class="src">Робочий бланк Пластової бібліотеки. Ті самі стовпці, що в аркуші «Відвідуваність» книги гуртка — легко перенести.</div>`;
+      <footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Робочий бланк · ті самі стовпці, що в аркуші «Відвідуваність» книги гуртка</span></footer>`;
     const sh = $('sheet'); sh.innerHTML = h; sh.classList.toggle('edit', ed);
     $('b-hint').hidden = !ed; pidrakhunok();
   }
@@ -350,15 +352,15 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     sh.querySelectorAll('img').forEach(x => x.remove());
     const css = `@page Section1{size:841.9pt 595.3pt;mso-page-orientation:landscape;margin:28pt}div.Section1{page:Section1}
       body{font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#1b1d21}h3{font-size:18pt;margin:0;text-transform:uppercase;letter-spacing:1pt}
-      .sub,.src,.sh-foot{font-size:8.5pt;color:#555}.stamp{font-size:8pt;text-transform:uppercase;text-align:right;color:#444}
-      table.grid{border-collapse:collapse;width:100%}table.grid th,table.grid td{border:1px solid #8b9097;height:20pt;text-align:center;font-size:9.5pt}
-      table.grid thead th,table.grid tfoot td{background:#efede6;font-weight:bold}td.nm{text-align:left;font-weight:bold}
+      .sub,.ft{font-size:8.5pt;color:#5f6873}.kind{color:#c8284a;font-weight:bold;font-size:10pt}
+      table.grid{border-collapse:collapse;width:100%}table.grid th,table.grid td{border:1px solid #cfd5dc;height:20pt;text-align:center;font-size:9.5pt}
+      table.grid thead th,table.grid tfoot td{background:#f9e6ea;font-weight:bold}td.nm{text-align:left;font-weight:bold}
       .sh-f u{text-decoration:none;font-weight:bold}`;
     // Word погано розуміє flex — збираємо шапку таблицею
-    const top = `<table style="width:100%;border-bottom:2px solid #1b1d21"><tr><td><h3>Відвідуваність сходин</h3><div class="sub">Юнацький гурток · «+» був · «−» не був · «в» — поважна причина</div></td><td class="stamp">Пласт у Фінляндії</td></tr></table>
+    const top = `<table style="width:100%;border-bottom:2.2pt solid #c8284a"><tr><td><div class="kind">Документи гуртка · веде заступник</div><h3>Відвідуваність сходин</h3><div class="sub">Юнацький гурток · «+» був · «−» не був · «в» — відсутній з поважної причини</div></td></tr></table>
       <p>Гурток: <b>${esc($('b-hur').value.trim()) || '______________________'}</b> &nbsp;&nbsp; Курінь: ______________________ &nbsp;&nbsp; Рік / місяці: <b>${esc($('b-rik').value.trim()) || '__________'}</b></p>`;
     const grid = sh.querySelector('table.grid').outerHTML;
-    const foot = `<p class="sh-foot">Позначки: + був · − не був · в — поважна причина &nbsp;&nbsp;&nbsp; Записав: ______________ &nbsp;&nbsp; Перевірив виховник: ______________</p><p class="src">${sh.querySelector('.src').textContent}</p>`;
+    const foot = `<p class="sh-foot">Позначки: + був · − не був · в — поважна причина &nbsp;&nbsp;&nbsp; Записав: ______________ &nbsp;&nbsp; Перевірив виховник: ______________</p><p class="ft"><b>Пласт у Фінляндії</b> · бібліотека гутірок &nbsp;·&nbsp; Робочий бланк · ті самі стовпці, що в аркуші «Відвідуваність» книги гуртка</p>`;
     return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Відвідуваність</title><style>${css}</style></head><body><div class="Section1">${top}${grid}${foot}</div></body></html>`;
   }
   const wordFile = () => new File(['﻿' + wordHtml()], 'Vidviduvanist.doc', {type: 'application/msword'});
