@@ -228,6 +228,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
           <label class="f"><span>Програма коротко <small style="font-weight:400">— необов'язково</small></span><input class="in" id="s-prog" maxlength="160" placeholder="напр. вузли, гра, пісня"></label>
           <div class="row3">
             <label class="f"><span>Гутірка чи гра з бібліотеки</span><input class="in" id="s-gut" maxlength="60" placeholder="необов'язково"></label>
+            <label class="f"><span>Проба / вмілість</span><input class="in" id="s-vml" maxlength="80" placeholder="якщо гутірка до проби чи вмілості"></label>
             <label class="f"><span>Місце</span><input class="in" id="s-mis" maxlength="40" placeholder="домівка"></label>
           </div>
         </div>
@@ -338,7 +339,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   function chysto() {
     prys = {}; plat = {}; sent = {};
-    $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
+    $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-vml', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
     $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
       <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
       || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
@@ -414,7 +415,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     const zadachi = [
       {id: 'vid', t: 'Відвідуваність', z: {arkush: 'Відвідуваність', dani: {'Дата': d, '№ сходин': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'присутність': Object.assign({}, prys)}}},
       {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
-        'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
+        'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Проба / вмілість (якщо стосується)': $('s-vml').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
     ].concat(Object.keys(plat).map(im => ({id: 'f:' + im, t: 'Внесок — ' + im + ', ' + fmt(plat[im] === null ? suma() : plat[im]),
       z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv, 'Примітка': yak}}})));
 
