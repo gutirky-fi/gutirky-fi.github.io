@@ -177,6 +177,25 @@ button{cursor:pointer}
 .rp .in{padding:9px 11px;font-size:16px}
 .radd{display:flex;flex-wrap:wrap;gap:8px}
 .radd .btn{padding:9px 14px;font-size:15px}
+.den{margin:-2px 0 14px;padding:12px 14px;border-radius:16px;background:#14171a;border:1px solid var(--ln)}
+.den .dh{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.den .dh b{font:600 15px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--body)}
+.lnk{background:none;border:0;padding:2px 0;color:var(--d-t);font-weight:700;font-size:14px;text-decoration:underline;cursor:pointer}
+.den .ds{margin:3px 0 9px;color:var(--mut);font-size:14px}
+.den .ds b{color:var(--ink)}
+.den ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.den li{padding:9px 11px;border-radius:12px;background:var(--card);border:1px solid var(--ln)}
+.den li.zt{border-color:rgba(61,175,110,.5)}
+.den li.red{border-color:#d9a640;box-shadow:0 0 0 1px #d9a640}
+.den .dt{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+.den .plus{color:var(--ok-t);white-space:nowrap}.den .minus{color:var(--d-t);white-space:nowrap}
+.den .dd{color:var(--mut);font-size:13.5px;margin-top:2px;line-height:1.35}
+.den .db{display:flex;gap:8px;margin-top:8px}
+.den .db button{padding:6px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:14px}
+.den .db button.warn{border-color:rgba(200,40,74,.7);color:#ffb3c3}
+.den .db button.warn.sure{background:var(--d);border-color:var(--d);color:#fff}
+.den .ztb{display:inline-block;margin-top:5px;font-size:13px;font-weight:700;color:var(--ok-t)}
+.dl0{margin:6px 0 0;color:var(--mut);font-size:14px}
 .rpidk{display:block;margin-top:9px;color:var(--mut);font-size:13px}
 .hint{margin:12px 0 0;color:var(--mut);font-size:14px;text-align:center}
 /* форма */
@@ -437,6 +456,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     const ch = k.split('|'), kl = {}; KL.forEach((h, j) => { kl[h] = ch[j]; });
     DDB[dKey(kl)] = Object.assign({koly: /^\d{4}-/.test(k) ? isoDd(ch[0]) + ' 19:30' : '20.09.2026 18:10', nazva: k, ryadok: 5 + Object.keys(DDB).length}, x, {dani: Object.assign(kl, x.dani)});
   });
+  // каса (без ключа): рядки в пам'яті; K.demoRyadky — для дати «сьогодні»
+  const DR = (K.demoRyadky || []).map((x, j) => ({ryadok: 5 + j, ver: 'v0-' + j, koly: x.koly || 'сьогодні 18:40', khto: x.khto, zatv: x.zatv, dani: Object.assign({'Дата': (() => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); })()}, x.dani)}));
   const pauza = ms => new Promise(r => setTimeout(r, ms));
   async function zapyt(t) {
     if (DEMO) {
@@ -445,9 +466,19 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
       if (t.dija === 'spysok') return {ok: true, spysok: Object.values(DDB).map(x => x.nazva)};
       if (t.dija === 'stan') { const x = DDB[dKey(t.dani)]; return x ? {ok: true, ye: true, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: x.dani} : {ok: true, ye: false}; }
+      if (t.dija === 'den') return {ok: true, ryadky: DR.filter(r => r.dani['Дата'] === t.dani['Дата']).map(r => ({ryadok: r.ryadok, dani: r.dani, khto: r.khto, koly: r.koly, zatverdzheno: !!r.zatv, versiya: r.ver}))};
+      if (!KL.length && (t.dija === 'vypravyty' || t.dija === 'skasuvaty')) {   // каса: за квитком або за номером рядка
+        const rn = t.kvytok ? DKV[t.kvytok] : +t.ryadok, r = DR.find(x => x.ryadok === rn);
+        if (!r) return {ok: false, pomylka: 'Цього запису вже немає. Оновіть список.'};
+        if (r.zatv) return {ok: false, pomylka: 'Цей запис уже перевірив виховник — змінити його може лише він.'};
+        if (!t.kvytok && t.versiya !== r.ver) return {ok: false, zastarilo: true, pomylka: 'Цей рядок щойно змінив хтось інший. Оновіть список і подивіться ще раз.'};
+        if (t.dija === 'skasuvaty') { DR.splice(DR.indexOf(r), 1); return {ok: true, ryadok: rn}; }
+        Object.assign(r, {dani: Object.assign({}, t.dani), khto: t.khto, koly: 'щойно', ver: 'v' + (++demoR)});
+        return {ok: true, ryadok: rn, versiya: r.ver};
+      }
       if (t.dija === 'zapys') {
         const kv = 'demo-kvytok-' + (++demoR);
-        if (!KL.length) { DKV[kv] = null; return {ok: true, ryadok: 10 + demoR, kvytok: kv}; }
+        if (!KL.length) { const r = {ryadok: 20 + demoR, dani: Object.assign({}, t.dani), khto: t.khto, koly: 'щойно', ver: 'v' + demoR}; DR.push(r); DKV[kv] = r.ryadok; return {ok: true, ryadok: r.ryadok, kvytok: kv}; }
         const k = dKey(t.dani), x = DDB[k];
         if (x && x.zatv) return {ok: false, zatverdzheno: true, pomylka: 'Цей запис уже затвердив виховник — змінити його може лише він.'};
         DDB[k] = {khto: t.khto, koly: 'щойно', nazva: KL.map(h => t.dani[h]).join('|'), ryadok: x ? x.ryadok : 10 + demoR, dani: Object.assign({}, t.dani)};
@@ -488,7 +519,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   // K.polia: {h: заголовок аркуша, typ: text|area|date|num|imya|spysok, req, ph, opt, pidk, dl, para, w (на всю ширину в рядку), pust (дата без «сьогодні»)}
   const MN = K.mnoho || null, jeRyad = p => !!MN && MN.ryad.includes(p.h);
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
-  const opts = (l, pust) => (pust ? `<option value="">${pust}</option>` : '') + l.map(x => `<option>${esc(x)}</option>`).join('');
+  // варіант списку — рядок або [значення, як показати]
+  const opts = (l, pust) => (pust ? `<option value="">${pust}</option>` : '') + l.map(x => Array.isArray(x) ? `<option value="${esc(x[0])}">${esc(x[1])}</option>` : `<option>${esc(x)}</option>`).join('');
   function pole(p, i, id) {
     id = id || 'z-p' + i; const ph = (p.ph ? ` placeholder="${esc(p.ph)}"` : '') + (p.dl ? ` list="dl-${p.dl}"` : '');
     let w;
@@ -560,16 +592,23 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     $('z-polia').before($('z-stan'));   // спершу виносимо повідомлення, щоб не стерти
     $('z-polia').innerHTML = h;
     if (MN) { rN = 0; prybrani = []; dodatyRyad(); vsimVydno(); }
+    if (K.den) {   // «Уже в касі за …» — одразу під датою
+      const df = spilneEl('Дата'), blok = df && (df.closest('.row2') || df.closest('.f'));
+      if (blok) blok.insertAdjacentHTML('afterend', '<div class="den" id="z-den" hidden></div>');
+      red = null; dupOk = '';
+    }
     { const kf = KL.length && $('z-p' + idx(KL[KL.length - 1])); const blok = kf && (kf.closest('.row2') || kf.closest('.f')); if (blok) blok.after($('z-stan')); }
-    K.polia.forEach((p, i) => { const el = $('z-p' + i); if (el && p.typ === 'date' && !p.pust) el.value = den(); });
+    K.polia.forEach((p, i) => { const el = $('z-p' + i); if (el && p.typ === 'date' && !p.pust) el.value = K.den && ostData ? ostData : den(); });
     $('z-khto').innerHTML = opts(imena.concat(['виховник']), '— виберіть —');
     const m = $('z-msg'); m.style.color = ''; m.textContent = K.povtor || ''; $('z-fixing').hidden = true; $('z-fixing').textContent = 'Виправляєте щойно надісланий запис — зміни ляжуть у той самий рядок книги.';
     zSt = null; zapovneno = false; $('z-stan').hidden = true; zamok(false); $('z-send').lastChild.textContent = 'Надіслати в книгу';
     if (kod) setTimeout(perevirStan, 0);
+    if (kod && K.den) setTimeout(denZavantazhyty, 0);
   }
   $('z-form').addEventListener('input', e => {
     const f = e.target.closest('.f'); if (f) f.classList.remove('need');
     const rr = e.target.closest('.ryad'); if (rr) { rr.classList.remove('sent'); razom(); }
+    if (MN) dupOk = '';
     if (!document.querySelector('#z-polia .need')) { $('z-msg').style.color = ''; $('z-msg').textContent = K.povtor || ''; }
   });
 
@@ -633,8 +672,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       $('z-sum').textContent = merezha(x, 'Немає зв\'язку — спробуйте ще раз.');
     }
   });
-  $('z-again').addEventListener('click', () => { fixing = false; formaChysta(); $('z-done').hidden = true; $('z-form').hidden = false; });
-  $('z-out').addEventListener('click', () => { kod = ''; imena = []; ost = null; ostM = null; fixing = false; dlSpysok = []; dlNapovnyty(); $('z-polia').innerHTML = ''; $('z-form').hidden = true; $('z-done').hidden = true; $('z-lock').hidden = false; });
+  $('z-again').addEventListener('click', () => { fixing = false; red = null; formaChysta(); $('z-done').hidden = true; $('z-form').hidden = false; });
+  $('z-out').addEventListener('click', () => { kod = ''; imena = []; ost = null; ostM = null; fixing = false; red = null; ostData = ''; dlSpysok = []; dlNapovnyty(); $('z-polia').innerHTML = ''; $('z-form').hidden = true; $('z-done').hidden = true; $('z-lock').hidden = false; });
   window.addEventListener('pagehide', () => { kod = ''; ost = null; ostM = null; });
 
   /* ---------- підказка з книги: назви вже записаних речей (поле з "dl": "knyha") ---------- */
@@ -660,7 +699,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     const el = $('z-rl').lastElementChild;
     if (x) { el.dataset.kv = x.kv || ''; el.dataset.ryadok = x.ryadok || ''; el._dani = x.dani; if (x.kv) el.classList.add('sent'); }
     const z = x ? x.dani : kop || {};
-    K.polia.forEach((p, i) => { if (jeRyad(p) && z[p.h] != null) setV(rEl(n, i), z[p.h]); });
+    K.polia.forEach((p, i) => { if (jeRyad(p)) { if (z[p.h] != null && z[p.h] !== '') setV(rEl(n, i), z[p.h]); else if (p.zam) setV(rEl(n, i), p.zam); } });
     nomery(); return el;
   }
   function ryadDani(el) { const o = {}; K.polia.forEach((p, i) => { if (jeRyad(p)) o[p.h] = rEl(el.dataset.r, i).value.trim(); }); return o; }
@@ -675,6 +714,9 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   if (MN) {
     $('z-polia').addEventListener('click', e => {
       const t = e.target;
+      if (t.closest('[data-den]')) return denZavantazhyty();
+      if (t.closest('[data-vyp]')) { const r = denR.find(x => x.ryadok === +t.closest('[data-vyp]').dataset.vyp); if (r) pochatyRed(r); return; }
+      if (t.closest('[data-skas]')) return skasuvatyRyadok(t.closest('[data-skas]'));
       if (t.closest('.rx')) {
         const el = t.closest('.ryad'); if (el.dataset.kv) prybrani.push({kv: el.dataset.kv});
         el.remove(); if (!$('z-rl').children.length) dodatyRyad(); nomery();
@@ -697,8 +739,64 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       const f = e.target.closest('.f'); if (!f || e.target.closest('.ryad')) return;
       const h = K.polia[+f.dataset.i].h;
       if (MN.vsim && h === MN.vsim.pole) vsimVydno();
+      if (K.den && h === 'Дата') denZavantazhyty();
       if (MN.avto && h === MN.avto.pole) { const c = spilneEl(MN.avto.tsil), x = MN.avto.mapa[e.target.value]; if (c && x && !c.value) c.value = x; }
     });
+  }
+  /* ---------- «Уже в касі за …»: що записано за день (K.den) ---------- */
+  let denR = [], denN = 0, red = null, dupOk = '', ostData = '';
+  async function denZavantazhyty() {
+    const box = $('z-den'); if (!box || !kod) return;
+    const d = spilneEl('Дата').value; if (!d) { box.hidden = true; denR = []; return; }
+    const moye = ++denN; box.hidden = false;
+    box.innerHTML = `<div class="dh"><b>Уже в касі за ${esc(isoDd(d))}</b></div><p class="dl0">Дивлюсь у книгу…</p>`;
+    let v; try { v = await zapyt({kod, dija: 'den', arkush: K.arkush, dani: {'Дата': d}}); } catch (x) { v = null; }
+    if (moye !== denN) return;
+    if (!v || !v.ok) { denR = []; box.innerHTML = `<div class="dh"><b>Уже в касі за ${esc(isoDd(d))}</b></div><p class="dl0">Не вдалося подивитись у книгу (немає зв'язку). <button type="button" class="lnk" data-den="1">Спробувати ще</button></p>`; return; }
+    denR = v.ryadky || []; malDen();
+  }
+  function malDen() {
+    const box = $('z-den'); if (!box) return;
+    const d = spilneEl('Дата').value, im = MN.imya, S = MN.suma;
+    let pr = 0, pi = 0; denR.forEach(r => { const x = chyslo(r.dani[S]); if (r.dani['Рух'] === 'видаток') pi += x; else pr += x; });
+    const li = r => {
+      const x = r.dani, minus = x['Рух'] === 'видаток', nm = x[im] || x['Опис'] || '—';
+      const dd = [x['Категорія'], x[im] ? x['Опис'] : '', x['Як платили'], x['Квитанція №'] ? 'кв. ' + x['Квитанція №'] : '', x['Примітка']].filter(Boolean).map(esc).join(' · ');
+      const kt = (r.khto ? 'записано: ' + esc(r.khto) : '') + (r.koly ? ', ' + esc(String(r.koly).replace(/(\d\d:\d\d):\d\d$/, '$1')) : '');
+      return `<li class="${r.zatverdzheno ? 'zt' : ''}${red && red.ryadok === r.ryadok ? ' red' : ''}"><div class="dt"><span>${esc(nm)}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${groshi(chyslo(x[S]))}</span></div>`
+        + `<div class="dd">${dd}${dd && kt ? '<br>' : ''}${kt} · рядок ${r.ryadok}</div>`
+        + (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' : red && red.ryadok === r.ryadok ? '<span class="ztb" style="color:#f0c060">виправляєте нижче</span>' : `<div class="db"><button type="button" data-vyp="${r.ryadok}">Виправити</button><button type="button" class="warn" data-skas="${r.ryadok}">Скасувати</button></div>`) + `</li>`;
+    };
+    box.innerHTML = `<div class="dh"><b>Уже в касі за ${esc(isoDd(d))}</b><button type="button" class="lnk" data-den="1">оновити</button></div>`
+      + (denR.length ? `<p class="ds">Прийшло <b>${groshi(pr)}</b> · пішло <b>${groshi(pi)}</b> · записів: ${denR.length}</p><ul>${denR.map(li).join('')}</ul>`
+        : `<p class="dl0">За цей день у касі ще нічого немає.</p>`);
+  }
+  function pochatyRed(r) {   // виправити один рядок зі списку: він стає єдиним рядком форми
+    red = {ryadok: r.ryadok}; dupOk = '';
+    K.polia.forEach((p, i) => { if (!jeRyad(p) && p.h !== 'Дата') setV($('z-p' + i), r.dani[p.h]); });
+    $('z-rl').innerHTML = ''; prybrani = [];
+    const el = dodatyRyad(); K.polia.forEach((p, i) => { if (jeRyad(p)) setV(rEl(el.dataset.r, i), r.dani[p.h]); });
+    el.dataset.ver = r.versiya; el.dataset.ryadok = r.ryadok; el.querySelector('.rx').hidden = true; el.querySelector('.rn').textContent = 'Рядок ' + r.ryadok + ' книги'; razom();
+    $('z-radd').hidden = true; $('z-vsim').hidden = true;
+    const fx = $('z-fixing'); fx.hidden = false;
+    fx.innerHTML = `Виправляєте рядок ${r.ryadok} книги — зміни ляжуть у той самий рядок, нового не буде. <button type="button" class="lnk" id="z-redx">Не виправляти</button>`;
+    $('z-send').lastChild.textContent = 'Надіслати виправлення'; $('z-msg').textContent = '';
+    malDen(); el.scrollIntoView({behavior: 'smooth', block: 'center'});
+  }
+  $('z-fixing').addEventListener('click', e => {
+    if (!e.target.closest('#z-redx')) return;
+    const d = spilneEl('Дата').value; ostData = d; formaChysta();
+  });
+  async function skasuvatyRyadok(btn) {
+    if (!btn.classList.contains('sure')) { btn.classList.add('sure'); btn.textContent = 'Так, скасувати'; return; }
+    const r = denR.find(x => x.ryadok === +btn.dataset.skas); if (!r) return;
+    const khto = $('z-khto').value;
+    if (!khto) { btn.classList.remove('sure'); btn.textContent = 'Скасувати'; $('z-msg').style.color = 'var(--d-t)'; $('z-msg').textContent = 'Спершу виберіть унизу, хто ви («Хто записав») — скасування теж підписується.'; return $('z-khto').focus(); }
+    btn.disabled = true; btn.textContent = 'Скасовую…';
+    let v; try { v = await zapyt({kod, dija: 'skasuvaty', arkush: K.arkush, ryadok: r.ryadok, versiya: r.versiya, khto}); } catch (x) { v = {ok: false, pomylka: 'Немає зв\'язку — спробуйте ще раз.'}; }
+    const m = $('z-msg'); m.style.color = v.ok ? 'var(--ok-t)' : 'var(--d-t)';
+    m.textContent = v.ok ? 'Рядок ' + r.ryadok + ' скасовано. Виховник бачить це в «Змінах».' : (v.pomylka || 'Не вдалося скасувати.');
+    denZavantazhyty();
   }
   async function nadislatyMnoho() {
     const msg = $('z-msg'); msg.style.color = 'var(--d-t)';
@@ -718,8 +816,25 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (brak.length) { msg.textContent = 'Заповніть: ' + brak.join(', ') + '.'; return fokus(); }
     if (chys) { msg.textContent = '«' + chys + '» — лише число (напр. 10 або 12,50).'; return fokus(); }
     const khto = $('z-khto').value; if (!khto) { msg.textContent = 'Виберіть, хто записав.'; return $('z-khto').focus(); }
+    if (K.den && !red) {   // подвійний запис? те саме ім'я (або опис), та сама сума й рух — у книзі за цей день чи двічі в списку
+      const pp = d => [norm(d[MN.imya]) || norm(d['Опис']), chyslo(d[MN.suma]).toFixed(2), d['Рух']].join('|');
+      const nazva = d => (d[MN.imya] || d['Опис']) + ' — ' + groshi(chyslo(d[MN.suma]));
+      const nov = aktyvni.filter(x => !x.el.dataset.kv).map(x => Object.assign({}, spil, x.d)), bachu = {}, zbig = [];
+      nov.forEach(d => {
+        const k = pp(d), z = denR.find(r => pp(r.dani) === k);
+        if (z) zbig.push(nazva(d) + ' (уже є в книзі: рядок ' + z.ryadok + (z.khto ? ', записано: ' + z.khto : '') + ')');
+        else if (bachu[k]) zbig.push(nazva(d) + ' (двічі в цьому списку)');
+        bachu[k] = 1;
+      });
+      const sig = JSON.stringify(nov);
+      if (zbig.length && dupOk !== sig) {
+        dupOk = sig; msg.style.color = '#f0c060';
+        msg.textContent = 'Схоже на подвійний запис: ' + zbig.join('; ') + '. Якщо це справді ще один платіж — натисніть «Надіслати» ще раз.';
+        return;
+      }
+    }
     const b = $('z-send'); b.disabled = true; msg.style.color = ''; msg.textContent = 'Надсилаю в книгу…';
-    let vdalo = 0, vsogo = 0, pom = '';
+    let vdalo = 0, vsogo = 0, pom = '', zast = '';
     const skas = prybrani.slice().concat(vsi.filter(x => porozhnii(x.d) && x.el.dataset.kv).map(x => ({kv: x.el.dataset.kv, el: x.el})));
     for (const s of skas) {      // прибрані рядки, що вже в книзі
       vsogo++;
@@ -728,6 +843,15 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     }
     for (const x of aktyvni) {
       const dani = Object.assign({}, spil, x.d), kv = x.el.dataset.kv;
+      if (x.el.dataset.ver) {   // виправлення рядка зі списку «Уже в касі»
+        vsogo++;
+        try {
+          const v = await zapyt({kod, dija: 'vypravyty', arkush: K.arkush, ryadok: +x.el.dataset.ryadok, versiya: x.el.dataset.ver, dani, khto});
+          if (!v.ok) { if (v.zastarilo) zast = v.pomylka; throw new Error(v.pomylka || 'Книга не прийняла виправлення.'); }
+          x.el.dataset.ver = v.versiya || ''; x.el.classList.add('sent'); vdalo++;
+        } catch (e2) { pom = merezha(e2, 'Немає зв\'язку.'); }
+        continue;
+      }
       if (kv && x.el._dani && JSON.stringify(x.el._dani) === JSON.stringify(dani)) { x.el.classList.add('sent'); continue; }   // уже в книзі, без змін
       vsogo++; msg.textContent = 'Надсилаю в книгу… ' + vdalo + ' з ' + vsogo;
       try {
@@ -738,10 +862,13 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       } catch (e2) { pom = merezha(e2, 'Немає зв\'язку.'); }
     }
     b.disabled = false;
+    if (zast) { ostData = spil['Дата']; formaChysta(); msg.style.color = 'var(--d-t)'; msg.textContent = 'Цей рядок щойно змінив хтось інший — ваше виправлення не записано, щоб не затерти чуже. Список угорі оновлено: подивіться й, якщо треба, виправте ще раз.'; return; }
     if (pom) { msg.style.color = 'var(--d-t)'; msg.textContent = 'Надіслано ' + vdalo + ' з ' + vsogo + '. ' + pom + ' Натисніть «Надіслати» ще раз — надіслане (зелене) не повториться.'; return; }
-    ostM = {spil, khto, ryady: aktyvni.map(x => ({dani: x.el._dani, kv: x.el.dataset.kv, ryadok: +x.el.dataset.ryadok || ''}))};
-    const vypr = fixing; fixing = false;
-    gotovo(vypr ? 'Виправлено в книзі' : 'Записано в книгу', ostM.ryady.some(r => r.kv));
+    ostM = {spil, khto, ryady: aktyvni.map(x => ({dani: x.el._dani || Object.assign({}, spil, x.d), kv: x.el.dataset.kv, ryadok: +x.el.dataset.ryadok || ''}))};
+    const vypr = fixing || !!red; fixing = false; red = null;
+    if (K.den) ostData = spil['Дата'];
+    gotovo(vypr ? 'Виправлено в книзі' : 'Записано в книгу', !K.den && ostM.ryady.some(r => r.kv));   // з «Уже в касі» виправляють там, не тут
+    if (K.den) { $('z-mini').hidden = false; $('z-mini').textContent = 'Усе, що записано за цей день, видно у формі в «Уже в касі» — там можна виправити або скасувати будь-який незатверджений рядок.'; }
     const n = ostM.ryady.length, s = ostM.ryady.reduce((a, r) => a + chyslo(r.dani[MN.suma]), 0), rr = ostM.ryady.map(r => r.ryadok).filter(Boolean);
     $('z-sum').textContent = `${K.forma || K.t}: ${isoDd(spil[K.polia[0].h])}${(MN.pidsumok || []).map(h => spil[h] ? ' · ' + spil[h] : '').join('')} — ${n} ${ryadkiv(n)}, разом ${groshi(s)}.` + (rr.length ? ` Рядки в книзі: ${rr.join(', ')}.` : '');
     formaChysta(); $('z-form').hidden = true; $('z-done').hidden = false;

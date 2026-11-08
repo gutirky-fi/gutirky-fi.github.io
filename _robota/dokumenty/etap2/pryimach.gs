@@ -14,6 +14,9 @@
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
+ *   {kod, dija:"den", arkush:"Фінанси", dani:{Дата}} → усі рядки за цю дату: {ryadok, dani, khto, koly, zatverdzheno, versiya}
+ *   vypravyty / skasuvaty з {arkush, ryadok, versiya} замість квитка — будь-який незатверджений рядок аркушів DEN;
+ *   «versiya» — відбиток рядка: якщо хтось змінив його тим часом, зміна не пройде («оновіть список»).
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
  *
@@ -36,7 +39,8 @@ var PER = 'Перевірено виховником', ZMINY = 'Зміни', DOB
 var SLUZHBOVI = ['Хто записав', 'Записано', PER];
 // одна подія = один рядок: за цими стовпцями шукаємо наявний запис (дубля не буде)
 var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид'], 'Майно': ['Річ']};
-var SPYSKY = ['Майно'];   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
+var SPYSKY = ['Майно'];
+var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
 var LYSHE_V = ['novi', 'zatverdyty', 'zvit'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 
@@ -67,8 +71,9 @@ function doPost(e) {
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
     if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.tak !== false));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
-    if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto));
-    if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto));
+    if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
+    if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto, z));
+    if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto, z));
     if (z.dija === 'novi') { var nv = novi(); return vidpovid({ok: true, novi: nv.zapysy, chekaiut: nv.chekaiut}); }
     if (z.dija === 'zvit') return vidpovid(zvit(z.arkush, z.vid, z['do']));
     return vidpovid({ok: false, pomylka: 'Невідома дія.'});
@@ -142,9 +147,20 @@ function zvit(arkush, vid, doo) {
 }
 
 // ---------- запис ----------
+// гроші — без двозначностей: сума — додатне число (до центів), рух — лише надходження/видаток, дата — є
+function perevirkaKasy(arkush, dani) {
+  if (arkush !== 'Фінанси') return '';
+  var s = String(dani['Сума, €'] === undefined ? '' : dani['Сума, €']).trim().replace(',', '.');
+  if (!/^\d+(\.\d{1,2})?$/.test(s) || Number(s) <= 0) return 'Сума — додатне число, до центів (напр. 10 або 12,50).';
+  if (['надходження', 'видаток'].indexOf(String(dani['Рух'] || '')) < 0) return 'Рух — «надходження» або «видаток».';
+  if (!data(dani['Дата'])) return 'Потрібна дата.';
+  return '';
+}
+
 function zapys(arkush, dani, khto) {
   if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'У цей аркуш сайт не пише.'};
   if (!dani || typeof dani !== 'object') return {ok: false, pomylka: 'Порожній запис.'};
+  var pk = perevirkaKasy(arkush, dani); if (pk) return {ok: false, pomylka: pk};
   if (Object.keys(dani).length > 40) return {ok: false, pomylka: 'Забагато полів.'};
   var lock = LockService.getScriptLock();
   lock.waitLock(15000);
@@ -216,12 +232,47 @@ function zaKvytkom(kv) {
   return {sh: sh, zag: zag, r: info.r, info: info, kv: kv};
 }
 
-function vypravyty(kv, dani, khto) {
+// відбиток рядка (щоб не затерти чужу зміну, зроблену тим часом)
+function versiya(sh, r, nc) {
+  var v = sh.getRange(r, 1, 1, nc).getValues()[0].map(function (x) { return x instanceof Date ? 'd' + x.getTime() : String(x === null || x === undefined ? '' : x); });
+  return vidbytok(JSON.stringify(v)).slice(0, 20);
+}
+
+// усі рядки за дату (каса: хто що вже записав сьогодні)
+function den(arkush, dani) {
+  if (DEN.indexOf(arkush) < 0) return {ok: false, pomylka: 'Цей аркуш так не видається.'};
+  var d = data(dani && dani['Дата']); if (!d) return {ok: false, pomylka: 'Потрібна дата.'};
+  var sh = SpreadsheetApp.getActive().getSheetByName(arkush), nc = sh.getLastColumn();
+  var zag = sh.getRange(H, 1, 1, nc).getDisplayValues()[0], n = sh.getMaxRows() - P + 1;
+  var v = sh.getRange(P, 1, n, 1).getValues(), out = [];
+  for (var i = 0; i < n; i++) {
+    var x = v[i][0]; if (!(x instanceof Date) || x.getTime() !== d.getTime()) continue;
+    var m = vmist(sh, zag, arkush, P + i);
+    out.push({ryadok: P + i, dani: m.dani, khto: m.khto, koly: m.koly, zatverdzheno: m.zatverdzheno, versiya: versiya(sh, P + i, nc)});
+  }
+  return {ok: true, ryadky: out};
+}
+
+// виправити/скасувати рядок за номером (лише аркуші DEN, лише незатверджений, лише якщо не змінився тим часом)
+function zaRyadkom(o) {
+  var arkush = o && o.arkush, r = Number(o && o.ryadok);
+  if (DEN.indexOf(arkush) < 0) return {pomylka: 'Цей запис уже не можна змінити з сайту. Попросіть виховника.'};
+  var sh = SpreadsheetApp.getActive().getSheetByName(arkush), nc = sh.getLastColumn();
+  if (!(r >= P && r <= sh.getMaxRows() && r % 1 === 0)) return {pomylka: 'Невідомий рядок.'};
+  var zag = sh.getRange(H, 1, 1, nc).getDisplayValues()[0], kl = sh.getRange(r, 1).getValues()[0][0];
+  if (kl === '' || kl === null) return {pomylka: 'Цього запису вже немає (його скасували). Оновіть список.'};
+  if (perevireno(sh, zag, r)) return {pomylka: 'Цей запис уже перевірив виховник — змінити його може лише він.'};
+  if (String(o.versiya || '') !== versiya(sh, r, nc)) return {pomylka: 'Цей рядок щойно змінив хтось інший. Оновіть список і подивіться ще раз.', zastarilo: true};
+  return {sh: sh, zag: zag, r: r, info: {a: arkush, r: r, t: Date.now()}, kv: null};
+}
+
+function vypravyty(kv, dani, khto, o) {
   if (!dani || typeof dani !== 'object' || Object.keys(dani).length > 40) return {ok: false, pomylka: 'Порожній запис.'};
   var lock = LockService.getScriptLock(); lock.waitLock(15000);
   try {
-    var z = zaKvytkom(kv); if (z.pomylka) return {ok: false, pomylka: z.pomylka};
+    var z = kv ? zaKvytkom(kv) : zaRyadkom(o); if (z.pomylka) return {ok: false, pomylka: z.pomylka, zastarilo: !!z.zastarilo};
     if (z.info.a === VID) return {ok: false, pomylka: 'Відвідуваність виправляють так: надішліть ці сходини ще раз — запис оновиться.'};
+    var pk = perevirkaKasy(z.info.a, dani); if (pk) return {ok: false, pomylka: pk};
     var sh = z.sh, nc = z.zag.length, f = sh.getRange(z.r, 1, 1, nc).getFormulas()[0];
     var ryad = sh.getRange(z.r, 1, 1, nc).getValues()[0];
     if (!dani.hasOwnProperty(z.zag[0]) || chyste(dani[z.zag[0]]) === '') return {ok: false, pomylka: 'Перше поле («' + z.zag[0] + '») не може бути порожнім.'};
@@ -233,20 +284,20 @@ function vypravyty(kv, dani, khto) {
       ryad[c] = h === 'Записано' ? new Date() : h === 'Хто записав' ? chyste(khto || '') : dani.hasOwnProperty(h) ? perevesty(dani[h]) : '';
       sh.getRange(z.r, c + 1).setValue(ryad[c]);
     }
-    PropertiesService.getScriptProperties().setProperty('q:' + kv, JSON.stringify({a: z.info.a, r: z.r, k: kliuchTekst(ryad[0]), t: z.info.t}));
+    if (kv) PropertiesService.getScriptProperties().setProperty('q:' + kv, JSON.stringify({a: z.info.a, r: z.r, k: kliuchTekst(ryad[0]), t: z.info.t}));
     zminy('виправлення', z.info.a, z.r, khto, opys(z.info.a, z.zag, ryad));
-    return {ok: true, arkush: z.info.a, ryadok: z.r};
+    return {ok: true, arkush: z.info.a, ryadok: z.r, versiya: versiya(sh, z.r, nc)};
   } finally { lock.releaseLock(); }
 }
 
-function skasuvaty(kv, khto) {
+function skasuvaty(kv, khto, o) {
   var lock = LockService.getScriptLock(); lock.waitLock(15000);
   try {
-    var z = zaKvytkom(kv); if (z.pomylka) return {ok: false, pomylka: z.pomylka};
+    var z = kv ? zaKvytkom(kv) : zaRyadkom(o); if (z.pomylka) return {ok: false, pomylka: z.pomylka, zastarilo: !!z.zastarilo};
     var sh = z.sh, nc = z.zag.length, f = sh.getRange(z.r, 1, 1, nc).getFormulas()[0];
     var bulo = opys(z.info.a, z.zag, sh.getRange(z.r, 1, 1, nc).getValues()[0]);
     for (var c = 0; c < nc; c++) if (!f[c]) sh.getRange(z.r, c + 1).setValue('');
-    PropertiesService.getScriptProperties().deleteProperty('q:' + kv);
+    if (kv) PropertiesService.getScriptProperties().deleteProperty('q:' + kv);
     zminy('скасування', z.info.a, z.r, khto, 'було: ' + bulo);
     return {ok: true, arkush: z.info.a, ryadok: z.r};
   } finally { lock.releaseLock(); }
@@ -470,7 +521,8 @@ function perevirytyPryimach() {
 
 function novyiRik() {
   var ui = SpreadsheetApp.getUi(), ss = SpreadsheetApp.getActive();
-  var rik = String(ss.getSheetByName('Налаштування').getRange(5, 22).getDisplayValue() || '').trim() || String(new Date().getFullYear());
+  var rikK = klitynkaRoku(ss);
+  var rik = String(rikK ? rikK.getDisplayValue() : '').trim() || String(new Date().getFullYear());
   var r = ui.alert('Новий рік (' + rik + ' закінчується)',
     'Що станеться:\n' +
     '1) повна копія книги піде в архів;\n' +
@@ -504,8 +556,16 @@ function novyiRik() {
   var arkh = ss.getSheetByName('Архів');
   if (arkh) arkh.getRange(vilnyiRyadok(arkh), 1, 1, 4).setValues([[rik, 'Книга гуртка (архів)', 'повна книга року', url]]);
   var m = /^(\d{4})\/(\d{2})$/.exec(rik);
-  if (m) ss.getSheetByName('Налаштування').getRange(5, 22).setValue((+m[1] + 1) + '/' + ('0' + ((+m[2] + 1) % 100)).slice(-2));
+  if (m && rikK) rikK.setValue((+m[1] + 1) + '/' + ('0' + ((+m[2] + 1) % 100)).slice(-2));
   ui.alert('Готово.\nАрхівна копія: ' + nazva + '\nПідсумок — на аркушах «Роки» й «Історія учасників».' + (m ? '\nНавчальний рік у «Налаштуваннях» змінено на наступний.' : ''));
+}
+
+// клітинка «Навчальний рік» у «Налаштуваннях» — шукаємо за назвою (стовпець залежить від кількості списків)
+function klitynkaRoku(ss) {
+  var sh = ss.getSheetByName('Налаштування'); if (!sh) return null;
+  var v = sh.getRange(H, 1, 6, sh.getLastColumn()).getDisplayValues();
+  for (var i = 0; i < v.length; i++) for (var c = 0; c < v[i].length - 1; c++) if (String(v[i][c]).trim() === 'Навчальний рік') return sh.getRange(H + i, c + 2);
+  return null;
 }
 
 // підсумок року з даних журналів (рахує сам, не покладається на формули)

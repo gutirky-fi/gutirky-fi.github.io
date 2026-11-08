@@ -134,6 +134,31 @@ ok(kv.every(r => r.ok && r.kvytok) && fN() === f0 + 3, 'каса: 3 внески
 ok(post({ kod: J, dija: 'vypravyty', kvytok: kv[1].kvytok, khto: 'Дана', dani: { 'Дата': '2026-11-07', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок за листопад', "Ім'я (для внеску)": 'Дана', 'Сума, €': '7', 'Квитанція №': 'К-11' } }).ok
    && sheets['Фінанси']._f[kv[1].ryadok - 1][5] === 7 && sheets['Фінанси']._f[kv[0].ryadok - 1][5] === 5, 'каса: виправлено один рядок, сусідні не зачеплено');
 ok(post({ kod: J, dija: 'skasuvaty', kvytok: kv[2].kvytok, khto: 'Дана' }).ok && fN() === f0 + 2, 'каса: скасовано один рядок');
+// ---- Каса: що записано за день; виправити будь-який незатверджений рядок за номером і відбитком ----
+const kz = (d) => ({ 'Дата': '2026-11-07', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок', "Ім'я (для внеску)": 'Олесь', 'Сума, €': '10', ...d });
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: kz({ 'Сума, €': '-5' }) }).ok, 'каса: від\'ємну суму не прийнято');
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: kz({ 'Сума, €': '0' }) }).ok, 'каса: нуль не прийнято');
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: kz({ 'Сума, €': '10.555' }) }).ok, 'каса: більше двох знаків після коми — ні');
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: kz({ 'Рух': 'щось' }) }).ok, 'каса: незнаний «Рух» не прийнято');
+let dn = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': '2026-11-07' } });
+ok(dn.ok && dn.ryadky.length === 2 && dn.ryadky.every(r => r.versiya && r.ryadok) && dn.ryadky[1].dani['Сума, €'] === 7, 'den: за 07.11 — 2 рядки з номером і відбитком');
+ok(!post({ kod: J, dija: 'den', arkush: 'Учасники', dani: { 'Дата': '2026-11-07' } }).ok, 'den: інші аркуші — ні');
+const r0 = dn.ryadky[0];
+x = post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Ярко', dani: kz({ 'Сума, €': '10', 'Як платили': 'MobilePay' }) });
+ok(x.ok && fN() === f0 + 3 && sheets['Фінанси']._f[x.ryadok - 1][7] === 'MobilePay', 'каса: другий платіж тієї самої людини — новий рядок; «Як платили» — свій стовпець');
+x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: r0.ryadok, versiya: r0.versiya, khto: 'Ярко', dani: Object.assign({}, r0.dani, { 'Сума, €': '15' }) });
+ok(x.ok && sheets['Фінанси']._f[r0.ryadok - 1][5] === 15 && x.versiya && x.versiya !== r0.versiya, 'каса: інший діловод виправив старий рядок за номером');
+x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: r0.ryadok, versiya: r0.versiya, khto: 'Дана', dani: Object.assign({}, r0.dani, { 'Сума, €': '99' }) });
+ok(!x.ok && x.zastarilo && sheets['Фінанси']._f[r0.ryadok - 1][5] === 15, 'каса: стара версія рядка — зміна не пройшла (чужу не затерти)');
+ok(!post({ kod: J, dija: 'vypravyty', arkush: 'Сходини', ryadok: 11, versiya: 'x', dani: { 'Тема': 'x' } }).ok, 'за номером — лише каса');
+sheets['Фінанси']._f[r0.ryadok - 1][12] = 'так';
+dn = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': '2026-11-07' } });
+const r1 = dn.ryadky.find(r => r.ryadok === r0.ryadok);
+ok(r1.zatverdzheno && !post({ kod: J, dija: 'skasuvaty', arkush: 'Фінанси', ryadok: r1.ryadok, versiya: r1.versiya, khto: 'Дана' }).ok, 'каса: затверджений рядок не скасувати');
+sheets['Фінанси']._f[r0.ryadok - 1][12] = '';
+dn = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': '2026-11-07' } });
+const r2 = dn.ryadky.find(r => r.ryadok === r0.ryadok);
+ok(post({ kod: J, dija: 'skasuvaty', arkush: 'Фінанси', ryadok: r2.ryadok, versiya: r2.versiya, khto: 'Дана' }).ok && fN() === f0 + 2, 'каса: скасовано за номером');
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
 const zal = fin0.reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
@@ -151,7 +176,7 @@ const iu = ryad('Історія учасників');
 const zi = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Історія учасників' });
 ok(zi.ok && zi.ryadky.length === 7 && !JSON.stringify(zi).includes('Бондар'), 'звіт «Історія учасників» — без прізвищ'); const ol = iu.find(r => r[1] === 'Олесь');
 ok(iu.length === 7 && ol[2] === 'Бондар' && ol[5] === 8 && ol[9].includes('Приклад-вмілість А'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
-ok(sheets['Налаштування']._f[4][21] === '2027/28', 'навчальний рік → 2027/28');
+ok(sheets['Налаштування']._f[4].includes('2027/28'), 'навчальний рік → 2027/28');
 ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посилання на архів записано');
 for (let i = 0; i < 5; i++) post({ kod: 'x', dija: 'perevirka' });
 ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 5 хибних спроб — вхід закрито');

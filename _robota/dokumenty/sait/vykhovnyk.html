@@ -431,7 +431,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
         'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Проба / вмілість (якщо стосується)': $('s-vml').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
     ].concat(Object.keys(plat).map(im => ({id: 'f:' + im, t: 'Внесок — ' + im + ', ' + fmt(plat[im] === null ? suma() : plat[im]),
-      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv, 'Примітка': yak}}})));
+      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'Внесок', "Ім'я (для внеску)": im, 'Сума, €': plat[im] === null ? suma() : plat[im], 'Квитанція №': kv, 'Як платили': yak}}})));
 
     const pr = $('ps-prog'); pr.hidden = false;
     pr.innerHTML = zadachi.map(z => `<li data-id="${esc(z.id)}" class="${sent[z.id] ? 'ok' : ''}">${esc(z.t)}</li>`).join('');
