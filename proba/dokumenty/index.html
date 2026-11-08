@@ -45,7 +45,7 @@ a{color:inherit}
 .sec{margin:0 0 48px}
 .sec>h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin:0 0 18px;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 .sec>h2 small{font:400 15px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
-.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
 .role{display:flex;flex-direction:column;gap:10px;padding:22px 22px 18px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c)}
 .role h3{margin:0;font:600 28px/1 var(--disp);letter-spacing:.03em;text-transform:uppercase;color:var(--ct)}
 .role .also{margin:-4px 0 0;font-size:14px;color:var(--mut)}
@@ -57,6 +57,17 @@ a{color:inherit}
 .docs a svg{width:17px;height:17px;flex:none;color:var(--ct)}
 .docs span{color:var(--mut);font-weight:600;padding-block:6px}
 .docs span i{font-style:normal;font-size:12.5px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mut)}
+.more{margin:2px 0 0;border-radius:12px;background:#1d2025;border:1px solid var(--ln)}
+.more summary{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;list-style:none;font-weight:700;font-size:15px;color:var(--body)}
+.more summary::-webkit-details-marker{display:none}
+.more summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ct);border-bottom:2px solid var(--ct);transform:rotate(45deg) translateY(-3px);transition:transform .15s}
+.more[open] summary::after{transform:rotate(-135deg) translate(-2px,-1px)}
+.more .ob{margin:0;padding:2px 14px 4px 30px;font-size:15px;color:var(--body)}
+.more .ob li{margin:3px 0}
+.more .ob li::marker{color:var(--ct)}
+.more dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:6px 12px 12px;padding-top:8px;border-top:1px solid var(--ln);font-size:14px}
+.more dt{color:var(--mut);font-weight:600}
+.more dd{margin:0;color:var(--body)}
 .yu{--c:var(--yu);--ct:var(--yu-t)}
 .vy{--c:var(--vy);--ct:var(--vy-t)}
 .note{margin:-4px 0 18px;color:var(--mut);font-size:15px;max-width:70ch}
@@ -103,31 +114,51 @@ a{color:inherit}
     <div class="roles" id="roles-vy"></div>
   </section>
 
-  <p class="src">Посади й обов'язки — за Правильником УПЮ (пункти 3.3.5, 3.4.1–3.4.6). Якщо у вашому курені чи краї заведено інакше — питайте виховника.</p>
+  <section class="sec" aria-labelledby="h-rada"><h2 id="h-rada">Гурткова рада<small>усі члени гуртка разом</small></h2>
+    <p class="note" style="margin:0">Збирається щонайменше раз на рік. Обирає провід гуртка (гурткового й діловодів) і затверджує річний план — відкритим голосуванням, більшістю голосів. Рішення набирають сили після згоди впорядника. Протокол пише писар. <span style="opacity:.8">(Правильник УПЮ ч. I, п. 3.2.1, переказ)</span></p></section>
+  <p class="src">Обов'язки — переказ своїми словами з <a href="https://plast.org/wp-content/uploads/2014/02/Pravylnyk-UPU-1-zminy-KUPO-2019.pdf" target="_blank" rel="noopener">Правильника УПЮ, ч. I</a> (5-те вид., зі змінами 2019). Якщо у вашому курені чи краї заведено інакше — питайте виховника.</p>
 </div>
 
 <script>
 (function () {
   // Документи: [назва, адреса або null (ще готується)]
+  // Обов'язки — переказ Правильника УПЮ ч. I (2019), не дослівно; джерело — etap1/KATALOH-ETAP1.xlsx, аркуш «Ролі».
+  // ob — обов'язки, koly — коли, knyha — книга за Правильником, p — пункт.
   const R = [
-    {k: 'yu', t: 'Гуртковий', also: 'обраний гуртом', duty: 'Веде книгу гурткового: план праці, сходини, завдання гуртка, звіт.',
+    {k: 'yu', t: 'Гуртковий', also: 'обирають члени гуртка', p: '3.4.1', duty: 'Очолює гурток, готує план і звіт, стежить за роботою діловодів.',
+     ob: ['Обирається членами гуртка на гуртковій раді (не призначається).', 'Очолює гурток і представляє його назовні.', 'Стежить, щоб діловоди вели свої записи.', 'Готує план праці гуртка.', 'Готує письмовий звіт гуртка.', 'Береже гуртковий прапорець.'],
+     koly: 'План — на гуртковій раді; звіт — у строк, який дає курінь.', knyha: 'Книга гурткового',
      d: [['План праці'], ['Сходини'], ['Завдання'], ['Звіт гуртка']]},
-    {k: 'yu', t: 'Заступник', also: 'заступник гурткового', duty: 'Стежить за присутністю і пластовими осягами: проби, вмілості, пропозиції відзначень.',
+    {k: 'yu', t: 'Заступник', also: 'заступник гурткового', p: '3.4.2', duty: 'Веде присутність і пластові осяги: проби, вмілості, відзначення.',
+     ob: ['Заступає гурткового, коли його немає.', 'Веде присутність на сходинах.', 'Веде пластові осяги кожного: проби, вмілості.', 'Пропонує відзначення й перестороги.', 'Пропонує прийом нових членів і вибуття.'],
+     koly: 'Щосходин.', knyha: 'Книга присутності й осягів',
      d: [['Відвідуваність', 'vidviduvanist/'], ['Проби'], ['Вмілості'], ['Відзначки']]},
-    {k: 'yu', t: 'Писар', also: 'можна разом із хронікарем', duty: 'Пише протоколи сходин і рад, записує рішення, береже архів гуртка.',
+    {k: 'yu', t: 'Писар', also: 'можна разом із хронікарем', p: '3.4.3', duty: 'Пише протоколи сходин і рад, веде листування, береже архів.',
+     ob: ['Пише протоколи сходин і гурткових рад.', 'Веде листування гуртка.', 'Береже гуртковий архів.'],
+     koly: 'Щосходин і на кожній раді.', knyha: 'Книга протоколів; архів',
      d: [['Протокол сходин'], ['Рішення'], ['Архів і реєстр документів']]},
-    {k: 'yu', t: 'Скарбник', also: 'можна разом із господарем', duty: 'Веде прихід і розхід з квитанціями: внески, видатки, фінансовий план.',
+    {k: 'yu', t: 'Скарбник', also: 'можна разом із господарем', p: '3.4.4', duty: 'Веде касу гуртка: внески, видатки, фінансовий план.',
+     ob: ['Записує кожен прихід і розхід грошей.', 'Складає фінансовий план.', 'Збирає внески й передає їх до куреня.', 'Зберігає гроші там, де затвердила гурткова рада.'],
+     koly: 'Щоразу, коли рухаються гроші; внески — у строк.', knyha: 'Книга скарбника',
      d: [['Внески'], ['Видатки'], ['Фінансовий план']]},
-    {k: 'yu', t: 'Господар', also: 'можна разом зі скарбником', duty: 'Веде книгу майна: що має гурток, у кого воно, хто взяв і повернув.',
+    {k: 'yu', t: 'Господар', also: 'можна разом зі скарбником', p: '3.4.5', duty: 'Веде облік майна гуртка і дбає, щоб воно безпечно зберігалось.',
+     ob: ['Веде облік усього майна гуртка.', 'Дбає про безпечне зберігання.', 'Записує, хто що взяв і повернув.'],
+     koly: 'При кожній видачі й поверненні; раз на рік — перевірка.', knyha: 'Книга господаря',
      d: [['Майно'], ['Акт передачі']]},
-    {k: 'yu', t: 'Хронікар', also: 'можна разом із писарем', duty: 'Веде хроніку гуртка: мандрівки, заходи, короткі звіти зі сходин.',
+    {k: 'yu', t: 'Хронікар', also: 'можна разом із писарем', p: '3.4.6', duty: 'Веде хроніку гуртка: мандрівки, заходи, події.',
+     ob: ['Веде хроніку діяльності гуртка.', 'Записує мандрівки, заходи й важливі події.'],
+     koly: 'Після кожної події.', knyha: 'Книга хроніки',
      d: [['Хроніка'], ['Мандрівки й заходи']]},
-    {k: 'vy', t: 'Впорядник', also: 'виховник гуртка', duty: 'Веде книгу впорядника: учасники, плани, листи; підтверджує проби.',
+    {k: 'vy', t: 'Впорядник', also: 'виховник гуртка', p: '3.3.5', duty: 'Відповідає за успіхи й безпеку юнаків, зв\'язок з батьками і звітність.',
+     ob: ['Дбає про успіхи й безпеку членів гуртка.', 'Стежить за участю в програмі.', 'Тримає зв\'язок з батьками.', 'Приймає й звільняє членів.', 'Відповідає за звітність і внески.', 'Має останнє слово в рішеннях гуртка.'],
+     koly: 'Постійно; підсумок — у звіті.', knyha: 'Книга впорядника (дані членів, плани, листування)',
      d: [['Вхід виховника: усе за подіями', 'vykhovnyk/'], ['Учасники'], ['Підтвердження проб'], ['Звіт за рік']]}
   ];
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const arr = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   const card = r => `<article class="role ${r.k}"><h3>${esc(r.t)}</h3><p class="also">${esc(r.also)}</p><p class="duty">${esc(r.duty)}</p>
+    <details class="more"><summary>Усі обов'язки</summary><ul class="ob">${r.ob.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+      <dl><dt>Коли</dt><dd>${esc(r.koly)}</dd><dt>Веде</dt><dd>${esc(r.knyha)}</dd><dt>Джерело</dt><dd>Правильник УПЮ ч. I, п. ${r.p} (переказ)</dd></dl></details>
     <ul class="docs">${r.d.map(([n, u]) => u ? `<li><a href="${u}">${esc(n)}${arr}</a></li>` : `<li><span>${esc(n)}<i>готується</i></span></li>`).join('')}</ul></article>`;
   document.getElementById('roles-yu').innerHTML = R.filter(r => r.k === 'yu').map(card).join('');
   document.getElementById('roles-vy').innerHTML = R.filter(r => r.k === 'vy').map(card).join('');
