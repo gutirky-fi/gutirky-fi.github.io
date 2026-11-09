@@ -1271,8 +1271,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     l.push(ty ? 'Нагадую про внески до гуртка:' : `Нагадуємо про пластові внески гуртка (${im}):`);
     vs.forEach(x => l.push(`• «${x.n}» — бракує ${groshi(x.b)}${x.t ? ' (термін — ' + isoDd(x.t) + ')' : ''}`));
     if (p.borh < 0) l.push(`• ${ty ? 'твій борг' : 'борг'} гуртку — ${groshi(-p.borh)}`);
-    l.push(`Разом: ${groshi(p.vynenHurtku)}.`);
-    if (p.hurtokVynen > 0) l.push(ty ? `А гурток винен тобі ${groshi(p.hurtokVynen)} — можемо зарахувати це у внесок, напиши.` : `Гурток, своєю чергою, винен ${groshi(p.hurtokVynen)} — можемо зарахувати це у внесок.`);
+    if (p.hurtokVynen > 0) l.push(ty ? `Гурток теж має віддати тобі ${groshi(p.hurtokVynen)} — зараховуємо це, тож тобі лишається доплатити ${groshi(p.razom)}. (Хочеш ці гроші назад, а внесок повністю — напиши.)` : `Гурток, своєю чергою, має повернути ${groshi(p.hurtokVynen)} — зараховуємо це, тож лишається доплатити ${groshi(p.razom)}. (Якщо краще повернути гроші — дайте знати.)`);
+    else l.push(`Разом: ${groshi(p.vynenHurtku)}.`);
     if (VT.rek.trim()) l.push((ty ? 'Як заплатити: ' : 'Як сплатити: ') + VT.rek.trim());
     l.push(ty ? 'Якщо вже заплатив(-ла) — напиши мені, перевіримо. Дякую!' : 'Якщо вже сплачено — будь ласка, дайте знати, ми перевіримо. Дякуємо!');
     l.push('— ' + pidpysNag());
