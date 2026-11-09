@@ -206,6 +206,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 .kl .kt{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .kl .kt .plus{color:var(--ok-t);white-space:nowrap}.kl .kt .minus{color:#ff7d99;white-space:nowrap}
 .kl .kd{color:var(--mut);font-size:13.5px;margin-top:2px;line-height:1.35}
+.kl .fot{display:inline-block;margin-top:5px;font-size:14px;font-weight:700;color:var(--ok-t)}.kl .fot.no{color:#f3d48a}
 .kl .neb{display:block;margin-top:4px;font-size:13px;font-weight:700;color:#ffb3c3}
 .kl .kb{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .kl .kb button{padding:8px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14.5px}
@@ -310,7 +311,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
         <button class="btn" type="button" id="kp-re" style="width:100%">Оновити</button>
       </div>
       <aside class="side">
-        <div class="card"><h3>Як перевіряти</h3><ul><li><b>Переказ, MobilePay, картка</b> — відкрийте банк: є такий платіж? «✓ є в банку».</li><li><b>Готівка</b> — гроші у вас чи в скарбника? «✓ гроші є».</li><li><b>Видаток</b> — бачили чек (фото)? «✓ є чек».</li><li>Не знайшли — «✗ немає». Рядок не рахується, юнак бачить позначку й може виправити помилку. Далі — розмова.</li></ul></div>
+        <div class="card"><h3>Як перевіряти</h3><ul><li><b>Переказ, MobilePay, картка</b> — відкрийте банк: є такий платіж? «✓ є в банку».</li><li><b>Готівка</b> — гроші у вас чи в скарбника? «✓ гроші є».</li><li><b>Видаток</b> — «📷 Подивитись чек»: сума й дата збігаються? «✓ є чек». Фото лежать у вашому Диску, папка «Чеки гуртка».</li><li>Не знайшли — «✗ немає». Рядок не рахується, юнак бачить позначку й може виправити помилку. Далі — розмова.</li></ul></div>
         <div class="card"><h3>Чому так</h3><ul><li>Внесок отримує ✓ у «Хто сплатив» лише після вашого «✓».</li><li>Спільний код не каже, хто натиснув, — але фальшивий запис нічого не дає: без грошей у банку чи в коробці він не пройде перевірку.</li><li>Звірки лишаються в аркуші «Звірки» книги.</li></ul></div>
       </aside>
     </div>
@@ -416,7 +417,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     {ryadok: 31, khto: 'Дана', koly: '02.11.2026 19:10', dani: {'Дата': '2026-11-02', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Олесь', 'Сума, €': 10, 'Як платили': 'MobilePay', 'Внесок': 'Листопад 2026'}},
     {ryadok: 33, khto: 'Ярко', koly: '05.11.2026 20:02', dani: {'Дата': '2026-11-05', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Ярко', 'Сума, €': 20, 'Як платили': 'переказ', 'Внесок': 'Листопад 2026'}, ne: true},
     {ryadok: 34, khto: 'Дана', koly: '08.11.2026 18:40', dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Соломія', 'Сума, €': 20, 'Квитанція №': 'К-7', 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}},
-    {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка'}}];
+    {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка', 'Фото чека': 'https://drive.google.com/file/d/demo/view'}}];
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length; return Object.assign({ok: true}, DH, {razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
@@ -550,6 +551,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
         const dd = [ddd(d['Дата']), d['Категорія'] + (d['Внесок'] ? ' «' + d['Внесок'] + '»' : ''), d["Ім'я (для внеску)"] ? d['Опис'] : '', d['Як платили'], d['Квитанція №'] ? 'кв. ' + d['Квитанція №'] : '', d['Примітка']].filter(Boolean).map(esc).join(' · ');
         return `<li class="${x.ne ? 'ne' : ''}" data-r="${x.ryadok}"><div class="kt"><span>${esc(d["Ім'я (для внеску)"] || d['Опис'] || '—')}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${fmt2(+d['Сума, €'] || 0)}</span></div>`
           + `<div class="kd">${dd}<br>записав: ${esc(x.khto || '—')} · рядок ${x.ryadok}</div>`
+          + (/^https:\/\/(drive|docs)\.google\.com\//.test(d['Фото чека'] || '') ? `<a class="fot" href="${esc(d['Фото чека'])}" target="_blank" rel="noopener noreferrer">📷 Подивитись чек</a>` : minus ? '<span class="fot no">📷 фото чека не додали — попросіть</span>' : '')
           + (x.ne ? `<span class="neb">✗ Ви позначили: немає ${shcho}. Юнак бачить це й може виправити.</span>` : '')
           + `<div class="kb"><button type="button" class="tak" data-k="так">${ta}</button>${x.ne ? '<button type="button" data-k="">Зняти «немає»</button>' : `<button type="button" class="ni" data-k="ні">${ni}</button>`}</div></li>`;
       }).join('')}</ul></div>`;

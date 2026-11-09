@@ -22,7 +22,13 @@ function Sheet(name, d) {
 }
 const sheets = Object.fromEntries(Object.entries(dump).map(([n, d]) => [n, Sheet(n, d)]));
 const props = {}, cache = {};
+const drive = { files: {}, folders: 0 };
 const ctx = {
+  DriveApp: {
+    createFolder: n => { const id = 'papka' + (++drive.folders); return { getId: () => id, isTrashed: () => false, createFile: b => { const fid = 'f'.repeat(10) + crypto.randomUUID().replace(/-/g, ''); drive.files[fid] = { name: b.name, len: b.bytes.length, trashed: false }; return { getUrl: () => 'https://drive.google.com/file/d/' + fid + '/view' }; } }; },
+    getFolderById: id => { throw Error('немає'); },
+    getFileById: id => ({ setTrashed: t => { if (drive.files[id]) drive.files[id].trashed = t; } }),
+  },
   SpreadsheetApp: {
     getActive: () => ({ getSheetByName: n => sheets[n] || null, getSheets: () => Object.values(sheets), getName: () => 'Книга гуртка',
       copy: n => ({ getUrl: () => 'https://docs.google.com/archiv' }), getSpreadsheetTimeZone: () => 'Europe/Helsinki' }),
@@ -31,7 +37,7 @@ const ctx = {
   PropertiesService: { getScriptProperties: () => ({ getProperty: k => props[k] || null, setProperty: (k, v) => props[k] = v, getProperties: () => Object.assign({}, props), deleteProperty: k => { delete props[k]; } }) },
   CacheService: { getScriptCache: () => ({ get: k => cache[k] || null, put: (k, v) => cache[k] = v }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
-  Utilities: { sleep() {}, getUuid: () => crypto.randomUUID(), DigestAlgorithm: {}, Charset: {}, computeDigest: (a, s) => [...crypto.createHash('sha256').update(s, 'utf8').digest()].map(b => b > 127 ? b - 256 : b) },
+  Utilities: { base64Decode: b => [...Buffer.from(b, 'base64')].map(x => x > 127 ? x - 256 : x), newBlob: (bytes, typ, name) => ({ bytes, typ, name }), sleep() {}, getUuid: () => crypto.randomUUID(), DigestAlgorithm: {}, Charset: {}, computeDigest: (a, s) => [...crypto.createHash('sha256').update(s, 'utf8').digest()].map(b => b > 127 ? b - 256 : b) },
   ContentService: { MimeType: { JSON: 1 }, createTextOutput: t => ({ setMimeType: () => JSON.parse(t) }) },
   console, Date,
 };
@@ -151,11 +157,11 @@ ok(x.ok && sheets['Фінанси']._f[r0.ryadok - 1][5] === 15 && x.versiya && 
 x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: r0.ryadok, versiya: r0.versiya, khto: 'Дана', dani: Object.assign({}, r0.dani, { 'Сума, €': '99' }) });
 ok(!x.ok && x.zastarilo && sheets['Фінанси']._f[r0.ryadok - 1][5] === 15, 'каса: стара версія рядка — зміна не пройшла (чужу не затерти)');
 ok(!post({ kod: J, dija: 'vypravyty', arkush: 'Сходини', ryadok: 11, versiya: 'x', dani: { 'Тема': 'x' } }).ok, 'за номером — лише каса');
-sheets['Фінанси']._f[r0.ryadok - 1][13] = 'так';
+sheets['Фінанси']._f[r0.ryadok - 1][14] = 'так';
 dn = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': '2026-11-07' } });
 const r1 = dn.ryadky.find(r => r.ryadok === r0.ryadok);
 ok(r1.zatverdzheno && !post({ kod: J, dija: 'skasuvaty', arkush: 'Фінанси', ryadok: r1.ryadok, versiya: r1.versiya, khto: 'Дана' }).ok, 'каса: затверджений рядок не скасувати');
-sheets['Фінанси']._f[r0.ryadok - 1][13] = '';
+sheets['Фінанси']._f[r0.ryadok - 1][14] = '';
 dn = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': '2026-11-07' } });
 const r2 = dn.ryadky.find(r => r.ryadok === r0.ryadok);
 ok(post({ kod: J, dija: 'skasuvaty', arkush: 'Фінанси', ryadok: r2.ryadok, versiya: r2.versiya, khto: 'Дана' }).ok && fN() === f0 + 2, 'каса: скасовано за номером');
@@ -187,16 +193,16 @@ ok(ks.ok && ks.ryadky.length === hr.chekaiut && ks.ryadky.every(x => x.versiya &
 const mPay = ks.ryadky.find(x => x.dani['Як платили'] === 'MobilePay' && x.dani["Ім'я (для внеску)"] === 'Мирося');
 x = post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: mPay.ryadok, znach: 'так' });
 vn = post({ kod: J, dija: 'vnesky' });
-ok(x.ok && x.zatverdzheno && sheets['Фінанси']._f[mPay.ryadok - 1][13] === 'так' && (vn.perevireno['Мирося'] || {})['Осінь 2026'] >= 10, '«✓ є в банку» → перевірено, рахується в ✓');
+ok(x.ok && x.zatverdzheno && sheets['Фінанси']._f[mPay.ryadok - 1][14] === 'так' && (vn.perevireno['Мирося'] || {})['Осінь 2026'] >= 10, '«✓ є в банку» → перевірено, рахується в ✓');
 const inshyi = post({ kod: K, dija: 'kasa' }).ryadky.find(x => x.ryadok !== mPay.ryadok && x.dani['Рух'] === 'надходження');
 x = post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: inshyi.ryadok, znach: 'ні' });
-ok(x.ok && x.ne && sheets['Фінанси']._f[inshyi.ryadok - 1][13] === 'ні' && zm().some(z => z[1] === 'немає'), '«✗ немає» → «ні», у «Змінах» — «немає»');
+ok(x.ok && x.ne && sheets['Фінанси']._f[inshyi.ryadok - 1][14] === 'ні' && zm().some(z => z[1] === 'немає'), '«✗ немає» → «ні», у «Змінах» — «немає»');
 ok(post({ kod: K, dija: 'hroshi' }).ne === 1 && post({ kod: K, dija: 'kasa' }).ryadky.some(x => x.ryadok === inshyi.ryadok && x.ne), '«ні» лишається в «Перевірці каси»');
 ok(!post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: inshyi.ryadok, znach: 'може' }).ok, 'незнана позначка — ні');
 const dI = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': inshyi.dani['Дата'] } }).ryadky.find(x => x.ryadok === inshyi.ryadok);
 ok(dI && dI.ne && !dI.zatverdzheno, 'den: діловод бачить «не знайдено»');
 x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: dI.ryadok, versiya: dI.versiya, khto: 'Дана', dani: Object.assign({}, dI.dani, { 'Примітка': 'сума була інша' }) });
-ok(x.ok && sheets['Фінанси']._f[inshyi.ryadok - 1][13] === '', 'діловод виправив «ні» → знову чекає перевірки');
+ok(x.ok && sheets['Фінанси']._f[inshyi.ryadok - 1][14] === '', 'діловод виправив «ні» → знову чекає перевірки');
 ok(post({ kod: K, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11, tak: true }).ok, 'старе «tak» теж працює');
 hr = post({ kod: K, dija: 'hroshi' });
 x = post({ kod: K, dija: 'zvirka', shcho: 'готівка', ye: String(hr.gotivka - 2).replace('.', ','), prymitka: 'бракує 2 €' });
@@ -208,8 +214,29 @@ ok(!post({ kod: K, dija: 'nakhunok', suma: String(hr.gotivka + 100) }).ok, 'на
 const fx = FN().length;
 x = post({ kod: K, dija: 'nakhunok', suma: '5', prymitka: 'банкомат' });
 const pr2 = x.ryadky ? x.ryadky.map(n => sheets['Фінанси']._f[n - 1]) : [];
-ok(x.ok && FN().length === fx + 2 && pr2.every(r => r[2] === 'переміщення' && r[5] === 5 && r[13] === 'так') && Math.abs(x.hroshi.gotivka - (hr.gotivka - 5)) < 0.01 && Math.abs(x.hroshi.rakhunok - (hr.rakhunok + 5)) < 0.01 && x.hroshi.razom === hr.razom, 'на рахунок 5 €: два рядки «переміщення», готівки −5, рахунку +5, разом те саме');
+ok(x.ok && FN().length === fx + 2 && pr2.every(r => r[2] === 'переміщення' && r[5] === 5 && r[14] === 'так') && Math.abs(x.hroshi.gotivka - (hr.gotivka - 5)) < 0.01 && Math.abs(x.hroshi.rakhunok - (hr.rakhunok + 5)) < 0.01 && x.hroshi.razom === hr.razom, 'на рахунок 5 €: два рядки «переміщення», готівки −5, рахунку +5, разом те саме');
 ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: vz({ 'Категорія': 'переміщення', 'Внесок': '', "Ім'я (для внеску)": '' }) }).ok, '«переміщення» з форми каси — не прийнято (лише виховник)');
+// ---- фото чека ----
+const jpg = Buffer.concat([Buffer.from([0xFF, 0xD8, 0xFF, 0xE0]), Buffer.alloc(300, 7)]).toString('base64');
+const vyd = FN().find(x => x.r[1] === 'видаток' && x.r[14] !== 'так');
+const CF = sheets['Фінанси']._f[2].indexOf('Фото чека');
+ok(CF === 11 && sheets['Фінанси']._f[2][14] === 'Перевірено виховником', 'книга: «Фото чека» — стовпець L, «Перевірено» — останній');
+let ft = post({ kod: J, dija: 'foto', ryadok: vyd.n, foto: jpg, khto: 'Дана' });
+const f1url = sheets['Фінанси']._f[vyd.n - 1][CF];
+ok(ft.ok && /drive\.google\.com/.test(f1url) && Object.keys(drive.files).length === 1 && /рядок/.test(Object.values(drive.files)[0].name), 'фото чека: файл у Диску, посилання в книзі (' + Object.values(drive.files)[0].name + ')');
+ok(zm().some(z => z[1] === 'фото чека'), '«Зміни»: фото чека');
+ok(!post({ kod: J, dija: 'foto', ryadok: vyd.n, foto: Buffer.from('просто текст, не фото — довше ста байтів '.repeat(5)).toString('base64') }).ok, 'не JPEG — відмова');
+ok(!post({ kod: J, dija: 'foto', ryadok: vyd.n, foto: 'A'.repeat(5 * 1024 * 1024) }).ok, 'завелике — відмова');
+ft = post({ kod: J, dija: 'foto', ryadok: vyd.n, foto: jpg, khto: 'Дана' });
+ok(ft.ok && Object.values(drive.files).filter(f => f.trashed).length === 1 && sheets['Фінанси']._f[vyd.n - 1][CF] !== f1url, 'заміна фото (неперевірений рядок): старе — у кошик');
+let dv = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': (d => d.toISOString().slice(0, 10))(new Date(vyd.r[0].getTime() - vyd.r[0].getTimezoneOffset() * 60000)) } }).ryadky.find(x => x.ryadok === vyd.n);
+x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: vyd.n, versiya: dv.versiya, khto: 'Дана', dani: Object.assign({}, dv.dani, { 'Фото чека': 'https://zlo.example/x', 'Примітка': 'уточнено' }) });
+ok(x.ok && sheets['Фінанси']._f[vyd.n - 1][CF] === ft.url, 'виправлення рядка фото не стирає й чужого посилання не підставляє');
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: { 'Дата': '2026-11-09', 'Рух': 'видаток', 'Категорія': 'інше', 'Опис': 'x', 'Сума, €': '1', 'Як платили': 'картка', 'Фото чека': 'https://zlo.example' } }).ryadok || sheets['Фінанси']._f[FN().slice(-1)[0].n - 1][CF] === '', 'новий запис: посилання на фото з форми не приймається');
+sheets['Фінанси']._f[vyd.n - 1][14] = 'так';
+ok(!post({ kod: J, dija: 'foto', ryadok: vyd.n, foto: jpg }).ok, 'перевірений рядок із фото — замінити з сайту не можна');
+hr = post({ kod: J, dija: 'hroshi' });
+ok(hr.cheky.includes('Ч-1') && hr.cheky.includes('Ч-2') && hr.nastupnyiChek === 'Ч-3', 'номери чеків: ' + hr.cheky.join(', ') + ' → наступний ' + hr.nastupnyiChek);
 const hrRik = post({ kod: K, dija: 'hroshi' });
 const borgy = ctx.borhyRoku();
 // ---- Новий рік ----
@@ -225,7 +252,7 @@ ok(ryad('Проби').length === proby0 && ryad('Вмілості').length === v
 const zv = ryad('Завдання'); ok(zv.length === 3 && zv.every(r => r[4] !== 'зроблено'), 'завдання: лишились 3 незроблені, стягнуті догори');
 const vr1 = ryad('Внески'); ok(vr1.length === 1 && String(vr1[0][0]).startsWith('Борг з') && vr1[0][3] === borgy && /Мирося 5/.test(borgy) && /Остап 10/.test(borgy) && !/Олесь/.test(borgy.replace(/Олесь 10/, '')), 'Новий рік: внески очищено, борги перенесено: ' + borgy);
 const f1 = ryad('Фінанси'), zn = r => (r[1] === 'видаток' ? -1 : 1) * r[5];
-ok(f1.length >= 1 && f1.length <= 3 && Math.abs(f1.reduce((a, r) => a + zn(r), 0) - zal) < 0.01 && f1.every(r => String(r[3]).startsWith('Залишок з 2026/27') && r[13] === 'так'), 'каса: залишок з 2026/27 = ' + zal + ' (' + f1.map(r => r[3] + ' ' + zn(r)).join('; ') + ')');
+ok(f1.length >= 1 && f1.length <= 3 && Math.abs(f1.reduce((a, r) => a + zn(r), 0) - zal) < 0.01 && f1.every(r => String(r[3]).startsWith('Залишок з 2026/27') && r[14] === 'так'), 'каса: залишок з 2026/27 = ' + zal + ' (' + f1.map(r => r[3] + ' ' + zn(r)).join('; ') + ')');
 const g1 = f1.find(r => r[7] === 'готівка'), r1x = f1.find(r => r[7] === 'переказ');
 ok(Math.abs((g1 ? zn(g1) : 0) - hrRik.gotivka) < 0.01 && Math.abs((r1x ? zn(r1x) : 0) - hrRik.rakhunok) < 0.01, 'Новий рік: готівка й рахунок перенесено окремо');
 ok(ryad('Звірки').length >= 3, '«Звірки» Новий рік не чистить');

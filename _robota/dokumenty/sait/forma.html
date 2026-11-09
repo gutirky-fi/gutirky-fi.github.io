@@ -92,7 +92,8 @@
 .den .dt{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .den .plus{color:var(--ok-t);white-space:nowrap}.den .minus{color:var(--d-t);white-space:nowrap}
 .den .dd{color:var(--mut);font-size:13.5px;margin-top:2px;line-height:1.35}
-.den .db{display:flex;gap:8px;margin-top:8px}
+.den .db{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.den .db button{white-space:nowrap}
 .den .db button{padding:6px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:14px}
 .den .db button.warn{border-color:rgba(200,40,74,.7);color:#ffb3c3}
 .den .db button.warn.sure{background:var(--d);border-color:var(--d);color:#fff}
@@ -112,6 +113,13 @@
 .vn p{margin:8px 4px 0;color:var(--mut);font-size:13px;white-space:normal}
 .vn .w{color:#f3d48a;font-weight:700}
 .den li.ne{border-color:rgba(200,40,74,.65)}
+/* фото чека */
+.foto{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 6px}
+.foto label{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:12px;border:1px dashed #6b7480;background:#14171a;font-weight:700;font-size:15px;cursor:pointer}
+.foto.ye label{border-style:solid;border-color:rgba(61,175,110,.6)}
+.foto img{width:44px;height:44px;object-fit:cover;border-radius:8px;border:1px solid var(--ln)}
+.foto .fs{font-size:13.5px;color:var(--mut)}.foto .fs.ok{color:var(--ok-t);font-weight:700}.foto .fs.bad{color:#ffb3c3;font-weight:700}
+.den .fz{display:inline-block;margin-top:5px;font-size:13px;font-weight:700;color:var(--ok-t)}.den .fz.no{color:#f3d48a}
 .den .neb{display:block;margin-top:5px;font-size:13px;font-weight:700;color:#ffb3c3}
 /* «Де зараз гроші» (каса) */
 .hrc .hrg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 6px}
@@ -405,7 +413,10 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
         const h = Object.assign({gotivka: 0, rakhunok: 0, nevkazano: 0, chekaiut: 0, chekaiutSuma: 0, ne: 0}, K.demoHroshi || {});
         DR.forEach(r => { const x = chyslo(r.dani['Сума, €']), y = r.dani['Як платили'], k = y === 'готівка' ? 'gotivka' : ['MobilePay', 'переказ', 'картка'].includes(y) ? 'rakhunok' : 'nevkazano';
           h[k] += r.dani['Рух'] === 'видаток' ? -x : x; if (!r.zatv) { h.chekaiut++; h.chekaiutSuma += x; if (r.ne) h.ne++; } });
-        h.razom = h.gotivka + h.rakhunok + h.nevkazano; return Object.assign({ok: true}, h);
+        h.razom = h.gotivka + h.rakhunok + h.nevkazano;
+        h.cheky = (h.cheky || []).concat(DR.map(r => r.dani['Квитанція №']).filter(x => /^Ч-\d+$/i.test(x || '')));
+        h.nastupnyiChek = 'Ч-' + (Math.max(0, ...h.cheky.map(x => +String(x).slice(2))) + 1);
+        return Object.assign({ok: true}, h);
       }
       if (!KL.length && (t.dija === 'vypravyty' || t.dija === 'skasuvaty')) {   // каса: за квитком або за номером рядка
         const rn = t.kvytok ? DKV[t.kvytok] : +t.ryadok, r = DR.find(x => x.ryadok === rn);
@@ -416,6 +427,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
         Object.assign(r, {dani: Object.assign({}, t.dani), khto: t.khto, koly: 'щойно', ne: false, ver: 'v' + (++demoR)});
         return {ok: true, ryadok: rn, versiya: r.ver};
       }
+      if (t.dija === 'foto') { const r = DR.find(x => x.ryadok === +t.ryadok); if (!r) return {ok: false, pomylka: 'Цього запису вже немає.'}; if (r.zatv && r.dani['Фото чека']) return {ok: false, pomylka: 'Рядок уже перевірив виховник, фото в нього є.'}; r.dani['Фото чека'] = 'https://drive.google.com/demo'; r.ver = 'v' + (++demoR); return {ok: true, ryadok: r.ryadok}; }
       if (t.dija === 'zapys') {
         const kv = 'demo-kvytok-' + (++demoR);
         if (!KL.length) { const r = {ryadok: 20 + demoR, dani: Object.assign({}, t.dani), khto: t.khto, koly: 'щойно', ver: 'v' + demoR}; DR.push(r); DKV[kv] = r.ryadok; return {ok: true, ryadok: r.ryadok, kvytok: kv}; }
@@ -636,13 +648,13 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   const setV = (el, x) => { x = x == null ? '' : String(x); if (el.tagName === 'SELECT' && x && ![...el.options].some(o => o.value === x)) el.add(new Option(x, x)); el.value = x; };
   function dodatyRyad(x, kop) {
     const n = ++rN;
-    $('z-rl').insertAdjacentHTML('beforeend', `<div class="ryad" data-r="${n}"><div class="rh"><span class="rn"></span><span class="rok">✓ у книзі</span><button type="button" class="rx" aria-label="Прибрати рядок">×</button></div><div class="rp">${K.polia.map((p, i) => jeRyad(p) ? pole(p, i, 'z-r' + n + '-' + i) : '').join('')}${VNP >= 0 ? '<p class="vh" hidden></p>' : ''}</div></div>`);
+    $('z-rl').insertAdjacentHTML('beforeend', `<div class="ryad" data-r="${n}"><div class="rh"><span class="rn"></span><span class="rok">✓ у книзі</span><button type="button" class="rx" aria-label="Прибрати рядок">×</button></div><div class="rp">${K.polia.map((p, i) => jeRyad(p) ? pole(p, i, 'z-r' + n + '-' + i) : '').join('')}${VNP >= 0 ? '<p class="vh" hidden></p>' : ''}${K.foto ? '<div class="foto" hidden><label><input type="file" accept="image/*" hidden>📷 <span class="fl">Фото чека</span></label><span class="fs">сфотографуйте чек — або виберіть фото</span></div>' : ''}</div></div>`);
     const el = $('z-rl').lastElementChild;
     if (x) { el.dataset.kv = x.kv || ''; el.dataset.ryadok = x.ryadok || ''; el._dani = x.dani; if (x.kv) el.classList.add('sent'); }
     const z = x ? x.dani : kop || {};
     K.polia.forEach((p, i) => { if (jeRyad(p)) { if (z[p.h] != null && z[p.h] !== '') setV(rEl(n, i), z[p.h]); else if (p.zam) setV(rEl(n, i), p.zam); } });
     if (VNP >= 0 && !(x && x.dani && x.dani['Внесок']) && !(kop && kop['Внесок']) && VN && VN.vnesky.length) rEl(n, VNP).value = VN.vnesky[VN.vnesky.length - 1].n;   // новий рядок — найсвіжіший внесок
-    nomery(); vnVsi(); return el;
+    nomery(); vnVsi(); fotoVsi(); return el;
   }
   function ryadDani(el) { const o = {}; K.polia.forEach((p, i) => { if (jeRyad(p)) o[p.h] = rEl(el.dataset.r, i).value.trim(); }); return o; }
   const porozhnii = o => Object.values(o).every(v => !v);
@@ -659,6 +671,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (t.closest('[data-den]')) return denZavantazhyty();
       if (t.closest('[data-vyp]')) { const r = denR.find(x => x.ryadok === +t.closest('[data-vyp]').dataset.vyp); if (r) pochatyRed(r); return; }
       if (t.closest('[data-skas]')) return skasuvatyRyadok(t.closest('[data-skas]'));
+      if (t.closest('[data-foto]')) { fotoDlia = +t.closest('[data-foto]').dataset.foto; return fotoInp.click(); }
       if (t.closest('.rx')) {
         const el = t.closest('.ryad'); if (el.dataset.kv) prybrani.push({kv: el.dataset.kv});
         el.remove(); if (!$('z-rl').children.length) dodatyRyad(); nomery();
@@ -681,11 +694,13 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     $('z-polia').addEventListener('change', e => {
       const f = e.target.closest('.f'); if (!f) return;
       const h = K.polia[+f.dataset.i].h;
-      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок') vnDopovnyty(e.target.closest('.ryad')); vnVsi(); return; }
+      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок') vnDopovnyty(e.target.closest('.ryad')); if (h === 'Квитанція №') e.target.dataset.auto = ''; vnVsi(); return; }
       if (MN.vsim && h === MN.vsim.pole) { vsimVydno(); vnVsi(); }
       if (K.den && h === 'Дата') denZavantazhyty();
       if (MN.avto && h === MN.avto.pole) { const c = spilneEl(MN.avto.tsil), x = MN.avto.mapa[e.target.value]; if (c && x && !c.value) c.value = x; }
+      fotoVsi();
     });
+    $('z-polia').addEventListener('change', e => { if (e.target.matches('.foto input[type=file]')) fotoVybrano(e.target); });
   }
   /* ---------- внески: скільки треба, хто скільки сплатив (поле з "vn") ---------- */
   const VNP = K.polia.findIndex(p => p.vn);
@@ -789,6 +804,68 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     box.open = vidkr; box.hidden = false;
   }
 
+  /* ---------- фото чека (K.foto): стиснути на телефоні → «foto» → Диск виховника ---------- */
+  let HR = null;   // останні «hroshi»: номери чеків
+  const jeVydatok = () => !!K.foto && spilneEl('Рух') && spilneEl('Рух').value === 'видаток';
+  const chNomer = s => { const m = /^\s*Ч-?\s*(\d+)\s*$/i.exec(String(s || '')); return m ? +m[1] : 0; };
+  function fotoVsi() {   // видаток: показати «📷», підставити наступні Ч-номери в порожні «Квитанція №»
+    if (!K.foto || !$('z-rl')) return;
+    const vyd = jeVydatok(), ki = idx('Квитанція №'), rows = [...$('z-rl').children];
+    rows.forEach(el => { const f = el.querySelector('.foto'); if (f) f.hidden = !vyd; });
+    if (ki < 0) return;
+    const zainiati = new Set((HR && HR.cheky || []).map(chNomer));
+    let n = HR && HR.nastupnyiChek ? chNomer(HR.nastupnyiChek) : 0;
+    rows.forEach(el => { const i = rEl(el.dataset.r, ki); if (!i.dataset.auto) { const x = chNomer(i.value); if (x) zainiati.add(x); } });
+    rows.forEach(el => {
+      const i = rEl(el.dataset.r, ki);
+      if (!vyd) { if (i.dataset.auto) { i.value = ''; i.dataset.auto = ''; } return; }
+      if (el.dataset.kv || el.dataset.ver || !n) return;
+      if (i.value && !i.dataset.auto) return;
+      while (zainiati.has(n)) n++;
+      i.value = 'Ч-' + n; i.dataset.auto = '1'; zainiati.add(n); n++;
+    });
+  }
+  function stysnuty(file) {   // довга сторона до 1600 px, JPEG ~0,72 → зазвичай 200–400 КБ, текст читається
+    return new Promise((ok, ne) => {
+      const url = URL.createObjectURL(file), img = new Image();
+      img.onload = () => {
+        const k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement('canvas');
+        c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+        const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', 0.72));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); ne(new Error('Це не фото, або телефон не дав його відкрити.')); };
+      img.src = url;
+    });
+  }
+  async function fotoVybrano(inp) {
+    const f = inp.files && inp.files[0]; if (!f) return;
+    const box = inp.closest('.foto'), st = box.querySelector('.fs'), el = inp.closest('.ryad');
+    st.className = 'fs'; st.textContent = 'Готую фото…';
+    try {
+      const d = await stysnuty(f); inp.value = '';
+      if (el) { el._foto = d; el._fotoOk = false; }
+      box.classList.add('ye'); box.querySelector('.fl').textContent = 'Інше фото';
+      let im = box.querySelector('img'); if (!im) { im = document.createElement('img'); im.alt = 'чек'; box.prepend(im); } im.src = d;
+      st.textContent = 'фото піде в книгу разом із рядком (≈ ' + Math.round(d.length * 0.75 / 1024) + ' КБ)';
+    } catch (x) { st.className = 'fs bad'; st.textContent = x.message; }
+  }
+  async function nadislatyFoto(ryadok, d, khto) {
+    const v = await zapyt({kod, dija: 'foto', ryadok, foto: d.replace(/^data:image\/jpeg;base64,/, ''), khto});
+    if (!v.ok) throw new Error(v.pomylka || 'Фото не прийнято.');
+    return v;
+  }
+  // «Уже в касі» → «📷 Додати фото» до рядка, що вже в книзі
+  const fotoInp = document.createElement('input'); fotoInp.type = 'file'; fotoInp.accept = 'image/*'; fotoInp.hidden = true; document.body.append(fotoInp);
+  let fotoDlia = 0;
+  fotoInp.addEventListener('change', async () => {
+    const f = fotoInp.files && fotoInp.files[0]; fotoInp.value = ''; if (!f || !fotoDlia) return;
+    const b = document.querySelector(`[data-foto="${fotoDlia}"]`), khto = $('z-khto').value;
+    if (b) { b.disabled = true; b.textContent = 'Надсилаю фото…'; }
+    try { await nadislatyFoto(fotoDlia, await stysnuty(f), khto || ''); await denZavantazhyty(); }
+    catch (x) { if (b) { b.disabled = false; b.textContent = merezha(x, 'Немає зв\'язку — спробуйте ще.'); } }
+  });
+
   /* ---------- «Де зараз гроші» (K.hroshi): готівкою, на рахунку, разом — за книгою ---------- */
   let hrN = 0;
   async function hrZavantazhyty() {
@@ -797,6 +874,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     let v; try { v = await zapyt({kod, dija: 'hroshi'}); } catch (x) { v = null; }
     if (moye !== hrN || !kod) return;
     if (!v || !v.ok) { box.hidden = true; return; }
+    HR = v; fotoVsi();
     box.innerHTML = `<h3>Де зараз гроші</h3><div class="hrg"><div><small>на рахунку</small><b>${groshi(v.rakhunok)}</b></div><div><small>готівкою</small><b>${groshi(v.gotivka)}</b></div>`
       + `<div class="rz"><small>разом у касі</small><b>${groshi(v.razom)}</b></div></div>`
       + (v.nevkazano ? `<p class="ch">Ще ${groshi(v.nevkazano)} — не вказано, як платили. Виправте ці рядки («Як платили»).</p>` : '')
@@ -806,7 +884,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   }
 
   /* ---------- «Уже в касі за …»: що записано за день (K.den) ---------- */
-  let denR = [], denN = 0, red = null, dupOk = '', ostData = '';
+  let denR = [], denN = 0, red = null, dupOk = '', ostData = '', fotoPyt = '';
   async function denZavantazhyty() {
     const box = $('z-den'); if (!box || !kod) return;
     const d = spilneEl('Дата').value; if (!d) { box.hidden = true; denR = []; return; }
@@ -826,19 +904,23 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       const dd = [x['Категорія'] + (x['Внесок'] ? ' «' + x['Внесок'] + '»' : ''), x[im] ? x['Опис'] : '', x['Як платили'], x['Квитанція №'] ? 'кв. ' + x['Квитанція №'] : '', x['Примітка']].filter(Boolean).map(esc).join(' · ');
       const kt = (r.khto ? 'записано: ' + esc(r.khto) : '') + (r.koly ? ', ' + esc(String(r.koly).replace(/(\d\d:\d\d):\d\d$/, '$1')) : '');
       const neT = r.ne ? `<span class="neb">✗ Виховник не знайшов ${x['Рух'] === 'видаток' ? 'чека' : ['MobilePay', 'переказ', 'картка'].includes(x['Як платили']) ? 'цей платіж у банку' : 'цих грошей'}. Виправте, якщо є помилка, — або поговоріть із виховником.</span>` : '';
+      const vyd = K.foto && x['Рух'] === 'видаток', maF = !!x['Фото чека'];
+      const fz = vyd ? (maF ? '<span class="fz">📷 фото чека є</span>' : '<span class="fz no">📷 фото чека ще немає</span>') : '';
+      const fb = vyd && !(r.zatverdzheno && maF) ? `<button type="button" data-foto="${r.ryadok}">📷 ${maF ? 'Замінити фото' : 'Додати фото'}</button>` : '';
       return `<li class="${r.zatverdzheno ? 'zt' : ''}${r.ne ? ' ne' : ''}${red && red.ryadok === r.ryadok ? ' red' : ''}"><div class="dt"><span>${esc(nm)}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${groshi(chyslo(x[S]))}</span></div>`
-        + `<div class="dd">${dd}${dd && kt ? '<br>' : ''}${kt} · рядок ${r.ryadok}</div>` + neT
-        + (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' : red && red.ryadok === r.ryadok ? '<span class="ztb" style="color:#f0c060">виправляєте нижче</span>' : `<div class="db"><button type="button" data-vyp="${r.ryadok}">Виправити</button><button type="button" class="warn" data-skas="${r.ryadok}">Скасувати</button></div>`) + `</li>`;
+        + `<div class="dd">${dd}${dd && kt ? '<br>' : ''}${kt} · рядок ${r.ryadok}</div>` + neT + fz
+        + (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' + (fb ? `<div class="db">${fb}</div>` : '') : red && red.ryadok === r.ryadok ? '<span class="ztb" style="color:#f0c060">виправляєте нижче</span>' : `<div class="db"><button type="button" data-vyp="${r.ryadok}">Виправити</button>${fb}<button type="button" class="warn" data-skas="${r.ryadok}">Скасувати</button></div>`) + `</li>`;
     };
     box.innerHTML = `<div class="dh"><b>Уже в касі за ${esc(isoDd(d))}</b><button type="button" class="lnk" data-den="1">оновити</button></div>`
       + (denR.length ? `<p class="ds">Прийшло <b>${groshi(pr)}</b> · пішло <b>${groshi(pi)}</b> · записів: ${denR.length}</p><ul>${denR.map(li).join('')}</ul>`
         : `<p class="dl0">За цей день у касі ще нічого немає.</p>`);
   }
   function pochatyRed(r) {   // виправити один рядок зі списку: він стає єдиним рядком форми
-    red = {ryadok: r.ryadok, orig: {im: r.dani[MN.imya] || '', v: r.dani['Внесок'] || '', s: chyslo(r.dani[MN.suma])}}; dupOk = '';
+    red = {ryadok: r.ryadok, chek: chNomer(r.dani['Квитанція №']), orig: {im: r.dani[MN.imya] || '', v: r.dani['Внесок'] || '', s: chyslo(r.dani[MN.suma])}}; dupOk = '';
     K.polia.forEach((p, i) => { if (!jeRyad(p) && p.h !== 'Дата') setV($('z-p' + i), r.dani[p.h]); });
     $('z-rl').innerHTML = ''; prybrani = [];
     const el = dodatyRyad(); K.polia.forEach((p, i) => { if (jeRyad(p)) setV(rEl(el.dataset.r, i), r.dani[p.h]); });
+    el.querySelectorAll('[data-auto]').forEach(i => { i.dataset.auto = ''; });
     el.dataset.ver = r.versiya; el.dataset.ryadok = r.ryadok; el.querySelector('.rx').hidden = true; el.querySelector('.rn').textContent = 'Рядок ' + r.ryadok + ' книги'; razom();
     $('z-radd').hidden = true; $('z-vsim').hidden = true;
     const fx = $('z-fixing'); fx.hidden = false;
@@ -902,6 +984,15 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
         return;
       }
     }
+    if (jeVydatok()) {   // той самий номер чека двічі? (у книзі чи в цьому списку) — спершу питаємо
+      const ki = idx('Квитанція №'), vzhe = new Set((HR && HR.cheky || []).map(chNomer)), tut = {}, povt = [];
+      if (red && red.chek) vzhe.delete(red.chek);
+      aktyvni.forEach(x => { if (x.el.dataset.kv) return; const n = chNomer(x.d['Квитанція №']); if (!n) return; if (vzhe.has(n) || tut[n]) povt.push('Ч-' + n); tut[n] = 1; });
+      const sig = 'ch' + povt.join();
+      if (povt.length && dupOk !== sig) { dupOk = sig; msg.style.color = '#f0c060'; msg.textContent = 'Чек ' + [...new Set(povt)].join(', ') + ' уже записано. Один чек — один номер. Якщо це справді той самий чек (напр. розділили на два рядки) — натисніть «Надіслати» ще раз.'; return; }
+      const bezFoto = aktyvni.filter(x => !x.el._foto && !x.el.dataset.kv && !x.el.dataset.ver).length, sigF = 'f' + bezFoto + JSON.stringify(aktyvni.map(x => x.d));
+      if (bezFoto && fotoPyt !== sigF) { fotoPyt = sigF; msg.style.color = '#f0c060'; msg.textContent = 'Без фото чека: ' + bezFoto + ' ' + ryadkiv(bezFoto) + '. Краще додати фото зараз (📷). Можна й пізніше — у «Уже в касі». Надіслати без фото — натисніть ще раз.'; return; }
+    }
     const b = $('z-send'); b.disabled = true; msg.style.color = ''; msg.textContent = 'Надсилаю в книгу…';
     let vdalo = 0, vsogo = 0, pom = '', zast = '';
     const skas = prybrani.slice().concat(vsi.filter(x => porozhnii(x.d) && x.el.dataset.kv).map(x => ({kv: x.el.dataset.kv, el: x.el})));
@@ -930,6 +1021,12 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
         if (!kv) x.el.dataset.kv = v.kvytok || '';
         x.el.dataset.ryadok = v.ryadok || ''; x.el._dani = dani; x.el.classList.add('sent'); vdalo++;
       } catch (e2) { pom = merezha(e2, 'Немає зв\'язку.'); }
+    }
+    for (const x of aktyvni) {   // фото чеків — коли рядок уже в книзі
+      if (!x.el._foto || x.el._fotoOk || !+x.el.dataset.ryadok) continue;
+      vsogo++; msg.textContent = 'Надсилаю фото чека…';
+      try { await nadislatyFoto(+x.el.dataset.ryadok, x.el._foto, khto); x.el._fotoOk = true; vdalo++; const s2 = x.el.querySelector('.foto .fs'); if (s2) { s2.className = 'fs ok'; s2.textContent = '✓ фото в книзі'; } }
+      catch (e2) { pom = merezha(e2, 'Немає зв\'язку.') + ' (фото чека)'; }
     }
     b.disabled = false;
     if (zast) { ostData = spil['Дата']; formaChysta(); msg.style.color = 'var(--d-t)'; msg.textContent = 'Цей рядок щойно змінив хтось інший — ваше виправлення не записано, щоб не затерти чуже. Список угорі оновлено: подивіться й, якщо треба, виправте ще раз.'; return; }

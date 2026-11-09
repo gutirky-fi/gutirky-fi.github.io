@@ -23,6 +23,7 @@
  *   {kod, dija:"zatverdyty", arkush, ryadok, znach:"так"|"ні"|""} → (виховник) «ні» — не знайшов у банку / немає грошей чи чека
  *   {kod, dija:"zvirka", shcho:"готівка"|"рахунок", ye:"20,50", prymitka} → (виховник) рядок у «Звірки»; «мало бути» рахує приймач сам
  *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
+ *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
  *
@@ -49,7 +50,7 @@ var SPYSKY = ['Майно'];
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
 var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
-var ZVIRKY = 'Звірки', PEREM = 'переміщення';
+var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
 var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
 
 // ---------- вебзастосунок ----------
@@ -82,6 +83,7 @@ function doPost(e) {
     if (z.dija === 'kasa') return vidpovid(kasa());
     if (z.dija === 'zvirka') return vidpovid(zvirka(z.shcho, z.ye, z.prymitka));
     if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
+    if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
     if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
@@ -207,9 +209,11 @@ function vnesky() {
 function sposib(yak) { yak = String(yak || '').trim(); return yak === 'готівка' ? 'gotivka' : NA_RAKHUNKU.indexOf(yak) >= 0 ? 'rakhunok' : 'nevkazano'; }
 function hroshi() {
   var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs);
-  var cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), cp = z.indexOf(PER);
-  var o = {gotivka: 0, rakhunok: 0, nevkazano: 0}, ch = 0, chS = 0, ni = 0;
+  var cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), cp = z.indexOf(PER), ck = z.indexOf('Квитанція №');
+  var o = {gotivka: 0, rakhunok: 0, nevkazano: 0}, ch = 0, chS = 0, ni = 0, cheky = [], maxCh = 0;
   ryadky(fs).forEach(function (r) {
+    var m = ck >= 0 && /^\s*Ч-?\s*(\d+)\s*$/i.exec(String(r[ck]));   // номери чеків: Ч-1, Ч-2… — щоб не повторювались
+    if (m) { cheky.push('Ч-' + Number(m[1])); maxCh = Math.max(maxCh, Number(m[1])); }
     var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
     o[sposib(r[cy])] += x;
     var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
@@ -217,7 +221,7 @@ function hroshi() {
   });
   var k = function (x) { return Math.round(x * 100) / 100; };
   return {ok: true, gotivka: k(o.gotivka), rakhunok: k(o.rakhunok), nevkazano: k(o.nevkazano), razom: k(o.gotivka + o.rakhunok + o.nevkazano),
-          chekaiut: ch, chekaiutSuma: k(chS), ne: ni};
+          chekaiut: ch, chekaiutSuma: k(chS), ne: ni, cheky: cheky, nastupnyiChek: 'Ч-' + (maxCh + 1)};
 }
 
 function zapys(arkush, dani, khto) {
@@ -250,6 +254,7 @@ function zapys(arkush, dani, khto) {
         if (m === undefined) continue;
         v = ['+', '−', 'в', ''].indexOf(m) >= 0 ? m : '';
       }
+      else if (h === FOTO) continue;                     // лише через «foto»
       else if (dani.hasOwnProperty(h)) v = perevesty(dani[h]);
       else continue;
       ryad[c] = v; zapysano++;
@@ -344,6 +349,7 @@ function vypravyty(kv, dani, khto, o) {
     for (var c = 0; c < nc; c++) {
       var h = z.zag[c];
       if (!h || f[c] || h === PER) continue;
+      if (h === FOTO) continue;     // фото — лише дією «foto»; виправлення його не стирає й не підмінює
       ryad[c] = h === 'Записано' ? new Date() : h === 'Хто записав' ? chyste(khto || '') : dani.hasOwnProperty(h) ? perevesty(dani[h]) : '';
       sh.getRange(z.r, c + 1).setValue(ryad[c]);
     }
@@ -554,6 +560,41 @@ function nakhunok(suma, prymitka) {
       zminy('запис', 'Фінанси', r, 'виховник', dd(d) + ' · ' + x[0] + ' · ' + PEREM + ' · ' + s + ' € (' + x[1] + ')');
     });
     return {ok: true, ryadky: out, hroshi: hroshi()};
+  } finally { lock.releaseLock(); }
+}
+
+// ---------- фото чека ----------
+// Будь-хто з кодом може додати фото до рядка каси; замінити — лише поки рядок не перевірено.
+// Файл лягає в папку «Чеки гуртка» на Диску виховника (доступ — лише йому); у книгу — посилання.
+function papkaChekiv() {
+  var pr = PropertiesService.getScriptProperties(), id = pr.getProperty('FOTO_PAPKA');
+  if (id) { try { var f = DriveApp.getFolderById(id); if (!f.isTrashed()) return f; } catch (x) {} }
+  var nova = DriveApp.createFolder('Чеки гуртка');
+  pr.setProperty('FOTO_PAPKA', nova.getId());
+  return nova;
+}
+function foto(ryadok, b64, khto) {
+  var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), nc = sh.getLastColumn(), zag = zaholovky(sh), cf = zag.indexOf(FOTO);
+  if (cf < 0) return {ok: false, pomylka: 'У книзі немає стовпця «' + FOTO + '» — візьміть свіжу книгу.'};
+  var r = Number(ryadok);
+  if (!(r >= P && r <= sh.getMaxRows() && r % 1 === 0)) return {ok: false, pomylka: 'Невідомий рядок.'};
+  b64 = String(b64 || '').replace(/^data:image\/jpeg;base64,/, '');
+  if (!b64 || b64.length > FOTO_MAX * 4 / 3 + 4 || !/^[A-Za-z0-9+\/=]+$/.test(b64)) return {ok: false, pomylka: 'Фото не вдалося прочитати (або воно завелике).'};
+  var bytes = Utilities.base64Decode(b64);
+  if (!(bytes.length > 100 && (bytes[0] & 255) === 0xFF && (bytes[1] & 255) === 0xD8)) return {ok: false, pomylka: 'Це не схоже на фото (потрібен JPEG).'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var v = sh.getRange(r, 1, 1, nc).getValues()[0];
+    if (v[0] === '' || v[0] === null) return {ok: false, pomylka: 'Цього запису вже немає (його скасували). Оновіть список.'};
+    var bulo = String(v[cf] || '');
+    if (bulo && perevireno(sh, zag, r)) return {ok: false, pomylka: 'Рядок уже перевірив виховник, фото в нього є — замінити може лише виховник у книзі.'};
+    var kv = String(v[zag.indexOf('Квитанція №')] || '').trim() || 'без номера';
+    var nazva = kv + ' · ' + dd(v[0]) + ' · ' + String(v[zag.indexOf('Сума, €')]).replace('.', ',') + ' € · рядок ' + r + '.jpg';
+    var fl = papkaChekiv().createFile(Utilities.newBlob(bytes, 'image/jpeg', nazva));
+    if (bulo) { var m = /[-\w]{25,}/.exec(bulo); if (m) try { DriveApp.getFileById(m[0]).setTrashed(true); } catch (x) {} }   // старе фото — у кошик Диска
+    sh.getRange(r, cf + 1).setValue(fl.getUrl());
+    zminy('фото чека', 'Фінанси', r, khto, (bulo ? 'замінено: ' : '') + nazva);
+    return {ok: true, ryadok: r, url: fl.getUrl(), versiya: versiya(sh, r, nc)};
   } finally { lock.releaseLock(); }
 }
 
