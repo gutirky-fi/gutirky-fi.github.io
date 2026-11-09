@@ -37,7 +37,15 @@
  *   {kod, dija:"skasuvatyMnoho", kvytky:[...], khto} → скасувати щойно надіслане кількома квитками (напр. усе з probyZapys)
  *   kopiia з arkush:"Проби" — копія бланка проби до рядка «посвідка» (здобуто)
  *   {kod, dija:"vmilosti"}                          → огляд «хто на що працює і що замовляти»: рядки «Вмілостей» (лише імена), що є й що в дорозі по кожній нашивці, пороги з «Налаштувань»
- *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
+ *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту); vidkryto — скільки «Особливих випадків» ще не вирішено
+ *   «Прийшов, перейшов, пішов» (лише виховник; прізвищ сайт не пише й не отримує ніколи):
+ *   {kod, dija:"uchasnyky"}                         → усі учасники (і вибулі): {uchasnyky:[{im, st, vid, plast, zvidky, pishov}]}
+ *   {kod, dija:"uchasnyk", imya, novyi:true|false, polia:{Статус, «У гуртку від (рік)», «У Пласті від», «Звідки прийшов», «Пішов (коли, куди)»}, prymitka, khto}
+ *                                                   → новий рядок «Учасників» (лише ім'я; прізвище виховник впише в Таблиці сам) або зміна цих граф; prymitka дописується
+ *   {kod, dija:"vypadok", imya, vypadok, shcho, maie, ne, propoz, khto} → рядок «Особливих випадків» (статус «відкрито»)
+ *   {kod, dija:"vypadky"}                           → усі особливі випадки, найновіші вгорі
+ *   {kod, dija:"vyrishyty", ryadok, status, yak}    → статус випадку (відкрито / чекає проводу / вирішено) і «Як вирішили»
+ *   «Де здобуто» (Проби, Вмілості, Відзначки): у нас / до нас / поза гуртком; «до нас» без дати — можна, якщо в «Примітці» написано, звідки
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
  *   {kod, dija:"zvity"}                             → (виховник) усе для звітів і «Картки учасника» одним разом: {nazva, kurin, rik, vykhovnyk, sohodni,
  *                                                     arkushi:{Учасники:{z:[...], v:[[...]]}, …}} — значення як є (дати — «2026-11-05»), без прізвищ
@@ -66,7 +74,10 @@ var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['
               'Замовлення': ['№ замовлення', 'Відзнака'], 'Мандрівки': ['Дата', 'Назва']};
 var SPYSKY = ['Майно', 'Завдання', 'Замовлення'];   // «spysok»: перший стовпець — назви завдань, номери замовлень; Проби/Вмілості/Відзначки (перший стовпець — імена) сюди не входять
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
-var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'zvity', 'kasa', 'zvirka', 'nakhunok', 'spysaty'];   // лише з кодом виховника
+var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'zvity', 'kasa', 'zvirka', 'nakhunok', 'spysaty', 'uchasnyky', 'uchasnyk', 'vypadok', 'vypadky', 'vyrishyty'];
+var DEZ = 'Де здобуто', DO_NAS = 'до нас', DEZ_SP = ['', 'у нас', DO_NAS, 'поза гуртком'];   // «до нас» — здобуто до переходу в наш гурток: звіти гуртка не рахують
+var OSOBL = 'Особливі випадки', ST_VYP = ['відкрито', 'чекає проводу', 'вирішено'];
+var UCH_POLIA = ['Статус', 'У гуртку від (рік)', 'У Пласті від', 'Звідки прийшов', 'Пішов (коли, куди)'];   // що сайт може змінити в «Учасниках» (не прізвище!)   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
 var KOPIIA = 'Копія посвідки', KOPIIA_PR = 'Копія бланка', KOPII_PAPKA = 'Проби та вмілості', KOPIIA_MAX = 5 * 1024 * 1024;
@@ -129,9 +140,14 @@ function doPost(e) {
     if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
     if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto, z));
     if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto, z));
-    if (z.dija === 'novi') { var nv = novi(); return vidpovid({ok: true, novi: nv.zapysy, chekaiut: nv.chekaiut}); }
+    if (z.dija === 'novi') { var nv = novi(); return vidpovid({ok: true, novi: nv.zapysy, chekaiut: nv.chekaiut, vidkryto: nv.vidkryto}); }
     if (z.dija === 'zvit') return vidpovid(zvit(z.arkush, z.vid, z['do']));
     if (z.dija === 'zvity') return vidpovid(zvity());
+    if (z.dija === 'uchasnyky') return vidpovid(uchasnyky());
+    if (z.dija === 'uchasnyk') return vidpovid(uchasnyk(z));
+    if (z.dija === 'vypadok') return vidpovid(vypadok(z));
+    if (z.dija === 'vypadky') return vidpovid(vypadky());
+    if (z.dija === 'vyrishyty') return vidpovid(vyrishyty(z.ryadok, z.status, z.yak));
     return vidpovid({ok: false, pomylka: 'Невідома дія.'});
   } catch (x) {
     return vidpovid({ok: false, pomylka: 'Помилка в таблиці: ' + x.message});
@@ -402,7 +418,7 @@ function vytiah(imya) {
 function zapys(arkush, dani, khto) {
   if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'У цей аркуш сайт не пише.'};
   if (!dani || typeof dani !== 'object') return {ok: false, pomylka: 'Порожній запис.'};
-  var pk = perevirkaKasy(arkush, dani) || perevirkaVmil(arkush, dani) || perevirkaProb(arkush, dani); if (pk) return {ok: false, pomylka: pk};
+  var pk = perevirkaDez(dani) || perevirkaKasy(arkush, dani) || perevirkaVmil(arkush, dani) || perevirkaProb(arkush, dani); if (pk) return {ok: false, pomylka: pk};
   if (Object.keys(dani).length > 40) return {ok: false, pomylka: 'Забагато полів.'};
   var lock = LockService.getScriptLock();
   lock.waitLock(15000);
@@ -602,7 +618,12 @@ function novi() {
     }
     out.push(z);
   }
-  return {zapysy: out, chekaiut: chekaiut};
+  return {zapysy: out, chekaiut: chekaiut, vidkryto: vidkrytoVypadkiv()};
+}
+function vidkrytoVypadkiv() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(OSOBL); if (!sh) return 0;
+  var c = zaholovky(sh).indexOf('Статус');
+  return ryadky(sh).filter(function (r) { return String(r[c]).trim() !== 'вирішено'; }).length;
 }
 
 function vilnyiRyadok(sh) {
@@ -919,6 +940,14 @@ function foto(ryadok, b64, khto) {
 }
 
 // ---------- вмілості: перевірка, «Запас», копія посвідки, огляд ----------
+function perevirkaDez(dani) {
+  if (!dani || !dani.hasOwnProperty(DEZ)) return '';
+  var x = String(dani[DEZ] === null || dani[DEZ] === undefined ? '' : dani[DEZ]).trim().toLowerCase();
+  if (DEZ_SP.indexOf(x) < 0) return '«' + DEZ + '» — у нас, до нас або поза гуртком.';
+  dani[DEZ] = x === 'у нас' ? '' : x;   // «у нас» — як порожньо
+  return '';
+}
+var doNas = function (dani) { return String(dani[DEZ] || '').trim().toLowerCase() === DO_NAS; };
 function chysloAbo(x) { var s = String(x === undefined || x === null ? '' : x).trim(); return s === '' ? null : /^\d{1,3}$/.test(s) ? Number(s) : NaN; }
 function perevirkaVmil(arkush, dani) {
   if (arkush !== 'Вмілості') return '';
@@ -928,7 +957,8 @@ function perevirkaVmil(arkush, dani) {
   if (vyk !== null && us !== null && vyk > us) return 'Виконано (' + vyk + ') більше, ніж усього точок (' + us + ') — перевірте бланк.';
   var vzheMaie = String(dani['Нашивку не замовляти (вже має)'] || '').trim().toLowerCase() === 'так';
   if (dani['Статус'] === 'здобуто' && !data(dani['Дата здобуття'])) {
-    if (!vzheMaie) return 'Здобуто — вкажіть дату здобуття (коли інструктор підписав посвідку).';
+    if (doNas(dani)) { if (!String(dani['Примітка'] || '').trim()) return 'Дата здобуття невідома — напишіть у «Примітці», звідки ця вмілість (напр. «гурток … в Києві»).'; }
+    else if (!vzheMaie) return 'Здобуто — вкажіть дату здобуття (коли інструктор підписав посвідку).';
     if (!String(dani['Примітка'] || '').trim()) return 'Дата здобуття невідома — напишіть у «Примітці», звідки ця вмілість (напр. «здобув у гуртку … в Києві»).';
   }
   if (dani['Статус'] !== 'здобуто' && String(dani['Вручено'] || '').trim()) return 'Нашивку вручають лише за здобуту вмілість — спершу «здобуто».';
@@ -1000,6 +1030,7 @@ function perevirkaProb(arkush, dani, ix) {
   dani['Статус'] = st;
   if (!pr || !t) return 'Вкажіть пробу й точку.';
   var d = data(dani['Дата виконання']);
+  if (!d && t === 'посвідка' && doNas(dani) && st === 'здобуто') return String(dani['Примітка'] || '').trim() ? '' : 'Дата посвідки невідома — напишіть у «Примітці», звідки ця проба (гурток, місто).';
   if (!d) return t === 'посвідка' ? 'Вкажіть дату посвідки (як на бланку).' : 'Вкажіть дату, коли точку підписано.';
   if (d.getTime() > Date.now() + DOBA) return 'Дата ще не настала — перевірте.';
   if (t === 'посвідка') return st === 'здобуто' ? '' : 'Рядок «посвідка» — це «здобуто».';
@@ -1027,6 +1058,7 @@ function probyZapys(z) {
   var vidomi = imena();
   for (var a = 0; a < lyudy.length; a++) if (vidomi.indexOf(lyudy[a]) < 0) return {ok: false, pomylka: 'Імені «' + chyste(lyudy[a]) + '» немає серед учасників.'};
   var ix = indeksProb(), spil = {'Проба': pr, 'Статус': 'виконано', 'Дата виконання': z.data, 'Хто підтвердив': chyste(z.pidtv || ''), 'Примітка': chyste(z.prymitka || '')};
+  if (z.dez !== undefined) { var dz = {}; dz[DEZ] = z.dez; var ed = perevirkaDez(dz); if (ed) return {ok: false, pomylka: ed}; spil[DEZ] = dz[DEZ]; }
   tt = tt.map(tochka).filter(function (x, k, m) { return m.indexOf(x) === k; });
   for (var b = 0; b < tt.length; b++) {
     var e = perevirkaProb('Проби', {'Проба': pr, 'Точка': tt[b], 'Статус': 'виконано', 'Дата виконання': z.data}, ix);
@@ -1049,7 +1081,7 @@ function probyZapys(z) {
         if (ye[k]) { vzhe.push({im: im, t: t}); return; }
         var r = vilni.length ? vilni.shift() : vilnyiRyadok(sh);
         zapysatyRyadok(sh, r, {"Ім'я": im, 'Проба': pr, 'Точка': t, 'Статус': 'виконано', 'Дата виконання': d,
-                               'Хто підтвердив': spil['Хто підтвердив'], 'Примітка': spil['Примітка'], 'Хто записав': chyste(khto || ''), 'Записано': teper});
+                               'Хто підтвердив': spil['Хто підтвердив'], 'Примітка': spil['Примітка'], 'Де здобуто': spil[DEZ] || '', 'Хто записав': chyste(khto || ''), 'Записано': teper});
         ye[k] = true;
         zapysano.push({im: im, t: t, ryadok: r, kvytok: datyKvytok('Проби', r, im)});
       });
@@ -1143,6 +1175,80 @@ function chyste(v) {               // текст без формул і без �
   return s;
 }
 
+// ---------- «Прийшов, перейшов, пішов» (лише виховник) ----------
+// «Учасники»: сайт пише лише ім'я й кілька граф (UCH_POLIA, «Примітка» — дописує); прізвища не пише й не видає ніколи
+function uchasnyky() {
+  var sh = SpreadsheetApp.getActive().getSheetByName('Учасники'), z = zaholovky(sh), c = function (h) { return z.indexOf(h); };
+  var t = function (r, h) { var k = c(h); return k < 0 ? '' : String(r[k] === null || r[k] === undefined ? '' : r[k]).trim(); };
+  return {ok: true, uchasnyky: ryadky(sh).filter(function (r) { return t(r, "Ім'я"); }).map(function (r) {
+    return {im: t(r, "Ім'я"), st: t(r, 'Статус'), vid: t(r, 'У гуртку від (рік)'), plast: t(r, 'У Пласті від'), zvidky: t(r, 'Звідки прийшов'), pishov: t(r, 'Пішов (коли, куди)')};
+  })};
+}
+function uchasnyk(z) {
+  var im = chyste(z.imya).replace(/^'/, '');
+  if (!im || im.length > 40) return {ok: false, pomylka: 'Ім\'я — від 1 до 40 знаків.'};
+  if (/\s{2,}|[<>]/.test(im)) return {ok: false, pomylka: 'Перевірте, як написано ім\'я.'};
+  var polia = z.polia || {}, st = polia['Статус'];
+  if (st !== undefined && ['активний', 'кандидат', 'вибув'].indexOf(st) < 0) return {ok: false, pomylka: 'Статус — активний, кандидат або вибув.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var sh = SpreadsheetApp.getActive().getSheetByName('Учасники'), zag = zaholovky(sh), nc = zag.length, cI = zag.indexOf("Ім'я");
+    var v = sh.getRange(P, 1, sh.getMaxRows() - P + 1, nc).getValues(), r = null, maxN = 0;
+    v.forEach(function (x, k) { if (String(x[cI]).trim().toLowerCase() === im.toLowerCase()) r = P + k; if (Number(x[0]) > maxN) maxN = Number(x[0]); });
+    if (z.novyi && r) return {ok: false, ye: true, pomylka: 'Ім\'я «' + im + '» уже є в книзі. Якщо це інша людина — додайте букву прізвища: «' + im + ' К.»; якщо та сама — виберіть «Повернувся».'};
+    if (!z.novyi && !r) return {ok: false, pomylka: 'Імені «' + im + '» немає в «Учасниках».'};
+    var novyi = !r;
+    if (novyi) r = vilnyiRyadok(sh);
+    var obj = {};
+    if (novyi) { obj['№'] = maxN + 1; obj["Ім'я"] = im; if (st === undefined) obj['Статус'] = 'кандидат'; }
+    UCH_POLIA.forEach(function (h) { if (polia.hasOwnProperty(h)) obj[h] = perevesty(polia[h]); });
+    var pm = chyste(z.prymitka || '');
+    if (pm) { var cp = zag.indexOf('Примітка'), bulo = cp >= 0 ? String(sh.getRange(r, cp + 1).getValues()[0][0] || '').trim() : ''; obj['Примітка'] = (bulo ? bulo + '; ' : '') + pm; }
+    zapysatyRyadok(sh, r, obj);
+    zminy(novyi ? 'новий учасник' : 'учасник', 'Учасники', r, z.khto || 'виховник', im + (st ? ' · ' + st : '') + (polia['Звідки прийшов'] ? ' · з ' + chyste(polia['Звідки прийшов']) : '') + (polia['Пішов (коли, куди)'] ? ' · пішов: ' + chyste(polia['Пішов (коли, куди)']) : '') + (pm ? ' · ' + pm : ''));
+    return {ok: true, ryadok: r, novyi: novyi, imya: im};
+  } finally { lock.releaseLock(); }
+}
+function vypadok(z) {
+  var shcho = chyste(z.shcho || '');
+  if (shcho.length < 5) return {ok: false, pomylka: 'Напишіть кількома словами, що сталося.'};
+  var vyp = String(z.vypadok || 'особливий випадок').trim();
+  var sh = SpreadsheetApp.getActive().getSheetByName(OSOBL); if (!sh) return {ok: false, pomylka: 'У книзі ще немає аркуша «' + OSOBL + '» — візьміть свіжу книгу.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var r = vilnyiRyadok(sh), sohodni = new Date(); sohodni.setHours(0, 0, 0, 0);
+    zapysatyRyadok(sh, r, {'Дата': sohodni, "Ім'я": chyste(z.imya || ''), 'Випадок': chyste(vyp), 'Що сталося': shcho, 'Що вже має': chyste(z.maie || ''),
+                           'Чого не знаємо': chyste(z.ne || ''), 'Що пропоную': chyste(z.propoz || ''), 'Статус': 'відкрито', 'Хто записав': chyste(z.khto || 'виховник'), 'Записано': new Date()});
+    zminy('особливий випадок', OSOBL, r, z.khto || 'виховник', (z.imya ? chyste(z.imya) + ': ' : '') + shcho);
+    return {ok: true, ryadok: r};
+  } finally { lock.releaseLock(); }
+}
+function vypadky() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(OSOBL); if (!sh) return {ok: true, vypadky: []};
+  var z = zaholovky(sh), nc = z.length, v = sh.getRange(P, 1, sh.getMaxRows() - P + 1, nc).getValues(), out = [];
+  v.forEach(function (r, k) {
+    if (r[0] === '' || r[0] === null) return;
+    var o = {ryadok: P + k}; z.forEach(function (h, c) { if (h && h !== 'Записано') o[h] = r[c] instanceof Date ? iso(r[c]) : String(r[c] === null || r[c] === undefined ? '' : r[c]); });
+    out.push(o);
+  });
+  out.sort(function (a, b) { return String(b['Дата']).localeCompare(String(a['Дата'])) || b.ryadok - a.ryadok; });
+  return {ok: true, vypadky: out};
+}
+function vyrishyty(ryadok, status, yak) {
+  if (ST_VYP.indexOf(status) < 0) return {ok: false, pomylka: 'Статус — відкрито, чекає проводу або вирішено.'};
+  yak = chyste(yak || '');
+  if (status === 'вирішено' && !yak) return {ok: false, pomylka: 'Напишіть коротко, як вирішили — наступного разу це знадобиться.'};
+  var sh = SpreadsheetApp.getActive().getSheetByName(OSOBL), r = Number(ryadok); if (!sh) return {ok: false, pomylka: 'Немає аркуша «' + OSOBL + '».'};
+  if (!(r >= P && r <= sh.getMaxRows() && r % 1 === 0)) return {ok: false, pomylka: 'Невідомий рядок.'};
+  if (sh.getRange(r, 1).getValues()[0][0] === '') return {ok: false, pomylka: 'Цього випадку вже немає. Оновіть список.'};
+  var sohodni = new Date(); sohodni.setHours(0, 0, 0, 0);
+  var obj = {'Статус': status, 'Вирішено': status === 'вирішено' ? sohodni : ''};
+  if (yak || status === 'вирішено') obj['Як вирішили'] = yak;
+  zapysatyRyadok(sh, r, obj);
+  zminy(status === 'вирішено' ? 'випадок вирішено' : 'випадок: ' + status, OSOBL, r, 'виховник', yak || status);
+  return {ok: true, ryadok: r, status: status};
+}
+
 // ---------- меню виховника ----------
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Книга гуртка')
@@ -1194,7 +1300,7 @@ function nalashtuvaty() {
 function perevirytyPryimach() {
   var ui = SpreadsheetApp.getUi();
   var pr = PropertiesService.getScriptProperties(), maKod = !!pr.getProperty('KOD'), maKodV = !!pr.getProperty('KOD_V');
-  var brak = PYSATY.concat(['Учасники']).filter(function (a) { return !SpreadsheetApp.getActive().getSheetByName(a); });
+  var brak = PYSATY.concat(['Учасники', OSOBL]).filter(function (a) { return !SpreadsheetApp.getActive().getSheetByName(a); });
   ui.alert('Код гуртка (юнаки): ' + (maKod ? 'встановлено' : 'НЕ встановлено') + '\nКод виховника: ' + (maKodV ? 'встановлено' : 'НЕ встановлено') +
            '\nАркуші: ' + (brak.length ? 'бракує ' + brak.join(', ') : 'усі на місці') +
            '\nУчасників для форм: ' + imena().length);
@@ -1307,8 +1413,9 @@ function pidsumokRoku(ss, rik) {
       else if (r[c] === '−' || r[c] === 'в') { vids++; osoba[im].n++; }
     }
   });
-  var pr = pro.v.filter(function (r) { return r[i(pro, 'Статус')] === 'виконано' && uRotsi(r[i(pro, 'Дата виконання')]); });
-  var vmz = vm.v.filter(function (r) { return r[i(vm, 'Статус')] === 'здобуто' && uRotsi(r[i(vm, 'Дата здобуття')]); });
+  var nashe = function (x, r) { return String(r[i(x, DEZ)] || '').trim().toLowerCase() !== DO_NAS; };   // здобуте «до нас» — не здобуток гуртка
+  var pr = pro.v.filter(function (r) { return r[i(pro, 'Статус')] === 'виконано' && uRotsi(r[i(pro, 'Дата виконання')]) && nashe(pro, r); });
+  var vmz = vm.v.filter(function (r) { return r[i(vm, 'Статус')] === 'здобуто' && uRotsi(r[i(vm, 'Дата здобуття')]) && nashe(vm, r); });
   var vruch = vm.v.filter(function (r) { return uRotsi(r[i(vm, 'Вручено')]); })   // нашивку вручено — вписана дата «Вручено»
       .map(function (r) { return [r[0], r[i(vm, 'Вмілість')]]; })
       .concat(vz.v.filter(function (r) { return r[i(vz, 'Статус')] === 'вручено' && uRotsi(r[i(vz, 'Дата вручення')]); })

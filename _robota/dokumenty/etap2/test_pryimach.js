@@ -159,7 +159,7 @@ x = post({ kod: J, dija: 'probyZapys', proba: '1-ша проба', imena: ['Ол
 ok(x.ok && x.zapysano.length === 6 && x.vzhe.length === 3 && cnt('Проби') === pb0 + 6, 'probyZapys: 3 юнаки × 3 точки, А1 у всіх уже є → 6 нових рядків, 3 пропущено');
 ok(x.zapysano.every(z => typeof z.kvytok === 'string'), 'probyZapys: квиток для кожного рядка');
 const rD = sheets['Проби']._f[x.zapysano[0].ryadok - 1];
-ok(rD[2] === 'Г2' && rD[6] instanceof Date && rD[7] === 'Тарас' && rD[10] === 'Ярко' && String(rD[3]).startsWith('='), 'probyZapys: точка, дата, хто підтвердив, хто записав; формула «Що за точка» ціла');
+ok(rD[2] === 'Г2' && rD[6] instanceof Date && rD[7] === 'Тарас' && rD[sheets['Проби']._f[2].indexOf('Хто записав')] === 'Ярко' && String(rD[3]).startsWith('='), 'probyZapys: точка, дата, хто підтвердив, хто записав; формула «Що за точка» ціла');
 x = post({ kod: J, dija: 'probyZapys', proba: '1-ша проба', imena: ['Олесь'], tochky: ['Я1'], data: '2026-11-07', khto: 'Ярко' });
 ok(!x.ok && /немає в бланку/.test(x.pomylka), 'probyZapys: чужа точка — нічого не записано');
 x = post({ kod: J, dija: 'probyZapys', proba: '1-ша проба', imena: ['Чужий'], tochky: ['А2'], data: '2026-11-07', khto: 'Ярко' });
@@ -546,6 +546,47 @@ ok(zi.ok && zi.ryadky.length === 7 && !JSON.stringify(zi).includes('Бондар
 ok(iu.length === 7 && ol[2] === 'Бондар' && ol[5] === 8 && ol[9].includes('Кераміка') && ol[10].includes('Кераміка'), 'Історія: 7 учасників; Олесь — ' + ol.slice(1, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
 ok(sheets['Налаштування']._f[4].includes('2027/28'), 'навчальний рік → 2027/28');
 ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посилання на архів записано');
+// ---- «Прийшов, перейшов, пішов» (лише виховник) ----
+{
+  const U = () => sheets['Учасники'], uz = U()._f[2], ci = h => uz.indexOf(h);
+  ok(!post({ kod: J, dija: 'uchasnyk', imya: 'Тест', novyi: true }).ok && !post({ kod: J, dija: 'vypadok', shcho: 'щось сталося' }).ok, 'учасника й випадок — лише з кодом виховника');
+  const l0 = post({ kod: K, dija: 'uchasnyky' });
+  ok(l0.ok && l0.uchasnyky.some(x => x.im === 'Дана' && x.plast === '2023' || x.plast === 2023) && !JSON.stringify(l0).includes('Мельник'), 'uchasnyky: усі, з «У Пласті від», без прізвищ');
+  ok(!post({ kod: K, dija: 'uchasnyk', imya: 'олесь', novyi: true }).ok, 'те саме ім\'я вдруге (інший регістр) — ні');
+  let x = post({ kod: K, dija: 'uchasnyk', imya: 'Богдан', novyi: true, khto: 'виховник', polia: { 'Статус': 'кандидат', 'У гуртку від (рік)': 2026, 'У Пласті від': 2022, 'Звідки прийшов': 'гурток «Орли», Львів' }, prymitka: 'перевівся в листопаді' });
+  const rb = U()._f[x.ryadok - 1];
+  ok(x.ok && x.novyi && rb[ci("Ім'я")] === 'Богдан' && rb[ci('Прізвище')] === undefined || rb[ci('Прізвище')] === '' , 'новий учасник: лише ім\'я, прізвища сайт не пише');
+  ok(rb[0] === 8 && rb[ci('Статус')] === 'кандидат' && rb[ci('Звідки прийшов')] === 'гурток «Орли», Львів' && rb[ci('Примітка')] === 'перевівся в листопаді' && String(rb[ci('Проба зараз')]).startsWith('='), 'новий учасник: №, статус, звідки, примітка; формули цілі');
+  ok(!post({ kod: K, dija: 'uchasnyk', imya: 'Богдан', novyi: true, polia: { 'Прізвище': 'Х' } }).ok, 'повторно — ні');
+  x = post({ kod: K, dija: 'uchasnyk', imya: 'Богдан', polia: { 'Прізвище': 'Хакер', 'Статус': 'вибув', 'Пішов (коли, куди)': '2026-12-20, гурток «Вовки»' }, prymitka: 'переїхав' });
+  ok(x.ok && rb[ci('Прізвище')] !== 'Хакер' && rb[ci('Статус')] === 'вибув' && rb[ci('Примітка')] === 'перевівся в листопаді; переїхав', 'зміна: «Прізвище» сайт не пише, статус і примітка — так');
+  ok(!post({ kod: K, dija: 'uchasnyk', imya: 'Нема', polia: { 'Статус': 'вибув' } }).ok && !post({ kod: K, dija: 'uchasnyk', imya: 'Богдан', polia: { 'Статус': 'king' } }).ok, 'чуже ім\'я чи хибний статус — ні');
+  post({ kod: K, dija: 'uchasnyk', imya: 'Богдан', polia: { 'Статус': 'активний' } });
+  // що вже має — «до нас»
+  x = post({ kod: K, dija: 'zapys', arkush: 'Проби', khto: 'виховник', dani: { "Ім'я": 'Богдан', 'Проба': 'прихильник', 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': '', 'Де здобуто': 'до нас' } });
+  ok(!x.ok && /Примітці/.test(x.pomylka), 'посвідка «до нас» без дати й без «звідки» — ні');
+  x = post({ kod: K, dija: 'zapys', arkush: 'Проби', khto: 'виховник', dani: { "Ім'я": 'Богдан', 'Проба': 'прихильник', 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': '', 'Примітка': 'до нас: «Орли», Львів; потребує перевірки', 'Де здобуто': 'до нас' } });
+  ok(x.ok && sheets['Проби']._f[x.ryadok - 1][sheets['Проби']._f[2].indexOf('Де здобуто')] === 'до нас', 'посвідка «до нас» без дати, але з «звідки» — так');
+  ok(!post({ kod: K, dija: 'zapys', arkush: 'Проби', dani: { "Ім'я": 'Богдан', 'Проба': 'прихильник', 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': '', 'Примітка': 'x' } }).ok, 'посвідка без дати й не «до нас» — ні');
+  ok(!post({ kod: K, dija: 'zapys', arkush: 'Вмілості', dani: { "Ім'я": 'Богдан', 'Вмілість': 'Кераміка', 'Статус': 'працює', 'Де здобуто': 'на Марсі' } }).ok, '«Де здобуто» — лише зі списку');
+  x = post({ kod: K, dija: 'zapys', arkush: 'Вмілості', dani: { "Ім'я": 'Богдан', 'Вмілість': 'Плавання', 'Статус': 'здобуто', 'Примітка': 'до нас: «Орли»', 'Де здобуто': 'до нас', 'Нашивку не замовляти (вже має)': 'так' } });
+  ok(x.ok, 'вмілість «до нас» без дати, з «звідки» — так');
+  x = post({ kod: K, dija: 'probyZapys', proba: '1-ша проба', imena: ['Богдан'], tochky: ['А1', 'Б2'], data: '2026-03-01', pidtv: 'впорядник «Орлів»', dez: 'до нас', khto: 'виховник' });
+  ok(x.ok && x.zapysano.length === 2 && x.zapysano.every(z => sheets['Проби']._f[z.ryadok - 1][sheets['Проби']._f[2].indexOf('Де здобуто')] === 'до нас'), 'probyZapys: точки «до нас»');
+  ok(!post({ kod: K, dija: 'probyZapys', proba: '1-ша проба', imena: ['Богдан'], tochky: ['А3'], data: '2026-03-01', dez: 'ні' }).ok, 'probyZapys: хибне «Де здобуто» — ні');
+  const pid = ctx.pidsumokRoku(ctx.SpreadsheetApp.getActive(), '2026/27');
+  ok(!pid.uchasnyky.find(u => u[1] === 'Богдан') || pid.uchasnyky.find(u => u[1] === 'Богдан')[8] === 0, 'підсумок року: точки «до нас» не рахуються Богданові');
+  // особливі випадки
+  x = post({ kod: K, dija: 'vypadok', imya: 'Богдан', shcho: 'каже, що має 1-шу пробу, але бланка немає', maie: '1-ша проба (зі слів)', ne: 'дата', khto: 'виховник' });
+  ok(x.ok, 'особливий випадок записано');
+  ok(!post({ kod: K, dija: 'vypadok', shcho: 'ой' }).ok, 'порожній випадок — ні');
+  const nv1 = post({ kod: K, dija: 'novi' }); ok(nv1.vidkryto === 2, '«Що нового»: відкрито випадків = ' + nv1.vidkryto);
+  const vy = post({ kod: K, dija: 'vypadky' }); ok(vy.ok && vy.vypadky.length === 3 && vy.vypadky[0]["Ім'я"] === 'Богдан' && vy.vypadky[0]['Статус'] === 'відкрито', 'список випадків: найновіший угорі');
+  ok(!post({ kod: K, dija: 'vyrishyty', ryadok: x.ryadok, status: 'вирішено', yak: '' }).ok, '«вирішено» без «як» — ні');
+  ok(post({ kod: K, dija: 'vyrishyty', ryadok: x.ryadok, status: 'чекає проводу' }).ok && post({ kod: K, dija: 'vyrishyty', ryadok: x.ryadok, status: 'вирішено', yak: 'попередній виховник підтвердив листом' }).ok, 'статус → чекає проводу → вирішено');
+  ok(post({ kod: K, dija: 'novi' }).vidkryto === 1 && post({ kod: K, dija: 'vypadky' }).vypadky[0]['Вирішено'], 'вирішений — не рахується, дата «Вирішено» є');
+  ok(!post({ kod: K, dija: 'zvit', arkush: 'Особливі випадки' }).ok && !post({ kod: K, dija: 'zvity' }).arkushi['Особливі випадки'], 'особливі випадки не йдуть у звіти');
+}
 for (let i = 0; i < 5; i++) post({ kod: 'x', dija: 'perevirka' });
 ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 5 хибних спроб — вхід закрито');
 ok(sheets['Зміни']._f.slice(3).some(r => r[1] === 'блокування'), 'блокування записано в «Зміни»');

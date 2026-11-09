@@ -108,6 +108,13 @@ button{cursor:pointer}
 .done h2{margin-bottom:6px}
 .done p{margin:0 0 18px;color:var(--body)}
 
+/* лінійні значки замість емодзі (RODYNA: без емодзі) — <i class="ik ik-foto"></i> */
+.ik{display:inline-block;width:1.05em;height:1.05em;margin-right:.3em;vertical-align:-.17em;background:currentColor;-webkit-print-color-adjust:exact;print-color-adjust:exact;-webkit-mask:var(--ik) center/contain no-repeat;mask:var(--ik) center/contain no-repeat}
+.ik-foto{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/%3E%3Ccircle cx='12' cy='13' r='4'/%3E%3C/svg%3E")}
+.ik-kop{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5'/%3E%3C/svg%3E")}
+.ik-chas{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+.ik-uv{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E")}
+.dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;margin-right:.35em;vertical-align:.02em;-webkit-print-color-adjust:exact;print-color-adjust:exact}.dot.zel{background:#3daf6e}.dot.syn{background:#6b9be0}
 
 /* Вхід виховника: усе за подіями (Етап 3, 08.11.2026). Колір — виховницький зелений (PROEKT.md, п. 8). */
 :root{--d:#3daf6e;--d-t:#62cf93}
@@ -163,7 +170,7 @@ a.tile{text-decoration:none}
 .nv .act small{color:var(--mut);font-size:13px}
 .ps{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:22px;align-items:start}
 .step{margin:0 0 16px}
-.step>h3{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:600 19px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.step>h3{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;font:600 19px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 .step>h3 em{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--d);color:#0e1f15;font:600 14px var(--disp);font-style:normal}
 .step>h3 small{font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
 .row3{display:grid;grid-template-columns:1.3fr .7fr;gap:10px}
@@ -221,6 +228,32 @@ a.tile{text-decoration:none}
 .bor .pf,.bor .spf{margin-top:8px}.bor .spf .kd{margin:6px 0}.bor .rb{display:flex;gap:8px;align-items:center;margin:4px 0;font-size:14.5px}.bor .rez{font-weight:700}.bor .rez.bad{color:#ffb3c3}
 .zv .rez{font-weight:700}.zv .rez.ok{color:var(--ok-t)}.zv .rez.bad{color:#ffb3c3}
 .zost{margin:0;padding:0 0 0 18px;color:var(--mut);font-size:14px}
+/* прийшов, перейшов, пішов */
+.tiles.vyp{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tiles.vyp .tile{min-height:132px;padding:16px}
+.tiles.vyp .tile b{font-size:18px}
+.tiles.vyp .tile span{font-size:14px}
+.tile i{border-color:rgba(217,166,64,.55);color:#f3d48a}
+.pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
+.maie{display:grid;gap:10px;margin:0 0 10px}
+.mr{padding:12px 14px 4px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.mr .mh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+.mr .mh b{font:600 15px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase;color:var(--ok-t)}
+.mr .rx{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut)}.mr .rx svg{width:16px;height:16px}
+.mr .rok{margin:0 0 10px;color:var(--ok-t);font-weight:700;font-size:14px}
+.mr .row2{align-items:start}.mr .row2 .chk.sm{margin:-4px 0 10px}
+.mr .f{margin-bottom:10px}.mr .in{font-size:16px;padding:9px 11px}
+.chk.sm{padding:8px 12px;margin-bottom:10px;font-size:14.5px;background:none}
+.note.sm{font-size:13.5px;margin:-4px 0 10px}
+.dodaty{display:flex;flex-wrap:wrap;gap:8px}.dodaty .btn{padding:9px 14px;font-size:15px}
+.spl{margin:0;padding-left:20px;color:var(--body);font-size:15.5px}.spl li{margin:4px 0}
+textarea.in{resize:vertical;font:inherit;line-height:1.4}
+.nv .st.pr{background:rgba(120,160,230,.16);color:#a9c6ff}
+.ov .more .f{margin:0 0 10px}.ov .rez{margin:8px 0 0;font-weight:700;color:var(--ok-t);font-size:14.5px}.ov .rez.bad{color:#ffb3c3}
+.done .dali{max-width:520px;margin:6px auto 0;text-align:left}.done .dali h3{margin:0 0 6px;font:600 16px var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--body)}
+.done .dali ul{display:block;margin:0;padding-left:20px;color:var(--body);list-style:disc}.done .dali li::before{content:none}
+#nv-ov{gap:12px}
+@media (max-width:900px){.tiles.vyp{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.hrg{grid-template-columns:1fr 1fr}.hrg .rz{grid-column:1/-1}}
 @media (max-width:900px){.ps{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.tiles{grid-template-columns:1fr}.tile.main{grid-column:auto}.tile{min-height:0}.row3{grid-template-columns:1fr}
@@ -256,7 +289,7 @@ a.tile{text-decoration:none}
       <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
     </form>
     <aside class="side">
-      <div class="card"><h3>Що тут буде</h3><ul><li><b>Після сходин</b> — тема, хто був, хто заплатив внесок: одна форма, одне «Надіслати».</li><li><b>Перевірка каси</b> — чи гроші справді є, і звірка раз на місяць.</li><li>Новий учасник, проби й вмілості, гроші й майно, звіти — згодом.</li></ul></div>
+      <div class="card"><h3>Що тут буде</h3><ul><li><b>Після сходин</b> — тема, хто був, хто заплатив внесок: одна форма, одне «Надіслати».</li><li><b>Перевірка каси</b> — чи гроші справді є, і звірка раз на місяць.</li><li><b>Прийшов, перейшов, пішов</b> — новий учасник, перехід, повернення, особливий випадок.</li><li>Проби й вмілості, гроші й майно — згодом.</li></ul></div>
     </aside>
   </div>
 
@@ -265,12 +298,38 @@ a.tile{text-decoration:none}
     <div class="hubhead"><h2>Що сталося?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
-      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/></svg></span><b>Новий учасник</b><span>Ім'я й статус «кандидат».</span><i>готується</i></button>
+      <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>і все, що було до нас або поза гуртком: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок.</span></button>
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет.</span><i>готується</i></button>
       <a class="tile" href="../zvity/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
       <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span></button>
       <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Чи гроші справді є: банк, коробка, чеки. Раз на місяць — звірка.</span></button>
+    </div>
+  </section>
+
+  <!-- прийшов, перейшов, пішов -->
+  <section id="v-pp" hidden>
+    <div id="pp-vyb">
+      <div class="hubhead"><h2>Який у вас випадок?</h2><button class="leave" type="button" id="pp-back0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+      <div class="tiles vyp" id="pp-tiles"></div>
+      <div class="card pravylo"><b>Одне правило на все.</b> Не знаєте точно — пишіть, що відомо, і позначте «потребує перевірки»: нічого не блокується, виправити можна пізніше. Дати — справжні, з посвідки, а не сьогоднішні.</div>
+    </div>
+    <div class="ps" id="pp-robota" hidden>
+      <div class="card" id="pp-forma">
+        <div class="fhead"><h2 id="pp-t"></h2><button class="leave" type="button" id="pp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Інший випадок</button></div>
+        <div id="pp-body"></div>
+        <ul class="prog" id="pp-prog" hidden></ul>
+        <p class="msg" id="pp-msg"></p>
+      </div>
+      <div class="card done" id="pp-done" hidden>
+        <div class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h2>Записано в книгу</h2>
+        <p id="pp-sum"></p>
+        <ul id="pp-what"></ul>
+        <div class="dali" id="pp-dali"></div>
+        <div class="btns" style="max-width:360px;margin:16px auto 0"><button class="btn" type="button" id="pp-znov">Ще один випадок</button><button class="btn" type="button" id="pp-hub">До подій</button></div>
+      </div>
+      <aside class="side" id="pp-side"></aside>
     </div>
   </section>
 
@@ -281,6 +340,7 @@ a.tile{text-decoration:none}
         <div class="fhead"><h2>Що нового</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
         <p class="note" style="margin-bottom:14px">Кожен запис з сайту — один раз, найновіший угорі. Натисніть на запис, щоб побачити його повністю й затвердити.</p>
         <p class="nvc" id="nv-cnt" hidden></p>
+        <p class="nvc ye" id="nv-ov" hidden></p>
         <ul class="nv" id="nv-list"></ul>
         <button class="btn" type="button" id="nv-re" style="width:100%;margin-top:14px">Оновити</button>
       </div>
@@ -313,7 +373,7 @@ a.tile{text-decoration:none}
         <button class="btn" type="button" id="kp-re" style="width:100%">Оновити</button>
       </div>
       <aside class="side">
-        <div class="card"><h3>Як перевіряти</h3><ul><li><b>Переказ, MobilePay, картка</b> — відкрийте банк: є такий платіж? «✓ є в банку».</li><li><b>Готівка</b> — гроші у вас чи в скарбника? «✓ гроші є».</li><li><b>Видаток</b> — «📷 Подивитись чек»: сума й дата збігаються? «✓ є чек». Фото лежать у вашому Диску, папка «Чеки гуртка».</li><li>Не знайшли — «✗ немає». Рядок не рахується, юнак бачить позначку й може виправити помилку. Далі — розмова.</li></ul></div>
+        <div class="card"><h3>Як перевіряти</h3><ul><li><b>Переказ, MobilePay, картка</b> — відкрийте банк: є такий платіж? «✓ є в банку».</li><li><b>Готівка</b> — гроші у вас чи в скарбника? «✓ гроші є».</li><li><b>Видаток</b> — «<i class="ik ik-foto"></i>Подивитись чек»: сума й дата збігаються? «✓ є чек». Фото лежать у вашому Диску, папка «Чеки гуртка».</li><li>Не знайшли — «✗ немає». Рядок не рахується, юнак бачить позначку й може виправити помилку. Далі — розмова.</li></ul></div>
         <div class="card"><h3>Чому так</h3><ul><li>Внесок отримує ✓ у «Хто сплатив» лише після вашого «✓».</li><li>Спільний код не каже, хто натиснув, — але фальшивий запис нічого не дає: без грошей у банку чи в коробці він не пройде перевірку.</li><li>Звірки лишаються в аркуші «Звірки» книги.</li></ul></div>
       </aside>
     </div>
@@ -415,6 +475,11 @@ a.tile{text-decoration:none}
     {koly: '01.11.2026 20:05', dija: 'запис', arkush: 'Сходини', ryadok: 11, khto: 'Олесь', shcho: '01.11.2026 · 10 · Мапа й компас', zatverdzheno: true,
      pola: [['Дата', '01.11.2026'], ['№', '10'], ['Тема', 'Мапа й компас'], ['Відповідальний', 'Олесь'], ['Місце', 'парк'], ['Присутніх', '6']]}];
   let demoRow = 13;
+  const DUCH = [{im: 'Олесь', st: 'активний'}, {im: 'Мирося', st: 'активний'}, {im: 'Дана', st: 'активний', plast: '2023', zvidky: 'гурток «Чайки», Київ'}, {im: 'Ярко', st: 'активний'},
+                {im: 'Соломія', st: 'активний'}, {im: 'Остап', st: 'активний'}, {im: 'Зоряна', st: 'кандидат'}, {im: 'Марко', st: 'вибув'}];
+  const DVY = [   // проба «Особливі випадки»
+    {ryadok: 5, 'Дата': '2026-10-24', "Ім'я": 'Зоряна', 'Випадок': 'особливий випадок', 'Що сталося': 'приїхала з України; каже, що в Києві здобула прихильника, але посвідки немає (лишилась удома)', 'Що вже має': 'прихильник (зі слів)', 'Чого не знаємо': 'дата й хто підписав', 'Що пропоную': 'спитати попереднього виховника; поки — вести як новенку', 'Статус': 'чекає проводу', 'Хто записав': 'виховник'},
+    {ryadok: 4, 'Дата': '2026-09-12', "Ім'я": 'Мирося', 'Випадок': 'особливий випадок', 'Що сталося': 'на таборі вмілостей склала вишивання, нашивку дали, а посвідку інструктор обіцяв надіслати пізніше', 'Що вже має': 'нашивка «Вишивання»', 'Що пропоную': 'записати, коли буде посвідка', 'Статус': 'вирішено', 'Як вирішили': 'поки посвідки немає — «працює»; прийде — «здобуто» з датою табору, «поза гуртком», «Нашивку не замовляти» = так', 'Вирішено': '2026-09-19', 'Хто записав': 'виховник'}];
   const DK = [   // проба «Перевірка каси»: неперевірені рядки
     {ryadok: 31, khto: 'Дана', koly: '02.11.2026 19:10', dani: {'Дата': '2026-11-02', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Олесь', 'Сума, €': 10, 'Як платили': 'MobilePay', 'Внесок': 'Листопад 2026'}},
     {ryadok: 33, khto: 'Ярко', koly: '05.11.2026 20:02', dani: {'Дата': '2026-11-05', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Ярко', 'Сума, €': 20, 'Як платили': 'переказ', 'Внесок': 'Листопад 2026'}, ne: true},
@@ -432,6 +497,20 @@ a.tile{text-decoration:none}
       if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
       if (t.dija === 'vnesky') return {ok: true, vnesky: [{n: 'Жовтень 2026', suma: 20, osobl: {}}, {n: 'Листопад 2026', suma: 20, osobl: {'Остап': 10}}], splacheno: {'Олесь': {'Листопад 2026': 10}, 'Мирося': {'Листопад 2026': 20}}};
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
+      if (t.dija === 'uchasnyky') return {ok: true, uchasnyky: DUCH.map(u => Object.assign({}, u))};
+      if (t.dija === 'uchasnyk') {
+        const u = DUCH.find(x => x.im.toLowerCase() === String(t.imya).toLowerCase());
+        if (t.novyi && u) return {ok: false, pomylka: 'Ім\'я «' + t.imya + '» уже є в книзі. Якщо це інша людина — додайте букву прізвища.'};
+        if (!t.novyi && !u) return {ok: false, pomylka: 'Імені «' + t.imya + '» немає в «Учасниках».'};
+        const x = u || {im: t.imya, st: 'кандидат'}; if (!u) DUCH.push(x);
+        if (t.polia && t.polia['Статус']) x.st = t.polia['Статус'];
+        return {ok: true, ryadok: 4 + DUCH.indexOf(x), novyi: !u};
+      }
+      if (t.dija === 'probyZapys') return {ok: true, zapysano: t.tochky.map(x => ({im: t.imena[0], t: x, ryadok: ++demoRow})), vzhe: []};
+      if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(t.dani['Де здобуто'] === 'до нас' && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
+      if (t.dija === 'vypadok') { DVY.unshift({ryadok: ++demoRow, 'Дата': den(), "Ім'я": t.imya, 'Випадок': 'особливий випадок', 'Що сталося': t.shcho, 'Що вже має': t.maie, 'Чого не знаємо': t.ne, 'Що пропоную': t.propoz, 'Статус': 'відкрито', 'Хто записав': 'виховник'}); return {ok: true, ryadok: demoRow}; }
+      if (t.dija === 'vypadky') return {ok: true, vypadky: JSON.parse(JSON.stringify(DVY))};
+      if (t.dija === 'vyrishyty') { const x = DVY.find(y => y.ryadok === t.ryadok); if (t.status === 'вирішено' && !t.yak) return {ok: false, pomylka: 'Напишіть коротко, як вирішили.'}; x['Статус'] = t.status; x['Як вирішили'] = t.yak || x['Як вирішили']; x['Вирішено'] = t.status === 'вирішено' ? den() : ''; return {ok: true}; }
       if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
       if (t.dija === 'kasa') return {ok: true, ryadky: JSON.parse(JSON.stringify(DK)).map(x => Object.assign(x, {sposib: x.dani['Як платили'] === 'готівка' ? 'gotivka' : 'rakhunok', versiya: 'v'})), hroshi: dHroshi(), zvirky: DZV.slice()};
       if (t.dija === 'zatverdyty' && t.arkush === 'Фінанси' && 'znach' in t) { const i = DK.findIndex(x => x.ryadok === t.ryadok); if (t.znach === 'так' && i >= 0) DK.splice(i, 1); else if (i >= 0) DK[i].ne = t.znach === 'ні'; return {ok: true, znach: t.znach}; }
@@ -440,7 +519,7 @@ a.tile{text-decoration:none}
       if (t.dija === 'povernuty') { const b = DH.borhy[t.imya] || 0, x = parseFloat(String(t.suma).replace(',', '.')); if (!(b > 0)) return {ok: false, pomylka: 'Гурток нічого не винен: ' + t.imya}; if (DH.bezCheka[t.imya]) return {ok: false, pomylka: 'Без чека не повертаємо.'}; if (!(x > 0)) return {ok: false, pomylka: 'Скільки віддали — число.'}; if (t.yak === 'готівка' && x > DH.gotivka) return {ok: false, pomylka: 'За книгою готівкою лише ' + DH.gotivka + ' €.'}; DH[t.yak === 'готівка' ? 'gotivka' : 'rakhunok'] -= x; DH.borhy[t.imya] = t.zaokr ? 0 : Math.round((b - x) * 100) / 100; if (!DH.borhy[t.imya]) delete DH.borhy[t.imya]; return {ok: true, zalyshok: DH.borhy[t.imya] || 0}; }
       if (t.dija === 'nakhunok') { const x = parseFloat(String(t.suma).replace(',', '.')); if (!(x > 0)) return {ok: false, pomylka: 'Сума — додатне число.'}; if (x > DH.gotivka) return {ok: false, pomylka: 'За книгою готівкою лише ' + DH.gotivka + ' € — більше на рахунок не здати.'}; DH.gotivka -= x; DH.rakhunok += x; return {ok: true, hroshi: dHroshi()}; }
       if (t.dija === 'zatverdyty') { const x = DNV.find(y => y.arkush === t.arkush && y.ryadok === t.ryadok); if (x) x.zatverdzheno = t.tak !== false; return {ok: true, zatverdzheno: t.tak !== false}; }
-      if (t.dija === 'novi') return {ok: true, novi: JSON.parse(JSON.stringify(DNV)), chekaiut: DNV.filter(x => x.pola && !x.zatverdzheno).length};
+      if (t.dija === 'novi') return {ok: true, novi: JSON.parse(JSON.stringify(DNV)), chekaiut: DNV.filter(x => x.pola && !x.zatverdzheno).length, vidkryto: DVY.filter(x => x['Статус'] !== 'вирішено').length};
       return {ok: true};
     }
     const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
@@ -450,7 +529,7 @@ a.tile{text-decoration:none}
 
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
-  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -514,6 +593,8 @@ a.tile{text-decoration:none}
       NV = v.novi || [];
       l.innerHTML = NV.map((x, i) => punkt(x, i)).join('') || '<li><span class="row"><span class="s">З сайту ще нічого не надсилали.</span></span></li>';
       $('nv-cnt').hidden = false; lichylnyk();
+      const ov = $('nv-ov'); ov.hidden = !v.vidkryto;
+      if (v.vidkryto) ov.innerHTML = `<b>${v.vidkryto}</b> ${v.vidkryto === 1 ? 'особливий випадок чекає' : 'особливі випадки чекають'} рішення <button class="btn" type="button" id="nv-ovb" style="margin-left:auto;padding:8px 14px">Подивитись</button>`;
     } catch (x) { l.innerHTML = `<li><span class="row"><span class="s">${esc(ludsky(x))}</span></span></li>`; }
   }
   $('nv-list').addEventListener('click', async e => {
@@ -534,6 +615,7 @@ a.tile{text-decoration:none}
     m.hidden = !m.hidden; b.setAttribute('aria-expanded', String(!m.hidden));
   });
   $('go-nv').addEventListener('click', () => { ekran('v-nv'); novi(); });
+  $('nv-ov').addEventListener('click', e => { if (e.target.closest('#nv-ovb')) { ekran('v-pp'); UCH_OK = uchZavantazhyty(); ppVidkryty('osobl'); } });
 
   /* ---------- перевірка каси ---------- */
   let KR = [], KH = null;
@@ -552,7 +634,7 @@ a.tile{text-decoration:none}
     if (!my.length && !vony.length) return '';
     return `<div class="kg bor"><h3>Борги «свої гроші» <small>— купили для гуртка за власні</small></h3><ul class="kl">`
       + my.map(im => `<li data-im="${esc(im)}"><div class="kt"><span>Гурток винен: ${esc(im)}</span><span class="minus">${fmt2(B[im])}</span></div>`
-        + ((bez[im] || []).length ? `<span class="fot no">📷 без чека: ${bez[im].map(x => esc(ddd(x.data) + ' «' + x.opys + '» ' + fmt2(+x.suma))).join('; ')} — без чека не повертаємо</span>`
+        + ((bez[im] || []).length ? `<span class="fot no"><i class="ik ik-foto"></i>без чека: ${bez[im].map(x => esc(ddd(x.data) + ' «' + x.opys + '» ' + fmt2(+x.suma))).join('; ')} — без чека не повертаємо</span>`
           : `<div class="kb"><button type="button" class="tak" data-pov="1">Повернули</button><button type="button" data-sp="1">Списати</button></div>`) + '</li>').join('')
       + vony.map(im => `<li data-im="${esc(im)}"><div class="kt"><span>${esc(im)} винен(-на) гуртку</span><span class="plus">${fmt2(-B[im])}</span></div><div class="kd">Коли віддасть — скарбник записує «повернення боргу» або бере разом із внеском (залік).</div><div class="kb"><button type="button" data-sp="1">Списати</button></div></li>`).join('')
       + `</ul>${my.length ? `<p class="kd">Вільних грошей після боргів: <b>${fmt2(h.vilni != null ? h.vilni : h.razom - (h.vynen || 0))}</b></p>` : ''}</div>`;
@@ -618,8 +700,8 @@ a.tile{text-decoration:none}
     $('kp-hr').innerHTML = h ? `<div class="hrg"><div><small>на рахунку</small><b>${fmt2(h.rakhunok)}</b></div><div><small>готівкою</small><b>${fmt2(h.gotivka)}</b></div><div class="rz"><small>разом у касі</small><b>${fmt2(h.razom)}</b></div></div>` + borhyHtml(h) : '';
     $('zv-g-m').textContent = h ? fmt2(h.gotivka) : '—'; $('zv-r-m').textContent = h ? fmt2(h.rakhunok) : '—';
     const n = KR.length, c = n ? `<p class="nvc ye"><b>${n}</b> ${n === 1 ? 'запис чекає' : n < 5 ? 'записи чекають' : 'записів чекають'} перевірки</p>` : '<p class="nvc ok">✓ Усе в касі перевірено</p>';
-    const sy = Object.entries(KS || {}), uv = (h && h.minus ? `<p class="nvc ye">⚠ За книгою ${h.gotivka < 0 ? 'готівки' : 'на рахунку'} менше нуля — десь не записано надходження або видаток записано двічі.</p>` : '')
-      + (sy.length ? `<p class="nvc ye">⚠ Платежі за внесок, якого вже немає в аркуші «Внески»: ${sy.map(([n, o]) => '«' + esc(n) + '» — ' + Object.entries(o).map(([im, x]) => esc(im) + ' ' + fmt2(x)).join(', ')).join('; ')}. Поверніть назву внеску в «Внесках» або виправте «Внесок» у цих рядках. На Новий рік вони однаково зарахуються людям.</p>` : '');
+    const sy = Object.entries(KS || {}), uv = (h && h.minus ? `<p class="nvc ye"><i class="ik ik-uv"></i>За книгою ${h.gotivka < 0 ? 'готівки' : 'на рахунку'} менше нуля — десь не записано надходження або видаток записано двічі.</p>` : '')
+      + (sy.length ? `<p class="nvc ye"><i class="ik ik-uv"></i>Платежі за внесок, якого вже немає в аркуші «Внески»: ${sy.map(([n, o]) => '«' + esc(n) + '» — ' + Object.entries(o).map(([im, x]) => esc(im) + ' ' + fmt2(x)).join(', ')).join('; ')}. Поверніть назву внеску в «Внесках» або виправте «Внесок» у цих рядках. На Новий рік вони однаково зарахуються людям.</p>` : '');
     $('kp-list').innerHTML = uv + c + GR.map(([g, t, pyt, ta, ni, shcho]) => {
       const l = KR.filter(x => grupa(x) === g); if (!l.length) return '';
       return `<div class="kg"><h3>${t} <small>— ${pyt}</small></h3><ul class="kl">${l.map(x => {
@@ -627,7 +709,7 @@ a.tile{text-decoration:none}
         const dd = [ddd(d['Дата']), d['Категорія'] + (d['Внесок'] ? ' «' + d['Внесок'] + '»' : ''), d["Хто (ім'я)"] ? d['Опис'] : '', d['Як платили'], d['Квитанція №'] ? 'кв. ' + d['Квитанція №'] : '', d['Примітка']].filter(Boolean).map(esc).join(' · ');
         return `<li class="${x.ne ? 'ne' : ''}" data-r="${x.ryadok}"><div class="kt"><span>${esc(d["Хто (ім'я)"] || d['Опис'] || '—')}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${fmt2(+d['Сума, €'] || 0)}</span></div>`
           + `<div class="kd">${dd}<br>записав: ${esc(x.khto || '—')} · рядок ${x.ryadok}</div>`
-          + (/^https:\/\/(drive|docs)\.google\.com\//.test(d['Фото чека'] || '') ? `<a class="fot" href="${esc(d['Фото чека'])}" target="_blank" rel="noopener noreferrer">📷 Подивитись чек</a>` : minus ? '<span class="fot no">📷 фото чека не додали — попросіть</span>' : '')
+          + (/^https:\/\/(drive|docs)\.google\.com\//.test(d['Фото чека'] || '') ? `<a class="fot" href="${esc(d['Фото чека'])}" target="_blank" rel="noopener noreferrer"><i class="ik ik-foto"></i>Подивитись чек</a>` : minus ? '<span class="fot no"><i class="ik ik-foto"></i>фото чека не додали — попросіть</span>' : '')
           + (x.ne ? `<span class="neb">✗ Ви позначили: немає ${shcho}. Юнак бачить це й може виправити.</span>` : '')
           + `<div class="kb"><button type="button" class="tak" data-k="так">${ta}</button>${x.ne ? '<button type="button" data-k="">Зняти «немає»</button>' : `<button type="button" class="ni" data-k="ні">${ni}</button>`}</div></li>`;
       }).join('')}</ul></div>`;
@@ -750,6 +832,328 @@ a.tile{text-decoration:none}
   $('p-suma').addEventListener('input', onovyty);
   let yak = 'готівка';
   $('p-yak').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; yak = b.dataset.y; $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+
+
+  /* ---------- Прийшов, перейшов, пішов (09.11.2026) ----------
+     Сайт питає «Який у вас випадок?» і показує лише потрібні поля. Учасники — лише ім'я (прізвище виховник впише в Таблиці сам).
+     Що людина вже має — у «Проби», «Вмілості», «Відзначки» з «Де здобуто» (у нас / до нас / поза гуртком). */
+  const SV = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const IKO = {
+    novyi: '<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/>',
+    novatstvo: '<circle cx="12" cy="12" r="9"/><path d="M12 16.5V8M8.5 11.5L12 8l3.5 3.5"/>',
+    perekhid: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+    povernuvsia: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-4"/>',
+    poza: '<path d="M2 20h20M12 4L3.5 20M12 4l8.5 16M12 13l-3 7M12 13l3 7"/>',
+    yde: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
+    hurtok: '<circle cx="12" cy="7" r="3"/><circle cx="5" cy="10" r="2.3"/><circle cx="19" cy="10" r="2.3"/><path d="M7 21a5 5 0 0 1 10 0M1.5 20a3.5 3.5 0 0 1 5-3.2M22.5 20a3.5 3.5 0 0 0-5-3.2"/>',
+    osobl: '<circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.4M12 17.6v.01"/>',
+    maie: '<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'
+  };
+  const RIK = String(new Date().getFullYear());
+  // хто: new — нове ім'я; exist — з книги (активні й кандидати); vsi — і ті, хто вибув; nove-abo — нове або «уже є в книзі»
+  const VYP = {
+    novyi: {t: 'Прийшов уперше в Пласт', s: 'новенький — ще ніде не був', khto: 'new', pol: ['status', 'vid', 'plast', 'prym'], plastD: RIK,
+      prosyty: ['Ім\'я, яким кличуть у гуртку (два однакові — додайте букву: «Олесь К.»).', 'Згоду й контакти батьків — <b>лише в закриту папку 99</b>, не сюди.', 'Прізвище впишете самі в Таблиці («Учасники») — сайт прізвищ не пише.'],
+      dali: ['Прізвище — у Таблиці, аркуш «Учасники».', 'Далі — як з усіма: прихильник, відвідуваність, внески.']},
+    novatstvo: {t: 'Перейшов з новацтва', s: 'був новаком, тепер юнак', khto: 'nove-abo', pol: ['status', 'vid', 'plast', 'zvidkyN', 'prymN'], maie: 'до нас',
+      prosyty: ['У якому рої був і з якого року в Пласті.', 'Новацькі відзначки й посвідки — якщо хочете, щоб вони були в картці (кнопка «+ Відзнака» нижче).', 'Згоду й контакти батьків — лише в папку 99.'],
+      dali: ['Юнацькі проби й вмілості далі — як усім.', 'Прізвище — у Таблиці, аркуш «Учасники» (якщо новий у книзі).']},
+    perekhid: {t: 'З іншого гуртка, краю чи з України', s: 'має щось від попереднього гуртка', khto: 'nove-abo', pol: ['status', 'vid', 'plast', 'zvidky', 'prym'], maie: 'до нас',
+      prosyty: ['Посвідки проб і вмілостей — фото на телефон.', 'Бланк поточної проби з підписами — щоб перенести вже підписані точки.', 'Хто був попереднім виховником (на випадок, якщо щось незрозуміло).', 'Нашивки, що вже пришиті, — «нашивка вже є», щоб не замовляти вдруге.'],
+      dali: ['Копії посвідок — «Вмілості» й «Проби» (кнопка «Копія»), коли будуть фото.', 'Без документа — спитайте попереднього виховника; поки що лишіть «потребує перевірки».', 'Прізвище — у Таблиці, аркуш «Учасники» (якщо новий у книзі).']},
+    povernuvsia: {t: 'Повернувся після перерви', s: 'вже був у нашому гуртку', khto: 'vsi', pol: ['dataP', 'prymDe'], maie: 'до нас', maieNeobov: true,
+      prosyty: ['Що здобув(-ла) за перерву деінде (інший гурток, табір) — якщо так, додайте нижче.', 'Інакше нічого не треба: старі записи на місці, нічого не стиралось.'],
+      dali: ['Статус — «активний», ім\'я знову в списках сходин.']},
+    poza: {t: 'Здобув щось поза гуртком', s: 'табір, вишкіл — уже бувши в нас', khto: 'exist', pol: [], maie: 'поза гуртком',
+      prosyty: ['Посвідку або підпис інструктора — фото.', 'Дату й де саме (назва табору чи вишколу).', 'Чи дали нашивку одразу (тоді «нашивка вже є» — не замовляти).'],
+      dali: ['Копію посвідки — «Вмілості» (кнопка «Копія»).', 'У звітах гуртка це рахується як наш здобуток — він уже був нашим юнаком.']},
+    yde: {t: 'Йде від нас', s: 'в інший гурток, до старших, або вибуває', khto: 'exist', pol: ['kudy', 'prym'],
+      prosyty: ['Куди саме — щоб новий виховник знав, звідки юнак.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
+      dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.']},
+    hurtok: {t: 'Цілий гурток', s: 'беру гурток, який хтось уже вів, — або передаю свій', khto: '', pol: []},
+    osobl: {t: 'Особливий випадок', s: 'не підходить ні під що — розберемось', khto: '', pol: []},
+    maie: {t: 'Дописати, що вже має', s: '', khto: 'exist', pol: [], maie: 'у нас', skryto: true,
+      prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; здобуте в іншому гуртку — «до нас».'],
+      dali: ['Копії — «Вмілості» й «Проби» (кнопка «Копія»).']}
+  };
+  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'povernuvsia', 'poza', 'yde', 'hurtok', 'osobl'];
+  $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
+
+  let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
+  const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
+  async function uchZavantazhyty() {
+    try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = v.uchasnyky || []; } catch (x) {}
+  }
+  let UCH_OK = null;
+  $('go-pp').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); });
+  $('pp-back0').addEventListener('click', () => ekran('v-hub'));
+  $('pp-back').addEventListener('click', ppVybir);
+  $('pp-hub').addEventListener('click', () => ekran('v-hub'));
+  $('pp-znov').addEventListener('click', ppVybir);
+  $('pp-tiles').addEventListener('click', e => { const b = e.target.closest('[data-vyp]'); if (b) ppVidkryty(b.dataset.vyp); });
+  function ppVybir() { $('pp-vyb').hidden = false; $('pp-robota').hidden = true; }
+  async function vkLichylnyk() {
+    let v; try { v = await zapyt({kod, dija: 'vypadky'}); } catch (x) { return; }
+    if (!v || !v.ok) return;
+    const n = (v.vypadky || []).filter(x => x['Статус'] !== 'вирішено').length, i = $('pp-vk');
+    if (i) { i.hidden = !n; i.textContent = n + ' відкрито'; }
+  }
+
+  function poleKhto(c) {
+    const vsi = c.khto === 'vsi', spysok = UCH.filter(u => vsi || u.st !== 'вибув');
+    const opt = spysok.map(u => `<option value="${esc(u.im)}">${esc(u.im)}${u.st === 'вибув' ? ' — вибув(-ла)' : u.st === 'кандидат' ? ' — кандидат' : ''}</option>`).join('');
+    const vyb = `<label class="f" id="pp-imv"${c.khto === 'nove-abo' ? ' hidden' : ''}><span>Хто</span><select class="in" id="pp-imS"><option value="">— виберіть —</option>${opt}</select></label>`;
+    if (c.khto === 'exist' || c.khto === 'vsi') return vyb + (spysok.length ? '' : '<p class="empty">У книзі ще немає учасників — спершу «Прийшов уперше» або «Цілий гурток».</p>');
+    const nove = `<label class="f" id="pp-imn"><span>Ім'я <small>— як кличуть у гуртку, без прізвища</small></span><input class="in" id="pp-im" maxlength="40" autocomplete="off" placeholder="напр. Богдан"></label>`;
+    return nove + (c.khto === 'nove-abo' ? `<label class="chk"><input type="checkbox" id="pp-vzhe"> Уже є в книзі — вибрати зі списку</label>` + vyb : '');
+  }
+  const POLE = {
+    status: () => `<label class="f"><span>Статус</span><select class="in" id="pp-st"><option>кандидат</option><option>активний</option></select></label>`,
+    vid: () => `<label class="f"><span>У гуртку від (рік)</span><input class="in" id="pp-vid" inputmode="numeric" maxlength="4" value="${RIK}"></label>`,
+    plast: c => `<label class="f"><span>У Пласті від (рік) <small>— якщо знаєте</small></span><input class="in" id="pp-plast" inputmode="numeric" maxlength="4" value="${c.plastD || ''}" placeholder="напр. 2022"></label>`,
+    zvidky: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" placeholder="гурток / курінь / станиця, місто, країна"></label>`,
+    zvidkyN: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" value="новацтво — рій " placeholder="новацтво — рій …"></label>`,
+    prym: () => `<label class="f"><span>Примітка <small>— за бажанням</small></span><input class="in" id="pp-pm" maxlength="160"></label>`,
+    prymN: () => `<label class="f"><span>Що пам'ятати з новацтва <small>— за бажанням, для картки</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. був вістовим рою"></label>`,
+    dataP: () => `<label class="f"><span>Коли повернувся(-лась)</span><input class="in" id="pp-dp" type="date" value="${den()}"></label>`,
+    prymDe: () => `<label class="f"><span>Де був(-ла) <small>— коротко, за бажанням</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. рік у Львові"></label>`,
+    kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
+      <label class="f"><span>Коли</span><input class="in" id="pp-dv" type="date" value="${den()}"></label></div>
+      <label class="f"><span>Куди саме <small>— гурток, курінь, місто</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
+  };
+
+  async function ppVidkryty(k) {
+    if (UCH_OK) { $('pp-tiles').style.opacity = .5; await UCH_OK; $('pp-tiles').style.opacity = ''; }
+    VK = k; PP = {ryad: [], sent: {}, n: 0};
+    const c = VYP[k];
+    $('pp-vyb').hidden = true; $('pp-robota').hidden = false; $('pp-forma').hidden = false; $('pp-done').hidden = true;
+    $('pp-t').textContent = c.t; $('pp-prog').hidden = true; $('pp-prog').innerHTML = ''; $('pp-msg').textContent = ''; $('pp-msg').classList.remove('bad');
+    if (k === 'hurtok') return hurtokForma();
+    if (k === 'osobl') return osoblForma();
+    $('pp-body').innerHTML = `<div class="step"><h3><em>1</em>Хто</h3>${poleKhto(c)}${c.pol.map(p => POLE[p](c)).join('')}</div>`
+      + (c.maie ? `<div class="step"><h3><em>2</em>Що вже має<small>${c.maieNeobov ? 'лише якщо щось здобув(-ла) за перерву' : 'кожне — окремо'}</small></h3>
+        <div class="maie" id="pp-maie"></div>
+        <div class="dodaty"><button class="btn" type="button" data-d="proba">+ Проба здобута</button><button class="btn" type="button" data-d="tochky">+ Точки проби</button><button class="btn" type="button" data-d="vmil">+ Вмілість</button><button class="btn" type="button" data-d="vidzn">+ Відзнака</button></div></div>` : '')
+      + `<button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Надіслати</button>`;
+    $('pp-side').innerHTML = `<div class="card"><h3>Що попросити</h3><ul>${c.prosyty.map(x => `<li>${x}</li>`).join('')}</ul></div>`
+      + `<div class="card"><h3>Одне правило</h3><ul><li>Не знаєте точно — пишіть, що відомо, і позначте <b>«потребує перевірки»</b>. Нічого не блокується.</li><li>Дати — справжні, з посвідки. Невідома — позначте «дата невідома» і напишіть, звідки.</li>${c.maie === 'до нас' ? '<li>«До нас» — звіти гуртка не рахують це як наш здобуток; «Картка учасника» покаже окремо.</li>' : ''}</ul></div>`;
+    const vz = $('pp-vzhe'); if (vz) vz.addEventListener('change', () => { $('pp-imv').hidden = !vz.checked; $('pp-imn').hidden = vz.checked; ['pp-st', 'pp-vid'].forEach(id => { const el = $(id); if (el) el.closest('.f').hidden = vz.checked; }); });
+    if (k === 'poza') dodatyRyad('vmil');
+    $('pp-send').addEventListener('click', ppNadislaty);
+  }
+
+  /* ---- «Що вже має»: рядки ---- */
+  const PROBY = ['прихильник', '1-ша проба', '2-га проба', '3-тя проба'];
+  const prS = () => `<select class="in" data-k="proba">${PROBY.map(p => `<option>${p}</option>`).join('')}</select>`;
+  function dodatyRyad(typ) {
+    const n = ++PP.n, c = VYP[VK], dez = c.maie, zv = ($('pp-zv') && $('pp-zv').value.trim()) || '';
+    const dat = (lab, req) => `<label class="f"><span>${lab}</span><input class="in" type="date" data-k="data"></label>${req ? '' : '<label class="chk sm"><input type="checkbox" data-k="nezn"> дата невідома</label>'}`;
+    const T = {
+      proba: ['Проба здобута (посвідка)', `<div class="row2"><label class="f"><span>Проба</span>${prS()}</label><div>${dat('Дата посвідки')}</div></div><label class="f"><span>Хто підписав посвідку</span><input class="in" data-k="khto" maxlength="60"></label>`],
+      tochky: ['Точки проби з бланка', `<div class="row2"><label class="f"><span>Проба</span>${prS()}</label><label class="f"><span>Дата (з бланка)</span><input class="in" type="date" data-k="data"></label></div><label class="f"><span>Які точки <small>— як на бланку, через пробіл</small></span><input class="in" data-k="tochky" maxlength="200" placeholder="напр. А1 А3 Б2"></label><p class="note sm">Різні дати на бланку — додайте кількома рядками «+ Точки проби».</p><label class="f"><span>Хто підписав</span><input class="in" data-k="khto" maxlength="60"></label>`],
+      vmil: ['Вмілість', `<label class="f"><span>Вмілість</span><input class="in" data-k="nazva" list="dl-vmilNazvy" maxlength="60" placeholder="почніть писати…"></label><div class="row2"><div>${dat('Дата здобуття', dez === 'поза гуртком')}</div><label class="f"><span>Хто прийняв</span><input class="in" data-k="khto" maxlength="60" placeholder="інструктор"></label></div><label class="chk sm"><input type="checkbox" data-k="nash"${dez !== 'у нас' ? ' checked' : ''}> нашивка вже є — не замовляти</label><label class="chk sm"><input type="checkbox" data-k="posv" checked> є посвідка</label>`],
+      vidzn: ['Відзнака', `<div class="row2"><label class="f"><span>Відзнака</span><input class="in" data-k="nazva" maxlength="60" placeholder="напр. нашивка табору"></label><label class="f"><span>Вид</span><select class="in" data-k="vyd"><option>табір</option><option>проба</option><option>відзначення</option><option>інша</option></select></label></div><div class="row2"><div>${dat('Коли отримав(-ла)')}</div><label class="f"><span>За що</span><input class="in" data-k="pidst" maxlength="80"></label></div>`]
+    };
+    const [nz, h] = T[typ];
+    $('pp-maie').insertAdjacentHTML('beforeend', `<div class="mr" data-r="${n}" data-t="${typ}"><div class="mh"><b>${nz}</b><button type="button" class="rx" aria-label="Прибрати">${SV('<path d="M18 6L6 18M6 6l12 12"/>')}</button></div>${h}
+      <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div>
+      <label class="chk sm"><input type="checkbox" data-k="per"> потребує перевірки (немає документа чи не все відомо)</label><p class="rok" hidden>✓ у книзі</p></div>`);
+  }
+  $('pp-body').addEventListener('click', e => {
+    const d = e.target.closest('[data-d]'); if (d) return dodatyRyad(d.dataset.d);
+    const x = e.target.closest('.rx'); if (x) { const r = x.closest('.mr'); if (!PP.sent['r' + r.dataset.r]) r.remove(); }
+  });
+  const pole = (r, k) => { const el = r.querySelector(`[data-k="${k}"]`); return !el ? '' : el.type === 'checkbox' ? el.checked : el.value.trim(); };
+
+  function zibratyRyady(im) {   // → [{id, t, z}] або рядок-помилка
+    const out = [];
+    for (const r of $('pp-maie') ? $('pp-maie').querySelectorAll('.mr') : []) {
+      const typ = r.dataset.t, id = 'r' + r.dataset.r, dez = pole(r, 'dez'), de = pole(r, 'de'), per = pole(r, 'per'), nezn = pole(r, 'nezn'), d = pole(r, 'data');
+      const prym = [dez === 'до нас' ? 'до нас' + (de ? ': ' + de : '') : dez === 'поза гуртком' ? 'поза гуртком' + (de ? ': ' + de : '') : de, per ? 'потребує перевірки' : ''].filter(Boolean).join('; ');
+      const dzK = dez === 'у нас' ? '' : dez;
+      const bezDaty = msg => { if (!d && !nezn) return msg; if (!d && nezn && dez !== 'до нас') return 'Без дати можна лише для «до нас». ' + msg; if (!d && nezn && !de) return 'Дата невідома — напишіть у «Звідки / де», звідки це.'; return ''; };
+      if (typ === 'proba') {
+        const e = bezDaty('Вкажіть дату посвідки (або «дата невідома»).'); if (e) return [e, r];
+        out.push({id, t: pole(r, 'proba') + ' — посвідка' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Проби', dani: {"Ім'я": im, 'Проба': pole(r, 'proba'), 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': d, 'Хто підтвердив': pole(r, 'khto'), 'Примітка': prym, 'Де здобуто': dzK}}});
+      } else if (typ === 'tochky') {
+        const tt = pole(r, 'tochky').split(/[\s,;]+/).filter(Boolean);
+        if (!tt.length) return ['Які точки підписано? Напишіть, як на бланку (А1 А3 Б2).', r];
+        if (!d) return ['Точки — з датою з бланка (різні дати — кількома рядками).', r];
+        out.push({id, t: pole(r, 'proba') + ': точки ' + tt.join(' ') + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'probyZapys', proba: pole(r, 'proba'), imena: [im], tochky: tt, data: d, pidtv: pole(r, 'khto'), prymitka: prym, dez: dzK}});
+      } else if (typ === 'vmil') {
+        if (!pole(r, 'nazva')) return ['Яка вмілість?', r];
+        const e = bezDaty('Вкажіть дату здобуття (або «дата невідома»).'); if (e) return [e, r];
+        out.push({id, t: 'вмілість «' + pole(r, 'nazva') + '»' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Вмілості', dani: {"Ім'я": im, 'Вмілість': pole(r, 'nazva'), 'Інструктор': pole(r, 'khto'), 'Статус': 'здобуто', 'Дата здобуття': d,
+          'Посвідка': pole(r, 'posv') ? 'так' : 'ні', 'Нашивку не замовляти (вже має)': pole(r, 'nash') ? 'так' : '', 'Примітка': prym, 'Де здобуто': dzK}}});
+      } else if (typ === 'vidzn') {
+        if (!pole(r, 'nazva')) return ['Яка відзнака?', r];
+        out.push({id, t: 'відзнака «' + pole(r, 'nazva') + '»' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Відзначки', dani: {"Ім'я": im, 'Відзнака': pole(r, 'nazva'), 'Вид': pole(r, 'vyd'), 'Підстава': pole(r, 'pidst'), 'Статус': 'вручено', 'Дата вручення': d, 'Примітка': prym, 'Де здобуто': dzK}}});
+      }
+    }
+    return out;
+  }
+
+  async function vykonaty(zadachi, gotovo) {
+    const pr = $('pp-prog'), msg = $('pp-msg'); msg.classList.remove('bad');
+    pr.hidden = false; pr.innerHTML = zadachi.map(z => `<li data-id="${esc(z.id)}" class="${PP.sent[z.id] ? 'ok' : ''}">${esc(z.t)}</li>`).join('');
+    const b = $('pp-send'); if (b) b.disabled = true; msg.textContent = 'Надсилаю в книгу…';
+    let pomylky = 0, ostannya = '';
+    for (const z of zadachi) {
+      if (PP.sent[z.id]) continue;
+      const li = pr.querySelector(`li[data-id="${CSS.escape(z.id)}"]`); li.className = 'go';
+      try {
+        const v = await zapyt(Object.assign({kod, khto: KHTO}, z.z));
+        if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');
+        if (v.vzhe && v.vzhe.length && !(v.zapysano || []).length) z.t += ' — уже були в книзі';
+        PP.sent[z.id] = true; li.className = 'ok';
+        const rr = /^r\d+$/.test(z.id) && document.querySelector(`.mr[data-r="${z.id.slice(1)}"] .rok`); if (rr) rr.hidden = false;
+        if (z.pislia) z.pislia(v);
+      } catch (x) { pomylky++; ostannya = ludsky(x); li.className = 'no'; if (z.zupyn) { li.textContent = z.t + ' — ' + ostannya; break; } }
+    }
+    if (b) b.disabled = false;
+    if (pomylky) { msg.textContent = 'Не все дійшло. ' + ostannya + ' Виправте й натисніть «Надіслати» ще раз — дошлеться лише червоне.'; msg.classList.add('bad'); return; }
+    gotovo(zadachi);
+  }
+  function hotovo(sum, zadachi, dali) {
+    $('pp-forma').hidden = true; $('pp-done').hidden = false;
+    $('pp-sum').innerHTML = sum;
+    $('pp-what').innerHTML = zadachi.map(z => `<li>${esc(z.t)}</li>`).join('');
+    $('pp-dali').innerHTML = dali && dali.length ? `<h3>Що далі</h3><ul>${dali.map(x => `<li>${x}</li>`).join('')}</ul>` : '';
+    uchZavantazhyty();
+  }
+
+  async function ppNadislaty() {
+    const c = VYP[VK], msg = $('pp-msg'); msg.classList.remove('bad');
+    const stop = (t, el) => { msg.textContent = t; msg.classList.add('bad'); if (el) { el.scrollIntoView({block: 'center', behavior: 'smooth'}); if (el.focus) el.focus(); } };
+    const vzhe = $('pp-vzhe') && $('pp-vzhe').checked, novyi = (c.khto === 'new' || c.khto === 'nove-abo') && !vzhe;
+    const im = novyi ? $('pp-im').value.trim().replace(/\s+/g, ' ') : $('pp-imS').value;
+    if (!im) return stop(novyi ? 'Напишіть ім\'я.' : 'Виберіть, хто.', novyi ? $('pp-im') : $('pp-imS'));
+    if (novyi && !PP.sent.u && UCH.some(u => u.im.toLowerCase() === im.toLowerCase())) return stop('«' + im + '» уже є в книзі. Інша людина — додайте букву: «' + im + ' К.»; та сама — позначте «Уже є в книзі» або виберіть «Повернувся».', $('pp-im'));
+    const v = id => $(id) ? $(id).value.trim() : '';
+    if ((v('pp-vid') && !/^\d{4}$/.test(v('pp-vid'))) || (v('pp-plast') && !/^\d{4}$/.test(v('pp-plast')))) return stop('Рік — чотири цифри, напр. 2024.', /^\d{4}$/.test(v('pp-vid') || '0000') ? $('pp-plast') : $('pp-vid'));
+    if (VK === 'perekhid' && !v('pp-zv')) return stop('Звідки прийшов(-ла)? Гурток, курінь чи станиця, місто.', $('pp-zv'));
+    const zad = [];
+    // 1) «Учасники»
+    const polia = {};
+    if (novyi) { polia['Статус'] = v('pp-st') || 'кандидат'; if (v('pp-vid')) polia['У гуртку від (рік)'] = +v('pp-vid'); }
+    if (v('pp-plast')) polia['У Пласті від'] = +v('pp-plast');
+    if (v('pp-zv') && v('pp-zv') !== 'новацтво — рій') polia['Звідки прийшов'] = v('pp-zv');
+    let prym = v('pp-pm');
+    if (VK === 'povernuvsia') { polia['Статус'] = 'активний'; prym = 'повернувся(-лась) ' + ddd(v('pp-dp') || den()) + (prym ? ' (' + prym + ')' : ''); }
+    if (VK === 'yde') { polia['Статус'] = 'вибув'; polia['Пішов (коли, куди)'] = ddd(v('pp-dv') || den()) + ' — ' + v('pp-kd') + (v('pp-kds') ? ': ' + v('pp-kds') : ''); }
+    if (novyi || Object.keys(polia).length || prym)
+      zad.push({id: 'u', t: novyi ? 'Учасники: ' + im + ' (' + (polia['Статус'] || 'кандидат') + ')' : 'Учасники: ' + im + (polia['Статус'] ? ' → ' + polia['Статус'] : ''), zupyn: true,
+        z: {dija: 'uchasnyk', imya: im, novyi, polia, prymitka: prym}});
+    // 2) що вже має
+    const rr = zibratyRyady(im);
+    if (typeof rr[0] === 'string') return stop(rr[0], rr[1]);
+    zad.push(...rr);
+    if (!zad.length) return stop(c.maie ? 'Додайте, що саме здобуто («+ Вмілість», «+ Проба здобута»…).' : 'Немає що записувати.');
+    vykonaty(zad, z => hotovo(`<b>${esc(im)}</b> · ${esc(c.t)}`, z, c.dali));
+  }
+
+  /* ---- Цілий гурток ---- */
+  function hurtokForma() {
+    $('pp-body').innerHTML = `<div class="seg" role="tablist" id="hg-seg"><button type="button" role="tab" data-h="beru" aria-selected="true"><b>Беру гурток</b><small>хтось уже вів його до мене</small></button><button type="button" role="tab" data-h="peredaiu" aria-selected="false"><b>Передаю гурток</b><small>новому виховникові</small></button></div>
+      <div id="hg-beru">
+        <div class="step"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
+          <label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
+          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"></label></div>
+          <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
+          <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
+        <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
+          <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; в іншому гуртку — «до нас».</p>
+          <button class="btn" type="button" id="hg-maie" style="margin-top:10px">${SV(IKO.maie)}Дописати, що вже має</button></div>
+        <div class="step"><h3><em>3</em>Минуле гуртка<small>за бажанням — можна пропустити</small></h3>
+          <ul class="spl"><li>Стара книга чи папери — сфотографуйте або відскануйте в папку Диска, а в Таблиці, аркуш <b>«Архів»</b>, — рядок: рік, що це, посилання.</li><li>Минулі роки — лише якщо є дані: аркуші <b>«Роки»</b> й <b>«Історія учасників»</b> (вручну). Немає — нічого страшного: книга почнеться з вашого року.</li><li>Прізвища — у Таблиці, аркуш «Учасники».</li></ul></div>
+      </div>
+      <div id="hg-peredaiu" hidden>
+        <div class="step"><h3><em>1</em>Зберегти, що є</h3><ul class="spl"><li><b>Звіти → Картка учасника → «Усі картки, і тих, хто вибув — для архіву»</b> → Друк / PDF.</li><li><b>Звіти → Звіт гуртка</b> (навчальний рік) і <b>Рік за роком</b> → PDF.</li></ul><a class="btn" href="../zvity/" style="margin-top:6px">${SV('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}Відкрити звіти</a></div>
+        <div class="step"><h3><em>2</em>Передати книгу</h3><ul class="spl"><li>У Google Таблиці — «Поділитися» → новий виховник (редактор). Чи робити його власником — за домовленістю.</li><li>Новий виховник ставить <b>свої</b> коди: меню «Книга гуртка → Встановити код…»; ваші коди перестануть діяти.</li><li>Найпростіше — новий виховник розгортає приймач від свого імені (INSTRUKTSIIA, кроки 4–6) і дає гуртку нове посилання.</li></ul></div>
+        <div class="step"><h3><em>3</em>Майно й гроші</h3><ul class="spl"><li>Майно — перелік з аркуша «Майно» (акт передачі — готується, Етап 4).</li><li>Каса — звірка («Перевірка каси») в день передачі.</li></ul></div>
+      </div>`;
+    $('pp-side').innerHTML = `<div class="card"><h3>Як це працює</h3><ul><li><b>Беру гурток</b> — спершу всі імена одним разом, потім для кожного «що вже має».</li><li><b>Передаю</b> — нічого не надсилається: лише що зробити, щоб нічого не загубилось.</li></ul></div>`;
+    $('hg-seg').addEventListener('click', e => { const b = e.target.closest('[data-h]'); if (!b) return; $('hg-seg').querySelectorAll('[data-h]').forEach(x => x.setAttribute('aria-selected', String(x === b))); $('hg-beru').hidden = b.dataset.h !== 'beru'; $('hg-peredaiu').hidden = b.dataset.h !== 'peredaiu'; $('pp-prog').hidden = true; $('pp-msg').textContent = ''; });
+    $('hg-maie').addEventListener('click', () => ppVidkryty('maie'));
+    $('pp-send').addEventListener('click', () => {
+      const msg = $('pp-msg'); msg.classList.remove('bad');
+      const im = [...new Set($('hg-im').value.split(/\n/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean))];
+      if (!im.length) { msg.textContent = 'Впишіть імена — кожне з нового рядка.'; msg.classList.add('bad'); return $('hg-im').focus(); }
+      const vid = $('hg-vid').value.trim();
+      if (vid && !/^\d{4}$/.test(vid)) { msg.textContent = 'Рік — чотири цифри.'; msg.classList.add('bad'); return $('hg-vid').focus(); }
+      const ye = im.filter(x => UCH.some(u => u.im.toLowerCase() === x.toLowerCase()) && !PP.sent['h:' + x]);
+      const zad = im.filter(x => !ye.includes(x)).map(x => ({id: 'h:' + x, t: x, z: {dija: 'uchasnyk', imya: x, novyi: true, polia: Object.assign({'Статус': $('hg-st').value}, vid ? {'У гуртку від (рік)': +vid} : {}), prymitka: $('hg-pm').value.trim()}}));
+      if (!zad.length) { msg.textContent = 'Усі ці імена вже є в книзі.'; msg.classList.add('bad'); return; }
+      vykonaty(zad, z => hotovo(`Записано: <b>${z.length}</b>${ye.length ? ` · уже були в книзі: ${esc(ye.join(', '))}` : ''}`, z, ['Прізвища — у Таблиці, аркуш «Учасники».', 'Для кожного, у кого вже щось є: «Цілий гурток» → «Дописати, що вже має».']));
+    });
+  }
+
+  /* ---- Особливий випадок ---- */
+  let DVYP = null;
+  function osoblForma() {
+    const opt = UCH.map(u => `<option value="${esc(u.im)}">${esc(u.im)}${u.st === 'вибув' ? ' — вибув(-ла)' : ''}</option>`).join('');
+    $('pp-body').innerHTML = `<div class="step"><h3><em>1</em>Що сталося</h3>
+        <div class="row2"><label class="f"><span>Хто <small>— якщо стосується людини</small></span><select class="in" id="ov-imS"><option value="">— без імені / ще не в книзі —</option>${opt}</select></label><label class="f"><span>Або ім'я <small>(ще не в книзі)</small></span><input class="in" id="ov-im" maxlength="40"></label></div>
+        <label class="f"><span>Що сталося <small>— своїми словами</small></span><textarea class="in" id="ov-sh" rows="4" maxlength="500" placeholder="напр. приїхала з України, каже, що має 1-шу пробу, але посвідка лишилась удома"></textarea></label>
+        <label class="f"><span>Що вже має <small>— що відомо напевно</small></span><input class="in" id="ov-ma" maxlength="300"></label>
+        <label class="f"><span>Чого не знаємо</span><input class="in" id="ov-ne" maxlength="300" placeholder="напр. дата, хто підписав"></label>
+        <label class="f"><span>Що пропоную <small>— можна лишити порожнім</small></span><input class="in" id="ov-pr" maxlength="300"></label>
+        <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати випадок</button></div>
+      <div class="step"><h3><em>2</em>Випадки<small>відкриті й вирішені</small></h3><div id="ov-list"><p class="empty">Завантажую…</p></div></div>`;
+    $('pp-side').innerHTML = `<div class="card"><h3>Як це працює</h3><ul><li>Запис іде в аркуш «Особливі випадки» зі статусом «відкрито». Людина далі ходить і працює, як усі.</li><li>Вирішити: <b>самі</b> — «Вирішено» й коротко як; <b>спитати провід</b> — «Чекає проводу»; <b>спитати Claude</b> — «Скопіювати для поради» (текст без імені) → нова розмова «Пласт → Документація гуртка → Особливий випадок».</li><li>Вирішені лишаються в книзі: наступного разу відповідь уже буде. Випадок повторюється — стане новою плиткою.</li></ul></div>
+      <div class="card"><h3>Чого не писати</h3><ul><li>Здоров'я, родинні справи, контакти — лише в закритій папці 99.</li></ul></div>`;
+    $('pp-send').addEventListener('click', async () => {
+      const msg = $('pp-msg'); msg.classList.remove('bad');
+      const sh = $('ov-sh').value.trim(); if (sh.length < 5) { msg.textContent = 'Напишіть кількома словами, що сталося.'; msg.classList.add('bad'); return $('ov-sh').focus(); }
+      const b = $('pp-send'); b.disabled = true; msg.textContent = 'Записую…';
+      try {
+        const v = await zapyt({kod, dija: 'vypadok', khto: KHTO, imya: $('ov-imS').value || $('ov-im').value.trim(), shcho: sh, maie: $('ov-ma').value.trim(), ne: $('ov-ne').value.trim(), propoz: $('ov-pr').value.trim()});
+        if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');
+        ['ov-im', 'ov-sh', 'ov-ma', 'ov-ne', 'ov-pr'].forEach(id => { $(id).value = ''; }); $('ov-imS').value = '';
+        msg.textContent = '✓ Записано. Випадок — у списку нижче.'; ovSpysok();
+      } catch (x) { msg.textContent = ludsky(x); msg.classList.add('bad'); } finally { b.disabled = false; }
+    });
+    ovSpysok();
+  }
+  async function ovSpysok() {
+    const l = $('ov-list'); if (!l) return;
+    let v; try { v = await zapyt({kod, dija: 'vypadky'}); } catch (x) { l.innerHTML = `<p class="empty">${esc(ludsky(x))}</p>`; return; }
+    if (!v.ok) { l.innerHTML = `<p class="empty">${esc(v.pomylka || 'Не вдалося взяти список.')}</p>`; return; }
+    DVYP = v.vypadky || [];
+    const n = DVYP.filter(x => x['Статус'] !== 'вирішено').length, i = $('pp-vk'); if (i) { i.hidden = !n; i.textContent = n + ' відкрито'; }
+    if (!DVYP.length) { l.innerHTML = '<p class="empty">Особливих випадків ще не було.</p>'; return; }
+    const kl = s => s === 'вирішено' ? 'ok' : s === 'чекає проводу' ? 'pr' : 'ch';
+    l.innerHTML = `<ul class="nv ov">${DVYP.map((x, j) => `<li class="${x['Статус'] === 'вирішено' ? 'zt' : ''}" data-j="${j}"><button class="row" type="button" aria-expanded="false"><span class="k"><b>${esc(ddd(x['Дата']))}</b>${esc(x["Ім'я"] || '—')}</span><span class="t">${esc(x['Випадок'] || 'особливий випадок')}</span><span class="st ${kl(x['Статус'])}">${esc(x['Статус'] || 'відкрито')}</span><span class="s">${esc(x['Що сталося'])}</span></button>
+      <div class="more" hidden><table class="pl">${[['Що вже має', x['Що вже має']], ['Чого не знаємо', x['Чого не знаємо']], ['Що пропоную', x['Що пропоную']], ['Як вирішили', x['Як вирішили']], ['Вирішено', ddd(x['Вирішено'])], ['Записав(-ла)', x['Хто записав']]].filter(p => p[1]).map(p => `<tr><th>${esc(p[0])}</th><td>${esc(p[1])}</td></tr>`).join('')}</table>
+        ${x['Статус'] === 'вирішено' ? '' : `<label class="f"><span>Як вирішили <small>— коротко, щоб наступного разу знати</small></span><input class="in" data-yak maxlength="300" value="${esc(x['Як вирішили'] || '')}"></label>`}
+        <div class="act">${x['Статус'] === 'вирішено' ? `<button class="btn" type="button" data-s="відкрито">Відкрити знову</button>` : `<button class="btn ok" type="button" data-s="вирішено">✓ Вирішено</button>${x['Статус'] !== 'чекає проводу' ? '<button class="btn" type="button" data-s="чекає проводу">Чекає проводу</button>' : ''}`}<button class="btn" type="button" data-kp="1">Скопіювати для поради</button></div><p class="rez" hidden></p></div></li>`).join('')}</ul>`;
+  }
+  function porada(x) {   // текст без імені — для нової розмови з Claude
+    const im = String(x["Ім'я"] || '').trim(), bez = s => { s = String(s || ''); return im ? s.split(im).join('[юнак]') : s; };
+    return ['Особливий випадок у гуртку (Документація гуртка). Як записати це в книгу гуртка?', '',
+      'Випадок: ' + (x['Випадок'] || 'особливий випадок'), 'Що сталося: ' + bez(x['Що сталося']), x['Що вже має'] ? 'Що вже має: ' + bez(x['Що вже має']) : '',
+      x['Чого не знаємо'] ? 'Чого не знаємо: ' + bez(x['Чого не знаємо']) : '', x['Що пропоную'] ? 'Що пропоную: ' + bez(x['Що пропоную']) : ''].filter((s, k) => s || k === 1).join('\n');
+  }
+  $('pp-body').addEventListener('click', async e => {
+    const li = e.target.closest('.ov > li'); if (!li) return;
+    const x = DVYP[+li.dataset.j], rez = li.querySelector('.rez');
+    if (e.target.closest('.row')) { const m = li.querySelector('.more'), b = li.querySelector('.row'); m.hidden = !m.hidden; b.setAttribute('aria-expanded', String(!m.hidden)); return; }
+    if (e.target.closest('[data-kp]')) {
+      const t = porada(x);
+      try { await navigator.clipboard.writeText(t); rez.textContent = '✓ Скопійовано (без імені). Відкрийте нову розмову: «Пласт» → «Документація гуртка» → «Особливий випадок» і вставте.'; }
+      catch (y) { rez.innerHTML = 'Скопіюйте самі:<br><textarea class="in" rows="6" readonly>' + esc(t) + '</textarea>'; const ta = rez.querySelector('textarea'); setTimeout(() => ta.select(), 0); }
+      rez.hidden = false; rez.classList.remove('bad'); return;
+    }
+    const s = e.target.closest('[data-s]'); if (!s) return;
+    const yakEl = li.querySelector('[data-yak]'), yak = yakEl ? yakEl.value.trim() : '';
+    if (s.dataset.s === 'вирішено' && !yak) { rez.hidden = false; rez.textContent = 'Напишіть коротко, як вирішили.'; rez.classList.add('bad'); return yakEl.focus(); }
+    s.disabled = true;
+    try {
+      const v = await zapyt({kod, dija: 'vyrishyty', ryadok: x.ryadok, status: s.dataset.s, yak});
+      if (!v.ok) throw new Error(v.pomylka || 'Не вдалося.');
+      ovSpysok();
+    } catch (y) { rez.hidden = false; rez.textContent = ludsky(y); rez.classList.add('bad'); s.disabled = false; }
+  });
 
   /* ---------- надсилання: кілька записів, повтор лише того, що не дійшло ---------- */
   $('ps-send').addEventListener('click', async () => {

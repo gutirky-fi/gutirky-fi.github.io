@@ -10,6 +10,13 @@
 <link rel="icon" href="{{EMBLEM}}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
+/* лінійні значки замість емодзі (RODYNA: без емодзі) — <i class="ik ik-foto"></i> */
+.ik{display:inline-block;width:1.05em;height:1.05em;margin-right:.3em;vertical-align:-.17em;background:currentColor;-webkit-print-color-adjust:exact;print-color-adjust:exact;-webkit-mask:var(--ik) center/contain no-repeat;mask:var(--ik) center/contain no-repeat}
+.ik-foto{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z'/%3E%3Ccircle cx='12' cy='13' r='4'/%3E%3C/svg%3E")}
+.ik-kop{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.4 11.1l-9.2 9.2a6 6 0 0 1-8.5-8.5l9.2-9.2a4 4 0 0 1 5.7 5.7l-9.2 9.2a2 2 0 0 1-2.8-2.8l8.5-8.5'/%3E%3C/svg%3E")}
+.ik-chas{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
+.ik-uv{--ik:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/%3E%3Cpath d='M12 9v4M12 17h.01'/%3E%3C/svg%3E")}
+.dot{display:inline-block;width:.62em;height:.62em;border-radius:50%;margin-right:.35em;vertical-align:.02em;-webkit-print-color-adjust:exact;print-color-adjust:exact}.dot.zel{background:#3daf6e}.dot.syn{background:#6b9be0}
 /* Документи гуртка → Проби (етап 3.6, 09.11.2026): точка = рядок, кілька юнаків і точок однією датою. Основа стилю — як «Відвідуваність». */
 :root{color-scheme:dark;--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;
   --d:#c8284a;--d-t:#ff7d99;--ok:#3daf6e;--ok-t:#62cf93;--a:#c9cfd6;
@@ -318,7 +325,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
         <!-- форма -->
         <div class="card" id="z-form" hidden>
           <div class="fhead"><h2>Підписані точки</h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
-          <details class="yakp"><summary>Як заповнювати<small>коротко, за випадками</small></summary><dl><dt>Впорядник підписав точку на бланку юнака</dt><dd>На сходинах юнак показує бланк заступникові. Тут: проба → хто виконав → які точки → дата підпису й хто підписав → «Надіслати в книгу».</dd><dt>Кілька юнаків чи кілька точок</dt><dd>Виберіть усіх і всі точки — одним «Надіслати». Кожна точка кожного юнака — окремий рядок у книзі.</dd><dt>Точка вже є в книзі</dt><dd>Сайт пропустить її сам: перед «Надіслати» видно, що буде записано, а що вже є. Для одного юнака виконана точка зелена й неклікабельна.</dd><dt>Помилилися</dt><dd>На екрані «Записано» — «Скасувати щойно надіслане».</dd><dt>Усі точки є — проба здобута</dt><dd>У картці «Хто на якій пробі» (праворуч, на телефоні — під формою) біля юнака — «Проба здобута →»: дата посвідки, хто підписав і, за бажанням, 📎 копія бланка.</dd><dt>Перейшов з іншого гуртка з уже здобутою пробою</dt><dd>У тій самій картці внизу виберіть його й натисніть «Проба здобута» — з приміткою, звідки.</dd><dt>Бланка проби в книзі немає (напр. 3-тя)</dt><dd>Впишіть точку так, як на бланку, і натисніть «Додати».</dd></dl></details>
+          <details class="yakp"><summary>Як заповнювати<small>коротко, за випадками</small></summary><dl><dt>Впорядник підписав точку на бланку юнака</dt><dd>На сходинах юнак показує бланк заступникові. Тут: проба → хто виконав → які точки → дата підпису й хто підписав → «Надіслати в книгу».</dd><dt>Кілька юнаків чи кілька точок</dt><dd>Виберіть усіх і всі точки — одним «Надіслати». Кожна точка кожного юнака — окремий рядок у книзі.</dd><dt>Точка вже є в книзі</dt><dd>Сайт пропустить її сам: перед «Надіслати» видно, що буде записано, а що вже є. Для одного юнака виконана точка зелена й неклікабельна.</dd><dt>Помилилися</dt><dd>На екрані «Записано» — «Скасувати щойно надіслане».</dd><dt>Усі точки є — проба здобута</dt><dd>У картці «Хто на якій пробі» (праворуч, на телефоні — під формою) біля юнака — «Проба здобута →»: дата посвідки, хто підписав і, за бажанням, <i class="ik ik-kop"></i>копія бланка.</dd><dt>Перейшов з іншого гуртка з уже здобутою пробою</dt><dd>У тій самій картці внизу виберіть його й натисніть «Проба здобута» — з приміткою, звідки.</dd><dt>Бланка проби в книзі немає (напр. 3-тя)</dt><dd>Впишіть точку так, як на бланку, і натисніть «Додати».</dd></dl></details>
           <div class="lbl"><span class="n"><i>1</i>Яка проба</span></div>
           <div class="prb" id="z-pr" role="group" aria-label="Проба"></div>
           <div class="lbl"><span class="n"><i>2</i>Хто виконав</span><button class="all" type="button" id="z-vsi">Усі</button></div>
@@ -364,9 +371,9 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
           <button class="btn ok" type="button" id="z-poss" style="width:100%">✓ Записати: проба здобута</button>
           <p class="msg" id="z-posmsg"></p>
           <div id="z-kp" hidden>
-            <h3 style="margin:18px 0 4px;font:600 16px var(--disp);letter-spacing:.1em;text-transform:uppercase">📎 Копія бланка <small style="font:400 13px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)">за бажанням</small></h3>
+            <h3 style="margin:18px 0 4px;font:600 16px var(--disp);letter-spacing:.1em;text-transform:uppercase"><i class="ik ik-kop"></i>Копія бланка <small style="font:400 13px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)">за бажанням</small></h3>
             <p class="note">Сфотографуйте заповнений бланк проби з посвідкою (усі сторінки — по черзі) або виберіть готовий скан. Файл піде в закриту папку «Проби та вмілості» на Диску виховника; на сайті його не видно. Бланк віддайте юнакові — це його документ.</p>
-            <div class="kb"><button class="btn" type="button" data-kp="0">📷 Сфотографувати</button><button class="btn" type="button" data-kp="1">Вибрати файл (фото чи PDF)</button></div>
+            <div class="kb"><button class="btn" type="button" data-kp="0"><i class="ik ik-foto"></i>Сфотографувати</button><button class="btn" type="button" data-kp="1">Вибрати файл (фото чи PDF)</button></div>
             <p class="fs" id="z-kps" hidden></p>
           </div>
         </div>
@@ -645,7 +652,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     lyudy.sort((a, b) => (posv(b, pr) ? 1 : 0) - (posv(a, pr) ? 1 : 0) || maie(b, pr).size - maie(a, pr).size).forEach(im => {
       const m = maie(im, pr), p = posv(im, pr), brak = vsi.filter(t => !m.has(t));
       h += `<div class="os"><div class="on">${esc(im)}<small>${p ? '' : N ? m.size + ' з ' + N : m.size + ' точок'}</small></div>`;
-      if (p) h += `<div class="zd">✓ Проба здобута ${esc(dd(p.d))}${p.kp ? ' · 📎 копія бланка є' : ''}</div>`;
+      if (p) h += `<div class="zd">✓ Проба здобута ${esc(dd(p.d))}${p.kp ? ' · ' + '<i class="ik ik-kop"></i>' + 'копія бланка є' : ''}</div>`;
       else {
         if (N) h += `<div class="barp"><span style="width:${Math.round(100 * m.size / N)}%"></span></div>`;
         if (N && !brak.length) h += `<div class="zd">Усі точки підписано — можна приймати пробу.</div>`;

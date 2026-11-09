@@ -109,6 +109,7 @@
 .khr li.rk::before{background:var(--pi)}
 .khr li.rk{font-weight:700}
 .khr li span{color:var(--pm);white-space:nowrap}
+.dn{padding:6px 10px;border-radius:6px;border:1px solid var(--pl);font-size:12px;break-inside:avoid}.dn p{margin:2px 0}.dn ul{margin:3px 0;padding-left:18px}.dn .m{color:var(--pm)}
 .chips{display:flex;flex-wrap:wrap;gap:3px}
 .chips span{padding:1px 6px;border-radius:4px;font-size:10.5px;border:1px solid var(--pl)}
 .chips .p{background:var(--okb);border-color:#b8dfc8}.chips .x{background:#fdf1f4;border-color:#f0c3cf}.chips .v{background:var(--zhb);border-color:#ecd59c}
@@ -175,6 +176,7 @@
       <label class="f sm" id="b-vid" hidden><span>Від</span><input class="in" type="date" id="z-vid"></label>
       <label class="f sm" id="b-do" hidden><span>До</span><input class="in" type="date" id="z-do"></label>
       <label class="f" id="b-im" hidden><span>Хто</span><select class="in" id="z-im"></select></label>
+      <label class="f" id="b-vyp" hidden><span>Як показати</span><select class="in" id="z-vyp"><option value="">Картка (для нас)</option><option value="1">Виписка для нового гуртка</option></select></label>
       <button class="btn main" type="button" id="z-druk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Друк / PDF</button>
     </div>
     <p class="hint" id="z-hint"></p>
@@ -230,6 +232,7 @@
   const MIS = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
   const sohodni = () => dt(D && D.sohodni) || new Date().toISOString().slice(0, 10);
   const nazvaH = () => t(D.nazva) || 'наш гурток';
+  const doNas = r => t(r['Де здобуто']).toLowerCase() === 'до нас';   // здобуто до переходу в наш гурток — не здобуток гуртка
   const pos = posada => { const p = A('Посади').filter(r => t(r['Посада']) === posada && t(r["Ім'я"]) && !dt(r['До'])); return p.length ? t(p[p.length - 1]["Ім'я"]) : ''; };
 
   /* ---------- період ---------- */
@@ -323,12 +326,12 @@
     const akt = uch.filter(r => t(r['Статус']) === 'активний').length, kand = uch.filter(r => t(r['Статус']) === 'кандидат').length;
     const at = prysutnist(P.vid, P.do), atD = {}; at.ryad.forEach(r => { atD[r._d] = r; });
     const skh = A('Сходини').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
-    const pro = A('Проби').filter(r => vPer(dt(r['Дата виконання'])));
+    const pro = A('Проби').filter(r => vPer(dt(r['Дата виконання'])) && !doNas(r));
     const toch = pro.filter(r => t(r['Статус']) === 'виконано' && tochkaN(r['Точка']) !== 'ПОСВІДКА');
     const posv = pro.filter(r => tochkaN(r['Точка']) === 'ПОСВІДКА');
-    const vm = A('Вмілості'), vmZ = vm.filter(r => t(r['Статус']) === 'здобуто' && vPer(dt(r['Дата здобуття'])));
+    const vm = A('Вмілості').filter(r => !doNas(r)), vmZ = vm.filter(r => t(r['Статус']) === 'здобуто' && vPer(dt(r['Дата здобуття'])));
     const vruch = vm.filter(r => vPer(dt(r['Вручено']))).map(r => ({im: t(r["Ім'я"]), n: 'нашивка вмілості «' + t(r['Вмілість']) + '»', d: dt(r['Вручено'])}))
-      .concat(A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vPer(dt(r['Дата вручення']))).map(r => ({im: t(r["Ім'я"]), n: t(r['Відзнака']), d: dt(r['Дата вручення'])})));
+      .concat(A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vPer(dt(r['Дата вручення'])) && !doNas(r)).map(r => ({im: t(r["Ім'я"]), n: t(r['Відзнака']), d: dt(r['Дата вручення'])})));
     const md = A('Мандрівки').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
     const prot = A('Протоколи').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
     const pos = A('Посади').filter(r => t(r["Ім'я"]) && (!dt(r['Від']) || dt(r['Від']) <= P.do) && (!dt(r['До']) || dt(r['До']) >= P.vid));
@@ -364,7 +367,7 @@
       <h4>Від гурткового <small>можна написати тут або від руки після друку</small></h4>
       ${lin(['Що вдалося', 'Що не вийшло і чому', 'Що плануємо далі'], 'h')}
       ${pidpys([['Гуртковий', hurtk], ['Виховник', t(D.vykhovnyk)]])}
-      <p class="pp">Письмовий звіт гурткового — Правильник УПЮ ч. I, п. 3.4.1 з. Обов'язкової форми звіту ми не знайшли: її й строк спитаємо в проводу. Лише імена, без прізвищ.</p>
+      <p class="pp">Здобуте до переходу в наш гурток («Де здобуто» = до нас) у звіт не входить — воно в «Картці учасника». Письмовий звіт гурткового — Правильник УПЮ ч. I, п. 3.4.1 з. Обов'язкової форми звіту ми не знайшли: її й строк спитаємо в проводу. Лише імена, без прізвищ.</p>
       ${pidval('Звіт з аркушів «Сходини», «Відвідуваність», «Проби», «Вмілості», «Відзначки», «Мандрівки», «Протоколи», «Фінанси»')}</div>`;
   }
 
@@ -385,16 +388,16 @@
         <tr><td>+ прийшло</td><td class="s">${eur(f.sN)}</td></tr><tr><td>− витратили</td><td class="s">${eur(f.sV)}</td></tr>
         ${f.inshe ? `<tr><td>± інше <span class="m">— гроші лише перейшли: повернули борги, позички «за учасника»; покупки за свої гроші ще не вийшли з каси</span></td><td class="s">${f.inshe > 0 ? '+ ' : ''}${eur(f.inshe)}</td></tr>` : ''}
         <tr class="z"><td>У касі на кінець · готівкою ${eur(f.de.gotivka)} · на рахунку ${eur(f.de.rakhunok)}${okr(f.de.ne) ? ' · не вказано як ' + eur(f.de.ne) : ''}</td><td class="s">${eur(f.kin)}</td></tr></table>
-      ${f.chek.length ? `<p class="uvaga">⏳ ${f.chek.length} ${f.chek.length === 1 ? 'запис ще чекає' : 'записи ще чекають'} перевірки виховника — у звіті вони вже пораховані. Перевірити: «Вхід виховника → Перевірка каси».</p>` : ''}
+      ${f.chek.length ? `<p class="uvaga"><i class="ik ik-chas"></i>${f.chek.length} ${f.chek.length === 1 ? 'запис ще чекає' : 'записи ще чекають'} перевірки виховника — у звіті вони вже пораховані. Перевірити: «Вхід виховника → Перевірка каси».</p>` : ''}
       ${f.svoi.length ? `<p class="pp">Покупки за свої гроші (гурток мав повернути): ${f.svoi.map(r => esc(r["Хто (ім'я)"]) + ' ' + eur(num(r['Сума, €']))).join(', ')}. Чи вже повернули — у витягу людини в касі.</p>` : ''}
       ${vn.length ? `<h4>Внески</h4>${tabl(['Внесок', 'Сума', 'Термін', 'Зібрано', 'Особливі суми'], vn.map(r => [`<b>${esc(r['Внесок'])}</b>`, eur(num(r['Сума, €'])), esc(dd(dt(r['Термін']))), eur(num(r['Зібрано, €'])), esc(r['Особливі суми'])]), [0, 's', 'm', 's', 'm'])}<p class="pp">Хто скільки ще винен — «Каса → Витяг і нагадування» (там суми кожного; у цей звіт вони не входять).</p>` : ''}
       <h4>Усі рухи за період <small>${rukhy.length}</small></h4>
       ${tabl(['Дата', 'Рух', 'За що', 'Опис', 'Хто', 'Як', 'Сума', 'Чек / кв.', '✓'],
         rukhy.map(r => { const p = t(r['Перевірено виховником']).toLowerCase(), nv = NE_V_PIDSUMKU.indexOf(t(r['Категорія'])) >= 0;
           return [esc(dd(r._d)), t(r['Рух']) === 'надходження' ? '+' : '−', esc(r['Категорія']) + (nv ? ' <span class="m">(не в підсумку)</span>' : ''), esc(r['Опис']), esc(r["Хто (ім'я)"]), esc(r['Як платили']),
-            `<b>${eur(num(r['Сума, €']))}</b>`, esc(r['Квитанція №']), p === 'так' ? '<span class="ok">✓</span>' : p === 'ні' ? '<span class="no">✗</span>' : '<span class="zh">⏳</span>']; }),
+            `<b>${eur(num(r['Сума, €']))}</b>`, esc(r['Квитанція №']), p === 'так' ? '<span class="ok">✓</span>' : p === 'ні' ? '<span class="no">✗</span>' : '<span class="zh"><i class="ik ik-chas"></i></span>']; }),
         ['m', 'c', 0, 0, 0, 'm', 's', 'm', 'c']) || porozh('Рухів за цей період немає.')}
-      <p class="pp">✓ — перевірив виховник (є в банку / гроші й чек є); ⏳ — чекає перевірки; ✗ — не знайшов. «Не в підсумку» — гроші лише перейшли (переміщення, повернення, позичка), тому не дохід і не видаток.</p>
+      <p class="pp">✓ — перевірив виховник (є в банку / гроші й чек є); <i class="ik ik-chas"></i>— чекає перевірки; ✗ — не знайшов. «Не в підсумку» — гроші лише перейшли (переміщення, повернення, позичка), тому не дохід і не видаток.</p>
       ${pidpys([['Скарбник', skarb], ['Перевірив виховник', t(D.vykhovnyk)]])}
       ${pidval('Звіт з аркушів «Фінанси» і «Внески»')}</div>`;
   }
@@ -420,9 +423,9 @@
   /* ---------- підсумок одного року (як «Новий рік» у приймачі) ---------- */
   function pidsumokRoku(vid, doo) {
     const at = prysutnist(vid, doo), vP = s => !!s && s >= vid && s <= doo;
-    const pr = A('Проби').filter(r => t(r['Статус']) === 'виконано' && vP(dt(r['Дата виконання'])));
-    const vm = A('Вмілості').filter(r => t(r['Статус']) === 'здобуто' && vP(dt(r['Дата здобуття'])));
-    const vr = A('Вмілості').filter(r => vP(dt(r['Вручено']))).length + A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vP(dt(r['Дата вручення']))).length;
+    const pr = A('Проби').filter(r => t(r['Статус']) === 'виконано' && vP(dt(r['Дата виконання'])) && !doNas(r));
+    const vm = A('Вмілості').filter(r => t(r['Статус']) === 'здобуто' && vP(dt(r['Дата здобуття'])) && !doNas(r));
+    const vr = A('Вмілості').filter(r => vP(dt(r['Вручено'])) && !doNas(r)).length + A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vP(dt(r['Дата вручення'])) && !doNas(r)).length;
     const f = finansy(vid, doo);
     return {uch: A('Учасники').filter(r => t(r["Ім'я"]) && t(r['Статус']) === 'активний').length, skh: at.ryad.length, ser: at.ser, toch: pr.length, vm: vm.length, vr,
             md: A('Мандрівки').filter(r => vP(dt(r['Дата']))).length, n: f.sN, v: f.sV, at, pr, vmz: vm};
@@ -463,26 +466,49 @@
     A('Історія учасників').forEach(r => { const im = t(r["Ім'я"]); if (im && !(im in o)) o[im] = 'вибув'; });
     return o;
   }
-  function kartka(im, brk) {
+  // «До нашого гуртка»: що людина мала, коли прийшла (перевід, з новацтва, з іншого краю)
+  function doNashoho(u, pro, vm, vz) {
+    const posv = pro.filter(x => doNas(x) && tochkaN(x['Точка']) === 'ПОСВІДКА'), toch = {};
+    pro.filter(x => doNas(x) && tochkaN(x['Точка']) !== 'ПОСВІДКА' && t(x['Статус']) === 'виконано').forEach(x => { (toch[t(x['Проба'])] = toch[t(x['Проба'])] || []).push(tochkaN(x['Точка'])); });
+    const vmD = vm.filter(doNas), vzD = vz.filter(doNas), zv = t(u['Звідки прийшов']), pl = t(u['У Пласті від']);
+    const l = [];
+    posv.forEach(x => l.push(`<b>${esc(x['Проба'])}</b> — здобуто${dt(x['Дата виконання']) ? ' ' + esc(dd(dt(x['Дата виконання']))) : ' (дата невідома)'}${t(x['Хто підтвердив']) ? ', підписав(-ла): ' + esc(x['Хто підтвердив']) : ''}`));
+    Object.keys(toch).forEach(pr => l.push(`${esc(pr)}: точки ${esc(toch[pr].join(', '))} — з попереднього бланка`));
+    vmD.forEach(x => l.push(`вмілість <b>«${esc(x['Вмілість'])}»</b>${t(x['Статус']) === 'здобуто' ? ' — здобуто' + (dt(x['Дата здобуття']) ? ' ' + esc(dd(dt(x['Дата здобуття']))) : '') : ' — ' + esc(x['Статус'])}${t(x['Нашивку не замовляти (вже має)']).toLowerCase() === 'так' ? ', нашивка вже є' : ''}`));
+    vzD.forEach(x => l.push(`відзнака <b>«${esc(x['Відзнака'])}»</b>${t(x['Підстава']) ? ' — ' + esc(x['Підстава']) : ''}`));
+    const pp = [].concat(posv, vmD, vzD).filter(x => /перевір/i.test(t(x['Примітка']))).length;
+    if (!zv && !l.length) return '';
+    return `<h4>До нашого гуртка <small>що вже мав(-ла), коли прийшов(-ла)</small></h4><div class="dn">
+      ${zv || pl ? `<p>${zv ? 'Звідки: <b>' + esc(zv) + '</b>' : ''}${zv && pl ? ' · ' : ''}${pl ? 'у Пласті від <b>' + esc(pl) + '</b>' : ''}</p>` : ''}
+      ${l.length ? `<ul>${l.map(x => `<li>${x}</li>`).join('')}</ul>` : '<p class="m">Здобутків до нас не записано.</p>'}
+      ${pp ? `<p class="m">${pp} ${pp === 1 ? 'запис потребує' : 'записи потребують'} перевірки (див. «Примітку» в книзі).</p>` : ''}
+      <p class="m">У звітах гуртка це не рахується як наші здобутки — лише тут, щоб картка була повна.</p></div>`;
+  }
+  function kartka(im, brk, vyp) {
     const u = A('Учасники').find(r => t(r["Ім'я"]) === im) || {}, my = r => t(r["Ім'я"]) === im;
     const y = rikPochatok(), r = rikN(), p = pidsumokRoku(y + '-09-01', (y + 1) + '-08-31'), o = p.at.o[im] || {p: 0, n: 0, x: 0, v: 0};
     const ist = A('Історія учасників').filter(my).sort((a, b) => t(a['Навчальний рік']).localeCompare(t(b['Навчальний рік'])));
     const pro = A('Проби').filter(my), vm = A('Вмілості').filter(my), vz = A('Відзначки').filter(my), pos = A('Посади').filter(my);
     const khr = [];
     const vid = t(u['У гуртку від (рік)']) || (ist[0] ? t(ist[0]['Навчальний рік']).slice(0, 4) : '');
-    if (vid) khr.push({d: vid + '-00', p: vid, s: 'прийшов(-ла) в гурток', rk: 1});
+    const plast = t(u['У Пласті від']), zvidky = t(u['Звідки прийшов']), pishov = t(u['Пішов (коли, куди)']);
+    if (plast && (!vid || plast < vid)) khr.push({d: plast + '-00', p: plast, s: 'прийшов(-ла) в Пласт', rk: 1});
+    if (vid) khr.push({d: vid + '-01', p: vid, s: 'прийшов(-ла) в гурток' + (zvidky ? ' — з: ' + esc(zvidky) : ''), rk: 1});
+    const dN = x => doNas(x) ? ' <span class="m">(до нас)</span>' : '';
     pos.forEach(x => { if (dt(x['Від'])) khr.push({d: dt(x['Від']), s: 'посада: ' + esc(x['Посада'])}); if (dt(x['До'])) khr.push({d: dt(x['До']), s: 'закінчив(-ла) посаду ' + esc(x['Посада'])}); });
     const prRazom = {};
     pro.forEach(x => { const pr = t(x['Проба']), d = dt(x['Дата виконання']); if (!pr) return; const q = prRazom[pr] = prRazom[pr] || {t: [], pochav: '', ost: '', posv: null};
       if (tochkaN(x['Точка']) === 'ПОСВІДКА') q.posv = x; else if (t(x['Статус']) === 'виконано') { q.t.push(tochkaN(x['Точка'])); if (d && (!q.pochav || d < q.pochav)) q.pochav = d; if (d && d > q.ost) q.ost = d; } });
     Object.keys(prRazom).forEach(pr => { const q = prRazom[pr]; if (q.pochav) khr.push({d: q.pochav, s: 'почав(-ла) «' + esc(pr) + '» — перша точка'});
-      if (q.posv && dt(q.posv['Дата виконання'])) khr.push({d: dt(q.posv['Дата виконання']), s: `<b>здобув(-ла) «${esc(pr)}»</b> — посвідку підписано${t(q.posv['Хто підтвердив']) ? ' (' + esc(q.posv['Хто підтвердив']) + ')' : ''}`}); });
+      if (q.posv && dt(q.posv['Дата виконання'])) khr.push({d: dt(q.posv['Дата виконання']), s: `<b>здобув(-ла) «${esc(pr)}»</b> — посвідку підписано${t(q.posv['Хто підтвердив']) ? ' (' + esc(q.posv['Хто підтвердив']) + ')' : ''}${dN(q.posv)}`}); });
     vm.forEach(x => { const n = esc(x['Вмілість']);
       if (dt(x['Почато'])) khr.push({d: dt(x['Почато']), s: 'почав(-ла) вмілість «' + n + '»'});
-      if (t(x['Статус']) === 'здобуто' && dt(x['Дата здобуття'])) khr.push({d: dt(x['Дата здобуття']), s: `<b>здобув(-ла) вмілість «${n}»</b>${t(x['Інструктор']) ? ' (прийняв: ' + esc(x['Інструктор']) + ')' : ''}`});
+      if (t(x['Статус']) === 'здобуто' && dt(x['Дата здобуття'])) khr.push({d: dt(x['Дата здобуття']), s: `<b>здобув(-ла) вмілість «${n}»</b>${t(x['Інструктор']) ? ' (прийняв: ' + esc(x['Інструктор']) + ')' : ''}${dN(x)}${t(x['Де здобуто']) === 'поза гуртком' ? ' <span class="m">(поза гуртком)</span>' : ''}`});
       if (dt(x['Вручено'])) khr.push({d: dt(x['Вручено']), s: 'вручено нашивку «' + n + '»'}); });
     vz.forEach(x => { if (t(x['Статус']) === 'вручено' && dt(x['Дата вручення'])) khr.push({d: dt(x['Дата вручення']), s: 'вручено «' + esc(x['Відзнака']) + '»' + (t(x['Підстава']) ? ' — ' + esc(x['Підстава']) : '')}); });
     ist.forEach(h => { const rk = t(h['Навчальний рік']), m = /^(\d{4})/.exec(rk); if (m) khr.push({d: (+m[1] + 1) + '-08-31~', p: 'рік ' + rk, s: `закінчив(-ла) рік: ${num(h['Сходин відвідано'])} сходин (${pct(num(h['Присутність']))})${t(h['Посада']) ? ', посада — ' + esc(h['Посада']) : ''}`, rk: 1}); });
+    const pm = /^(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(pishov);
+    if (pishov) khr.push({d: pm ? dt(pm[0]) : '9999', p: pm ? '' : 'пішов', s: '<b>пішов(-ла) від нас</b> — ' + esc(pishov.replace(/^\d{1,2}\.\d{1,2}\.\d{4}\s*[—,-]?\s*/, '')), rk: 1});
     khr.sort((a, b) => a.d.localeCompare(b.d));
     const skhVse = suma(ist.map(h => num(h['Сходин відвідано']))) + (ist.some(h => t(h['Навчальний рік']) === r) ? 0 : o.p);
     const vruch = vm.filter(x => dt(x['Вручено'])).length + vz.filter(x => t(x['Статус']) === 'вручено').length;
@@ -492,10 +518,11 @@
     const probyT = Object.keys(prRazom).map(pr => { const q = prRazom[pr], vse = IX[pr] || [], brak = vse.filter(x => q.t.indexOf(tochkaN(x.t)) < 0).map(x => x.t);
       return [`<b>${esc(pr)}</b>`, vse.length ? `${new Set(q.t).size} з ${vse.length}` : String(new Set(q.t).size), esc(dd(q.ost)), q.posv ? `<span class="ok">✓ ${esc(dd(dt(q.posv['Дата виконання'])))}</span>` : '—', q.posv ? '—' : vse.length ? (brak.length > 14 ? esc(brak.slice(0, 14).join(', ')) + ' … (ще ' + (brak.length - 14) + ')' : esc(brak.join(', ')) || '—') : '<span class="m">бланка ще немає</span>']; });
     const chips = p.at.ryad.map(rr => { const m = t(rr[im]); return m ? `<span class="${m === '+' ? 'p' : m === 'в' ? 'v' : 'x'}">${ddk(rr._d)} ${esc(m)}</span>` : ''; }).join('');
-    return `<div class="ppr${brk ? ' brk' : ''}">${shapka('Картка учасника', 'Усе про одну людину з книги гуртка — від першого дня', 'впорядник')}
-      ${meta([['Ім\'я', im], ['Гурток', nazvaH()], ['Статус', t(u['Статус']) || 'вибув(-ла)'], ['У гуртку від', vid], ['Посада зараз', t(u['Посада'])], ['Проба зараз', t(u['Проба зараз'])]])}
+    return `<div class="ppr${brk ? ' brk' : ''}">${vyp ? shapka('Виписка для нового гуртка', 'Що вже здобув(-ла) і на чому зупинився(-лась) — для виховника, до якого переходить', 'виховник') : shapka('Картка учасника', 'Усе про одну людину з книги гуртка — від першого дня', 'впорядник')}
+      ${meta([['Ім\'я', im], ['Гурток', nazvaH()], ['Курінь / станиця', vyp ? t(D.kurin) : ''], ['Статус', vyp ? '' : t(u['Статус']) || 'вибув(-ла)'], ['У Пласті від', plast], ['У гуртку від', vid], ['Посада зараз', vyp ? '' : t(u['Посада'])], ['Проба зараз', t(u['Проба зараз'])], ['Пішов', vyp ? '' : pishov]])}
       ${kpi([[String((new Set(ist.map(h => t(h['Навчальний рік'])).concat(t(u['Статус']) && t(u['Статус']) !== 'вибув' ? [r] : []))).size || 1), 'років у гуртку (за книгою)'], [skhVse, 'сходин відвідано за всі роки'], [o.n ? pct(o.p / o.n) : '—', 'присутність цього року'], [pro.filter(x => t(x['Статус']) === 'виконано' && tochkaN(x['Точка']) !== 'ПОСВІДКА').length, 'точок проб виконано'],
              [Object.values(prRazom).filter(q => q.posv).length, 'проб здобуто', true], [vm.filter(x => t(x['Статус']) === 'здобуто').length, 'вмілостей здобуто', true], [vm.filter(x => t(x['Статус']) === 'працює').length, 'вмілостей у роботі'], [vruch, 'відзнак вручено', true]])}
+      ${doNashoho(u, pro, vm, vz)}
       <h4>Хронологія</h4>
       ${khr.length ? `<ol class="khr">${khr.map(x => `<li${x.rk ? ' class="rk"' : ''}><span>${x.p || dd(x.d)}</span><div>${x.s}</div></li>`).join('')}</ol>` : porozh('Записів про цю людину ще немає.')}
       <h4>Проби</h4>
@@ -505,17 +532,19 @@
       ${vz.length ? `<h4>Інші відзначки</h4>${tabl(['Відзнака', 'Вид', 'За що', 'Статус', 'Вручено'], vz.map(x => [`<b>${esc(x['Відзнака'])}</b>`, esc(x['Вид']), esc(x['Підстава']), esc(x['Статус']), esc(dd(dt(x['Дата вручення'])))]), [0, 0, 0, 0, 'm'])}` : ''}
       <h4>Рік за роком</h4>
       ${tabl(['Рік', 'Посада', 'Статус', 'Сходин', 'Присутність', 'Проба', 'Точок', 'Вмілості', 'Відзнаки'], roky, [0, 0, 'm', 'c', 'c', 0, 'c', 0, 0]) || porozh('Підсумків років ще немає.')}
-      ${chips ? `<h4>Присутність цього року <small>${o.p} з ${o.n} сходин</small></h4><div class="chips">${chips}</div>` : ''}
+      ${vyp ? `<h4>Від виховника <small>можна дописати тут або від руки</small></h4>${lin(['Що варто знати новому виховникові', 'Що вже вміє добре'], 'vyp-' + im)}
+      <p class="pp">Оригінали посвідок і бланків проб — у самого юнака; копії, якщо є, — у виховника. Прізвище, контакти й дозволи у виписку не входять — їх передає родина. Лише записи книги гуртка; що було до нас — блок «До нашого гуртка».</p>
+      ${pidpys([['Виховник', t(D.vykhovnyk)]])}` : `${chips ? `<h4>Присутність цього року <small>${o.p} з ${o.n} сходин</small></h4><div class="chips">${chips}</div>` : ''}
       <h4>Зауваження й перестороги</h4>
       <p class="porozh">У книзі гуртка поки не ведемо: що можна записувати про неповнолітніх і скільки зберігати — питання до проводу (№ 7).</p>
-      <p class="pp">Лише ім'я — без прізвища, дати народження й контактів (вони лише в закритій папці 99). Картку можна зберегти в PDF і покласти в архів гуртка: вона знадобиться й тоді, коли гурток розійдеться.</p>
+      <p class="pp">Лише ім'я — без прізвища, дати народження й контактів (вони лише в закритій папці 99). Картку можна зберегти в PDF і покласти в архів гуртка: вона знадобиться й тоді, коли гурток розійдеться.</p>`}
       ${pidval('Картка з аркушів «Учасники», «Посади», «Проби», «Вмілості», «Відзначки», «Відвідуваність», «Історія учасників»')}</div>`;
   }
   function zvitKartka() {
     const v = $('z-im').value, im = vsiImena();
     if (v === '*') return Object.keys(im).filter(x => im[x] !== 'вибув').map((x, i) => kartka(x, i > 0)).join('') || '<p class="wait">Учасників немає.</p>';
     if (v === '**') return Object.keys(im).map((x, i) => kartka(x, i > 0)).join('') || '<p class="wait">Учасників немає.</p>';
-    return v ? kartka(v) : '<p class="wait">Виберіть, чию картку показати.</p>';
+    return v ? kartka(v, false, $('z-vyp').value === '1') : '<p class="wait">Виберіть, чию картку показати.</p>';
   }
 
   /* ---------- показ ---------- */
@@ -525,13 +554,14 @@
     finansy: 'Для гурткової ради, курінного чи батьків: скільки було, прийшло, витратили й лишилось — і всі рухи. <b>Боргів окремих людей тут немає</b> (вони — у витягу людини в касі).',
     prysutnist: 'Таблиця «хто на яких сходинах був» за вибраний період. Друкується лежачи (A4 горизонтально).',
     roky: 'Підсумки кожного навчального року й хто ким був у гуртку. Минулі роки записує «Новий рік»; цей рік сторінка рахує сама.',
-    kartka: 'Повна хронологія однієї людини: коли прийшла, посади, проби, вмілості, відзнаки, присутність по роках. Можна надрукувати всі картки разом — для архіву.'
+    kartka: 'Повна хронологія однієї людини: коли прийшла, посади, проби, вмілості, відзнаки, присутність по роках; що мала до нас — окремим блоком. Можна надрукувати всі картки разом — для архіву. Юнак переходить в інший гурток — «Як показати → <b>Виписка для нового гуртка</b>»: без службових позначок, з тим, що вже здобуто й чого ще бракує.'
   };
   function malyuvaty() {
     if (!D) return;
     zPeriod();
     const k = ZV === 'kartka' || ZV === 'roky';
-    $('b-per').hidden = k; $('b-im').hidden = ZV !== 'kartka';
+    $('b-per').hidden = k; $('b-im').hidden = $('b-vyp').hidden = ZV !== 'kartka';
+    $('b-vyp').hidden = ZV !== 'kartka' || /^\*/.test($('z-im').value);
     if (k) { $('b-vid').hidden = $('b-do').hidden = true; }
     $('z-hint').innerHTML = OPYS[ZV];
     try {
@@ -540,7 +570,7 @@
   }
   $('z-desk').addEventListener('input', e => { const el = e.target.closest('[data-vr]'); if (el) VR[el.dataset.vr] = el.innerText; });
   $('z-rz').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; ZV = b.dataset.z; document.querySelectorAll('#z-rz [data-z]').forEach(x => x.setAttribute('aria-selected', String(x === b))); malyuvaty(); });
-  ['z-per', 'z-vid', 'z-do', 'z-im'].forEach(id => $(id).addEventListener('change', malyuvaty));
+  ['z-per', 'z-vid', 'z-do', 'z-im', 'z-vyp'].forEach(id => $(id).addEventListener('change', malyuvaty));
   $('z-druk').addEventListener('click', () => {
     const land = ZV === 'prysutnist', ps = document.createElement('style');
     ps.textContent = land ? '@page{size:A4 landscape;margin:9mm}' : '@page{size:A4 portrait;margin:13mm 14mm}';
