@@ -49,8 +49,10 @@ for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku', *FO
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
     s = s.replace('<!--DATALISTS-->', DL)
+    s = s.replace('/*DEMO*/false/*/DEMO*/', 'false' if SAIT else 'true')   # проби — завжди пробний режим (без коду, нічого не надсилається); на сайті — вхід за кодом
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s
+    assert '/*DEMO*/' not in s and not (SAIT and 'const DEMO = true' in s)
     out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / ('' if nazva == 'index' else nazva) / 'index.html'
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(s, encoding='utf-8')
