@@ -892,7 +892,11 @@ function perevirkaVmil(arkush, dani) {
   if (isNaN(vyk) || isNaN(us)) return '«Виконано точок» і «Усього точок» — цілі числа (порахуйте точки на бланку).';
   if (us === 0) return '«Усього точок» не може бути 0 — порахуйте точки на бланку вимог.';
   if (vyk !== null && us !== null && vyk > us) return 'Виконано (' + vyk + ') більше, ніж усього точок (' + us + ') — перевірте бланк.';
-  if (dani['Статус'] === 'здобуто' && !data(dani['Дата здобуття'])) return 'Здобуто — вкажіть дату здобуття (коли інструктор підписав посвідку).';
+  var vzheMaie = String(dani['Нашивку не замовляти (вже має)'] || '').trim().toLowerCase() === 'так';
+  if (dani['Статус'] === 'здобуто' && !data(dani['Дата здобуття'])) {
+    if (!vzheMaie) return 'Здобуто — вкажіть дату здобуття (коли інструктор підписав посвідку).';
+    if (!String(dani['Примітка'] || '').trim()) return 'Дата здобуття невідома — напишіть у «Примітці», звідки ця вмілість (напр. «здобув у гуртку … в Києві»).';
+  }
   if (dani['Статус'] !== 'здобуто' && String(dani['Вручено'] || '').trim()) return 'Нашивку вручають лише за здобуту вмілість — спершу «здобуто».';
   return '';
 }
@@ -961,7 +965,7 @@ function vmilosti() {
     return {im: t(r[0]), vm: t(r[i(vm, 'Вмілість')]), vyk: ch(r[i(vm, 'Виконано точок')]), us: ch(r[i(vm, 'Усього точок')]),
             ost: dt(r[i(vm, 'Остання точка')]) || dt(r[i(vm, 'Почато')]), status: t(r[i(vm, 'Статус')]) || 'працює',
             zdob: dt(r[i(vm, 'Дата здобуття')]), vruch: dt(r[i(vm, 'Вручено')]) || (r[i(vm, 'Вручено')] ? 'так' : ''),
-            maie: t(r[i(vm, 'Нашивка вже є')]).toLowerCase() === 'так', kopiia: !!t(r[i(vm, KOPIIA)])};
+            maie: t(r[i(vm, 'Нашивку не замовляти (вже має)')]).toLowerCase() === 'так', kopiia: !!t(r[i(vm, KOPIIA)])};
   });
   var nash = {}, n = function (x) { var k = t(x); return nash[k.toLowerCase()] = nash[k.toLowerCase()] || {n: k, otr: 0, dor: 0, zapl: 0, vzVruch: 0, vzChek: 0}; };
   zp.v.forEach(function (r) { if (t(r[0])) n(r[0]); });
