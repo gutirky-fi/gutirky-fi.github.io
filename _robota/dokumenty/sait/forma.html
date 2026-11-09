@@ -543,7 +543,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       <div class="radd"><button type="button" class="btn" id="z-radd">+ Ще рядок</button><button type="button" class="btn" id="z-vsim" hidden>+ Рядок кожному учаснику</button></div>${MN.pidk ? `<small class="rpidk">${esc(MN.pidk)}</small>` : ''}</div>`;
     $('z-polia').before($('z-stan'));   // спершу виносимо повідомлення, щоб не стерти
     $('z-polia').innerHTML = h;
-    if (MN) { rN = 0; prybrani = []; dodatyRyad(); vsimVydno(); }
+    if (MN) { rN = 0; prybrani = []; dodatyRyad(); ruhVsi(); vsimVydno(); }
     if (K.den) {   // «Уже в касі за …» — одразу під датою
       const df = spilneEl('Дата'), blok = df && (df.closest('.row2') || df.closest('.f'));
       if (blok) blok.insertAdjacentHTML('afterend', '<div class="den" id="z-den" hidden></div>' + (VNP >= 0 ? '<details class="vn" id="z-vn" hidden></details>' : ''));
@@ -654,7 +654,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     const z = x ? x.dani : kop || {};
     K.polia.forEach((p, i) => { if (jeRyad(p)) { if (z[p.h] != null && z[p.h] !== '') setV(rEl(n, i), z[p.h]); else if (p.zam) setV(rEl(n, i), p.zam); } });
     if (VNP >= 0 && !(x && x.dani && x.dani['Внесок']) && !(kop && kop['Внесок']) && VN && VN.vnesky.length) rEl(n, VNP).value = VN.vnesky[VN.vnesky.length - 1].n;   // новий рядок — найсвіжіший внесок
-    nomery(); vnVsi(); fotoVsi(); return el;
+    nomery(); ruhVsi(); vnVsi(); fotoVsi(); return el;
   }
   function ryadDani(el) { const o = {}; K.polia.forEach((p, i) => { if (jeRyad(p)) o[p.h] = rEl(el.dataset.r, i).value.trim(); }); return o; }
   const porozhnii = o => Object.values(o).every(v => !v);
@@ -698,7 +698,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (MN.vsim && h === MN.vsim.pole) { vsimVydno(); vnVsi(); }
       if (K.den && h === 'Дата') denZavantazhyty();
       if (MN.avto && h === MN.avto.pole) { const c = spilneEl(MN.avto.tsil), x = MN.avto.mapa[e.target.value]; if (c && x && !c.value) c.value = x; }
-      fotoVsi();
+      ruhVsi(); vsimVydno(); vnVsi(); fotoVsi();
     });
     $('z-polia').addEventListener('change', e => { if (e.target.matches('.foto input[type=file]')) fotoVybrano(e.target); });
   }
@@ -802,6 +802,26 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       <div class="vt"><table><thead><tr><th>Хто</th>${vs.map(x => `<th>${esc(x.n)}<br>${groshi(x.suma)}</th>`).join('')}<th>Бракує</th></tr></thead><tbody>${tr}</tbody></table>
       <p>✓ — сплачено повністю, <b>виховник перевірив</b> (переказ — у банку, готівку — отримав). ⏳ — записано, але ще не перевірено. «10 з 20» — частково; «—» — ще нічого. «Бракує» рахує все записане, щоб не просити двічі. Суми внесків і винятки вписує виховник в аркуш «Внески» книги.${VN.vnesky.length > 4 ? ' Показано 4 останні внески; «Бракує» — за всі.' : ''}</p></div>`;
     box.open = vidkr; box.hidden = false;
+  }
+
+  /* ---------- форма за рухом (поле з "poRuhu"): видаток виглядає інакше, ніж надходження ---------- */
+  function ruhVsi() {
+    const ruh = spilneEl('Рух') ? spilneEl('Рух').value : '';
+    K.polia.forEach((p, i) => {
+      if (!p.poRuhu) return;
+      const o = p.poRuhu[ruh] || {}, opt = o.opt || p.opt;
+      const els = jeRyad(p) ? [...($('z-rl') ? $('z-rl').children : [])].map(el => rEl(el.dataset.r, i)) : [$('z-p' + i)];
+      els.forEach(el => {
+        if (!el) return; const f = el.closest('.f');
+        f.querySelector('span').firstChild.textContent = (o.l || p.l || p.h) + (p.req ? ' ' : '');
+        if (el.tagName !== 'SELECT') el.placeholder = o.ph != null ? o.ph : p.ph || '';
+        if (opt && el.tagName === 'SELECT' && el.dataset.opt !== JSON.stringify(opt)) {
+          const was = el.value; el.innerHTML = opts(opt, p.req ? '— виберіть —' : '—'); el.dataset.opt = JSON.stringify(opt);
+          if ([...el.options].some(x => x.value === was)) el.value = was;
+        }
+        f.hidden = !!o.skhov; if (o.skhov && el.tagName === 'SELECT') el.value = '';
+      });
+    });
   }
 
   /* ---------- фото чека (K.foto): стиснути на телефоні → «foto» → Диск виховника ---------- */
@@ -919,7 +939,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     red = {ryadok: r.ryadok, chek: chNomer(r.dani['Квитанція №']), orig: {im: r.dani[MN.imya] || '', v: r.dani['Внесок'] || '', s: chyslo(r.dani[MN.suma])}}; dupOk = '';
     K.polia.forEach((p, i) => { if (!jeRyad(p) && p.h !== 'Дата') setV($('z-p' + i), r.dani[p.h]); });
     $('z-rl').innerHTML = ''; prybrani = [];
-    const el = dodatyRyad(); K.polia.forEach((p, i) => { if (jeRyad(p)) setV(rEl(el.dataset.r, i), r.dani[p.h]); });
+    ruhVsi(); const el = dodatyRyad(); K.polia.forEach((p, i) => { if (jeRyad(p)) setV(rEl(el.dataset.r, i), r.dani[p.h]); });
     el.querySelectorAll('[data-auto]').forEach(i => { i.dataset.auto = ''; });
     el.dataset.ver = r.versiya; el.dataset.ryadok = r.ryadok; el.querySelector('.rx').hidden = true; el.querySelector('.rn').textContent = 'Рядок ' + r.ryadok + ' книги'; razom();
     $('z-radd').hidden = true; $('z-vsim').hidden = true;
@@ -1003,7 +1023,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     }
     for (const x of aktyvni) {
       const dani = Object.assign({}, spil, x.d), kv = x.el.dataset.kv;
-      if (VNP >= 0 && spil['Категорія'] !== 'внески') dani['Внесок'] = '';   // внесок — лише для категорії «внески»
+      if (VNP >= 0 && spil['Категорія'] !== 'внески') dani['Внесок'] = '';
+      K.polia.forEach(p => { if (p.poRuhu && (p.poRuhu[spil['Рух']] || {}).skhov) dani[p.h] = ''; });   // приховане для цього руху — не надсилаємо   // внесок — лише для категорії «внески»
       if (x.el.dataset.ver) {   // виправлення рядка зі списку «Уже в касі»
         vsogo++;
         try {
