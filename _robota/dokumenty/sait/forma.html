@@ -1091,8 +1091,9 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
     const nz = k => /^\d{4}-/.test(k) ? k.split('|').map(isoDd).join(' · ') : '«' + k + '»';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код юнаків — 1234.' + (K.demo ? ' Спробуйте ' + Object.entries(K.demo).map(([k, x]) => nz(k) + (x.zatv ? ' (затверджено)' : ' (уже записано)')).join(' і ') + '.' : '');
+    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі код гуртка потрібен).' + (K.demo ? ' Спробуйте ' + Object.entries(K.demo).map(([k, x]) => nz(k) + (x.zatv ? ' (затверджено)' : ' (уже записано)')).join(' і ') + '.' : '');
     document.body.prepend(n); $('z-noaddr').hidden = true;
+    $('z-kod').value = '1234'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }
 })();
 </script>

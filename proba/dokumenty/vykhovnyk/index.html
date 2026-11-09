@@ -720,8 +720,9 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код виховника — 123456 (код юнаків 1234 сюди не пускає).';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника).';
     document.body.prepend(n); $('z-noaddr').hidden = true;
+    $('z-kod').value = '123456'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }
 })();
 </script>

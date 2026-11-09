@@ -514,8 +514,9 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Код юнаків — 1234. Спробуйте дати 05.11.2026 (уже записано) і 01.11.2026 (затверджено).';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі код гуртка потрібен). Спробуйте дати 05.11.2026 (уже записано) і 01.11.2026 (затверджено).';
     document.body.prepend(n); $('z-noaddr').hidden = true;
+    $('z-kod').value = '1234'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }
 })();
 </script>
