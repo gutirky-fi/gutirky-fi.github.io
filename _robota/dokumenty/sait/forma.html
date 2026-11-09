@@ -19,6 +19,30 @@
 .bar2{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;padding:0 4px}
 .bar2 .chk{margin:0;flex:1 1 360px}
 .bar2 .note{flex:1 1 260px}
+/* форма → аркуш (10.11.2026) */
+.fm{max-width:760px;width:100%;margin:0 auto;padding:22px 22px 0}
+.fm-hd h2{margin:0 0 6px;font:600 22px/1.15 var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.fm-hd p{margin:0 0 16px;color:var(--mut);font-size:15px;line-height:1.4}
+.fm-top{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.fm .f textarea.in{min-height:96px;resize:vertical;font:inherit;font-size:17px;line-height:1.4}
+.fm .f small{color:var(--mut);font-size:13px}
+.fm-r{margin:0 0 14px;padding:16px 16px 4px;border-radius:16px;background:#14171a;border:1px solid var(--ln)}
+.fm-r .fm-rh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 10px}
+.fm-r .fm-rh b{font:600 15px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--body)}
+.fm-r .fm-rh button{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:10px;border:1px solid var(--ln);background:none;color:var(--mut);font:600 14px var(--txt);cursor:pointer}
+.fm-r .fm-rh button svg{width:15px;height:15px}
+.fm-r .in{background:var(--card)}
+.fm-add{width:100%;border-style:dashed}
+.fm-add svg{width:18px;height:18px}
+.fm-add[disabled]{opacity:.5;cursor:not-allowed}
+.fm-auto{margin:10px 2px 0;color:var(--mut);font-size:14px;line-height:1.4}
+.fm-dock{position:sticky;bottom:0;z-index:5;display:grid;grid-template-columns:1fr auto;gap:10px;margin:16px -22px 0;padding:14px 22px;padding-bottom:max(14px,env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--ln);border-radius:0 0 20px 20px}
+#p-b.fm-on>:not(.fm){display:none!important}
+/* аркуш після форми: виглядає як готовий (без жовтого), але дрібне можна виправити дотиком */
+.sheet.edit.tykho [contenteditable]{background:none}
+.sheet.edit.tykho [contenteditable]:focus{background:#ffefa8}
+html.pv-touch .bar2 .chk{display:none}   /* на телефоні — «Заповнити» (форма); клітинки — на комп'ютері */
+@media (max-width:620px){.fm{padding:16px 14px 0}.fm-top{grid-template-columns:1fr}.fm-dock{margin:16px -14px 0;padding-inline:14px}.fm-r{padding:14px 12px 2px}}
 .desk{position:relative;padding:22px;border-radius:20px;background:#14171a;border:1px solid var(--ln);overflow:auto}
 .sheet{--pi:#1d2125;--pm:#5f6873;--pl:#cfd5dc;--acc:#c8284a;--tint:#f9e6ea;width:100%;min-width:860px;max-width:1080px;margin:0 auto;aspect-ratio:297/210;padding:3.6% 4.4% 2.6%;background:#fff;color:var(--pi);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.45);font:13px/1.35 var(--txt);display:flex;flex-direction:column}
 .hd{display:flex;align-items:flex-end;gap:20px;padding-bottom:10px;border-bottom:3px solid var(--acc);margin-bottom:10px}
@@ -292,8 +316,9 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       <label class="f"><span>Рік / місяці</span><input class="in" id="b-rik" placeholder="напр. 2026–2027" maxlength="30"></label>
       <label class="f" id="b-ryad-l"><span>Рядків</span><select class="in" id="b-ryad"><option>8</option><option selected>10</option><option>12</option><option>15</option></select></label>
       <div class="btns">
+        <button class="btn main" type="button" id="b-fill" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span id="b-fill-t">Заповнити</span></button>
         <button class="btn" type="button" id="b-view" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Переглянути</button>
-        <button class="btn main" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>Друк або PDF</button>
+        <button class="btn" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>Друк або PDF</button>
         <button class="btn" type="button" id="b-word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13l1.5 5 2.5-4 2.5 4 1.5-5"/></svg>Word</button>
         <button class="btn" type="button" id="b-share" hidden style="grid-column:1/-1">Поділитися</button>
       </div>
@@ -302,7 +327,16 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       <label class="chk"><input type="checkbox" id="b-edit"><span><b>Заповнити тут</b> — вписати просто в клітинки й надрукувати. Нічого нікуди не надсилається.</span></label>
       <p class="note" id="b-note">Для PDF у вікні друку виберіть «Зберегти як PDF». Аркуш — A4, лежачи.</p>
     </div>
-    <div>
+    <!-- форма → аркуш (10.11.2026): великі поля, скільки треба рядків; з них складається той самий бланк -->
+    <form class="card fm" id="b-fm" hidden novalidate autocomplete="off">
+      <div class="fm-hd"><h2 id="b-fm-h"></h2><p>Пишіть у великі поля — з них сам складеться аркуш. Потім прочитаєте його й збережете PDF, надішлете чи надрукуєте. Нічого нікуди не надсилається.</p></div>
+      <div class="fm-top"></div>
+      <div id="b-fm-ryad"></div>
+      <button class="btn fm-add" type="button" id="b-fm-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span></span></button>
+      <p class="fm-auto" id="b-fm-auto" hidden></p>
+      <div class="fm-dock"><button class="btn main" type="submit" id="b-fm-ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Готово — показати аркуш</button><button class="btn" type="button" id="b-fm-back">Назад</button></div>
+    </form>
+    <div id="b-desk-w">
       <div class="desk"><div class="sheet" id="sheet"></div></div>
       <p class="hint" id="b-hint" hidden>Жовте — можна вписати. Сірі стовпці «авто» рахує книга гуртка — на папері їх можна заповнити вручну.</p>
     </div>
@@ -377,7 +411,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 
   /* ================= БЛАНК ================= */
   // K.stovpci: [[заголовок, ширина %, "au" якщо стовпець рахує книга], …] — ті самі, що в аркуші книги
-  const B = K.blank, S = K.stovpci, PORT = B.vyd === 'storinka';   // storinka — один запис на A4 стоячи (протокол)
+  const B = K.blank, S = K.stovpci || [], PORT = B.vyd === 'storinka';   // storinka — один запис на A4 стоячи (протокол)
   let st = {};
   if (PORT) {
     $('b-ryad-l').hidden = true; document.querySelector('.bar').classList.add('bez-r'); $('sheet').classList.add('port');
@@ -424,6 +458,99 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   }
   Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
   $('b-view').addEventListener('click', () => otkryty(false));
+
+  /* ---------- форма → аркуш (10.11.2026) ----------
+     «Заповнити» → великі поля (скільки треба рядків) → з них складається той самий аркуш → «Виправити у формі»
+     повертає назад з уже вписаним; дрібне — дотиком на аркуші. Дані — ті самі st, що й «Заповнити тут»: нічого не губиться.
+     Текст на аркуші виводиться одним способом, тож шрифт і розмір однакові. Нічого не надсилається. */
+  const ROPT = [...$('b-ryad').options].map(o => +o.value), RMAX = Math.max(...ROPT);
+  const PL = h => (K.polia || []).find(p => p.h === h) || (K.polia || []).find(p => h.startsWith(p.h) || p.h.startsWith(h)) || {h};
+  const fmDd = v => /^\d{4}-\d\d-\d\d$/.test(v || '') ? v.split('-').reverse().join('.') : (v || '');
+  const ddIso = v => { const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec((v || '').trim()); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : (v ? null : ''); };
+  const IC_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+  const FCOLS = S.map((s, c) => [s, c]).filter(([s]) => !s[2]);   // «авто» рахує книга — у формі їх немає
+  let fmRows = [];
+  function fmPole(p, key, val, lbl) {   // одне велике поле; key — куди в st
+    const L = esc(lbl || p.l || p.h), ph = p.ph ? ` placeholder="${esc(p.ph)}"` : '', a = `class="in" data-fk="${esc(key)}"`;
+    let w;
+    if (p.typ === 'area') w = `<textarea ${a} maxlength="600"${ph}>${esc(val)}</textarea>`;
+    else if (p.typ === 'date' && ddIso(val) !== null) w = `<input ${a} data-d="1" type="date" value="${esc(ddIso(val))}">`;
+    else if (p.typ === 'num') w = `<input ${a} inputmode="decimal" maxlength="12" value="${esc(val)}"${ph}>`;
+    else if (p.typ === 'spysok' && (p.opt || []).length) {
+      const o = p.opt.includes(val) || !val ? p.opt : p.opt.concat([val]);
+      w = `<select ${a}><option value="">—</option>${o.map(x => `<option${x === val ? ' selected' : ''}>${esc(x)}</option>`).join('')}</select>`;
+    } else w = `<input ${a} maxlength="200" value="${esc(val)}"${ph}${p.dl ? ` list="dl-${esc(p.dl)}"` : ''}${p.typ === 'imya' ? ' autocapitalize="words"' : ''}>`;
+    return `<label class="f"><span>${L}</span>${w}${p.dl && p.pidk ? `<small>${esc(p.pidk)}</small>` : ''}</label>`;
+  }
+  function fmZibraty() {   // st → рядки форми
+    fmRows = [];
+    for (let r = 0; r < RMAX; r++) fmRows.push(S.map((s, c) => st[r + ':' + c] || ''));
+    let n = fmRows.length; while (n > 1 && fmRows[n - 1].every(x => !x)) n--;
+    fmRows.length = n;
+  }
+  function fmZapysaty() {   // рядки форми → st
+    Object.keys(st).forEach(k => { if (/^\d+:\d+$/.test(k)) delete st[k]; });
+    fmRows.forEach((row, r) => row.forEach((v, c) => { if (v) st[r + ':' + c] = v; }));
+  }
+  function fmMalyuvaty() {
+    const top = [['b-hur', 'Гурток', $('b-hur').value, 'назва гуртка'], ['b-rik', 'Рік / місяці', $('b-rik').value, 'напр. 2026–2027']];
+    document.querySelector('.fm-top').innerHTML = top.map(([id, l, v, ph]) => `<label class="f"><span>${l}</span><input class="in" data-top="${id}" maxlength="40" value="${esc(v)}" placeholder="${ph}"></label>`).join('');
+    if (PORT) {
+      $('b-fm-ryad').innerHTML = B.pola.map(([h, ph]) => fmPole(Object.assign({ph}, PL(h), {l: h}), 'f:' + h, st['f:' + h] || '')).join('')
+        + B.bloky.map(([h, n, ph]) => fmPole(Object.assign({}, PL(h), {typ: 'area', ph, l: h}), 'b:' + h, st['b:' + h] || '')).join('');
+      $('b-fm-add').hidden = true;
+      return;
+    }
+    $('b-fm-ryad').innerHTML = fmRows.map((row, r) => `<div class="fm-r" data-r="${r}"><div class="fm-rh"><b>Рядок ${r + 1}</b>${fmRows.length > 1 ? `<button type="button" data-del="${r}">${IC_X}Прибрати</button>` : ''}</div>`
+      + FCOLS.map(([s, c]) => fmPole(PL(s[0]), r + ':' + c, row[c], (PL(s[0]).l || s[0]))).join('') + `</div>`).join('');
+    const add = $('b-fm-add'); add.hidden = false; add.disabled = fmRows.length >= RMAX;
+    add.querySelector('span').textContent = add.disabled ? `На аркуші вміщається ${RMAX} рядків` : 'Ще рядок';
+  }
+  function fmVidkryty() {
+    zberegty();   // дрібні виправлення, зроблені на аркуші, теж ідуть у форму
+    if (!PORT) { fmZibraty(); if (!fmRows.length) fmRows = [S.map(() => '')]; }
+    $('b-fm-h').textContent = B.t;
+    const au = S.filter(s => s[2]).map(s => '«' + s[0] + '»');
+    $('b-fm-auto').hidden = !au.length;
+    if (au.length) $('b-fm-auto').textContent = (au.length > 1 ? 'Стовпці ' + au.join(', ') + ' рахує' : 'Стовпець ' + au[0] + ' рахує') + ' книга гуртка — на папері їх можна дописати від руки.';
+    fmMalyuvaty();
+    $('p-b').classList.add('fm-on'); $('b-fm').hidden = false;
+    $('b-fm').scrollIntoView({block: 'start'});
+  }
+  function fmZakryty() { $('p-b').classList.remove('fm-on'); $('b-fm').hidden = true; }
+  function fmInput(e) {
+    const t = e.target;
+    if (t.dataset.top) { $(t.dataset.top).value = t.value; return; }
+    const k = t.dataset.fk; if (!k) return;
+    const v = t.dataset.d ? fmDd(t.value) : t.value.trim();
+    if (/^\d+:\d+$/.test(k)) { const [r, c] = k.split(':').map(Number); fmRows[r][c] = v; fmZapysaty(); }
+    else if (v) st[k] = v; else delete st[k];
+  }
+  $('b-fm').addEventListener('input', fmInput);
+  $('b-fm').addEventListener('change', fmInput);
+  $('b-fm').addEventListener('click', e => {
+    const d = e.target.closest('[data-del]'); if (!d) return;
+    fmRows.splice(+d.dataset.del, 1); fmZapysaty(); fmMalyuvaty();
+  });
+  $('b-fm-add').addEventListener('click', () => {
+    if (fmRows.length >= RMAX) return;
+    fmRows.push(S.map(() => '')); fmMalyuvaty();
+    const r = $('b-fm-ryad').lastElementChild; r.scrollIntoView({block: 'start', behavior: 'smooth'}); const i = r.querySelector('.in'); if (i) i.focus({preventScroll: true});
+  });
+  $('b-fm-back').addEventListener('click', () => { fmZakryty(); malyuvaty(); });
+  function fmHotovo() {
+    $('b-fm').querySelectorAll('[data-fk],[data-top]').forEach(t => fmInput({target: t}));
+    if (!PORT) { const n = fmRows.length; $('b-ryad').value = String(ROPT.find(x => x >= n) || RMAX); }
+    fmZakryty();
+    $('b-edit').checked = true; malyuvaty(); $('sheet').classList.add('tykho');   // виглядає як готовий; дрібне — дотиком
+    $('b-fill-t').textContent = 'Виправити у формі';
+    $('b-desk-w').scrollIntoView({block: 'start'});
+    Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], live: true, print: () => $('b-print').click(),
+      lead: 'Прочитайте аркуш. Дрібне — торкніться слова й виправте тут.', fix: () => fmVidkryty()});
+  }
+  $('b-fm').addEventListener('submit', e => { e.preventDefault(); fmHotovo(); });
+  $('b-fill').addEventListener('click', fmVidkryty);
+  $('b-edit').addEventListener('change', () => $('sheet').classList.remove('tykho'));
 
   function wordHtml() {
     zberegty();

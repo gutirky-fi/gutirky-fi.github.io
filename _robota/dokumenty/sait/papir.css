@@ -48,3 +48,15 @@ html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-even
 /* телефон / планшет: звичайне вікно друку браузера ігнорує орієнтацію аркуша, тому кнопок «Друк» на сторінках немає — друк іде з вікна «Переглянути» через PDF */
 html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-touch #b-note{display:none!important}
 .blank{grid-template-columns:minmax(0,1fr)}   /* аркуш не розпирає сторінку: на телефоні papir.js зменшує його на всю ширину */
+/* після форми (forma.html, 10.11): угорі ліворуч — «Виправити у формі» */
+.pv-fix{position:absolute;top:max(10px,env(safe-area-inset-top));left:12px;z-index:2;display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 16px;border-radius:99px;background:rgba(18,21,25,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 4px 14px rgba(0,0,0,.35);color:var(--ink,#f2f4f6);font:700 15px var(--txt);cursor:pointer}
+.pv-fix svg{width:17px;height:17px;color:var(--d-t,#ff7d99)}
+.pv.typing .pv-fix{display:none}
+/* ===== Шрифт документів (10.11.2026): усе, що ВПИСАНО в аркуш — рукою на сторінці, з форми чи з книги, — одним шрифтом:
+   Source Sans 3, звичайний (400), 12 px (аркуш 794–1080 px ≈ 9 pt на A4), колір тексту аркуша.
+   Підписи полів, заголовки стовпців, назви — як були (Oswald / Source Sans 3 жирний). Caveat — лише прикраса, не для вписаного. ===== */
+.sheet [data-k]:not(.m),.sheet .sh-f u,.sheet td.nm,.sheet .pf u,.sheet .pb .ln,.sheet .grid tbody td:not(.n):not(.m),
+.ppr .tb tbody td,.ppr .vr [contenteditable],.ppr .sig u{font-family:var(--txt);font-size:12px;font-weight:400;color:var(--pi)}
+.ppr .tb tbody td.m{color:var(--pm)}
+.ppr .tb .ok,.ppr .tb .zh,.ppr .tb .no{font-weight:700}
+.ppr .tb .ok{color:var(--ok)}.ppr .tb .zh{color:var(--zh)}.ppr .tb .no{color:var(--acc)}

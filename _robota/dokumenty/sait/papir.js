@@ -3,7 +3,7 @@
 
    Papir.fit(корінь, {open, tip, tipAt}) — на вузькому екрані аркуші (.ppr, .sheet) самі зменшуються на всю ширину, як сторінка в PDF-переглядачі.
        На телефоні (аркуш зменшено помітно) кнопка «Переглянути» зникає: перегляд відкривається дотиком до самого аркуша.
-   Papir.view({title, pages, file, print, live}) — вікно на весь екран: аркуш цілком на ширину екрана, пальцями наблизити / віддалити,
+   Papir.view({title, pages, file, print, live, fix, lead}) — вікно на весь екран: аркуш цілком на ширину екрана, пальцями наблизити / віддалити,
        кілька аркушів — гортати вниз. live:true — у вікно переходить сам аркуш, тож у ньому можна вписувати (бланки), а при закритті
        він повертається на місце. Унизу кнопки в стилі сайту: «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…),
        «Зберегти PDF», «Друк» (на комп'ютері закриває перегляд і викликає друк браузера; на телефоні й планшеті друкує готовий PDF — вікно друку
@@ -246,6 +246,7 @@
     fit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5a1 1 0 0 1 1-1h4M20 9V5a1 1 0 0 0-1-1h-4M4 15v4a1 1 0 0 0 1 1h4M20 15v4a1 1 0 0 1-1 1h-4"/></svg>',
     dl: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 20h16"/></svg>',
     sh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>',
+    pen: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
     pr: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>'
   };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]; }); }
@@ -275,6 +276,7 @@
       '<button type="button" class="pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button>' +
       '<button type="button" class="btn main pv-ok" data-a="ok">Готово</button>' +
       '<span class="pv-cnt" hidden></span>' +
+      (o.fix ? '<button type="button" class="pv-fix" data-a="fix">' + IC.pen + 'Виправити у формі</button>' : '') +
       '<div class="pv-zm">' +
       '<button type="button" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
       '<button type="button" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
@@ -567,6 +569,7 @@
       var b = e.target.closest('[data-a]'); if (!b || b.disabled) return;
       var a = b.dataset.a, cx = sc.clientWidth / 2, cy = sc.clientHeight / 2;
       if (a === 'x') zakryty();
+      else if (a === 'fix') { zakryty(); setTimeout(o.fix, 60); }   // назад у форму з уже вписаним (forma.html)
       else if (a === '+') zoomAt(S.s * 1.25, cx, cy);
       else if (a === '-') zoomAt(S.s / 1.25, cx, cy);
       else if (a === 'fit') { zoomAt(S.s0, cx, cy); sc.scrollLeft = 0; }
@@ -579,6 +582,7 @@
         setTimeout(function () { try { (o.print || window.print.bind(window))(); } catch (x) { window.print(); } }, 120);
       }
     });
+    if (o.lead) msg(o.lead);
     ovr.querySelector('.pv-x').focus();
   }
 
