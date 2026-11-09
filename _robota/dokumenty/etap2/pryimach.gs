@@ -23,6 +23,7 @@
  *   {kod, dija:"zatverdyty", arkush, ryadok, znach:"так"|"ні"|""} → (виховник) «ні» — не знайшов у банку / немає грошей чи чека
  *   {kod, dija:"zvirka", shcho:"готівка"|"рахунок", ye:"20,50", prymitka} → (виховник) рядок у «Звірки»; «мало бути» рахує приймач сам
  *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
+ *   {kod, dija:"povernuty", imya, suma, yak, zaokr, khto} → гурток повернув «свої гроші» (видаток «повернення»); zaokr — різницю лишити як «заокруглення»
  *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
@@ -52,6 +53,10 @@ var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok'];   //
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
 var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
+// «свої гроші»: купив для гуртка за власні — з каси ще нічого не пішло, гурток винен цій людині
+var SVOI = 'свої гроші', IM = "Хто (ім'я)", POVERN = 'повернення', POVB = 'повернення боргу', ZAOKR = 'заокруглення';
+var NE_V_PIDSUMKU = [PEREM, POVERN, POVB];   // не дохід і не видаток: гроші лише переходять (видаток «свої гроші» вже порахований)
+var SYSTEMNI = [PEREM, POVERN, ZAOKR];      // ці категорії пише сам приймач, не форма
 
 // ---------- вебзастосунок ----------
 function doGet() {
@@ -83,6 +88,7 @@ function doPost(e) {
     if (z.dija === 'kasa') return vidpovid(kasa());
     if (z.dija === 'zvirka') return vidpovid(zvirka(z.shcho, z.ye, z.prymitka));
     if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
+    if (z.dija === 'povernuty') return vidpovid(povernuty(z.imya, z.suma, z.yak, z.zaokr, z.khto, rol));
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
@@ -170,9 +176,20 @@ function perevirkaKasy(arkush, dani) {
   if (['надходження', 'видаток'].indexOf(String(dani['Рух'] || '')) < 0) return 'Рух — «надходження» або «видаток».';
   if (!data(dani['Дата'])) return 'Потрібна дата.';
   if (dani['Категорія'] === PEREM) return 'Переміщення (готівку здали на рахунок) записує виховник: «Вхід виховника → Перевірка каси».';
+  if (SYSTEMNI.indexOf(dani['Категорія']) >= 0) return 'Повернення «своїх грошей» записує кнопка «Повернули» («Де зараз гроші»). Помилку в такому рядку — скасуйте його й поверніть ще раз.';
+  var im = String(dani[IM] || '').trim();
+  if (dani['Як платили'] === SVOI) {
+    if (dani['Рух'] !== 'видаток') return '«Свої гроші» — лише для видатку (хтось купив для гуртка за власні).';
+    if (!im) return 'Хто заплатив своїми — виберіть ім\'я: гурток буде винен саме йому.';
+  }
+  if (dani['Категорія'] === POVB) {
+    if (dani['Рух'] !== 'надходження') return '«Повернення боргу» — це надходження (людина віддає гуртку).';
+    if (!im) return 'Хто повертає борг — виберіть ім\'я.';
+    if (dani['Як платили'] === SVOI) return 'Повернення боргу — готівкою чи на рахунок, не «свої гроші».';
+  }
   var vn = vnesky().vnesky.map(function (x) { return x.n; }), v = String(dani['Внесок'] || '').trim();
   if (v && vn.indexOf(v) < 0) return 'Внеску «' + v + '» немає в аркуші «Внески» — виберіть зі списку.';
-  if (!v && vn.length && dani['Категорія'] === 'внески' && String(dani["Ім'я (для внеску)"] || '').trim()) return 'Виберіть, за який внесок цей платіж.';
+  if (!v && vn.length && dani['Категорія'] === 'внески' && String(dani["Хто (ім'я)"] || '').trim()) return 'Виберіть, за який внесок цей платіж.';
   return '';
 }
 
@@ -194,7 +211,7 @@ function vnesky() {
     out.push({n: n, suma: Number(r[z.indexOf('Сума, €')]) || 0, termin: iso(r[z.indexOf('Термін')]) || '', osobl: osoblyvi(r[z.indexOf('Особливі суми')])});
   });
   var fs = ss.getSheetByName('Фінанси'), fz = zaholovky(fs), sp = {};
-  var ci = fz.indexOf("Ім'я (для внеску)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух'), cp = fz.indexOf(PER), pv = {};
+  var ci = fz.indexOf("Хто (ім'я)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух'), cp = fz.indexOf(PER), pv = {};
   var dodaty = function (o, im, v, x) { o[im] = o[im] || {}; o[im][v] = Math.round(((o[im][v] || 0) + x) * 100) / 100; };
   if (cv >= 0) ryadky(fs).forEach(function (r) {
     var im = String(r[ci]).trim(), v = String(r[cv]).trim(); if (!im || !v) return;
@@ -206,7 +223,30 @@ function vnesky() {
 }
 
 // ---------- де зараз гроші (за книгою): готівкою, на рахунку ----------
-function sposib(yak) { yak = String(yak || '').trim(); return yak === 'готівка' ? 'gotivka' : NA_RAKHUNKU.indexOf(yak) >= 0 ? 'rakhunok' : 'nevkazano'; }
+function sposib(yak) { yak = String(yak || '').trim(); return yak === 'готівка' ? 'gotivka' : yak === SVOI ? 'svoi' : NA_RAKHUNKU.indexOf(yak) >= 0 ? 'rakhunok' : 'nevkazano'; }
+
+// хто скільки: {ім'я: €} — додатне: гурток винен людині; від'ємне: людина винна гуртку.
+// «свої гроші» видаток +, надходження − (заокруглення / борг з минулого року); «повернення» −; «повернення боргу» +.
+// bezCheka — рядки «свої гроші» без фото чека (і не перевірені): поки вони є, не повертаємо.
+function borhy() {
+  var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs), b = {}, bez = {};
+  var ci = z.indexOf(IM), cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), ck = z.indexOf('Категорія'), cf = z.indexOf(FOTO), cp = z.indexOf(PER), co = z.indexOf('Опис');
+  if (ci < 0) return {b: {}, bez: {}};
+  ryadky(fs).forEach(function (r, j) {
+    var im = String(r[ci]).trim(); if (!im) return;
+    var x = Number(r[cs]) || 0, ruh = r[cr], kat = r[ck], d = 0;
+    if (r[cy] === SVOI) d = ruh === 'видаток' ? x : ruh === 'надходження' ? -x : 0;
+    else if (kat === POVERN && ruh === 'видаток') d = -x;
+    else if (kat === POVB && ruh === 'надходження') d = x;
+    if (!d) return;
+    b[im] = Math.round(((b[im] || 0) + d) * 100) / 100;
+    var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
+    if (r[cy] === SVOI && ruh === 'видаток' && kat !== PEREM && kat !== ZAOKR && (p === 'ні' || (p !== 'так' && !(cf >= 0 && String(r[cf]).trim()))))
+      (bez[im] = bez[im] || []).push({data: iso(r[0]), opys: String(r[co] || ''), suma: x, ne: p === 'ні'});
+  });
+  Object.keys(b).forEach(function (im) { if (!b[im]) delete b[im]; });
+  return {b: b, bez: bez};
+}
 function hroshi() {
   var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs);
   var cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), cp = z.indexOf(PER), ck = z.indexOf('Квитанція №');
@@ -215,13 +255,15 @@ function hroshi() {
     var m = ck >= 0 && /^\s*Ч-?\s*(\d+)\s*$/i.exec(String(r[ck]));   // номери чеків: Ч-1, Ч-2… — щоб не повторювались
     if (m) { cheky.push('Ч-' + Number(m[1])); maxCh = Math.max(maxCh, Number(m[1])); }
     var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
-    o[sposib(r[cy])] += x;
+    var sp = sposib(r[cy]); if (sp !== 'svoi') o[sp] += x;   // «свої гроші» — не в касі
     var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
     if (p !== 'так') { ch++; chS += Math.abs(x); if (p === 'ні') ni++; }
   });
-  var k = function (x) { return Math.round(x * 100) / 100; };
+  var k = function (x) { return Math.round(x * 100) / 100; }, bo = borhy(), vynen = 0, vynni = 0;
+  Object.keys(bo.b).forEach(function (im) { if (bo.b[im] > 0) vynen += bo.b[im]; else vynni -= bo.b[im]; });
   return {ok: true, gotivka: k(o.gotivka), rakhunok: k(o.rakhunok), nevkazano: k(o.nevkazano), razom: k(o.gotivka + o.rakhunok + o.nevkazano),
-          chekaiut: ch, chekaiutSuma: k(chS), ne: ni, cheky: cheky, nastupnyiChek: 'Ч-' + (maxCh + 1)};
+          chekaiut: ch, chekaiutSuma: k(chS), ne: ni, cheky: cheky, nastupnyiChek: 'Ч-' + (maxCh + 1),
+          borhy: bo.b, bezCheka: bo.bez, vynen: k(vynen), vynni: k(vynni), vilni: k(o.gotivka + o.rakhunok + o.nevkazano - vynen)};
 }
 
 function zapys(arkush, dani, khto) {
@@ -563,6 +605,42 @@ function nakhunok(suma, prymitka) {
   } finally { lock.releaseLock(); }
 }
 
+// гурток повертає «свої гроші»: один рядок видатку «повернення» (з коробки чи з рахунку).
+// Повернули не стільки, скільки винні: zaokr — різницю лишаємо як «заокруглення» (рядок «свої гроші»), борг = 0;
+// інакше різниця лишається боргом (гурток доплатить або людина поверне — «повернення боргу»).
+var SPOSOBY_POVERN = ['готівка', 'переказ', 'MobilePay'];
+function povernuty(imya, suma, yak, zaokr, khto, rol) {
+  var im = chyste(imya || '').trim(), s = chysloGroshei(suma);
+  if (!im) return {ok: false, pomylka: 'Кому повернули — ім\'я.'};
+  if (s === null || s <= 0) return {ok: false, pomylka: 'Скільки віддали — додатне число, до центів (напр. 15 або 14,50).'};
+  if (SPOSOBY_POVERN.indexOf(yak) < 0) return {ok: false, pomylka: 'Як повернули — готівка, переказ або MobilePay.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var g = hroshi(), b = g.borhy[im] || 0;
+    if (!(b > 0)) return {ok: false, pomylka: 'За книгою гурток нічого не винен: ' + im + '. Оновіть сторінку.'};
+    var bez = g.bezCheka[im] || [];
+    if (bez.length) return {ok: false, bezCheka: bez, pomylka: 'Без чека не повертаємо: спершу фото чека (' + bez.map(function (x) { return dd(data(x.data) || x.data) + ' «' + x.opys + '» ' + String(x.suma).replace('.', ',') + ' €'; }).join('; ') + ').'};
+    if (yak === 'готівка' && s > g.gotivka + 0.001) return {ok: false, pomylka: 'За книгою готівкою лише ' + String(g.gotivka).replace('.', ',') + ' € — стільки з коробки не віддати. Перевірте касу або поверніть переказом.'};
+    var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), out = [];
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var rizn = Math.round((s - b) * 100) / 100, kh = chyste(khto || '') || (rol === 'v' ? 'виховник' : '');
+    var ryad = function (o, shcho) {
+      var r = vilnyiRyadok(sh); o['Дата'] = d; o[IM] = im; o['Хто записав'] = kh; o['Записано'] = new Date();
+      if (rol === 'v') o[PER] = 'так';      // виховник сам віддав — уже перевірено
+      zapysatyRyadok(sh, r, o); out.push(r);
+      zminy('запис', 'Фінанси', r, kh, dd(d) + ' · ' + shcho);
+    };
+    ryad({'Рух': 'видаток', 'Категорія': POVERN, 'Опис': 'повернення: ' + im + ' (купував(-ла) за свої)', 'Сума, €': s, 'Як платили': yak},
+         'повернення · ' + im + ' · ' + s + ' € (' + yak + ')');
+    if (rizn && zaokr) {
+      ryad({'Рух': rizn > 0 ? 'видаток' : 'надходження', 'Категорія': ZAOKR, 'Опис': 'заокруглення: віддали ' + String(s).replace('.', ',') + ' € замість ' + String(b).replace('.', ',') + ' €', 'Сума, €': Math.abs(rizn), 'Як платили': SVOI},
+           'заокруглення · ' + im + ' · ' + Math.abs(rizn) + ' €');
+    }
+    var g2 = hroshi();
+    return {ok: true, ryadky: out, bulo: b, zalyshok: g2.borhy[im] || 0, hroshi: g2};
+  } finally { lock.releaseLock(); }
+}
+
 // ---------- фото чека ----------
 // Будь-хто з кодом може додати фото до рядка каси; замінити — лише поки рядок не перевірено.
 // Файл лягає в папку «Чеки гуртка» на Диску виховника (доступ — лише йому); у книгу — посилання.
@@ -699,7 +777,7 @@ function novyiRik() {
     'Що станеться:\n' +
     '1) повна копія книги піде в архів;\n' +
     '2) підсумок року допишеться в «Роки» і «Історію учасників» (ці аркуші не очищаються ніколи);\n' +
-    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться залишок (окремо готівкою й на рахунку); у внесках — один рядок «Борг з …» (хто недоплатив); із завдань — лише незроблені.\n' +
+    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться залишок (окремо готівкою й на рахунку) і борги «свої гроші» (по людях); у внесках — один рядок «Борг з …» (хто недоплатив); із завдань — лише незроблені.\n' +
     'Учасники, посади, проби, вмілості, відзначки, замовлення, запас, майно й документи лишаються.\n\nПродовжити?', ui.ButtonSet.YES_NO);
   if (r !== ui.Button.YES) return;
   var pidsumok = pidsumokRoku(ss, rik);               // рахуємо ДО очищення
@@ -724,11 +802,17 @@ function novyiRik() {
   var zst = kolonka(zav, 'Статус');
   zalyshyty(zav, function (row) { return row[zst] !== 'зроблено'; });
   var fin = ss.getSheetByName('Фінанси');
-  var gr = hroshi();                                    // де гроші — до очищення каси
+  var gr = hroshi();                                    // де гроші й хто кому винен — до очищення каси
   zalyshyty(fin, function () { return false; });
+  Object.keys(gr.borhy).sort().reverse().forEach(function (im) {   // борги — по людях (нижче за залишки)
+    var b = gr.borhy[im], z = {};
+    z['Дата'] = new Date(); z['Рух'] = b > 0 ? 'видаток' : 'надходження'; z['Категорія'] = PEREM; z['Як платили'] = SVOI; z[IM] = im;
+    z['Опис'] = 'Борг з ' + rik + (b > 0 ? ': гурток винен' : ': винен(-на) гуртку'); z['Сума, €'] = Math.abs(b); z['Хто записав'] = 'Новий рік'; z[PER] = 'так';
+    zapysatyObj(fin, P, z);
+  });
   [['nevkazano', '', ' (не вказано, як платили)'], ['rakhunok', 'переказ', ' — на рахунку'], ['gotivka', 'готівка', ' — готівкою']].forEach(function (x) {
     var zal = gr[x[0]]; if (!zal) return;               // зверху буде готівка, далі рахунок
-    var z = {}; z['Дата'] = new Date(); z['Рух'] = zal > 0 ? 'надходження' : 'видаток'; z['Категорія'] = 'інше';
+    var z = {}; z['Дата'] = new Date(); z['Рух'] = zal > 0 ? 'надходження' : 'видаток'; z['Категорія'] = PEREM;   // залишок — не дохід нового року
     z['Опис'] = 'Залишок з ' + rik + x[2]; z['Сума, €'] = Math.abs(zal); z['Як платили'] = x[1]; z['Хто записав'] = 'Новий рік'; z[PER] = 'так';
     zapysatyObj(fin, P, z);
   });
@@ -786,7 +870,7 @@ function pidsumokRoku(ss, rik) {
   var nadh = 0, vyd = 0;
   fn.v.forEach(function (r) {
     var s = Number(r[i(fn, 'Сума, €')]) || 0;
-    if (r[i(fn, 'Категорія')] === PEREM) return;   // з коробки на рахунок — не дохід і не видаток
+    if (NE_V_PIDSUMKU.indexOf(r[i(fn, 'Категорія')]) >= 0) return;   // гроші лише перейшли (на рахунок, повернули борг) — не дохід і не видаток
     if (r[i(fn, 'Рух')] === 'надходження') nadh += s; else if (r[i(fn, 'Рух')] === 'видаток') vyd += s;
   });
   var kr = function (x) { return Math.round(x * 100) / 100; };
