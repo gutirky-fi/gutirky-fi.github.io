@@ -1178,9 +1178,9 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   function zberegty() { $('sheet').querySelectorAll('[data-k]').forEach(td => { const v = (td.classList.contains('ln') ? td.innerText : td.textContent).trim(); if (v) st[td.dataset.k] = v; else delete st[td.dataset.k]; }); }
   function shapka() {
     return `<header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде ${esc(K.posada)}</span></div><h3>${esc(B.t)}</h3><div class="sub">${esc(B.sub)}</div></div><img src="${EMB}" alt="Пластова лілея"></header>
-      <div class="sh-f"><span><i>Гурток</i><u>${esc($('b-hur').value.trim())}</u></span><span><i>Курінь</i><u></u></span><span><i>Рік / місяці</i><u>${esc($('b-rik').value.trim())}</u></span></div>`;
+      <div class="sh-f"><span><i>Гурток</i><u>${esc($('b-hur').value.trim())}</u></span><span><i>Курінь</i><u>${esc(st.kur || '')}</u></span><span><i>Рік / місяці</i><u>${esc($('b-rik').value.trim())}</u></span></div>`;
   }
-  const pidpys = () => `<div class="sh-sig"><div class="leg">${esc(B.leg || '')}</div><div class="sig"><div>Записав <span></span></div><div>Перевірив виховник <span></span></div></div></div>`;
+  const pidpys = () => `<div class="sh-sig"><div class="leg">${esc(B.leg || '')}</div><div class="sig"><div>Записав <span>${esc(st.zap || '')}</span></div><div>Перевірив виховник <span></span></div></div></div>`;
   const pidval = () => `<footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Робочий бланк · ті самі ${PORT ? 'поля' : 'стовпці'}, що в аркуші «${esc(K.arkush)}» книги гуртка</span></footer>`;
   function tablytsia(ce) {
     const R = +$('b-ryad').value;
@@ -1211,8 +1211,9 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   function otkryty(tap) {
     if (tap && !$('b-edit').checked) { $('b-edit').checked = true; zberegty(); malyuvaty(); }
     zberegty();
-    Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], live: true, print: () => $('b-print').click()});
+    Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], live: true, print: () => $('b-print').click(), fix: fmBulo ? () => fmVidkryty() : null});
   }
+  let fmBulo = false;   // аркуш уже заповнювали через форму
   Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
   $('b-view').addEventListener('click', () => otkryty(false));
 
@@ -1225,7 +1226,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   const fmDd = v => /^\d{4}-\d\d-\d\d$/.test(v || '') ? v.split('-').reverse().join('.') : (v || '');
   const ddIso = v => { const m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})$/.exec((v || '').trim()); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : (v ? null : ''); };
   const IC_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
-  const FCOLS = S.map((s, c) => [s, c]).filter(([s]) => !s[2]);   // «авто» рахує книга — у формі їх немає
+  const FCOLS = S.map((s, c) => [s, c]);   // «авто» — теж (необов'язково): у книзі рахується сам, на окремому бланку — вписати
   let fmRows = [];
   function fmPole(p, key, val, lbl) {   // одне велике поле; key — куди в st
     const L = esc(lbl || p.l || p.h), ph = p.ph ? ` placeholder="${esc(p.ph)}"` : '', a = `class="in" data-fk="${esc(key)}"`;
@@ -1251,7 +1252,9 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   }
   function fmMalyuvaty() {
     const top = [['b-hur', 'Гурток', $('b-hur').value, 'назва гуртка'], ['b-rik', 'Рік / місяці', $('b-rik').value, 'напр. 2026–2027']];
-    document.querySelector('.fm-top').innerHTML = top.map(([id, l, v, ph]) => `<label class="f"><span>${l}</span><input class="in" data-top="${id}" maxlength="40" value="${esc(v)}" placeholder="${ph}"></label>`).join('');
+    document.querySelector('.fm-top').innerHTML = top.map(([id, l, v, ph]) => `<label class="f"><span>${l}</span><input class="in" data-top="${id}" maxlength="40" value="${esc(v)}" placeholder="${ph}"></label>`).join('')
+      + `<label class="f"><span>Курінь</span><input class="in" data-fk="kur" maxlength="40" value="${esc(st.kur || '')}" placeholder="якщо гурток у курені"><small>Гурток не в курені — лишіть порожнім.</small></label>`
+      + (PORT ? '' : `<label class="f"><span>Записав (ім'я)</span><input class="in" data-fk="zap" maxlength="40" value="${esc(st.zap || '')}" placeholder="хто заповнив"><small>«Перевірив виховник» — підпис рукою на папері.</small></label>`);
     if (PORT) {
       $('b-fm-ryad').innerHTML = B.pola.map(([h, ph]) => fmPole(Object.assign({ph}, PL(h), {l: h}), 'f:' + h, st['f:' + h] || '')).join('')
         + B.bloky.map(([h, n, ph]) => fmPole(Object.assign({}, PL(h), {typ: 'area', ph, l: h}), 'b:' + h, st['b:' + h] || '')).join('');
@@ -1259,7 +1262,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
       return;
     }
     $('b-fm-ryad').innerHTML = fmRows.map((row, r) => `<div class="fm-r" data-r="${r}"><div class="fm-rh"><b>Рядок ${r + 1}</b>${fmRows.length > 1 ? `<button type="button" data-del="${r}">${IC_X}Прибрати</button>` : ''}</div>`
-      + FCOLS.map(([s, c]) => fmPole(PL(s[0]), r + ':' + c, row[c], (PL(s[0]).l || s[0]))).join('') + `</div>`).join('');
+      + FCOLS.map(([s, c]) => s[2] ? fmPole(Object.assign({}, PL(s[0]), {ph: 'можна не писати'}), r + ':' + c, row[c], s[0] + ' (необов\'язково)') : fmPole(PL(s[0]), r + ':' + c, row[c], (PL(s[0]).l || s[0]))).join('') + `</div>`).join('');
     const add = $('b-fm-add'); add.hidden = false; add.disabled = fmRows.length >= RMAX;
     add.querySelector('span').textContent = add.disabled ? `На аркуші вміщається ${RMAX} рядків` : 'Ще рядок';
   }
@@ -1269,7 +1272,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
     $('b-fm-h').textContent = B.t;
     const au = S.filter(s => s[2]).map(s => '«' + s[0] + '»');
     $('b-fm-auto').hidden = !au.length;
-    if (au.length) $('b-fm-auto').textContent = (au.length > 1 ? 'Стовпці ' + au.join(', ') + ' рахує' : 'Стовпець ' + au[0] + ' рахує') + ' книга гуртка — на папері їх можна дописати від руки.';
+    if (au.length) $('b-fm-auto').textContent = (au.length > 1 ? 'Стовпці ' + au.join(', ') + ' рахує' : 'Стовпець ' + au[0] + ' рахує') + ' книга гуртка сама, коли запис подано в книгу («Заповнити й подати»). На цьому бланку — впишіть, якщо знаєте, або лишіть порожнім.';
     fmMalyuvaty();
     $('p-b').classList.add('fm-on'); $('b-fm').hidden = false;
     $('b-fm').scrollIntoView({block: 'start'});
@@ -1300,7 +1303,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
     if (!PORT) { const n = fmRows.length; $('b-ryad').value = String(ROPT.find(x => x >= n) || RMAX); }
     fmZakryty();
     $('b-edit').checked = true; malyuvaty(); $('sheet').classList.add('tykho');   // виглядає як готовий; дрібне — дотиком
-    $('b-fill-t').textContent = 'Виправити у формі';
+    $('b-fill-t').textContent = 'Виправити у формі'; fmBulo = true;
     $('b-desk-w').scrollIntoView({block: 'start'});
     Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], live: true, print: () => $('b-print').click(),
       lead: 'Прочитайте аркуш. Дрібне — торкніться слова й виправте тут.', fix: () => fmVidkryty()});
