@@ -172,6 +172,45 @@ ok(vn.splacheno['Мирося']['Осінь 2026'] === 20, 'vnesky: Мирося
 ok(post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: vz({ 'Рух': 'видаток', 'Категорія': 'інше', 'Опис': 'повернення переплати', 'Сума, €': '5' }) }).ok
    && post({ kod: J, dija: 'vnesky' }).splacheno['Мирося']['Осінь 2026'] === 15, 'повернення (видаток із внеском) зменшує сплачене');
 ok(JSON.stringify(ctx.osoblyvi('Остап 10; Дана: 0\nЯрко — 12,50 €')) === JSON.stringify({ 'Остап': 10, 'Дана': 0, 'Ярко': 12.5 }), 'особливі суми розпізнано');
+// ---- Каса: звірка (перевірене окремо, де гроші, «ні», звірка, на рахунок) ----
+const FN = () => sheets['Фінанси']._f.slice(3).map((r, i) => ({ r, n: i + 4 })).filter(x => x.r[0] !== '' && x.r[0] !== undefined);
+const rakh = sp => FN().filter(x => sp(x.r[7])).reduce((a, x) => a + (x.r[1] === 'надходження' ? +x.r[5] : x.r[1] === 'видаток' ? -x.r[5] : 0), 0);
+vn = post({ kod: J, dija: 'vnesky' });
+ok(vn.perevireno && !(vn.perevireno['Мирося'] && vn.perevireno['Мирося']['Осінь 2026'] >= 20) && vn.splacheno['Мирося']['Осінь 2026'] === 15, 'vnesky: перевірене окремо — Мирося записано 15, перевірено менше (' + JSON.stringify(vn.perevireno['Мирося'] || {}) + ')');
+let hr = post({ kod: J, dija: 'hroshi' });
+ok(hr.ok && Math.abs(hr.gotivka - rakh(y => y === 'готівка')) < 0.01 && Math.abs(hr.rakhunok - rakh(y => ['MobilePay', 'переказ', 'картка'].includes(y))) < 0.01, `hroshi: готівкою ${hr.gotivka}, на рахунку ${hr.rakhunok}, не вказано ${hr.nevkazano}`);
+ok(Math.abs(hr.razom - rakh(() => true)) < 0.01 && hr.chekaiut > 0, 'hroshi: разом = залишок каси; чекають перевірки: ' + hr.chekaiut);
+ok(!post({ kod: '2468', dija: 'kasa' }).ok && !post({ kod: '2468', dija: 'zvirka', shcho: 'готівка', ye: '1' }).ok && !post({ kod: '2468', dija: 'nakhunok', suma: '1' }).ok, 'kasa / zvirka / nakhunok з кодом юнаків — ні');
+ok(post({ kod: '2468', dija: 'hroshi' }).ok, 'hroshi — і юнакам (лише суми)');
+let ks = post({ kod: K, dija: 'kasa' });
+ok(ks.ok && ks.ryadky.length === hr.chekaiut && ks.ryadky.every(x => x.versiya && x.sposib) && ks.hroshi.razom === hr.razom && ks.zvirky.length === 1, 'kasa: неперевірені рядки (' + ks.ryadky.length + '), гроші, звірки');
+const mPay = ks.ryadky.find(x => x.dani['Як платили'] === 'MobilePay' && x.dani["Ім'я (для внеску)"] === 'Мирося');
+x = post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: mPay.ryadok, znach: 'так' });
+vn = post({ kod: J, dija: 'vnesky' });
+ok(x.ok && x.zatverdzheno && sheets['Фінанси']._f[mPay.ryadok - 1][13] === 'так' && (vn.perevireno['Мирося'] || {})['Осінь 2026'] >= 10, '«✓ є в банку» → перевірено, рахується в ✓');
+const inshyi = post({ kod: K, dija: 'kasa' }).ryadky.find(x => x.ryadok !== mPay.ryadok && x.dani['Рух'] === 'надходження');
+x = post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: inshyi.ryadok, znach: 'ні' });
+ok(x.ok && x.ne && sheets['Фінанси']._f[inshyi.ryadok - 1][13] === 'ні' && zm().some(z => z[1] === 'немає'), '«✗ немає» → «ні», у «Змінах» — «немає»');
+ok(post({ kod: K, dija: 'hroshi' }).ne === 1 && post({ kod: K, dija: 'kasa' }).ryadky.some(x => x.ryadok === inshyi.ryadok && x.ne), '«ні» лишається в «Перевірці каси»');
+ok(!post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: inshyi.ryadok, znach: 'може' }).ok, 'незнана позначка — ні');
+const dI = post({ kod: J, dija: 'den', arkush: 'Фінанси', dani: { 'Дата': inshyi.dani['Дата'] } }).ryadky.find(x => x.ryadok === inshyi.ryadok);
+ok(dI && dI.ne && !dI.zatverdzheno, 'den: діловод бачить «не знайдено»');
+x = post({ kod: J, dija: 'vypravyty', arkush: 'Фінанси', ryadok: dI.ryadok, versiya: dI.versiya, khto: 'Дана', dani: Object.assign({}, dI.dani, { 'Примітка': 'сума була інша' }) });
+ok(x.ok && sheets['Фінанси']._f[inshyi.ryadok - 1][13] === '', 'діловод виправив «ні» → знову чекає перевірки');
+ok(post({ kod: K, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11, tak: true }).ok, 'старе «tak» теж працює');
+hr = post({ kod: K, dija: 'hroshi' });
+x = post({ kod: K, dija: 'zvirka', shcho: 'готівка', ye: String(hr.gotivka - 2).replace('.', ','), prymitka: 'бракує 2 €' });
+const zvR = sheets['Звірки']._f[x.ryadok - 1];
+ok(x.ok && x.malo === hr.gotivka && x.riznytsia === -2 && zvR[1] === 'готівка' && zvR[2] === hr.gotivka && String(zvR[4]).startsWith('='), 'звірка готівки: мало ' + hr.gotivka + ', є на 2 менше → різниця −2, формула «Різниця» ціла');
+ok(!post({ kod: K, dija: 'zvirka', shcho: 'готівка', ye: 'багато' }).ok && !post({ kod: K, dija: 'zvirka', shcho: 'коробка', ye: '1' }).ok, 'звірка: незрозуміле число чи «що» — ні');
+ok(post({ kod: K, dija: 'zvirka', shcho: 'рахунок', ye: String(hr.rakhunok) }).riznytsia === 0, 'звірка рахунку: збігається');
+ok(!post({ kod: K, dija: 'nakhunok', suma: String(hr.gotivka + 100) }).ok, 'на рахунок більше, ніж є готівкою, — ні');
+const fx = FN().length;
+x = post({ kod: K, dija: 'nakhunok', suma: '5', prymitka: 'банкомат' });
+const pr2 = x.ryadky ? x.ryadky.map(n => sheets['Фінанси']._f[n - 1]) : [];
+ok(x.ok && FN().length === fx + 2 && pr2.every(r => r[2] === 'переміщення' && r[5] === 5 && r[13] === 'так') && Math.abs(x.hroshi.gotivka - (hr.gotivka - 5)) < 0.01 && Math.abs(x.hroshi.rakhunok - (hr.rakhunok + 5)) < 0.01 && x.hroshi.razom === hr.razom, 'на рахунок 5 €: два рядки «переміщення», готівки −5, рахунку +5, разом те саме');
+ok(!post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: vz({ 'Категорія': 'переміщення', 'Внесок': '', "Ім'я (для внеску)": '' }) }).ok, '«переміщення» з форми каси — не прийнято (лише виховник)');
+const hrRik = post({ kod: K, dija: 'hroshi' });
 const borgy = ctx.borhyRoku();
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
@@ -185,7 +224,11 @@ ok(sheets['Відвідуваність']._f[2][5] === 'Олесь', 'імена
 ok(ryad('Проби').length === proby0 && ryad('Вмілості').length === vm0 && ryad('Замовлення').length === zam0, 'проби, вмілості, замовлення — не чіпано');
 const zv = ryad('Завдання'); ok(zv.length === 3 && zv.every(r => r[4] !== 'зроблено'), 'завдання: лишились 3 незроблені, стягнуті догори');
 const vr1 = ryad('Внески'); ok(vr1.length === 1 && String(vr1[0][0]).startsWith('Борг з') && vr1[0][3] === borgy && /Мирося 5/.test(borgy) && /Остап 10/.test(borgy) && !/Олесь/.test(borgy.replace(/Олесь 10/, '')), 'Новий рік: внески очищено, борги перенесено: ' + borgy);
-const f1 = ryad('Фінанси'); ok(f1.length === 1 && Math.abs(f1[0][5] - zal) < 0.01 && f1[0][3] === 'Залишок з 2026/27', 'каса: один рядок «Залишок з 2026/27» = ' + zal);
+const f1 = ryad('Фінанси'), zn = r => (r[1] === 'видаток' ? -1 : 1) * r[5];
+ok(f1.length >= 1 && f1.length <= 3 && Math.abs(f1.reduce((a, r) => a + zn(r), 0) - zal) < 0.01 && f1.every(r => String(r[3]).startsWith('Залишок з 2026/27') && r[13] === 'так'), 'каса: залишок з 2026/27 = ' + zal + ' (' + f1.map(r => r[3] + ' ' + zn(r)).join('; ') + ')');
+const g1 = f1.find(r => r[7] === 'готівка'), r1x = f1.find(r => r[7] === 'переказ');
+ok(Math.abs((g1 ? zn(g1) : 0) - hrRik.gotivka) < 0.01 && Math.abs((r1x ? zn(r1x) : 0) - hrRik.rakhunok) < 0.01, 'Новий рік: готівка й рахунок перенесено окремо');
+ok(ryad('Звірки').length >= 3, '«Звірки» Новий рік не чистить');
 const rk = ryad('Роки'); ok(rk.length === 1 && rk[0][0] === '2026/27' && rk[0][2] === 8 && Math.abs(rk[0][10] - zal) < 0.01 && rk[0][11].includes('archiv'), 'Роки: ' + rk[0].slice(0, 11).map(x => typeof x === 'number' ? Math.round(x * 100) / 100 : x).join(' | '));
 const iu = ryad('Історія учасників');
 const zi = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Історія учасників' });

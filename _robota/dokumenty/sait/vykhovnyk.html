@@ -93,6 +93,34 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 @keyframes sp{to{transform:rotate(360deg)}}
 .done ul{margin:0 auto 18px;padding:0;list-style:none;display:inline-grid;gap:4px;text-align:left;color:var(--body)}
 .done ul li::before{content:"✓  ";color:var(--ok-t);font-weight:700}
+/* перевірка каси */
+.hrg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.hrg div{padding:10px 12px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
+.hrg small{display:block;color:var(--mut);font-size:12.5px;font-weight:600}
+.hrg b{font:600 22px/1.15 var(--disp);color:var(--ink)}
+.hrg .rz b{color:var(--ok-t)}
+.kg{margin:0 0 18px}
+.kg>h3{display:flex;align-items:baseline;gap:8px;margin:0 0 8px;font:600 17px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.kg>h3 small{font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
+.kl{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.kl li{padding:10px 12px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.kl li.ne{border-color:rgba(200,40,74,.65)}
+.kl .kt{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+.kl .kt .plus{color:var(--ok-t);white-space:nowrap}.kl .kt .minus{color:#ff7d99;white-space:nowrap}
+.kl .kd{color:var(--mut);font-size:13.5px;margin-top:2px;line-height:1.35}
+.kl .neb{display:block;margin-top:4px;font-size:13px;font-weight:700;color:#ffb3c3}
+.kl .kb{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.kl .kb button{padding:8px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14.5px}
+.kl .kb button.tak{background:var(--d);border-color:var(--d);color:#0e1f15}
+.kl .kb button.ni{border-color:rgba(200,40,74,.7);color:#ffb3c3}
+.zv{display:grid;gap:10px;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.zv p{margin:0;color:var(--body);font-size:15px}
+.zv .zr{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.zv .zr .f{margin:0;flex:1 1 130px}
+.zv .zr .btn{padding:11px 16px}
+.zv .rez{font-weight:700}.zv .rez.ok{color:var(--ok-t)}.zv .rez.bad{color:#ffb3c3}
+.zost{margin:0;padding:0 0 0 18px;color:var(--mut);font-size:14px}
+@media (max-width:600px){.hrg{grid-template-columns:1fr 1fr}.hrg .rz{grid-column:1/-1}}
 @media (max-width:900px){.ps{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.tiles{grid-template-columns:1fr}.tile.main{grid-column:auto}.tile{min-height:0}.row3{grid-template-columns:1fr}
   .pay li{grid-template-columns:minmax(0,1fr) auto;padding-left:12px}.pay .sum{grid-column:2;grid-row:1}.pay button{grid-column:1/-1;min-width:0}}
@@ -127,7 +155,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
     </form>
     <aside class="side">
-      <div class="card"><h3>Що тут буде</h3><ul><li><b>Після сходин</b> — тема, хто був, хто заплатив внесок: одна форма, одне «Надіслати».</li><li>Новий учасник, проби й вмілості, гроші й майно, звіти — згодом.</li></ul></div>
+      <div class="card"><h3>Що тут буде</h3><ul><li><b>Після сходин</b> — тема, хто був, хто заплатив внесок: одна форма, одне «Надіслати».</li><li><b>Перевірка каси</b> — чи гроші справді є, і звірка раз на місяць.</li><li>Новий учасник, проби й вмілості, гроші й майно, звіти — згодом.</li></ul></div>
     </aside>
   </div>
 
@@ -141,6 +169,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет.</span><i>готується</i></button>
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіт</b><span>Відвідуваність за місяць, каса — для друку чи PDF.</span><i>готується</i></button>
       <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span></button>
+      <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Чи гроші справді є: банк, коробка, чеки. Раз на місяць — звірка.</span></button>
     </div>
   </section>
 
@@ -157,6 +186,34 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       <aside class="side">
         <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li></ul></div>
         <div class="card"><h3>Щось не так?</h3><ul><li>Виправте рядок просто в книзі.</li><li>Зіпсували багато — «Файл → Історія версій» у Google Таблиці поверне будь-який попередній стан.</li><li>Повна історія — аркуш «Зміни».</li></ul></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- перевірка каси -->
+  <section id="v-kp" hidden>
+    <div class="ps">
+      <div class="card">
+        <div class="fhead"><h2>Перевірка каси</h2><button class="leave" type="button" id="kp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div id="kp-hr"></div>
+        <div id="kp-list"><p class="empty">Завантажую…</p></div>
+        <div class="kg"><h3>Звірка <small>раз на місяць</small></h3>
+          <div class="zv"><p>Готівка: за книгою має бути <b id="zv-g-m">—</b>. Порахуйте гроші в коробці скарбника.</p>
+            <div class="zr"><label class="f"><span>Є насправді, €</span><input class="in" id="zv-g" inputmode="decimal" maxlength="10"></label><label class="f" style="flex-basis:200px"><span>Примітка</span><input class="in" id="zv-g-p" maxlength="120" placeholder="необов'язково"></label><button class="btn main" type="button" data-zv="готівка">Записати звірку</button></div>
+            <p class="rez" id="zv-g-r" hidden></p></div>
+          <div class="zv"><p>Рахунок: за книгою має бути <b id="zv-r-m">—</b>. Подивіться залишок у банку.</p>
+            <div class="zr"><label class="f"><span>Є насправді, €</span><input class="in" id="zv-r" inputmode="decimal" maxlength="10"></label><label class="f" style="flex-basis:200px"><span>Примітка</span><input class="in" id="zv-r-p" maxlength="120" placeholder="необов'язково"></label><button class="btn main" type="button" data-zv="рахунок">Записати звірку</button></div>
+            <p class="rez" id="zv-r-r" hidden></p></div>
+          <div class="zv"><p><b>Здали готівку на рахунок?</b> Книга запише два рядки «переміщення»: готівки менше, на рахунку більше, разом — те саме.</p>
+            <div class="zr"><label class="f"><span>Скільки, €</span><input class="in" id="nr-s" inputmode="decimal" maxlength="10"></label><label class="f" style="flex-basis:200px"><span>Примітка</span><input class="in" id="nr-p" maxlength="120" placeholder="напр. банкомат, 10.11"></label><button class="btn" type="button" id="nr-go">Записати</button></div>
+            <p class="rez" id="nr-r" hidden></p></div>
+          <h3 style="margin-top:14px">Останні звірки</h3><ul class="zost" id="zv-ost"></ul>
+        </div>
+        <button class="btn" type="button" id="kp-re" style="width:100%">Оновити</button>
+      </div>
+      <aside class="side">
+        <div class="card"><h3>Як перевіряти</h3><ul><li><b>Переказ, MobilePay, картка</b> — відкрийте банк: є такий платіж? «✓ є в банку».</li><li><b>Готівка</b> — гроші у вас чи в скарбника? «✓ гроші є».</li><li><b>Видаток</b> — бачили чек (фото)? «✓ є чек».</li><li>Не знайшли — «✗ немає». Рядок не рахується, юнак бачить позначку й може виправити помилку. Далі — розмова.</li></ul></div>
+        <div class="card"><h3>Чому так</h3><ul><li>Внесок отримує ✓ у «Хто сплатив» лише після вашого «✓».</li><li>Спільний код не каже, хто натиснув, — але фальшивий запис нічого не дає: без грошей у банку чи в коробці він не пройде перевірку.</li><li>Звірки лишаються в аркуші «Звірки» книги.</li></ul></div>
       </aside>
     </div>
   </section>
@@ -257,6 +314,14 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     {koly: '01.11.2026 20:05', dija: 'запис', arkush: 'Сходини', ryadok: 11, khto: 'Олесь', shcho: '01.11.2026 · 10 · Мапа й компас', zatverdzheno: true,
      pola: [['Дата', '01.11.2026'], ['№', '10'], ['Тема', 'Мапа й компас'], ['Відповідальний', 'Олесь'], ['Місце', 'парк'], ['Присутніх', '6']]}];
   let demoRow = 13;
+  const DK = [   // проба «Перевірка каси»: неперевірені рядки
+    {ryadok: 31, khto: 'Дана', koly: '02.11.2026 19:10', dani: {'Дата': '2026-11-02', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Олесь', 'Сума, €': 10, 'Як платили': 'MobilePay', 'Внесок': 'Листопад 2026'}},
+    {ryadok: 33, khto: 'Ярко', koly: '05.11.2026 20:02', dani: {'Дата': '2026-11-05', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Ярко', 'Сума, €': 20, 'Як платили': 'переказ', 'Внесок': 'Листопад 2026'}, ne: true},
+    {ryadok: 34, khto: 'Дана', koly: '08.11.2026 18:40', dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Ім'я (для внеску)": 'Соломія', 'Сума, €': 20, 'Квитанція №': 'К-7', 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}},
+    {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка'}}];
+  const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0};
+  const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
+  const dHroshi = () => { const n = DK.length; return Object.assign({ok: true}, DH, {razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
   async function zapyt(t) {
     if (DEMO) {
       await new Promise(r => setTimeout(r, 450));
@@ -266,6 +331,10 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
       if (t.dija === 'vnesky') return {ok: true, vnesky: [{n: 'Жовтень 2026', suma: 20, osobl: {}}, {n: 'Листопад 2026', suma: 20, osobl: {'Остап': 10}}], splacheno: {'Олесь': {'Листопад 2026': 10}, 'Мирося': {'Листопад 2026': 20}}};
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
       if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
+      if (t.dija === 'kasa') return {ok: true, ryadky: JSON.parse(JSON.stringify(DK)).map(x => Object.assign(x, {sposib: x.dani['Як платили'] === 'готівка' ? 'gotivka' : 'rakhunok', versiya: 'v'})), hroshi: dHroshi(), zvirky: DZV.slice()};
+      if (t.dija === 'zatverdyty' && t.arkush === 'Фінанси' && 'znach' in t) { const i = DK.findIndex(x => x.ryadok === t.ryadok); if (t.znach === 'так' && i >= 0) DK.splice(i, 1); else if (i >= 0) DK[i].ne = t.znach === 'ні'; return {ok: true, znach: t.znach}; }
+      if (t.dija === 'zvirka') { const y = parseFloat(String(t.ye).replace(',', '.')); if (!isFinite(y) || y < 0) return {ok: false, pomylka: 'Скільки є насправді — число, до центів.'}; const m = t.shcho === 'готівка' ? DH.gotivka : DH.rakhunok; DZV.unshift({'Дата': 'сьогодні', 'Що звіряли': t.shcho, 'Мало бути, €': m, 'Є насправді, €': y, 'Різниця, €': Math.round((y - m) * 100) / 100, 'Примітка': t.prymitka}); return {ok: true, malo: m, ye: y, riznytsia: Math.round((y - m) * 100) / 100}; }
+      if (t.dija === 'nakhunok') { const x = parseFloat(String(t.suma).replace(',', '.')); if (!(x > 0)) return {ok: false, pomylka: 'Сума — додатне число.'}; if (x > DH.gotivka) return {ok: false, pomylka: 'За книгою готівкою лише ' + DH.gotivka + ' € — більше на рахунок не здати.'}; DH.gotivka -= x; DH.rakhunok += x; return {ok: true, hroshi: dHroshi()}; }
       if (t.dija === 'zatverdyty') { const x = DNV.find(y => y.arkush === t.arkush && y.ryadok === t.ryadok); if (x) x.zatverdzheno = t.tak !== false; return {ok: true, zatverdzheno: t.tak !== false}; }
       if (t.dija === 'novi') return {ok: true, novi: JSON.parse(JSON.stringify(DNV)), chekaiut: DNV.filter(x => x.pola && !x.zatverdzheno).length};
       return {ok: true};
@@ -277,7 +346,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
 
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
-  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -311,7 +380,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
   $('p-vn').addEventListener('change', () => { vnSuma(); onovyty(); });
   $('ps-back').addEventListener('click', () => ekran('v-hub'));
   // ---- що нового (журнал «Зміни» з книги) ----
-  const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk', 'блокування': 'bl', 'затвердження': 'zt', 'зняття затвердження': 'zt'};
+  const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk', 'блокування': 'bl', 'затвердження': 'zt', 'зняття затвердження': 'zt', 'немає': 'sk', 'звірка': 'zt'};
   const ZN = {'+': 'був', '−': 'не був', 'в': 'поважна'};
   let NV = [];
   function lichylnyk() {
@@ -361,6 +430,81 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     m.hidden = !m.hidden; b.setAttribute('aria-expanded', String(!m.hidden));
   });
   $('go-nv').addEventListener('click', () => { ekran('v-nv'); novi(); });
+
+  /* ---------- перевірка каси ---------- */
+  let KR = [], KH = null;
+  const fmt2 = v => (Math.round(v * 100) / 100).toFixed(2).replace('.', ',') + ' €';   // гроші в касі — завжди з центами
+  const GR = [['rakhunok', 'Перекази, MobilePay, картка', 'є в банку?', '✓ є в банку', '✗ немає в банку', 'цей платіж у банку'],
+              ['gotivka', 'Готівка', 'гроші справді є?', '✓ гроші є', '✗ немає', 'цих грошей'],
+              ['vydatok', 'Видатки', 'є чек?', '✓ є чек', '✗ немає чека', 'чека'],
+              ['nevkazano', 'Не вказано, як платили', 'попросіть діловода вказати', '✓ усе гаразд', '✗ немає', 'цього платежу']];
+  const grupa = x => x.dani['Рух'] === 'видаток' ? 'vydatok' : x.sposib;
+  const ddd = iso => String(iso || '').split('-').reverse().join('.');
+  function malKasu() {
+    const h = KH;
+    $('kp-hr').innerHTML = h ? `<div class="hrg"><div><small>на рахунку</small><b>${fmt2(h.rakhunok)}</b></div><div><small>готівкою</small><b>${fmt2(h.gotivka)}</b></div><div class="rz"><small>разом у касі</small><b>${fmt2(h.razom)}</b></div></div>` : '';
+    $('zv-g-m').textContent = h ? fmt2(h.gotivka) : '—'; $('zv-r-m').textContent = h ? fmt2(h.rakhunok) : '—';
+    const n = KR.length, c = n ? `<p class="nvc ye"><b>${n}</b> ${n === 1 ? 'запис чекає' : n < 5 ? 'записи чекають' : 'записів чекають'} перевірки</p>` : '<p class="nvc ok">✓ Усе в касі перевірено</p>';
+    $('kp-list').innerHTML = c + GR.map(([g, t, pyt, ta, ni, shcho]) => {
+      const l = KR.filter(x => grupa(x) === g); if (!l.length) return '';
+      return `<div class="kg"><h3>${t} <small>— ${pyt}</small></h3><ul class="kl">${l.map(x => {
+        const d = x.dani, minus = d['Рух'] === 'видаток';
+        const dd = [ddd(d['Дата']), d['Категорія'] + (d['Внесок'] ? ' «' + d['Внесок'] + '»' : ''), d["Ім'я (для внеску)"] ? d['Опис'] : '', d['Як платили'], d['Квитанція №'] ? 'кв. ' + d['Квитанція №'] : '', d['Примітка']].filter(Boolean).map(esc).join(' · ');
+        return `<li class="${x.ne ? 'ne' : ''}" data-r="${x.ryadok}"><div class="kt"><span>${esc(d["Ім'я (для внеску)"] || d['Опис'] || '—')}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${fmt2(+d['Сума, €'] || 0)}</span></div>`
+          + `<div class="kd">${dd}<br>записав: ${esc(x.khto || '—')} · рядок ${x.ryadok}</div>`
+          + (x.ne ? `<span class="neb">✗ Ви позначили: немає ${shcho}. Юнак бачить це й може виправити.</span>` : '')
+          + `<div class="kb"><button type="button" class="tak" data-k="так">${ta}</button>${x.ne ? '<button type="button" data-k="">Зняти «немає»</button>' : `<button type="button" class="ni" data-k="ні">${ni}</button>`}</div></li>`;
+      }).join('')}</ul></div>`;
+    }).join('');
+  }
+  function malZvirky(z) {
+    $('zv-ost').innerHTML = (z || []).map(o => { const r = +o['Різниця, €'] || 0; return `<li>${esc(o['Дата'])} · ${esc(o['Що звіряли'])}: мало ${fmt2(+o['Мало бути, €'] || 0)}, є ${fmt2(+o['Є насправді, €'] || 0)} — ${r ? '<b class="bad">різниця ' + (r > 0 ? '+' : '−') + fmt2(Math.abs(r)) + '</b>' : 'збігається ✓'}${o['Примітка'] ? ' · ' + esc(o['Примітка']) : ''}</li>`; }).join('') || '<li>Ще не було.</li>';
+  }
+  async function kasa() {
+    $('kp-list').innerHTML = '<p class="empty">Завантажую…</p>';
+    try {
+      const v = await zapyt({kod, dija: 'kasa'}); if (!v.ok) throw new Error(v.pomylka);
+      KR = v.ryadky || []; KH = v.hroshi || null; malKasu(); malZvirky(v.zvirky);
+    } catch (x) { $('kp-list').innerHTML = `<p class="empty">${esc(ludsky(x))}</p>`; }
+  }
+  $('kp-list').addEventListener('click', async e => {
+    const b = e.target.closest('button[data-k]'); if (!b) return;
+    const li = b.closest('li'), x = KR.find(y => y.ryadok === +li.dataset.r), znach = b.dataset.k;
+    li.querySelectorAll('button').forEach(q => { q.disabled = true; }); b.textContent = 'Записую…';
+    try {
+      const v = await zapyt({kod, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: x.ryadok, znach});
+      if (!v.ok) throw new Error(v.pomylka);
+      if (znach === 'так') KR = KR.filter(y => y !== x); else x.ne = znach === 'ні';
+      malKasu();
+    } catch (er) { b.textContent = ludsky(er); li.querySelectorAll('button').forEach(q => { q.disabled = false; }); }
+  });
+  document.querySelectorAll('[data-zv]').forEach(b => b.addEventListener('click', async () => {
+    const g = b.dataset.zv === 'готівка' ? 'g' : 'r', inp = $('zv-' + g), rez = $('zv-' + g + '-r');
+    if (!inp.value.trim()) return inp.focus();
+    b.disabled = true; rez.hidden = true;
+    try {
+      const v = await zapyt({kod, dija: 'zvirka', shcho: b.dataset.zv, ye: inp.value.trim(), prymitka: $('zv-' + g + '-p').value.trim()});
+      if (!v.ok) throw new Error(v.pomylka);
+      rez.className = 'rez ' + (v.riznytsia ? 'bad' : 'ok');
+      rez.textContent = v.riznytsia ? `Записано. Різниця ${v.riznytsia > 0 ? '+' : '−'}${fmt2(Math.abs(v.riznytsia))} (${v.riznytsia > 0 ? 'грошей більше, ніж у книзі' : 'грошей менше, ніж у книзі'}). Пошукайте незаписаний чи зайвий рядок; що знайдете — у «Примітку» аркуша «Звірки».` : 'Записано. Збігається ✓';
+      rez.hidden = false; inp.value = ''; $('zv-' + g + '-p').value = '';
+      const k = await zapyt({kod, dija: 'kasa'}); if (k.ok) malZvirky(k.zvirky);
+    } catch (er) { rez.className = 'rez bad'; rez.textContent = ludsky(er); rez.hidden = false; }
+    finally { b.disabled = false; }
+  }));
+  $('nr-go').addEventListener('click', async () => {
+    const inp = $('nr-s'), rez = $('nr-r'), b = $('nr-go'); if (!inp.value.trim()) return inp.focus();
+    b.disabled = true; rez.hidden = true;
+    try {
+      const v = await zapyt({kod, dija: 'nakhunok', suma: inp.value.trim(), prymitka: $('nr-p').value.trim()});
+      if (!v.ok) throw new Error(v.pomylka);
+      KH = v.hroshi; malKasu(); rez.className = 'rez ok'; rez.textContent = 'Записано: готівкою ' + fmt2(KH.gotivka) + ', на рахунку ' + fmt2(KH.rakhunok) + '.'; rez.hidden = false; inp.value = ''; $('nr-p').value = '';
+    } catch (er) { rez.className = 'rez bad'; rez.textContent = ludsky(er); rez.hidden = false; }
+    finally { b.disabled = false; }
+  });
+  $('go-kp').addEventListener('click', () => { ekran('v-kp'); kasa(); });
+  $('kp-back').addEventListener('click', () => ekran('v-hub'));
+  $('kp-re').addEventListener('click', kasa);
   $('nv-back').addEventListener('click', () => ekran('v-hub'));
   $('nv-re').addEventListener('click', novi);
   $('ps-hub').addEventListener('click', () => { $('ps-done').hidden = true; $('ps-form').hidden = false; ekran('v-hub'); });

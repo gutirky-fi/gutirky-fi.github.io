@@ -14,10 +14,15 @@
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
- *   {kod, dija:"vnesky"}                            → внески з аркуша «Внески» і хто скільки сплатив за кожен: {vnesky:[{n,suma,termin,osobl}], splacheno:{ім'я:{внесок:€}}}
+ *   {kod, dija:"vnesky"}                            → внески з аркуша «Внески» і хто скільки сплатив за кожен: {vnesky:[{n,suma,termin,osobl}], splacheno:{ім'я:{внесок:€}}, perevireno:{…лише рядки «Перевірено виховником» = так}}
  *   {kod, dija:"den", arkush:"Фінанси", dani:{Дата}} → усі рядки за цю дату: {ryadok, dani, khto, koly, zatverdzheno, versiya}
  *   vypravyty / skasuvaty з {arkush, ryadok, versiya} замість квитка — будь-який незатверджений рядок аркушів DEN;
  *   «versiya» — відбиток рядка: якщо хтось змінив його тим часом, зміна не пройде («оновіть список»).
+ *   {kod, dija:"hroshi"}                            → де зараз гроші за книгою: {rakhunok, gotivka, nevkazano, razom, chekaiut, chekaiutSuma}
+ *   {kod, dija:"kasa"}                              → (виховник) усі неперевірені рядки каси + гроші + останні звірки — для «Перевірки каси»
+ *   {kod, dija:"zatverdyty", arkush, ryadok, znach:"так"|"ні"|""} → (виховник) «ні» — не знайшов у банку / немає грошей чи чека
+ *   {kod, dija:"zvirka", shcho:"готівка"|"рахунок", ye:"20,50", prymitka} → (виховник) рядок у «Звірки»; «мало бути» рахує приймач сам
+ *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
  *
@@ -42,8 +47,10 @@ var SLUZHBOVI = ['Хто записав', 'Записано', PER];
 var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид'], 'Майно': ['Річ']};
 var SPYSKY = ['Майно'];
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
-var LYSHE_V = ['novi', 'zatverdyty', 'zvit'];   // лише з кодом виховника
+var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
+var ZVIRKY = 'Звірки', PEREM = 'переміщення';
+var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
 
 // ---------- вебзастосунок ----------
 function doGet() {
@@ -70,7 +77,11 @@ function doPost(e) {
     if (z.dija === 'imena') return vidpovid({ok: true, rol: rol, imena: imena()});
     if (z.dija === 'spysok') return vidpovid(spysok(z.arkush));
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
-    if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.tak !== false));
+    if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.hasOwnProperty('znach') ? z.znach : (z.tak !== false ? 'так' : '')));
+    if (z.dija === 'hroshi') return vidpovid(hroshi());
+    if (z.dija === 'kasa') return vidpovid(kasa());
+    if (z.dija === 'zvirka') return vidpovid(zvirka(z.shcho, z.ye, z.prymitka));
+    if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
     if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
@@ -156,6 +167,7 @@ function perevirkaKasy(arkush, dani) {
   if (!/^\d+(\.\d{1,2})?$/.test(s) || Number(s) <= 0) return 'Сума — додатне число, до центів (напр. 10 або 12,50).';
   if (['надходження', 'видаток'].indexOf(String(dani['Рух'] || '')) < 0) return 'Рух — «надходження» або «видаток».';
   if (!data(dani['Дата'])) return 'Потрібна дата.';
+  if (dani['Категорія'] === PEREM) return 'Переміщення (готівку здали на рахунок) записує виховник: «Вхід виховника → Перевірка каси».';
   var vn = vnesky().vnesky.map(function (x) { return x.n; }), v = String(dani['Внесок'] || '').trim();
   if (v && vn.indexOf(v) < 0) return 'Внеску «' + v + '» немає в аркуші «Внески» — виберіть зі списку.';
   if (!v && vn.length && dani['Категорія'] === 'внески' && String(dani["Ім'я (для внеску)"] || '').trim()) return 'Виберіть, за який внесок цей платіж.';
@@ -180,13 +192,32 @@ function vnesky() {
     out.push({n: n, suma: Number(r[z.indexOf('Сума, €')]) || 0, termin: iso(r[z.indexOf('Термін')]) || '', osobl: osoblyvi(r[z.indexOf('Особливі суми')])});
   });
   var fs = ss.getSheetByName('Фінанси'), fz = zaholovky(fs), sp = {};
-  var ci = fz.indexOf("Ім'я (для внеску)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух');
+  var ci = fz.indexOf("Ім'я (для внеску)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух'), cp = fz.indexOf(PER), pv = {};
+  var dodaty = function (o, im, v, x) { o[im] = o[im] || {}; o[im][v] = Math.round(((o[im][v] || 0) + x) * 100) / 100; };
   if (cv >= 0) ryadky(fs).forEach(function (r) {
     var im = String(r[ci]).trim(), v = String(r[cv]).trim(); if (!im || !v) return;
     var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
-    sp[im] = sp[im] || {}; sp[im][v] = Math.round(((sp[im][v] || 0) + x) * 100) / 100;
+    dodaty(sp, im, v, x);
+    if (cp >= 0 && String(r[cp]).trim().toLowerCase() === 'так') dodaty(pv, im, v, x);   // ✓ — лише перевірене виховником
   });
-  return {ok: true, vnesky: out, splacheno: sp};
+  return {ok: true, vnesky: out, splacheno: sp, perevireno: pv};
+}
+
+// ---------- де зараз гроші (за книгою): готівкою, на рахунку ----------
+function sposib(yak) { yak = String(yak || '').trim(); return yak === 'готівка' ? 'gotivka' : NA_RAKHUNKU.indexOf(yak) >= 0 ? 'rakhunok' : 'nevkazano'; }
+function hroshi() {
+  var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs);
+  var cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), cp = z.indexOf(PER);
+  var o = {gotivka: 0, rakhunok: 0, nevkazano: 0}, ch = 0, chS = 0, ni = 0;
+  ryadky(fs).forEach(function (r) {
+    var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
+    o[sposib(r[cy])] += x;
+    var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
+    if (p !== 'так') { ch++; chS += Math.abs(x); if (p === 'ні') ni++; }
+  });
+  var k = function (x) { return Math.round(x * 100) / 100; };
+  return {ok: true, gotivka: k(o.gotivka), rakhunok: k(o.rakhunok), nevkazano: k(o.nevkazano), razom: k(o.gotivka + o.rakhunok + o.nevkazano),
+          chekaiut: ch, chekaiutSuma: k(chS), ne: ni};
 }
 
 function zapys(arkush, dani, khto) {
@@ -280,7 +311,7 @@ function den(arkush, dani) {
   for (var i = 0; i < n; i++) {
     var x = v[i][0]; if (!(x instanceof Date) || x.getTime() !== d.getTime()) continue;
     var m = vmist(sh, zag, arkush, P + i);
-    out.push({ryadok: P + i, dani: m.dani, khto: m.khto, koly: m.koly, zatverdzheno: m.zatverdzheno, versiya: versiya(sh, P + i, nc)});
+    out.push({ryadok: P + i, dani: m.dani, khto: m.khto, koly: m.koly, zatverdzheno: m.zatverdzheno, ne: m.ne, versiya: versiya(sh, P + i, nc)});
   }
   return {ok: true, ryadky: out};
 }
@@ -316,6 +347,8 @@ function vypravyty(kv, dani, khto, o) {
       ryad[c] = h === 'Записано' ? new Date() : h === 'Хто записав' ? chyste(khto || '') : dani.hasOwnProperty(h) ? perevesty(dani[h]) : '';
       sh.getRange(z.r, c + 1).setValue(ryad[c]);
     }
+    var cpe = z.zag.indexOf(PER);
+    if (cpe >= 0 && String(sh.getRange(z.r, cpe + 1).getValues()[0][0]).trim().toLowerCase() === 'ні') sh.getRange(z.r, cpe + 1).setValue('');   // виправили — знову чекає перевірки
     if (kv) PropertiesService.getScriptProperties().setProperty('q:' + kv, JSON.stringify({a: z.info.a, r: z.r, k: kliuchTekst(ryad[0]), t: z.info.t}));
     zminy('виправлення', z.info.a, z.r, khto, opys(z.info.a, z.zag, ryad));
     return {ok: true, arkush: z.info.a, ryadok: z.r, versiya: versiya(sh, z.r, nc)};
@@ -427,7 +460,8 @@ function iso(v) { return v instanceof Date ? v.getFullYear() + '-' + ('0' + (v.g
 // що вже записано в рядку: {pola:[[заголовок, значення]], dani:{…для форми}, prys:{ім'я: позначка}}
 function vmist(sh, zag, arkush, r) {
   var v = sh.getRange(r, 1, 1, zag.length).getValues()[0], d = sh.getRange(r, 1, 1, zag.length).getDisplayValues()[0];
-  var out = {pola: [], dani: {}, prys: {}, khto: '', koly: '', zatverdzheno: perevireno(sh, zag, r)};
+  var cp = zag.indexOf(PER), pz = cp >= 0 ? String(v[cp]).trim().toLowerCase() : '';
+  var out = {pola: [], dani: {}, prys: {}, khto: '', koly: '', zatverdzheno: pz === 'так', ne: pz === 'ні'};
   for (var c = 0; c < zag.length; c++) {
     var h = zag[c]; if (!h || PRYKHOVATY.indexOf(h) >= 0 || h === PER) continue;
     if (h === 'Хто записав') { out.khto = d[c]; continue; }
@@ -450,7 +484,9 @@ function stan(arkush, dani) {
   return {ok: true, ye: true, ryadok: r, zatverdzheno: m.zatverdzheno, khto: m.khto, koly: m.koly, dani: m.dani, prys: m.prys};
 }
 
-function zatverdyty(arkush, ryadok, tak) {
+function zatverdyty(arkush, ryadok, znach) {
+  if (znach === true) znach = 'так'; if (znach === false || znach === null || znach === undefined) znach = '';
+  if (['так', 'ні', ''].indexOf(znach) < 0) return {ok: false, pomylka: 'Позначка — «так», «ні» або порожньо.'};
   if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'Невідомий аркуш.'};
   var r = Number(ryadok);
   var sh = SpreadsheetApp.getActive().getSheetByName(arkush);
@@ -459,9 +495,72 @@ function zatverdyty(arkush, ryadok, tak) {
   if (c < 0) return {ok: false, pomylka: 'В аркуші немає стовпця «' + PER + '».'};
   var kl = sh.getRange(r, 1, 1, 1).getValues()[0][0];
   if (kl === '' || kl === null) return {ok: false, pomylka: 'Цей рядок порожній (запис скасовано).'};
-  sh.getRange(r, c + 1).setValue(tak ? 'так' : '');
-  zminy(tak ? 'затвердження' : 'зняття затвердження', arkush, r, 'виховник', opys(arkush, zag, sh.getRange(r, 1, 1, zag.length).getValues()[0]));
-  return {ok: true, ryadok: r, zatverdzheno: tak};
+  sh.getRange(r, c + 1).setValue(znach);
+  zminy(znach === 'так' ? 'затвердження' : znach === 'ні' ? 'немає' : 'зняття затвердження', arkush, r, 'виховник', opys(arkush, zag, sh.getRange(r, 1, 1, zag.length).getValues()[0]));
+  return {ok: true, ryadok: r, zatverdzheno: znach === 'так', ne: znach === 'ні', znach: znach};
+}
+
+// ---------- «Перевірка каси» (виховник) ----------
+// усі рядки каси, які ще не «так» (і «ні» теж), — щоб звірити з банком, коробкою й чеками
+function kasa() {
+  var ss = SpreadsheetApp.getActive(), sh = ss.getSheetByName('Фінанси'), nc = sh.getLastColumn();
+  var zag = zaholovky(sh), n = sh.getMaxRows() - P + 1, v = sh.getRange(P, 1, n, 1).getValues(), out = [];
+  for (var i = 0; i < n; i++) {
+    if (v[i][0] === '' || v[i][0] === null) continue;
+    var m = vmist(sh, zag, 'Фінанси', P + i); if (m.zatverdzheno) continue;
+    out.push({ryadok: P + i, dani: m.dani, khto: m.khto, koly: m.koly, ne: m.ne, sposib: sposib(m.dani['Як платили']), versiya: versiya(sh, P + i, nc)});
+  }
+  out.sort(function (a, b) { return String(a.dani['Дата']).localeCompare(String(b.dani['Дата'])) || a.ryadok - b.ryadok; });
+  var zv = ss.getSheetByName(ZVIRKY), ost = [];
+  if (zv) {
+    var zz = zaholovky(zv);
+    ryadky(zv).slice(-6).reverse().forEach(function (r) { var o = {}; zz.forEach(function (h, k) { if (h) o[h] = r[k] instanceof Date ? dd(r[k]) : r[k]; }); ost.push(o); });
+  }
+  return {ok: true, ryadky: out, hroshi: hroshi(), zvirky: ost};
+}
+
+function chysloGroshei(x) {
+  var s = String(x === undefined || x === null ? '' : x).trim().replace(/\s|€/g, '').replace(',', '.');
+  return /^-?\d+(\.\d{1,2})?$/.test(s) ? Number(s) : null;
+}
+
+// звірка: «мало бути» — з книги (не з сайту), «є насправді» — що порахував виховник
+function zvirka(shcho, ye, prymitka) {
+  if (['готівка', 'рахунок'].indexOf(shcho) < 0) return {ok: false, pomylka: 'Що звіряли — «готівка» або «рахунок».'};
+  var y = chysloGroshei(ye); if (y === null || y < 0) return {ok: false, pomylka: 'Скільки є насправді — число, до центів (напр. 20 або 12,50).'};
+  var ss = SpreadsheetApp.getActive(), zv = ss.getSheetByName(ZVIRKY); if (!zv) return {ok: false, pomylka: 'У книзі немає аркуша «' + ZVIRKY + '» — візьміть свіжу книгу.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var g = hroshi(), malo = shcho === 'готівка' ? g.gotivka : g.rakhunok, rizn = Math.round((y - malo) * 100) / 100;
+    var r = vilnyiRyadok(zv);
+    zapysatyRyadok(zv, r, {'Дата': new Date(), 'Що звіряли': shcho, 'Мало бути, €': malo, 'Є насправді, €': y, 'Хто звіряв': 'виховник', 'Примітка': chyste(prymitka || ''), 'Записано': new Date()});
+    zminy('звірка', ZVIRKY, r, 'виховник', shcho + ': мало бути ' + malo + ' €, є ' + y + ' €' + (rizn ? ', різниця ' + rizn + ' €' : ' — збігається'));
+    return {ok: true, ryadok: r, malo: malo, ye: y, riznytsia: rizn, chekaiut: g.chekaiut};
+  } finally { lock.releaseLock(); }
+}
+
+// готівку здали на рахунок: видаток готівкою + надходження на рахунок (разом у касі не змінюється)
+function nakhunok(suma, prymitka) {
+  var s = chysloGroshei(suma); if (s === null || s <= 0) return {ok: false, pomylka: 'Сума — додатне число, до центів.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var g = hroshi(); if (s > g.gotivka + 0.001) return {ok: false, pomylka: 'За книгою готівкою лише ' + g.gotivka + ' € — більше на рахунок не здати. Спершу перевірте касу.'};
+    var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), out = [];
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    [['видаток', 'готівка', 'готівку здано на рахунок'], ['надходження', 'переказ', 'готівку внесено на рахунок']].forEach(function (x) {
+      var r = vilnyiRyadok(sh), o = {'Дата': d, 'Рух': x[0], 'Категорія': PEREM, 'Опис': x[2], 'Сума, €': s, 'Як платили': x[1], 'Примітка': chyste(prymitka || ''), 'Хто записав': 'виховник', 'Записано': new Date()};
+      o[PER] = 'так';
+      zapysatyRyadok(sh, r, o); out.push(r);
+      zminy('запис', 'Фінанси', r, 'виховник', dd(d) + ' · ' + x[0] + ' · ' + PEREM + ' · ' + s + ' € (' + x[1] + ')');
+    });
+    return {ok: true, ryadky: out, hroshi: hroshi()};
+  } finally { lock.releaseLock(); }
+}
+
+// записує {заголовок: значення} у рядок r (лише стовпці без формул)
+function zapysatyRyadok(sh, r, obj) {
+  var nc = sh.getLastColumn(), z = zaholovky(sh), f = sh.getRange(r, 1, 1, nc).getFormulas()[0];
+  for (var c = 0; c < nc; c++) if (z[c] && !f[c] && obj.hasOwnProperty(z[c])) sh.getRange(r, c + 1).setValue(obj[z[c]]);
 }
 
 function imenaVZaholovok(sh, zag, prys) {
@@ -559,7 +658,7 @@ function novyiRik() {
     'Що станеться:\n' +
     '1) повна копія книги піде в архів;\n' +
     '2) підсумок року допишеться в «Роки» і «Історію учасників» (ці аркуші не очищаються ніколи);\n' +
-    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться один рядок — залишок; у внесках — один рядок «Борг з …» (хто недоплатив); із завдань — лише незроблені.\n' +
+    '3) очистяться план праці, сходини, відвідуваність, протоколи, мандрівки; у касі лишиться залишок (окремо готівкою й на рахунку); у внесках — один рядок «Борг з …» (хто недоплатив); із завдань — лише незроблені.\n' +
     'Учасники, посади, проби, вмілості, відзначки, замовлення, запас, майно й документи лишаються.\n\nПродовжити?', ui.ButtonSet.YES_NO);
   if (r !== ui.Button.YES) return;
   var pidsumok = pidsumokRoku(ss, rik);               // рахуємо ДО очищення
@@ -584,13 +683,14 @@ function novyiRik() {
   var zst = kolonka(zav, 'Статус');
   zalyshyty(zav, function (row) { return row[zst] !== 'зроблено'; });
   var fin = ss.getSheetByName('Фінанси');
+  var gr = hroshi();                                    // де гроші — до очищення каси
   zalyshyty(fin, function () { return false; });
-  var zal = pidsumok.rik[10];
-  if (zal !== 0) {
+  [['nevkazano', '', ' (не вказано, як платили)'], ['rakhunok', 'переказ', ' — на рахунку'], ['gotivka', 'готівка', ' — готівкою']].forEach(function (x) {
+    var zal = gr[x[0]]; if (!zal) return;               // зверху буде готівка, далі рахунок
     var z = {}; z['Дата'] = new Date(); z['Рух'] = zal > 0 ? 'надходження' : 'видаток'; z['Категорія'] = 'інше';
-    z['Опис'] = 'Залишок з ' + rik; z['Сума, €'] = Math.abs(zal); z['Хто записав'] = 'Новий рік';
+    z['Опис'] = 'Залишок з ' + rik + x[2]; z['Сума, €'] = Math.abs(zal); z['Як платили'] = x[1]; z['Хто записав'] = 'Новий рік'; z[PER] = 'так';
     zapysatyObj(fin, P, z);
-  }
+  });
   var arkh = ss.getSheetByName('Архів');
   if (arkh) arkh.getRange(vilnyiRyadok(arkh), 1, 1, 4).setValues([[rik, 'Книга гуртка (архів)', 'повна книга року', url]]);
   var m = /^(\d{4})\/(\d{2})$/.exec(rik);
@@ -645,6 +745,7 @@ function pidsumokRoku(ss, rik) {
   var nadh = 0, vyd = 0;
   fn.v.forEach(function (r) {
     var s = Number(r[i(fn, 'Сума, €')]) || 0;
+    if (r[i(fn, 'Категорія')] === PEREM) return;   // з коробки на рахунок — не дохід і не видаток
     if (r[i(fn, 'Рух')] === 'надходження') nadh += s; else if (r[i(fn, 'Рух')] === 'видаток') vyd += s;
   });
   var kr = function (x) { return Math.round(x * 100) / 100; };
