@@ -1,11 +1,12 @@
 /* Документи гуртка — «папір»: аркуш на телефоні й перегляд на весь екран (09.11.2026).
    Вставляє zibraty.py у кожну сторінку, де є аркуші (звіти, бланки, проби, витяг каси).
 
-   Papir.fit(корінь)  — на вузькому екрані аркуші (.ppr, .sheet) самі зменшуються на всю ширину, як сторінка в PDF-переглядачі.
-   Papir.view({title, pages, file, print}) — вікно «Переглянути» на весь екран: аркуш цілком на ширину екрана,
-       пальцями наблизити / віддалити, кілька аркушів — гортати вниз. Лише потім унизу кнопки:
-       «Зберегти PDF», «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…), «Друк».
-       Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
+   Papir.fit(корінь, {open, tip, tipAt}) — на вузькому екрані аркуші (.ppr, .sheet) самі зменшуються на всю ширину, як сторінка в PDF-переглядачі.
+       На телефоні (аркуш зменшено помітно) кнопка «Переглянути» зникає: перегляд відкривається дотиком до самого аркуша.
+   Papir.view({title, pages, file, print, live}) — вікно на весь екран: аркуш цілком на ширину екрана, пальцями наблизити / віддалити,
+       кілька аркушів — гортати вниз. live:true — у вікно переходить сам аркуш, тож у ньому можна вписувати (бланки), а при закритті
+       він повертається на місце. Унизу кнопки в стилі сайту: «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…),
+       «Зберегти PDF», «Друк» (закриває перегляд і друкує). Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
    Дані нікуди не йдуть: PDF робиться в самому браузері. */
 (function () {
   'use strict';
@@ -35,18 +36,41 @@
   }
 
   /* ---------- 1. аркуш сам зменшується на вузькому екрані ---------- */
-  function fit(root) {
+  // opts.open(): що зробити, коли на телефоні торкнулися аркуша (відкрити перегляд); opts.tip — підказка над аркушем;
+  // opts.tipAt — перед яким елементом її вставити. Коли аркуш зменшено помітно (телефон) — «режим дотику»:
+  // клас pv-tapmode на <html> ховає кнопку «Переглянути», а дотик до самого аркуша відкриває перегляд.
+  function fit(root, opts) {
     if (!root || root.__papirFit) return;
     root.__papirFit = true;
-    var busy = false;
+    opts = opts || {};
+    var busy = false, tapOn = false;
+    if (opts.open) {
+      var tip = document.createElement('p'), at = opts.tipAt || root;
+      tip.className = 'pv-tip';
+      tip.innerHTML = IC.fit + '<span>' + esc(opts.tip || 'Торкніться аркуша — він відкриється на весь екран.') + '</span>';
+      if (at.parentNode) at.parentNode.insertBefore(tip, at);
+      root.addEventListener('click', function (e) {
+        if (!tapOn || document.querySelector('.pv')) return;
+        var t = e.target, sh = t && t.closest ? t.closest('.ppr, .sheet') : null;
+        if (!sh || !root.contains(sh) || t.closest('a, button, select')) return;
+        e.preventDefault(); e.stopPropagation();
+        opts.open();
+      }, true);
+    }
     function run() {
       busy = false;
       var cs = getComputedStyle(root);
       var av = root.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
-      var list = root.querySelectorAll('.ppr, .sheet');
+      var list = root.querySelectorAll('.ppr, .sheet'), mn = 1;
       for (var i = 0; i < list.length; i++) {
         var n = nat(list[i]), z = av > 0 ? Math.min(1, av / n.min) : 1;
         list[i].style.zoom = z < 0.995 ? z.toFixed(4) : '';
+        mn = Math.min(mn, z);
+      }
+      if (opts.open && list.length && av > 0) {
+        tapOn = mn < 0.8;
+        root.classList.toggle('pv-tapok', tapOn);
+        document.documentElement.classList.toggle('pv-tapmode', tapOn);
       }
     }
     function later() { if (!busy) { busy = true; requestAnimationFrame(run); } }
@@ -242,27 +266,43 @@
     ovr.innerHTML =
       '<div class="pv-main"><div class="pv-sc" tabindex="0"><div class="pv-in"><div class="pv-st"></div></div></div>' +
       '<button type="button" class="pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button>' +
+      '<button type="button" class="btn main pv-ok" data-a="ok">Готово</button>' +
       '<span class="pv-cnt" hidden></span>' +
       '<div class="pv-zm">' +
       '<button type="button" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
       '<button type="button" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
       '<button type="button" data-a="fit" aria-label="На всю ширину">' + IC.fit + '</button></div></div>' +
       '<div class="pv-dock"><p class="pv-msg" role="status" aria-live="polite"></p><div class="pv-bt">' +
-      '<button type="button" class="pv-act" data-a="pdf"><i>' + IC.dl + '</i><b>Зберегти PDF</b><small>файл у телефон</small></button>' +
-      '<button type="button" class="pv-act main" data-a="share"><i>' + IC.sh + '</i><b>Надіслати</b><small>WhatsApp, Telegram, пошта</small></button>' +
-      '<button type="button" class="pv-act" data-a="print"><i>' + IC.pr + '</i><b>Друк</b><small>на папір</small></button></div></div>';
+      '<button type="button" class="btn main" data-a="share">' + IC.sh + 'Надіслати</button>' +
+      '<button type="button" class="btn" data-a="pdf">' + IC.dl + 'Зберегти PDF</button>' +
+      '<button type="button" class="btn" data-a="print">' + IC.pr + 'Друк</button></div>' +
+      '<p class="pv-hint"></p></div>';
     var sc = ovr.querySelector('.pv-sc'), inn = ovr.querySelector('.pv-in'), st = ovr.querySelector('.pv-st'), msgEl = ovr.querySelector('.pv-msg');
     var W = 0, H = 0, S = {s: 1, s0: 1, min: .3, max: 5};
 
+    // o.live — у перегляд переходить сам аркуш (а не його копія): у ньому можна вписувати; при закритті він повертається на місце
+    var live = !!o.live, lives = [];
     src.forEach(function (el) {
       var n = nat(el), pg = document.createElement('div');
       pg.className = 'pv-pg';
       pg.style.width = n.w + 'px';
-      pg.appendChild(klon(el));
+      if (live && el.parentNode && !n.pad) {
+        var ph = document.createComment('pv');
+        el.parentNode.insertBefore(ph, el);
+        lives.push({el: el, ph: ph, css: el.getAttribute('style')});
+        el.style.zoom = '1'; el.style.margin = '0'; el.style.width = n.w + 'px';
+        if (el.classList.contains('sheet')) { el.style.minWidth = '0'; el.style.maxWidth = 'none'; }
+        pg.appendChild(el);
+      } else {
+        pg.classList.add('ro');
+        pg.appendChild(klon(el));
+      }
       st.appendChild(pg);
       W = Math.max(W, n.w);
     });
     st.style.width = W + 'px';
+    var editable = live && !!st.querySelector('[contenteditable], .sheet.edit');
+    var touch = !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
 
     // ----- масштаб
     function layout(s) {
@@ -330,12 +370,54 @@
       ro.observe(sc);
     }
     setTimeout(function () { if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (ovr.parentNode) { var f = Math.abs(S.s - S.s0) < .005; st.style.transform = 'none'; H = st.offsetHeight; if (f) layout(S.s0); else layout(S.s); } }); }, 0);
+    // аркуш росте, коли вписуємо текст у клітинку: лише оновлюємо висоту прокрутки, масштаб і позицію не чіпаємо
+    var ro2 = window.ResizeObserver ? new ResizeObserver(function () {
+      var h = st.offsetHeight;
+      if (h && h !== H) { H = h; inn.style.height = (H * S.s + TOP + PAD) + 'px'; }
+    }) : null;
+    if (ro2) ro2.observe(st);
+
+    // на телефоні, поки вписуємо: ховаємо кнопки внизу, зверху — «Готово»; вікно стискається до видимої частини над клавіатурою
+    var vv = window.visualViewport, typing = false, vm = document.querySelector('meta[name="viewport"]'), vmOld = vm ? vm.getAttribute('content') : null;
+    if (vm && editable) vm.setAttribute('content', (vmOld || 'width=device-width, initial-scale=1') + ', maximum-scale=1');   // iOS: не наближати сторінку самому
+    function vvFit() {
+      if (!vv || !typing) return;
+      ovr.style.top = Math.round(vv.offsetTop) + 'px'; ovr.style.bottom = 'auto'; ovr.style.height = Math.round(vv.height) + 'px';
+    }
+    function pysaty(on) {
+      if (!touch || typing === on) return;
+      typing = on;
+      ovr.classList.toggle('typing', on);
+      if (on) vvFit(); else { ovr.style.top = ''; ovr.style.bottom = ''; ovr.style.height = ''; }
+    }
+    if (vv) { vv.addEventListener('resize', vvFit); vv.addEventListener('scroll', vvFit); }
+    ovr.addEventListener('focusin', function (e) {
+      var t = e.target;
+      if (!(t && t.isContentEditable)) return;
+      pysaty(true);
+      if (S.s < 1) {   // дрібний аркуш: наближаємо до клітинки, щоб було видно, що вписуєш
+        var rs = sc.getBoundingClientRect(), r = t.getBoundingClientRect(), l = parseFloat(st.style.left) || PAD;
+        var cl = (r.left - rs.left + sc.scrollLeft - l) / S.s, cw = r.width / S.s, wide = cw > sc.clientWidth - 2 * PAD;   // широке поле: початок рядка біля краю екрана, інакше — посередині
+        zoomAt(1, wide ? PAD + 2 : sc.clientWidth / 2, sc.clientHeight / 2, wide ? cl : cl + cw / 2, (r.top + r.height / 2 - rs.top + sc.scrollTop - TOP) / S.s);
+      }
+    });
+    ovr.addEventListener('focusout', function () {
+      setTimeout(function () { var a = document.activeElement; if (!(a && a.isContentEditable && ovr.contains(a))) pysaty(false); }, 150);
+    });
+    ovr.querySelector('.pv-ok').addEventListener('mousedown', function (e) { e.preventDefault(); });   // щоб кнопка не з'їла клацання, знявши фокус раніше
 
     var pushed = false;
     try { history.pushState({pv: 1}, ''); pushed = true; } catch (e) {}
     function teardown() {
       if (!ovr.parentNode) return;
       if (ro) ro.disconnect();
+      if (ro2) ro2.disconnect();
+      if (vv) { vv.removeEventListener('resize', vvFit); vv.removeEventListener('scroll', vvFit); }
+      if (vm && editable) { if (vmOld == null) vm.removeAttribute('content'); else vm.setAttribute('content', vmOld); }
+      lives.forEach(function (l) {   // живі аркуші — назад на своє місце
+        if (l.css == null) l.el.removeAttribute('style'); else l.el.setAttribute('style', l.css);
+        if (l.ph.parentNode) { l.ph.parentNode.insertBefore(l.el, l.ph); l.ph.remove(); } else if (l.el.parentNode) l.el.remove();
+      });
       ovr.remove();
       document.documentElement.classList.remove('pv-lock');
       inertList.forEach(function (p) { p[0].inert = p[1]; });
@@ -382,7 +464,7 @@
     }, {passive: false});
     sc.addEventListener('touchend', function (e) {
       if (e.touches.length < 2) pin = null;
-      if (tapDown && e.touches.length === 0 && e.changedTouches.length === 1 && Date.now() - tapDown.t < 300) {
+      if (!editable && tapDown && e.touches.length === 0 && e.changedTouches.length === 1 && Date.now() - tapDown.t < 300) {   // у аркуші, де вписують, подвійний дотик не наближає
         var x = e.changedTouches[0].clientX, y = e.changedTouches[0].clientY, now = Date.now();
         if (lastTap && now - lastTap.t < 320 && Math.abs(x - lastTap.x) < 40 && Math.abs(y - lastTap.y) < 40) {
           var r = sc.getBoundingClientRect();
@@ -403,7 +485,7 @@
     // ----- PDF
     var blob = null, busyP = null, name = slug(o.file || o.title) + '-' + dataStr() + '.pdf';
     function msg(t, bad) { msgEl.textContent = t || ''; msgEl.classList.toggle('bad', !!bad); }
-    function knopky(off) { ovr.querySelectorAll('.pv-act').forEach(function (b) { b.disabled = !!off; }); }
+    function knopky(off) { ovr.querySelectorAll('.pv-bt .btn').forEach(function (b) { b.disabled = !!off; }); }
     function zrobyty() {
       if (blob) return Promise.resolve(blob);
       if (busyP) return busyP;
@@ -433,7 +515,8 @@
       zrobyty().then(function (b) { zberehty(b); msg('PDF збережено (' + name + ').'); }).catch(function () {});
     }
     var mozhe = mozhnaDilytysia();
-    if (!mozhe) ovr.querySelector('[data-a="share"] small').textContent = 'збереже PDF-файл';
+    ovr.querySelector('.pv-hint').textContent = (editable ? 'Торкніться клітинки чи рядка, щоб вписати. ' : '') +
+      (mozhe ? 'PDF — звичайний файл на A4: його можна переслати чи віддати на друк.' : '«Надіслати» тут збереже PDF — додайте його до листа чи месенджера.');
     function dilytysia() {
       var wasReady = !!blob;
       zrobyty().then(function (b) {
@@ -460,7 +543,11 @@
       else if (a === 'fit') { zoomAt(S.s0, cx, cy); sc.scrollLeft = 0; }
       else if (a === 'pdf') zavantazhyty();
       else if (a === 'share') dilytysia();
-      else if (a === 'print') { try { (o.print || window.print.bind(window))(); } catch (x) { window.print(); } }
+      else if (a === 'ok') { var ae = document.activeElement; if (ae && ae.blur) ae.blur(); }
+      else if (a === 'print') {   // спершу закриваємо перегляд (аркуш повертається на сторінку), потім звичайний друк
+        zakryty();
+        setTimeout(function () { try { (o.print || window.print.bind(window))(); } catch (x) { window.print(); } }, 120);
+      }
     });
     ovr.querySelector('.pv-x').focus();
   }

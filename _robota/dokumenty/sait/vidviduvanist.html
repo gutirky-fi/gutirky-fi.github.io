@@ -353,8 +353,13 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   $('sheet').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.isContentEditable) { e.preventDefault(); e.target.blur(); } });
   ['b-skh', 'b-ryad', 'b-edit', 'b-hur', 'b-rik'].forEach(id => $(id).addEventListener(id === 'b-hur' || id === 'b-rik' ? 'input' : 'change', () => { zberegty(); malyuvaty(); }));
   $('b-print').addEventListener('click', () => { zberegty(); window.print(); });
-  Papir.fit($('sheet').parentElement);
-  $('b-view').addEventListener('click', () => { zberegty(); Papir.view({title: 'Відвідуваність', file: 'Відвідуваність', pages: [$('sheet')], print: () => $('b-print').click()}); });
+  function otkryty(tap) {   // на телефоні «Переглянути» немає: торкаєшся аркуша — він відкривається на весь екран, готовий до вписування
+    if (tap && !$('b-edit').checked) { $('b-edit').checked = true; zberegty(); malyuvaty(); }
+    zberegty();
+    Papir.view({title: 'Відвідуваність', file: 'Відвідуваність', pages: [$('sheet')], live: true, print: () => $('b-print').click()});
+  }
+  Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
+  $('b-view').addEventListener('click', () => otkryty(false));
 
   function wordHtml() {
     zberegty();

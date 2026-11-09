@@ -477,8 +477,14 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   $('sheet').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.isContentEditable) { e.preventDefault(); e.target.blur(); } });
   ['b-pr', 'b-n', 'b-edit', 'b-hur'].forEach(id => $(id).addEventListener(id === 'b-hur' ? 'input' : 'change', () => { bZberegty(); bMal(); }));
   $('b-print').addEventListener('click', () => { bZberegty(); window.print(); });
-  Papir.fit($('sheet').parentElement);
-  $('b-view').addEventListener('click', () => { bZberegty(); const pr = $('b-pr').selectedOptions[0]; Papir.view({title: 'Проби', file: 'Проби' + (pr ? ' — ' + pr.textContent : ''), pages: [$('sheet')], print: () => $('b-print').click()}); });
+  function otkryty(tap) {   // на телефоні «Переглянути» немає: торкаєшся аркуша — він відкривається на весь екран, готовий до вписування
+    if (tap && !$('b-edit').checked) { $('b-edit').checked = true; bZberegty(); bMal(); }
+    bZberegty();
+    const pr = $('b-pr').selectedOptions[0];
+    Papir.view({title: 'Проби', file: 'Проби' + (pr ? ' — ' + pr.textContent : ''), pages: [$('sheet')], live: true, print: () => $('b-print').click()});
+  }
+  Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
+  $('b-view').addEventListener('click', () => otkryty(false));
   function wordHtml() {
     bZberegty();
     const sh = $('sheet').cloneNode(true);

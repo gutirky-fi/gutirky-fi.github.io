@@ -416,8 +416,14 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   ['b-ryad', 'b-edit'].forEach(id => $(id).addEventListener('change', () => { zberegty(); malyuvaty(); }));
   ['b-hur', 'b-rik'].forEach(id => $(id).addEventListener('input', () => { zberegty(); malyuvaty(); }));
   $('b-print').addEventListener('click', () => { zberegty(); window.print(); });
-  Papir.fit($('sheet').parentElement);
-  $('b-view').addEventListener('click', () => { zberegty(); Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], print: () => $('b-print').click()}); });
+  // на телефоні «Переглянути» немає: торкаєшся аркуша — він відкривається на весь екран, уже готовий до вписування
+  function otkryty(tap) {
+    if (tap && !$('b-edit').checked) { $('b-edit').checked = true; zberegty(); malyuvaty(); }
+    zberegty();
+    Papir.view({title: K.t, file: K.fail || K.t, pages: [$('sheet')], live: true, print: () => $('b-print').click()});
+  }
+  Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
+  $('b-view').addEventListener('click', () => otkryty(false));
 
   function wordHtml() {
     zberegty();

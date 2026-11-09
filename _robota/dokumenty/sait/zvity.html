@@ -747,15 +747,16 @@
       $('z-desk').innerHTML = ({hurtok: zvitHurtka, finansy: zvitFinansy, prysutnist: zvitPrysutnist, roky: zvitRoky, kartka: zvitKartka, dos: zvitDos})[ZV]();
     } catch (x) { console.error(x); $('z-desk').innerHTML = '<p class="wait">Не вдалося скласти звіт: ' + esc(x.message) + '</p>'; }
   }
-  $('z-desk').addEventListener('input', e => { const el = e.target.closest('[data-vr]'); if (el) VR[el.dataset.vr] = el.innerText; });
+  document.addEventListener('input', e => { const el = e.target.closest && e.target.closest('[data-vr]'); if (el) VR[el.dataset.vr] = el.innerText; });   // на документі, бо у вікні перегляду аркуш поза #z-desk
   $('z-rz').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; ZV = b.dataset.z; document.querySelectorAll('#z-rz [data-z]').forEach(x => x.setAttribute('aria-selected', String(x === b))); malyuvaty(); });
   ['z-per', 'z-vid', 'z-do', 'z-im', 'z-vyp'].forEach(id => $(id).addEventListener('change', malyuvaty));
-  Papir.fit($('z-desk'));
-  $('z-pereg').addEventListener('click', () => {
+  const otkryty = () => {
     const NAZVA = {hurtok: 'Звіт гуртка', finansy: 'Фінансовий звіт', prysutnist: 'Присутність', roky: 'Гурток рік за роком', kartka: 'Картка учасника', dos: 'Досягнення за рік'};
     const im = (ZV === 'kartka' || ZV === 'dos') && $('z-im').value && !/^\*/.test($('z-im').value) ? ' — ' + $('z-im').value : '';
-    Papir.view({title: NAZVA[ZV] + im, file: NAZVA[ZV] + im, pages: () => $('z-desk').querySelectorAll('.ppr'), print: () => $('z-druk').click()});
-  });
+    Papir.view({title: NAZVA[ZV] + im, file: NAZVA[ZV] + im, pages: () => $('z-desk').querySelectorAll('.ppr'), live: true, print: () => $('z-druk').click()});
+  };
+  Papir.fit($('z-desk'), {tipAt: $('z-desk'), tip: 'Торкніться звіту — він відкриється на весь екран: там PDF, надіслати й друк.', open: otkryty});   // на телефоні «Переглянути» немає: торкаєшся звіту — він відкривається на весь екран
+  $('z-pereg').addEventListener('click', otkryty);
   $('z-druk').addEventListener('click', () => {
     const land = ZV === 'prysutnist', ps = document.createElement('style');
     ps.textContent = land ? '@page{size:A4 landscape;margin:9mm}' : ZV === 'dos' ? '@page{size:A4 portrait;margin:10mm 12mm}' : '@page{size:A4 portrait;margin:13mm 14mm}';
