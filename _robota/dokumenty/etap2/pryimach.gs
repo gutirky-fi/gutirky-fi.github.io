@@ -11,6 +11,7 @@
  *   {kod, dija:"zatverdyty", arkush, ryadok, tak}   → (виховник) «Перевірено виховником» = так / зняти
  *   {kod, dija:"imena"}                             → {ok:true, imena:[...]}  (активні й кандидати)
  *   {kod, dija:"spysok", arkush:"Майно"}            → {ok:true, spysok:[...]}  (назви вже записаних речей — підказка в полі «Річ»)
+ *   {kod, dija:"nazvy"}                             → {ok:true, nazvy:[...]}  (назви нашивок із «Вмілостей», «Відзначок», «Замовлень», «Запасу» без повторів — підказка в полі «Відзнака»; імен там немає)
  *   {kod, dija:"zapys", arkush:"Сходини", dani:{...}, khto:"Ярко"} → {ok:true, ryadok:N}
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
@@ -95,6 +96,7 @@ function doPost(e) {
     if (z.dija === 'perevirka') return vidpovid({ok: true, rol: rol});
     if (z.dija === 'imena') return vidpovid({ok: true, rol: rol, imena: imena()});
     if (z.dija === 'spysok') return vidpovid(spysok(z.arkush));
+    if (z.dija === 'nazvy') return vidpovid(nazvy());
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
     if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.hasOwnProperty('znach') ? z.znach : (z.tak !== false ? 'так' : '')));
     if (z.dija === 'hroshi') return vidpovid(hroshi());
@@ -158,6 +160,22 @@ function spysok(arkush) {
   var v = sh.getRange(P, 1, n, 1).getDisplayValues(), out = [];
   v.forEach(function (r) { var x = String(r[0]).trim(); if (x && out.indexOf(x) < 0) out.push(x); });
   return {ok: true, spysok: out};
+}
+
+// назви нашивок — з усіх аркушів, де вони є (Вмілість = назва нашивки за вмілість); книга рахує нашивки за збігом назв
+var NAZVY = [['Вмілості', 'Вмілість'], ['Відзначки', 'Відзнака'], ['Замовлення', 'Відзнака'], ['Запас', 'Відзнака']];
+function nazvy() {
+  var ss = SpreadsheetApp.getActive(), out = [], bachyly = {};
+  NAZVY.forEach(function (a) {
+    var sh = ss.getSheetByName(a[0]); if (!sh) return;
+    var c = sh.getRange(H, 1, 1, sh.getLastColumn()).getDisplayValues()[0].indexOf(a[1]), n = sh.getMaxRows() - P + 1;
+    if (c < 0 || n < 1) return;
+    sh.getRange(P, c + 1, n, 1).getDisplayValues().forEach(function (r) {
+      var x = String(r[0]).trim(), k = x.toLowerCase();
+      if (x && !bachyly[k]) { bachyly[k] = 1; out.push(x); }
+    });
+  });
+  return {ok: true, nazvy: out};
 }
 
 function zvit(arkush, vid, doo) {

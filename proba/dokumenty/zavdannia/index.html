@@ -133,6 +133,7 @@ button{cursor:pointer}
 .grid{width:100%;border-collapse:collapse;table-layout:fixed;flex:1}
 .grid th,.grid td{border:1px solid var(--pl);padding:2px 5px;text-align:left;vertical-align:top;height:1px;font-size:12px;overflow-wrap:anywhere}
 .grid thead th{font-weight:700;font-size:10.5px;line-height:1.15;overflow-wrap:normal;hyphens:manual;background:var(--tint);vertical-align:middle;padding-block:5px}
+.f small.dlw{color:#f0b429}
 .grid.tisno th,.grid.tisno td{padding-inline:3px}.grid.tisno thead th{font-size:9px;line-height:1.1}.grid.tisno td{font-size:11px}   /* B.tisno: багато стовпців (Вмілості, Замовлення) */
 .grid thead th.au{color:var(--pm);font-weight:600}
 .grid thead th.au::after{content:" авто";display:block;font-size:9px;font-weight:400;letter-spacing:.04em}
@@ -562,6 +563,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
       if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
       if (t.dija === 'spysok') return {ok: true, spysok: Object.values(DDB).map(x => x.nazva)};
+      if (t.dija === 'nazvy') return {ok: true, nazvy: ['Шиття', 'Якірництво', 'нашивка табору «Літо 2026»', 'нашивка 1-ї проби']};
       if (t.dija === 'stan') { const x = DDB[dKey(t.dani)]; return x ? {ok: true, ye: true, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: x.dani} : {ok: true, ye: false}; }
       if (t.dija === 'vnesky') {
         const sp = JSON.parse(JSON.stringify(K.demoSplacheno || {}));
@@ -676,7 +678,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
       kod = k; imena = v.imena || [];
       $('z-kod').value = ''; $('z-lock').hidden = true; formaChysta(); $('z-form').hidden = false;
-      dlZavantazhyty();
+      dlZavantazhyty(); dlNazvyZavantazhyty();
     } catch (x) {
       pomylka($('z-err'), merezha(x, 'Немає зв\'язку з книгою гуртка. Перевірте інтернет або попросіть у виховника нове посилання.'));
     } finally { b.disabled = false; b.textContent = 'Увійти'; }
@@ -800,6 +802,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (!vypr) ost = v.kvytok ? {kvytok: v.kvytok} : null;
       if (ost) { ost.dani = dani; ost.khto = khto; }
       if (DLK) { const nz = dani[DLK.h]; if (nz && !dlSpysok.some(x => norm(x) === norm(nz))) { dlSpysok.push(nz); dlNapovnyty(); } }
+      if (DLN) { const nz = dani[DLN.h]; if (nz && !dlNazvy.some(x => norm(x) === norm(nz))) { dlNazvy.push(nz); dlNazvyNapovnyty(); } }
       gotovo(vypr || v.onovleno ? 'Виправлено в книзі' : 'Записано в книгу', !!ost);
       const dd = isoDd(dani[K.polia[0].h] || '');
       $('z-sum').textContent = `${K.forma || K.t}: ${dd}${dani[K.pidsumok] ? ' · ' + dani[K.pidsumok] : ''}.` + (v.ryadok ? ` Рядок у книзі — ${v.ryadok}.` : '');
@@ -852,6 +855,25 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (!DLK) return;
     try { const v = await zapyt({kod, dija: 'spysok', arkush: K.arkush}); if (v.ok) { dlSpysok = v.spysok || []; dlNapovnyty(); } } catch (x) {}
   }
+  /* підказка «nazvy» (поле з "dl": "nazvy"): назви нашивок з усіх аркушів книги + м'яке попередження, якщо назви там ще немає.
+     Книга рахує нашивки за назвою — тому в «Вмілостях», «Відзначках», «Замовленнях» і «Запасі» вона має бути написана однаково. */
+  const DLN = K.polia.find(p => p.dl === 'nazvy');
+  let dlNazvy = [];
+  if (DLN) { const d = document.createElement('datalist'); d.id = 'dl-nazvy'; document.body.appendChild(d); }
+  function dlNazvyNapovnyty() { const d = $('dl-nazvy'); if (d) d.innerHTML = dlNazvy.map(x => `<option value="${esc(x)}">`).join(''); }
+  async function dlNazvyZavantazhyty() {
+    if (!DLN) return;
+    try { const v = await zapyt({kod, dija: 'nazvy'}); if (v.ok) { dlNazvy = v.nazvy || []; dlNazvyNapovnyty(); dlNazvyPerevirka(); } } catch (x) {}
+  }
+  function dlNazvyPerevirka() {
+    const el = DLN && $('z-p' + K.polia.indexOf(DLN)); if (!el) return;
+    const f = el.closest('.f'), v = el.value.trim(); let w = f.querySelector('.dlw');
+    const nema = v && dlNazvy.length && !dlNazvy.some(x => norm(x) === norm(v));
+    if (!nema) { if (w) w.remove(); return; }
+    if (!w) { w = document.createElement('small'); w.className = 'dlw'; f.append(w); }
+    w.textContent = 'Такої назви ще немає в книзі. Нова нашивка — усе гаразд. Якщо така вже є — перевірте, як вона написана: інакше книга порахує її окремо.';
+  }
+  $('z-polia').addEventListener('change', e => { if (DLN && e.target.id === 'z-p' + K.polia.indexOf(DLN)) dlNazvyPerevirka(); });
 
   /* ================= КІЛЬКА РЯДКІВ ЗА РАЗ (K.mnoho — каса) =================
      Спільні поля (дата, рух, категорія) — один раз; поля з MN.ryad — у кожному рядку.
