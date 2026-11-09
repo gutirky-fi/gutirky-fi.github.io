@@ -310,7 +310,7 @@ function vytiah(imya) {
   Object.keys(v.syroty || {}).forEach(function (n) { var s = (v.syroty[n] || {})[im] || 0; if (s) { syroty.push({n: n, suma: okr(s)}); brak -= s; } });
   if (brak < 0) { pereplata -= brak; brak = 0; }
   var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs), c = function (h) { return z.indexOf(h); };
-  var ci = c(IM), cs = c('Сума, €'), cr = c('Рух'), cy = c('Як платили'), ck = c('Категорія'), co = c('Опис'), cv = c('Внесок'), cf = c(FOTO), cp = c(PER), cq = c('Квитанція №');
+  var ci = c(IM), cs = c('Сума, €'), cr = c('Рух'), cy = c('Як платили'), ck = c('Категорія'), co = c('Опис'), cv = c('Внесок'), cf = c(FOTO), cp = c(PER), cq = c('Квитанція №'), ckh = c('Хто записав');
   var rows = [];
   if (ci >= 0) ryadky(fs).forEach(function (r) {
     if (String(r[ci]).trim() !== im) return;
@@ -329,7 +329,7 @@ function vytiah(imya) {
     else if (yak === SVOI) g = 'svoi';
     else g = 'inshe';
     rows.push({data: iso(r[0]), ruh: String(ruh || ''), kat: kat, opys: String(r[co] || ''), suma: x, yak: yak, vnesok: cv >= 0 ? String(r[cv] || '') : '',
-               kvyt: cq >= 0 ? String(r[cq] || '') : '', foto: cf >= 0 && !!String(r[cf]).trim(), perevireno: cp >= 0 ? String(r[cp]).trim().toLowerCase() : '', hrupa: g, vplyv: okr(d)});
+               kvyt: cq >= 0 ? String(r[cq] || '') : '', foto: cf >= 0 && !!String(r[cf]).trim(), perevireno: cp >= 0 ? String(r[cp]).trim().toLowerCase() : '', khto: ckh >= 0 ? chyste(r[ckh] || '') : '', hrupa: g, vplyv: okr(d)});
   });
   var bh = borhy(), borh = okr(bh.b[im] || 0);
   var vynen = okr(brak + (borh < 0 ? -borh : 0)), hv = okr((borh > 0 ? borh : 0) + pereplata);
