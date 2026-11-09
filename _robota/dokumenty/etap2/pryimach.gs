@@ -25,7 +25,7 @@
  *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
  *   {kod, dija:"povernuty", imya, suma, yak, zaokr, khto} → гурток повернув «свої гроші» (видаток «повернення»); zaokr — різницю лишити як «заокруглення»
  *   {kod, dija:"zalik", imya, vnesok, kudy:"vnesok"|"borh", suma?, khto} → залік без грошей: борг гуртка → у внесок, або переплата внеску → у борг
- *   {kod, dija:"spysaty", imya, prymitka}          → (виховник) списати борг людини (рядок «списано»)
+ *   {kod, dija:"spysaty", imya, prychyna, pidstava, suma, prymitka} → (виховник) списати борг людини (рядок «списано»; причина обов'язкова, >10 € — підстава)
  *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
@@ -98,7 +98,7 @@ function doPost(e) {
     if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
     if (z.dija === 'povernuty') return vidpovid(povernuty(z.imya, z.suma, z.yak, z.zaokr, z.khto, rol));
     if (z.dija === 'zalik') return vidpovid(zalik(z.imya, z.vnesok, z.kudy, z.suma, z.khto, rol));
-    if (z.dija === 'spysaty') return vidpovid(spysaty(z.imya, z.prymitka));
+    if (z.dija === 'spysaty') return vidpovid(spysaty(z.imya, z.prychyna, z.pidstava, z.suma, z.prymitka));
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
@@ -700,19 +700,30 @@ function zalik(imya, vnesok, kudy, suma, khto, rol) {
     return {ok: true, ryadok: r, suma: s, borh: borhy().b[im] || 0, brak: st2.brak};
   } finally { lock.releaseLock(); }
 }
-// виховник списує борг (людина вибула, дрібниця, подарунок гуртку): рядок «списано», «свої гроші», борг → 0
-function spysaty(imya, prymitka) {
+// виховник списує борг (людина не бере грошей, дрібниця, вибула): рядок «списано», «свої гроші», борг → 0.
+// Обов'язково: причина; більше SPYS_MEZHA € — ще й підстава (протокол гурткової ради / хто погодив);
+// suma — скільки бачив виховник: якщо борг тим часом змінився, не списуємо.
+var SPYS_MEZHA = 10, SPYS_PRYCHYNY = ['подарунок гуртку', 'дрібниця', 'вибув(-ла)', 'рішення гурткової ради', 'інше'];
+function spysaty(imya, prychyna, pidstava, suma, prymitka) {
   var im = chyste(imya || '').trim(); if (!im) return {ok: false, pomylka: 'Чий борг — ім\'я.'};
+  prychyna = String(prychyna || ''); pidstava = chyste(pidstava || '').trim(); prymitka = chyste(prymitka || '').trim();
+  if (SPYS_PRYCHYNY.indexOf(prychyna) < 0) return {ok: false, pomylka: 'Виберіть причину списання.'};
   var lock = LockService.getScriptLock(); lock.waitLock(15000);
   try {
     var b = borhy().b[im] || 0; if (!b) return {ok: false, pomylka: 'У ' + im + ' боргів немає.'};
+    var s = chysloGroshei(suma); if (s === null || Math.abs(s - Math.abs(b)) > 0.001) return {ok: false, pomylka: 'Борг ' + im + ' тим часом змінився (тепер ' + String(Math.abs(b)).replace('.', ',') + ' €). Оновіть і подивіться ще раз.'};
+    if (prychyna === 'подарунок гуртку' && b < 0) return {ok: false, pomylka: '«Подарунок гуртку» — коли гурток винен людині, а вона не бере грошей.'};
+    if (prychyna === 'дрібниця' && Math.abs(b) > 1) return {ok: false, pomylka: '«Дрібниця» — до 1 €. Тут більше — виберіть іншу причину.'};
+    if (prychyna === 'інше' && !prymitka) return {ok: false, pomylka: 'Причина «інше» — напишіть пояснення.'};
+    if (Math.abs(b) > SPYS_MEZHA && !pidstava) return {ok: false, pomylka: 'Більше ' + SPYS_MEZHA + ' € — потрібна підстава: № протоколу гурткової ради або хто погодив.'};
     var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), r = vilnyiRyadok(sh);
     d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var pr = 'причина: ' + prychyna + (pidstava ? '; підстава: ' + pidstava : '') + (prymitka ? '; ' + prymitka : '');
     var o = {'Дата': d, 'Рух': b > 0 ? 'надходження' : 'видаток', 'Категорія': SPYSANO, 'Як платили': SVOI, 'Сума, €': Math.abs(b), 'Хто записав': 'виховник', 'Записано': new Date(),
-             'Опис': b > 0 ? 'списано: ' + im + ' не бере грошей назад' : 'списано: борг ' + im + ' перед гуртком', 'Примітка': chyste(prymitka || '')};
+             'Опис': b > 0 ? 'списано: гурток був винен ' + im : 'списано: ' + im + ' був(-ла) винен(-на) гуртку', 'Примітка': pr};
     o[IM] = im; o[PER] = 'так';
     zapysatyRyadok(sh, r, o);
-    zminy('списано', 'Фінанси', r, 'виховник', dd(d) + ' · ' + im + ' · ' + Math.abs(b) + ' €' + (prymitka ? ' · ' + chyste(prymitka) : ''));
+    zminy('списано', 'Фінанси', r, 'виховник', dd(d) + ' · ' + im + ' · ' + Math.abs(b) + ' € · ' + pr);
     return {ok: true, ryadok: r, bulo: b, hroshi: hroshi()};
   } finally { lock.releaseLock(); }
 }

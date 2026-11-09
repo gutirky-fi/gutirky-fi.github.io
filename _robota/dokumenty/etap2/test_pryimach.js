@@ -301,7 +301,16 @@ ok(post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dan
 zl = post({ kod: J, dija: 'zalik', imya: 'Дана', vnesok: 'Осінь 2026', kudy: 'borh', khto: 'Дана' });
 ok(zl.ok && zl.suma === 2 && zl.borh === 0 && zl.brak === 0, 'зайві 2 € пішли в борг Дани → розраховано, внесок сплачено');
 ok(!post({ kod: J, dija: 'spysaty', imya: 'Дана' }).ok, 'списати борг може лише виховник');
-ok(zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '0,30' }).ok && post({ kod: K, dija: 'spysaty', imya: 'Дана', prymitka: 'дрібниця' }).ok && !post({ kod: J, dija: 'hroshi' }).borhy['Дана'], 'виховник списав 0,30 € — боргу немає');
+ok(zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '0,30' }).ok, 'Дана купила за свої 0,30');
+ok(!post({ kod: K, dija: 'spysaty', imya: 'Дана', suma: '0,30' }).ok, 'списати без причини — не можна');
+ok(!post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'дрібниця', suma: '0,50' }).ok, 'борг змінився (бачив інше) — не списуємо');
+ok(!post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'інше', suma: '0,30' }).ok, '«інше» без пояснення — не можна');
+ok(post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'подарунок гуртку', suma: '0,30' }).ok && !post({ kod: J, dija: 'hroshi' }).borhy['Дана'], 'виховник списав 0,30 € (подарунок гуртку) — боргу немає');
+ok(String(FN().slice(-1)[0].r[10]).startsWith('причина: подарунок гуртку'), 'у «Примітці» — причина списання');
+const q15 = zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '15' });
+ok(!post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'дрібниця', suma: '15' }).ok, '«дрібниця» — лише до 1 €');
+ok(!post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'подарунок гуртку', suma: '15' }).ok, 'більше 10 € без підстави — не можна');
+ok(post({ kod: K, dija: 'spysaty', imya: 'Дана', prychyna: 'подарунок гуртку', pidstava: 'протокол гурткової ради №3', suma: '15' }).ok, 'з підставою (протокол) — списано');
 const rr0 = ctx.pidsumokRoku(ctx.SpreadsheetApp.getActive(), 'x').rik, FNn = FN().map(x => x.r);
 const nadhOcik = FNn.filter(r => !['переміщення', 'повернення', 'повернення боргу'].includes(r[2])).reduce((a, r) => a + (r[1] === 'надходження' ? r[5] : r[2] === 'внески' ? -r[5] : 0), 0);
 ok(Math.abs(rr0[8] - nadhOcik) < 0.01, 'підсумок року: внески назад (залік) — мінус надходжень, не видаток: ' + rr0[8]);
