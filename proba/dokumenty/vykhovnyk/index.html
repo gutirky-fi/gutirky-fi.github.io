@@ -419,6 +419,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     {ryadok: 33, khto: 'Ярко', koly: '05.11.2026 20:02', dani: {'Дата': '2026-11-05', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Ярко', 'Сума, €': 20, 'Як платили': 'переказ', 'Внесок': 'Листопад 2026'}, ne: true},
     {ryadok: 34, khto: 'Дана', koly: '08.11.2026 18:40', dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Соломія', 'Сума, €': 20, 'Квитанція №': 'К-7', 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}},
     {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка', 'Фото чека': 'https://drive.google.com/file/d/demo/view'}}];
+  let KS = {};
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0, borhy: {'Остап': 14.5, 'Зоряна': 3.2, 'Мирося': -0.5}, bezCheka: {'Зоряна': [{data: '2026-11-05', opys: 'свічки', suma: 3.2}]}};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length, vy = Object.values(DH.borhy).filter(x => x > 0).reduce((a, x) => a + x, 0); return Object.assign({ok: true}, JSON.parse(JSON.stringify(DH)), {vynen: vy, vilni: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano - vy) * 100) / 100, razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
@@ -598,7 +599,9 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     $('kp-hr').innerHTML = h ? `<div class="hrg"><div><small>на рахунку</small><b>${fmt2(h.rakhunok)}</b></div><div><small>готівкою</small><b>${fmt2(h.gotivka)}</b></div><div class="rz"><small>разом у касі</small><b>${fmt2(h.razom)}</b></div></div>` + borhyHtml(h) : '';
     $('zv-g-m').textContent = h ? fmt2(h.gotivka) : '—'; $('zv-r-m').textContent = h ? fmt2(h.rakhunok) : '—';
     const n = KR.length, c = n ? `<p class="nvc ye"><b>${n}</b> ${n === 1 ? 'запис чекає' : n < 5 ? 'записи чекають' : 'записів чекають'} перевірки</p>` : '<p class="nvc ok">✓ Усе в касі перевірено</p>';
-    $('kp-list').innerHTML = c + GR.map(([g, t, pyt, ta, ni, shcho]) => {
+    const sy = Object.entries(KS || {}), uv = (h && h.minus ? `<p class="nvc ye">⚠ За книгою ${h.gotivka < 0 ? 'готівки' : 'на рахунку'} менше нуля — десь не записано надходження або видаток записано двічі.</p>` : '')
+      + (sy.length ? `<p class="nvc ye">⚠ Платежі за внесок, якого вже немає в аркуші «Внески»: ${sy.map(([n, o]) => '«' + esc(n) + '» — ' + Object.entries(o).map(([im, x]) => esc(im) + ' ' + fmt2(x)).join(', ')).join('; ')}. Поверніть назву внеску в «Внесках» або виправте «Внесок» у цих рядках. На Новий рік вони однаково зарахуються людям.</p>` : '');
+    $('kp-list').innerHTML = uv + c + GR.map(([g, t, pyt, ta, ni, shcho]) => {
       const l = KR.filter(x => grupa(x) === g); if (!l.length) return '';
       return `<div class="kg"><h3>${t} <small>— ${pyt}</small></h3><ul class="kl">${l.map(x => {
         const d = x.dani, minus = d['Рух'] === 'видаток';
@@ -618,7 +621,7 @@ button.tile:hover{border-color:#5a6573;transform:translateY(-2px)}
     $('kp-list').innerHTML = '<p class="empty">Завантажую…</p>';
     try {
       const v = await zapyt({kod, dija: 'kasa'}); if (!v.ok) throw new Error(v.pomylka);
-      KR = v.ryadky || []; KH = v.hroshi || null; malKasu(); malZvirky(v.zvirky);
+      KR = v.ryadky || []; KH = v.hroshi || null; KS = v.syroty || {}; malKasu(); malZvirky(v.zvirky);
     } catch (x) { $('kp-list').innerHTML = `<p class="empty">${esc(ludsky(x))}</p>`; }
   }
   $('kp-list').addEventListener('click', async e => {

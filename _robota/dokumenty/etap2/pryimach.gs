@@ -57,7 +57,8 @@ var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото 
 var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
 // «свої гроші»: купив для гуртка за власні — з каси ще нічого не пішло, гурток винен цій людині
 var SVOI = 'свої гроші', IM = "Хто (ім'я)", POVERN = 'повернення', POVB = 'повернення боргу', ZAOKR = 'заокруглення';
-var NE_V_PIDSUMKU = [PEREM, POVERN, POVB];   // не дохід і не видаток: гроші лише переходять (видаток «свої гроші» вже порахований)
+var ZA_UCH = 'за учасника (поверне)';   // гурток купив/заплатив за когось, а той поверне (сорочка, табір наперед) — позичка, не видаток
+var NE_V_PIDSUMKU = [PEREM, POVERN, POVB, ZA_UCH];   // не дохід і не видаток: гроші лише переходять (видаток «свої гроші» вже порахований)
 var SPYSANO = 'списано';
 var SYSTEMNI = [PEREM, POVERN, ZAOKR, SPYSANO];   // ці категорії пише сам приймач, не форма
 // ЗАЛІК — борг і внесок без грошей: рядок категорії «внески» з «Як платили: свої гроші».
@@ -192,6 +193,11 @@ function perevirkaKasy(arkush, dani) {
     if (dani['Рух'] !== 'видаток') return '«Свої гроші» — лише для видатку (хтось купив для гуртка за власні).';
     if (!im) return 'Хто заплатив своїми — виберіть ім\'я: гурток буде винен саме йому.';
   }
+  if (dani['Категорія'] === ZA_UCH) {
+    if (dani['Рух'] !== 'видаток') return '«' + ZA_UCH + '» — це видаток (гурток заплатив за когось).';
+    if (!im) return 'Кому купили (хто поверне) — виберіть ім\'я.';
+    if (dani['Як платили'] === SVOI) return 'За учасника гурток платить зі своєї каси, не «свої гроші». Якщо платив хтось інший за свої — два рядки: його «свої гроші» і окремо борг учасника.';
+  }
   if (dani['Категорія'] === POVB) {
     if (dani['Рух'] !== 'надходження') return '«Повернення боргу» — це надходження (людина віддає гуртку).';
     if (!im) return 'Хто повертає борг — виберіть ім\'я.';
@@ -229,7 +235,9 @@ function vnesky() {
     dodaty(sp, im, v, x);
     if (cp >= 0 && String(r[cp]).trim().toLowerCase() === 'так') dodaty(pv, im, v, x);   // ✓ — лише перевірене виховником
   });
-  return {ok: true, vnesky: out, splacheno: sp, perevireno: pv};
+  var imenaVn = out.map(function (x) { return x.n; }), syroty = {};   // платежі за внесок, якого вже немає в «Внесках» (перейменували / видалили)
+  Object.keys(sp).forEach(function (im) { Object.keys(sp[im]).forEach(function (n) { if (imenaVn.indexOf(n) < 0 && sp[im][n]) { syroty[n] = syroty[n] || {}; syroty[n][im] = sp[im][n]; } }); });
+  return {ok: true, vnesky: out, splacheno: sp, perevireno: pv, syroty: syroty};
 }
 
 // ---------- де зараз гроші (за книгою): готівкою, на рахунку ----------
@@ -248,6 +256,7 @@ function borhy() {
     if (r[cy] === SVOI) d = ruh === 'видаток' ? x : ruh === 'надходження' ? -x : 0;
     else if (kat === POVERN && ruh === 'видаток') d = -x;
     else if (kat === POVB && ruh === 'надходження') d = x;
+    else if (kat === ZA_UCH && ruh === 'видаток') d = -x;          // людина винна гуртку
     if (!d) return;
     b[im] = Math.round(((b[im] || 0) + d) * 100) / 100;
     var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
@@ -273,7 +282,7 @@ function hroshi() {
   Object.keys(bo.b).forEach(function (im) { if (bo.b[im] > 0) vynen += bo.b[im]; else vynni -= bo.b[im]; });
   return {ok: true, gotivka: k(o.gotivka), rakhunok: k(o.rakhunok), nevkazano: k(o.nevkazano), razom: k(o.gotivka + o.rakhunok + o.nevkazano),
           chekaiut: ch, chekaiutSuma: k(chS), ne: ni, cheky: cheky, nastupnyiChek: 'Ч-' + (maxCh + 1),
-          borhy: bo.b, bezCheka: bo.bez, vynen: k(vynen), vynni: k(vynni), vilni: k(o.gotivka + o.rakhunok + o.nevkazano - vynen)};
+          minus: o.gotivka < -0.001 || o.rakhunok < -0.001, borhy: bo.b, bezCheka: bo.bez, vynen: k(vynen), vynni: k(vynni), vilni: k(o.gotivka + o.rakhunok + o.nevkazano - vynen)};
 }
 
 function zapys(arkush, dani, khto) {
@@ -574,7 +583,7 @@ function kasa() {
     var zz = zaholovky(zv);
     ryadky(zv).slice(-6).reverse().forEach(function (r) { var o = {}; zz.forEach(function (h, k) { if (h) o[h] = r[k] instanceof Date ? dd(r[k]) : r[k]; }); ost.push(o); });
   }
-  return {ok: true, ryadky: out, hroshi: hroshi(), zvirky: ost};
+  return {ok: true, ryadky: out, hroshi: hroshi(), zvirky: ost, syroty: vnesky().syroty};
 }
 
 function chysloGroshei(x) {
@@ -899,6 +908,7 @@ function borhyRoku() {
   imena().forEach(function (im) {
     var b = 0;
     v.vnesky.forEach(function (x) { var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma; b += treba - ((v.splacheno[im] || {})[x.n] || 0); });
+    Object.keys(v.syroty || {}).forEach(function (n) { b -= v.syroty[n][im] || 0; });   // платежі за зниклий внесок — теж сплачено
     b = Math.round(b * 100) / 100; if (b > 0) out.push(im + ' ' + String(b).replace('.', ','));
   });
   return out.join('; ');
@@ -910,6 +920,7 @@ function pereplatyRoku() {
   Object.keys(v.splacheno).forEach(function (im) {
     var b = 0;
     v.vnesky.forEach(function (x) { b += ((v.splacheno[im] || {})[x.n] || 0) - (x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma); });
+    Object.keys(v.syroty || {}).forEach(function (n) { b += v.syroty[n][im] || 0; });   // заплатили за внесок, якого вже немає, — не пропадає
     b = Math.round(b * 100) / 100; if (b > 0) out[im] = b;
   });
   return out;
