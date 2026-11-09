@@ -19,6 +19,8 @@ SPILNE = (TUT / 'spilne.css').read_text(encoding='utf-8')
 import json, re, html
 FORMA = (TUT / 'forma.html').read_text(encoding='utf-8')
 FORMY = {k: v for k, v in json.loads((TUT / 'formy.json').read_text(encoding='utf-8')).items() if k != '_'}
+FORMY.pop('proby', None)   # «Проби» — окрема сторінка proby.html (етап 3.6); запис у formy.json лишився як історія
+INDEKS = json.loads((TUT.parent / 'etap2' / 'indeks_prob.json').read_text(encoding='utf-8'))['proby']   # точки з офіційних бланків
 
 
 # підказки для полів (пошук під час введення; можна вписати й своє)
@@ -44,11 +46,12 @@ def dzherelo(nazva):   # окрема сторінка або документ �
     return FORMA.replace('{{TITLE}}', k['t']).replace('/*KONFIG*/{}/*/KONFIG*/', json.dumps(k, ensure_ascii=False).replace('</', '<\\/'))
 
 
-for nazva in ('index', 'vidviduvanist', 'vykhovnyk', 'knyha', 'kinets-roku', *FORMY):
+for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'knyha', 'kinets-roku', *FORMY):
     s = dzherelo(nazva)
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
     s = s.replace('<!--DATALISTS-->', DL)
+    s = s.replace('/*INDEKS*/null/*/INDEKS*/', json.dumps(INDEKS, ensure_ascii=False).replace('</', '<\\/'))
     s = s.replace('/*DEMO*/false/*/DEMO*/', 'false' if SAIT else 'true')   # проби — завжди пробний режим (без коду, нічого не надсилається); на сайті — вхід за кодом
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s

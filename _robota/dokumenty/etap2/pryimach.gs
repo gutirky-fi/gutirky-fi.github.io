@@ -31,6 +31,11 @@
  *   {kod, dija:"spysaty", imya, prychyna, pidstava, suma, prymitka} → (виховник) списати борг людини (рядок «списано»; причина обов'язкова, >10 € — підстава)
  *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"kopiia", ryadok, fail:"<base64>", typ:"image/jpeg"|"application/pdf"} → копія посвідки до рядка «Вмілостей» (здобуто): файл у папку «Проби та вмілості», посилання — у «Копія посвідки»
+ *   {kod, dija:"proby"}                             → огляд проб: {ryadky:[{im, pr, t, st, d, ryadok, zt, kp}], indeks:{проба:[{t, rz, k}]}} (лише імена; точки — з «Індексу проб»)
+ *   {kod, dija:"probyZapys", proba, imena:[...], tochky:["А1","Ґ3"], data, pidtv, prymitka, khto}
+ *                                                   → кожному з imena кожну точку окремим рядком «Проби»; що вже є — пропускає: {zapysano:[{im,t,ryadok,kvytok}], vzhe:[{im,t}]}
+ *   {kod, dija:"skasuvatyMnoho", kvytky:[...], khto} → скасувати щойно надіслане кількома квитками (напр. усе з probyZapys)
+ *   kopiia з arkush:"Проби" — копія бланка проби до рядка «посвідка» (здобуто)
  *   {kod, dija:"vmilosti"}                          → огляд «хто на що працює і що замовляти»: рядки «Вмілостей» (лише імена), що є й що в дорозі по кожній нашивці, пороги з «Налаштувань»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
@@ -55,14 +60,14 @@ var SLUZHBOVI = ['Хто записав', 'Записано', PER];
 // одна подія = один рядок: за цими стовпцями шукаємо наявний запис (дубля не буде)
 var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид'], 'Майно': ['Річ'],
               'План праці': ['Період', 'Коли (місяць/квартал)', 'Ціль / тема'], 'Завдання': ['Завдання'],
-              'Проби': ["Ім'я", 'Проба', 'Індекс точки'], 'Вмілості': ["Ім'я", 'Вмілість'], 'Відзначки': ["Ім'я", 'Відзнака'],
+              'Проби': ["Ім'я", 'Проба', 'Точка'], 'Вмілості': ["Ім'я", 'Вмілість'], 'Відзначки': ["Ім'я", 'Відзнака'],
               'Замовлення': ['№ замовлення', 'Відзнака'], 'Мандрівки': ['Дата', 'Назва']};
 var SPYSKY = ['Майно', 'Завдання', 'Замовлення'];   // «spysok»: перший стовпець — назви завдань, номери замовлень; Проби/Вмілості/Відзначки (перший стовпець — імена) сюди не входять
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
 var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok', 'spysaty'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
-var KOPIIA = 'Копія посвідки', KOPII_PAPKA = 'Проби та вмілості', KOPIIA_MAX = 5 * 1024 * 1024;
+var KOPIIA = 'Копія посвідки', KOPIIA_PR = 'Копія бланка', KOPII_PAPKA = 'Проби та вмілості', KOPIIA_MAX = 5 * 1024 * 1024;
 var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
 // «свої гроші»: купив для гуртка за власні — з каси ще нічого не пішло, гурток винен цій людині
 var SVOI = 'свої гроші', IM = "Хто (ім'я)", POVERN = 'повернення', POVB = 'повернення боргу', ZAOKR = 'заокруглення';
@@ -111,7 +116,10 @@ function doPost(e) {
     if (z.dija === 'zalik') return vidpovid(zalik(z.imya, z.vnesok, z.kudy, z.suma, z.khto, rol));
     if (z.dija === 'spysaty') return vidpovid(spysaty(z.imya, z.prychyna, z.pidstava, z.suma, z.prymitka));
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
-    if (z.dija === 'kopiia') return vidpovid(kopiia(z.ryadok, z.fail, z.typ, z.khto));
+    if (z.dija === 'kopiia') return vidpovid(kopiia(z.ryadok, z.fail, z.typ, z.khto, z.arkush));
+    if (z.dija === 'proby') return vidpovid(proby());
+    if (z.dija === 'probyZapys') return vidpovid(probyZapys(z));
+    if (z.dija === 'skasuvatyMnoho') return vidpovid(skasuvatyMnoho(z.kvytky, z.khto));
     if (z.dija === 'vmilosti') return vidpovid(vmilosti());
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
@@ -368,7 +376,7 @@ function vytiah(imya) {
 function zapys(arkush, dani, khto) {
   if (PYSATY.indexOf(arkush) < 0) return {ok: false, pomylka: 'У цей аркуш сайт не пише.'};
   if (!dani || typeof dani !== 'object') return {ok: false, pomylka: 'Порожній запис.'};
-  var pk = perevirkaKasy(arkush, dani) || perevirkaVmil(arkush, dani); if (pk) return {ok: false, pomylka: pk};
+  var pk = perevirkaKasy(arkush, dani) || perevirkaVmil(arkush, dani) || perevirkaProb(arkush, dani); if (pk) return {ok: false, pomylka: pk};
   if (Object.keys(dani).length > 40) return {ok: false, pomylka: 'Забагато полів.'};
   var lock = LockService.getScriptLock();
   lock.waitLock(15000);
@@ -395,7 +403,7 @@ function zapys(arkush, dani, khto) {
         if (m === undefined) continue;
         v = ['+', '−', 'в', ''].indexOf(m) >= 0 ? m : '';
       }
-      else if (h === FOTO || h === KOPIIA) continue;     // лише через «foto» / «kopiia»
+      else if (h === FOTO || h === KOPIIA || h === KOPIIA_PR) continue;     // лише через «foto» / «kopiia»
       else if (dani.hasOwnProperty(h)) v = perevesty(dani[h]);
       else continue;
       ryad[c] = v; zapysano++;
@@ -619,7 +627,7 @@ function vmist(sh, zag, arkush, r) {
     if (h === 'Записано') { out.koly = d[c]; continue; }
     if (arkush === VID && c >= SLOT0 - 1 && c < SLOT0 - 1 + SLOTY) { if (v[c] !== '' && v[c] !== null) out.prys[h] = String(v[c]); continue; }
     if (d[c] === '') continue;
-    if (h === KOPIIA || h === FOTO) { out.pola.push([h, 'є']); out.dani[h] = 'є'; continue; }   // посилання на Диск сайт не отримує — лише «є»
+    if (h === KOPIIA || h === KOPIIA_PR || h === FOTO) { out.pola.push([h, 'є']); out.dani[h] = 'є'; continue; }   // посилання на Диск сайт не отримує — лише «є»
     out.pola.push([h, v[c] instanceof Date ? dd(v[c]) : d[c]]);
     out.dani[h] = iso(v[c]);
   }
@@ -915,9 +923,10 @@ function papka(kliuch, nazva) {
   pr.setProperty(kliuch, nova.getId());
   return nova;
 }
-function kopiia(ryadok, b64, typ, khto) {
-  var sh = SpreadsheetApp.getActive().getSheetByName('Вмілості'), nc = sh.getLastColumn(), zag = zaholovky(sh), ck = zag.indexOf(KOPIIA);
-  if (ck < 0) return {ok: false, pomylka: 'У книзі немає стовпця «' + KOPIIA + '» — візьміть свіжу книгу.'};
+function kopiia(ryadok, b64, typ, khto, arkush) {
+  var PR = arkush === 'Проби', A = PR ? 'Проби' : 'Вмілості', KOL = PR ? KOPIIA_PR : KOPIIA;
+  var sh = SpreadsheetApp.getActive().getSheetByName(A), nc = sh.getLastColumn(), zag = zaholovky(sh), ck = zag.indexOf(KOL);
+  if (ck < 0) return {ok: false, pomylka: 'У книзі немає стовпця «' + KOL + '» — візьміть свіжу книгу.'};
   var r = Number(ryadok);
   if (!(r >= P && r <= sh.getMaxRows() && r % 1 === 0)) return {ok: false, pomylka: 'Невідомий рядок.'};
   var pdf = typ === 'application/pdf';
@@ -930,19 +939,109 @@ function kopiia(ryadok, b64, typ, khto) {
   try {
     var v = sh.getRange(r, 1, 1, nc).getValues()[0];
     if (v[0] === '' || v[0] === null) return {ok: false, pomylka: 'Цього запису вже немає. Оновіть сторінку.'};
-    if (v[zag.indexOf('Статус')] !== 'здобуто') return {ok: false, pomylka: 'Копію посвідки додають, коли вмілість здобуто.'};
+    if (v[zag.indexOf('Статус')] !== 'здобуто') return {ok: false, pomylka: PR ? 'Копію бланка додають, коли проба здобута (рядок «посвідка»).' : 'Копію посвідки додають, коли вмілість здобуто.'};
     // кілька файлів (посвідка, бланк вимог) — посилання одне під одним; замінити чи прибрати — лише виховник у книзі
     var bulo = String(v[ck] || '').split(/\s+/).filter(function (x) { return /^https?:/.test(x); });
     if (bulo.length && perevireno(sh, zag, r)) return {ok: false, pomylka: 'Рядок уже перевірив виховник — додати копію може лише виховник у книзі.'};
     if (bulo.length >= 4) return {ok: false, pomylka: 'Уже є 4 копії — досить. Зайве виховник прибере в книзі.'};
-    var dz = v[zag.indexOf('Дата здобуття')];
-    var nazva = String(v[0]).trim() + ' — ' + String(v[zag.indexOf('Вмілість')]).trim() + ' — ' + (dz instanceof Date ? iso(dz) : 'без дати') + (bulo.length ? ' (' + (bulo.length + 1) + ')' : '') + (pdf ? '.pdf' : '.jpg');
+    var dz = v[zag.indexOf(PR ? 'Дата виконання' : 'Дата здобуття')];
+    var nazva = String(v[0]).trim() + ' — ' + String(v[zag.indexOf(PR ? 'Проба' : 'Вмілість')]).trim() + ' — ' + (dz instanceof Date ? iso(dz) : 'без дати') + (bulo.length ? ' (' + (bulo.length + 1) + ')' : '') + (pdf ? '.pdf' : '.jpg');
     var fl = papka('KOPII_PAPKA', KOPII_PAPKA).createFile(Utilities.newBlob(bytes, pdf ? 'application/pdf' : 'image/jpeg', nazva));
     sh.getRange(r, ck + 1).setValue(bulo.concat([fl.getUrl()]).join('\n'));
-    zminy('копія посвідки', 'Вмілості', r, khto, nazva);
+    zminy(PR ? 'копія бланка' : 'копія посвідки', A, r, khto, nazva);
     return {ok: true, ryadok: r, kilkist: bulo.length + 1};
   } finally { lock.releaseLock(); }
 }
+// ---------- проби: точка як на бланку, кілька юнаків × кілька точок однією датою ----------
+var LAT = {A: 'А', B: 'В', C: 'С', E: 'Е', H: 'Н', I: 'І', K: 'К', M: 'М', O: 'О', P: 'Р', T: 'Т', X: 'Х'};
+function tochka(t) {   // «a3», «A 3» (латиниця), « ґ7 » → «А3», «Ґ7»; «посвідка» — як є
+  var s = String(t === null || t === undefined ? '' : t).trim();
+  if (/^посвідка$/i.test(s)) return 'посвідка';
+  return s.replace(/\s+/g, '').toUpperCase().replace(/[A-Z]/g, function (c) { return LAT[c] || c; });
+}
+function indeksProb() {   // {проба: [{t, rz, k}]} з аркуша «Індекс проб»
+  var sh = SpreadsheetApp.getActive().getSheetByName('Індекс проб'), out = {}; if (!sh) return out;
+  ryadky(sh).forEach(function (r) {
+    var pr = String(r[0]).trim(), t = tochka(r[1]); if (!pr || !t) return;
+    (out[pr] = out[pr] || []).push({t: t, rz: String(r[2] || '').trim(), k: String(r[3] || '').trim()});
+  });
+  return out;
+}
+function perevirkaProb(arkush, dani, ix) {
+  if (arkush !== 'Проби') return '';
+  dani['Точка'] = tochka(dani['Точка']);
+  var pr = String(dani['Проба'] || '').trim(), t = dani['Точка'], st = String(dani['Статус'] || '').trim() || 'виконано';
+  dani['Статус'] = st;
+  if (!pr || !t) return 'Вкажіть пробу й точку.';
+  var d = data(dani['Дата виконання']);
+  if (!d) return t === 'посвідка' ? 'Вкажіть дату посвідки (як на бланку).' : 'Вкажіть дату, коли точку підписано.';
+  if (d.getTime() > Date.now() + DOBA) return 'Дата ще не настала — перевірте.';
+  if (t === 'посвідка') return st === 'здобуто' ? '' : 'Рядок «посвідка» — це «здобуто».';
+  if (st !== 'виконано') return '«Здобуто» — лише для рядка «посвідка»; точка — «виконано».';
+  var sp = (ix || indeksProb())[pr];
+  if (sp && sp.length && !sp.some(function (x) { return x.t === t; })) return 'Точки «' + t + '» немає в бланку «' + pr + '» (аркуш «Індекс проб»).';
+  return '';
+}
+function proby() {
+  var sh = SpreadsheetApp.getActive().getSheetByName('Проби'), zag = zaholovky(sh), nc = zag.length;
+  var c = function (h) { return zag.indexOf(h); }, t = function (x) { return String(x === null || x === undefined ? '' : x).trim(); };
+  var v = sh.getRange(P, 1, sh.getMaxRows() - P + 1, nc).getValues(), rr = [];
+  v.forEach(function (r, k) {
+    if (r[0] === '' || r[0] === null) return;
+    var dt = r[c('Дата виконання')];
+    rr.push({im: t(r[0]), pr: t(r[c('Проба')]), t: tochka(r[c('Точка')]), st: t(r[c('Статус')]), d: dt instanceof Date ? iso(dt) : '',
+             ryadok: P + k, zt: t(r[c(PER)]).toLowerCase() === 'так', kp: c(KOPIIA_PR) >= 0 && !!t(r[c(KOPIIA_PR)])});
+  });
+  return {ok: true, ryadky: rr, indeks: indeksProb()};
+}
+function probyZapys(z) {
+  var pr = String(z.proba || '').trim(), lyudy = z.imena, tt = z.tochky, khto = z.khto;
+  if (!Array.isArray(lyudy) || !Array.isArray(tt) || !lyudy.length || !tt.length) return {ok: false, pomylka: 'Виберіть, хто виконав, і які точки.'};
+  if (lyudy.length * tt.length > 300) return {ok: false, pomylka: 'Забагато за раз — розділіть на кілька записів.'};
+  var vidomi = imena();
+  for (var a = 0; a < lyudy.length; a++) if (vidomi.indexOf(lyudy[a]) < 0) return {ok: false, pomylka: 'Імені «' + chyste(lyudy[a]) + '» немає серед учасників.'};
+  var ix = indeksProb(), spil = {'Проба': pr, 'Статус': 'виконано', 'Дата виконання': z.data, 'Хто підтвердив': chyste(z.pidtv || ''), 'Примітка': chyste(z.prymitka || '')};
+  tt = tt.map(tochka).filter(function (x, k, m) { return m.indexOf(x) === k; });
+  for (var b = 0; b < tt.length; b++) {
+    var e = perevirkaProb('Проби', {'Проба': pr, 'Точка': tt[b], 'Статус': 'виконано', 'Дата виконання': z.data}, ix);
+    if (e) return {ok: false, pomylka: e};
+    if (tt[b] === 'посвідка') return {ok: false, pomylka: 'Посвідку записують окремо — «Проба здобута».'};
+  }
+  var lock = LockService.getScriptLock(); lock.waitLock(20000);
+  try {
+    var sh = SpreadsheetApp.getActive().getSheetByName('Проби'), zag = zaholovky(sh), nc = zag.length;
+    var cP = zag.indexOf('Проба'), cT = zag.indexOf('Точка');
+    var v = sh.getRange(P, 1, sh.getMaxRows() - P + 1, nc).getValues(), ye = {}, vilni = [];
+    v.forEach(function (r, k) {
+      if (r[0] === '' || r[0] === null) { vilni.push(P + k); return; }
+      ye[[String(r[0]).trim().toLowerCase(), String(r[cP]).trim().toLowerCase(), tochka(r[cT]).toLowerCase()].join('|')] = true;
+    });
+    var zapysano = [], vzhe = [], d = data(z.data), teper = new Date();
+    lyudy.forEach(function (im) {
+      tt.forEach(function (t) {
+        var k = [im.trim().toLowerCase(), pr.toLowerCase(), t.toLowerCase()].join('|');
+        if (ye[k]) { vzhe.push({im: im, t: t}); return; }
+        var r = vilni.length ? vilni.shift() : vilnyiRyadok(sh);
+        zapysatyRyadok(sh, r, {"Ім'я": im, 'Проба': pr, 'Точка': t, 'Статус': 'виконано', 'Дата виконання': d,
+                               'Хто підтвердив': spil['Хто підтвердив'], 'Примітка': spil['Примітка'], 'Хто записав': chyste(khto || ''), 'Записано': teper});
+        ye[k] = true;
+        zapysano.push({im: im, t: t, ryadok: r, kvytok: datyKvytok('Проби', r, im)});
+      });
+    });
+    if (zapysano.length) {
+      var kto = {}; zapysano.forEach(function (x) { (kto[x.im] = kto[x.im] || []).push(x.t); });
+      zminy('запис', 'Проби', zapysano[0].ryadok, khto, pr + ', ' + dd(d) + ': ' + Object.keys(kto).map(function (im) { return im + ' ' + kto[im].join(' '); }).join('; '));
+    }
+    return {ok: true, zapysano: zapysano, vzhe: vzhe};
+  } finally { lock.releaseLock(); }
+}
+function skasuvatyMnoho(kvytky, khto) {
+  if (!Array.isArray(kvytky) || !kvytky.length) return {ok: false, pomylka: 'Немає що скасовувати.'};
+  var ok = 0, pomylky = [];
+  kvytky.slice(0, 300).forEach(function (kv) { var x = skasuvaty(kv, khto); if (x.ok) ok++; else pomylky.push(x.pomylka); });
+  return {ok: ok > 0, skasovano: ok, pomylky: pomylky, pomylka: ok ? '' : (pomylky[0] || 'Не вдалося скасувати.')};
+}
+
 // огляд для сайту: що записано (лише імена) і що є по нашивках; групує й рахує сторінка — так само, як книга
 function porohy() {
   var sh = SpreadsheetApp.getActive().getSheetByName('Налаштування'), out = {maizhe: 2, maizheDniv: 31, davno: 60, chasN: 5, chasDniv: 60};
