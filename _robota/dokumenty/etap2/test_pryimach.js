@@ -271,12 +271,49 @@ ok(zFin({ 'Рух': 'надходження', 'Категорія': 'повер�
 hb = post({ kod: J, dija: 'hroshi' });
 ok(!hb.borhy['Остап'] && hb.vynen === 0, 'Остап розрахувався — боргів немає');
 ok(!post({ kod: J, dija: 'povernuty', imya: 'Соломія', suma: '1000', yak: 'готівка' }).ok, 'більше готівки, ніж у коробці, — не віддати');
+
+// ---- залік: борг ↔ внесок, без грошей ----
+const VN0 = ctx.stanVnesku('Зоряна', 'Осінь 2026');
+ok(VN0 && VN0.brak > 4, 'Зоряні бракує за «Осінь 2026»: ' + (VN0 && VN0.brak));
+const qz = zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Зоряна', 'Сума, €': '4' }); ok(qz.ok, 'Зоряна купила за свої 4 €');
+ok(!post({ kod: J, dija: 'zalik', imya: 'Зоряна', vnesok: 'Осінь 2026', kudy: 'vnesok' }).ok, 'без фото чека — не зараховуємо');
+post({ kod: J, dija: 'foto', ryadok: qz.ryadok, foto: jpg, khto: 'Зоряна' });
+ok(!zFin({ 'Рух': 'надходження', 'Категорія': 'внески', 'Внесок': 'Осінь 2026', 'Як платили': 'свої гроші', "Хто (ім'я)": 'Зоряна' }).ok, 'залік з форми — не прийнято (лише кнопка)');
+const gz0 = post({ kod: J, dija: 'hroshi' });
+let zl = post({ kod: J, dija: 'zalik', imya: 'Зоряна', vnesok: 'Осінь 2026', kudy: 'vnesok', khto: 'Дана' });
+ok(zl.ok && zl.suma === 4 && zl.borh === 0 && zl.brak === VN0.brak - 4, 'залік: борг гуртка 4 € → у внесок Зоряни; бракує тепер ' + zl.brak);
+const gz1 = post({ kod: J, dija: 'hroshi' });
+ok(gz1.razom === gz0.razom && !gz1.borhy['Зоряна'], 'залік гроші в касі не змінив, борг Зоряни — 0');
+ok(!post({ kod: J, dija: 'zalik', imya: 'Зоряна', vnesok: 'Осінь 2026', kudy: 'vnesok' }).ok, 'повторний залік — нічого зараховувати');
+// переплата: Олесь заплатив за осінь більше, ніж треба
+const so = ctx.stanVnesku('Олесь', 'Осінь 2026');
+ok(post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: { 'Дата': '2026-11-09', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок', "Хто (ім'я)": 'Олесь', 'Внесок': 'Осінь 2026', 'Сума, €': String(so.brak + 3), 'Як платили': 'переказ' } }).ok, 'Олесь переплатив внесок на 3 €');
+ok(!post({ kod: J, dija: 'zalik', imya: 'Олесь', vnesok: 'Осінь 2026', kudy: 'borh', suma: '5' }).ok, 'зарахувати більше за переплату — не можна');
+zl = post({ kod: J, dija: 'zalik', imya: 'Олесь', vnesok: 'Осінь 2026', kudy: 'borh', khto: 'Дана' });
+ok(zl.ok && zl.suma === 3 && zl.borh === 3 && zl.brak === 0, 'переплата 3 € → гурток винен Олесю 3 €, внесок рівно сплачено');
+pv = post({ kod: J, dija: 'povernuty', imya: 'Олесь', suma: '3', yak: 'переказ', khto: 'Дана' });
+ok(pv.ok && pv.zalyshok === 0, 'переплату повернули (без чека можна — це не покупка)');
+// людина винна гуртку → платить внесок більше, зайве — у борг
+const qd = zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '5' }); post({ kod: J, dija: 'foto', ryadok: qd.ryadok, foto: jpg, khto: 'Дана' });
+ok(post({ kod: K, dija: 'povernuty', imya: 'Дана', suma: '7', yak: 'переказ', zaokr: false }).ok && post({ kod: J, dija: 'hroshi' }).borhy['Дана'] === -2, 'Дані віддали 7 замість 5: Дана винна гуртку 2 €');
+const sd = ctx.stanVnesku('Дана', 'Осінь 2026');
+ok(post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: { 'Дата': '2026-11-09', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок + борг', "Хто (ім'я)": 'Дана', 'Внесок': 'Осінь 2026', 'Сума, €': String(sd.brak + 2), 'Як платили': 'готівка' } }).ok, 'Дана платить внесок на 2 € більше');
+zl = post({ kod: J, dija: 'zalik', imya: 'Дана', vnesok: 'Осінь 2026', kudy: 'borh', khto: 'Дана' });
+ok(zl.ok && zl.suma === 2 && zl.borh === 0 && zl.brak === 0, 'зайві 2 € пішли в борг Дани → розраховано, внесок сплачено');
+ok(!post({ kod: J, dija: 'spysaty', imya: 'Дана' }).ok, 'списати борг може лише виховник');
+ok(zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '0,30' }).ok && post({ kod: K, dija: 'spysaty', imya: 'Дана', prymitka: 'дрібниця' }).ok && !post({ kod: J, dija: 'hroshi' }).borhy['Дана'], 'виховник списав 0,30 € — боргу немає');
+const rr0 = ctx.pidsumokRoku(ctx.SpreadsheetApp.getActive(), 'x').rik, FNn = FN().map(x => x.r);
+const nadhOcik = FNn.filter(r => !['переміщення', 'повернення', 'повернення боргу'].includes(r[2])).reduce((a, r) => a + (r[1] === 'надходження' ? r[5] : r[2] === 'внески' ? -r[5] : 0), 0);
+ok(Math.abs(rr0[8] - nadhOcik) < 0.01, 'підсумок року: внески назад (залік) — мінус надходжень, не видаток: ' + rr0[8]);
 ok(zFin({ 'Як платили': 'свої гроші', "Хто (ім'я)": 'Дана', 'Сума, €': '5' }).ok, 'Дана купила за свої 5 € (лишаємо на новий рік)');
+const ss0 = ctx.stanVnesku('Соломія', 'Осінь 2026');
+ok(post({ kod: J, dija: 'zapys', arkush: 'Фінанси', khto: 'Дана', dani: { 'Дата': '2026-11-09', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок', "Хто (ім'я)": 'Соломія', 'Внесок': 'Осінь 2026', 'Сума, €': String(ss0.brak + 4), 'Як платили': 'переказ' } }).ok, 'Соломія переплатила 4 € (не зараховано — до Нового року)');
+const vnRik = post({ kod: K, dija: 'vnesky' });
 const hrRik = post({ kod: K, dija: 'hroshi' });
 const borgy = ctx.borhyRoku();
 // ---- Новий рік ----
 const fin0 = sheets['Фінанси']._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
-const vydR = fin0.filter(r => r[1] === 'видаток' && !['переміщення', 'повернення', 'повернення боргу'].includes(r[2])).reduce((a, r) => a + r[5], 0), bulyPov = fin0.some(r => r[2] === 'повернення');
+const vydR = fin0.filter(r => r[1] === 'видаток' && !['переміщення', 'повернення', 'повернення боргу', 'внески'].includes(r[2])).reduce((a, r) => a + r[5], 0), bulyPov = fin0.some(r => r[2] === 'повернення');
 const zal = fin0.filter(r => r[7] !== 'свої гроші').reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
 const proby0 = sheets['Проби']._f.slice(3).filter(r => r[0]).length, vm0 = sheets['Вмілості']._f.slice(3).filter(r => r[0]).length;
 const zam0 = sheets['Замовлення']._f.slice(3).filter(r => r[0]).length;
@@ -288,7 +325,8 @@ ok(ryad('Проби').length === proby0 && ryad('Вмілості').length === v
 const zv = ryad('Завдання'); ok(zv.length === 3 && zv.every(r => r[4] !== 'зроблено'), 'завдання: лишились 3 незроблені, стягнуті догори');
 const vr1 = ryad('Внески'); ok(vr1.length === 1 && String(vr1[0][0]).startsWith('Борг з') && vr1[0][3] === borgy && /Мирося 5/.test(borgy) && /Остап 10/.test(borgy) && !/Олесь/.test(borgy.replace(/Олесь 10/, '')), 'Новий рік: внески очищено, борги перенесено: ' + borgy);
 const f1a = ryad('Фінанси'), zn = r => (r[1] === 'видаток' ? -1 : 1) * r[5], f1 = f1a.filter(r => r[7] !== 'свої гроші');
-const bRik = f1a.find(r => r[7] === 'свої гроші');
+const bRik = f1a.find(r => r[7] === 'свої гроші' && r[4] === 'Дана'), bSol = f1a.find(r => r[7] === 'свої гроші' && r[4] === 'Соломія');
+ok(bSol && bSol[5] === 4 && bSol[1] === 'видаток', 'Новий рік: переплату внеску Соломії 4 € перенесено як борг гуртка');
 ok(bRik && bRik[4] === 'Дана' && bRik[5] === 5 && bRik[1] === 'видаток' && bRik[2] === 'переміщення' && post({ kod: K, dija: 'hroshi' }).borhy['Дана'] === 5, 'Новий рік: борг «свої гроші» Дані 5 € перенесено');
 const rkR = ryad('Роки').slice(-1)[0];
 ok(rkR && Math.abs(rkR[9] - vydR) < 0.01 && bulyPov, 'Роки: видатки без повернень і переміщень = ' + rkR[9] + ' (очікували ' + vydR + ')');

@@ -24,6 +24,8 @@
  *   {kod, dija:"zvirka", shcho:"готівка"|"рахунок", ye:"20,50", prymitka} → (виховник) рядок у «Звірки»; «мало бути» рахує приймач сам
  *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
  *   {kod, dija:"povernuty", imya, suma, yak, zaokr, khto} → гурток повернув «свої гроші» (видаток «повернення»); zaokr — різницю лишити як «заокруглення»
+ *   {kod, dija:"zalik", imya, vnesok, kudy:"vnesok"|"borh", suma?, khto} → залік без грошей: борг гуртка → у внесок, або переплата внеску → у борг
+ *   {kod, dija:"spysaty", imya, prymitka}          → (виховник) списати борг людини (рядок «списано»)
  *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
@@ -49,14 +51,19 @@ var SLUZHBOVI = ['Хто записав', 'Записано', PER];
 var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['Дата'], 'Протоколи': ['Дата', 'Вид'], 'Майно': ['Річ']};
 var SPYSKY = ['Майно'];
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
-var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok'];   // лише з кодом виховника
+var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok', 'spysaty'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
 var NA_RAKHUNKU = ['MobilePay', 'переказ', 'картка'];   // «Як платили» → гроші на рахунку; «готівка» → у коробці
 // «свої гроші»: купив для гуртка за власні — з каси ще нічого не пішло, гурток винен цій людині
 var SVOI = 'свої гроші', IM = "Хто (ім'я)", POVERN = 'повернення', POVB = 'повернення боргу', ZAOKR = 'заокруглення';
 var NE_V_PIDSUMKU = [PEREM, POVERN, POVB];   // не дохід і не видаток: гроші лише переходять (видаток «свої гроші» вже порахований)
-var SYSTEMNI = [PEREM, POVERN, ZAOKR];      // ці категорії пише сам приймач, не форма
+var SPYSANO = 'списано';
+var SYSTEMNI = [PEREM, POVERN, ZAOKR, SPYSANO];   // ці категорії пише сам приймач, не форма
+// ЗАЛІК — борг і внесок без грошей: рядок категорії «внески» з «Як платили: свої гроші».
+//   надходження — борг гуртка людині йде в її внесок (людина доплачує менше);
+//   видаток — переплата внеску йде в борг (гурток винен людині, або людина менше винна гуртку).
+// У залишку каси не рахується (гроші не рухались); у підсумках року — як надходження внесків (видаток — мінусом).
 
 // ---------- вебзастосунок ----------
 function doGet() {
@@ -89,6 +96,8 @@ function doPost(e) {
     if (z.dija === 'zvirka') return vidpovid(zvirka(z.shcho, z.ye, z.prymitka));
     if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
     if (z.dija === 'povernuty') return vidpovid(povernuty(z.imya, z.suma, z.yak, z.zaokr, z.khto, rol));
+    if (z.dija === 'zalik') return vidpovid(zalik(z.imya, z.vnesok, z.kudy, z.suma, z.khto, rol));
+    if (z.dija === 'spysaty') return vidpovid(spysaty(z.imya, z.prymitka));
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
@@ -178,6 +187,7 @@ function perevirkaKasy(arkush, dani) {
   if (dani['Категорія'] === PEREM) return 'Переміщення (готівку здали на рахунок) записує виховник: «Вхід виховника → Перевірка каси».';
   if (SYSTEMNI.indexOf(dani['Категорія']) >= 0) return 'Повернення «своїх грошей» записує кнопка «Повернули» («Де зараз гроші»). Помилку в такому рядку — скасуйте його й поверніть ще раз.';
   var im = String(dani[IM] || '').trim();
+  if (dani['Як платили'] === SVOI && dani['Категорія'] === 'внески') return 'Залік боргу й внеску робить кнопка «Зарахувати» (у «Де зараз гроші» або під рядком внеску). Помилку — скасуйте рядок і зробіть залік ще раз.';
   if (dani['Як платили'] === SVOI) {
     if (dani['Рух'] !== 'видаток') return '«Свої гроші» — лише для видатку (хтось купив для гуртка за власні).';
     if (!im) return 'Хто заплатив своїми — виберіть ім\'я: гурток буде винен саме йому.';
@@ -241,7 +251,7 @@ function borhy() {
     if (!d) return;
     b[im] = Math.round(((b[im] || 0) + d) * 100) / 100;
     var p = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
-    if (r[cy] === SVOI && ruh === 'видаток' && kat !== PEREM && kat !== ZAOKR && (p === 'ні' || (p !== 'так' && !(cf >= 0 && String(r[cf]).trim()))))
+    if (r[cy] === SVOI && ruh === 'видаток' && kat !== PEREM && kat !== ZAOKR && kat !== 'внески' && kat !== SPYSANO && (p === 'ні' || (p !== 'так' && !(cf >= 0 && String(r[cf]).trim()))))
       (bez[im] = bez[im] || []).push({data: iso(r[0]), opys: String(r[co] || ''), suma: x, ne: p === 'ні'});
   });
   Object.keys(b).forEach(function (im) { if (!b[im]) delete b[im]; });
@@ -641,6 +651,63 @@ function povernuty(imya, suma, yak, zaokr, khto, rol) {
   } finally { lock.releaseLock(); }
 }
 
+// ---------- залік: борг ↔ внесок (без грошей) ----------
+function stanVnesku(im, n) {
+  var v = vnesky(), x = null;
+  v.vnesky.forEach(function (y) { if (y.n === n) x = y; });
+  if (!x) return null;
+  var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma, bulo = (v.splacheno[im] || {})[n] || 0;
+  return {treba: treba, bulo: bulo, brak: Math.round((treba - bulo) * 100) / 100};
+}
+function zalik(imya, vnesok, kudy, suma, khto, rol) {
+  var im = chyste(imya || '').trim(), n = String(vnesok || '').trim();
+  if (!im || !n) return {ok: false, pomylka: 'Потрібні ім\'я і внесок.'};
+  if (['vnesok', 'borh'].indexOf(kudy) < 0) return {ok: false, pomylka: 'Незрозуміло, куди зараховувати.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var st = stanVnesku(im, n); if (!st) return {ok: false, pomylka: 'Внеску «' + n + '» немає в аркуші «Внески».'};
+    var b = borhy().b[im] || 0, maks, okr = function (x) { return Math.round(x * 100) / 100; };
+    if (kudy === 'vnesok') {
+      if (!(b > 0)) return {ok: false, pomylka: 'Гурток нічого не винен: ' + im + ' — зараховувати нічого.'};
+      if ((borhy().bez[im] || []).length) return {ok: false, pomylka: 'Без чека не зараховуємо (як і не повертаємо): спершу фото чека — ' + im + '.'};
+      if (!(st.brak > 0)) return {ok: false, pomylka: '«' + n + '»: ' + im + ' уже сплатив(-ла) повністю.'};
+      maks = Math.min(b, st.brak);
+    } else {
+      maks = okr(-st.brak);
+      if (!(maks > 0)) return {ok: false, pomylka: '«' + n + '»: переплати немає.'};
+    }
+    var s = suma === undefined || suma === null || suma === '' ? maks : chysloGroshei(suma);
+    if (s === null || s <= 0) return {ok: false, pomylka: 'Сума — додатне число, до центів.'};
+    if (s > maks + 0.001) return {ok: false, pomylka: 'Можна зарахувати щонайбільше ' + String(okr(maks)).replace('.', ',') + ' €.'};
+    s = okr(s);
+    var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), r = vilnyiRyadok(sh), kh = chyste(khto || '') || (rol === 'v' ? 'виховник' : '');
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var o = {'Дата': d, 'Рух': kudy === 'vnesok' ? 'надходження' : 'видаток', 'Категорія': 'внески', 'Внесок': n, 'Як платили': SVOI, 'Сума, €': s, 'Хто записав': kh, 'Записано': new Date(),
+             'Опис': kudy === 'vnesok' ? 'залік: борг гуртка → у внесок' : 'залік: переплата внеску → ' + (b < 0 ? 'у борг перед гуртком' : 'гурток винен')};
+    o[IM] = im;
+    zapysatyRyadok(sh, r, o);
+    zminy('залік', 'Фінанси', r, kh, dd(d) + ' · ' + im + ' · «' + n + '» ' + (kudy === 'vnesok' ? '+' : '−') + s + ' € (без грошей)');
+    var st2 = stanVnesku(im, n);
+    return {ok: true, ryadok: r, suma: s, borh: borhy().b[im] || 0, brak: st2.brak};
+  } finally { lock.releaseLock(); }
+}
+// виховник списує борг (людина вибула, дрібниця, подарунок гуртку): рядок «списано», «свої гроші», борг → 0
+function spysaty(imya, prymitka) {
+  var im = chyste(imya || '').trim(); if (!im) return {ok: false, pomylka: 'Чий борг — ім\'я.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var b = borhy().b[im] || 0; if (!b) return {ok: false, pomylka: 'У ' + im + ' боргів немає.'};
+    var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), r = vilnyiRyadok(sh);
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var o = {'Дата': d, 'Рух': b > 0 ? 'надходження' : 'видаток', 'Категорія': SPYSANO, 'Як платили': SVOI, 'Сума, €': Math.abs(b), 'Хто записав': 'виховник', 'Записано': new Date(),
+             'Опис': b > 0 ? 'списано: ' + im + ' не бере грошей назад' : 'списано: борг ' + im + ' перед гуртком', 'Примітка': chyste(prymitka || '')};
+    o[IM] = im; o[PER] = 'так';
+    zapysatyRyadok(sh, r, o);
+    zminy('списано', 'Фінанси', r, 'виховник', dd(d) + ' · ' + im + ' · ' + Math.abs(b) + ' €' + (prymitka ? ' · ' + chyste(prymitka) : ''));
+    return {ok: true, ryadok: r, bulo: b, hroshi: hroshi()};
+  } finally { lock.releaseLock(); }
+}
+
 // ---------- фото чека ----------
 // Будь-хто з кодом може додати фото до рядка каси; замінити — лише поки рядок не перевірено.
 // Файл лягає в папку «Чеки гуртка» на Диску виховника (доступ — лише йому); у книгу — посилання.
@@ -792,6 +859,7 @@ function novyiRik() {
     ist.getRange(ri, 1, 1, 12).setValues([u.concat([new Date()])]);
   });
   var borgy = borhyRoku();                              // хто недоплатив — до очищення каси
+  var pere = pereplatyRoku();                           // хто переплатив — гурток винен (не пропадає)
   OCHYSTYTY.forEach(function (n) { zalyshyty(ss.getSheetByName(n), function () { return false; }); });
   var vs = ss.getSheetByName(VNESKY);
   if (vs) {
@@ -803,6 +871,7 @@ function novyiRik() {
   zalyshyty(zav, function (row) { return row[zst] !== 'зроблено'; });
   var fin = ss.getSheetByName('Фінанси');
   var gr = hroshi();                                    // де гроші й хто кому винен — до очищення каси
+  Object.keys(pere).forEach(function (im) { gr.borhy[im] = Math.round(((gr.borhy[im] || 0) + pere[im]) * 100) / 100; if (!gr.borhy[im]) delete gr.borhy[im]; });
   zalyshyty(fin, function () { return false; });
   Object.keys(gr.borhy).sort().reverse().forEach(function (im) {   // борги — по людях (нижче за залишки)
     var b = gr.borhy[im], z = {};
@@ -833,6 +902,17 @@ function borhyRoku() {
     b = Math.round(b * 100) / 100; if (b > 0) out.push(im + ' ' + String(b).replace('.', ','));
   });
   return out.join('; ');
+}
+
+// хто переплатив внески за рік (усі внески разом): {ім'я: €}
+function pereplatyRoku() {
+  var v = vnesky(), out = {};
+  Object.keys(v.splacheno).forEach(function (im) {
+    var b = 0;
+    v.vnesky.forEach(function (x) { b += ((v.splacheno[im] || {})[x.n] || 0) - (x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma); });
+    b = Math.round(b * 100) / 100; if (b > 0) out[im] = b;
+  });
+  return out;
 }
 
 // клітинка «Навчальний рік» у «Налаштуваннях» — шукаємо за назвою (стовпець залежить від кількості списків)
@@ -871,7 +951,8 @@ function pidsumokRoku(ss, rik) {
   fn.v.forEach(function (r) {
     var s = Number(r[i(fn, 'Сума, €')]) || 0;
     if (NE_V_PIDSUMKU.indexOf(r[i(fn, 'Категорія')]) >= 0) return;   // гроші лише перейшли (на рахунок, повернули борг) — не дохід і не видаток
-    if (r[i(fn, 'Рух')] === 'надходження') nadh += s; else if (r[i(fn, 'Рух')] === 'видаток') vyd += s;
+    if (r[i(fn, 'Рух')] === 'надходження') nadh += s;
+    else if (r[i(fn, 'Рух')] === 'видаток') { if (r[i(fn, 'Категорія')] === 'внески') nadh -= s; else vyd += s; }   // внесок назад (залік, повернення) — менше внесків, не видаток
   });
   var kr = function (x) { return Math.round(x * 100) / 100; };
   var cI = i(uch, "Ім'я"), cP = i(uch, 'Прізвище'), cPo = i(uch, 'Посада'), cS = i(uch, 'Статус'), cPr = i(uch, 'Проба зараз');
