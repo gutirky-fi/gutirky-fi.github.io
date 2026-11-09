@@ -186,24 +186,38 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 /* ===== Папір на телефоні й перегляд на весь екран (papir.js, 09.11.2026) ===== */
 .pv{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;background:#0f1114;color:var(--ink);height:100vh;height:100dvh}
 html.pv-lock,html.pv-lock body{overflow:hidden}
-.pv-top{display:flex;align-items:center;gap:8px;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));background:var(--card);border-bottom:1px solid var(--ln)}
-.pv-t{flex:1;min-width:0;font:600 16px/1.15 var(--disp);letter-spacing:.05em;text-transform:uppercase;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;overflow-wrap:anywhere}
-.pv-ib{display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:12px;border:1px solid var(--ln);background:var(--card2);color:var(--ink)}
-.pv-ib svg{width:20px;height:20px}
-.pv-x{margin-left:4px}
-.pv-sc{position:relative;flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;background:#14171a}
+.pv-main{position:relative;flex:1;min-height:0}
+.pv-sc{position:absolute;inset:0;overflow:auto;overscroll-behavior:contain;touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;background:radial-gradient(120% 70% at 50% 0,#1d2127 0,#13161a 60%)}
 .pv-in{position:relative}
 .pv-st{position:absolute;transform-origin:0 0}
 .pv-pg{margin:0 auto}
 .pv-pg+.pv-pg{margin-top:18px}
 .pv-pg>*{pointer-events:none;-webkit-user-select:none;user-select:none}
 .pv-paper{box-sizing:border-box;padding:46px 52px 34px;background:#fff;box-shadow:0 18px 40px rgba(0,0,0,.45)}
-.pv-bot{padding:10px 12px;padding-bottom:max(10px,env(safe-area-inset-bottom));background:var(--card);border-top:1px solid var(--ln)}
-.pv-msg{margin:0 0 8px;min-height:1.3em;font-size:14px;line-height:1.3;color:var(--mut);text-align:center}
+/* без верхньої шапки: лише кругла кнопка «закрити» та, коли аркушів кілька, лічильник */
+.pv-x,.pv-cnt{position:absolute;top:max(10px,env(safe-area-inset-top));z-index:2;background:rgba(18,21,25,.72);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.16);box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.pv-x{right:12px;display:grid;place-items:center;width:42px;height:42px;padding:0;border-radius:50%;color:var(--ink)}
+.pv-x svg{width:18px;height:18px}
+.pv-cnt{left:12px;display:flex;align-items:center;height:42px;padding:0 15px;border-radius:99px;font-size:14px;font-weight:600;color:var(--body);pointer-events:none}
+.pv-zm{position:absolute;right:16px;bottom:16px;z-index:2;display:none;flex-direction:column;gap:6px}
+.pv-zm button{display:grid;place-items:center;width:40px;height:40px;padding:0;border-radius:50%;color:var(--ink);background:rgba(18,21,25,.78);border:1px solid rgba(255,255,255,.16)}
+.pv-zm svg{width:18px;height:18px}
+@media (hover:hover) and (pointer:fine){.pv-zm{display:flex}}
+/* знизу — три зрозумілі дії */
+.pv-dock{padding:12px 14px;padding-bottom:max(12px,env(safe-area-inset-bottom));background:#181b20;border-top:1px solid rgba(255,255,255,.08)}
+.pv-msg{margin:0 auto 10px;max-width:520px;font-size:14px;line-height:1.35;color:var(--body);text-align:center}
+.pv-msg:empty{display:none}
 .pv-msg.bad{color:#ffb3c3}
-.pv-bt{display:flex;gap:8px;max-width:560px;margin:0 auto}
-.pv-bt .btn{flex:1 1 0;min-width:0;flex-direction:column;gap:4px;padding:9px 6px;font-size:13.5px;line-height:1.15;text-align:center}
-.pv-bt .btn[hidden]{display:none}
+.pv-bt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:520px;margin:0 auto}
+.pv-act{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 6px 11px;border-radius:18px;border:1px solid var(--ln);background:var(--card);color:var(--ink);text-align:center;font:inherit;cursor:pointer}
+.pv-act i{display:grid;place-items:center;width:42px;height:42px;margin-bottom:4px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--a)}
+.pv-act i svg{width:21px;height:21px}
+.pv-act b{font:700 15px/1.15 var(--txt)}
+.pv-act small{min-height:2.4em;font-size:12px;line-height:1.2;color:var(--mut)}
+.pv-act.main{border-color:var(--d);background:var(--card);background:color-mix(in srgb,var(--d) 16%,var(--card))}
+.pv-act.main i{background:var(--d);color:#fff}
+.pv-act:active{transform:scale(.97)}
+.pv-act[disabled]{opacity:.5;cursor:default}
 .pv-host{position:fixed;left:0;top:0;z-index:-1;pointer-events:none;background:#fff}
 .pv-host>*{box-shadow:none!important;border-radius:0!important;margin:0!important}
 @media print{.pv,.pv-host{display:none!important}.ppr,.sheet{zoom:1!important}}
@@ -313,7 +327,7 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
    Papir.fit(корінь)  — на вузькому екрані аркуші (.ppr, .sheet) самі зменшуються на всю ширину, як сторінка в PDF-переглядачі.
    Papir.view({title, pages, file, print}) — вікно «Переглянути» на весь екран: аркуш цілком на ширину екрана,
        пальцями наблизити / віддалити, кілька аркушів — гортати вниз. Лише потім унизу кнопки:
-       «Завантажити PDF», «Поділитися» (той самий PDF через меню телефона), «Друк».
+       «Зберегти PDF», «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…), «Друк».
        Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
    Дані нікуди не йдуть: PDF робиться в самому браузері. */
 (function () {
@@ -324,6 +338,7 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
     h2c: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
   };
   var PAD = 10;      // поле навколо аркушів у вікні перегляду, px
+  var TOP = 56;      // зверху лишаємо місце під кнопку «закрити», px
   var GAP = 18;      // відстань між аркушами, px
   var libP = null;
 
@@ -548,16 +563,17 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
     ovr.setAttribute('aria-label', 'Перегляд: ' + (o.title || 'аркуш'));
     ovr.setAttribute('data-html2canvas-ignore', 'true');
     ovr.innerHTML =
-      '<div class="pv-top"><b class="pv-t">' + esc(o.title || 'Перегляд') + '</b>' +
-      '<button type="button" class="pv-ib" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
-      '<button type="button" class="pv-ib" data-a="fit" aria-label="На всю ширину">' + IC.fit + '</button>' +
-      '<button type="button" class="pv-ib" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
-      '<button type="button" class="pv-ib pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button></div>' +
-      '<div class="pv-sc" tabindex="0"><div class="pv-in"><div class="pv-st"></div></div></div>' +
-      '<div class="pv-bot"><p class="pv-msg" role="status" aria-live="polite"></p><div class="pv-bt">' +
-      '<button type="button" class="btn main" data-a="pdf">' + IC.dl + '<span>Завантажити PDF</span></button>' +
-      '<button type="button" class="btn" data-a="share" hidden>' + IC.sh + '<span>Поділитися</span></button>' +
-      '<button type="button" class="btn" data-a="print">' + IC.pr + '<span>Друк</span></button></div></div>';
+      '<div class="pv-main"><div class="pv-sc" tabindex="0"><div class="pv-in"><div class="pv-st"></div></div></div>' +
+      '<button type="button" class="pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button>' +
+      '<span class="pv-cnt" hidden></span>' +
+      '<div class="pv-zm">' +
+      '<button type="button" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
+      '<button type="button" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
+      '<button type="button" data-a="fit" aria-label="На всю ширину">' + IC.fit + '</button></div></div>' +
+      '<div class="pv-dock"><p class="pv-msg" role="status" aria-live="polite"></p><div class="pv-bt">' +
+      '<button type="button" class="pv-act" data-a="pdf"><i>' + IC.dl + '</i><b>Зберегти PDF</b><small>файл у телефон</small></button>' +
+      '<button type="button" class="pv-act main" data-a="share"><i>' + IC.sh + '</i><b>Надіслати</b><small>WhatsApp, Telegram, пошта</small></button>' +
+      '<button type="button" class="pv-act" data-a="print"><i>' + IC.pr + '</i><b>Друк</b><small>на папір</small></button></div></div>';
     var sc = ovr.querySelector('.pv-sc'), inn = ovr.querySelector('.pv-in'), st = ovr.querySelector('.pv-st'), msgEl = ovr.querySelector('.pv-msg');
     var W = 0, H = 0, S = {s: 1, s0: 1, min: .3, max: 5};
 
@@ -577,20 +593,20 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
       var cw = sc.clientWidth, left = Math.max(PAD, (cw - W * s) / 2);
       st.style.transform = 'scale(' + s + ')';
       st.style.left = left + 'px';
-      st.style.top = PAD + 'px';
+      st.style.top = TOP + 'px';
       inn.style.width = Math.max(cw, W * s + 2 * PAD) + 'px';
-      inn.style.height = (H * s + 2 * PAD) + 'px';
+      inn.style.height = (H * s + TOP + PAD) + 'px';
       return left;
     }
     function zoomAt(ns, cx, cy, ux, uy) {   // cx, cy — точка на екрані; ux, uy — точка аркуша, що лишається під пальцями
       ns = Math.max(S.min, Math.min(S.max, ns));
       if (ux == null) {
         var l = parseFloat(st.style.left) || PAD;
-        ux = (sc.scrollLeft + cx - l) / S.s; uy = (sc.scrollTop + cy - PAD) / S.s;
+        ux = (sc.scrollLeft + cx - l) / S.s; uy = (sc.scrollTop + cy - TOP) / S.s;
       }
       var left = layout(ns);
       sc.scrollLeft = ux * ns + left - cx;
-      sc.scrollTop = uy * ns + PAD - cy;
+      sc.scrollTop = uy * ns + TOP - cy;
     }
     function ranges() {
       var av = sc.clientWidth - 2 * PAD;
@@ -604,7 +620,18 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
       ranges();
       layout(S.s0);
       sc.scrollTop = 0; sc.scrollLeft = 0;
+      if (pgs.length > 1) lichylnyk();
     }
+
+    // ----- «Аркуш 2 з 3» (лише коли аркушів кілька)
+    var cnt = ovr.querySelector('.pv-cnt'), pgs = st.querySelectorAll('.pv-pg');
+    function lichylnyk() {
+      if (pgs.length < 2) return;
+      var y = (sc.scrollTop + sc.clientHeight * .35 - TOP) / S.s, k = 0;
+      for (var i = 0; i < pgs.length; i++) { if (pgs[i].offsetTop <= y) k = i; }
+      cnt.textContent = 'Аркуш ' + (k + 1) + ' з ' + pgs.length;
+    }
+    if (pgs.length > 1) { cnt.hidden = false; sc.addEventListener('scroll', lichylnyk, {passive: true}); }
 
     // ----- відкрити
     var inertList = [];
@@ -659,7 +686,7 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
     sc.addEventListener('touchstart', function (e) {
       if (e.touches.length === 2) {
         var m = mid(e.touches), l = parseFloat(st.style.left) || PAD;
-        pin = {d: dist(e.touches), s: S.s, ux: (sc.scrollLeft + m[0] - l) / S.s, uy: (sc.scrollTop + m[1] - PAD) / S.s};
+        pin = {d: dist(e.touches), s: S.s, ux: (sc.scrollLeft + m[0] - l) / S.s, uy: (sc.scrollTop + m[1] - TOP) / S.s};
         tapDown = null; lastTap = null;
         e.preventDefault();
       } else if (e.touches.length === 1) {
@@ -699,7 +726,7 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
     // ----- PDF
     var blob = null, busyP = null, name = slug(o.file || o.title) + '-' + dataStr() + '.pdf';
     function msg(t, bad) { msgEl.textContent = t || ''; msgEl.classList.toggle('bad', !!bad); }
-    function knopky(off) { ovr.querySelectorAll('.pv-bt .btn').forEach(function (b) { b.disabled = !!off; }); }
+    function knopky(off) { ovr.querySelectorAll('.pv-act').forEach(function (b) { b.disabled = !!off; }); }
     function zrobyty() {
       if (blob) return Promise.resolve(blob);
       if (busyP) return busyP;
@@ -719,28 +746,33 @@ html.pv-lock,html.pv-lock body{overflow:hidden}
       });
       return busyP;
     }
-    function zavantazhyty() {
-      zrobyty().then(function (b) {
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(b); a.download = name;
-        document.body.appendChild(a); a.click();
-        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
-        msg('PDF збережено (' + name + ').');
-      }).catch(function () {});
+    function zberehty(b) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     }
+    function zavantazhyty() {
+      zrobyty().then(function (b) { zberehty(b); msg('PDF збережено (' + name + ').'); }).catch(function () {});
+    }
+    var mozhe = mozhnaDilytysia();
+    if (!mozhe) ovr.querySelector('[data-a="share"] small').textContent = 'збереже PDF-файл';
     function dilytysia() {
       var wasReady = !!blob;
       zrobyty().then(function (b) {
         var f = new File([b], name, {type: 'application/pdf'});
-        if (!(navigator.canShare && navigator.canShare({files: [f]}))) { msg('На цьому пристрої не виходить поділитися файлом — натисніть «Завантажити PDF».', true); return; }
+        if (!(navigator.canShare && navigator.canShare({files: [f]}))) {   // комп'ютер чи старий браузер: даємо файл, надсилати — вручну
+          zberehty(b);
+          msg('Тут немає меню «Надіслати». PDF збережено (' + name + ') — додайте його в WhatsApp чи Telegram.');
+          return;
+        }
         return navigator.share({files: [f], title: o.title || name}).then(function () { msg(''); }, function (e) {
           if (e && e.name === 'AbortError') return;
-          if (e && e.name === 'NotAllowedError' && !wasReady) msg('PDF готовий. Натисніть «Поділитися» ще раз.');
-          else msg('Не вдалося поділитися. Натисніть «Завантажити PDF».', true);
+          if (e && e.name === 'NotAllowedError' && !wasReady) msg('PDF готовий. Натисніть «Надіслати» ще раз.');
+          else msg('Не вдалося надіслати. Натисніть «Зберегти PDF».', true);
         });
       }).catch(function () {});
     }
-    if (mozhnaDilytysia()) ovr.querySelector('[data-a="share"]').hidden = false;
 
     ovr.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b || b.disabled) return;

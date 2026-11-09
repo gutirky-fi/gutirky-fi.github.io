@@ -4,7 +4,7 @@
    Papir.fit(корінь)  — на вузькому екрані аркуші (.ppr, .sheet) самі зменшуються на всю ширину, як сторінка в PDF-переглядачі.
    Papir.view({title, pages, file, print}) — вікно «Переглянути» на весь екран: аркуш цілком на ширину екрана,
        пальцями наблизити / віддалити, кілька аркушів — гортати вниз. Лише потім унизу кнопки:
-       «Завантажити PDF», «Поділитися» (той самий PDF через меню телефона), «Друк».
+       «Зберегти PDF», «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…), «Друк».
        Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
    Дані нікуди не йдуть: PDF робиться в самому браузері. */
 (function () {
@@ -15,6 +15,7 @@
     h2c: 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'
   };
   var PAD = 10;      // поле навколо аркушів у вікні перегляду, px
+  var TOP = 56;      // зверху лишаємо місце під кнопку «закрити», px
   var GAP = 18;      // відстань між аркушами, px
   var libP = null;
 
@@ -239,16 +240,17 @@
     ovr.setAttribute('aria-label', 'Перегляд: ' + (o.title || 'аркуш'));
     ovr.setAttribute('data-html2canvas-ignore', 'true');
     ovr.innerHTML =
-      '<div class="pv-top"><b class="pv-t">' + esc(o.title || 'Перегляд') + '</b>' +
-      '<button type="button" class="pv-ib" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
-      '<button type="button" class="pv-ib" data-a="fit" aria-label="На всю ширину">' + IC.fit + '</button>' +
-      '<button type="button" class="pv-ib" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
-      '<button type="button" class="pv-ib pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button></div>' +
-      '<div class="pv-sc" tabindex="0"><div class="pv-in"><div class="pv-st"></div></div></div>' +
-      '<div class="pv-bot"><p class="pv-msg" role="status" aria-live="polite"></p><div class="pv-bt">' +
-      '<button type="button" class="btn main" data-a="pdf">' + IC.dl + '<span>Завантажити PDF</span></button>' +
-      '<button type="button" class="btn" data-a="share" hidden>' + IC.sh + '<span>Поділитися</span></button>' +
-      '<button type="button" class="btn" data-a="print">' + IC.pr + '<span>Друк</span></button></div></div>';
+      '<div class="pv-main"><div class="pv-sc" tabindex="0"><div class="pv-in"><div class="pv-st"></div></div></div>' +
+      '<button type="button" class="pv-x" data-a="x" aria-label="Закрити">' + IC.x + '</button>' +
+      '<span class="pv-cnt" hidden></span>' +
+      '<div class="pv-zm">' +
+      '<button type="button" data-a="+" aria-label="Збільшити">' + IC.plus + '</button>' +
+      '<button type="button" data-a="-" aria-label="Зменшити">' + IC.minus + '</button>' +
+      '<button type="button" data-a="fit" aria-label="На всю ширину">' + IC.fit + '</button></div></div>' +
+      '<div class="pv-dock"><p class="pv-msg" role="status" aria-live="polite"></p><div class="pv-bt">' +
+      '<button type="button" class="pv-act" data-a="pdf"><i>' + IC.dl + '</i><b>Зберегти PDF</b><small>файл у телефон</small></button>' +
+      '<button type="button" class="pv-act main" data-a="share"><i>' + IC.sh + '</i><b>Надіслати</b><small>WhatsApp, Telegram, пошта</small></button>' +
+      '<button type="button" class="pv-act" data-a="print"><i>' + IC.pr + '</i><b>Друк</b><small>на папір</small></button></div></div>';
     var sc = ovr.querySelector('.pv-sc'), inn = ovr.querySelector('.pv-in'), st = ovr.querySelector('.pv-st'), msgEl = ovr.querySelector('.pv-msg');
     var W = 0, H = 0, S = {s: 1, s0: 1, min: .3, max: 5};
 
@@ -268,20 +270,20 @@
       var cw = sc.clientWidth, left = Math.max(PAD, (cw - W * s) / 2);
       st.style.transform = 'scale(' + s + ')';
       st.style.left = left + 'px';
-      st.style.top = PAD + 'px';
+      st.style.top = TOP + 'px';
       inn.style.width = Math.max(cw, W * s + 2 * PAD) + 'px';
-      inn.style.height = (H * s + 2 * PAD) + 'px';
+      inn.style.height = (H * s + TOP + PAD) + 'px';
       return left;
     }
     function zoomAt(ns, cx, cy, ux, uy) {   // cx, cy — точка на екрані; ux, uy — точка аркуша, що лишається під пальцями
       ns = Math.max(S.min, Math.min(S.max, ns));
       if (ux == null) {
         var l = parseFloat(st.style.left) || PAD;
-        ux = (sc.scrollLeft + cx - l) / S.s; uy = (sc.scrollTop + cy - PAD) / S.s;
+        ux = (sc.scrollLeft + cx - l) / S.s; uy = (sc.scrollTop + cy - TOP) / S.s;
       }
       var left = layout(ns);
       sc.scrollLeft = ux * ns + left - cx;
-      sc.scrollTop = uy * ns + PAD - cy;
+      sc.scrollTop = uy * ns + TOP - cy;
     }
     function ranges() {
       var av = sc.clientWidth - 2 * PAD;
@@ -295,7 +297,18 @@
       ranges();
       layout(S.s0);
       sc.scrollTop = 0; sc.scrollLeft = 0;
+      if (pgs.length > 1) lichylnyk();
     }
+
+    // ----- «Аркуш 2 з 3» (лише коли аркушів кілька)
+    var cnt = ovr.querySelector('.pv-cnt'), pgs = st.querySelectorAll('.pv-pg');
+    function lichylnyk() {
+      if (pgs.length < 2) return;
+      var y = (sc.scrollTop + sc.clientHeight * .35 - TOP) / S.s, k = 0;
+      for (var i = 0; i < pgs.length; i++) { if (pgs[i].offsetTop <= y) k = i; }
+      cnt.textContent = 'Аркуш ' + (k + 1) + ' з ' + pgs.length;
+    }
+    if (pgs.length > 1) { cnt.hidden = false; sc.addEventListener('scroll', lichylnyk, {passive: true}); }
 
     // ----- відкрити
     var inertList = [];
@@ -350,7 +363,7 @@
     sc.addEventListener('touchstart', function (e) {
       if (e.touches.length === 2) {
         var m = mid(e.touches), l = parseFloat(st.style.left) || PAD;
-        pin = {d: dist(e.touches), s: S.s, ux: (sc.scrollLeft + m[0] - l) / S.s, uy: (sc.scrollTop + m[1] - PAD) / S.s};
+        pin = {d: dist(e.touches), s: S.s, ux: (sc.scrollLeft + m[0] - l) / S.s, uy: (sc.scrollTop + m[1] - TOP) / S.s};
         tapDown = null; lastTap = null;
         e.preventDefault();
       } else if (e.touches.length === 1) {
@@ -390,7 +403,7 @@
     // ----- PDF
     var blob = null, busyP = null, name = slug(o.file || o.title) + '-' + dataStr() + '.pdf';
     function msg(t, bad) { msgEl.textContent = t || ''; msgEl.classList.toggle('bad', !!bad); }
-    function knopky(off) { ovr.querySelectorAll('.pv-bt .btn').forEach(function (b) { b.disabled = !!off; }); }
+    function knopky(off) { ovr.querySelectorAll('.pv-act').forEach(function (b) { b.disabled = !!off; }); }
     function zrobyty() {
       if (blob) return Promise.resolve(blob);
       if (busyP) return busyP;
@@ -410,28 +423,33 @@
       });
       return busyP;
     }
-    function zavantazhyty() {
-      zrobyty().then(function (b) {
-        var a = document.createElement('a');
-        a.href = URL.createObjectURL(b); a.download = name;
-        document.body.appendChild(a); a.click();
-        setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
-        msg('PDF збережено (' + name + ').');
-      }).catch(function () {});
+    function zberehty(b) {
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(b); a.download = name;
+      document.body.appendChild(a); a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
     }
+    function zavantazhyty() {
+      zrobyty().then(function (b) { zberehty(b); msg('PDF збережено (' + name + ').'); }).catch(function () {});
+    }
+    var mozhe = mozhnaDilytysia();
+    if (!mozhe) ovr.querySelector('[data-a="share"] small').textContent = 'збереже PDF-файл';
     function dilytysia() {
       var wasReady = !!blob;
       zrobyty().then(function (b) {
         var f = new File([b], name, {type: 'application/pdf'});
-        if (!(navigator.canShare && navigator.canShare({files: [f]}))) { msg('На цьому пристрої не виходить поділитися файлом — натисніть «Завантажити PDF».', true); return; }
+        if (!(navigator.canShare && navigator.canShare({files: [f]}))) {   // комп'ютер чи старий браузер: даємо файл, надсилати — вручну
+          zberehty(b);
+          msg('Тут немає меню «Надіслати». PDF збережено (' + name + ') — додайте його в WhatsApp чи Telegram.');
+          return;
+        }
         return navigator.share({files: [f], title: o.title || name}).then(function () { msg(''); }, function (e) {
           if (e && e.name === 'AbortError') return;
-          if (e && e.name === 'NotAllowedError' && !wasReady) msg('PDF готовий. Натисніть «Поділитися» ще раз.');
-          else msg('Не вдалося поділитися. Натисніть «Завантажити PDF».', true);
+          if (e && e.name === 'NotAllowedError' && !wasReady) msg('PDF готовий. Натисніть «Надіслати» ще раз.');
+          else msg('Не вдалося надіслати. Натисніть «Зберегти PDF».', true);
         });
       }).catch(function () {});
     }
-    if (mozhnaDilytysia()) ovr.querySelector('[data-a="share"]').hidden = false;
 
     ovr.addEventListener('click', function (e) {
       var b = e.target.closest('[data-a]'); if (!b || b.disabled) return;
