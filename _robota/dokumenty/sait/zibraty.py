@@ -46,12 +46,15 @@ def dzherelo(nazva):   # окрема сторінка або документ �
     return FORMA.replace('{{TITLE}}', k['t']).replace('/*KONFIG*/{}/*/KONFIG*/', json.dumps(k, ensure_ascii=False).replace('</', '<\\/'))
 
 
-for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'knyha', 'kinets-roku', *FORMY):
+DEMOZVITY = (TUT / 'demo_zvity.json').read_text(encoding='utf-8').strip()   # вигаданий гурток «Лелеки» для проби «Звітів» (python3 demo_zvity.py)
+
+for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 'kinets-roku', *FORMY):
     s = dzherelo(nazva)
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)
     s = s.replace('<!--DATALISTS-->', DL)
     s = s.replace('/*INDEKS*/null/*/INDEKS*/', json.dumps(INDEKS, ensure_ascii=False).replace('</', '<\\/'))
+    s = s.replace('/*DEMOZVITY*/null/*/DEMOZVITY*/', DEMOZVITY.replace('</', '<\\/'))
     s = s.replace('/*DEMO*/false/*/DEMO*/', 'false' if SAIT else 'true')   # проби — завжди пробний режим (без коду, нічого не надсилається); на сайті — вхід за кодом
     s = s.replace('<!--RIBBON-->', '' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
     assert 'noindex' in s and '{{' not in s

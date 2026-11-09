@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1b1d21">
+<title>Звіти — Документи гуртка</title>
+<link rel="icon" href="{{EMBLEM}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/*SPILNE*/
+/* Звіти з книги гуртка для друку (Етап 3.4, 09.11.2026). Сторінка — виховницька (зелена); самі звіти — про гурток, тож малинові (PROEKT.md, п. 8). */
+:root{--d:#3daf6e;--d-t:#62cf93}
+.hero h1::after{background:var(--d)}
+.btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}
+.btn.main:hover{background:#4cc07f}
+.lock .ico{background:rgba(61,175,110,.16);color:var(--ok-t)}
+.hubhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
+.hubhead h2{margin:0;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
+/* вибір звіту */
+.rz{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.rz button{display:flex;flex-direction:column;align-items:flex-start;gap:6px;padding:14px 14px 13px;border-radius:16px;border:1px solid var(--ln);background:var(--card);text-align:left;color:var(--mut);transition:border-color .15s}
+.rz button:hover{border-color:#5a6573}
+.rz .ti{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;background:rgba(61,175,110,.14);color:var(--ok-t)}
+.rz .ti svg{width:19px;height:19px}
+.rz b{font:600 17px/1.1 var(--disp);letter-spacing:.05em;text-transform:uppercase;color:var(--body)}
+.rz small{font-size:13.5px;line-height:1.3}
+.rz button[aria-selected=true]{background:var(--card2);border-color:var(--d);box-shadow:inset 0 -3px 0 var(--d)}
+.rz button[aria-selected=true] b{color:var(--ink)}
+.bar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px 12px;margin:0 0 12px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--ln)}
+.bar .f{margin:0;flex:1 1 220px}
+.bar .f.sm{flex:0 1 160px}
+.bar .btn{flex:none}
+.hint{margin:0 0 14px;color:var(--mut);font-size:15px}
+.hint b{color:var(--body)}
+.lnk{background:none;border:0;padding:0;color:var(--ok-t);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.desk{padding:22px;border-radius:20px;background:#14171a;border:1px solid var(--ln);overflow:auto}
+.wait{padding:40px 10px;text-align:center;color:var(--mut)}
+
+/* ===== папір (те саме, що піде на друк) ===== */
+.ppr{--pi:#1d2125;--pm:#5f6873;--pl:#cfd5dc;--acc:#c8284a;--tint:#f9e6ea;--ok:#1f7a48;--okb:#e3f4ea;--zh:#8a5a00;--zhb:#fbf0d6;
+  width:794px;margin:0 auto;padding:46px 52px 34px;background:#fff;color:var(--pi);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.45);font:12.5px/1.4 var(--txt)}
+.ppr.land{width:1123px;padding:34px 40px 26px}
+.ppr+.ppr{margin-top:24px}
+.ppr .hd{display:flex;align-items:flex-end;gap:20px;padding-bottom:10px;border-bottom:3px solid var(--acc);margin-bottom:12px}
+.ppr .hl{flex:1;min-width:0}
+.ppr .kind{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;color:var(--acc)}
+.ppr .for{font-weight:700;font-size:10.5px;padding:1px 9px;border-radius:99px;border:1px solid var(--pl);color:var(--pm)}
+.ppr h3{margin:2px 0 0;font:600 30px/1.02 var(--disp);letter-spacing:.01em;text-transform:uppercase}
+.ppr .sub{margin-top:3px;color:var(--pm);font-size:12.5px}
+.ppr .hd img{height:58px;width:auto;flex:none}
+.ppr .meta{display:flex;flex-wrap:wrap;gap:4px 22px;margin:0 0 12px;font-size:12.5px;color:var(--pm)}
+.ppr .meta b{color:var(--pi)}
+.ppr h4{display:flex;align-items:baseline;gap:10px;margin:16px 0 6px;font:700 11.5px var(--txt);letter-spacing:.09em;text-transform:uppercase;color:var(--acc);break-after:avoid}
+.ppr h4 small{font-weight:600;letter-spacing:0;text-transform:none;color:var(--pm);font-size:11px}
+.kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:4px 0 4px}
+.kpi div{padding:9px 11px 8px;border-radius:8px;background:var(--tint);break-inside:avoid}
+.kpi b{display:block;font:600 24px/1.05 var(--disp);color:var(--pi)}
+.kpi small{display:block;margin-top:2px;font-size:11px;line-height:1.25;color:var(--pm)}
+.kpi div.ok{background:var(--okb)}.kpi div.ok b{color:var(--ok)}
+.tb{width:100%;border-collapse:collapse}
+.tb th,.tb td{border:1px solid var(--pl);padding:4px 6px;text-align:left;vertical-align:top;font-size:11.5px;overflow-wrap:anywhere}
+.tb thead th{background:var(--tint);font-size:10.5px;line-height:1.15;vertical-align:bottom}
+.tb thead{display:table-header-group}
+.tb tr{break-inside:avoid}
+.tb td.s,.tb th.s{text-align:right;white-space:nowrap}
+.tb td.c,.tb th.c{text-align:center}
+.tb td.m{color:var(--pm)}
+.tb tfoot td{font-weight:700;background:#f6f7f8}
+.tb .ok{color:var(--ok);font-weight:700}.tb .zh{color:var(--zh);font-weight:700}.tb .no{color:var(--acc);font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.porozh{margin:0;color:var(--pm);font-style:italic}
+.pp{margin:6px 0 0;color:var(--pm);font-size:11px}
+.pp b{color:var(--pi)}
+.uvaga{margin:8px 0 0;padding:7px 10px;border-radius:6px;background:var(--zhb);color:#5c3d00;font-size:11.5px;break-inside:avoid}
+/* розрахунок каси */
+.rkh{width:100%;border-collapse:collapse;font-size:12.5px}
+.rkh td{padding:4px 2px;border-bottom:1px dotted var(--pl)}
+.rkh td.s{text-align:right;white-space:nowrap;font-weight:600}
+.rkh tr.z td{border-top:2px solid var(--pi);border-bottom:0;font-weight:700;font-size:13.5px}
+.rkh td.m{color:var(--pm);font-size:11px;font-weight:400}
+/* лінії «від руки / заповнити тут» */
+.vr{display:grid;gap:8px;margin-top:4px}
+.vr div{break-inside:avoid}
+.vr i{display:block;font-style:normal;font-weight:700;font-size:11px;color:var(--pm)}
+.vr [contenteditable]{min-height:46px;padding:2px 3px;line-height:23px;background-image:repeating-linear-gradient(transparent 0 22px,var(--pl) 22px 23px);outline:none;white-space:pre-wrap}
+.vr [contenteditable]:focus{background-color:#fff7d6}
+.sig{display:flex;flex-wrap:wrap;gap:12px 30px;margin-top:22px;font-size:11.5px;color:var(--pm);break-inside:avoid}
+.sig span{display:flex;align-items:flex-end;gap:6px}
+.sig u{display:inline-block;width:150px;border-bottom:1px solid var(--pl);text-decoration:none;color:var(--pi);font-weight:600;text-align:center}
+.ppr .ft{margin-top:16px;padding-top:7px;display:flex;justify-content:space-between;gap:12px;color:var(--pm);font-size:10.5px;border-top:1px solid var(--pl)}
+.ppr .ft b{color:var(--pi);font-weight:600}
+/* присутність */
+.att th,.att td{padding:3px 2px;text-align:center;font-size:10.5px}
+.att td.nm,.att th.nm{text-align:left;padding-inline:6px;font-weight:700;white-space:nowrap}
+.att thead th.dt{font-weight:600;font-size:9.5px;line-height:1.1}
+.att thead th.dt small{display:block;color:var(--pm);font-weight:400}
+.att td.p{color:var(--ok);font-weight:700}.att td.x{color:var(--acc);font-weight:700;background:#fdf1f4}.att td.v{color:var(--zh);font-weight:700;background:#fdf8ea}
+.att td.e{color:#b7bec6}
+.att .sv{background:#f6f7f8;font-weight:700}
+.leg{display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:8px;font-size:11px;color:var(--pm)}
+.leg b{font-weight:700}
+/* картка учасника */
+.khr{margin:2px 0 0;padding:0;list-style:none;border-left:2px solid var(--tint)}
+.khr li{position:relative;display:grid;grid-template-columns:86px minmax(0,1fr);gap:10px;padding:3px 0 3px 14px;font-size:12px;break-inside:avoid}
+.khr li::before{content:"";position:absolute;left:-5px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.khr li.rk::before{background:var(--pi)}
+.khr li.rk{font-weight:700}
+.khr li span{color:var(--pm);white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:3px}
+.chips span{padding:1px 6px;border-radius:4px;font-size:10.5px;border:1px solid var(--pl)}
+.chips .p{background:var(--okb);border-color:#b8dfc8}.chips .x{background:#fdf1f4;border-color:#f0c3cf}.chips .v{background:var(--zhb);border-color:#ecd59c}
+.ppr.brk{break-before:page}
+
+@media (max-width:980px){.rz{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:620px){.rz{grid-template-columns:1fr 1fr}.rz small{display:none}.desk{padding:10px}}
+@media print{
+  html,body{background:#fff!important;color-scheme:light}
+  body>*:not(.wrap),.top,.hero,#v-lock-wrap,.hubhead,.rz,.bar,.hint,.no-pr{display:none!important}
+  .wrap{max-width:none;padding:0}
+  #z-main{display:block!important}
+  .desk{padding:0;border:0;border-radius:0;background:none;overflow:visible}
+  .ppr,.ppr.land{width:auto;padding:0;margin:0;box-shadow:none;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ppr+.ppr{margin-top:0}
+  .ppr+.ppr,.ppr.brk{break-before:page}
+  .vr [contenteditable]{background-color:transparent!important}
+}
+</style>
+</head>
+<body>
+<!--RIBBON-->
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+    <a class="back" href="../vykhovnyk/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg><span>Вхід виховника</span></a>
+  </header>
+
+  <section class="hero">
+    <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+    <span class="ey">Документи гуртка</span>
+    <h1>Звіти</h1>
+    <p class="hand">з книги гуртка — на папір чи в PDF</p>
+    <p class="who">Нічого не треба переписувати: сторінка бере записи з книги гуртка й складає з них охайний звіт. Вибираєте звіт і період — і «Друк / PDF». <b>Сторінка нічого не зберігає</b>: закрили — і на пристрої нічого не лишилось.</p>
+  </section>
+
+  <!-- вхід -->
+  <div class="podaty" id="v-lock-wrap">
+    <form class="card lock" id="z-lock" autocomplete="off">
+      <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+      <h2>Код виховника</h2>
+      <p class="note" style="margin-bottom:16px">Звіти бачить лише виховник: у них усі записи гуртка. Сторінка не зберігає ні коду, ні даних.</p>
+      <p class="err" id="z-noaddr" hidden>Цю сторінку треба відкрити з <b>вашого посилання</b> — у ньому адреса книги гуртка.</p>
+      <p class="err" id="z-err" hidden></p>
+      <label class="f"><span>Код виховника</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
+      <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
+    </form>
+    <aside class="side">
+      <div class="card"><h3>Що тут є</h3><ul><li><b>Звіт гуртка</b> — що зробили за період (письмовий звіт гурткового).</li><li><b>Фінансовий звіт</b> — скільки було, прийшло, витратили, скільки лишилось.</li><li><b>Присутність</b> — хто на яких сходинах був.</li><li><b>Рік за роком</b> — підсумки всіх років гуртка.</li><li><b>Картка учасника</b> — усе про одну людину від першого дня.</li></ul></div>
+    </aside>
+  </div>
+
+  <section id="z-main" hidden>
+    <div class="hubhead"><h2>Який звіт?</h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="rz" role="tablist" id="z-rz">
+      <button type="button" role="tab" data-z="hurtok" aria-selected="true"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></svg></span><b>Звіт гуртка</b><small>що зробили за період</small></button>
+      <button type="button" role="tab" data-z="finansy" aria-selected="false"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Фінансовий</b><small>було · прийшло · витратили</small></button>
+      <button type="button" role="tab" data-z="prysutnist" aria-selected="false"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Присутність</b><small>хто на яких сходинах</small></button>
+      <button type="button" role="tab" data-z="roky" aria-selected="false"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Рік за роком</b><small>підсумки всіх років</small></button>
+      <button type="button" role="tab" data-z="kartka" aria-selected="false"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span><b>Картка учасника</b><small>усе про одну людину</small></button>
+    </div>
+    <div class="bar">
+      <label class="f" id="b-per"><span>Період</span><select class="in" id="z-per"></select></label>
+      <label class="f sm" id="b-vid" hidden><span>Від</span><input class="in" type="date" id="z-vid"></label>
+      <label class="f sm" id="b-do" hidden><span>До</span><input class="in" type="date" id="z-do"></label>
+      <label class="f" id="b-im" hidden><span>Хто</span><select class="in" id="z-im"></select></label>
+      <button class="btn main" type="button" id="z-druk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Друк / PDF</button>
+    </div>
+    <p class="hint" id="z-hint"></p>
+    <div class="desk" id="z-desk"><p class="wait">Беру записи з книги гуртка…</p></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const DEMO = /*DEMO*/false/*/DEMO*/ || /[?&]demo\b/.test(location.search);   // проби (proba/) — без коду, вигаданий гурток «Лелеки»
+  const DEMO_DANI = /*DEMOZVITY*/null/*/DEMOZVITY*/;   // sait/demo_zvity.json — лише вигадані імена
+  const IXV = /*INDEKS*/null/*/INDEKS*/;              // точки проб з офіційних бланків (etap2/indeks_prob.json)
+  const EMB = '{{LILY}}';
+  const esc = s => String(s === null || s === undefined ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+
+  /* адреса книги — з посилання виховника (#p=…), як в інших сторінках розділу */
+  const KEY = 'dokumenty:pryimach';
+  let addr = '';
+  try { addr = localStorage.getItem(KEY) || ''; } catch (x) {}
+  const hm = /[#&]p=([^&]+)/.exec(location.hash);
+  if (hm) {
+    const u = decodeURIComponent(hm[1]);
+    if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { addr = u; try { localStorage.setItem(KEY, u); } catch (x) {} }
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+  if (!addr && !DEMO) $('z-noaddr').hidden = false;
+
+  async function zapyt(t) {
+    if (DEMO) {
+      await new Promise(r => setTimeout(r, 350));
+      if (t.kod !== '123456') return {ok: false, pomylka: t.kod === '1234' ? 'Це може лише виховник — потрібен код виховника.' : 'Невірний код.'};
+      return JSON.parse(JSON.stringify(DEMO_DANI));
+    }
+    const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
+    return r.json();
+  }
+  const ludsky = x => x && x.message && !/fetch|network|JSON/i.test(x.message) ? x.message : 'Немає зв\'язку з книгою гуртка. Перевірте інтернет.';
+
+  /* ---------- дані книги ---------- */
+  let D = null;
+  const t = x => String(x === null || x === undefined ? '' : x).trim();
+  const A = n => { const s = D && D.arkushi[n]; if (!s) return []; return s.v.map(r => { const o = {}; s.z.forEach((h, k) => { o[h] = r[k] === null || r[k] === undefined ? '' : r[k]; }); return o; }); };
+  const dt = x => { x = t(x); let m = /^(\d{4})-(\d\d)-(\d\d)/.exec(x); if (m) return m[1] + '-' + m[2] + '-' + m[3]; m = /^(\d{1,2})\.(\d{1,2})\.(\d{4})/.exec(x); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : ''; };
+  const dd = s => s ? s.slice(8, 10) + '.' + s.slice(5, 7) + '.' + s.slice(0, 4) : '';
+  const ddk = s => s ? s.slice(8, 10) + '.' + s.slice(5, 7) : '';
+  const num = x => { if (typeof x === 'number') return x; const v = parseFloat(t(x).replace(/[\s €]/g, '').replace(',', '.')); return isFinite(v) ? v : 0; };
+  const okr = x => Math.round(x * 100) / 100;
+  const eur = x => (okr(x) < 0 ? '−' : '') + Math.abs(okr(x)).toFixed(2).replace('.', ',') + ' €';
+  const pct = x => x === null || x === undefined || x === '' || !isFinite(x) ? '—' : Math.round(x * 100) + '%';
+  const suma = l => okr(l.reduce((a, x) => a + x, 0));
+  const MIS = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
+  const sohodni = () => dt(D && D.sohodni) || new Date().toISOString().slice(0, 10);
+  const nazvaH = () => t(D.nazva) || 'наш гурток';
+  const pos = posada => { const p = A('Посади').filter(r => t(r['Посада']) === posada && t(r["Ім'я"]) && !dt(r['До'])); return p.length ? t(p[p.length - 1]["Ім'я"]) : ''; };
+
+  /* ---------- період ---------- */
+  let P = {vid: '', do: '', nazva: ''};
+  function rikPochatok() {
+    const m = /^(\d{4})\s*\/\s*\d{2}/.exec(t(D.rik)); if (m) return +m[1];
+    const s = sohodni(); return +s.slice(0, 4) - (+s.slice(5, 7) < 9 ? 1 : 0);
+  }
+  function periody() {
+    const y = rikPochatok(), r = y + '/' + String((y + 1) % 100).padStart(2, '0'), s = sohodni(), l = [];
+    l.push({k: 'rik', vid: y + '-09-01', do: (y + 1) + '-08-31', n: 'Навчальний рік ' + r, kor: 'навчальний рік ' + r});
+    l.push({k: 'osin', vid: y + '-09-01', do: y + '-12-31', n: 'Осінь ' + y + ' (вересень–грудень)', kor: 'осінь ' + y});
+    l.push({k: 'vesna', vid: (y + 1) + '-01-01', do: (y + 1) + '-08-31', n: 'Весна й літо ' + (y + 1) + ' (січень–серпень)', kor: 'січень–серпень ' + (y + 1)});
+    for (let i = 0; i < 12; i++) {
+      const mm = (8 + i) % 12, yy = y + (8 + i >= 12 ? 1 : 0), v = yy + '-' + String(mm + 1).padStart(2, '0') + '-01';
+      if (v > s) break;
+      const ost = new Date(Date.UTC(yy, mm + 1, 0)).getUTCDate();
+      l.push({k: 'm' + i, vid: v, do: v.slice(0, 8) + ost, n: MIS[mm][0].toUpperCase() + MIS[mm].slice(1) + ' ' + yy, kor: MIS[mm] + ' ' + yy});
+    }
+    l.push({k: 'svii', n: 'Свій період…'});
+    return l;
+  }
+  let PER = [];
+  function zPeriod() {
+    const k = $('z-per').value, x = PER.find(p => p.k === k) || PER[0], svii = k === 'svii';
+    $('b-vid').hidden = $('b-do').hidden = !svii || ZV === 'kartka' || ZV === 'roky';
+    if (svii) {
+      if (!$('z-vid').value) $('z-vid').value = PER[0].vid;
+      if (!$('z-do').value) $('z-do').value = sohodni();
+      const a = $('z-vid').value || '0000-01-01', b = $('z-do').value || '9999-12-31';
+      P = {vid: a <= b ? a : b, do: a <= b ? b : a}; P.nazva = dd(P.vid) + ' – ' + dd(P.do); P.kor = P.nazva;
+    } else P = {vid: x.vid, do: x.do, nazva: x.n.replace(/ \(.*\)$/, ''), kor: x.kor};
+  }
+  const vPer = s => !!s && s >= P.vid && s <= P.do;
+
+  /* ---------- спільні розрахунки ---------- */
+  // присутність: імена — стовпці між «Відсутні» і «Хто записав» (як у книзі: F–U)
+  function prysutnist(vid, doo) {
+    const s = D.arkushi['Відвідуваність'] || {z: [], v: []};
+    const a = s.z.indexOf('Відсутні') + 1, b = s.z.indexOf('Хто записав');
+    const imena = s.z.slice(a, b > a ? b : undefined).filter(Boolean);
+    const ryad = A('Відвідуваність').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => r._d && r._d >= vid && r._d <= doo).sort((x, y) => x._d.localeCompare(y._d));
+    const o = {};
+    imena.forEach(im => { o[im] = {p: 0, x: 0, v: 0, n: 0}; });
+    ryad.forEach(r => imena.forEach(im => { const m = t(r[im]); if (m === '+') { o[im].p++; o[im].n++; } else if (m === '−' || m === '-') { o[im].x++; o[im].n++; } else if (m === 'в') { o[im].v++; o[im].n++; } }));
+    let p = 0, n = 0; imena.forEach(im => { p += o[im].p; n += o[im].n; });
+    return {imena, ryad, o, ser: n ? p / n : null};
+  }
+  // каса: та сама логіка, що в приймачі (hroshi, pidsumokRoku)
+  const NE_V_PIDSUMKU = ['переміщення', 'повернення', 'повернення боргу', 'за учасника (поверне)'];
+  const NA_RAKH = ['MobilePay', 'переказ', 'картка'];
+  const kasaRukh = r => { if (t(r['Як платили']) === 'свої гроші') return 0; const s = num(r['Сума, €']); return t(r['Рух']) === 'надходження' ? s : t(r['Рух']) === 'видаток' ? -s : 0; };
+  const perenos = r => t(r['Категорія']) === 'переміщення' && /^(Залишок|Борг) з /.test(t(r['Опис']));   // рядки «Нового року»
+  function finansy(vid, doo) {
+    const vse = A('Фінанси').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => r._d);
+    const per = vse.filter(r => r._d >= vid && r._d <= doo).sort((x, y) => x._d.localeCompare(y._d));
+    const poch = suma(vse.filter(r => r._d < vid).map(kasaRukh)) + suma(per.filter(perenos).map(kasaRukh));
+    const kin = suma(vse.filter(r => r._d <= doo).map(kasaRukh));
+    const nadh = {}, vyd = {};
+    per.forEach(r => {
+      const k = t(r['Категорія']) || 'інше', s = num(r['Сума, €']);
+      if (NE_V_PIDSUMKU.indexOf(k) >= 0) return;   // гроші лише перейшли — не дохід і не видаток
+      if (t(r['Рух']) === 'надходження') nadh[k] = (nadh[k] || 0) + s;
+      else if (t(r['Рух']) === 'видаток') { if (k === 'внески') nadh[k] = (nadh[k] || 0) - s; else vyd[k] = (vyd[k] || 0) + s; }
+    });
+    const sN = suma(Object.values(nadh)), sV = suma(Object.values(vyd)), inshe = okr(kin - poch - (sN - sV));
+    const de = {gotivka: 0, rakhunok: 0, ne: 0};
+    vse.filter(r => r._d <= doo).forEach(r => { const y = t(r['Як платили']), x = kasaRukh(r); if (y === 'готівка') de.gotivka += x; else if (NA_RAKH.indexOf(y) >= 0) de.rakhunok += x; else if (y !== 'свої гроші') de.ne += x; });
+    const chek = per.filter(r => !perenos(r) && t(r['Перевірено виховником']).toLowerCase() !== 'так');
+    const svoi = per.filter(r => t(r['Рух']) === 'видаток' && t(r['Як платили']) === 'свої гроші' && NE_V_PIDSUMKU.indexOf(t(r['Категорія'])) < 0);
+    return {per, poch, kin, nadh, vyd, sN, sV, inshe, de, chek, svoi};
+  }
+  // точки проб з офіційних бланків
+  const IX = {}; (IXV || []).forEach(p => { IX[p.pr] = (p.rozdily || []).flatMap(r => r.t.map((k, i) => ({t: r.l + (i + 1), k}))); });
+  const tochkaN = x => t(x).replace(/\s+/g, '').toUpperCase();
+
+  /* ---------- шапка, підвал ---------- */
+  const shapka = (nazva, sub, vede) => `<header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде ${esc(vede)}</span></div><h3>${esc(nazva)}</h3><div class="sub">${esc(sub)}</div></div><img src="${EMB}" alt="Пластова лілея"></header>`;
+  const meta = l => `<div class="meta">${l.filter(x => x[1]).map(x => `<span>${esc(x[0])}: <b>${esc(x[1])}</b></span>`).join('')}</div>`;
+  const pidval = shcho => `<footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>${esc(shcho)} · станом на ${dd(sohodni())}</span></footer>`;
+  const kpi = l => `<div class="kpi">${l.map(x => `<div${x[2] ? ' class="ok"' : ''}><b>${esc(x[0])}</b><small>${esc(x[1])}</small></div>`).join('')}</div>`;
+  const tabl = (hh, rows, kl, foot) => rows.length ? `<table class="tb"><thead><tr>${hh.map((h, i) => `<th${kl && kl[i] ? ` class="${kl[i]}"` : ''}>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map((c, i) => `<td${kl && kl[i] ? ` class="${kl[i]}"` : ''}>${c}</td>`).join('')}</tr>`).join('')}</tbody>${foot ? `<tfoot><tr>${foot.map((c, i) => `<td${kl && kl[i] ? ` class="${kl[i]}"` : ''}>${c}</td>`).join('')}</tr></tfoot>` : ''}</table>` : '';
+  const porozh = s => `<p class="porozh">${esc(s)}</p>`;
+  const lin = (l, id) => `<div class="vr">${l.map((x, i) => `<div><i>${esc(x)}</i><div contenteditable="true" spellcheck="true" data-vr="${id}-${i}">${esc(VR[id + '-' + i] || '')}</div></div>`).join('')}</div>`;
+  const VR = {};   // написане «від руки» на сторінці — лише в пам'яті, поки сторінка відкрита
+  const pidpys = l => `<div class="sig">${l.map(x => `<span>${esc(x[0])}${x[1] ? ' (' + esc(x[1]) + ')' : ''}: <u>&nbsp;</u></span>`).join('')}<span>Дата: <u>&nbsp;</u></span></div>`;
+
+  /* ---------- 1. Звіт гуртка ---------- */
+  function zvitHurtka() {
+    const uch = A('Учасники').filter(r => t(r["Ім'я"]) && t(r['Статус']) !== 'вибув');
+    const akt = uch.filter(r => t(r['Статус']) === 'активний').length, kand = uch.filter(r => t(r['Статус']) === 'кандидат').length;
+    const at = prysutnist(P.vid, P.do), atD = {}; at.ryad.forEach(r => { atD[r._d] = r; });
+    const skh = A('Сходини').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
+    const pro = A('Проби').filter(r => vPer(dt(r['Дата виконання'])));
+    const toch = pro.filter(r => t(r['Статус']) === 'виконано' && tochkaN(r['Точка']) !== 'ПОСВІДКА');
+    const posv = pro.filter(r => tochkaN(r['Точка']) === 'ПОСВІДКА');
+    const vm = A('Вмілості'), vmZ = vm.filter(r => t(r['Статус']) === 'здобуто' && vPer(dt(r['Дата здобуття'])));
+    const vruch = vm.filter(r => vPer(dt(r['Вручено']))).map(r => ({im: t(r["Ім'я"]), n: 'нашивка вмілості «' + t(r['Вмілість']) + '»', d: dt(r['Вручено'])}))
+      .concat(A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vPer(dt(r['Дата вручення']))).map(r => ({im: t(r["Ім'я"]), n: t(r['Відзнака']), d: dt(r['Дата вручення'])})));
+    const md = A('Мандрівки').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
+    const prot = A('Протоколи').map(r => Object.assign(r, {_d: dt(r['Дата'])})).filter(r => vPer(r._d)).sort((x, y) => x._d.localeCompare(y._d));
+    const pos = A('Посади').filter(r => t(r["Ім'я"]) && (!dt(r['Від']) || dt(r['Від']) <= P.do) && (!dt(r['До']) || dt(r['До']) >= P.vid));
+    const f = finansy(P.vid, P.do), kv = id => { const o = at.o[id]; return o && o.n ? `${o.p} з ${o.n} · ${pct(o.p / o.n)}` : '—'; };
+    const skil = skh.length || at.ryad.length;
+    const hurtk = pos.filter(r => t(r['Посада']) === 'гуртковий').map(r => t(r["Ім'я"])).pop() || '';
+    const zdobuto = []
+      .concat(posv.map(r => ({d: dt(r['Дата виконання']), s: `<b>${esc(r["Ім'я"])}</b> — ${esc(r['Проба'])}: посвідку підписано${t(r['Хто підтвердив']) ? ' (' + esc(r['Хто підтвердив']) + ')' : ''}`})))
+      .concat(vmZ.map(r => ({d: dt(r['Дата здобуття']), s: `<b>${esc(r["Ім'я"])}</b> — вмілість «${esc(r['Вмілість'])}»${t(r['Інструктор']) ? ' (прийняв: ' + esc(r['Інструктор']) + ')' : ''}`})))
+      .concat(vruch.map(x => ({d: x.d, s: `<b>${esc(x.im)}</b> — вручено: ${esc(x.n)}`})))
+      .sort((a, b) => a.d.localeCompare(b.d));
+    return `<div class="ppr">${shapka('Звіт гуртка', 'Що гурток зробив за період · з книги гуртка', 'гуртковий')}
+      ${meta([['Гурток', nazvaH()], ['Курінь / станиця', t(D.kurin)], ['Період', P.nazva], ['Гуртковий', hurtk]])}
+      ${kpi([[akt + (kand ? ' + ' + kand : ''), 'учасників' + (kand ? ' (+ кандидати)' : '')], [skil, 'сходин'], [pct(at.ser), 'середня присутність'], [md.length, 'мандрівок і заходів'],
+             [toch.length, 'точок проб виконано'], [posv.length, 'проб здобуто (посвідки)', posv.length > 0], [vmZ.length, 'вмілостей здобуто', vmZ.length > 0], [vruch.length, 'відзнак вручено', vruch.length > 0]])}
+      <div class="two"><div><h4>Провід гуртка</h4>${tabl(['Посада', 'Ім\'я', 'Від'], pos.map(r => [esc(r['Посада']), `<b>${esc(r["Ім'я"])}</b>`, esc(dd(dt(r['Від'])))]), [0, 0, 'm']) || porozh('Посад у книзі не записано.')}</div>
+      <div><h4>Каса за період <small>докладно — фінансовий звіт</small></h4><table class="rkh"><tr><td>Було на початку</td><td class="s">${eur(f.poch)}</td></tr><tr><td>Прийшло</td><td class="s">+ ${eur(f.sN)}</td></tr><tr><td>Витратили</td><td class="s">− ${eur(f.sV)}</td></tr>${f.inshe ? `<tr><td class="m">Інше (повернення, позички, свої гроші)</td><td class="s m">${f.inshe > 0 ? '+ ' : ''}${eur(f.inshe)}</td></tr>` : ''}<tr class="z"><td>У касі на кінець</td><td class="s">${eur(f.kin)}</td></tr></table></div></div>
+      <h4>Учасники <small>присутність і здобутки за період</small></h4>
+      ${tabl(['Ім\'я', 'Посада', 'Статус', 'Проба зараз', 'Присутність', 'Точок проб', 'Вмілості', 'Відзнаки'],
+        uch.map(r => { const im = t(r["Ім'я"]); return [`<b>${esc(im)}</b>`, esc(r['Посада']), esc(r['Статус']), esc(r['Проба зараз']), kv(im),
+          toch.filter(x => t(x["Ім'я"]) === im).length || '—', esc(vmZ.filter(x => t(x["Ім'я"]) === im).map(x => t(x['Вмілість'])).join(', ')) || '—',
+          esc(vruch.filter(x => x.im === im).map(x => x.n.replace('нашивка вмілості ', '')).join(', ')) || '—']; }), [0, 0, 'm', 0, 's', 'c', 0, 0]) || porozh('Учасників у книзі немає.')}
+      <h4>Сходини <small>${skil} за період</small></h4>
+      ${tabl(['Дата', '№', 'Тема', 'Гутірка / гра', 'Проба / вмілість', 'Присутніх'],
+        skh.map(r => { const a = atD[r._d]; return [esc(dd(r._d)), esc(r['№']), `<b>${esc(r['Тема'])}</b>`, esc(r['Гутірка / гра з бібліотеки']), esc(r['Проба / вмілість (якщо стосується)']),
+          a ? esc(a['Присутні']) + ' з ' + (num(a['Присутні']) + num(a['Відсутні'])) : esc(r['Присутніх'])]; }), ['m', 'c', 0, 0, 0, 'c']) || porozh('Сходин за цей період у книзі немає.')}
+      <h4>Мандрівки й заходи</h4>
+      ${tabl(['Дата', 'Назва', 'Вид', 'Місце', 'Учасників', 'Підсумок'], md.map(r => [esc(dd(r._d)), `<b>${esc(r['Назва'])}</b>`, esc(r['Вид']), esc(r['Місце']), esc(r['Учасників']), esc(r['Підсумок'])]), ['m', 0, 0, 0, 'c', 0]) || porozh('Мандрівок і заходів за цей період не записано.')}
+      <h4>Здобуто й вручено</h4>
+      ${zdobuto.length ? `<ol class="khr">${zdobuto.map(x => `<li><span>${dd(x.d)}</span><div>${x.s}</div></li>`).join('')}</ol>` : porozh('За цей період нічого не здобуто й не вручено.')}
+      <h4>Гурткова рада й рішення</h4>
+      ${tabl(['Дата', 'Вид', 'Питання', 'Рішення', 'Голосування'], prot.map(r => [esc(dd(r._d)), esc(r['Вид']), esc(r['Питання']), `<b>${esc(r['Рішення'])}</b>`, esc(r['Голосування (за/проти/утрим.)'])]), ['m', 0, 0, 0, 'c']) || porozh('Протоколів за цей період немає.')}
+      <h4>Від гурткового <small>можна написати тут або від руки після друку</small></h4>
+      ${lin(['Що вдалося', 'Що не вийшло і чому', 'Що плануємо далі'], 'h')}
+      ${pidpys([['Гуртковий', hurtk], ['Виховник', t(D.vykhovnyk)]])}
+      <p class="pp">Письмовий звіт гурткового — Правильник УПЮ ч. I, п. 3.4.1 з. Обов'язкової форми звіту ми не знайшли: її й строк спитаємо в проводу. Лише імена, без прізвищ.</p>
+      ${pidval('Звіт з аркушів «Сходини», «Відвідуваність», «Проби», «Вмілості», «Відзначки», «Мандрівки», «Протоколи», «Фінанси»')}</div>`;
+  }
+
+  /* ---------- 2. Фінансовий звіт ---------- */
+  function zvitFinansy() {
+    const f = finansy(P.vid, P.do);
+    const ryad = o => Object.keys(o).sort((a, b) => o[b] - o[a]).map(k => `<tr><td>${esc(k)}</td><td class="s">${eur(o[k])}</td></tr>`).join('');
+    const vn = A('Внески').filter(r => t(r['Внесок']));
+    const skarb = pos('скарбник');
+    const rukhy = f.per.filter(r => !perenos(r));
+    return `<div class="ppr">${shapka('Фінансовий звіт', 'Каса гуртка: скільки було, прийшло, витратили й лишилось', 'скарбник')}
+      ${meta([['Гурток', nazvaH()], ['Період', P.nazva], ['Скарбник', skarb]])}
+      ${kpi([[eur(f.poch), 'було на початку'], [eur(f.sN), 'прийшло'], [eur(f.sV), 'витратили'], [eur(f.kin), 'у касі на кінець', true]])}
+      <div class="two"><div><h4>Прийшло</h4>${f.sN || Object.keys(f.nadh).length ? `<table class="rkh">${ryad(f.nadh)}<tr class="z"><td>Разом</td><td class="s">${eur(f.sN)}</td></tr></table>` : porozh('Надходжень немає.')}</div>
+      <div><h4>Витратили</h4>${f.sV || Object.keys(f.vyd).length ? `<table class="rkh">${ryad(f.vyd)}<tr class="z"><td>Разом</td><td class="s">${eur(f.sV)}</td></tr></table>` : porozh('Видатків немає.')}</div></div>
+      <h4>Як склався залишок</h4>
+      <table class="rkh"><tr><td>Було на початку періоду${f.per.some(perenos) ? ' <span class="m">(з них перенесено з минулого року)</span>' : ''}</td><td class="s">${eur(f.poch)}</td></tr>
+        <tr><td>+ прийшло</td><td class="s">${eur(f.sN)}</td></tr><tr><td>− витратили</td><td class="s">${eur(f.sV)}</td></tr>
+        ${f.inshe ? `<tr><td>± інше <span class="m">— гроші лише перейшли: повернули борги, позички «за учасника»; покупки за свої гроші ще не вийшли з каси</span></td><td class="s">${f.inshe > 0 ? '+ ' : ''}${eur(f.inshe)}</td></tr>` : ''}
+        <tr class="z"><td>У касі на кінець · готівкою ${eur(f.de.gotivka)} · на рахунку ${eur(f.de.rakhunok)}${okr(f.de.ne) ? ' · не вказано як ' + eur(f.de.ne) : ''}</td><td class="s">${eur(f.kin)}</td></tr></table>
+      ${f.chek.length ? `<p class="uvaga">⏳ ${f.chek.length} ${f.chek.length === 1 ? 'запис ще чекає' : 'записи ще чекають'} перевірки виховника — у звіті вони вже пораховані. Перевірити: «Вхід виховника → Перевірка каси».</p>` : ''}
+      ${f.svoi.length ? `<p class="pp">Покупки за свої гроші (гурток мав повернути): ${f.svoi.map(r => esc(r["Хто (ім'я)"]) + ' ' + eur(num(r['Сума, €']))).join(', ')}. Чи вже повернули — у витягу людини в касі.</p>` : ''}
+      ${vn.length ? `<h4>Внески</h4>${tabl(['Внесок', 'Сума', 'Термін', 'Зібрано', 'Особливі суми'], vn.map(r => [`<b>${esc(r['Внесок'])}</b>`, eur(num(r['Сума, €'])), esc(dd(dt(r['Термін']))), eur(num(r['Зібрано, €'])), esc(r['Особливі суми'])]), [0, 's', 'm', 's', 'm'])}<p class="pp">Хто скільки ще винен — «Каса → Витяг і нагадування» (там суми кожного; у цей звіт вони не входять).</p>` : ''}
+      <h4>Усі рухи за період <small>${rukhy.length}</small></h4>
+      ${tabl(['Дата', 'Рух', 'За що', 'Опис', 'Хто', 'Як', 'Сума', 'Чек / кв.', '✓'],
+        rukhy.map(r => { const p = t(r['Перевірено виховником']).toLowerCase(), nv = NE_V_PIDSUMKU.indexOf(t(r['Категорія'])) >= 0;
+          return [esc(dd(r._d)), t(r['Рух']) === 'надходження' ? '+' : '−', esc(r['Категорія']) + (nv ? ' <span class="m">(не в підсумку)</span>' : ''), esc(r['Опис']), esc(r["Хто (ім'я)"]), esc(r['Як платили']),
+            `<b>${eur(num(r['Сума, €']))}</b>`, esc(r['Квитанція №']), p === 'так' ? '<span class="ok">✓</span>' : p === 'ні' ? '<span class="no">✗</span>' : '<span class="zh">⏳</span>']; }),
+        ['m', 'c', 0, 0, 0, 'm', 's', 'm', 'c']) || porozh('Рухів за цей період немає.')}
+      <p class="pp">✓ — перевірив виховник (є в банку / гроші й чек є); ⏳ — чекає перевірки; ✗ — не знайшов. «Не в підсумку» — гроші лише перейшли (переміщення, повернення, позичка), тому не дохід і не видаток.</p>
+      ${pidpys([['Скарбник', skarb], ['Перевірив виховник', t(D.vykhovnyk)]])}
+      ${pidval('Звіт з аркушів «Фінанси» і «Внески»')}</div>`;
+  }
+
+  /* ---------- 3. Присутність ---------- */
+  function zvitPrysutnist() {
+    const at = prysutnist(P.vid, P.do), uch = {}; A('Учасники').forEach(r => { uch[t(r["Ім'я"])] = r; });
+    const imena = at.imena.filter(im => at.o[im].n || (uch[im] && t(uch[im]['Статус']) !== 'вибув'));
+    const kl = m => m === '+' ? 'p' : (m === '−' || m === '-') ? 'x' : m === 'в' ? 'v' : 'e';
+    const ost = at.ryad.slice(-2), davno = ost.length === 2 ? imena.filter(im => ost.every(r => (t(r[im]) === '−' || t(r[im]) === '-'))) : [];
+    const head = `<tr><th class="nm">Ім'я</th>${at.ryad.map(r => `<th class="dt">${ddk(r._d)}<small>${esc(r['№ сходин'])}</small></th>`).join('')}<th class="sv">був</th><th class="sv">−</th><th class="sv">в</th><th class="sv">%</th></tr>`;
+    const body = imena.map(im => { const o = at.o[im]; return `<tr><td class="nm">${esc(im)}</td>${at.ryad.map(r => { const m = t(r[im]); return `<td class="${kl(m)}">${m ? esc(m) : '·'}</td>`; }).join('')}<td class="sv">${o.p}</td><td class="sv">${o.x}</td><td class="sv">${o.v}</td><td class="sv">${o.n ? pct(o.p / o.n) : '—'}</td></tr>`; }).join('');
+    const foot = `<tr><td class="nm">Присутніх</td>${at.ryad.map(r => `<td>${at.imena.filter(im => t(r[im]) === '+').length}</td>`).join('')}<td colspan="4">${pct(at.ser)}</td></tr>`;
+    return `<div class="ppr land">${shapka('Присутність', 'Хто на яких сходинах був · з аркуша «Відвідуваність»', 'заступник')}
+      ${meta([['Гурток', nazvaH()], ['Період', P.nazva], ['Сходин', String(at.ryad.length)], ['Середня присутність', pct(at.ser)]])}
+      ${at.ryad.length ? `<table class="tb att"><thead>${head}</thead><tbody>${body}</tbody><tfoot>${foot}</tfoot></table>` : porozh('За цей період відвідуваності в книзі немає.')}
+      <div class="leg"><span><b class="ok">+</b> був(-ла)</span><span><b>−</b> не був(-ла)</span><span><b>в</b> поважна причина (сказав(-ла) заздалегідь)</span><span><b>·</b> ще не в гуртку / не позначено</span><span>% — від сходин, коли людину позначали</span></div>
+      ${davno.length ? `<p class="uvaga">Не були на двох останніх сходинах (без поважної причини): <b>${davno.map(esc).join(', ')}</b> — варто поговорити.</p>` : ''}
+      ${pidpys([['Заступник', pos('заступник')], ['Виховник', t(D.vykhovnyk)]])}
+      ${pidval('Звіт з аркуша «Відвідуваність» · лише імена')}</div>`;
+  }
+
+  /* ---------- підсумок одного року (як «Новий рік» у приймачі) ---------- */
+  function pidsumokRoku(vid, doo) {
+    const at = prysutnist(vid, doo), vP = s => !!s && s >= vid && s <= doo;
+    const pr = A('Проби').filter(r => t(r['Статус']) === 'виконано' && vP(dt(r['Дата виконання'])));
+    const vm = A('Вмілості').filter(r => t(r['Статус']) === 'здобуто' && vP(dt(r['Дата здобуття'])));
+    const vr = A('Вмілості').filter(r => vP(dt(r['Вручено']))).length + A('Відзначки').filter(r => t(r['Статус']) === 'вручено' && vP(dt(r['Дата вручення']))).length;
+    const f = finansy(vid, doo);
+    return {uch: A('Учасники').filter(r => t(r["Ім'я"]) && t(r['Статус']) === 'активний').length, skh: at.ryad.length, ser: at.ser, toch: pr.length, vm: vm.length, vr,
+            md: A('Мандрівки').filter(r => vP(dt(r['Дата']))).length, n: f.sN, v: f.sV, at, pr, vmz: vm};
+  }
+  const rikN = () => { const y = rikPochatok(); return y + '/' + String((y + 1) % 100).padStart(2, '0'); };
+
+  /* ---------- 4. Рік за роком ---------- */
+  function zvitRoky() {
+    const y = rikPochatok(), r = rikN(), roky = A('Роки').filter(x => t(x['Навчальний рік']));
+    const l = roky.map(x => [t(x['Навчальний рік']), num(x['Учасників']), num(x['Сходин']), num(x['Середня присутність']), num(x['Точок проб виконано']), num(x['Вмілостей здобуто']), num(x['Відзнак вручено']), num(x['Заходів']), num(x['Надходження, €']), num(x['Видатки, €']), num(x['Залишок, €']), false]);
+    if (!roky.some(x => t(x['Навчальний рік']) === r)) { const p = pidsumokRoku(y + '-09-01', (y + 1) + '-08-31'); l.push([r, p.uch, p.skh, p.ser, p.toch, p.vm, p.vr, p.md, p.n, p.v, okr(p.n - p.v), true]); }
+    const ist = A('Історія учасників').filter(x => t(x["Ім'я"]));
+    const roki = [...new Set(ist.map(x => t(x['Навчальний рік'])).concat([r]))].sort();
+    const p = pidsumokRoku(y + '-09-01', (y + 1) + '-08-31');
+    const zaraz = {}; A('Учасники').filter(x => t(x["Ім'я"]) && t(x['Статус']) !== 'вибув').forEach(x => { const im = t(x["Ім'я"]), o = p.at.o[im]; zaraz[im] = {pos: t(x['Посада']), st: t(x['Статус']), pr: o && o.n ? o.p / o.n : null}; });
+    const imena = [...new Set(ist.map(x => t(x["Ім'я"])).concat(Object.keys(zaraz)))];
+    const klit = (im, rk) => {
+      if (rk === r && zaraz[im]) { const z = zaraz[im]; return `${esc(z.pos && z.pos !== 'кандидат' ? z.pos : z.st)}<br><span class="m">${pct(z.pr)}</span>`; }
+      const h = ist.find(x => t(x["Ім'я"]) === im && t(x['Навчальний рік']) === rk); if (!h) return '<span class="m">—</span>';
+      return `${esc(t(h['Посада']) || t(h['Статус']))}<br><span class="m">${pct(num(h['Присутність']))}</span>`;
+    };
+    return `<div class="ppr">${shapka('Гурток рік за роком', 'Підсумки кожного навчального року · аркуші «Роки» й «Історія учасників»', 'впорядник')}
+      ${meta([['Гурток', nazvaH()], ['Курінь / станиця', t(D.kurin)], ['Років у книзі', String(l.length)]])}
+      <h4>Підсумки років</h4>
+      ${tabl(['Рік', 'Учасників', 'Сходин', 'Присутність', 'Точок проб', 'Вмілостей', 'Відзнак', 'Заходів', 'Прийшло', 'Витратили', 'Різниця'],
+        l.map(x => [`<b>${esc(x[0])}</b>${x[11] ? '<br><span class="m">ще триває</span>' : ''}`, x[1], x[2], pct(x[3]), x[4], x[5], x[6], x[7], eur(x[8]), eur(x[9]), eur(x[10])]),
+        [0, 'c', 'c', 'c', 'c', 'c', 'c', 'c', 's', 's', 's'],
+        l.length > 1 ? ['Разом', '', suma(l.map(x => x[2])), '', suma(l.map(x => x[4])), suma(l.map(x => x[5])), suma(l.map(x => x[6])), suma(l.map(x => x[7])), eur(suma(l.map(x => x[8]))), eur(suma(l.map(x => x[9]))), eur(suma(l.map(x => x[10])))] : null)}
+      <h4>Учасники рік за роком <small>посада (або статус) і присутність</small></h4>
+      ${imena.length ? tabl(['Ім\'я'].concat(roki.map(esc)), imena.map(im => [`<b>${esc(im)}</b>`].concat(roki.map(rk => klit(im, rk)))), [0].concat(roki.map(() => 'c'))) : porozh('Учасників у книзі немає.')}
+      <p class="pp">Минулі роки — з аркушів «Роки» й «Історія учасників» (їх записує «Новий рік» і ніколи не стирає). Поточний рік сторінка рахує сама з журналів — так само, як порахує «Новий рік». Повна книга кожного року — архівна копія на Диску (аркуш «Архів»).</p>
+      ${pidval('Звіт з аркушів «Роки», «Історія учасників» і журналів поточного року')}</div>`;
+  }
+
+  /* ---------- 5. Картка учасника ---------- */
+  function vsiImena() {
+    const o = {}; A('Учасники').forEach(r => { const im = t(r["Ім'я"]); if (im) o[im] = t(r['Статус']); });
+    A('Історія учасників').forEach(r => { const im = t(r["Ім'я"]); if (im && !(im in o)) o[im] = 'вибув'; });
+    return o;
+  }
+  function kartka(im, brk) {
+    const u = A('Учасники').find(r => t(r["Ім'я"]) === im) || {}, my = r => t(r["Ім'я"]) === im;
+    const y = rikPochatok(), r = rikN(), p = pidsumokRoku(y + '-09-01', (y + 1) + '-08-31'), o = p.at.o[im] || {p: 0, n: 0, x: 0, v: 0};
+    const ist = A('Історія учасників').filter(my).sort((a, b) => t(a['Навчальний рік']).localeCompare(t(b['Навчальний рік'])));
+    const pro = A('Проби').filter(my), vm = A('Вмілості').filter(my), vz = A('Відзначки').filter(my), pos = A('Посади').filter(my);
+    const khr = [];
+    const vid = t(u['У гуртку від (рік)']) || (ist[0] ? t(ist[0]['Навчальний рік']).slice(0, 4) : '');
+    if (vid) khr.push({d: vid + '-00', p: vid, s: 'прийшов(-ла) в гурток', rk: 1});
+    pos.forEach(x => { if (dt(x['Від'])) khr.push({d: dt(x['Від']), s: 'посада: ' + esc(x['Посада'])}); if (dt(x['До'])) khr.push({d: dt(x['До']), s: 'закінчив(-ла) посаду ' + esc(x['Посада'])}); });
+    const prRazom = {};
+    pro.forEach(x => { const pr = t(x['Проба']), d = dt(x['Дата виконання']); if (!pr) return; const q = prRazom[pr] = prRazom[pr] || {t: [], pochav: '', ost: '', posv: null};
+      if (tochkaN(x['Точка']) === 'ПОСВІДКА') q.posv = x; else if (t(x['Статус']) === 'виконано') { q.t.push(tochkaN(x['Точка'])); if (d && (!q.pochav || d < q.pochav)) q.pochav = d; if (d && d > q.ost) q.ost = d; } });
+    Object.keys(prRazom).forEach(pr => { const q = prRazom[pr]; if (q.pochav) khr.push({d: q.pochav, s: 'почав(-ла) «' + esc(pr) + '» — перша точка'});
+      if (q.posv && dt(q.posv['Дата виконання'])) khr.push({d: dt(q.posv['Дата виконання']), s: `<b>здобув(-ла) «${esc(pr)}»</b> — посвідку підписано${t(q.posv['Хто підтвердив']) ? ' (' + esc(q.posv['Хто підтвердив']) + ')' : ''}`}); });
+    vm.forEach(x => { const n = esc(x['Вмілість']);
+      if (dt(x['Почато'])) khr.push({d: dt(x['Почато']), s: 'почав(-ла) вмілість «' + n + '»'});
+      if (t(x['Статус']) === 'здобуто' && dt(x['Дата здобуття'])) khr.push({d: dt(x['Дата здобуття']), s: `<b>здобув(-ла) вмілість «${n}»</b>${t(x['Інструктор']) ? ' (прийняв: ' + esc(x['Інструктор']) + ')' : ''}`});
+      if (dt(x['Вручено'])) khr.push({d: dt(x['Вручено']), s: 'вручено нашивку «' + n + '»'}); });
+    vz.forEach(x => { if (t(x['Статус']) === 'вручено' && dt(x['Дата вручення'])) khr.push({d: dt(x['Дата вручення']), s: 'вручено «' + esc(x['Відзнака']) + '»' + (t(x['Підстава']) ? ' — ' + esc(x['Підстава']) : '')}); });
+    ist.forEach(h => { const rk = t(h['Навчальний рік']), m = /^(\d{4})/.exec(rk); if (m) khr.push({d: (+m[1] + 1) + '-08-31~', p: 'рік ' + rk, s: `закінчив(-ла) рік: ${num(h['Сходин відвідано'])} сходин (${pct(num(h['Присутність']))})${t(h['Посада']) ? ', посада — ' + esc(h['Посада']) : ''}`, rk: 1}); });
+    khr.sort((a, b) => a.d.localeCompare(b.d));
+    const skhVse = suma(ist.map(h => num(h['Сходин відвідано']))) + (ist.some(h => t(h['Навчальний рік']) === r) ? 0 : o.p);
+    const vruch = vm.filter(x => dt(x['Вручено'])).length + vz.filter(x => t(x['Статус']) === 'вручено').length;
+    const roky = ist.map(h => [`<b>${esc(h['Навчальний рік'])}</b>`, esc(h['Посада']), esc(h['Статус']), num(h['Сходин відвідано']), pct(num(h['Присутність'])), esc(h['Проба']), num(h['Точок проб за рік']), esc(h['Вмілості за рік']) || '—', esc(h['Відзнаки вручено за рік']) || '—']);
+    if (!ist.some(h => t(h['Навчальний рік']) === r) && t(u['Статус']) && t(u['Статус']) !== 'вибув')
+      roky.push([`<b>${esc(r)}</b><br><span class="m">ще триває</span>`, esc(u['Посада']), esc(u['Статус']), o.p, o.n ? pct(o.p / o.n) : '—', esc(u['Проба зараз']), p.pr.filter(my).length, esc(p.vmz.filter(my).map(x => t(x['Вмілість'])).join(', ')) || '—', '—']);
+    const probyT = Object.keys(prRazom).map(pr => { const q = prRazom[pr], vse = IX[pr] || [], brak = vse.filter(x => q.t.indexOf(tochkaN(x.t)) < 0).map(x => x.t);
+      return [`<b>${esc(pr)}</b>`, vse.length ? `${new Set(q.t).size} з ${vse.length}` : String(new Set(q.t).size), esc(dd(q.ost)), q.posv ? `<span class="ok">✓ ${esc(dd(dt(q.posv['Дата виконання'])))}</span>` : '—', q.posv ? '—' : vse.length ? (brak.length > 14 ? esc(brak.slice(0, 14).join(', ')) + ' … (ще ' + (brak.length - 14) + ')' : esc(brak.join(', ')) || '—') : '<span class="m">бланка ще немає</span>']; });
+    const chips = p.at.ryad.map(rr => { const m = t(rr[im]); return m ? `<span class="${m === '+' ? 'p' : m === 'в' ? 'v' : 'x'}">${ddk(rr._d)} ${esc(m)}</span>` : ''; }).join('');
+    return `<div class="ppr${brk ? ' brk' : ''}">${shapka('Картка учасника', 'Усе про одну людину з книги гуртка — від першого дня', 'впорядник')}
+      ${meta([['Ім\'я', im], ['Гурток', nazvaH()], ['Статус', t(u['Статус']) || 'вибув(-ла)'], ['У гуртку від', vid], ['Посада зараз', t(u['Посада'])], ['Проба зараз', t(u['Проба зараз'])]])}
+      ${kpi([[String((new Set(ist.map(h => t(h['Навчальний рік'])).concat(t(u['Статус']) && t(u['Статус']) !== 'вибув' ? [r] : []))).size || 1), 'років у гуртку (за книгою)'], [skhVse, 'сходин відвідано за всі роки'], [o.n ? pct(o.p / o.n) : '—', 'присутність цього року'], [pro.filter(x => t(x['Статус']) === 'виконано' && tochkaN(x['Точка']) !== 'ПОСВІДКА').length, 'точок проб виконано'],
+             [Object.values(prRazom).filter(q => q.posv).length, 'проб здобуто', true], [vm.filter(x => t(x['Статус']) === 'здобуто').length, 'вмілостей здобуто', true], [vm.filter(x => t(x['Статус']) === 'працює').length, 'вмілостей у роботі'], [vruch, 'відзнак вручено', true]])}
+      <h4>Хронологія</h4>
+      ${khr.length ? `<ol class="khr">${khr.map(x => `<li${x.rk ? ' class="rk"' : ''}><span>${x.p || dd(x.d)}</span><div>${x.s}</div></li>`).join('')}</ol>` : porozh('Записів про цю людину ще немає.')}
+      <h4>Проби</h4>
+      ${tabl(['Проба', 'Точок', 'Остання точка', 'Посвідка', 'Ще бракує'], probyT, [0, 'c', 'm', 0, 'm']) || porozh('Точок проб ще не записано.')}
+      <h4>Вмілості</h4>
+      ${tabl(['Вмілість', 'Почато', 'Точок', 'Статус', 'Здобуто', 'Прийняв', 'Нашивка'], vm.map(x => [`<b>${esc(x['Вмілість'])}</b>`, esc(dd(dt(x['Почато']))), esc(x['Виконано точок']) + (t(x['Усього точок']) ? ' з ' + esc(x['Усього точок']) : ''), t(x['Статус']) === 'здобуто' ? '<span class="ok">здобуто</span>' : t(x['Статус']) === 'відкладено' ? '<span class="m">відкладено</span>' : esc(x['Статус']), esc(dd(dt(x['Дата здобуття']))), esc(x['Інструктор']), dt(x['Вручено']) ? 'вручено ' + esc(dd(dt(x['Вручено']))) : esc(x['Нашивка'])]), [0, 'm', 'c', 0, 'm', 0, 0]) || porozh('Вмілостей не записано.')}
+      ${vz.length ? `<h4>Інші відзначки</h4>${tabl(['Відзнака', 'Вид', 'За що', 'Статус', 'Вручено'], vz.map(x => [`<b>${esc(x['Відзнака'])}</b>`, esc(x['Вид']), esc(x['Підстава']), esc(x['Статус']), esc(dd(dt(x['Дата вручення'])))]), [0, 0, 0, 0, 'm'])}` : ''}
+      <h4>Рік за роком</h4>
+      ${tabl(['Рік', 'Посада', 'Статус', 'Сходин', 'Присутність', 'Проба', 'Точок', 'Вмілості', 'Відзнаки'], roky, [0, 0, 'm', 'c', 'c', 0, 'c', 0, 0]) || porozh('Підсумків років ще немає.')}
+      ${chips ? `<h4>Присутність цього року <small>${o.p} з ${o.n} сходин</small></h4><div class="chips">${chips}</div>` : ''}
+      <h4>Зауваження й перестороги</h4>
+      <p class="porozh">У книзі гуртка поки не ведемо: що можна записувати про неповнолітніх і скільки зберігати — питання до проводу (№ 7).</p>
+      <p class="pp">Лише ім'я — без прізвища, дати народження й контактів (вони лише в закритій папці 99). Картку можна зберегти в PDF і покласти в архів гуртка: вона знадобиться й тоді, коли гурток розійдеться.</p>
+      ${pidval('Картка з аркушів «Учасники», «Посади», «Проби», «Вмілості», «Відзначки», «Відвідуваність», «Історія учасників»')}</div>`;
+  }
+  function zvitKartka() {
+    const v = $('z-im').value, im = vsiImena();
+    if (v === '*') return Object.keys(im).filter(x => im[x] !== 'вибув').map((x, i) => kartka(x, i > 0)).join('') || '<p class="wait">Учасників немає.</p>';
+    if (v === '**') return Object.keys(im).map((x, i) => kartka(x, i > 0)).join('') || '<p class="wait">Учасників немає.</p>';
+    return v ? kartka(v) : '<p class="wait">Виберіть, чию картку показати.</p>';
+  }
+
+  /* ---------- показ ---------- */
+  let ZV = 'hurtok';
+  const OPYS = {
+    hurtok: 'Що гурток зробив: сходини, присутність, проби, вмілості, мандрівки, рішення ради, каса коротко. <b>«Від гурткового»</b> можна дописати тут або від руки після друку.',
+    finansy: 'Для гурткової ради, курінного чи батьків: скільки було, прийшло, витратили й лишилось — і всі рухи. <b>Боргів окремих людей тут немає</b> (вони — у витягу людини в касі).',
+    prysutnist: 'Таблиця «хто на яких сходинах був» за вибраний період. Друкується лежачи (A4 горизонтально).',
+    roky: 'Підсумки кожного навчального року й хто ким був у гуртку. Минулі роки записує «Новий рік»; цей рік сторінка рахує сама.',
+    kartka: 'Повна хронологія однієї людини: коли прийшла, посади, проби, вмілості, відзнаки, присутність по роках. Можна надрукувати всі картки разом — для архіву.'
+  };
+  function malyuvaty() {
+    if (!D) return;
+    zPeriod();
+    const k = ZV === 'kartka' || ZV === 'roky';
+    $('b-per').hidden = k; $('b-im').hidden = ZV !== 'kartka';
+    if (k) { $('b-vid').hidden = $('b-do').hidden = true; }
+    $('z-hint').innerHTML = OPYS[ZV];
+    try {
+      $('z-desk').innerHTML = ({hurtok: zvitHurtka, finansy: zvitFinansy, prysutnist: zvitPrysutnist, roky: zvitRoky, kartka: zvitKartka})[ZV]();
+    } catch (x) { console.error(x); $('z-desk').innerHTML = '<p class="wait">Не вдалося скласти звіт: ' + esc(x.message) + '</p>'; }
+  }
+  $('z-desk').addEventListener('input', e => { const el = e.target.closest('[data-vr]'); if (el) VR[el.dataset.vr] = el.innerText; });
+  $('z-rz').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; ZV = b.dataset.z; document.querySelectorAll('#z-rz [data-z]').forEach(x => x.setAttribute('aria-selected', String(x === b))); malyuvaty(); });
+  ['z-per', 'z-vid', 'z-do', 'z-im'].forEach(id => $(id).addEventListener('change', malyuvaty));
+  $('z-druk').addEventListener('click', () => {
+    const land = ZV === 'prysutnist', ps = document.createElement('style');
+    ps.textContent = land ? '@page{size:A4 landscape;margin:9mm}' : '@page{size:A4 portrait;margin:13mm 14mm}';
+    document.head.appendChild(ps);
+    const kin = () => { ps.remove(); window.removeEventListener('afterprint', kin); };
+    window.addEventListener('afterprint', kin);
+    window.print();
+  });
+
+  /* ---------- вхід / вихід ---------- */
+  function vyity() { D = null; Object.keys(VR).forEach(k => delete VR[k]); $('z-desk').innerHTML = ''; $('z-main').hidden = true; $('v-lock-wrap').hidden = false; }
+  $('z-out').addEventListener('click', vyity);
+  window.addEventListener('pagehide', () => { D = null; });
+  $('z-lock').addEventListener('submit', async e => {
+    e.preventDefault();
+    const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
+    if (!addr && !DEMO) { $('z-noaddr').hidden = false; return; }
+    const b = $('z-in'); b.disabled = true; b.textContent = 'Беру з книги…'; $('z-err').hidden = true;
+    try {
+      const v = await zapyt({kod: k, dija: 'zvity'});
+      if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
+      D = v; $('z-kod').value = '';
+      PER = periody();
+      $('z-per').innerHTML = PER.map(p => `<option value="${p.k}">${esc(p.n)}</option>`).join('');
+      const im = vsiImena(), akt = Object.keys(im).filter(x => im[x] !== 'вибув'), vyb = Object.keys(im).filter(x => im[x] === 'вибув');
+      $('z-im').innerHTML = '<option value="">— виберіть —</option>' + akt.map(x => `<option>${esc(x)}</option>`).join('')
+        + (vyb.length ? `<optgroup label="Вибули">${vyb.map(x => `<option>${esc(x)}</option>`).join('')}</optgroup>` : '')
+        + '<option value="*">Усі картки (кожна з нової сторінки)</option>' + (vyb.length ? '<option value="**">Усі картки, і тих, хто вибув — для архіву</option>' : '');
+      if (akt.length) $('z-im').value = akt[0];
+      $('v-lock-wrap').hidden = true; $('z-main').hidden = false; malyuvaty();
+    } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
+    finally { b.disabled = false; b.textContent = 'Увійти'; }
+  });
+
+  if (DEMO) {
+    const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
+    n.textContent = 'Проба: вигаданий гурток «Лелеки». Вхід — без коду (у справжній роботі — ваш код виховника).';
+    document.body.prepend(n); $('z-noaddr').hidden = true;
+    $('z-kod').value = '123456'; $('z-lock').requestSubmit();
+  }
+})();
+</script>
+</body>
+</html>

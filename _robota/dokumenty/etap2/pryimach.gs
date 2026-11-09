@@ -39,6 +39,8 @@
  *   {kod, dija:"vmilosti"}                          → огляд «хто на що працює і що замовляти»: рядки «Вмілостей» (лише імена), що є й що в дорозі по кожній нашивці, пороги з «Налаштувань»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
  *   {kod, dija:"zvit", arkush:"Фінанси", vid:"2026-09-01", do:"2027-08-31"} → {ok:true, zaholovky:[...], ryadky:[[...]]}
+ *   {kod, dija:"zvity"}                             → (виховник) усе для звітів і «Картки учасника» одним разом: {nazva, kurin, rik, vykhovnyk, sohodni,
+ *                                                     arkushi:{Учасники:{z:[...], v:[[...]]}, …}} — значення як є (дати — «2026-11-05»), без прізвищ
  *
  * Безпека: код гуртка НЕ записаний тут — лише його відбиток (SHA-256) у «Властивостях скрипта»,
  * виставляється з меню «Книга гуртка → Встановити код». Писати можна лише в аркуші зі списку PYSATY,
@@ -64,7 +66,7 @@ var KLIUCH = {'Сходини': ['Дата'], 'Відвідуваність': ['
               'Замовлення': ['№ замовлення', 'Відзнака'], 'Мандрівки': ['Дата', 'Назва']};
 var SPYSKY = ['Майно', 'Завдання', 'Замовлення'];   // «spysok»: перший стовпець — назви завдань, номери замовлень; Проби/Вмілості/Відзначки (перший стовпець — імена) сюди не входять
 var DEN = ['Фінанси'];    // «den»: що вже записано за день — і виправити будь-який незатверджений рядок (каса)   // «spysok»: перший стовпець цих аркушів (назви речей) — підказка в полі; прізвищ там немає
-var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'kasa', 'zvirka', 'nakhunok', 'spysaty'];   // лише з кодом виховника
+var LYSHE_V = ['novi', 'zatverdyty', 'zvit', 'zvity', 'kasa', 'zvirka', 'nakhunok', 'spysaty'];   // лише з кодом виховника
 var ZLI_MAX = 5, ZLI_CHAS = 3600;
 var ZVIRKY = 'Звірки', PEREM = 'переміщення', FOTO = 'Фото чека', FOTO_MAX = 3 * 1024 * 1024;
 var KOPIIA = 'Копія посвідки', KOPIIA_PR = 'Копія бланка', KOPII_PAPKA = 'Проби та вмілості', KOPIIA_MAX = 5 * 1024 * 1024;
@@ -129,6 +131,7 @@ function doPost(e) {
     if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto, z));
     if (z.dija === 'novi') { var nv = novi(); return vidpovid({ok: true, novi: nv.zapysy, chekaiut: nv.chekaiut}); }
     if (z.dija === 'zvit') return vidpovid(zvit(z.arkush, z.vid, z['do']));
+    if (z.dija === 'zvity') return vidpovid(zvity());
     return vidpovid({ok: false, pomylka: 'Невідома дія.'});
   } catch (x) {
     return vidpovid({ok: false, pomylka: 'Помилка в таблиці: ' + x.message});
@@ -213,6 +216,29 @@ function zvit(arkush, vid, doo) {
   var bez = zag.map(function (h, k) { return PRYKHOVATY.indexOf(h) >= 0 ? -1 : k; }).filter(function (k) { return k >= 0; });
   return {ok: true, arkush: arkush, zaholovky: bez.map(function (k) { return zag[k]; }),
           ryadky: ryadky.map(function (r) { return bez.map(function (k) { return r[k]; }); })};
+}
+
+// ---------- звіти для друку (Етап 3.4) ----------
+// Сайт сам рахує звіт гуртка, фінансовий, присутність, підсумок по роках і «Картку учасника» — з тих самих аркушів.
+// Лише читає. Прізвищ не видає (PRYKHOVATY); порожні заголовки (вільні стовпці імен у «Відвідуваності») не віддає.
+var ZVITY = ['Учасники', 'Посади', 'Сходини', 'Відвідуваність', 'Проби', 'Вмілості', 'Відзначки', 'Мандрівки',
+             'Фінанси', 'Внески', 'Протоколи', 'Роки', 'Історія учасників'];
+function zvity() {
+  var ss = SpreadsheetApp.getActive(), out = {};
+  ZVITY.forEach(function (n) {
+    var sh = ss.getSheetByName(n); if (!sh) return;
+    var z = zaholovky(sh);
+    var bez = z.map(function (h, k) { return !String(h).trim() || PRYKHOVATY.indexOf(h) >= 0 ? -1 : k; }).filter(function (k) { return k >= 0; });
+    out[n] = {z: bez.map(function (k) { return z[k]; }),
+              v: ryadky(sh).map(function (r) { return bez.map(function (k) { var x = r[k]; return x instanceof Date ? iso(x) : x; }); })};
+  });
+  var nal = {}, sh = ss.getSheetByName('Налаштування');
+  if (sh) {
+    var v = sh.getRange(H, 1, 8, sh.getLastColumn()).getDisplayValues();
+    for (var i = 0; i < v.length; i++) for (var c = 0; c < v[i].length - 1; c++) nal[String(v[i][c]).trim()] = nal[String(v[i][c]).trim()] || String(v[i][c + 1]).trim();
+  }
+  return {ok: true, nazva: nal['Назва гуртка'] || '', kurin: nal['Курінь / станиця'] || '', rik: nal['Навчальний рік'] || '',
+          vykhovnyk: nal["Виховник (ім'я)"] || '', sohodni: iso(new Date()), arkushi: out};
 }
 
 // ---------- запис ----------

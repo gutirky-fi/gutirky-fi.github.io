@@ -72,6 +72,10 @@ ok(z.ok && z.ryadky.length === 3, 'звіт за датами: ' + z.ryadky.leng
 const zu = post({ kod: 'lelekы-2026', dija: 'zvit', arkush: 'Учасники' });
 ok(zu.ok && !zu.zaholovky.includes('Прізвище') && !JSON.stringify(zu).includes('Бондар'), 'звіт «Учасники» — без прізвищ');
 ok(!JSON.stringify(im).includes('Бондар'), 'список імен для форм — без прізвищ');
+const zz = post({ kod: 'lelekы-2026', dija: 'zvity' });
+ok(zz.ok && zz.arkushi['Сходини'].v.length >= 7 && zz.arkushi['Відвідуваність'].z.includes('Олесь') && !zz.arkushi['Відвідуваність'].z.includes(''), 'звіти одним разом: аркуші є, порожніх заголовків немає');
+ok(!JSON.stringify(zz).includes('Бондар') && !zz.arkushi['Учасники'].z.includes('Прізвище') && !zz.arkushi['Історія учасників'].z.includes('Прізвище'), 'звіти — без прізвищ');
+ok(/^\d{4}-\d\d-\d\d$/.test(zz.arkushi['Сходини'].v[0][0]) && zz.nazva !== undefined, 'дати у звітах — 2026-09-05');
 // ---- виправити / скасувати / перевірено / зміни ----
 const K = 'lelekы-2026', zm = () => sheets['Зміни']._f.slice(3).filter(x => x[0] instanceof Date);
 let q = post({ kod: K, dija: 'zapys', arkush: 'Майно', khto: 'Соломія', dani: { 'Річ': 'Казанок', 'Кількість': 2, 'Перевірено виховником': 'так' } });
@@ -103,7 +107,7 @@ ok(vx && vx.prys['Олесь'] === '+' && vx.zatverdzheno === true, 'Що нов
 // ---- одна дата — один запис; два коди; затвердження ----
 const J = '2468';
 let x = post({ kod: J, dija: 'imena' }); ok(x.ok && x.rol === 'd' && post({ kod: K, dija: 'perevirka' }).rol === 'v', 'два коди: юнаки «d», виховник «v»');
-ok(!post({ kod: J, dija: 'novi' }).ok && !post({ kod: J, dija: 'zvit', arkush: 'Фінанси' }).ok && !post({ kod: J, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11 }).ok, 'кодом юнаків не прочитати звітів і «Що нового», не затвердити');
+ok(!post({ kod: J, dija: 'novi' }).ok && !post({ kod: J, dija: 'zvit', arkush: 'Фінанси' }).ok && !post({ kod: J, dija: 'zvity' }).ok && !post({ kod: J, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11 }).ok, 'кодом юнаків не прочитати звітів і «Що нового», не затвердити');
 const skhN = () => sheets['Сходини']._f.slice(3).filter(r => r[0] instanceof Date).length, n0 = skhN();
 x = post({ kod: J, dija: 'zapys', arkush: 'Сходини', khto: 'Дана', dani: { 'Дата': '2026-10-24', 'Тема': 'Орієнтування й компас', 'Місце': '' } });
 ok(x.ok && x.ryadok === 11 && skhN() === n0 && sheets['Сходини']._f[10][2] === 'Орієнтування й компас', 'та сама дата — той самий рядок, дубля немає');
