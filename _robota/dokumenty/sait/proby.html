@@ -263,6 +263,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   .sheet.edit [contenteditable],.sheet.edit td.m:hover{background:none}
   .pg tr{break-inside:avoid}
 }
+/*PAPIRCSS*/
 </style>
 </head>
 <body>
@@ -293,6 +294,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
       <label class="f"><span>Проба</span><select class="in" id="b-pr"></select></label>
       <label class="f"><span>Імен</span><select class="in" id="b-n"><option>6</option><option selected>8</option><option>10</option><option>12</option></select></label>
       <div class="btns" style="grid-template-columns:auto auto">
+        <button class="btn" type="button" id="b-view" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Переглянути</button>
         <button class="btn main" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="9" rx="2"/><path d="M6 14h12v7H6z"/></svg>Друк / PDF</button>
         <button class="btn" type="button" id="b-word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>Word</button>
       </div>
@@ -389,6 +391,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   <div class="gap" style="height:60px"></div>
 </div>
 
+<script>/*PAPIR*/</script>
 <script>
 (function () {
   'use strict';
@@ -474,6 +477,8 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   $('sheet').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.isContentEditable) { e.preventDefault(); e.target.blur(); } });
   ['b-pr', 'b-n', 'b-edit', 'b-hur'].forEach(id => $(id).addEventListener(id === 'b-hur' ? 'input' : 'change', () => { bZberegty(); bMal(); }));
   $('b-print').addEventListener('click', () => { bZberegty(); window.print(); });
+  Papir.fit($('sheet').parentElement);
+  $('b-view').addEventListener('click', () => { bZberegty(); const pr = $('b-pr').selectedOptions[0]; Papir.view({title: 'Проби', file: 'Проби' + (pr ? ' — ' + pr.textContent : ''), pages: [$('sheet')], print: () => $('b-print').click()}); });
   function wordHtml() {
     bZberegty();
     const sh = $('sheet').cloneNode(true);

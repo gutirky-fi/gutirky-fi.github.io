@@ -172,6 +172,7 @@
   .ppr+.ppr,.ppr.brk{break-before:page}
   .vr [contenteditable]{background-color:transparent!important}
 }
+/*PAPIRCSS*/
 </style>
 </head>
 <body>
@@ -223,6 +224,7 @@
       <label class="f" id="b-im" hidden><span>Хто</span><select class="in" id="z-im"></select></label>
       <label class="f" id="b-vyp" hidden><span>Як показати</span><select class="in" id="z-vyp"><option value="">Картка (для нас)</option><option value="1">Виписка для нового гуртка</option></select></label>
       <button class="btn" type="button" id="z-tekst" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Текст для батьків</button>
+      <button class="btn" type="button" id="z-pereg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Переглянути</button>
       <button class="btn main" type="button" id="z-druk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>Друк / PDF</button>
     </div>
     <p class="hint" id="z-hint"></p>
@@ -231,6 +233,7 @@
   </section>
 </div>
 
+<script>/*PAPIR*/</script>
 <script>
 (function () {
   'use strict';
@@ -747,6 +750,12 @@
   $('z-desk').addEventListener('input', e => { const el = e.target.closest('[data-vr]'); if (el) VR[el.dataset.vr] = el.innerText; });
   $('z-rz').addEventListener('click', e => { const b = e.target.closest('[data-z]'); if (!b) return; ZV = b.dataset.z; document.querySelectorAll('#z-rz [data-z]').forEach(x => x.setAttribute('aria-selected', String(x === b))); malyuvaty(); });
   ['z-per', 'z-vid', 'z-do', 'z-im', 'z-vyp'].forEach(id => $(id).addEventListener('change', malyuvaty));
+  Papir.fit($('z-desk'));
+  $('z-pereg').addEventListener('click', () => {
+    const NAZVA = {hurtok: 'Звіт гуртка', finansy: 'Фінансовий звіт', prysutnist: 'Присутність', roky: 'Гурток рік за роком', kartka: 'Картка учасника', dos: 'Досягнення за рік'};
+    const im = (ZV === 'kartka' || ZV === 'dos') && $('z-im').value && !/^\*/.test($('z-im').value) ? ' — ' + $('z-im').value : '';
+    Papir.view({title: NAZVA[ZV] + im, file: NAZVA[ZV] + im, pages: () => $('z-desk').querySelectorAll('.ppr'), print: () => $('z-druk').click()});
+  });
   $('z-druk').addEventListener('click', () => {
     const land = ZV === 'prysutnist', ps = document.createElement('style');
     ps.textContent = land ? '@page{size:A4 landscape;margin:9mm}' : ZV === 'dos' ? '@page{size:A4 portrait;margin:10mm 12mm}' : '@page{size:A4 portrait;margin:13mm 14mm}';
