@@ -375,6 +375,16 @@ const zam0 = sheets['Замовлення']._f.slice(3).filter(r => r[0]).length
   const dl = post({ kod: J, dija: 'vytiah', imya: 'Дана' });
   ok(dl.ryadky.some(r => r.hrupa === 'svoi') && dl.ryadky.some(r => r.hrupa === 'povernennia') && dl.ryadky.some(r => r.hrupa === 'vnesok'), 'витяг Дани: є «свої гроші», «повернення», внески');
   ok(!post({ kod: 'x', dija: 'vytiah', imya: 'Дана' }).ok, 'витяг без коду — ні');
+  // платіж «ні» (виховник не знайшов у банку) — не сплачено
+  const fr = FN().find(x => x.r[2] === 'внески' && x.r[7] !== 'свої гроші' && x.r[4] && x.r[8] && x.r[14] !== 'ні' && x.r[14] !== 'так');
+  if (fr) {
+    const im = fr.r[4], n = fr.r[8], b0 = post({ kod: J, dija: 'vytiah', imya: im }).vnesky.find(x => x.n === n).brak;
+    post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: fr.n, znach: 'ні' });
+    const v1 = post({ kod: J, dija: 'vytiah', imya: im }).vnesky.find(x => x.n === n);
+    ok(Math.abs(v1.brak - (b0 + fr.r[5])) < 0.001 && v1.nezn === fr.r[5], 'платіж «ні» (не знайдено в банку) — знову бракує: ' + im + ' «' + n + '» ' + b0 + ' → ' + v1.brak);
+    post({ kod: K, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: fr.n, znach: '' });
+  } else ok(false, 'немає рядка внеску для перевірки «ні»');
+  const vyb = post({ kod: J, dija: 'vytiah', imya: 'Ніхто' }); ok(vyb.aktyvn === false && !vyb.vnesky.length, 'не серед учасників — внески не рахуються');
 }
 
 ctx.novyiRik();

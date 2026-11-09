@@ -228,18 +228,20 @@ function vnesky() {
     var n = String(r[z.indexOf('Внесок')]).trim(); if (!n) return;
     out.push({n: n, suma: Number(r[z.indexOf('Сума, €')]) || 0, termin: iso(r[z.indexOf('Термін')]) || '', osobl: osoblyvi(r[z.indexOf('Особливі суми')])});
   });
-  var fs = ss.getSheetByName('Фінанси'), fz = zaholovky(fs), sp = {};
+  var fs = ss.getSheetByName('Фінанси'), fz = zaholovky(fs), sp = {}, ne = {};
   var ci = fz.indexOf("Хто (ім'я)"), cv = fz.indexOf('Внесок'), cs = fz.indexOf('Сума, €'), cr = fz.indexOf('Рух'), cp = fz.indexOf(PER), pv = {};
   var dodaty = function (o, im, v, x) { o[im] = o[im] || {}; o[im][v] = Math.round(((o[im][v] || 0) + x) * 100) / 100; };
   if (cv >= 0) ryadky(fs).forEach(function (r) {
     var im = String(r[ci]).trim(), v = String(r[cv]).trim(); if (!im || !v) return;
     var x = Number(r[cs]) || 0; if (r[cr] === 'видаток') x = -x; else if (r[cr] !== 'надходження') return;
+    var pz = cp >= 0 ? String(r[cp]).trim().toLowerCase() : '';
+    if (pz === 'ні') { dodaty(ne, im, v, x); return; }   // ✗ виховник не знайшов цих грошей — не рахуємо сплаченим
     dodaty(sp, im, v, x);
-    if (cp >= 0 && String(r[cp]).trim().toLowerCase() === 'так') dodaty(pv, im, v, x);   // ✓ — лише перевірене виховником
+    if (pz === 'так') dodaty(pv, im, v, x);   // ✓ — лише перевірене виховником
   });
   var imenaVn = out.map(function (x) { return x.n; }), syroty = {};   // платежі за внесок, якого вже немає в «Внесках» (перейменували / видалили)
   Object.keys(sp).forEach(function (im) { Object.keys(sp[im]).forEach(function (n) { if (imenaVn.indexOf(n) < 0 && sp[im][n]) { syroty[n] = syroty[n] || {}; syroty[n][im] = sp[im][n]; } }); });
-  return {ok: true, vnesky: out, splacheno: sp, perevireno: pv, syroty: syroty};
+  return {ok: true, vnesky: out, splacheno: sp, perevireno: pv, syroty: syroty, ne: ne};
 }
 
 // ---------- де зараз гроші (за книгою): готівкою, на рахунку ----------
@@ -296,11 +298,13 @@ function hroshi() {
 function vytiah(imya) {
   var im = chyste(imya || '').trim(); if (!im) return {ok: false, pomylka: 'Виберіть ім\'я.'};
   var okr = function (x) { return Math.round(x * 100) / 100; };
-  var v = vnesky(), vn = [], brak = 0, pereplata = 0, PV = v.perevireno || {};
+  var v = vnesky(), vn = [], brak = 0, pereplata = 0, PV = v.perevireno || {}, aktyvn = imena().indexOf(im) >= 0;
   v.vnesky.forEach(function (x) {
-    var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma, sp = (v.splacheno[im] || {})[x.n] || 0, pv = (PV[im] || {})[x.n] || 0, b = okr(treba - sp);
+    var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma, sp = (v.splacheno[im] || {})[x.n] || 0, pv = (PV[im] || {})[x.n] || 0, nz = (v.ne[im] || {})[x.n] || 0;
+    if (!aktyvn) { if (!sp && !nz) return; treba = sp; }   // вибув(-ла) чи ще не в «Учасниках»: внески не рахуються, лише те, що вже заплатив(-ла)
+    var b = okr(treba - sp);
     if (b > 0) brak += b; else if (b < 0) pereplata -= b;
-    vn.push({n: x.n, termin: x.termin, treba: treba, splacheno: okr(sp), perevireno: okr(pv), brak: b});
+    vn.push({n: x.n, termin: x.termin, treba: treba, splacheno: okr(sp), perevireno: okr(pv), nezn: okr(nz), brak: b});
   });
   var syroty = [];
   Object.keys(v.syroty || {}).forEach(function (n) { var s = (v.syroty[n] || {})[im] || 0; if (s) { syroty.push({n: n, suma: okr(s)}); brak -= s; } });
@@ -329,7 +333,7 @@ function vytiah(imya) {
   });
   var bh = borhy(), borh = okr(bh.b[im] || 0);
   var vynen = okr(brak + (borh < 0 ? -borh : 0)), hv = okr((borh > 0 ? borh : 0) + pereplata);
-  return {ok: true, imya: im, vnesky: vn, syroty: syroty, ryadky: rows.slice(-200),
+  return {ok: true, imya: im, aktyvn: aktyvn, vnesky: vn, syroty: syroty, ryadky: rows.slice(-200),
           pidsumok: {brakVnesky: okr(brak), pereplata: okr(pereplata), borh: borh, vynenHurtku: vynen, hurtokVynen: hv, razom: okr(vynen - hv), bezCheka: bh.bez[im] || []}};
 }
 
