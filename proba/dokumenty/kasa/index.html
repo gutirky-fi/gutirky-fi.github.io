@@ -285,6 +285,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 .vtc .in{width:100%;min-height:0;height:44px;padding:8px 10px;font-size:16px}
 .vtc textarea.in{height:auto;min-height:150px;line-height:1.4;resize:vertical}
 .vtc .vst{margin:10px 0 6px;padding:12px;border-radius:12px;background:#14171a;border:1px solid var(--ln);display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.vtc ul.vpo{margin:4px 0 6px;padding-left:18px;color:var(--body);font-size:14.5px}.vtc ul.vpo li{margin:4px 0}
+.vtp ul.ppo{margin:0 0 10px;padding-left:18px;font-size:13px}.vtp ul.ppo li{margin:3px 0}
 .vtc .vst small{color:var(--mut);font-weight:600;font-size:13px}.vtc .vst b{font:600 24px/1.1 var(--disp)}
 .vtc .vst.vy b{color:#ffb3c3}.vtc .vst.hv b{color:#f3d48a}.vtc .vst.ok b{color:var(--ok-t)}
 .vtc h4{margin:12px 0 4px;font-size:14.5px;color:var(--ink)}
@@ -1320,7 +1322,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (!bz.querySelector('.nag')) {
       const sg = den();
       bz.innerHTML = !boh.length ? '<p class="y">✓ Ніхто нічого не винен гуртку.</p>' : `<p>За книгою гуртка, від найбільшого. Уже записані, але ще не перевірені платежі (⏳) враховано — двічі не просимо.</p><ul class="vl">${boh.map(x => `<li data-im="${esc(x.im)}"><div class="vlt"><span>${esc(x.im)}</span><b>${groshi(x.vynenHurtku)}</b></div>
-        <div class="vls">${[x.brakVnesky > 0 ? 'внески: бракує ' + groshi(x.brakVnesky) : '', x.termin ? 'термін ' + isoDd(x.termin) + (x.termin < sg ? ' <span class="r">прострочено</span>' : '') : '', x.borh < 0 ? 'борг гуртку ' + groshi(-x.borh) : '', x.hurtokVynen > 0 ? 'гурток винен ' + groshi(x.hurtokVynen) + ' — можна зарахувати' : '', chekaie(x.im) ? '⏳ є неперевірені платежі' : ''].filter(Boolean).join(' · ')}</div>
+        <div class="vls">${[x.brakVnesky > 0 ? 'внески: бракує ' + groshi(x.brakVnesky) : '', x.termin ? 'термін ' + isoDd(x.termin) + (x.termin < sg ? ' <span class="r">прострочено</span>' : '') : '', x.borh < 0 ? 'борг гуртку ' + groshi(-x.borh) : '', x.hurtokVynen > 0 ? 'має й отримати від гуртка ' + groshi(x.hurtokVynen) + ' — можна зарахувати' : '', chekaie(x.im) ? '⏳ є неперевірені платежі' : ''].filter(Boolean).join(' · ')}</div>
         <div class="vb"><button type="button" class="btn" data-vtn="1">Нагадати</button><button type="button" class="btn" data-vtv="1">Витяг</button></div></li>`).join('')}</ul>`;
     }
     // оголошення
@@ -1344,7 +1346,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (r.opys && !['vnesok', 'zaokr', 'povernennia', 'povb'].includes(r.hrupa) && r.opys !== t) t += ': ' + r.opys;
     if (r.yak && r.yak !== 'свої гроші') t += ' (' + r.yak + ')';
     if (r.hrupa === 'svoi') t += r.foto ? ' · 📷 чек' : ' · без чека';
-    if (r.vplyv) t += r.vplyv > 0 ? ' → гурток винен' : ' → винен(-на) гуртку';
+    if (r.vplyv) t += r.vplyv > 0 ? ' → має отримати назад' : ' → має віддати гуртку';
     return t;
   }
   const vtStan = r => r.perevireno === 'так' ? ['y', '✓'] : r.perevireno === 'ні' ? ['r', '✗ не знайдено'] : ['w', '⏳'];
@@ -1354,35 +1356,46 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     return ['r', 'бракує ' + groshi(x.brak) + (x.splacheno > x.perevireno + 0.001 ? ' · ⏳' : '') + (x.termin ? ' · до ' + isoDd(x.termin) : '')];
   }
   function vtPidsumok(p) {
-    if (p.razom > 0.001) return ['vy', 'винен(-на) гуртку', groshi(p.razom)];
-    if (p.razom < -0.001) return ['hv', 'гурток винен', groshi(-p.razom)];
-    return ['ok', 'розраховано', '✓'];
+    if (p.razom > 0.001) return ['vy', 'має доплатити гуртку', groshi(p.razom)];
+    if (p.razom < -0.001) return ['hv', 'має отримати від гуртка', groshi(-p.razom)];
+    return ['ok', 'розраховано, ніхто нікому не винен', '✓'];
+  }
+  function vtPoyasn(d) {   // простими реченнями: що треба заплатити, що отримати, і що виходить разом
+    const p = d.pidsumok, im = d.imya, l = [];
+    d.vnesky.filter(x => x.brak > 0).forEach(x => l.push(`${im} має заплатити внесок «${x.n}»: ${groshi(x.brak)}${x.termin ? ' (до ' + isoDd(x.termin) + ')' : ''}.`));
+    if (p.borh < 0) l.push(`${im} має віддати гуртку борг: ${groshi(-p.borh)}.`);
+    if (p.borh > 0) l.push(`${im} має отримати від гуртка ${groshi(p.borh)} — за те, що купив(-ла) для гуртка за свої гроші.`);
+    if (p.pereplata > 0) l.push(`${im} заплатив(-ла) внески на ${groshi(p.pereplata)} більше, ніж треба, — їх можна повернути або зарахувати в наступний внесок.`);
+    if (p.vynenHurtku > 0 && p.hurtokVynen > 0) l.push('Якщо зарахувати одне в інше: ' + (p.razom > 0.001 ? `${im} доплачує лише ${groshi(p.razom)}.` : p.razom < -0.001 ? `${im} нічого не платить і ще отримує від гуртка ${groshi(-p.razom)}.` : 'ніхто нікому нічого не винен.'));
+    if (!l.length) l.push('Усе розраховано: ніхто нікому нічого не винен.');
+    return l;
   }
   function vtVyvid() {
     const d = VT.dani, out = $('vt-out'); if (!d) return;
     const p = d.pidsumok, [k, sl, s] = vtPidsumok(p), obydva = p.vynenHurtku > 0 && p.hurtokVynen > 0;
     out.innerHTML = `<div class="vst ${k}"><small>${esc(d.imya)} · станом на ${isoDd(den())}<br>${sl}</small><b>${s}</b></div>`
-      + (obydva ? `<p class="w">Окремо: винен(-на) гуртку ${groshi(p.vynenHurtku)}, гурток винен ${groshi(p.hurtokVynen)} — разом ${sl} ${s}. Зарахувати одне в інше — кнопка «У внесок» у «Де зараз гроші».</p>` : '')
+      + `<ul class="vpo">${vtPoyasn(d).map(x => `<li>${esc(x)}</li>`).join('')}</ul>`
+      + (obydva ? `<p>Зарахувати одне в інше — кнопка «У внесок» у «Де зараз гроші».</p>` : '')
       + (p.bezCheka.length ? `<p class="w">Без чека: ${p.bezCheka.map(x => esc(isoDd(x.data) + ' «' + x.opys + '» ' + groshi(+x.suma))).join('; ')} — поки немає фото чека, не повертаємо.</p>` : '')
       + (d.vnesky.length ? `<h4>Внески</h4><table><thead><tr><th>Внесок</th><th>Треба</th><th>Сплачено</th><th>Стан</th></tr></thead><tbody>${d.vnesky.map(x => { const [c, t] = vtVnStan(x); return `<tr><td>${esc(x.n)}</td><td class="s">${groshi(x.treba)}</td><td class="s">${groshi(x.splacheno)}</td><td class="${c}">${esc(t)}</td></tr>`; }).join('')}</tbody></table>` : '<p>Внесків ще немає в книзі.</p>')
       + (d.syroty.length ? `<p class="w">Платежі за внесок, якого вже немає в «Внесках»: ${d.syroty.map(x => '«' + esc(x.n) + '» ' + groshi(x.suma)).join(', ')} — враховано як сплачене.</p>` : '')
       + `<h4>Рух грошей</h4>` + (d.ryadky.length ? `<table><thead><tr><th>Дата</th><th>Що</th><th>Сума</th><th></th></tr></thead><tbody>${d.ryadky.map(r => { const [c, t] = vtStan(r); return `<tr><td>${esc(isoDd(r.data))}</td><td>${esc(vtShcho(r))}</td><td class="s">${groshi(r.suma)}</td><td class="${c}" title="✓ — перевірив виховник; ⏳ — чекає перевірки">${t}</td></tr>`; }).join('')}</tbody></table>` : '<p>Записів у касі з цим ім\'ям немає.</p>')
       + `<p>✓ — перевірив виховник (переказ — у банку, готівку — отримав); ⏳ — записано, чекає перевірки.</p>`
-      + `<div class="vb"><button type="button" class="btn ok" data-vtd="1">Друк / PDF</button><button type="button" class="btn" data-vtsh="1">Поділитися</button>${p.vynenHurtku > 0 ? '<button type="button" class="btn" data-vtnag="1">Нагадати</button>' : ''}<button type="button" class="lnk" data-vtr="1">оновити</button></div><p class="vm"></p>`;
+      + `<div class="vb"><button type="button" class="btn ok" data-vtd="1">Друк / PDF</button><button type="button" class="btn" data-vtsh="1">Поділитися</button>${p.razom > 0.001 ? '<button type="button" class="btn" data-vtnag="1">Нагадати</button>' : ''}<button type="button" class="lnk" data-vtr="1">оновити</button></div><p class="vm"></p>`;
   }
   function vtTekst(d) {
     const p = d.pidsumok, [, sl, s] = vtPidsumok(p), l = [`Витяг з каси гуртка — ${d.imya}, станом на ${isoDd(den())}`];
     if (d.vnesky.length) { l.push('', 'Внески:'); d.vnesky.forEach(x => l.push(`• ${x.n} (${groshi(x.treba)}) — ${vtVnStan(x)[1]}`)); }
     const ins = d.ryadky.filter(r => r.hrupa !== 'vnesok');
     if (ins.length) { l.push('', 'Свої гроші, повернення, борги:'); ins.forEach(r => l.push(`• ${isoDd(r.data)} ${vtShcho(r)} — ${groshi(r.suma)}`)); }
-    l.push('', `Підсумок: ${sl}${s === '✓' ? ' ✓' : ' ' + s}.`, '✓ — перевірив виховник; ⏳ — чекає перевірки.');
+    l.push('', `Підсумок: ${d.imya} ${sl}${s === '✓' ? ' ✓' : ': ' + s}.`); vtPoyasn(d).forEach(x => l.push('• ' + x)); l.push('', '✓ — перевірив виховник; ⏳ — чекає перевірки.');
     return l.join('\n');
   }
   function vtDrukHtml(d) {
     const p = d.pidsumok, [, sl, s] = vtPidsumok(p);
     return `<div class="vtp"><header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде ${esc(K.posada)}</span></div><h3>Витяг з каси</h3><div class="sub">Внески, свої гроші й борги однієї людини · за книгою гуртка</div></div><img src="${EMB}" alt="Пластова лілея"></header>
       <div class="meta"><span>Ім'я: <b>${esc(d.imya)}</b></span><span>Станом на: <b>${isoDd(den())}</b></span></div>
-      <div class="pd">Підсумок: ${sl} ${s === '✓' ? '✓' : s}${p.vynenHurtku > 0 && p.hurtokVynen > 0 ? ` — окремо: винен(-на) гуртку ${groshi(p.vynenHurtku)}, гурток винен ${groshi(p.hurtokVynen)}` : ''}</div>
+      <div class="pd">${esc(d.imya)} ${sl}${s === '✓' ? ' ✓' : ': ' + s}</div><ul class="ppo">${vtPoyasn(d).map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       ${d.vnesky.length ? `<h4>Внески</h4><table><thead><tr><th>Внесок</th><th>Треба</th><th>Сплачено</th><th>Стан</th></tr></thead><tbody>${d.vnesky.map(x => `<tr><td>${esc(x.n)}</td><td class="s">${groshi(x.treba)}</td><td class="s">${groshi(x.splacheno)}</td><td>${esc(vtVnStan(x)[1])}</td></tr>`).join('')}</tbody></table>` : ''}
       <h4>Рух грошей</h4>${d.ryadky.length ? `<table><thead><tr><th style="width:16%">Дата</th><th>Що</th><th style="width:14%">Сума</th><th style="width:12%">Перевірено</th></tr></thead><tbody>${d.ryadky.map(r => `<tr><td>${esc(isoDd(r.data))}</td><td>${esc(vtShcho(r))}</td><td class="s">${groshi(r.suma)}</td><td>${vtStan(r)[1]}</td></tr>`).join('')}</tbody></table>` : '<p>Записів немає.</p>'}
       <p class="pr">✓ — перевірив виховник; ⏳ — записано, чекає перевірки. Витяг лише з ім'ям, без прізвища й контактів. Якщо щось не так — скажіть скарбникові чи виховникові.</p>
