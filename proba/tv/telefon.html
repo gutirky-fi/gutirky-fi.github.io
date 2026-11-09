@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Відкрити на проєкторі · макет</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+body{margin:0;min-height:100vh;background:#1b1d21;color:#f2f4f6;font:400 17px/1.4 'Source Sans 3',system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding:28px 22px;box-sizing:border-box}
+img{height:48px;align-self:flex-start}
+.c{margin-top:40px;width:100%;max-width:420px;background:#22262b;border:1px solid #383d44;border-top:5px solid #3daf6e;border-radius:20px;padding:24px 20px}
+.k{font:600 13px 'Source Sans 3';letter-spacing:.25em;text-transform:uppercase;color:#a0a8b2}
+h1{font:600 30px/1.05 Oswald,sans-serif;text-transform:uppercase;margin:8px 0 10px}
+.dev{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:14px;background:#2a2f35;margin:16px 0 20px}
+.dev svg{flex:0 0 32px}
+.dev small{display:block;color:#a0a8b2}
+button{display:block;width:100%;min-height:54px;border-radius:14px;border:0;font:700 18px 'Source Sans 3';margin-top:10px}
+.y{background:#3daf6e;color:#0e1f15}.n{background:transparent;border:1px solid #383d44;color:#cfd5dc}
+p{color:#cfd5dc;margin:0}
+.ok{display:none;text-align:center}.done .ok{display:block}.done .ask{display:none}
+.ok h1{color:#62cf93}
+</style>
+</head>
+<body>
+<img src="img/plast-fi-logo-hd.png" alt="Пласт">
+<div class="c" id="c">
+  <div class="ask">
+    <div class="k">Виховники</div>
+    <h1>Відкрити розділ виховників на проєкторі?</h1>
+    <p>Ви ввійшли як виховник на цьому телефоні — код вводити не треба.</p>
+    <div class="dev"><svg viewBox="0 0 24 24" fill="none" stroke="#ffd23f" stroke-width="2"><rect x="2" y="7" width="20" height="10" rx="3"/><circle cx="16" cy="12" r="2.5"/></svg>
+      <div><b>Проєктор</b><small>запит щойно · код <span id="p"></span></small></div></div>
+    <button class="y" onclick="c.classList.add('done')">Так, відкрити</button>
+    <button class="n" onclick="history.back()">Ні, це не я</button>
+  </div>
+  <div class="ok"><h1>Готово</h1><p>Розділ виховників відкрито на проєкторі.<br>Закрити на проєкторі — кнопка «Вийти».</p></div>
+</div>
+<script>document.getElementById('p').textContent=new URLSearchParams(location.search).get('p')||'—';</script>
+</body>
+</html>

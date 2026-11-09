@@ -1,0 +1,23 @@
+/* ТБ-режим сайту (макет 2): той самий сайт, лише більше, з жовтою рамкою, без курсора. */
+html.tv body{zoom:1.22;cursor:none}
+html.tv{scroll-behavior:smooth}
+/* одна рамка на весь сайт */
+html.tv :focus{outline:none}
+html.tv :focus-visible,html.tv :focus{outline:4px solid #ffd23f!important;outline-offset:4px;box-shadow:0 0 0 8px rgba(255,210,63,.18),0 14px 34px rgba(0,0,0,.55)!important;position:relative;z-index:3;transition:transform .14s,box-shadow .14s}
+html.tv a:focus,html.tv button:focus,html.tv summary:focus,html.tv [role=tab]:focus{transform:scale(1.035)}
+html.tv .tabs a:focus{transform:none}
+/* дрібний текст читається з 3–4 метрів */
+html.tv small,html.tv .sb,html.tv .meta{font-size:max(1em,14px)}
+/* вхід виховника: QR замість поля */
+html.tv #lockbox{width:min(820px,100%)!important;max-width:none!important}
+html.tv .tvq .tx{min-width:0;flex:1}
+html.tv #lockbox>input,html.tv #lockbox>button[type=submit],html.tv #lockbox>small{display:none}
+html.tv #lockbox.tvkod-on>input,html.tv #lockbox.tvkod-on>button[type=submit]{display:block}
+html.tv #lockbox.tvkod-on>input{-webkit-text-security:disc;letter-spacing:.5em;text-align:center}
+html.tv .tvq{display:flex;gap:24px;align-items:center;margin:14px 0 6px}
+html.tv .tvq .qr{flex:0 0 auto;width:236px;height:236px;padding:8px;border-radius:16px;background:#fff}
+html.tv .tvq .qr svg{display:block;width:100%;height:100%}
+html.tv .tvq .tx{display:flex;flex-direction:column;gap:10px}
+html.tv .tvq b{font:600 26px/1.1 Oswald,sans-serif;text-transform:uppercase;color:var(--ink,#f2f4f6)}
+html.tv .tvq span{color:var(--body,#cfd5dc);font-size:17px}
+html.tv .tvq .btn.ghost{background:transparent;border:1px solid var(--ln,#383d44);color:var(--body,#cfd5dc);min-height:44px;border-radius:12px;font-weight:700;padding:0 16px;text-align:left}
