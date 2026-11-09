@@ -176,6 +176,40 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   .seg button{padding:10px 12px}.seg b{font-size:16px}.seg small{font-size:12.5px}
   .card{padding:18px 16px}.row2{grid-template-columns:1fr}
 }
+/* «Витяг і нагадування» (каса) */
+.vtc h3{margin:0 0 8px}
+.vtc .vtt{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:#14171a;border:1px solid var(--ln);margin-bottom:10px}
+.vtc .vtt button{padding:8px 4px;border:0;border-radius:9px;background:none;color:var(--mut);font:700 13.5px/1.2 var(--txt);cursor:pointer}
+.vtc .vtt button[aria-selected="true"]{background:#2a2f35;color:var(--ink)}
+.vtc .vtt button b{display:block;font:600 16px/1.1 var(--disp);color:#f3d48a}
+.vtc p{margin:6px 0 0;color:var(--mut);font-size:14px}
+.vtc label.f2{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mut);font-weight:600;margin-top:6px}
+.vtc .in{width:100%;min-height:0;height:44px;padding:8px 10px;font-size:16px}
+.vtc textarea.in{height:auto;min-height:150px;line-height:1.4;resize:vertical}
+.vtc .vst{margin:10px 0 6px;padding:12px;border-radius:12px;background:#14171a;border:1px solid var(--ln);display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.vtc .vst small{color:var(--mut);font-weight:600;font-size:13px}.vtc .vst b{font:600 24px/1.1 var(--disp)}
+.vtc .vst.vy b{color:#ffb3c3}.vtc .vst.hv b{color:#f3d48a}.vtc .vst.ok b{color:var(--ok-t)}
+.vtc h4{margin:12px 0 4px;font-size:14.5px;color:var(--ink)}
+.vtc table{width:100%;border-collapse:collapse;font-size:13.5px}
+.vtc td,.vtc th{padding:5px 4px;border-top:1px solid var(--ln);text-align:left;vertical-align:top}
+.vtc th{color:var(--mut);font-weight:600;font-size:12.5px;border-top:0}
+.vtc td.s{text-align:right;white-space:nowrap;font-weight:700}
+.vtc .y{color:var(--ok-t)}.vtc .w{color:#f3d48a}.vtc .r{color:#ffb3c3}
+.vtc ul.vl{list-style:none;margin:0;padding:0}.vtc ul.vl li{padding:8px 0;border-top:1px solid var(--ln)}.vtc ul.vl li:first-child{border-top:0}
+.vtc .vlt{display:flex;justify-content:space-between;gap:8px;font-weight:700}.vtc .vlt b{font:600 18px/1.2 var(--disp);color:#ffb3c3;white-space:nowrap}
+.vtc .vls{font-size:13px;color:var(--mut)}.vtc .vls .r{font-weight:700}
+.vtc .vb{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.vtc .vb .btn{padding:7px 13px;font-size:14px}
+.vtc .nag{margin-top:8px;padding:10px;border-radius:12px;background:#14171a;border:1px solid rgba(217,166,64,.45)}
+.vtc .kom{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--body)}.vtc .kom label{display:flex;gap:6px;align-items:center}
+.vtc .vm{font-size:13.5px;margin:6px 0 0;color:var(--ok-t)}
+#vt-print{display:none}
+.vtp{--pi:#1d2125;--pm:#5f6873;--pl:#cfd5dc;--acc:#c8284a;--tint:#f9e6ea;background:#fff;color:var(--pi);font:12.5px/1.4 var(--txt)}
+.vtp .meta{display:flex;gap:22px;margin:4px 0 10px;font-size:13px}.vtp .meta span{color:var(--pm)}.vtp .meta b{color:var(--pi)}
+.vtp .pd{margin:8px 0 12px;padding:10px 14px;background:var(--tint);border-left:4px solid var(--acc);font-size:15px;font-weight:700}
+.vtp h4{margin:12px 0 5px;font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--acc)}
+.vtp table{width:100%;border-collapse:collapse}.vtp th,.vtp td{border:1px solid var(--pl);padding:4px 6px;text-align:left;vertical-align:top;font-size:12px}
+.vtp th{background:var(--tint);font-size:11px}.vtp td.s{text-align:right;white-space:nowrap}
+.vtp .pr{margin-top:10px;color:var(--pm);font-size:11.5px}
 @page{size:A4 landscape;margin:9mm}
 @media print{
   html,body{background:#fff}
@@ -185,6 +219,10 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   .sheet{min-width:0;max-width:none;width:100%;aspect-ratio:auto;height:186mm;padding:0;box-shadow:none;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sheet.edit [contenteditable]{background:none}
   .sheet.port{height:271mm}
+  html:has(body.vt-pr),body.vt-pr{background:#fff!important;color-scheme:light}
+  body.vt-pr>*{display:none!important}
+  body.vt-pr>#vt-print{display:block!important}
+  .vtp{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -387,7 +425,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   }
   if (/podaty/.test(location.hash) || hm) show(1);
 
-  $('z-side').innerHTML = (K.hroshi ? '<div class="card hrc" id="z-hr" hidden></div>' : '') + [['Куди це піде', K.kudy]].concat(K.pravylo ? [['Що є доказом', K.pravylo]] : [], [['Що лишається на телефоні', ['Нічого з записів: після «Надіслати» форма чиста.', 'Код не зберігається — після «Вийти» або закриття сторінки треба ввести знову.']],
+  $('z-side').innerHTML = (K.hroshi ? '<div class="card hrc" id="z-hr" hidden></div>' : '') + (K.vytiah ? '<div class="card vtc" id="z-vt" hidden></div>' : '') + [['Куди це піде', K.kudy]].concat(K.pravylo ? [['Що є доказом', K.pravylo]] : [], [['Що лишається на телефоні', ['Нічого з записів: після «Надіслати» форма чиста.', 'Код не зберігається — після «Вийти» або закриття сторінки треба ввести знову.']],
     ['Немає мережі?', ['Відкрийте «Бланк», запишіть на папері, а вдома перенесіть сюди.']]])
     .map(([h, l]) => `<div class="card"><h3>${esc(h)}</h3><ul>${l.map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('');
   if (K.auto) { $('z-auto').hidden = false; $('z-auto').querySelector('span').textContent = K.auto; }
@@ -422,6 +460,25 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
         return {ok: true, vnesky: K.demoVnesky || [], splacheno: sp, perevireno: pv};
       }
       if (t.dija === 'den') return {ok: true, ryadky: DR.filter(r => r.dani['Дата'] === t.dani['Дата']).map(r => ({ryadok: r.ryadok, dani: r.dani, khto: r.khto, koly: r.koly, zatverdzheno: !!r.zatv, ne: !!r.ne, versiya: r.ver}))};
+      if (t.dija === 'vytiah') {   // проба: те саме, що рахує приймач, — з рядків у пам'яті
+        const im = String(t.imya || '').trim(); if (!im) return {ok: false, pomylka: 'Виберіть ім\'я.'};
+        const vn = await zapyt({kod: t.kod, dija: 'vnesky'}), h = await zapyt({kod: t.kod, dija: 'hroshi'}), o2 = x => Math.round(x * 100) / 100, rows = [];
+        Object.entries((K.demoSplacheno || {})[im] || {}).forEach(([n, s]) => rows.push({data: '2026-10-05', ruh: 'надходження', kat: 'внески', opys: 'внесок', suma: s, yak: 'переказ', vnesok: n, foto: false, perevireno: 'так', hrupa: 'vnesok', vplyv: 0}));
+        let vp = 0;
+        DR.forEach(r => { const d = r.dani; if (d["Хто (ім'я)"] !== im) return;
+          const x = chyslo(d['Сума, €']), kat = d['Категорія'] || '', yak = d['Як платили'] || '', ruh = d['Рух'];
+          let v = 0; if (yak === 'свої гроші') v = ruh === 'видаток' ? x : -x; else if (kat === 'повернення' && ruh === 'видаток') v = -x; else if (kat === 'повернення боргу' && ruh === 'надходження') v = x; else if (kat === 'за учасника (поверне)' && ruh === 'видаток') v = -x;
+          const g = kat === 'внески' ? (yak === 'свої гроші' ? 'zalik' : 'vnesok') : kat === 'списано' ? 'spysano' : kat === 'повернення' ? 'povernennia' : kat === 'повернення боргу' ? 'povb' : kat === 'за учасника (поверне)' ? 'pozychka' : kat === 'заокруглення' ? 'zaokr' : yak === 'свої гроші' ? 'svoi' : 'inshe';
+          vp += v; rows.push({data: d['Дата'], ruh, kat, opys: d['Опис'] || '', suma: x, yak, vnesok: d['Внесок'] || '', foto: !!d['Фото чека'], perevireno: r.zatv ? 'так' : r.ne ? 'ні' : '', hrupa: g, vplyv: o2(v)}); });
+        const b0 = o2(((h.borhy || {})[im] || 0) - vp), bc = ((h.bezCheka || {})[im] || [])[0];   // давнє з проби (рядків немає)
+        if (b0 > 0) rows.push({data: bc ? bc.data : '2026-11-05', ruh: 'видаток', kat: 'матеріали для сходин', opys: bc ? bc.opys : 'покупка для гуртка', suma: b0, yak: 'свої гроші', vnesok: '', foto: false, perevireno: '', hrupa: 'svoi', vplyv: b0});
+        if (b0 < 0) rows.push({data: '2026-10-20', ruh: 'видаток', kat: 'повернення', opys: 'повернення', suma: -b0, yak: 'готівка', vnesok: '', foto: false, perevireno: 'так', hrupa: 'povernennia', vplyv: b0});
+        rows.sort((a, b) => String(a.data).localeCompare(String(b.data)));
+        let brak = 0, perepl = 0; const PV = vn.perevireno || {};
+        const vs = vn.vnesky.map(x => { const tr = x.osobl && im in x.osobl ? x.osobl[im] : x.suma, sp = o2((vn.splacheno[im] || {})[x.n] || 0), b = o2(tr - sp); if (b > 0) brak += b; else perepl -= b; return {n: x.n, termin: x.termin, treba: tr, splacheno: sp, perevireno: o2((PV[im] || {})[x.n] || 0), brak: b}; });
+        const borh = o2((h.borhy || {})[im] || 0), vy = o2(brak + (borh < 0 ? -borh : 0)), hv = o2((borh > 0 ? borh : 0) + perepl);
+        return {ok: true, imya: im, vnesky: vs, syroty: [], ryadky: rows, pidsumok: {brakVnesky: o2(brak), pereplata: o2(perepl), borh, vynenHurtku: vy, hurtokVynen: hv, razom: o2(vy - hv), bezCheka: (h.bezCheka || {})[im] || []}};
+      }
       if (t.dija === 'hroshi') {
         const h = Object.assign({gotivka: 0, rakhunok: 0, nevkazano: 0, chekaiut: 0, chekaiutSuma: 0, ne: 0}, K.demoHroshi || {});
         DR.forEach(r => { const x = chyslo(r.dani['Сума, €']), y = r.dani['Як платили'], k = y === 'готівка' ? 'gotivka' : ['MobilePay', 'переказ', 'картка'].includes(y) ? 'rakhunok' : y === 'свої гроші' ? '' : 'nevkazano';
@@ -665,7 +722,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     }
   });
   $('z-again').addEventListener('click', () => { fixing = false; red = null; formaChysta(); $('z-done').hidden = true; $('z-form').hidden = false; });
-  $('z-out').addEventListener('click', () => { if ($('z-hr')) $('z-hr').hidden = true; kod = ''; imena = []; ost = null; ostM = null; fixing = false; red = null; ostData = ''; VN = null; dlSpysok = []; dlNapovnyty(); $('z-polia').innerHTML = ''; $('z-form').hidden = true; $('z-done').hidden = true; $('z-lock').hidden = false; });
+  $('z-out').addEventListener('click', () => { if ($('z-hr')) $('z-hr').hidden = true; if ($('z-vt')) { $('z-vt').hidden = true; $('z-vt').innerHTML = ''; delete $('z-vt').dataset.gotovo; VT.im = ''; VT.dani = null; VT.tab = 0; } kod = ''; imena = []; ost = null; ostM = null; fixing = false; red = null; ostData = ''; VN = null; dlSpysok = []; dlNapovnyty(); $('z-polia').innerHTML = ''; $('z-form').hidden = true; $('z-done').hidden = true; $('z-lock').hidden = false; });
   window.addEventListener('pagehide', () => { kod = ''; ost = null; ostM = null; });
 
   /* ---------- підказка з книги: назви вже записаних речей (поле з "dl": "knyha") ---------- */
@@ -758,7 +815,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       s.innerHTML = opts(K.polia[VNP].opt, '— виберіть —');
       if (was) setV(s, was); else if (VN.vnesky.length) s.value = VN.vnesky[VN.vnesky.length - 1].n;
     });
-    vnVsi(); malVn(); if (HR && $('z-hr') && !$('z-hr').querySelector('.pf')) hrZavantazhyty();
+    vnVsi(); malVn(); if (HR && $('z-hr') && !$('z-hr').querySelector('.pf')) hrZavantazhyty(); else vtMal();
   }
   const vnTrebaSuma = (x, im) => x.osobl && Object.prototype.hasOwnProperty.call(x.osobl, im) ? x.osobl[im] : x.suma;
   function vnStan(el) {   // для рядка: {x, im, treba, bulo, brak} або null
@@ -1000,7 +1057,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       + (v.chekaiut ? `<p class="ch">⏳ Чекають перевірки виховника: ${v.chekaiut} ${ryadkiv(v.chekaiut)} (${groshi(v.chekaiutSuma)}).${v.ne ? ' З них не знайдено: ' + v.ne + '.' : ''}</p>` : '<p>✓ Усе перевірив виховник.</p>')
       + borhyHtml(v)
       + `<p>За книгою гуртка. «На рахунку» — MobilePay, перекази, картка; «готівкою» — гроші в коробці скарбника.</p>`;
-    box.hidden = false; vnVsi();
+    box.hidden = false; vnVsi(); vtMal();
   }
   /* ---------- борги «свої гроші»: «Гурток винен» + «Повернули» (той самий блок і у «Вході виховника») ---------- */
   function borhyHtml(v) {
@@ -1085,6 +1142,211 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (t.closest('[data-zv]')) return zalikZBoku(t.closest('[data-zv]'), im, t.closest('[data-zv]').dataset.zv, 'vnesok');
     if (t.closest('[data-pp]')) return zalikZBoku(t.closest('[data-pp]'), im, t.closest('[data-pp]').dataset.pp, 'borh');
   });
+
+  /* ---------- «Витяг і нагадування» (K.vytiah): витяг однієї людини, хто винен, загальне оголошення ---------- */
+  // Числа: витяг — з приймача («vytiah», лише рядки цієї людини); «Хто винен» — з уже завантажених «vnesky» і «hroshi».
+  // Сайт нічого не надсилає: скарбник копіює текст і шле сам. Суми — лише в особистому; в оголошенні — без імен і боргів.
+  const VT = {tab: 0, im: '', dani: null, rek: '', ogRuch: false, n: 0};
+  const REK = 'dokumenty-kasa-rekvizyty';
+  try { VT.rek = localStorage.getItem(REK) || ''; } catch (x) {}
+  function pidsumokZ(im) {   // те саме, що рахує приймач у «vytiah»
+    let brak = 0, perepl = 0, termin = '';
+    (VN && VN.vnesky || []).forEach(x => { const b = vnBrak(im, x); if (b > 0) { brak += b; if (x.termin && (!termin || x.termin < termin)) termin = x.termin; } else if (b < 0) perepl -= b; });
+    Object.keys(VN && VN.syroty || {}).forEach(n => { brak -= (VN.syroty[n] || {})[im] || 0; });
+    if (brak < 0) { perepl -= brak; brak = 0; }
+    const borh = okr((HR && HR.borhy || {})[im] || 0), vynen = okr(brak + (borh < 0 ? -borh : 0)), hv = okr((borh > 0 ? borh : 0) + perepl);
+    return {brakVnesky: okr(brak), pereplata: okr(perepl), borh, vynenHurtku: vynen, hurtokVynen: hv, razom: okr(vynen - hv), termin};
+  }
+  const chekaie = im => !!VN && VN.vnesky.some(x => ((VN.splacheno[im] || {})[x.n] || 0) > (((VN.perevireno || {})[im] || {})[x.n] || 0) + 0.001);
+  function lyudy() {
+    const l = imena.slice();
+    [VN && VN.splacheno, HR && HR.borhy].forEach(o => Object.keys(o || {}).forEach(im => { if (!l.includes(im)) l.push(im); }));
+    return l;
+  }
+  const pidpysNag = () => { const k = $('z-khto') && $('z-khto').value; return k ? k + ', скарбник гуртка' : 'скарбник гуртка'; };
+  function tekstNahad(im, komu) {
+    const p = pidsumokZ(im), ty = komu !== 'batky', l = [];
+    const vs = (VN && VN.vnesky || []).map(x => ({n: x.n, b: vnBrak(im, x), t: x.termin})).filter(x => x.b > 0);
+    l.push(ty ? `Привіт, ${im}!` : 'Добрий день!');
+    l.push(ty ? 'Нагадую про внески до гуртка:' : `Нагадуємо про пластові внески гуртка (${im}):`);
+    vs.forEach(x => l.push(`• «${x.n}» — бракує ${groshi(x.b)}${x.t ? ' (термін — ' + isoDd(x.t) + ')' : ''}`));
+    if (p.borh < 0) l.push(`• ${ty ? 'твій борг' : 'борг'} гуртку — ${groshi(-p.borh)}`);
+    l.push(`Разом: ${groshi(p.vynenHurtku)}.`);
+    if (p.hurtokVynen > 0) l.push(ty ? `А гурток винен тобі ${groshi(p.hurtokVynen)} — можемо зарахувати це у внесок, напиши.` : `Гурток, своєю чергою, винен ${groshi(p.hurtokVynen)} — можемо зарахувати це у внесок.`);
+    if (VT.rek.trim()) l.push((ty ? 'Як заплатити: ' : 'Як сплатити: ') + VT.rek.trim());
+    l.push(ty ? 'Якщо вже заплатив(-ла) — напиши мені, перевіримо. Дякую!' : 'Якщо вже сплачено — будь ласка, дайте знати, ми перевіримо. Дякуємо!');
+    l.push('— ' + pidpysNag());
+    return l.join('\n');
+  }
+  function tekstOgol(n) {
+    const x = VN && VN.vnesky.find(y => y.n === n); if (!x) return '';
+    const l = ['Привіт усім! Нагадуємо про пластовий внесок.', `«${x.n}» — ${groshi(x.suma)}${x.termin ? ', до ' + isoDd(x.termin) : ''}.`];
+    if (Object.keys(x.osobl || {}).length) l.push('Хто має домовлену іншу суму — платить її.');
+    l.push(VT.rek.trim() ? 'Як сплатити: ' + VT.rek.trim() : 'Найкраще — переказом або MobilePay.');
+    l.push('Готівку — лише в день внесків на сходинах, при виховникові.');
+    l.push('Хто вже заплатив — дякуємо! Не певні, чи сплатили, — напишіть скарбникові особисто.');
+    l.push('— скарбник гуртка');
+    return l.join('\n');
+  }
+  async function kopiuvaty(t, ta) {
+    try { await navigator.clipboard.writeText(t); return true; }
+    catch (x) { if (!ta) return false; ta.focus(); ta.select(); try { return document.execCommand('copy'); } catch (y) { return false; } }
+  }
+  async function podilytysia(t, ta) {
+    if (navigator.share) { try { await navigator.share({text: t}); return 'Готово.'; } catch (x) { if (x && x.name === 'AbortError') return ''; } }
+    return await kopiuvaty(t, ta) ? 'Скопійовано — вставте в WhatsApp чи Viber.' : 'Не вдалося — виділіть текст і скопіюйте вручну.';
+  }
+  const nagHtml = (im, t) => `<div class="nag"><div class="kom"><span>Кому:</span><label><input type="radio" name="komu-${esc(im)}" value="yunak" checked> юнакові / юначці</label><label><input type="radio" name="komu-${esc(im)}" value="batky"> батькам</label></div>
+    <label class="f2">Текст (можна змінити)<textarea class="in" rows="9">${esc(t)}</textarea></label>
+    <div class="vb"><button type="button" class="btn ok" data-vts="1">Поділитися</button><button type="button" class="btn" data-vtk="1">Скопіювати</button><a class="btn" data-vtw="1" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(t)}">WhatsApp</a><button type="button" class="lnk" data-vtx="1">закрити</button></div><p class="vm"></p></div>`;
+
+  function vtMal() {
+    const box = $('z-vt'); if (!box || !kod) return;
+    if (!box.dataset.gotovo) {
+      box.innerHTML = `<h3>Витяг і нагадування</h3><div class="vtt" role="tablist" aria-label="Витяг і нагадування">
+        <button type="button" role="tab" data-vtt="0">Витяг<br>людини</button><button type="button" role="tab" data-vtt="1">Хто винен<b id="vt-n"></b></button><button type="button" role="tab" data-vtt="2">Оголо&shy;шення<br>для всіх</button></div>
+        <div data-vtp="0"><label class="f2">Чий витяг<select class="in" id="vt-im"></select></label><div id="vt-out"><p>Виберіть ім'я — покажу внески, свої гроші, повернення й підсумок цієї людини. Можна надрукувати, зберегти PDF або надіслати їй.</p></div></div>
+        <div data-vtp="1" hidden><div id="vt-bz"></div></div>
+        <div data-vtp="2" hidden><div id="vt-og"></div></div>
+        <label class="f2">Як сплатити — для текстів (напр. «MobilePay 040 123 4567» або рахунок гуртка)<input class="in" id="vt-rek" maxlength="160" value="${esc(VT.rek)}" placeholder="запам'ятається лише на цьому пристрої"></label>
+        <p>Сайт сам нічого не надсилає: ви копіюєте текст і шлете в WhatsApp чи Viber самі. Суми — лише в особистому повідомленні; в оголошенні для всіх — жодних імен і боргів.</p>`;
+      box.dataset.gotovo = '1';
+    }
+    const s = $('vt-im'), l = lyudy();
+    s.innerHTML = '<option value="">— виберіть —</option>' + l.map(im => `<option${im === VT.im ? ' selected' : ''}>${esc(im)}</option>`).join('');
+    box.querySelectorAll('[data-vtt]').forEach(b => b.setAttribute('aria-selected', String(+b.dataset.vtt === VT.tab)));
+    box.querySelectorAll('[data-vtp]').forEach(p => { p.hidden = +p.dataset.vtp !== VT.tab; });
+    // хто винен
+    const bz = $('vt-bz'), boh = l.map(im => Object.assign({im}, pidsumokZ(im))).filter(x => x.razom > 0).sort((a, b) => b.razom - a.razom);
+    $('vt-n').textContent = boh.length ? String(boh.length) : '✓';
+    if (!bz.querySelector('.nag')) {
+      const sg = den();
+      bz.innerHTML = !boh.length ? '<p class="y">✓ Ніхто нічого не винен гуртку.</p>' : `<p>За книгою гуртка, від найбільшого. Уже записані, але ще не перевірені платежі (⏳) враховано — двічі не просимо.</p><ul class="vl">${boh.map(x => `<li data-im="${esc(x.im)}"><div class="vlt"><span>${esc(x.im)}</span><b>${groshi(x.vynenHurtku)}</b></div>
+        <div class="vls">${[x.brakVnesky > 0 ? 'внески: бракує ' + groshi(x.brakVnesky) : '', x.termin ? 'термін ' + isoDd(x.termin) + (x.termin < sg ? ' <span class="r">прострочено</span>' : '') : '', x.borh < 0 ? 'борг гуртку ' + groshi(-x.borh) : '', x.hurtokVynen > 0 ? 'гурток винен ' + groshi(x.hurtokVynen) + ' — можна зарахувати' : '', chekaie(x.im) ? '⏳ є неперевірені платежі' : ''].filter(Boolean).join(' · ')}</div>
+        <div class="vb"><button type="button" class="btn" data-vtn="1">Нагадати</button><button type="button" class="btn" data-vtv="1">Витяг</button></div></li>`).join('')}</ul>`;
+    }
+    // оголошення
+    const og = $('vt-og');
+    if (!VN || !VN.vnesky.length) og.innerHTML = '<p>Внесків ще немає в книзі (аркуш «Внески» веде виховник).</p>';
+    else if (!og.querySelector('textarea') || !VT.ogRuch) {
+      const sg = den(), was = og.querySelector('select') ? og.querySelector('select').value : '';
+      const nast = (VN.vnesky.find(x => x.termin && x.termin >= sg) || VN.vnesky[VN.vnesky.length - 1]).n, n = VN.vnesky.some(x => x.n === was) ? was : nast;
+      og.innerHTML = `<label class="f2">Про який внесок<select class="in" data-vto="1">${VN.vnesky.map(x => `<option${x.n === n ? ' selected' : ''}>${esc(x.n)}</option>`).join('')}</select></label>
+        <label class="f2">Текст для групи гуртка (можна змінити)<textarea class="in" rows="8">${esc(tekstOgol(n))}</textarea></label>
+        <div class="vb"><button type="button" class="btn ok" data-vts="1">Поділитися</button><button type="button" class="btn" data-vtk="1">Скопіювати</button><a class="btn" data-vtw="1" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(tekstOgol(n))}">WhatsApp</a></div><p class="vm"></p>`;
+      VT.ogRuch = false;
+    }
+    box.hidden = false;
+  }
+
+  const VT_SLOVA = {vnesok: '', zalik: 'залік без грошей', svoi: 'купив(-ла) для гуртка за свої', povernennia: 'гурток повернув гроші', povb: 'віддав(-ла) борг гуртку',
+    pozychka: 'гурток заплатив наперед — поверне', zaokr: 'заокруглення', spysano: 'списано', perenos: 'з минулого року', inshe: ''};
+  function vtShcho(r) {
+    let t = r.hrupa === 'vnesok' ? (r.ruh === 'видаток' ? 'повернуто з внеску' : 'внесок') + (r.vnesok ? ' «' + r.vnesok + '»' : '') : (VT_SLOVA[r.hrupa] || r.kat);
+    if (r.opys && !['vnesok', 'zaokr', 'povernennia', 'povb'].includes(r.hrupa) && r.opys !== t) t += ': ' + r.opys;
+    if (r.yak && r.yak !== 'свої гроші') t += ' (' + r.yak + ')';
+    if (r.hrupa === 'svoi') t += r.foto ? ' · 📷 чек' : ' · без чека';
+    if (r.vplyv) t += r.vplyv > 0 ? ' → гурток винен' : ' → винен(-на) гуртку';
+    return t;
+  }
+  const vtStan = r => r.perevireno === 'так' ? ['y', '✓'] : r.perevireno === 'ні' ? ['r', '✗ не знайдено'] : ['w', '⏳'];
+  function vtVnStan(x) {
+    if (x.brak <= 0 && x.perevireno >= x.treba) return ['y', '✓ сплачено' + (x.brak < 0 ? ', переплата ' + groshi(-x.brak) : '')];
+    if (x.brak <= 0) return ['w', '⏳ сплачено, чекає перевірки'];
+    return ['r', 'бракує ' + groshi(x.brak) + (x.splacheno > x.perevireno + 0.001 ? ' · ⏳' : '') + (x.termin ? ' · до ' + isoDd(x.termin) : '')];
+  }
+  function vtPidsumok(p) {
+    if (p.razom > 0.001) return ['vy', 'винен(-на) гуртку', groshi(p.razom)];
+    if (p.razom < -0.001) return ['hv', 'гурток винен', groshi(-p.razom)];
+    return ['ok', 'розраховано', '✓'];
+  }
+  function vtVyvid() {
+    const d = VT.dani, out = $('vt-out'); if (!d) return;
+    const p = d.pidsumok, [k, sl, s] = vtPidsumok(p), obydva = p.vynenHurtku > 0 && p.hurtokVynen > 0;
+    out.innerHTML = `<div class="vst ${k}"><small>${esc(d.imya)} · станом на ${isoDd(den())}<br>${sl}</small><b>${s}</b></div>`
+      + (obydva ? `<p class="w">Окремо: винен(-на) гуртку ${groshi(p.vynenHurtku)}, гурток винен ${groshi(p.hurtokVynen)} — разом ${sl} ${s}. Зарахувати одне в інше — кнопка «У внесок» у «Де зараз гроші».</p>` : '')
+      + (p.bezCheka.length ? `<p class="w">Без чека: ${p.bezCheka.map(x => esc(isoDd(x.data) + ' «' + x.opys + '» ' + groshi(+x.suma))).join('; ')} — поки немає фото чека, не повертаємо.</p>` : '')
+      + (d.vnesky.length ? `<h4>Внески</h4><table><thead><tr><th>Внесок</th><th>Треба</th><th>Сплачено</th><th>Стан</th></tr></thead><tbody>${d.vnesky.map(x => { const [c, t] = vtVnStan(x); return `<tr><td>${esc(x.n)}</td><td class="s">${groshi(x.treba)}</td><td class="s">${groshi(x.splacheno)}</td><td class="${c}">${esc(t)}</td></tr>`; }).join('')}</tbody></table>` : '<p>Внесків ще немає в книзі.</p>')
+      + (d.syroty.length ? `<p class="w">Платежі за внесок, якого вже немає в «Внесках»: ${d.syroty.map(x => '«' + esc(x.n) + '» ' + groshi(x.suma)).join(', ')} — враховано як сплачене.</p>` : '')
+      + `<h4>Рух грошей</h4>` + (d.ryadky.length ? `<table><thead><tr><th>Дата</th><th>Що</th><th>Сума</th><th></th></tr></thead><tbody>${d.ryadky.map(r => { const [c, t] = vtStan(r); return `<tr><td>${esc(isoDd(r.data))}</td><td>${esc(vtShcho(r))}</td><td class="s">${groshi(r.suma)}</td><td class="${c}" title="✓ — перевірив виховник; ⏳ — чекає перевірки">${t}</td></tr>`; }).join('')}</tbody></table>` : '<p>Записів у касі з цим ім\'ям немає.</p>')
+      + `<p>✓ — перевірив виховник (переказ — у банку, готівку — отримав); ⏳ — записано, чекає перевірки.</p>`
+      + `<div class="vb"><button type="button" class="btn ok" data-vtd="1">Друк / PDF</button><button type="button" class="btn" data-vtsh="1">Поділитися</button>${p.vynenHurtku > 0 ? '<button type="button" class="btn" data-vtnag="1">Нагадати</button>' : ''}<button type="button" class="lnk" data-vtr="1">оновити</button></div><p class="vm"></p>`;
+  }
+  function vtTekst(d) {
+    const p = d.pidsumok, [, sl, s] = vtPidsumok(p), l = [`Витяг з каси гуртка — ${d.imya}, станом на ${isoDd(den())}`];
+    if (d.vnesky.length) { l.push('', 'Внески:'); d.vnesky.forEach(x => l.push(`• ${x.n} (${groshi(x.treba)}) — ${vtVnStan(x)[1]}`)); }
+    const ins = d.ryadky.filter(r => r.hrupa !== 'vnesok');
+    if (ins.length) { l.push('', 'Свої гроші, повернення, борги:'); ins.forEach(r => l.push(`• ${isoDd(r.data)} ${vtShcho(r)} — ${groshi(r.suma)}`)); }
+    l.push('', `Підсумок: ${sl}${s === '✓' ? ' ✓' : ' ' + s}.`, '✓ — перевірив виховник; ⏳ — чекає перевірки.');
+    return l.join('\n');
+  }
+  function vtDrukHtml(d) {
+    const p = d.pidsumok, [, sl, s] = vtPidsumok(p);
+    return `<div class="vtp"><header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде ${esc(K.posada)}</span></div><h3>Витяг з каси</h3><div class="sub">Внески, свої гроші й борги однієї людини · за книгою гуртка</div></div><img src="${EMB}" alt="Пластова лілея"></header>
+      <div class="meta"><span>Ім'я: <b>${esc(d.imya)}</b></span><span>Станом на: <b>${isoDd(den())}</b></span></div>
+      <div class="pd">Підсумок: ${sl} ${s === '✓' ? '✓' : s}${p.vynenHurtku > 0 && p.hurtokVynen > 0 ? ` — окремо: винен(-на) гуртку ${groshi(p.vynenHurtku)}, гурток винен ${groshi(p.hurtokVynen)}` : ''}</div>
+      ${d.vnesky.length ? `<h4>Внески</h4><table><thead><tr><th>Внесок</th><th>Треба</th><th>Сплачено</th><th>Стан</th></tr></thead><tbody>${d.vnesky.map(x => `<tr><td>${esc(x.n)}</td><td class="s">${groshi(x.treba)}</td><td class="s">${groshi(x.splacheno)}</td><td>${esc(vtVnStan(x)[1])}</td></tr>`).join('')}</tbody></table>` : ''}
+      <h4>Рух грошей</h4>${d.ryadky.length ? `<table><thead><tr><th style="width:16%">Дата</th><th>Що</th><th style="width:14%">Сума</th><th style="width:12%">Перевірено</th></tr></thead><tbody>${d.ryadky.map(r => `<tr><td>${esc(isoDd(r.data))}</td><td>${esc(vtShcho(r))}</td><td class="s">${groshi(r.suma)}</td><td>${vtStan(r)[1]}</td></tr>`).join('')}</tbody></table>` : '<p>Записів немає.</p>'}
+      <p class="pr">✓ — перевірив виховник; ⏳ — записано, чекає перевірки. Витяг лише з ім'ям, без прізвища й контактів. Якщо щось не так — скажіть скарбникові чи виховникові.</p>
+      <footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Витяг з аркуша «Фінанси» книги гуртка</span></footer></div>`;
+  }
+  function vtDruk() {
+    let el = $('vt-print'); if (!el) { el = document.createElement('div'); el.id = 'vt-print'; document.body.appendChild(el); }
+    el.innerHTML = vtDrukHtml(VT.dani);
+    const ps = document.createElement('style'); ps.textContent = '@page{size:A4 portrait;margin:12mm}'; document.head.appendChild(ps);
+    document.body.classList.add('vt-pr');
+    const kin = () => { document.body.classList.remove('vt-pr'); ps.remove(); el.innerHTML = ''; window.removeEventListener('afterprint', kin); };
+    window.addEventListener('afterprint', kin);
+    window.print();
+  }
+  async function vtZavantazhyty(im) {
+    VT.im = im; VT.dani = null; const out = $('vt-out');
+    if (!im) { out.innerHTML = ''; return; }
+    out.innerHTML = '<p>Збираю витяг…</p>'; const moye = ++VT.n;
+    let v; try { v = await zapyt({kod, dija: 'vytiah', imya: im}); } catch (x) { v = {ok: false, pomylka: merezha(x, 'Немає зв\'язку — спробуйте ще.')}; }
+    if (moye !== VT.n) return;
+    if (!v.ok) { out.innerHTML = `<p class="r">${esc(v.pomylka || 'Не вдалося.')}</p>`; return; }
+    VT.dani = v; vtVyvid();
+  }
+  function vtNag(li, im) {
+    const ta0 = li.querySelector('.nag'); if (ta0) return ta0.querySelector('textarea').focus();
+    li.insertAdjacentHTML('beforeend', nagHtml(im, tekstNahad(im, 'yunak'))); li.querySelector('.nag textarea').focus();
+  }
+  if (K.vytiah) {
+    const box = $('z-vt');
+    box.addEventListener('click', async e => {
+      const t = e.target, m = t.closest('.vb') && t.closest('.vb').nextElementSibling;
+      if (t.closest('[data-vtt]')) { VT.tab = +t.closest('[data-vtt]').dataset.vtt; return vtMal(); }
+      if (t.closest('[data-vtd]')) return vtDruk();
+      if (t.closest('[data-vtsh]')) { if (m) m.textContent = await podilytysia(vtTekst(VT.dani)); return; }
+      if (t.closest('[data-vtr]')) return vtZavantazhyty(VT.im);
+      if (t.closest('[data-vtnag]')) { VT.tab = 1; vtMal(); const li = [...$('vt-bz').querySelectorAll('li[data-im]')].find(x => x.dataset.im === VT.dani.imya); if (li) { vtNag(li, li.dataset.im); li.scrollIntoView({block: 'nearest'}); } return; }
+      const li = t.closest('li[data-im]');
+      if (li && t.closest('[data-vtn]')) return vtNag(li, li.dataset.im);
+      if (li && t.closest('[data-vtv]')) { VT.tab = 0; vtMal(); $('vt-im').value = li.dataset.im; return vtZavantazhyty(li.dataset.im); }
+      if (li && t.closest('[data-vtx]')) { li.querySelector('.nag').remove(); return vtMal(); }
+      const ta = (t.closest('.nag') || t.closest('[data-vtp]') || box).querySelector('textarea');
+      if (t.closest('[data-vtk]') && ta) { if (m) m.textContent = await kopiuvaty(ta.value, ta) ? 'Скопійовано — вставте в WhatsApp чи Viber.' : 'Не вдалося — виділіть текст і скопіюйте вручну.'; return; }
+      if (t.closest('[data-vts]') && ta) { if (m) m.textContent = await podilytysia(ta.value, ta); return; }
+    });
+    box.addEventListener('change', e => {
+      const t = e.target;
+      if (t.id === 'vt-im') return vtZavantazhyty(t.value);
+      if (t.dataset.vto) { VT.ogRuch = false; const ta = $('vt-og').querySelector('textarea'); ta.value = tekstOgol(t.value); ta.dispatchEvent(new Event('input', {bubbles: true})); return; }
+      if (t.type === 'radio' && t.closest('.nag')) { const li = t.closest('li[data-im]'), ta = li.querySelector('textarea'); ta.value = tekstNahad(li.dataset.im, t.value); ta.dispatchEvent(new Event('input', {bubbles: true})); }
+    });
+    box.addEventListener('input', e => {
+      const t = e.target;
+      if (t.id === 'vt-rek') { VT.rek = t.value; try { localStorage.setItem(REK, t.value.trim()); } catch (x) {}
+        box.querySelectorAll('.nag').forEach(n => { const li = n.closest('li[data-im]'), r = n.querySelector('input:checked'); n.querySelector('textarea').value = tekstNahad(li.dataset.im, r ? r.value : 'yunak'); n.querySelector('[data-vtw]').href = 'https://wa.me/?text=' + encodeURIComponent(n.querySelector('textarea').value); });
+        if (!VT.ogRuch) { const s = $('vt-og').querySelector('select'), ta = $('vt-og').querySelector('textarea'); if (s && ta) { ta.value = tekstOgol(s.value); $('vt-og').querySelector('[data-vtw]').href = 'https://wa.me/?text=' + encodeURIComponent(ta.value); } }
+        return; }
+      if (t.tagName === 'TEXTAREA') {
+        if (t.closest('#vt-og') && e.isTrusted) VT.ogRuch = true;
+        const w = t.closest('.nag, [data-vtp]').querySelector('[data-vtw]'); if (w) w.href = 'https://wa.me/?text=' + encodeURIComponent(t.value);
+      }
+    });
+  }
 
   /* ---------- «Уже в касі за …»: що записано за день (K.den) ---------- */
   let denR = [], denN = 0, red = null, dupOk = '', ostData = '', fotoPyt = '';

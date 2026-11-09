@@ -343,6 +343,40 @@ const vydR = fin0.filter(r => r[1] === 'видаток' && !['переміщен
 const zal = fin0.filter(r => r[7] !== 'свої гроші').reduce((a, r) => a + (r[1] === 'надходження' ? +r[5] : r[1] === 'видаток' ? -r[5] : 0), 0);
 const proby0 = sheets['Проби']._f.slice(3).filter(r => r[0]).length, vm0 = sheets['Вмілості']._f.slice(3).filter(r => r[0]).length;
 const zam0 = sheets['Замовлення']._f.slice(3).filter(r => r[0]).length;
+// ---- витяг людини (vytiah): лише її рядки, числа збігаються з hroshi / vnesky ----
+{
+  const hr = post({ kod: J, dija: 'hroshi' }), uz = sheets['Учасники'], zU = uz._f[2], cP = zU.indexOf('Прізвище');
+  const pr = uz._f.slice(3).map(r => r[cP]).filter(x => x), imFin = [...new Set(FN().map(x => x.r[4]).filter(x => x))];
+  let vse = true, chysto = true, lysheSvoi = true, vn = true, pidsum = true;
+  const usi = [...new Set(ctx.imena().concat(imFin))];
+  usi.forEach(im => {
+    const v = post({ kod: J, dija: 'vytiah', imya: im });
+    if (!v.ok) { vse = false; return; }
+    const s = JSON.stringify(v); if (pr.some(p => s.includes(p))) chysto = false;
+    if (v.ryadky.length !== FN().filter(x => String(x.r[4]).trim() === im).length) lysheSvoi = false;
+    const sum = Math.round(v.ryadky.reduce((a, r) => a + r.vplyv, 0) * 100) / 100;
+    if (Math.abs(sum - (hr.borhy[im] || 0)) > 0.001 || v.pidsumok.borh !== (hr.borhy[im] || 0)) { vse = false; console.log('   ', im, sum, hr.borhy[im]); }
+    v.vnesky.forEach(x => { const st = ctx.stanVnesku(im, x.n); if (!st || Math.abs(st.brak - x.brak) > 0.001) vn = false; if (x.perevireno > x.splacheno + 0.001) console.log("    (перевірене > сплачене)", im, x.n, x.perevireno, x.splacheno); });
+    const p = v.pidsumok;
+    if (Math.abs(p.razom - (p.vynenHurtku - p.hurtokVynen)) > 0.001 || p.brakVnesky < 0 || p.pereplata < 0) pidsum = false;
+  });
+  ok(usi.length >= 5 && vse, 'витяг: ' + usi.length + ' людей — сума «vplyv» рядків = борг із «hroshi»');
+  ok(lysheSvoi, 'витяг: лише рядки цієї людини');
+  ok(chysto, 'витяг: жодного прізвища');
+  ok(vn, "витяг: «бракує» кожного внеску = stanVnesku");
+  ok(pidsum, 'витяг: разом = винен гуртку − гурток винен');
+  const roku = ctx.borhyRoku();
+  const okr = x => Math.round(x * 100) / 100;
+  const zbig = ctx.imena().every(im => { const v = post({ kod: J, dija: 'vytiah', imya: im }), m = new RegExp('(^|; )' + im + ' ([\\d,]+)').exec(roku), r = m ? +m[2].replace(',', '.') : 0;
+    return Math.abs(okr(v.pidsumok.brakVnesky - v.pidsumok.pereplata) - r) < 0.001 || (r === 0 && v.pidsumok.brakVnesky - v.pidsumok.pereplata <= 0.001); });
+  ok(zbig, 'витяг: бракує − переплата = борг року (як переносить «Новий рік»)');
+  ok(!post({ kod: J, dija: 'vytiah', imya: '' }).ok, 'витяг без імені — ні');
+  const nh = post({ kod: J, dija: 'vytiah', imya: 'Ніхто' }); ok(nh.ok && !nh.ryadky.length && nh.pidsumok.borh === 0, 'витяг для імені без записів — порожній');
+  const dl = post({ kod: J, dija: 'vytiah', imya: 'Дана' });
+  ok(dl.ryadky.some(r => r.hrupa === 'svoi') && dl.ryadky.some(r => r.hrupa === 'povernennia') && dl.ryadky.some(r => r.hrupa === 'vnesok'), 'витяг Дани: є «свої гроші», «повернення», внески');
+  ok(!post({ kod: 'x', dija: 'vytiah', imya: 'Дана' }).ok, 'витяг без коду — ні');
+}
+
 ctx.novyiRik();
 const ryad = n => sheets[n]._f.slice(3).filter(r => r[0] !== '' && r[0] !== undefined);
 ok(ryad('Сходини').length === 0 && ryad('Відвідуваність').length === 0 && ryad('Протоколи').length === 0, 'сходини, відвідуваність, протоколи очищено');

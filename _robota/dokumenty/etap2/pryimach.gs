@@ -15,6 +15,7 @@
  *   {kod, dija:"vypravyty", kvytok, dani:{...}, khto} → той самий рядок переписано (квиток дає «zapys», діє добу)
  *   {kod, dija:"skasuvaty", kvytok, khto}           → рядок очищено, у «Зміни» лишається, що там було
  *   {kod, dija:"vnesky"}                            → внески з аркуша «Внески» і хто скільки сплатив за кожен: {vnesky:[{n,suma,termin,osobl}], splacheno:{ім'я:{внесок:€}}, perevireno:{…лише рядки «Перевірено виховником» = так}}
+ *   {kod, dija:"vytiah", imya:"Остап"}               → витяг однієї людини: внески (треба/сплачено/перевірено/бракує), її рядки каси, підсумок «винен гуртку / гурток винен»
  *   {kod, dija:"den", arkush:"Фінанси", dani:{Дата}} → усі рядки за цю дату: {ryadok, dani, khto, koly, zatverdzheno, versiya}
  *   vypravyty / skasuvaty з {arkush, ryadok, versiya} замість квитка — будь-який незатверджений рядок аркушів DEN;
  *   «versiya» — відбиток рядка: якщо хтось змінив його тим часом, зміна не пройде («оновіть список»).
@@ -102,6 +103,7 @@ function doPost(e) {
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
     if (z.dija === 'zapys') return vidpovid(zapys(z.arkush, z.dani, z.khto));
     if (z.dija === 'vnesky') return vidpovid(vnesky());
+    if (z.dija === 'vytiah') return vidpovid(vytiah(z.imya));
     if (z.dija === 'den') return vidpovid(den(z.arkush, z.dani));
     if (z.dija === 'vypravyty') return vidpovid(vypravyty(z.kvytok, z.dani, z.khto, z));
     if (z.dija === 'skasuvaty') return vidpovid(skasuvaty(z.kvytok, z.khto, z));
@@ -283,6 +285,52 @@ function hroshi() {
   return {ok: true, gotivka: k(o.gotivka), rakhunok: k(o.rakhunok), nevkazano: k(o.nevkazano), razom: k(o.gotivka + o.rakhunok + o.nevkazano),
           chekaiut: ch, chekaiutSuma: k(chS), ne: ni, cheky: cheky, nastupnyiChek: 'Ч-' + (maxCh + 1),
           minus: o.gotivka < -0.001 || o.rakhunok < -0.001, borhy: bo.b, bezCheka: bo.bez, vynen: k(vynen), vynni: k(vynni), vilni: k(o.gotivka + o.rakhunok + o.nevkazano - vynen)};
+}
+
+// ---------- витяг людини: усе, що в касі стосується ОДНІЄЇ людини ----------
+// Лише рядки «Фінансів» із цим ім'ям і підсумки (прізвищ у касі немає). Нічого не пише.
+// Доступ — і код гуртка (скарбник), і код виховника: це ті самі числа, що вже видно в касі
+// («Хто сплатив внески», «Гурток винен»). Щоб бачив лише виховник — додайте 'vytiah' у LYSHE_V.
+// hrupa рядка: vnesok · zalik · svoi · povernennia · povb · pozychka · zaokr · spysano · perenos · inshe
+// vplyv — як рядок змінює борг: + гурток винен людині, − людина винна гуртку (разом = borhy()).
+function vytiah(imya) {
+  var im = chyste(imya || '').trim(); if (!im) return {ok: false, pomylka: 'Виберіть ім\'я.'};
+  var okr = function (x) { return Math.round(x * 100) / 100; };
+  var v = vnesky(), vn = [], brak = 0, pereplata = 0, PV = v.perevireno || {};
+  v.vnesky.forEach(function (x) {
+    var treba = x.osobl.hasOwnProperty(im) ? x.osobl[im] : x.suma, sp = (v.splacheno[im] || {})[x.n] || 0, pv = (PV[im] || {})[x.n] || 0, b = okr(treba - sp);
+    if (b > 0) brak += b; else if (b < 0) pereplata -= b;
+    vn.push({n: x.n, termin: x.termin, treba: treba, splacheno: okr(sp), perevireno: okr(pv), brak: b});
+  });
+  var syroty = [];
+  Object.keys(v.syroty || {}).forEach(function (n) { var s = (v.syroty[n] || {})[im] || 0; if (s) { syroty.push({n: n, suma: okr(s)}); brak -= s; } });
+  if (brak < 0) { pereplata -= brak; brak = 0; }
+  var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs), c = function (h) { return z.indexOf(h); };
+  var ci = c(IM), cs = c('Сума, €'), cr = c('Рух'), cy = c('Як платили'), ck = c('Категорія'), co = c('Опис'), cv = c('Внесок'), cf = c(FOTO), cp = c(PER), cq = c('Квитанція №');
+  var rows = [];
+  if (ci >= 0) ryadky(fs).forEach(function (r) {
+    if (String(r[ci]).trim() !== im) return;
+    var x = Number(r[cs]) || 0, ruh = r[cr], kat = String(r[ck] || ''), yak = String(r[cy] || ''), d = 0, g;
+    if (yak === SVOI) d = ruh === 'видаток' ? x : ruh === 'надходження' ? -x : 0;
+    else if (kat === POVERN && ruh === 'видаток') d = -x;
+    else if (kat === POVB && ruh === 'надходження') d = x;
+    else if (kat === ZA_UCH && ruh === 'видаток') d = -x;
+    if (kat === 'внески') g = yak === SVOI ? 'zalik' : 'vnesok';
+    else if (kat === SPYSANO) g = 'spysano';
+    else if (kat === POVERN) g = 'povernennia';
+    else if (kat === POVB) g = 'povb';
+    else if (kat === ZA_UCH) g = 'pozychka';
+    else if (kat === ZAOKR) g = 'zaokr';
+    else if (kat === PEREM && yak === SVOI) g = 'perenos';
+    else if (yak === SVOI) g = 'svoi';
+    else g = 'inshe';
+    rows.push({data: iso(r[0]), ruh: String(ruh || ''), kat: kat, opys: String(r[co] || ''), suma: x, yak: yak, vnesok: cv >= 0 ? String(r[cv] || '') : '',
+               kvyt: cq >= 0 ? String(r[cq] || '') : '', foto: cf >= 0 && !!String(r[cf]).trim(), perevireno: cp >= 0 ? String(r[cp]).trim().toLowerCase() : '', hrupa: g, vplyv: okr(d)});
+  });
+  var bh = borhy(), borh = okr(bh.b[im] || 0);
+  var vynen = okr(brak + (borh < 0 ? -borh : 0)), hv = okr((borh > 0 ? borh : 0) + pereplata);
+  return {ok: true, imya: im, vnesky: vn, syroty: syroty, ryadky: rows.slice(-200),
+          pidsumok: {brakVnesky: okr(brak), pereplata: okr(pereplata), borh: borh, vynenHurtku: vynen, hurtokVynen: hv, razom: okr(vynen - hv), bezCheka: bh.bez[im] || []}};
 }
 
 function zapys(arkush, dani, khto) {
