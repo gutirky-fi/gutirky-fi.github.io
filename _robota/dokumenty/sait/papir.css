@@ -45,4 +45,6 @@ html.pv-tapmode .pv-tip{display:flex}
 html.pv-tapmode #z-pereg,html.pv-tapmode #b-view{display:none}
 html.pv-tapmode .pv-tapok .sheet,html.pv-tapmode .pv-tapok .ppr{cursor:pointer;-webkit-user-select:none;user-select:none}
 html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-events:none}
+/* телефон / планшет: звичайне вікно друку браузера ігнорує орієнтацію аркуша, тому кнопок «Друк» на сторінках немає — друк іде з вікна «Переглянути» через PDF */
+html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-touch #b-note{display:none!important}
 .blank{grid-template-columns:minmax(0,1fr)}   /* аркуш не розпирає сторінку: на телефоні papir.js зменшує його на всю ширину */

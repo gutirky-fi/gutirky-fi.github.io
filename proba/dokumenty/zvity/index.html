@@ -324,6 +324,8 @@ html.pv-tapmode .pv-tip{display:flex}
 html.pv-tapmode #z-pereg,html.pv-tapmode #b-view{display:none}
 html.pv-tapmode .pv-tapok .sheet,html.pv-tapmode .pv-tapok .ppr{cursor:pointer;-webkit-user-select:none;user-select:none}
 html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-events:none}
+/* телефон / планшет: звичайне вікно друку браузера ігнорує орієнтацію аркуша, тому кнопок «Друк» на сторінках немає — друк іде з вікна «Переглянути» через PDF */
+html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-touch #b-note{display:none!important}
 .blank{grid-template-columns:minmax(0,1fr)}   /* аркуш не розпирає сторінку: на телефоні papir.js зменшує його на всю ширину */
 
 </style>
@@ -394,7 +396,8 @@ html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-even
    Papir.view({title, pages, file, print, live}) — вікно на весь екран: аркуш цілком на ширину екрана, пальцями наблизити / віддалити,
        кілька аркушів — гортати вниз. live:true — у вікно переходить сам аркуш, тож у ньому можна вписувати (бланки), а при закритті
        він повертається на місце. Унизу кнопки в стилі сайту: «Надіслати» (той самий PDF через меню телефона: WhatsApp, Telegram, пошта…),
-       «Зберегти PDF», «Друк» (закриває перегляд і друкує). Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
+       «Зберегти PDF», «Друк» (на комп'ютері закриває перегляд і викликає друк браузера; на телефоні й планшеті друкує готовий PDF — вікно друку
+       телефона ігнорує орієнтацію аркуша). Нічого не завантажується, поки не натиснути кнопку: бібліотеки для PDF беруться з інтернету лише тоді.
    Дані нікуди не йдуть: PDF робиться в самому браузері. */
 (function () {
   'use strict';
@@ -407,6 +410,12 @@ html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-even
   var TOP = 56;      // зверху лишаємо місце під кнопку «закрити», px
   var GAP = 18;      // відстань між аркушами, px
   var libP = null;
+
+  /* Телефон / планшет (основний вказівник — палець). Там вікно друку браузера ігнорує @page: лежачий бланк виходить стоячим.
+     Тому «Друк» на таких пристроях іде через готовий PDF, де A4 і орієнтація вже правильні (клас pv-touch ховає звичайні кнопки «Друк» на сторінках). */
+  var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer:coarse)').matches);
+  var IOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (TOUCH) document.documentElement.classList.add('pv-touch');
 
   /* ---------- розміри аркушів ---------- */
   // w — природна ширина (px при 96 dpi), min — найменша ширина, коли аркуш ще не зменшують, land — лежачи
@@ -903,8 +912,30 @@ html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-even
       zrobyty().then(function (b) { zberehty(b); msg('PDF збережено (' + name + ').'); }).catch(function () {});
     }
     var mozhe = mozhnaDilytysia();
-    ovr.querySelector('.pv-hint').textContent = (editable ? 'Торкніться клітинки чи рядка, щоб вписати. ' : '') +
-      (mozhe ? 'PDF — звичайний файл на A4: його можна переслати чи віддати на друк.' : '«Надіслати» тут збереже PDF — додайте його до листа чи месенджера.');
+    ovr.querySelector('.pv-hint').textContent = TOUCH
+      ? (editable ? 'Вписуйте тут, на аркуші: у PDF буде шрифт аркуша (поверх готового PDF шрифт був би телефонний). ' : 'PDF — звичайний файл на A4: його можна переслати чи віддати на друк. ') +
+        '«Друк» теж іде через PDF — аркуш лягає на A4 правильно.'
+      : (editable ? 'Торкніться клітинки чи рядка, щоб вписати. ' : '') +
+        (mozhe ? 'PDF — звичайний файл на A4: його можна переслати чи віддати на друк.' : '«Надіслати» тут збереже PDF — додайте його до листа чи месенджера.');
+
+    // «Друк» на телефоні: готовий PDF відкривається у переглядачі (iPhone) або зберігається (інші) — звідти друкуємо з правильною орієнтацією
+    function drukPdf() {
+      var w = null;
+      if (IOS && !blob) {   // вкладку відкриваємо одразу, поки дотик «свіжий»: після підготовки PDF браузер уже не дозволив би
+        try {
+          w = window.open('', '_blank');
+          if (w) w.document.write('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><title>PDF</title><p style="font:18px -apple-system,sans-serif;padding:28px">Готую PDF…</p>');
+        } catch (x) { w = null; }
+      }
+      zrobyty().then(function (b) {
+        var u = URL.createObjectURL(b);
+        if (IOS && !w) { try { w = window.open(u, '_blank'); } catch (x) { w = null; } }
+        else if (w && !w.closed) { w.location.href = u; }
+        if (IOS && w && !w.closed) { msg('PDF відкрито в новій вкладці. Щоб надрукувати: «Поділитися» → «Друк».'); }
+        else { zberehty(b); msg('PDF збережено (' + name + '). Відкрийте його й оберіть «Друк» — орієнтація A4 уже правильна.'); }
+        setTimeout(function () { URL.revokeObjectURL(u); }, 120000);
+      }).catch(function () { try { if (w && !w.closed) w.close(); } catch (x) {} });
+    }
     function dilytysia() {
       var wasReady = !!blob;
       zrobyty().then(function (b) {
@@ -932,6 +963,7 @@ html.pv-tapmode .pv-tapok .sheet *,html.pv-tapmode .pv-tapok .ppr *{pointer-even
       else if (a === 'pdf') zavantazhyty();
       else if (a === 'share') dilytysia();
       else if (a === 'ok') { var ae = document.activeElement; if (ae && ae.blur) ae.blur(); }
+      else if (a === 'print' && TOUCH) drukPdf();
       else if (a === 'print') {   // спершу закриваємо перегляд (аркуш повертається на сторінку), потім звичайний друк
         zakryty();
         setTimeout(function () { try { (o.print || window.print.bind(window))(); } catch (x) { window.print(); } }, 120);
