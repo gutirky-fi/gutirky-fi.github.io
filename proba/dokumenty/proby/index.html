@@ -50,6 +50,11 @@ button{cursor:pointer}
 .seg button[aria-selected=true] small{color:var(--body)}
 
 .card{background:var(--card);border:1px solid var(--ln);border-radius:20px;padding:22px}
+.yakp{margin:0 0 14px;border:1px solid var(--ln);border-radius:14px;background:#14171a}
+.yakp summary{cursor:pointer;padding:11px 14px;font-weight:700;color:var(--ink);list-style:none}.yakp summary::-webkit-details-marker{display:none}
+.yakp summary::before{content:'?';display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:50%;background:var(--ln);color:var(--ink);font-size:13px}
+.yakp summary small{font-weight:500;color:var(--mut);margin-left:6px}
+.yakp dl{margin:0;padding:0 14px 10px}.yakp dt{margin-top:10px;font-weight:700;color:var(--ink);font-size:14.5px}.yakp dd{margin:2px 0 0;color:var(--body);font-size:14px;line-height:1.4}
 .card h2{margin:0 0 14px;font:600 20px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 .note{margin:0;color:var(--mut);font-size:15px}
 .f{display:grid;gap:5px;margin-bottom:14px}
@@ -313,6 +318,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
         <!-- форма -->
         <div class="card" id="z-form" hidden>
           <div class="fhead"><h2>Підписані точки</h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+          <details class="yakp"><summary>Як заповнювати<small>коротко, за випадками</small></summary><dl><dt>Впорядник підписав точку на бланку юнака</dt><dd>На сходинах юнак показує бланк заступникові. Тут: проба → хто виконав → які точки → дата підпису й хто підписав → «Надіслати в книгу».</dd><dt>Кілька юнаків чи кілька точок</dt><dd>Виберіть усіх і всі точки — одним «Надіслати». Кожна точка кожного юнака — окремий рядок у книзі.</dd><dt>Точка вже є в книзі</dt><dd>Сайт пропустить її сам: перед «Надіслати» видно, що буде записано, а що вже є. Для одного юнака виконана точка зелена й неклікабельна.</dd><dt>Помилилися</dt><dd>На екрані «Записано» — «Скасувати щойно надіслане».</dd><dt>Усі точки є — проба здобута</dt><dd>У картці «Хто на якій пробі» (праворуч, на телефоні — під формою) біля юнака — «Проба здобута →»: дата посвідки, хто підписав і, за бажанням, 📎 копія бланка.</dd><dt>Перейшов з іншого гуртка з уже здобутою пробою</dt><dd>У тій самій картці внизу виберіть його й натисніть «Проба здобута» — з приміткою, звідки.</dd><dt>Бланка проби в книзі немає (напр. 3-тя)</dt><dd>Впишіть точку так, як на бланку, і натисніть «Додати».</dd></dl></details>
           <div class="lbl"><span class="n"><i>1</i>Яка проба</span></div>
           <div class="prb" id="z-pr" role="group" aria-label="Проба"></div>
           <div class="lbl"><span class="n"><i>2</i>Хто виконав</span><button class="all" type="button" id="z-vsi">Усі</button></div>
