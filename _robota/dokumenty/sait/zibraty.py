@@ -31,7 +31,7 @@ def datalists():
     vm = [x[0] for x in json.loads(m.group(1))]
     vm = ['1-ша проба', '2-га проба', '3-тя проба'] + ['вмілість «' + v + '»' for v in vm]
     dl = lambda i, l: f'<datalist id="dl-{i}">' + ''.join('<option value="' + html.escape(x, quote=True) + '">' for x in l) + '</datalist>'
-    return dl('gutirky', hut) + dl('vmilosti', vm)
+    return dl('gutirky', hut) + dl('vmilosti', vm) + dl('vmilNazvy', sorted(x[0] for x in json.loads(m.group(1))))   # лише назви — для аркуша «Вмілості»
 
 
 DL = datalists()

@@ -35,6 +35,7 @@
 .grid{width:100%;border-collapse:collapse;table-layout:fixed;flex:1}
 .grid th,.grid td{border:1px solid var(--pl);padding:2px 5px;text-align:left;vertical-align:top;height:1px;font-size:12px;overflow-wrap:anywhere}
 .grid thead th{font-weight:700;font-size:10.5px;line-height:1.15;overflow-wrap:normal;hyphens:manual;background:var(--tint);vertical-align:middle;padding-block:5px}
+.grid.tisno th,.grid.tisno td{padding-inline:3px}.grid.tisno thead th{font-size:9px;line-height:1.1}.grid.tisno td{font-size:11px}   /* B.tisno: багато стовпців (Вмілості, Замовлення) */
 .grid thead th.au{color:var(--pm);font-weight:600}
 .grid thead th.au::after{content:" авто";display:block;font-size:9px;font-weight:400;letter-spacing:.04em}
 .grid td.n{color:var(--pm);font-size:11px;text-align:center;vertical-align:middle}
@@ -365,7 +366,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   const pidval = () => `<footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Робочий бланк · ті самі ${PORT ? 'поля' : 'стовпці'}, що в аркуші «${esc(K.arkush)}» книги гуртка</span></footer>`;
   function tablytsia(ce) {
     const R = +$('b-ryad').value;
-    let h = `<table class="grid"><colgroup><col style="width:3.5%">${S.map(s => `<col style="width:${s[1]}%">`).join('')}</colgroup><thead><tr><th style="text-align:center">№</th>`
+    let h = `<table class="grid${B.tisno ? ' tisno' : ''}"><colgroup><col style="width:3.5%">${S.map(s => `<col style="width:${s[1]}%">`).join('')}</colgroup><thead><tr><th style="text-align:center">№</th>`
       + S.map(s => `<th${s[2] ? ' class="au"' : ''}>${esc(s[0])}</th>`).join('') + `</tr></thead><tbody>`;
     for (let r = 0; r < R; r++) {
       h += `<tr><td class="n">${r + 1}</td>` + S.map((s, c) => `<td data-k="${r}:${c}"${s[2] ? ' class="au"' : ''}${ce}>${esc(st[r + ':' + c] || '')}</td>`).join('') + `</tr>`;
@@ -397,7 +398,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       p.bh{margin:12pt 0 2pt;color:#c8284a;font-weight:bold;font-size:9.5pt;text-transform:uppercase;letter-spacing:.5pt}table.ln{border-collapse:collapse;width:100%}table.ln td{border-bottom:1px solid #cfd5dc;height:18pt}
       body{font-family:Calibri,Arial,sans-serif;font-size:10pt;color:#1b1d21}h3{font-size:18pt;margin:0;text-transform:uppercase;letter-spacing:1pt}
       .sub,.ft{font-size:8.5pt;color:#5f6873}.kind{color:#c8284a;font-weight:bold;font-size:10pt}
-      table.grid{border-collapse:collapse;width:100%}table.grid th,table.grid td{border:1px solid #cfd5dc;height:26pt;vertical-align:top;font-size:9.5pt}
+      table.grid{border-collapse:collapse;width:100%}table.grid th,table.grid td{border:1px solid #cfd5dc;height:26pt;vertical-align:top;font-size:9.5pt}table.tisno th{font-size:7.5pt}table.tisno td{font-size:8.5pt}
       table.grid thead th{background:#f9e6ea;font-weight:bold;height:auto}td.au{background:#f3f4f6}td.n{text-align:center;color:#5f6873}`;
     const v = id => esc($(id).value.trim());
     const top = `<table style="width:100%;border-bottom:2.2pt solid #c8284a"><tr><td><div class="kind">Документи гуртка · веде ${esc(K.posada)}</div><h3>${esc(B.t)}</h3><div class="sub">${esc(B.sub)}</div></td></tr></table>
@@ -1615,7 +1616,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    const nz = k => /^\d{4}-/.test(k) ? k.split('|').map(isoDd).join(' · ') : '«' + k + '»';
+    const nz = k => /^\d{4}-\d\d-\d\d/.test(k) ? k.split('|').map(isoDd).join(' · ') : '«' + k.split('|').join(' · ') + '»';
     n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі код гуртка потрібен).' + (K.demo ? ' Спробуйте ' + Object.entries(K.demo).map(([k, x]) => nz(k) + (x.zatv ? ' (затверджено)' : ' (уже записано)')).join(' і ') + '.' : '');
     document.body.prepend(n); $('z-noaddr').hidden = true;
     $('z-kod').value = '1234'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
