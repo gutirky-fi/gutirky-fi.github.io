@@ -26,6 +26,7 @@
  *   {kod, dija:"nakhunok", suma, prymitka}          → (виховник) готівку здали на рахунок: два рядки «переміщення» в «Фінанси»
  *   {kod, dija:"povernuty", imya, suma, yak, zaokr, khto} → гурток повернув «свої гроші» (видаток «повернення»); zaokr — різницю лишити як «заокруглення»
  *   {kod, dija:"zalik", imya, vnesok, kudy:"vnesok"|"borh", suma?, khto} → залік без грошей: борг гуртка → у внесок, або переплата внеску → у борг
+ *   {kod, dija:"vidmina", imya, vnesok, suma?, khto} → людина передумала: скасувати залік (гроші знову винен гурток, внесок знову треба платити)
  *   {kod, dija:"spysaty", imya, prychyna, pidstava, suma, prymitka} → (виховник) списати борг людини (рядок «списано»; причина обов'язкова, >10 € — підстава)
  *   {kod, dija:"foto", ryadok, foto:"<base64 JPEG>"}  → фото чека до рядка каси: файл у папку «Чеки гуртка» Диска виховника, посилання — у «Фото чека»
  *   {kod, dija:"novi"}                              → останні 40 рядків «Змін» (що нового з сайту)
@@ -98,6 +99,7 @@ function doPost(e) {
     if (z.dija === 'zvirka') return vidpovid(zvirka(z.shcho, z.ye, z.prymitka));
     if (z.dija === 'nakhunok') return vidpovid(nakhunok(z.suma, z.prymitka));
     if (z.dija === 'povernuty') return vidpovid(povernuty(z.imya, z.suma, z.yak, z.zaokr, z.khto, rol));
+    if (z.dija === 'vidmina') return vidpovid(vidmina(z.imya, z.vnesok, z.suma, z.khto, rol));
     if (z.dija === 'zalik') return vidpovid(zalik(z.imya, z.vnesok, z.kudy, z.suma, z.khto, rol));
     if (z.dija === 'spysaty') return vidpovid(spysaty(z.imya, z.prychyna, z.pidstava, z.suma, z.prymitka));
     if (z.dija === 'foto') return vidpovid(foto(z.ryadok, z.foto, z.khto));
@@ -319,7 +321,7 @@ function vytiah(imya) {
     else if (kat === POVERN && ruh === 'видаток') d = -x;
     else if (kat === POVB && ruh === 'надходження') d = x;
     else if (kat === ZA_UCH && ruh === 'видаток') d = -x;
-    if (kat === 'внески') g = yak === SVOI ? 'zalik' : 'vnesok';
+    if (kat === 'внески') g = yak === SVOI ? (String(r[co] || '').indexOf(VIDM) === 0 ? 'vidmina' : 'zalik') : 'vnesok';
     else if (kat === SPYSANO) g = 'spysano';
     else if (kat === POVERN) g = 'povernennia';
     else if (kat === POVB) g = 'povb';
@@ -752,6 +754,42 @@ function zalik(imya, vnesok, kudy, suma, khto, rol) {
     return {ok: true, ryadok: r, suma: s, borh: borhy().b[im] || 0, brak: st2.brak};
   } finally { lock.releaseLock(); }
 }
+// ВІДМІНА ЗАЛІКУ: людина спершу попросила «у внесок», а потім передумала — хоче гроші назад.
+// Рядок «видаток · внески · свої гроші» з описом «відміна заліку…»: внесок знову не сплачено, гурток знову винен.
+// Скасувати можна не більше, ніж зараховано (мінус те, що вже скасовано).
+var VIDM = 'відміна заліку';
+function zarakhovano(im, n) {    // скільки з боргу гуртка зараховано у цей внесок (за вирахуванням відмін)
+  var fs = SpreadsheetApp.getActive().getSheetByName('Фінанси'), z = zaholovky(fs), x = 0;
+  var ci = z.indexOf(IM), cv = z.indexOf('Внесок'), cs = z.indexOf('Сума, €'), cr = z.indexOf('Рух'), cy = z.indexOf('Як платили'), ck = z.indexOf('Категорія'), co = z.indexOf('Опис');
+  ryadky(fs).forEach(function (r) {
+    if (String(r[ci]).trim() !== im || String(r[cv]).trim() !== n || r[cy] !== SVOI || r[ck] !== 'внески') return;
+    if (r[cr] === 'надходження') x += Number(r[cs]) || 0;
+    else if (r[cr] === 'видаток' && String(r[co]).indexOf(VIDM) === 0) x -= Number(r[cs]) || 0;
+  });
+  return Math.round(x * 100) / 100;
+}
+function vidmina(imya, vnesok, suma, khto, rol) {
+  var im = chyste(imya || '').trim(), n = String(vnesok || '').trim();
+  if (!im || !n) return {ok: false, pomylka: 'Потрібні ім\'я і внесок.'};
+  var lock = LockService.getScriptLock(); lock.waitLock(15000);
+  try {
+    var maks = zarakhovano(im, n);
+    if (!(maks > 0)) return {ok: false, pomylka: im + ': у «' + n + '» нічого не зараховано — скасовувати нічого.'};
+    var s = suma === undefined || suma === null || suma === '' ? maks : chysloGroshei(suma);
+    if (s === null || s <= 0) return {ok: false, pomylka: 'Сума — додатне число, до центів.'};
+    if (s > maks + 0.001) return {ok: false, pomylka: 'Скасувати можна щонайбільше ' + String(maks).replace('.', ',') + ' €.'};
+    s = Math.round(s * 100) / 100;
+    var sh = SpreadsheetApp.getActive().getSheetByName('Фінанси'), d = new Date(), r = vilnyiRyadok(sh), kh = chyste(khto || '') || (rol === 'v' ? 'виховник' : '');
+    d = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    var o = {'Дата': d, 'Рух': 'видаток', 'Категорія': 'внески', 'Внесок': n, 'Як платили': SVOI, 'Сума, €': s, 'Хто записав': kh, 'Записано': new Date(),
+             'Опис': VIDM + ': передумав(-ла) — гурток поверне гроші'};
+    o[IM] = im;
+    zapysatyRyadok(sh, r, o);
+    zminy('відміна заліку', 'Фінанси', r, kh, dd(d) + ' · ' + im + ' · «' + n + '» −' + s + ' € (передумав(-ла), без грошей)');
+    return {ok: true, ryadok: r, suma: s, borh: borhy().b[im] || 0, brak: stanVnesku(im, n).brak};
+  } finally { lock.releaseLock(); }
+}
+
 // виховник списує борг (людина не бере грошей, дрібниця, вибула): рядок «списано», «свої гроші», борг → 0.
 // Обов'язково: причина; більше SPYS_MEZHA € — ще й підстава (протокол гурткової ради / хто погодив);
 // suma — скільки бачив виховник: якщо борг тим часом змінився, не списуємо.

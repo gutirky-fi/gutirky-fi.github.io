@@ -375,6 +375,17 @@ const zam0 = sheets['Замовлення']._f.slice(3).filter(r => r[0]).length
   const dl = post({ kod: J, dija: 'vytiah', imya: 'Дана' });
   ok(dl.ryadky.some(r => r.hrupa === 'svoi') && dl.ryadky.some(r => r.hrupa === 'povernennia') && dl.ryadky.some(r => r.hrupa === 'vnesok'), 'витяг Дани: є «свої гроші», «повернення», внески');
   ok(!post({ kod: 'x', dija: 'vytiah', imya: 'Дана' }).ok, 'витяг без коду — ні');
+  // передумала: залік → назад
+  const zb0 = ctx.stanVnesku('Зоряна', 'Осінь 2026').brak, zh0 = post({ kod: J, dija: 'hroshi' }), zr = ctx.zarakhovano('Зоряна', 'Осінь 2026');
+  ok(zr === 4, 'зараховано Зоряні у «Осінь 2026»: ' + zr);
+  ok(!post({ kod: J, dija: 'vidmina', imya: 'Зоряна', vnesok: 'Осінь 2026', suma: '5' }).ok, 'відмінити більше, ніж зараховано, — ні');
+  const vm = post({ kod: J, dija: 'vidmina', imya: 'Зоряна', vnesok: 'Осінь 2026', khto: 'Дана' });
+  const zh1 = post({ kod: J, dija: 'hroshi' });
+  ok(vm.ok && vm.suma === 4 && vm.borh === 4 && Math.abs(vm.brak - (zb0 + 4)) < 0.001 && zh1.razom === zh0.razom, 'передумала: гурток знову винен 4 €, внесок знову бракує +4, у касі гроші ті самі');
+  ok(!post({ kod: J, dija: 'vidmina', imya: 'Зоряна', vnesok: 'Осінь 2026' }).ok, 'друга відміна — нічого скасовувати');
+  const vz = post({ kod: J, dija: 'vytiah', imya: 'Зоряна' });
+  ok(vz.ryadky.some(r => r.hrupa === 'vidmina') && vz.ryadky.some(r => r.hrupa === 'zalik') && vz.pidsumok.borh === 4, 'витяг: видно і залік, і відміну');
+  ok(post({ kod: J, dija: 'zalik', imya: 'Зоряна', vnesok: 'Осінь 2026', kudy: 'vnesok', khto: 'Дана' }).ok && ctx.zarakhovano('Зоряна', 'Осінь 2026') === 4, 'знову передумала — можна знову зарахувати');
   // платіж «ні» (виховник не знайшов у банку) — не сплачено
   const fr = FN().find(x => x.r[2] === 'внески' && x.r[7] !== 'свої гроші' && x.r[4] && x.r[8] && x.r[14] !== 'ні' && x.r[14] !== 'так');
   if (fr) {
