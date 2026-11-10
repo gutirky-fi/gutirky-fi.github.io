@@ -19,7 +19,7 @@
   .ok{color:#1d7a46;font-weight:600}
   .err{color:#b0122f;font-size:13px;margin-top:6px}
   .qr{display:flex;gap:14px;align-items:flex-start}
-  .qr svg{flex:none;border:1px solid #d8dde3;border-radius:6px}
+  .qr svg{flex:none;border:1px solid #d8dde3;border-radius:10px}
   .qr .side{flex:1;min-width:0}
   .ico{width:16px;height:16px;vertical-align:-3px;stroke:#c8284a;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   ul{margin:4px 0 0;padding-left:18px}
@@ -72,6 +72,7 @@
 
 <script>
 /*QR*/
+var LILEYA = '/*LILEYA*/';
 (function () {
   var $ = function (i) { return document.getElementById(i); };
   var RE = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
@@ -100,7 +101,7 @@
   function onovyty() {
     var l = posylannia();
     $('lnk').value = l;
-    $('kod').innerHTML = QR.svg(l, 210);
+    $('kod').innerHTML = QR.svgPlast(l, 230, LILEYA);
     $('msg').textContent = '';
   }
   function kopiiuvaty(t) {

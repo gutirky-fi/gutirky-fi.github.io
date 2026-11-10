@@ -3,10 +3,12 @@
    (posylannia.html → pryimach.gs, скрипт zibraty_pryimach.py). qrMatrytsia(tekst) → масив рядків true/false. */
 var QR = (function () {
   var ECC = {M: [0, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26],
-             L: [0, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28]};
+             L: [0, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28],
+             Q: [0, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26, 30]};
   var BLK = {M: [0, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16],
-             L: [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8]};
-  var FMT = {L: 1, M: 0};
+             L: [0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8],
+             Q: [0, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20]};
+  var FMT = {L: 1, M: 0, Q: 3};
   function raw(v) { var r = (16 * v + 128) * v + 64; if (v >= 2) { var n = Math.floor(v / 7) + 2; r -= (25 * n - 10) * n - 55; if (v >= 7) r -= 36; } return r; }
   function dataCw(v, l) { return Math.floor(raw(v) / 8) - ECC[l][v] * BLK[l][v]; }
   function mul(x, y) { var z = 0; for (var i = 7; i >= 0; i--) { z = (z << 1) ^ ((z >>> 7) * 0x11D); z ^= ((y >>> i) & 1) * x; } return z; }
@@ -18,10 +20,9 @@ var QR = (function () {
   function alignPos(v, size) { if (v === 1) return []; var n = Math.floor(v / 7) + 2, step = Math.ceil((v * 4 + 4) / (n * 2 - 2)) * 2, r = [6];
     for (var i = 0, p = size - 7; i < n - 1; i++, p -= step) r.splice(1, 0, p); return r; }
 
-  function matrytsia(tekst) {
-    var b = bytes(tekst), v, l = 'M';
-    for (v = 1; v <= 20; v++) if (4 + (v < 10 ? 8 : 16) + b.length * 8 <= dataCw(v, 'M') * 8) break;
-    if (v > 20) { l = 'L'; for (v = 1; v <= 20; v++) if (4 + (v < 10 ? 8 : 16) + b.length * 8 <= dataCw(v, 'L') * 8) break; }
+  function matrytsia(tekst, rivni) {   // rivni — від найнадійнішого: з лілеєю посередині 'Q' (витримує закриту середину)
+    var b = bytes(tekst), v, l, ri = rivni || ['M', 'L'];
+    for (var q0 = 0; q0 < ri.length; q0++) { l = ri[q0]; for (v = 1; v <= 20; v++) if (4 + (v < 10 ? 8 : 16) + b.length * 8 <= dataCw(v, l) * 8) break; if (v <= 20) break; }
     if (v > 20) throw new Error('Задовгий текст для QR');
     // біти даних
     var bits = [], put = function (x, n) { for (var i = n - 1; i >= 0; i--) bits.push((x >>> i) & 1); };
@@ -98,6 +99,22 @@ var QR = (function () {
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + w + '" width="' + px + '" height="' + px + '" shape-rendering="crispEdges">' +
       '<rect width="' + w + '" height="' + w + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
   }
-  return {matrytsia: matrytsia, svg: svg};
+  // У стилі розділу: круглі «крапки», кутові «очі» кольору розділу, лілея посередині (рівень Q — середину можна закрити)
+  function svgPlast(tekst, px, lileya, kolir) {
+    var m = matrytsia(tekst, ['Q', 'M', 'L']), n = m.length, q = 3, w = n + 2 * q, d = '', ink = '#1f2328', c = kolir || '#c8284a';
+    var oko = function (x, y) { return (x < 7 && y < 7) || (x >= n - 7 && y < 7) || (x < 7 && y >= n - 7); };
+    var s0 = Math.round(n * 0.22) | 1, a = (n - s0) / 2;          // середина під лілею (≈5 % площі)
+    var pid = function (x, y) { return x >= a - 0.5 && x < a + s0 + 0.5 && y >= a - 0.5 && y < a + s0 + 0.5; };
+    for (var y = 0; y < n; y++) for (var x = 0; x < n; x++) if (m[y][x] && !oko(x, y) && !(lileya && pid(x, y)))
+      d += 'M' + (x + q + 0.5) + ' ' + (y + q + 0.08) + 'a.42 .42 0 1 0 .001 0z';
+    var oka = [[0, 0], [n - 7, 0], [0, n - 7]].map(function (p) { var X = p[0] + q, Y = p[1] + q;
+      return '<rect x="' + (X + 0.5) + '" y="' + (Y + 0.5) + '" width="6" height="6" rx="1.8" fill="none" stroke="' + c + '"/>' +
+             '<rect x="' + (X + 2) + '" y="' + (Y + 2) + '" width="3" height="3" rx="0.9" fill="' + c + '"/>'; }).join('');
+    var lil = lileya ? '<rect x="' + (a + q - 0.3) + '" y="' + (a + q - 0.3) + '" width="' + (s0 + 0.6) + '" height="' + (s0 + 0.6) + '" rx="1.6" fill="#fff"/>' +
+      '<image href="' + lileya + '" x="' + (a + q + 0.4) + '" y="' + (a + q + 0.2) + '" width="' + (s0 - 0.8) + '" height="' + (s0 - 0.4) + '" preserveAspectRatio="xMidYMid meet"/>' : '';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + w + '" width="' + px + '" height="' + px + '">' +
+      '<rect width="' + w + '" height="' + w + '" rx="2" fill="#fff"/><path d="' + d + '" fill="' + ink + '"/>' + oka + lil + '</svg>';
+  }
+  return {matrytsia: matrytsia, svg: svg, svgPlast: svgPlast};
 })();
 if (typeof module !== 'undefined') module.exports = QR;
