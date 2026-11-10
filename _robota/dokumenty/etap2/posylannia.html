@@ -63,7 +63,7 @@
     <svg class="ico" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
     <b style="color:#1f2328">Як давати</b>
     <ul>
-      <li>Діловод наводить камеру телефона на QR (або відкриває посилання) <b>один раз</b> — далі всі сторінки розділу на цьому телефоні вже знають книгу.</li>
+      <li><b>Один QR для всіх</b> — кожен юнак сканує його <b>один раз</b>, телефон запам'ятовує книгу, далі юнак сам відкриває свою посаду. Окремі сторінки нижче — лише якщо хочете відкрити комусь одразу потрібну.</li>
       <li>Коду в посиланні немає. Код гуртка кажіть <b>усно</b>, не пишіть поруч із посиланням.</li>
       <li>Надсилайте особисто, не в загальний чат.</li>
     </ul>
@@ -96,7 +96,7 @@ var LILEYA = '/*LILEYA*/';
     }
     onovyty();
   }
-  function posylannia() { return D.sait + $('stor').value + '/#p=' + D.url; }
+  function posylannia() { var v = $('stor').value; return D.sait + (v ? v + '/' : '') + '#p=' + D.url; }
   function nazva() { var o = $('stor').options[$('stor').selectedIndex]; return o ? o.textContent : ''; }
   function onovyty() {
     var l = posylannia();

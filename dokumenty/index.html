@@ -105,6 +105,8 @@ a{color:inherit}
     <p class="lead">Кожна посада в гуртку веде свої записи. Усе сходиться в одну книгу гуртка в виховника, а тут — бланки й форми, щоб записувати швидко й однаково.</p>
   </section>
 
+  <div id="pidjed" hidden style="border:1px solid var(--ok);border-radius:14px;background:var(--card);margin:0 0 22px;padding:14px 16px;color:var(--body)"><b style="color:var(--ok-t)">✓ Телефон під'єднано до книги гуртка.</b><br>Тепер знайди нижче свою посаду й відкрий свою сторінку. Код гуртка скаже виховник.</div>
+
   <div class="how">
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><p style="margin:0"><b>Бланк</b><span>для всіх: роздрукувати, зберегти PDF чи Word або заповнити на сторінці. Нічого нікуди не надсилається.</span></p></div>
     <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><p style="margin:0"><b>Заповнити й подати</b><span>за кодом гуртка: імена вже є, запис іде просто в книгу гуртка.</span></p></div>
@@ -131,6 +133,13 @@ a{color:inherit}
 </div>
 
 <script>
+(function () {   // спільний QR / посилання виховника (#p=…): запам'ятати адресу книги для всіх сторінок розділу на цьому телефоні
+  const hm = /[#&]p=([^&]+)/.exec(location.hash);
+  if (!hm) return;
+  const u = decodeURIComponent(hm[1]);
+  if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { try { localStorage.setItem('dokumenty:pryimach', u); } catch (x) {} document.getElementById('pidjed').hidden = false; }
+  history.replaceState(null, '', location.pathname + location.search);
+})();
 (function () {
   // Документи: [назва, адреса або null (ще готується)]
   // Обов'язки — переказ Правильника УПЮ ч. I (2019), не дослівно; джерело — etap1/KATALOH-ETAP1.xlsx, аркуш «Ролі».
