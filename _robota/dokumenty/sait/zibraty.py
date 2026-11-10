@@ -61,7 +61,7 @@ for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 
     s = s.replace('/*INDEKS*/null/*/INDEKS*/', json.dumps(INDEKS, ensure_ascii=False).replace('</', '<\\/'))
     s = s.replace('/*DEMOZVITY*/null/*/DEMOZVITY*/', DEMOZVITY.replace('</', '<\\/'))
     s = s.replace('/*DEMO*/false/*/DEMO*/', 'false' if SAIT else 'true')   # проби — завжди пробний режим (без коду, нічого не надсилається); на сайті — вхід за кодом
-    s = s.replace('<!--RIBBON-->', '<div class="ribbon rozrob">Розділ у розробці. Бланки, форми й звіти працюють; запис у Google Таблицю гуртка вмикається після налаштування книги. Позначка «готується» — ще не зроблено.</div>' if SAIT else '<div class="ribbon">Проба для перегляду. На сайті цієї сторінки ще немає.</div>')
+    s = s.replace('<!--RIBBON-->', '<div class="ribbon rozrob">Розділ у розробці. Бланки, форми й звіти працюють; запис у Google Таблицю гуртка вмикається після налаштування книги. Позначка «готується» — ще не зроблено. <a href="/proba/dokumenty/" style="color:inherit;text-decoration:underline">Подивитись, як це працює, на прикладі з вигаданим гуртком</a>.</div>' if SAIT else '<div class="ribbon">Приклад із вигаданим гуртком: нічого не надсилається й не зберігається. <a href="/dokumenty/" style="color:inherit;text-decoration:underline">Справжній розділ</a></div>')
     assert 'noindex' in s and '{{' not in s
     assert '/*DEMO*/' not in s and not (SAIT and 'const DEMO = true' in s)
     out = SITE / ('dokumenty' if SAIT else 'proba/dokumenty') / ('' if nazva == 'index' else nazva) / 'index.html'
