@@ -415,12 +415,18 @@ wide('stan', 'Стан', 'Що зроблено і що далі',
      + f'<p style="{BODY};font-size:28px;color:{D_MUT}">Розділ уже на сайті — зі смужкою «У розробці».</p>', dark=True)
 
 # ───────────────────────── 27. Спробувати
-add('sprobuvaty', f'<section id="sprobuvaty" data-transition="fade" style="background:{L_ACC};color:#ffffff;{BODY};padding:128px;display:flex;flex-direction:column;justify-content:center;gap:34px">'
+add('sprobuvaty', f'<section id="sprobuvaty" data-transition="fade" style="background:{L_ACC};color:#ffffff;{BODY};padding:128px;display:flex;flex-direction:row;align-items:center;justify-content:space-between">'
+    '<div style="width:1000px;display:flex;flex-direction:column;gap:34px">'
     f'<p style="{BODY};font-size:26px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:#ffe1e9">Спробуйте самі</p>'
-    f'<h2 style="width:1500px;{HEAD};font-size:124px;line-height:1.02;letter-spacing:2px;color:#ffffff">Відкрийте пробу</h2>'
+    f'<h2 style="width:1000px;{HEAD};font-size:124px;line-height:1.02;letter-spacing:2px;color:#ffffff">Відкрийте пробу</h2>'
     f'<div style="width:200px;height:10px;border-radius:5px;background:#ffffff"></div>'
-    f'<p style="width:1500px;{BODY};font-size:54px;font-weight:700;line-height:1.2;color:#ffffff"><a href="https://gutirky-fi.github.io/proba/dokumenty/">gutirky-fi.github.io/proba/dokumenty</a></p>'
-    f'<p style="width:1200px;{BODY};font-size:34px;line-height:1.35;color:#ffe1e9">Вигаданий гурток «Лелеки». Бланки, «Заповнити», перегляд, PDF і друк працюють без книги. Нічого не надсилається й не зберігається.</p>'
+    f'<p style="width:1000px;{BODY};font-size:34px;line-height:1.35;color:#ffe1e9">Вигаданий гурток «Лелеки». Бланки, «Заповнити», перегляд, PDF і друк працюють без книги. Нічого не надсилається й не зберігається.</p>'
+    f'<p style="width:1000px;{BODY};font-size:36px;font-weight:700;line-height:1.2;color:#ffffff"><a href="https://gutirky-fi.github.io/proba/dokumenty/">gutirky-fi.github.io/proba/dokumenty</a></p>'
+    '</div>'
+    '<div style="width:612px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:28px 28px 34px 28px;background:#ffffff;border-radius:36px;box-shadow:0 36px 80px rgba(80,0,20,0.35)">'
+    '<img src="{IMG:qr_proba}" alt="QR-код: відкрити пробу розділу «Документи гуртка»" style="width:556px;height:556px">'
+    f'<p style="width:556px;{BODY};font-size:34px;font-weight:700;line-height:1.2;text-align:center;color:#1b1d21">Наведіть камеру телефона</p>'
+    '</div>'
     '</section>')
 
 # ───────────────────────── файли
