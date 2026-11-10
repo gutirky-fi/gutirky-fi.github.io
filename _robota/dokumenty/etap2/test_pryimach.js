@@ -587,6 +587,20 @@ ok(ryad('Архів').some(r => String(r[3]).includes('archiv')), 'посила�
   ok(post({ kod: K, dija: 'novi' }).vidkryto === 1 && post({ kod: K, dija: 'vypadky' }).vypadky[0]['Вирішено'], 'вирішений — не рахується, дата «Вирішено» є');
   ok(!post({ kod: K, dija: 'zvit', arkush: 'Особливі випадки' }).ok && !post({ kod: K, dija: 'zvity' }).arkushi['Особливі випадки'], 'особливі випадки не йдуть у звіти');
 }
+{ // «Посилання для гуртка» (10.11): адреса /exec лише у властивостях, діалог з QR
+  ctx.HtmlService = { createHtmlOutput: h => { const o = { h, setWidth: () => o, setHeight: () => o }; return o; } };
+  let pokazano = null; const ui0 = ctx.SpreadsheetApp.getUi;
+  ctx.SpreadsheetApp.getUi = () => Object.assign(ui0(), { showModalDialog: (o, t) => { pokazano = { o, t }; } });
+  ok(ctx.posylanniaDani().url === '' && ctx.posylanniaDani().storinky.length === 2, 'посилання: без адреси — діалог просить вставити');
+  const U = 'https://script.google.com/macros/s/AKfycbx-Test_123/exec';
+  ok(!ctx.zberehtyURL(U.replace('/exec', '/dev')).ok && !ctx.zberehtyURL('http://script.google.com/macros/s/a/exec').ok && !ctx.zberehtyURL('https://evil.example/macros/s/a/exec').ok && !props.URL_EXEC, 'посилання: /dev, http, чужий сайт — не приймаються');
+  ok(ctx.zberehtyURL(' ' + U + ' ').ok && props.URL_EXEC === U && ctx.posylanniaDani().url === U, 'посилання: /exec збережено у властивостях');
+  ctx.posylannia();
+  ok(pokazano && pokazano.t === 'Посилання для гуртка' && pokazano.o.h.includes('QR.svg') && !pokazano.o.h.includes(U) && !/https?:\/\/(?!script\.google\.com\/macros\/s\/|www\.w3\.org)[^\s'"<]+/.test(pokazano.o.h.replace(/https:\/\/script\.google\.com\/macros\/s\/…\/exec/g, '')), 'посилання: діалог показано, адреси в ньому немає, зовнішніх адрес немає');
+  const dirs = fs.readdirSync(path.join(__dirname, '..', '..', '..', 'dokumenty'));
+  ok(ctx.posylanniaDani().storinky.every(g => g.spysok.every(([p]) => dirs.includes(p))), 'посилання: усі сторінки є на сайті');
+  ctx.SpreadsheetApp.getUi = ui0; delete props.URL_EXEC;
+}
 for (let i = 0; i < 5; i++) post({ kod: 'x', dija: 'perevirka' });
 ok(!post({ kod: 'lelekы-2026', dija: 'perevirka' }).ok, 'після 5 хибних спроб — вхід закрито');
 ok(sheets['Зміни']._f.slice(3).some(r => r[1] === 'блокування'), 'блокування записано в «Зміни»');

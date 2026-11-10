@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk"><head><meta charset="utf-8"><base target="_top">
+<!-- Діалог «Книга гуртка → Посилання для гуртка» (10.11.2026). Джерело; у pryimach.gs вставляє zibraty_pryimach.py.
+     Адреса книги нікуди не передається: QR малює сам діалог (qr.js). -->
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;padding:4px 2px 10px;font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1f2328}
+  h2{margin:0 0 4px;font-size:17px}
+  p{margin:0 0 8px}
+  .mut{color:#59636e;font-size:13px}
+  .card{border:1px solid #d8dde3;border-radius:10px;padding:10px 12px;margin:0 0 10px;background:#fff}
+  label{display:block;font-weight:600;margin:0 0 4px}
+  input[type=text],select,textarea{width:100%;font:inherit;padding:7px 9px;border:1px solid #b9c1ca;border-radius:8px;background:#fff;color:inherit}
+  textarea{font-size:12.5px;resize:none;height:58px;word-break:break-all}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:8px 14px;cursor:pointer;background:#c8284a;color:#fff}
+  .btn.sec{background:#eef1f4;color:#1f2328;border:1px solid #c7ced6}
+  .lnk{font:inherit;font-size:13px;background:none;border:0;color:#a3203d;text-decoration:underline;cursor:pointer;padding:0}
+  .ok{color:#1d7a46;font-weight:600}
+  .err{color:#b0122f;font-size:13px;margin-top:6px}
+  .qr{display:flex;gap:14px;align-items:flex-start}
+  .qr svg{flex:none;border:1px solid #d8dde3;border-radius:6px}
+  .qr .side{flex:1;min-width:0}
+  .ico{width:16px;height:16px;vertical-align:-3px;stroke:#c8284a;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  ul{margin:4px 0 0;padding-left:18px}
+  li{margin:2px 0}
+  .msg{font-size:13px;min-height:18px;margin-top:6px}
+</style></head><body>
+
+<div id="nema" class="card" hidden>
+  <h2>Адреса книги</h2>
+  <p>Один раз вставте сюди <b>URL вебзастосунку</b> — той, що закінчується на <b>/exec</b>.
+    Де взяти: Apps Script → <b>Ввести в дію → Керувати введеннями</b> → скопіювати «URL вебзастосунку».</p>
+  <input type="text" id="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off" spellcheck="false">
+  <div class="row" style="margin-top:8px"><button class="btn" id="zberehty">Зберегти</button><button class="lnk" id="skasuvaty" hidden>скасувати</button></div>
+  <div class="err" id="pomylka"></div>
+  <p class="mut" style="margin:8px 0 0">Адреса зберігається лише в цій книзі (у налаштуваннях приймача), не на сайті.</p>
+</div>
+
+<div id="ye" hidden>
+  <div class="card">
+    <div class="row" style="justify-content:space-between"><span><span class="ok">✓</span> Книга під'єднана: <span class="mut" id="kinets"></span></span><button class="lnk" id="zminyty">змінити адресу</button></div>
+  </div>
+
+  <div class="card">
+    <label for="stor">Яка сторінка</label>
+    <select id="stor"></select>
+    <div class="qr" style="margin-top:10px">
+      <div id="kod"></div>
+      <div class="side">
+        <label for="lnk" style="font-weight:400" class="mut">Посилання</label>
+        <textarea id="lnk" readonly></textarea>
+        <div class="row" style="margin-top:6px">
+          <button class="btn" id="kop">Копіювати посилання</button>
+          <button class="btn sec" id="kopt">Копіювати з поясненням</button>
+        </div>
+        <div class="msg" id="msg"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mut">
+    <svg class="ico" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+    <b style="color:#1f2328">Як давати</b>
+    <ul>
+      <li>Діловод наводить камеру телефона на QR (або відкриває посилання) <b>один раз</b> — далі всі сторінки розділу на цьому телефоні вже знають книгу.</li>
+      <li>Коду в посиланні немає. Код гуртка кажіть <b>усно</b>, не пишіть поруч із посиланням.</li>
+      <li>Надсилайте особисто, не в загальний чат.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+/*QR*/
+(function () {
+  var $ = function (i) { return document.getElementById(i); };
+  var RE = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
+  var D = null;
+  var run = function (fn, arg, ok) {
+    if (window.google && google.script && google.script.run) {
+      google.script.run.withSuccessHandler(ok).withFailureHandler(function (e) { $('pomylka').textContent = 'Помилка: ' + (e && e.message || e); })[fn](arg);
+    } else ok(fn === 'posylanniaDani' ? window.DEMO_DANI : {ok: true, url: arg});   // перегляд без Google (знімки)
+  };
+  function pokazaty() {
+    var u = D.url;
+    $('nema').hidden = !!u; $('ye').hidden = !u;
+    if (!u) { $('url').focus(); return; }
+    $('kinets').textContent = '…' + u.slice(-18);
+    if (!$('stor').options.length) {
+      D.storinky.forEach(function (g) {
+        var og = document.createElement('optgroup'); og.label = g.hrupa;
+        g.spysok.forEach(function (s) { var o = document.createElement('option'); o.value = s[0]; o.textContent = s[1]; og.appendChild(o); });
+        $('stor').appendChild(og);
+      });
+    }
+    onovyty();
+  }
+  function posylannia() { return D.sait + $('stor').value + '/#p=' + D.url; }
+  function nazva() { var o = $('stor').options[$('stor').selectedIndex]; return o ? o.textContent : ''; }
+  function onovyty() {
+    var l = posylannia();
+    $('lnk').value = l;
+    $('kod').innerHTML = QR.svg(l, 210);
+    $('msg').textContent = '';
+  }
+  function kopiiuvaty(t) {
+    var ta = $('lnk'), staryi = ta.value, gotovo = function (ok) {
+      $('msg').innerHTML = ok ? '<span class="ok">✓</span> Скопійовано — вставте в особисте повідомлення.' : 'Не вдалося скопіювати само: виділено — натисніть Ctrl+C.';
+    };
+    ta.value = t; ta.select();
+    var ok = false; try { ok = document.execCommand('copy'); } catch (x) {}
+    if (ok) { ta.value = staryi; gotovo(true); return; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(function () { ta.value = staryi; gotovo(true); }, function () { gotovo(false); });
+    else gotovo(false);
+  }
+  $('stor').addEventListener('change', onovyty);
+  $('kop').addEventListener('click', function () { kopiiuvaty(posylannia()); });
+  $('kopt').addEventListener('click', function () {
+    kopiiuvaty(nazva() + ' — Документи гуртка:\n' + posylannia() + '\n\nВідкрий це посилання один раз на своєму телефоні. Код скажу окремо.');
+  });
+  $('zminyty').addEventListener('click', function () { $('url').value = D.url; $('skasuvaty').hidden = false; $('nema').hidden = false; $('ye').hidden = true; $('url').focus(); });
+  $('skasuvaty').addEventListener('click', function () { $('pomylka').textContent = ''; pokazaty(); });
+  $('zberehty').addEventListener('click', function () {
+    var u = $('url').value.trim(); $('pomylka').textContent = '';
+    if (/\/dev$/.test(u)) { $('pomylka').textContent = 'Це адреса для перевірки (/dev). Потрібна та, що закінчується на /exec.'; return; }
+    if (!RE.test(u)) { $('pomylka').textContent = 'Це не схоже на URL вебзастосунку: має починатися з https://script.google.com/macros/s/ і закінчуватися на /exec.'; return; }
+    run('zberehtyURL', u, function (r) { if (!r || !r.ok) { $('pomylka').textContent = (r && r.pomylka) || 'Не вдалося зберегти.'; return; } D.url = r.url; pokazaty(); });
+  });
+  $('url').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('zberehty').click(); });
+  run('posylanniaDani', null, function (d) { D = d; pokazaty(); });
+})();
+</script>
+</body></html>
