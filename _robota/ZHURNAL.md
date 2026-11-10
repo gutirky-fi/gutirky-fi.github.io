@@ -594,3 +594,6 @@
 
 ## 10.11.2026 ≈ 08:37 — Документація гуртка: презентація розділу
 Зроблено нову презентацію «Документи гуртка» (23 слайди, Slides): https://claude.ai/artifact/R58E1qA3KnrhGrv8JmoRTq . Подробиці — `_robota/dokumenty/ZHURNAL.md`.
+
+## 10.11.2026 ≈ 09:01 — Документація гуртка: презентація, друга версія
+Презентацію перероблено з нуля (27 слайдів, той самий артефакт R58E1qA3KnrhGrv8JmoRTq). Подробиці — `_robota/dokumenty/ZHURNAL.md`, скрипти — `_robota/dokumenty/prezentatsiia/`.
