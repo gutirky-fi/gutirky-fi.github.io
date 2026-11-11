@@ -51,7 +51,7 @@ def dzherelo(nazva):   # окрема сторінка або документ �
 
 DEMOZVITY = (TUT / 'demo_zvity.json').read_text(encoding='utf-8').strip()   # вигаданий гурток «Лелеки» для проби «Звітів» (python3 demo_zvity.py)
 
-for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 'kinets-roku', *FORMY):
+for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 'kinets-roku', 'znayomstvo', *FORMY):
     s = dzherelo(nazva)
     s = s.replace('{{LOGO}}', uri(IMG / 'logo.png', 'image/png')).replace('{{EMBLEM}}', uri(IMG / 'emblem.webp', 'image/webp')).replace('{{LILY}}', uri(ROB / 'druk' / 'lileya.png', 'image/png'))
     s = s.replace('/*SPILNE*/', SPILNE)

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#1b1d21">
+<title>Знайомство з гуртком — Документи гуртка</title>
+<link rel="icon" href="{{EMBLEM}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/*SPILNE*/
+/* Знайомство з гуртком — опитувальник для юнаків (11.11.2026). QR від виховника → 3 кроки → «Надіслати виховникові»
+   → рядок у Google Таблиці виховника (приймач opytuvannia/pryimach_znayomstvo.gs; адреса — у посиланні #p=…, не в репозиторії). */
+.lead{position:relative;margin:8px 0 0;color:var(--mut);font-size:16px;max-width:60ch}
+.lead b{color:var(--body)}
+.box{max-width:680px;margin:0 auto 70px}
+.prog{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 18px;padding:0;list-style:none}
+.prog li{display:grid;gap:7px;font:500 13px var(--disp);letter-spacing:.14em;text-transform:uppercase;color:var(--mut)}
+.prog li::before{content:"";height:5px;border-radius:3px;background:var(--ln)}
+.prog li.on{color:var(--ink)}.prog li.on::before{background:var(--d)}
+.prog li.ok::before{background:var(--ok)}
+.card>h2{display:flex;align-items:center;gap:10px}
+.card>h2 i{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--d);color:#fff;font:600 17px var(--disp);font-style:normal}
+.card>.note{margin:-6px 0 18px}
+.q{margin:0 0 22px}
+.q>.t{display:block;margin:0 0 4px;font-weight:700;font-size:17px;color:var(--ink)}
+.q>.t em{font-style:normal;color:var(--d-t)}
+.q>.h{display:block;margin:0 0 9px;font-size:14px;color:var(--mut)}
+.q.need .in,.q.need .chips{outline:2px solid rgba(200,40,74,.7);outline-offset:3px;border-radius:12px}
+textarea.in{min-height:92px;resize:vertical;line-height:1.4}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips label{position:relative;display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:99px;border:1px solid var(--ln);background:#14171a;color:var(--body);font-size:15.5px;font-weight:600;cursor:pointer;user-select:none}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label svg{width:15px;height:15px;display:none}
+.chips label:has(input:checked){background:var(--d);border-color:var(--d);color:#fff}
+.chips label:has(input:checked) svg{display:block}
+.chips label:has(input:focus-visible){outline:2px solid var(--a);outline-offset:2px}
+.inshe{margin-top:9px}
+.nav{display:grid;grid-template-columns:auto 1fr;gap:10px;margin-top:8px}
+.nav .btn.main{width:100%}
+.done h2{justify-content:center}
+.done .big.lil{background:rgba(200,40,74,.16);color:var(--d-t)}
+.stop{text-align:center;padding:30px 22px}
+.small{font-size:14px;color:var(--mut)}
+@media (max-width:700px){
+  .top{padding-top:14px}.logo img{height:46px}
+  .back span{display:none}.back{padding:9px 12px}
+  .hero{padding-block:26px 20px}.hero .wm{height:170px;right:-10px}
+  .card{padding:18px 16px}
+}
+</style>
+</head>
+<body>
+<!--RIBBON-->
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="/" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+  </header>
+
+  <section class="hero">
+    <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
+    <span class="ey">Документи гуртка · знайомство</span>
+    <h1>Знайомство</h1>
+    <p class="hand" id="hname">наш гурток і ти</p>
+    <p class="lead">Привіт! Я ваш новий виховник і хочу знати, <b>який у нас гурток і чого хочеш саме ти</b>. Це займе 5–10 хвилин. Правильних і неправильних відповідей немає. Прізвище не потрібне.</p>
+  </section>
+
+  <div class="box">
+    <ol class="prog" id="prog"><li>Про мене</li><li>Мій гурток</li><li>Що далі</li></ol>
+    <form id="f" novalidate></form>
+
+    <div class="card done" id="done" hidden>
+      <div class="big"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <h2>Дякую!</h2>
+      <p id="done-t">Твої відповіді дійшли до виховника. СКОБ!</p>
+      <button class="btn" type="button" id="znovu">Заповнити для іншого юнака</button>
+    </div>
+
+    <div class="card stop" id="noaddr" hidden>
+      <h2>Відкрий з QR-коду</h2>
+      <p class="note">Ця сторінка надсилає відповіді виховникові, тому відкривати її треба з QR-коду або посилання, яке дав виховник.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const DEMO = /*DEMO*/false/*/DEMO*/;
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+  // Питання. t — заголовок (він же назва стовпця в Таблиці), v — варіанти, m — кілька варіантів, o — «Інше», r — обов'язкове.
+  const VIK = []; for (let i = 10; i <= 18; i++) VIK.push(String(i)); VIK.push('більше 18');
+  const KROKY = [
+    {n: 'Про мене', note: 'Почнімо з тебе.', q: [
+      {t: 'Ім\'я', h: 'Лише ім\'я, без прізвища', tip: 'text', r: 1},
+      {t: 'Скільки тобі років', v: VIK, r: 1},
+      {t: 'Відколи ти в цьому гуртку', v: ['Цього року прийшов', '1–2 роки', '3 роки й більше', 'Від самого початку гуртка'], r: 1},
+      {t: 'Твоя посада в гуртку', v: ['Гуртковий', 'Заступник гурткового', 'Писар', 'Скарбник', 'Господар', 'Хронікар', 'Немає посади'], m: 1, o: 1, r: 1},
+      {t: 'Що ти робиш на своїй посаді', h: 'Якщо посади немає — пропусти', tip: 'area'},
+      {t: 'Яка в тебе проба і над чим зараз працюєш', h: 'Якщо не знаєш точно — напиши, як пам\'ятаєш', tip: 'area'},
+      {t: 'Які вмілості й відзначки ти вже маєш', tip: 'area'}
+    ]},
+    {n: 'Мій гурток', note: 'Розкажи, як ти бачиш гурток. Чого не знаєш — пропускай.', q: [
+      {t: 'Що тобі найбільше подобається в гуртку', tip: 'area', r: 1},
+      {t: 'Що б ти змінив або покращив', tip: 'area'},
+      {t: 'Як зараз проходять наші сходини', h: 'Що робимо, хто веде, скільки триває', tip: 'area'},
+      {t: 'Гасло, клич, пісня, традиції гуртка', h: 'Усе, що робить наш гурток особливим', tip: 'area'},
+      {t: 'Що гурток робив останнім часом', h: 'Табори, мандрівки, акції, вмілості, свята', tip: 'area'}
+    ]},
+    {n: 'Що далі', note: 'Останній крок — про цей рік.', q: [
+      {t: 'Чим хочеш займатися цього року', h: 'Можна кілька', v: ['Мандрівки й походи', 'Табори', 'Ігри', 'Вмілості', 'Гутірки', 'Добрі справи й акції', 'Спорт', 'Творчість і ремесла'], m: 1, o: 1, r: 1},
+      {t: 'Які теми тобі цікаві', h: 'Про що хотів би дізнатися на сходинах', tip: 'area'},
+      {t: 'Хочеш узяти посаду або справу в гуртку', v: ['Так', 'Можливо', 'Поки ні'], r: 1},
+      {t: 'Що ти вмієш і міг би навчити інших', tip: 'area'},
+      {t: 'Які дні тобі зручні для сходин', h: 'Можна кілька', v: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Нд'], m: 1},
+      {t: 'Що хочеш сказати новому виховникові', h: 'Необов\'язково', tip: 'area'}
+    ]}
+  ];
+
+  // Адреса приймача й назва гуртка — з посилання виховника (#p=…&h=…), не з репозиторію.
+  let addr = '', hurtok = '';
+  const KEY = 'znayomstvo:', ls = {
+    get: k => { try { return localStorage.getItem(KEY + k) || ''; } catch (x) { return ''; } },
+    set: (k, v) => { try { v ? localStorage.setItem(KEY + k, v) : localStorage.removeItem(KEY + k); } catch (x) {} }
+  };
+  addr = ls.get('addr'); hurtok = ls.get('h');
+  const pm = /[#&]p=([^&]+)/.exec(location.hash), hm = /[#&]h=([^&]+)/.exec(location.hash);
+  if (pm) { const u = decodeURIComponent(pm[1]); if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { addr = u; ls.set('addr', u); } }
+  if (hm) { hurtok = decodeURIComponent(hm[1]).slice(0, 60); ls.set('h', hurtok); }
+  if (pm || hm) history.replaceState(null, '', location.pathname + location.search);
+  if (DEMO && !hurtok) hurtok = 'Орли волі';
+  if (hurtok) $('hname').textContent = 'гурток «' + hurtok + '»';
+
+  // Будова форми
+  let uid = 0;
+  const pole = q => {
+    const id = 'q' + (++uid); q.id = id;
+    let s = '<div class="q" data-q="' + id + '"><label class="t" for="' + id + '">' + esc(q.t) + (q.r ? ' <em>*</em>' : '') + '</label>' + (q.h ? '<span class="h">' + esc(q.h) + '</span>' : '');
+    if (q.v && q.v.length > 8 && !q.m) s += '<select class="in" id="' + id + '"><option value="">— вибери —</option>' + q.v.map(v => '<option>' + esc(v) + '</option>').join('') + '</select>';
+    else if (q.v) {
+      s += '<div class="chips" role="group">' + q.v.concat(q.o ? ['Інше'] : []).map(v => '<label><input type="' + (q.m ? 'checkbox' : 'radio') + '" name="' + id + '" value="' + esc(v) + '">' + TICK + esc(v) + '</label>').join('') + '</div>';
+      if (q.o) s += '<input class="in inshe" id="' + id + '-o" maxlength="200" placeholder="Що саме?" hidden>';
+    }
+    else if (q.tip === 'area') s += '<textarea class="in" id="' + id + '" maxlength="2000"></textarea>';
+    else s += '<input class="in" id="' + id + '" maxlength="60" autocomplete="off">';
+    return s + '</div>';
+  };
+  $('f').innerHTML = KROKY.map((k, i) =>
+    '<section class="card krok" data-k="' + i + '" hidden><h2><i>' + (i + 1) + '</i>' + esc(k.n) + '</h2><p class="note">' + esc(k.note) + '</p>' + k.q.map(pole).join('') +
+    '<div class="nav">' + (i ? '<button class="btn" type="button" data-nazad>Назад</button>' : '<span></span>') +
+    '<button class="btn main" type="button" data-dali>' + (i < KROKY.length - 1 ? 'Далі' : 'Надіслати виховникові') + '</button></div>' +
+    (i === KROKY.length - 1 ? '<p class="msg" id="msg" hidden></p>' : '') + '</section>').join('');
+
+  const znach = q => {
+    if (q.v && !(q.v.length > 8 && !q.m)) {
+      const vs = [...document.querySelectorAll('input[name="' + q.id + '"]:checked')].map(x => x.value);
+      const o = $(q.id + '-o');
+      return vs.map(v => v === 'Інше' ? 'Інше: ' + (o ? o.value.trim() : '') : v).join(', ');
+    }
+    return $(q.id).value.trim();
+  };
+  const vse = () => { const d = {}; KROKY.forEach(k => k.q.forEach(q => { d[q.t] = znach(q); })); return d; };
+
+  // Чернетка на телефоні (якщо екран згасне — нічого не загубиться)
+  const zberehty = () => ls.set('chern', JSON.stringify(stan()));
+  const stan = () => { const s = {}; $('f').querySelectorAll('input,textarea,select').forEach(el => { s[el.id || el.name + '=' + el.value] = (el.type === 'checkbox' || el.type === 'radio') ? el.checked : el.value; }); return s; };
+  const vidnovyty = () => { let s; try { s = JSON.parse(ls.get('chern') || 'null'); } catch (x) {} if (!s) return;
+    $('f').querySelectorAll('input,textarea,select').forEach(el => { const k = el.id || el.name + '=' + el.value; if (!(k in s)) return; if (el.type === 'checkbox' || el.type === 'radio') el.checked = s[k]; else el.value = s[k]; }); };
+  const inshe = () => KROKY.forEach(k => k.q.forEach(q => { if (!q.o) return; const on = !!document.querySelector('input[name="' + q.id + '"][value="Інше"]:checked'); $(q.id + '-o').hidden = !on; }));
+  $('f').addEventListener('input', () => { inshe(); zberehty(); });
+  $('f').addEventListener('change', e => { inshe(); zberehty(); const q = e.target.closest('.q'); if (q) q.classList.remove('need'); });
+
+  // Кроки
+  let krok = 0;
+  const pokazaty = (i, tyho) => {
+    krok = i;
+    document.querySelectorAll('.krok').forEach(s => { s.hidden = +s.dataset.k !== i; });
+    document.querySelectorAll('#prog li').forEach((l, j) => { l.className = j < i ? 'ok' : j === i ? 'on' : ''; });
+    if (!tyho) window.scrollTo({top: $('prog').getBoundingClientRect().top + scrollY - 12, behavior: 'smooth'});
+  };
+  const perevir = i => {
+    let persha = null;
+    KROKY[i].q.forEach(q => { const el = document.querySelector('[data-q="' + q.id + '"]'); const pust = !!(q.r && !znach(q)); el.classList.toggle('need', pust); if (pust && !persha) persha = el; });
+    if (persha) { persha.scrollIntoView({behavior: 'smooth', block: 'center'}); return false; }
+    return true;
+  };
+  $('f').addEventListener('click', async e => {
+    if (e.target.closest('[data-nazad]')) return pokazaty(krok - 1);
+    if (!e.target.closest('[data-dali]')) return;
+    if (!perevir(krok)) return;
+    if (krok < KROKY.length - 1) return pokazaty(krok + 1);
+    await nadislaty(e.target.closest('[data-dali]'));
+  });
+
+  async function nadislaty(b) {
+    const msg = $('msg'); msg.hidden = true;
+    b.disabled = true; b.textContent = 'Надсилаю…';
+    try {
+      const t = {dija: 'znayomstvo', hurtok, vidpovidi: vse()};
+      if (DEMO) await new Promise(r => setTimeout(r, 700));
+      else {
+        const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
+        const v = await r.json();
+        if (!v.ok) throw new Error(v.pomylka || 'x');
+      }
+      ls.set('chern', '');
+      $('f').hidden = true; $('prog').hidden = true; $('done').hidden = false;
+      if (DEMO) $('done-t').textContent = 'Це приклад: нічого не надіслано. На справжньому опитуванні відповіді йдуть у Google Таблицю виховника.';
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    } catch (x) {
+      msg.textContent = 'Не вдалося надіслати. Перевір інтернет і натисни ще раз — усе вписане збережено.'; msg.hidden = false;
+    } finally { b.disabled = false; b.textContent = 'Надіслати виховникові'; }
+  }
+
+  $('znovu').addEventListener('click', () => {
+    $('f').reset(); inshe(); document.querySelectorAll('.q.need').forEach(x => x.classList.remove('need'));
+    $('done').hidden = true; $('f').hidden = false; $('prog').hidden = false; pokazaty(0);
+  });
+
+  if (!addr && !DEMO) { $('f').hidden = true; $('prog').hidden = true; $('noaddr').hidden = false; }
+  else { vidnovyty(); inshe(); pokazaty(0, 1); }
+})();
+</script>
+</body>
+</html>
