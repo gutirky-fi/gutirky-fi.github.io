@@ -256,7 +256,16 @@ html[data-v=vsi] .hero.in h1::after{content:"";display:block;width:min(240px,46%
 .leave:hover,.leave:focus-visible{color:var(--vyh-t);border-color:var(--vyh);background:rgba(61,175,110,.14)}
 .leave:active{background:rgba(61,175,110,.26)}
 .vtabs .wd{margin-left:-4px}
-@media (max-width:560px){.vbar{flex-direction:column;align-items:stretch}.vtabs{display:grid;grid-template-columns:1fr 1fr}.vtabs button{justify-content:center;padding:0 10px;font-size:15px}.vtabs .wd{display:none}.leave{align-self:flex-end}}
+/* «Вхід виховника» — пряма кнопка до записів гуртка (Документи гуртка), поруч із вкладками; зелена, як усе виховницьке */
+.vright{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.vdoor{display:inline-flex;align-items:center;gap:9px;min-height:48px;padding:0 18px;border-radius:99px;border:1px solid var(--vyh);background:rgba(61,175,110,.12);color:var(--vyh-t);font:700 16px var(--txt);text-decoration:none;transition:background .15s}
+.vdoor svg{width:19px;height:19px;flex:none}
+.vdoor small{font-weight:400;font-size:14px;color:var(--mut)}
+.vdoor i{font-style:normal;font-size:18px;line-height:1}
+.vdoor:hover,.vdoor:focus-visible{background:rgba(61,175,110,.26)}
+.vdoor:active{background:rgba(61,175,110,.36)}
+@media (max-width:900px){.vdoor small{display:none}}
+@media (max-width:560px){.vbar{flex-direction:column;align-items:stretch}.vtabs{display:grid;grid-template-columns:1fr 1fr}.vtabs button{justify-content:center;padding:0 10px;font-size:15px}.vtabs .wd{display:none}.vright{justify-content:space-between;flex-wrap:nowrap}.vdoor{flex:1;justify-content:center;padding:0 12px;font-size:15px}.leave{align-self:auto}}
 
 /* підвал */
 footer{display:flex;flex-direction:column;align-items:center;margin-top:30px;padding-block:36px 40px;border-top:1px solid var(--ln);text-align:center}
@@ -557,7 +566,10 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
           <button type="button" role="tab" id="t-k" aria-controls="p-k" aria-selected="false" tabindex="-1">Каталог<span class="wd"> вмілостей</span><span class="n" id="t-k-n"></span></button>
           <!--IG--><button type="button" role="tab" id="t-i" aria-controls="p-i" aria-selected="false" tabindex="-1">Ігри<span class="n" id="t-i-n"></span></button><!--/IG-->
         </div>
-        <button class="leave" type="button" id="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button>
+        <div class="vright">
+          <a class="vdoor" href="/dokumenty/vykhovnyk/" title="Записи гуртка: сходини, каса, проби, вмілості"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5h6v2.5H9zM9 12l1.7 1.7L14.5 10M9 17h6"/></svg><span>Вхід виховника<small> · записи гуртка</small></span><i aria-hidden="true">→</i></a>
+          <button class="leave" type="button" id="leave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button>
+        </div>
       </div>
       <section class="sec" id="p-g" role="tabpanel" aria-labelledby="t-g">
         <section class="feat auto" id="feat" aria-roledescription="карусель" aria-label="Нові гутірки">
