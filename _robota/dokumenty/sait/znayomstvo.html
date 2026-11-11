@@ -56,12 +56,12 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 <!--RIBBON-->
 <div class="wrap">
   <header class="top">
-    <a class="logo" href="/" aria-label="Пластова бібліотека, на головну"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></a>
+    <div class="logo"><img src="{{LOGO}}" alt="Пласт — Українська скаутська організація в Фінляндії"></div>
   </header>
 
   <section class="hero">
     <img class="wm" src="{{EMBLEM}}" alt="" aria-hidden="true">
-    <span class="ey">Документи гуртка · знайомство</span>
+    <span class="ey">Пласт · знайомство з гуртком</span>
     <h1>Знайомство</h1>
     <p class="hand" id="hname">наш гурток і ти</p>
     <p class="lead">Привіт! Я ваш новий виховник і хочу знати, <b>який у нас гурток і чого хочеш саме ти</b>. Це займе 5–10 хвилин. Правильних і неправильних відповідей немає. Прізвище не потрібне.</p>
@@ -89,6 +89,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 (function () {
   'use strict';
   const DEMO = /*DEMO*/false/*/DEMO*/;
+  const GAS = /*GAS*/false/*/GAS*/;   // сторінка всередині Google (приймач opytuvannia/znayomstvo.gs): надсилає через google.script.run
+  const HURTOK = /*HURTOK*/''/*/HURTOK*/;
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const TICK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
@@ -112,8 +114,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       {t: 'Гасло, клич, пісня, традиції гуртка', h: 'Усе, що робить наш гурток особливим', tip: 'area'},
       {t: 'Що гурток робив останнім часом', h: 'Табори, мандрівки, акції, вмілості, свята', tip: 'area'}
     ]},
-    {n: 'Що далі', note: 'Останній крок — про цей рік.', q: [
-      {t: 'Чим хочеш займатися цього року', h: 'Можна кілька', v: ['Мандрівки й походи', 'Табори', 'Ігри', 'Вмілості', 'Гутірки', 'Добрі справи й акції', 'Спорт', 'Творчість і ремесла'], m: 1, o: 1, r: 1},
+    {n: 'Що далі', note: 'Останній крок — про цей і наступний рік.', q: [
+      {t: 'Чим хочеш займатися в цьому й наступному році', h: 'Можна кілька', v: ['Мандрівки й походи', 'Табори', 'Ігри', 'Вмілості', 'Гутірки', 'Добрі справи й акції', 'Спорт', 'Творчість і ремесла'], m: 1, o: 1, r: 1},
       {t: 'Які теми тобі цікаві', h: 'Про що хотів би дізнатися на сходинах', tip: 'area'},
       {t: 'Хочеш узяти посаду або справу в гуртку', v: ['Так', 'Можливо', 'Поки ні'], r: 1},
       {t: 'Що ти вмієш і міг би навчити інших', tip: 'area'},
@@ -133,6 +135,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   if (pm) { const u = decodeURIComponent(pm[1]); if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { addr = u; ls.set('addr', u); } }
   if (hm) { hurtok = decodeURIComponent(hm[1]).slice(0, 60); ls.set('h', hurtok); }
   if (pm || hm) history.replaceState(null, '', location.pathname + location.search);
+  if (HURTOK) hurtok = HURTOK;
   if (DEMO && !hurtok) hurtok = 'Орли волі';
   if (hurtok) $('hname').textContent = 'гурток «' + hurtok + '»';
 
@@ -203,6 +206,10 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     try {
       const t = {dija: 'znayomstvo', hurtok, vidpovidi: vse()};
       if (DEMO) await new Promise(r => setTimeout(r, 700));
+      else if (GAS) {
+        const v = await new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no).zapysaty(JSON.stringify(t)));
+        if (!v || !v.ok) throw new Error((v && v.pomylka) || 'x');
+      }
       else {
         const r = await fetch(addr, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify(t), redirect: 'follow', cache: 'no-store', referrerPolicy: 'no-referrer'});
         const v = await r.json();
@@ -222,7 +229,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     $('done').hidden = true; $('f').hidden = false; $('prog').hidden = false; pokazaty(0);
   });
 
-  if (!addr && !DEMO) { $('f').hidden = true; $('prog').hidden = true; $('noaddr').hidden = false; }
+  if (!addr && !DEMO && !GAS) { $('f').hidden = true; $('prog').hidden = true; $('noaddr').hidden = false; }
   else { vidnovyty(); inshe(); pokazaty(0, 1); }
 })();
 </script>
