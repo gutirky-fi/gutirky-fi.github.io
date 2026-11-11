@@ -17,6 +17,14 @@
 .btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}
 .btn.main:hover{background:#4cc07f}
 .lock .ico{background:rgba(61,175,110,.16);color:var(--ok-t)}
+/* немає посилання гуртка (новий виховник): не помилка, а пояснення + «Спробувати на прикладі» */
+.nolink{margin:0 0 16px;padding:16px 16px 18px;border-radius:14px;border:1px solid rgba(61,175,110,.55);background:rgba(61,175,110,.10)}
+.nolink[hidden]{display:none}
+.nolink h3{margin:0 0 8px;font-size:18px}
+.nolink p{margin:0 0 10px;color:var(--body,#c9cfd6);font-size:15px;line-height:1.45}
+.nolink .btn{width:100%;margin-top:4px}
+.lock .in[disabled]{opacity:.45;cursor:not-allowed}
+@media (max-width:900px){.podaty{grid-template-columns:minmax(0,1fr)}}   /* як у форм: на телефоні й планшеті одна колонка, без бічної прокрутки */
 .chk input{accent-color:var(--d)}
 .bad{color:#ffb3c3!important}
 /* плитки подій */
@@ -178,7 +186,12 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
       <h2>Код виховника</h2>
       <p class="note" style="margin-bottom:16px">Ваш особистий код — не той, що в юнаків. Сторінка не зберігає ні коду, ні записів.</p>
-      <p class="err" id="z-noaddr" hidden>Цю сторінку треба відкрити з <b>вашого посилання</b> — у ньому адреса книги гуртка.</p>
+      <div class="nolink" id="z-noaddr" hidden>
+        <h3>Ще немає вашого посилання?</h3>
+        <p>Записувати можна лише з <b>особистого посилання (QR) вашого гуртка</b> — у ньому адреса книги гуртка. Його дає той, хто завів книгу.</p>
+        <p>Подивитися, як усе працює, можна вже зараз: на вигаданих іменах, без коду — нічого нікуди не надсилається.</p>
+        <a class="btn main" href="?demo">Спробувати на прикладі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
       <p class="err" id="z-err" hidden></p>
       <label class="f"><span>Код виховника</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
       <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
@@ -357,7 +370,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     if (/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(u)) { addr = u; try { localStorage.setItem(KEY, u); } catch (x) {} }
     history.replaceState(null, '', location.pathname + location.search);
   }
-  if (!addr && !DEMO) $('z-noaddr').hidden = false;
+  if (!addr && !DEMO) { $('z-noaddr').hidden = false; $('z-kod').disabled = true; $('z-in').disabled = true; }   // без посилання гуртка вводити код марно — спершу пояснення й «Спробувати на прикладі»
 
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
   const DNV = [   // проба «Що нового»
