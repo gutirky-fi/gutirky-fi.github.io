@@ -1,6 +1,7 @@
 /**
  * ОПИТУВАЛЬНИК «ЗНАЙОМСТВО З ГУРТКОМ» — окремий, не пов'язаний із сайтом і книгою гуртка.
- * Один файл: сторінка для юнаків (у стилі Пласту) + запис відповідей у Google Таблицю в окремій папці.
+ * Один файл: сторінка для юнаків (у стилі Пласту) + запис відповідей у Google Таблицю
+ * в папці Мій диск → «Гурток» → «Опитування» (папку скрипт створює сам).
  * Відповіді юнаків зберігаються ЛИШЕ в Google виховника.
  *
  * ЯК ПОСТАВИТИ (комп'ютер, профіль Chrome «Пласт»):
@@ -31,7 +32,7 @@ function tablytsia_() {
   var pr = PropertiesService.getScriptProperties();
   var id = pr.getProperty('TABLYTSIA');
   if (id) { try { return SpreadsheetApp.openById(id); } catch (e) {} }
-  var papka = DriveApp.createFolder('Знайомство з гуртком «' + NAZVA_HURTKA + '»');
+  var papka = papka_();
   var t = SpreadsheetApp.create('Знайомство з гуртком «' + NAZVA_HURTKA + '» — відповіді');
   DriveApp.getFileById(t.getId()).moveTo(papka);
   var a = t.getSheets()[0];
@@ -40,6 +41,14 @@ function tablytsia_() {
   a.setFrozenRows(1);
   pr.setProperty('TABLYTSIA', t.getId());
   return t;
+}
+
+// Мій диск → «Гурток» → «Опитування» (якщо немає — створює). Сюди ж ітимуть майбутні опитування.
+function papka_() {
+  var it = DriveApp.getRootFolder().getFoldersByName('Гурток');
+  var hurtok = it.hasNext() ? it.next() : DriveApp.createFolder('Гурток');
+  var op = hurtok.getFoldersByName('Опитування');
+  return op.hasNext() ? op.next() : hurtok.createFolder('Опитування');
 }
 
 function doGet() {
