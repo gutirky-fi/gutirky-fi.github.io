@@ -1238,6 +1238,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       $('z-names').querySelectorAll('li[data-i]').forEach(li => li.classList.toggle('need', !prys[imena[+li.dataset.i]]));
       return stop('Позначте всіх у кроці 2: лишилось ' + brak.length + ' (' + brak.slice(0, 3).join(', ') + (brak.length > 3 ? '…' : '') + ').');
     }
+    if (VN) plat.slice().forEach(p => {   // вписали більше, ніж бракує, і не натиснули «Готово» — розкласти так само, як «Готово»
+      const n = pVn(p), st = p.suma > 0 && Vn.stan(VN, p.im, n, (dodDlia(p.im, p))[n] || 0);
+      if (st && p.suma > st.brak) { const rz = Vn.rozklasty(VN, p.im, n, p.suma, dodDlia(p.im, p), !p.vn); if (rz.length > 1) plat.splice(plat.indexOf(p), 1, ...rz.map(y => Object.assign(nova(p.im, y.suma, y.v), {yak: p.yak}))); }
+    });
+    skladPl();
     const R = rakhuy();
     if (R.some(r => !(r.suma > 0))) { const p = R.find(r => !(r.suma > 0)).p; p.open = true; skladPl(); return stop('Вкажіть суму платежу: ' + p.im + '.', document.querySelector('#p-wrap .pk[data-id="' + p.id + '"] .sum')); }
 
