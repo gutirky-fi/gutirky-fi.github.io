@@ -207,6 +207,10 @@ a.tile{text-decoration:none}
 #p-body .paybar{flex-wrap:nowrap}#p-body .paybar .f{flex:0 0 72px}#p-body .paybar .yak{min-width:0}#p-body .paybar .yak button{min-width:0;padding:8px 2px}#p-body .paybar .yak button{padding:8px 4px;font-size:14px}#p-body .yak-l{display:flex;align-items:baseline;justify-content:space-between;gap:8px}#p-body .paybar .tot{margin:0;padding:0;border:0;background:none;font-weight:600}
 .pay .pr>button.lnk.npr{color:var(--mut)!important;font-size:13.5px!important}
 .pk .vh .lnk{display:block;white-space:normal;text-align:left;padding:6px 0 0}
+.zm-b{flex:none;padding:7px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer}
+.zm-dii{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
+.zm-dii .x-b{white-space:nowrap;padding:9px 12px;border-radius:10px;border:1px solid rgba(200,40,74,.6);background:none;color:#ffb3c3;font-weight:600;font-size:14px;cursor:pointer}
+.zm-dii .ok-b{flex:0 1 160px;padding:10px 16px;border-radius:10px;border:0;background:var(--d);color:#0e1f15;font-weight:800;font-size:15px;cursor:pointer}
 .vse-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 10px 14px;border-radius:12px;background:#14171a;border:1px solid rgba(61,175,110,.55);color:var(--ok-t);font-weight:700;font-size:15px}.vse-ok[hidden]{display:none}
 .pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:13px;font-weight:600;color:#f3d48a}
 .pk .ok1{flex:1 1 auto;min-width:0;font-size:15px;color:var(--body)}.pk .ok1 b{color:var(--ok-t)}.pk .ok1 small{color:var(--mut);font-size:13px}
@@ -1003,10 +1007,11 @@ window.Vn = (function () {
     const karta = r => {
       const p = r.p, inshyi = VN && r.n && r.n !== ref, vo = VN ? Vn.poriadok(VN).map(x => `<option value="${esc(x.n)}"${x.n === r.n ? ' selected' : ''}>${esc(x.n)} — ${fmt(x.suma)}</option>`).join('') : '';
       return `<div class="pk" data-id="${p.id}"><div class="l1"><span class="ok1">${r.suma > 0 ? '<b>✓ ' + fmt(r.suma) + '</b>' : '<b style="color:#f3d48a">сума?</b>'} · ${esc(pYak(p))}${inshyi ? ' <small>· ' + esc(Vn.nazva(r.n, 'za', ref)) + '</small>' : ''}</span>`
-        + `<button type="button" class="lnk" data-a="zm">${p.open ? 'готово' : 'змінити'}</button><button type="button" class="lnk" data-a="x" aria-label="Прибрати цей платіж">✕</button></div>`
+        + (p.open ? '' : '<button type="button" class="zm-b" data-a="zm">змінити</button>') + '</div>'   // 12.11, 04:25: ✕ — лише всередині «змінити» (щоб не видалити платіж випадково)
         + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="r1"><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" value="${p.suma > 0 ? num(p.suma) : ''}"><span style="color:var(--mut);font-size:14px">€</span></div>`
         + `<div class="yak" role="group" aria-label="Як платили">${['готівка', 'MobilePay', 'переказ'].map(y => `<button type="button" data-y="${y}" aria-pressed="${pYak(p) === y}">${y}</button>`).join('')}</div>`
-        + (VN ? `<label class="f"><span>За який внесок</span><select class="in pk-vn">${vo}</select></label>` : '') + `</div><div class="vh" hidden></div></div>`;
+        + (VN ? `<label class="f"><span>За який внесок</span><select class="in pk-vn">${vo}</select></label>` : '')
+        + '<div class="zm-dii"><button type="button" class="x-b" data-a="x">Прибрати платіж</button><button type="button" class="ok-b" data-a="zm">Готово</button></div>' + `</div><div class="vh" hidden></div></div>`;
     };
     const li = im => {
       const mine = R.filter(r => r.p.im === im), z = stanIm(im), brak = z ? z.st.brak > 0 || z.borhy.length > 0 : null;
