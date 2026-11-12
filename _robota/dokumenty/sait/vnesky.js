@@ -51,5 +51,55 @@ window.Vn = (function () {
     return out;
   }
 
-  return {okr, treba, stan, pidkazka, typovyi, neSplatyly};
+  /* ---- 12.11, «Кнопки внесків»: стан людини на всі місяці (старі борги, наперед), розкласти переплату ---- */
+  // внески в порядку строків (без строку — як у списку)
+  function poriadok(VN) {
+    const vs = (VN && VN.vnesky || []).map((x, i) => ({x, i}));
+    vs.sort((a, b) => a.x.termin && b.x.termin ? (a.x.termin < b.x.termin ? -1 : a.x.termin > b.x.termin ? 1 : a.i - b.i) : a.i - b.i);
+    return vs.map(y => y.x);
+  }
+  /* Назва внеску для речення: «Листопад 2026» → «листопад» / «до листопада» (рік — лише якщо інший, ніж у ref).
+     Не місяць — «за «назва»». rod: 'za' («за жовтень») | 'do' («до грудня») | '' («листопад»). */
+  const MIS = {'січень': 'січня', 'лютий': 'лютого', 'березень': 'березня', 'квітень': 'квітня', 'травень': 'травня', 'червень': 'червня', 'липень': 'липня', 'серпень': 'серпня', 'вересень': 'вересня', 'жовтень': 'жовтня', 'листопад': 'листопада', 'грудень': 'грудня'};
+  function nazva(n, rod, ref) {
+    const m = /^(\S+)\s+(\d{4})$/.exec(String(n || '')), r = /(\d{4})$/.exec(String(ref || ''));
+    const mis = m && m[1].toLowerCase();
+    if (!m || !MIS[mis]) return (rod === 'za' ? 'за ' : rod === 'do' ? 'по ' : '') + '«' + n + '»';
+    const rik = r && r[1] === m[2] ? '' : ' ' + m[2];
+    return rod === 'za' ? 'за ' + mis + rik : rod === 'do' ? 'до ' + MIS[mis] + rik : mis + rik;
+  }
+  /* Усе про людину станом на внесок n. dod — платежі, вписані на сторінці: {внесок: сума}.
+     {st — стан за n; borhy — [{v, brak}] за попередні внески; do_ — до якого внеску сплачено наперед (null — ні)}.
+     Старий борг рахуємо лише з того місяця, коли людина вже щось платила (новенький не «винен» за місяці до приходу). */
+  function vse(VN, im, n, dod) {
+    dod = dod || {};
+    const st = stan(VN, im, n, dod[n] || 0); if (!st) return null;
+    const vs = poriadok(VN), i = vs.findIndex(x => x.n === n), borhy = [];
+    let pochav = false;
+    vs.slice(0, i).forEach(x => {
+      const s = stan(VN, im, x.n, dod[x.n] || 0);
+      if (s.bulo > 0) pochav = true;
+      if (pochav && s.brak > 0) borhy.push({v: x.n, brak: s.brak});
+    });
+    let do_ = null;
+    if (st.brak <= 0) for (const x of vs.slice(i + 1)) { if (stan(VN, im, x.n, dod[x.n] || 0).brak <= 0) do_ = x.n; else break; }
+    return {st, borhy, do_};
+  }
+  /* Переплату за внесок n розкласти на наступні: [{v, suma}] (перший — n). dod — як у vse, БЕЗ цього платежу.
+     Останній може бути неповним; внесків не вистачило — решта лишається на останньому. */
+  function rozklasty(VN, im, n, suma, dod) {
+    dod = dod || {};
+    const vs = poriadok(VN), i = vs.findIndex(x => x.n === n), out = [];
+    let zal = okr(suma);
+    vs.slice(Math.max(i, 0)).forEach(x => {
+      if (zal <= 0) return;
+      const b = stan(VN, im, x.n, dod[x.n] || 0).brak; if (b <= 0 && x.n !== n) return;
+      const s = Math.min(zal, Math.max(b, 0)); if (s <= 0) return;
+      out.push({v: x.n, suma: okr(s)}); zal = okr(zal - s);
+    });
+    if (zal > 0) { if (out.length) out[out.length - 1].suma = okr(out[out.length - 1].suma + zal); else out.push({v: n, suma: zal}); }
+    return out;
+  }
+
+  return {okr, treba, stan, pidkazka, typovyi, neSplatyly, poriadok, nazva, vse, rozklasty};
 })();
