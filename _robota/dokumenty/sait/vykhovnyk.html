@@ -77,14 +77,29 @@ a.tile{text-decoration:none}
 .step>h3 em{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--d);color:#0e1f15;font:600 14px var(--disp);font-style:normal}
 .step>h3 small{font:400 14px var(--txt);letter-spacing:0;text-transform:none;color:var(--mut)}
 .row3{display:grid;grid-template-columns:1.3fr .7fr;gap:10px}
-.pay{display:grid;gap:6px;margin:0;padding:0;list-style:none}
-.pay li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:6px 6px 6px 14px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
+.pay{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.pay li.pp{border-radius:14px;background:#14171a;border:1px solid var(--ln);overflow:hidden}
+.pay .pr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:6px;padding:6px 6px 6px 14px}
 .pay .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pay .nm small{display:block;font-weight:600;font-size:12.5px;color:#f3d48a}.pay .nm small.y{color:var(--ok-t)}
-.pay .sum{width:84px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);text-align:right;font-size:16px}
-.pay button{min-width:118px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:14.5px}
-.pay button[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#0e1f15}
-.pay .sum[disabled]{opacity:.35}
+.pay .nm small{display:block;font-weight:600;font-size:12.5px;color:#f3d48a;white-space:normal;line-height:1.3}.pay .nm small.y{color:var(--ok-t)}
+.pay .pr>button{min-width:112px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:14.5px}
+.pay .pr>button[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#0e1f15}
+.pay .lnk{min-width:0!important;border:0!important;background:none!important;color:var(--ok-t)!important;padding:8px 6px!important;font-weight:600!important;font-size:14px!important;cursor:pointer}
+.pk{display:grid;gap:8px;padding:10px 12px 12px;border-top:1px solid var(--ln);background:#101316}
+.pk .l1{display:flex;align-items:center;gap:6px}
+.pk .sum{width:92px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);text-align:right;font-size:16px}
+.pk .lnk{white-space:nowrap;flex:none}
+.pk .kort{flex:1 1 auto;min-width:0;color:var(--mut);font-size:14px;line-height:1.25}.pk .kort b{color:var(--ink)}
+.pk .sum::placeholder{color:var(--ink);opacity:.55}
+.pk .zmin{display:grid;gap:8px}.pk .zmin[hidden]{display:none}.pk .zmin .f{margin:0}
+.pk .vh{padding:7px 10px;border-radius:10px;font-size:14px;line-height:1.35;background:#14171a;border:1px solid var(--ln);color:var(--body)}
+.pk .vh.ok{color:var(--ok-t);border-color:rgba(61,175,110,.55)}.pk .vh.warn{color:#f3d48a;border-color:rgba(217,166,64,.55)}.pk .vh[hidden]{display:none}
+.pay-hnt{margin:0 0 10px;color:var(--mut);font-size:14px;line-height:1.4}
+.pay-all{margin:0 0 8px;padding:6px 0;border:0;background:none;color:var(--ok-t);font-weight:600;font-size:14.5px;cursor:pointer}
+.inshi{margin:10px 0 0}.inshi>summary{cursor:pointer;color:var(--ok-t);font-weight:600;font-size:14.5px;padding:6px 0}.inshi .pay{margin-top:6px}
+.vsum{margin:10px 0 0;padding:9px 12px;border-radius:12px;font-size:14.5px;line-height:1.4;background:#14171a;border:1px solid rgba(217,166,64,.55);color:#f3d48a}
+.vsum.ok{color:var(--ok-t);border-color:rgba(61,175,110,.55)}.vsum[hidden]{display:none}
+.vsum-n{margin:6px 0 0;color:var(--mut);font-size:13.5px;line-height:1.4}
 .paybar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:0 0 10px}
 .paybar .f{margin:0;flex:0 0 130px}
 .yak{display:flex;gap:4px;padding:4px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
@@ -160,7 +175,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 @media (max-width:600px){.hrg{grid-template-columns:1fr 1fr}.hrg .rz{grid-column:1/-1}}
 @media (max-width:900px){.ps{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.tiles{grid-template-columns:1fr}.tile.main{grid-column:auto}.tile{min-height:0}.row3{grid-template-columns:1fr}
-  .pay li{grid-template-columns:minmax(0,1fr) auto;padding-left:12px}.pay .sum{grid-column:2;grid-row:1}.pay button{grid-column:1/-1;min-width:0}}
+  .pay .pr{padding-left:12px;gap:4px}.pay .pr>button{min-width:96px;padding:8px 8px}}
 </style>
 </head>
 <body>
@@ -317,12 +332,19 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
         <div class="step"><h3><em>3</em>Внески <small>хто заплатив сьогодні</small></h3>
           <div class="paybar">
-            <label class="f" id="p-vn-l" hidden style="flex:1 1 210px"><span>За який внесок</span><select class="in" id="p-vn"></select></label>
+            <label class="f" id="p-vn-l" hidden style="flex:1 1 210px"><span>За який внесок (звичайно)</span><select class="in" id="p-vn"></select></label>
             <label class="f"><span>Внесок, €</span><input class="in" id="p-suma" inputmode="decimal" value="5" maxlength="6"></label>
-            <div class="f" style="flex:1 1 260px"><span>Як платили</span><div class="yak" id="p-yak" role="group" aria-label="Як платили"><button type="button" data-y="готівка" aria-pressed="true">готівка</button><button type="button" data-y="MobilePay" aria-pressed="false">MobilePay</button><button type="button" data-y="переказ" aria-pressed="false">переказ</button></div></div>
+            <div class="f" style="flex:1 1 260px"><span>Як платили (звичайно)</span><div class="yak" id="p-yak" role="group" aria-label="Як платили"><button type="button" data-y="готівка" aria-pressed="true">готівка</button><button type="button" data-y="MobilePay" aria-pressed="false">MobilePay</button><button type="button" data-y="переказ" aria-pressed="false">переказ</button></div></div>
             <span class="tot">разом <b id="p-tot">0 €</b></span>
           </div>
+          <p class="pay-hnt">Зверху — як платять звичайно; кожен платіж можна змінити окремо («змінити»): MobilePay, внесок наперед, неповна сума. Доніс ще — «+ ще платіж»: суми складаються.</p>
+          <button class="pay-all" type="button" id="p-all" hidden>Усім, хто був і не сплатив — на суму, якої бракує</button>
+          <div id="p-wrap">
           <ul class="pay" id="p-list"></ul>
+          <details class="inshi" id="p-inshi" hidden><summary>Заплатив той, кого не було (наприклад, переказом)</summary><ul class="pay" id="p-list2"></ul></details>
+          </div>
+          <p class="vsum" id="p-sum" hidden></p>
+          <p class="vsum-n">Платіж записується датою сходин. Інша дата платежу, борги гуртка, фото чека — у <a href="../kasa/" style="color:var(--ok-t)">«Касі»</a>.</p>
           <label class="f" style="margin:10px 0 0"><span>№ квитанції <small style="font-weight:400">— лише якщо гурток видає паперові квитанції; інакше лиште порожнім</small></span><input class="in" id="p-kv" maxlength="20" style="max-width:220px"></label>
         </div>
 
@@ -352,6 +374,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   <div class="gap" style="height:60px"></div>
 </div>
 
+<script>/*VNESKY*/</script>
 <script>
 (function () {
   'use strict';
@@ -394,6 +417,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     {ryadok: 34, khto: 'Дана', koly: '08.11.2026 18:40', dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Соломія', 'Сума, €': 20, 'Квитанція №': 'К-7', 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}},
     {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка', 'Фото чека': 'https://drive.google.com/file/d/demo/view'}}];
   let KS = {};
+  const DVN = [{n: 'Жовтень 2026', suma: 20, termin: '2026-10-05', osobl: {}}, {n: 'Листопад 2026', suma: 20, termin: '2026-11-02', osobl: {}}, {n: 'Грудень 2026', suma: 20, termin: '2026-12-07', osobl: {}}];   // проба: 20 € на місяць, строк — перші сходини місяця
+  const DSP = {}; DEMO_IM.forEach(im => { DSP[im] = {'Жовтень 2026': 20}; });   // у жовтні сплатили всі
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0, borhy: {'Остап': 14.5, 'Зоряна': 3.2, 'Мирося': -0.5}, bezCheka: {'Зоряна': [{data: '2026-11-05', opys: 'свічки', suma: 3.2}]}};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length, vy = Object.values(DH.borhy).filter(x => x > 0).reduce((a, x) => a + x, 0); return Object.assign({ok: true}, JSON.parse(JSON.stringify(DH)), {vynen: vy, vilni: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano - vy) * 100) / 100, razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
@@ -403,7 +428,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       const rol = t.kod === '123456' ? 'v' : t.kod === '1234' ? 'd' : null;
       if (!rol) return {ok: false, pomylka: 'Невірний код.'};
       if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
-      if (t.dija === 'vnesky') return {ok: true, vnesky: [{n: 'Жовтень 2026', suma: 20, osobl: {}}, {n: 'Листопад 2026', suma: 20, osobl: {'Остап': 10}}], splacheno: {'Олесь': {'Листопад 2026': 10}, 'Мирося': {'Листопад 2026': 20}}};
+      if (t.dija === 'vnesky') return {ok: true, vnesky: JSON.parse(JSON.stringify(DVN)), splacheno: JSON.parse(JSON.stringify(DSP))};
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
       if (t.dija === 'uchasnyky') return {ok: true, uchasnyky: DUCH.map(u => Object.assign({}, u))};
       if (t.dija === 'uchasnyk') {
@@ -419,6 +444,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       if (t.dija === 'vypadok') { DVY.unshift({ryadok: ++demoRow, 'Дата': den(), "Ім'я": t.imya, 'Випадок': 'особливий випадок', 'Що сталося': t.shcho, 'Що вже має': t.maie, 'Чого не знаємо': t.ne, 'Що пропоную': t.propoz, 'Статус': 'відкрито', 'Хто записав': 'виховник'}); return {ok: true, ryadok: demoRow}; }
       if (t.dija === 'vypadky') return {ok: true, vypadky: JSON.parse(JSON.stringify(DVY))};
       if (t.dija === 'vyrishyty') { const x = DVY.find(y => y.ryadok === t.ryadok); if (t.status === 'вирішено' && !t.yak) return {ok: false, pomylka: 'Напишіть коротко, як вирішили.'}; x['Статус'] = t.status; x['Як вирішили'] = t.yak || x['Як вирішили']; x['Вирішено'] = t.status === 'вирішено' ? den() : ''; return {ok: true}; }
+      if (t.dija === 'zapys' && t.arkush === 'Фінанси' && t.dani['Внесок']) { const im = t.dani["Хто (ім'я)"], v = t.dani['Внесок']; DSP[im] = DSP[im] || {}; DSP[im][v] = Math.round(((DSP[im][v] || 0) + t.dani['Сума, €']) * 100) / 100; return {ok: true, ryadok: ++demoRow}; }   // проба: внески запам'ятовуються, поки сторінка відкрита
       if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
       if (t.dija === 'kasa') return {ok: true, ryadky: JSON.parse(JSON.stringify(DK)).map(x => Object.assign(x, {sposib: x.dani['Як платили'] === 'готівка' ? 'gotivka' : 'rakhunok', versiya: 'v'})), hroshi: dHroshi(), zvirky: DZV.slice()};
       if (t.dija === 'zatverdyty' && t.arkush === 'Фінанси' && 'znach' in t) { const i = DK.findIndex(x => x.ryadok === t.ryadok); if (t.znach === 'так' && i >= 0) DK.splice(i, 1); else if (i >= 0) DK[i].ne = t.znach === 'ні'; return {ok: true, znach: t.znach}; }
@@ -455,20 +481,19 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   document.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', vyity));
   window.addEventListener('pagehide', () => { kod = ''; });
   $('go-ps').addEventListener('click', () => { chysto(); ekran('v-ps'); vnZavantazhyty(); });
-  // внески з книги (аркуш «Внески»): за який внесок і скільки кому бракує
+  // внески з книги (аркуш «Внески»): за який внесок і скільки кому бракує. Вся логіка — у спільному vnesky.js (Vn), як у Касі.
   let VN = null;
   async function vnZavantazhyty() {
     let v; try { v = await zapyt({kod, dija: 'vnesky'}); } catch (x) { v = null; }
     VN = v && v.ok && v.vnesky && v.vnesky.length ? v : null;
     $('p-vn-l').hidden = !VN;
-    if (VN) { $('p-vn').innerHTML = VN.vnesky.map(x => `<option value="${esc(x.n)}">${esc(x.n)} — ${fmt(x.suma)}</option>`).join(''); $('p-vn').value = VN.vnesky[VN.vnesky.length - 1].n; vnSuma(); }
+    if (VN) { $('p-vn').innerHTML = VN.vnesky.map(x => `<option value="${esc(x.n)}">${esc(x.n)} — ${fmt(x.suma)}</option>`).join(''); vnRuch = false; vnTypovyi(); }
     onovyty();
   }
-  const vnX = () => VN && VN.vnesky.find(x => x.n === $('p-vn').value);
-  const vnBrak = im => { const x = vnX(); if (!x) return null; const tr = Object.prototype.hasOwnProperty.call(x.osobl || {}, im) ? x.osobl[im] : x.suma; return Math.round((tr - ((VN.splacheno[im] || {})[x.n] || 0)) * 100) / 100; };
-  const dflt = im => { const b = vnBrak(im); return b !== null && b > 0 ? b : suma(); };   // сума за замовчуванням — скільки бракує
-  function vnSuma() { const x = vnX(); if (x) $('p-suma').value = String(x.suma).replace('.', ','); }
-  $('p-vn').addEventListener('change', () => { vnSuma(); onovyty(); });
+  function vnTypovyi() { if (VN && !vnRuch) { $('p-vn').value = Vn.typovyi(VN, $('s-data').value); vnSuma(); } }   // звичайний внесок — за строком, ближчим до дати сходин
+  function vnSuma() { const x = VN && VN.vnesky.find(y => y.n === $('p-vn').value); if (x) $('p-suma').value = String(x.suma).replace('.', ','); }
+  $('p-vn').addEventListener('change', () => { vnRuch = true; vnSuma(); onovyty(); });
+  $('s-data').addEventListener('change', () => { vnTypovyi(); onovyty(); });
   $('ps-back').addEventListener('click', () => ekran('v-hub'));
   // ---- що нового (журнал «Зміни» з книги) ----
   const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk', 'блокування': 'bl', 'затвердження': 'zt', 'зняття затвердження': 'zt', 'немає': 'sk', 'звірка': 'zt'};
@@ -676,20 +701,36 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   $('ps-hub').addEventListener('click', () => { $('ps-done').hidden = true; $('ps-form').hidden = false; ekran('v-hub'); });
 
   /* ---------- форма ---------- */
-  let prys = {}, plat = {}, sent = {};   // sent — що вже дійшло (щоб при повторі не задвоїти)
+  /* Внески — за логікою Каси (спільний код Vn, файл vnesky.js): кожен платіж має свою суму, спосіб і внесок;
+     платіж не залежить від присутності (переказ може прийти й від того, кого не було); той самий платіж ще раз — рядок додається, суми складаються. */
+  let prys = {}, plat = [], sent = {}, pid = 0, vnRuch = false, inshiOpen = false, yak = 'готівка';   // plat — платежі; sent — що вже дійшло (щоб при повторі не задвоїти)
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   function chysto() {
-    prys = {}; plat = {}; sent = {};
+    prys = {}; plat = []; sent = {}; pid = 0; vnRuch = false; yak = 'готівка';
+    $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.y === yak)));
     $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-vml', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
     $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
       <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
       || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
     $('ps-prog').hidden = true; $('ps-prog').innerHTML = ''; $('ps-msg').textContent = 'Записано буде від імені «виховник».'; $('ps-msg').classList.remove('bad');
-    onovyty();
+    vnTypovyi(); onovyty();
   }
   const suma = () => { const v = parseFloat(String($('p-suma').value).replace(',', '.')); return isFinite(v) && v > 0 ? v : 0; };
-  const fmt = v => (Math.round(v * 100) / 100).toString().replace('.', ',') + ' €';
-  function onovyty() {
+  const fmt = v => (Math.round(v * 100) / 100).toString().replace('.', ',') + '\u00a0€';
+  const num = v => String(v).replace('.', ',');
+  const pVn = p => p.vn !== null ? p.vn : (VN ? $('p-vn').value : '');   // «за який внесок»: свій чи звичайний (зверху)
+  const pYak = p => p.yak || yak;
+  const nova = (im, vidkryty) => ({id: ++pid, im, suma: null, yak: null, vn: null, open: !!vidkryty});
+  function rakhuy() {   // для кожного платежу: внесок, стан внеску (з урахуванням платежів вище), сума (власна чи «скільки бракує»)
+    const vyshche = {};
+    return plat.map(p => {
+      const n = pVn(p), key = p.im + '\u0001' + n, dod = vyshche[key] || 0, st = VN && n ? Vn.stan(VN, p.im, n, dod) : null;
+      const def = st && st.brak > 0 ? st.brak : suma(), s = p.suma !== null ? p.suma : def;
+      vyshche[key] = Vn.okr(dod + s);
+      return {p, n, st, def, suma: s};
+    });
+  }
+  function onovyty() {   // лічильники присутності + платежі
     const v = Object.values(prys);
     $('c-p').textContent = v.filter(x => x === '+').length; $('c-x').textContent = v.filter(x => x === '−').length; $('c-v').textContent = v.filter(x => x === 'в').length;
     $('z-names').querySelectorAll('li[data-i]').forEach(li => {
@@ -697,27 +738,49 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       li.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
       if (m) li.classList.remove('need');
     });
-    // внески — лише ті, хто був
-    const buly = imena.filter(im => prys[im] === '+');
-    Object.keys(plat).forEach(im => { if (!buly.includes(im)) delete plat[im]; });
-    const pl = $('p-list');
-    const vzhe = new Set([...pl.querySelectorAll('li[data-im]')].map(li => li.dataset.im));
-    if (buly.length !== vzhe.size || buly.some(im => !vzhe.has(im))) {
-      pl.innerHTML = buly.length ? buly.map(im => `<li data-im="${esc(im)}"><span class="nm">${esc(im)}</span><input class="sum" inputmode="decimal" aria-label="Сума для ${esc(im)}" maxlength="6"><button type="button" aria-pressed="false">заплатив</button></li>`).join('')
-        : '<li style="display:block"><p class="empty" style="border:0;padding:0">Спершу позначте, хто був, — тут з\'являться їхні імена.</p></li>';
-    }
-    pl.querySelectorAll('li[data-im]').forEach(li => {
-      const im = li.dataset.im, on = im in plat, inp = li.querySelector('.sum');
-      li.querySelector('button').setAttribute('aria-pressed', String(on));
-      li.querySelector('button').textContent = on ? '✓ заплатив' : 'заплатив';
-      inp.disabled = !on; inp.placeholder = String(dflt(im)).replace('.', ',');
-      const b = vnBrak(im), nm = li.querySelector('.nm');
-      nm.innerHTML = esc(im) + (b === null ? '' : b <= 0 ? '<small class="y">✓ «' + esc($('p-vn').value) + '» сплачено</small>' : '<small>бракує ' + fmt(b) + '</small>');
-      if (on && document.activeElement !== inp) inp.value = plat[im] === null ? '' : String(plat[im]).replace('.', ',');
-      if (!on) inp.value = '';
+    skladPl();
+  }
+  function skladPl() {   // перемалювати список платежів (при зміні складу, способу, внеску); суму в полі змінює pidkPl без перемальовування
+    const R = rakhuy(), buly = imena.filter(im => prys[im] === '+'), inshi = imena.filter(im => prys[im] !== '+');
+    const karta = r => {
+      const p = r.p, vo = VN ? VN.vnesky.map(x => `<option value="${esc(x.n)}"${x.n === r.n ? ' selected' : ''}>${esc(x.n)} — ${fmt(x.suma)}</option>`).join('') : '';
+      return `<div class="pk" data-id="${p.id}"><div class="l1"><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" placeholder="${num(r.def)}" value="${p.suma === null ? '' : num(p.suma)}">`
+        + `<span class="kort"><b>${esc(pYak(p))}</b>${r.n && VN && r.n !== $('p-vn').value ? ' · «' + esc(r.n) + '»' : ''}</span><button type="button" class="lnk" data-a="zm">${p.open ? 'згорнути' : 'змінити'}</button><button type="button" class="lnk" data-a="x" aria-label="Прибрати цей платіж">✕</button></div>`
+        + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="yak" role="group" aria-label="Як платили">${['готівка', 'MobilePay', 'переказ'].map(y => `<button type="button" data-y="${y}" aria-pressed="${pYak(p) === y}">${y}</button>`).join('')}</div>`
+        + (VN ? `<label class="f"><span>За який внесок</span><select class="in pk-vn">${vo}</select></label>` : '') + `</div><div class="vh" hidden></div></div>`;
+    };
+    const li = im => {
+      const mine = R.filter(r => r.p.im === im), st = VN ? Vn.stan(VN, im, $('p-vn').value) : null;
+      const sm = !st ? '' : st.brak <= 0 ? `<small class="y">✓ «${esc(st.v)}» сплачено</small>` : `<small>${st.bulo > 0 ? 'сплачено ' + fmt(st.bulo) + ', ' : ''}бракує ${fmt(st.brak)}</small>`;
+      return `<li class="pp" data-im="${esc(im)}"><div class="pr"><span class="nm">${esc(im)}${sm}</span>`
+        + (mine.length ? '<button type="button" data-a="tak" aria-pressed="true">✓ заплатив</button><button type="button" class="lnk" data-a="shche">+ ще платіж</button>'
+                       : '<button type="button" data-a="tak" aria-pressed="false">заплатив</button><button type="button" class="lnk" data-a="inak">інакше…</button>')
+        + '</div>' + mine.map(karta).join('') + '</li>';
+    };
+    $('p-list').innerHTML = buly.length ? buly.map(li).join('') : '<li style="display:block"><p class="empty" style="border:0;padding:0">Спершу позначте, хто був, — тут з\'являться їхні імена.</p></li>';
+    $('p-list2').innerHTML = inshi.map(li).join('');
+    $('p-inshi').hidden = !inshi.length;
+    $('p-inshi').open = inshiOpen || inshi.some(im => plat.some(p => p.im === im));
+    $('p-all').hidden = !VN || !buly.some(im => !plat.some(p => p.im === im) && Vn.stan(VN, im, $('p-vn').value) && Vn.stan(VN, im, $('p-vn').value).brak > 0);
+    pidkPl();
+  }
+  function pidkPl() {   // підказки під платежами, «разом», «ще не сплатили» — без перемальовування (щоб не збити курсор у полі суми)
+    const R = rakhuy();
+    R.forEach(r => {
+      const pk = document.querySelector('#p-wrap .pk[data-id="' + r.p.id + '"]'); if (!pk) return;
+      pk.querySelector('.sum').placeholder = num(r.def);
+      const h = pk.querySelector('.vh');
+      if (r.st) { const x = Vn.pidkazka(r.st, r.suma, fmt, true); h.className = 'vh' + (x.k ? ' ' + x.k : ''); h.textContent = x.t; h.hidden = false; } else h.hidden = true;
     });
-    const tot = Object.entries(plat).reduce((a, [im, x]) => a + (x === null ? dflt(im) : x), 0);
-    $('p-tot').textContent = fmt(tot);
+    $('p-tot').textContent = fmt(R.reduce((a, r) => a + r.suma, 0));
+    const box = $('p-sum'), n = VN ? $('p-vn').value : '';
+    if (!VN || !n || !imena.length) { box.hidden = true; return; }
+    const sk = {}; R.forEach(r => { if (r.n === n) sk[r.p.im] = Vn.okr((sk[r.p.im] || 0) + r.suma); });
+    const ne = Vn.neSplatyly(VN, imena, n, sk);
+    box.hidden = false;
+    if (!ne.length) { box.className = 'vsum ok'; box.textContent = '✓ За «' + n + '» сплатили всі.'; return; }
+    box.className = 'vsum';
+    box.textContent = 'Ще не сплатили за «' + n + '»' + (plat.length ? ' (з урахуванням платежів вище)' : '') + ': ' + ne.map(x => x.im + ' (' + fmt(x.brak) + ')').join(', ') + '. Разом бракує ' + fmt(Vn.okr(ne.reduce((a, x) => a + x.brak, 0))) + '.';
   }
   $('z-names').addEventListener('click', e => {
     const b = e.target.closest('button[data-m]'); if (!b) return;
@@ -726,20 +789,35 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     onovyty();
   });
   $('z-all').addEventListener('click', () => { imena.forEach(im => { if (!prys[im]) prys[im] = '+'; }); onovyty(); });
-  $('p-list').addEventListener('click', e => {
+  $('p-wrap').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
-    const im = b.closest('li').dataset.im;
-    if (im in plat) delete plat[im]; else plat[im] = null;   // null = звичайний внесок
-    onovyty();
+    const li = b.closest('li[data-im]'), im = li && li.dataset.im, a = b.dataset.a, pk = b.closest('.pk'), p = pk && plat.find(x => x.id === +pk.dataset.id);
+    if (a === 'tak') { if (plat.some(x => x.im === im)) plat = plat.filter(x => x.im !== im); else plat.push(nova(im)); }
+    else if (a === 'inak' || a === 'shche') plat.push(nova(im, true));
+    else if (a === 'zm' && p) p.open = !p.open;
+    else if (a === 'x' && p) plat = plat.filter(x => x !== p);
+    else if (b.dataset.y && p) p.yak = b.dataset.y;
+    else return;
+    skladPl();
+    if (a === 'inak' || a === 'shche') { const c = $('p-wrap').querySelectorAll('li[data-im="' + CSS.escape(im) + '"] .pk .sum'); if (c.length) c[c.length - 1].focus(); }
   });
-  $('p-list').addEventListener('input', e => {
+  $('p-wrap').addEventListener('input', e => {
     if (!e.target.classList.contains('sum')) return;
-    const im = e.target.closest('li').dataset.im, v = parseFloat(e.target.value.replace(',', '.'));
-    plat[im] = isFinite(v) && v > 0 ? v : null; onovyty();
+    const p = plat.find(x => x.id === +e.target.closest('.pk').dataset.id), v = parseFloat(e.target.value.replace(',', '.'));
+    if (p) { p.suma = isFinite(v) && v > 0 ? v : null; pidkPl(); }
   });
-  $('p-suma').addEventListener('input', onovyty);
-  let yak = 'готівка';
-  $('p-yak').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; yak = b.dataset.y; $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+  $('p-wrap').addEventListener('change', e => {
+    if (!e.target.classList.contains('pk-vn')) return;
+    const p = plat.find(x => x.id === +e.target.closest('.pk').dataset.id); if (p) { p.vn = e.target.value; skladPl(); }
+  });
+  $('p-inshi').querySelector('summary').addEventListener('click', () => { inshiOpen = !$('p-inshi').open; });
+  $('p-all').addEventListener('click', () => {   // як у Касі: платіж кожному, хто ще не сплатив, — на суму, якої бракує
+    const n = $('p-vn').value;
+    imena.filter(im => prys[im] === '+' && !plat.some(p => p.im === im)).forEach(im => { const st = Vn.stan(VN, im, n); if (st && st.brak > 0) plat.push(nova(im)); });
+    skladPl();
+  });
+  $('p-suma').addEventListener('input', pidkPl);
+  $('p-yak').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; yak = b.dataset.y; $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); skladPl(); });
 
 
   /* ---------- Прийшов, перейшов, пішов (09.11.2026) ----------
@@ -1074,15 +1152,16 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       $('z-names').querySelectorAll('li[data-i]').forEach(li => li.classList.toggle('need', !prys[imena[+li.dataset.i]]));
       return stop('Позначте всіх у кроці 2: лишилось ' + brak.length + ' (' + brak.slice(0, 3).join(', ') + (brak.length > 3 ? '…' : '') + ').');
     }
-    if (Object.keys(plat).length && Object.entries(plat).some(([im, x]) => x === null && !dflt(im))) return stop('Вкажіть суму внеску.', $('p-suma'));
+    const R = rakhuy();
+    if (R.some(r => !(r.suma > 0))) return stop('Вкажіть суму внеску.', $('p-suma'));
 
     const d = $('s-data').value, kv = $('p-kv').value.trim();
     const zadachi = [
       {id: 'vid', t: 'Відвідуваність', z: {arkush: 'Відвідуваність', dani: {'Дата': d, '№ сходин': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'присутність': Object.assign({}, prys)}}},
       {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
         'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Проба / вмілість (якщо стосується)': $('s-vml').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
-    ].concat(Object.keys(plat).map(im => ({id: 'f:' + im, t: 'Внесок — ' + im + ', ' + fmt(plat[im] === null ? dflt(im) : plat[im]) + (vnX() ? ' («' + vnX().n + '»)' : ''),
-      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': vnX() ? 'внесок: ' + vnX().n : 'Внесок', "Хто (ім'я)": im, 'Сума, €': plat[im] === null ? dflt(im) : plat[im], 'Квитанція №': kv, 'Як платили': yak, 'Внесок': vnX() ? vnX().n : ''}}})));
+    ].concat(R.map(r => ({id: 'f:' + r.p.id, t: 'Внесок — ' + r.p.im + ', ' + fmt(r.suma) + ' · ' + pYak(r.p) + (r.n ? ' («' + r.n + '»)' : ''),
+      z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': r.n ? 'внесок: ' + r.n : 'Внесок', "Хто (ім'я)": r.p.im, 'Сума, €': r.suma, 'Квитанція №': kv, 'Як платили': pYak(r.p), 'Внесок': r.n}}})));
 
     const pr = $('ps-prog'); pr.hidden = false;
     pr.innerHTML = zadachi.map(z => `<li data-id="${esc(z.id)}" class="${sent[z.id] ? 'ok' : ''}">${esc(z.t)}</li>`).join('');
@@ -1099,8 +1178,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     }
     b.disabled = false;
     if (pomylky) { stop('Не все дійшло (' + pomylky + '). ' + ostannya + ' Натисніть «Надіслати» ще раз — дошлеться лише червоне.'); return; }
-    const p = Object.values(prys).filter(x => x === '+').length, nv = Object.keys(plat).length;
-    const tot = Object.entries(plat).reduce((a, [im, x]) => a + (x === null ? dflt(im) : x), 0);
+    const p = Object.values(prys).filter(x => x === '+').length, nv = R.length;
+    const tot = R.reduce((a, r) => a + r.suma, 0);
     $('ps-sum').textContent = `${d.split('-').reverse().join('.')} · «${$('s-tema').value.trim()}»`;
     $('ps-what').innerHTML = `<li>Сходини</li><li>Відвідуваність: був ${p} з ${imena.length}</li>` + (nv ? `<li>Внески: ${nv} — разом ${fmt(tot)}</li>` : '');
     chysto(); $('ps-form').hidden = true; $('ps-done').hidden = false;

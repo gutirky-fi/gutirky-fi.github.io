@@ -19,6 +19,8 @@ SPILNE = (TUT / 'spilne.css').read_text(encoding='utf-8')
 PAPIRCSS = (TUT / 'papir.css').read_text(encoding='utf-8')
 PAPIR = (TUT / 'papir.js').read_text(encoding='utf-8')   # аркуш на телефоні, «Переглянути», PDF (09.11)
 assert '</script' not in PAPIR and '{{' not in PAPIR
+VNESKY = (TUT / 'vnesky.js').read_text(encoding='utf-8')   # спільна логіка внесків: Каса (forma.html) + «Після сходин» (vykhovnyk.html), 12.11
+assert '</script' not in VNESKY and '{{' not in VNESKY
 import json, re, html
 FORMA = (TUT / 'forma.html').read_text(encoding='utf-8')
 FORMY = {k: v for k, v in json.loads((TUT / 'formy.json').read_text(encoding='utf-8')).items() if k != '_'}
@@ -57,6 +59,7 @@ for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 
     s = s.replace('/*SPILNE*/', SPILNE)
     s = s.replace('/*PAPIRCSS*/', PAPIRCSS)
     s = s.replace('/*PAPIR*/', PAPIR)
+    s = s.replace('/*VNESKY*/', VNESKY)
     s = s.replace('<!--DATALISTS-->', DL)
     s = s.replace('/*INDEKS*/null/*/INDEKS*/', json.dumps(INDEKS, ensure_ascii=False).replace('</', '<\\/'))
     s = s.replace('/*DEMOZVITY*/null/*/DEMOZVITY*/', DEMOZVITY.replace('</', '<\\/'))

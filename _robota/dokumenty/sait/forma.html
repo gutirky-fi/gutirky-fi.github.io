@@ -386,6 +386,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
 </div>
 
 <script>/*PAPIR*/</script>
+<script>/*VNESKY*/</script>
 <script>
 (function () {
   'use strict';
@@ -1043,7 +1044,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   /* ---------- внески: скільки треба, хто скільки сплатив (поле з "vn") ---------- */
   const VNP = K.polia.findIndex(p => p.vn);
   let VN = null;
-  const okr = x => Math.round(x * 100) / 100;
+  const okr = Vn.okr;   // вся логіка внеску — у спільному vnesky.js (Vn), її ділить «Вхід виховника → Після сходин»
   const vnTreba = () => VN && VN.vnesky.length && spilneEl('Категорія') && spilneEl('Категорія').value === 'внески';
   async function vnZavantazhyty() {
     if (VNP < 0 || !kod) return;
@@ -1057,31 +1058,23 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     });
     vnVsi(); malVn(); if (HR && $('z-hr') && !$('z-hr').querySelector('.pf')) hrZavantazhyty(); else vtMal();
   }
-  const vnTrebaSuma = (x, im) => x.osobl && Object.prototype.hasOwnProperty.call(x.osobl, im) ? x.osobl[im] : x.suma;
+  const vnTrebaSuma = Vn.treba;
   function vnStan(el) {   // для рядка: {x, im, treba, bulo, brak} або null
     const d = ryadDani(el), im = d[MN.imya], v = d['Внесок'];
     if (!VN || !im || !v || !vnTreba()) return null;
-    const x = VN.vnesky.find(y => y.n === v); if (!x) return null;
-    const treba = vnTrebaSuma(x, im);
-    let bulo = (VN.splacheno[im] || {})[v] || 0;
-    if (red && red.orig && red.orig.im === im && red.orig.v === v) bulo -= red.orig.s;   // виправляємо цей самий платіж
+    let dod = 0, minus = 0;
+    if (red && red.orig && red.orig.im === im && red.orig.v === v) minus = red.orig.s;   // виправляємо цей самий платіж
     for (const r of $('z-rl').children) {   // ще не надіслані рядки вище — теж рахуємо
       if (r === el) break; if (r.dataset.kv || r.dataset.ver) continue;
-      const o = ryadDani(r); if (o[MN.imya] === im && o['Внесок'] === v) bulo += chyslo(o[MN.suma]);
+      const o = ryadDani(r); if (o[MN.imya] === im && o['Внесок'] === v) dod += chyslo(o[MN.suma]);
     }
-    bulo = okr(bulo);
-    return {x, im, v, treba, bulo, brak: okr(treba - bulo), osobl: treba !== x.suma};
+    return Vn.stan(VN, im, v, dod, minus);
   }
   function vnPidk(el) {
     const box = el.querySelector('.vh'); if (!box) return;
     const st = vnStan(el); if (!st) return borhPidk(el, box);
-    const tut = chyslo(ryadDani(el)[MN.suma]), pislia = okr(st.brak - tut);
-    let t = `«${st.v}»: ${st.im} — сплачено ${groshi(st.bulo)} з ${groshi(st.treba)}${st.osobl ? ' (особлива сума)' : ''}. `, k = '';
-    if (st.brak <= 0) { k = 'warn'; t += '✓ Уже сплачено повністю. Це точно ще один внесок?'; }
-    else if (!tut) t += 'Бракує ' + groshi(st.brak) + '.';
-    else if (pislia === 0) { k = 'ok'; t += 'Після цього платежу — ✓ сплачено повністю.'; }
-    else if (pislia > 0) t += 'Після цього платежу бракуватиме ' + groshi(pislia) + '.';
-    else { k = 'warn'; t += 'Це на ' + groshi(-pislia) + ' більше, ніж бракує (' + groshi(st.brak) + ').'; }
+    const tut = chyslo(ryadDani(el)[MN.suma]);
+    let {t, k} = Vn.pidkazka(st, tut, groshi);   // текст і колір — спільні з «Після сходин»
     // борги людини: залік з внеском (без грошей)
     const b = okr((HR && HR.borhy || {})[st.im] || 0), zv = Math.max(st.brak, 0), z = okr(Math.min(b, zv));
     let dod = '';
