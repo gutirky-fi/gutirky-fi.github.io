@@ -116,7 +116,7 @@ a.tile{text-decoration:none}
 .pk .vh.vyb{display:grid;gap:8px;color:#f3d48a;border-color:rgba(217,166,64,.55)}
 .vyb-b{display:grid;gap:2px;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);cursor:pointer;font-size:14px}
 .vyb-b b{font-size:15.5px}.vyb-b span{color:var(--ok-t);font-weight:700}.vyb-b:hover{border-color:var(--d);background:#2b333b}
-.pk .rsh{color:#f3d48a;font-weight:700}
+.pk .rsh{display:inline;padding:0;border:0;background:none;color:#f3d48a;font-weight:700;font-size:inherit;text-align:left;cursor:pointer}.pk .rsh u{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid rgba(217,166,64,.6);text-decoration:none;white-space:nowrap}.pk .rsh:hover u{background:rgba(217,166,64,.18)}
 .vse-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 10px 14px;border-radius:12px;background:#14171a;border:1px solid rgba(61,175,110,.55);color:var(--ok-t);font-weight:700;font-size:15px}.vse-ok[hidden]{display:none}
 .pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:13px;font-weight:600;color:#f3d48a}
 .pk .ok1{flex:1 1 auto;min-width:0;font-size:15px;color:var(--body)}.pk .ok1 b{color:var(--ok-t)}.pk .ok1 small{color:var(--mut);font-size:13px}
@@ -802,7 +802,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   function okTekst(r) {   // рядок платежу: «✓ 20 € · готівка · за грудень · віддати решту 30 €»
     const p = r.p, ref = nCur(), inshyi = VN && r.n && r.n !== ref;
     return (r.suma > 0 ? '<b>✓ ' + fmt(r.suma) + '</b>' : '<b style="color:#f3d48a">сума?</b>') + ' · ' + esc(pYak(p)) + (inshyi ? ' <small>· ' + esc(Vn.nazva(r.n, 'za', ref)) + '</small>' : '')
-      + (p.reshta ? ' <span class="rsh">· віддати решту ' + fmt(p.reshta) + '</span>' : '');
+      + (!p.reshta ? '' : p.vidav ? ' <small>· ✓ решту ' + fmt(p.reshta) + ' віддано</small>'
+         : ' <button type="button" class="rsh" data-a="vidav" title="Торкніться, коли віддали">· віддати решту ' + fmt(p.reshta) + ' <u>віддав</u></button>');   // 12.11, 05:00: віддав — напис гасне
   }
   function skladPl() {   // перемалювати крок «Внески»
     const R = rakhuy(), buly = imena.filter(im => prys[im] === '+'), inshi = imena.filter(im => prys[im] !== '+'), ref = nCur();
@@ -896,7 +897,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     }
     else if (a === 'x' && p) plat = plat.filter(x => x !== p);
     else if (b.dataset.dal && p) { p.suma = +b.dataset.dal; p.reshta = 0; const i = pk.querySelector('.sum'); if (i) i.value = b.dataset.dal; i.dispatchEvent(new Event('input', {bubbles: true})); return; }
-    else if (a === 'lyshe' && p) { const n = pVn(p), st = Vn.stan(VN, p.im, n, (dodDlia(p.im, p))[n] || 0); if (st && st.brak > 0) { p.reshta = Vn.okr(p.suma - st.brak); p.suma = st.brak; p.open = false; } }
+    else if (a === 'vidav' && p) p.vidav = true;
+    else if (a === 'lyshe' && p) { const n = pVn(p), st = Vn.stan(VN, p.im, n, (dodDlia(p.im, p))[n] || 0); if (st && st.brak > 0) { p.reshta = Vn.okr(p.suma - st.brak); p.vidav = false; p.suma = st.brak; p.open = false; } }
     else if (a === 'vse' && p) { const rz = Vn.rozklasty(VN, p.im, pVn(p), p.suma, dodDlia(p.im, p), !p.vn); plat.splice(plat.indexOf(p), 1, ...rz.map(y => Object.assign(nova(p.im, y.suma, y.v), {yak: p.yak}))); }
     else if (b.dataset.y && p) p.yak = b.dataset.y;
     else return;
