@@ -190,7 +190,14 @@ html.pv-touch .bar2 .chk{display:none}   /* на телефоні — «Запо
 .hrc .pz p{margin:0 0 4px;color:#f3d48a}.hrc .pb{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .hrc .pm{font-size:14px;margin:0}
 .vn .vsy{color:#f3d48a!important}
-.vh .zl{display:block;margin-top:5px;color:#f3d48a}.vh .zl .lnk{color:var(--ok-t);font-size:14px}.hrc .pm.bad{color:#ffb3c3}
+.vh .zl{display:block;margin-top:5px;color:#f3d48a}.vh .zl .lnk{color:var(--ok-t);font-size:14px}
+/* 12.11: внески в Касі — як у «Після сходин»: старі борги, «сплачено до…», «Усе на внески / Лише за місяць — віддати решту», «віддав» */
+.vh .zl.ok{color:var(--ok-t)}.vh .zl.tykho{color:var(--muted,#8a94a0);font-weight:400}
+.vh .vyb{display:grid;gap:8px;margin-top:8px}
+.vyb-b{display:grid;gap:2px;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);cursor:pointer;font-size:14px}
+.vyb-b b{font-size:15.5px}.vyb-b span{color:var(--ok-t);font-weight:700}.vyb-b:hover{border-color:var(--d);background:#2b333b}
+.vh .rsh{display:inline;padding:0;border:0;background:none;color:#f3d48a;font-weight:700;font-size:inherit;text-align:left;cursor:pointer}.vh .rsh u{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid rgba(217,166,64,.6);text-decoration:none;white-space:nowrap}.vh .rsh:hover u{background:rgba(217,166,64,.18)}
+.lnk:hover,.vh .zl .lnk:hover{color:#8fe3b4!important}.hrc .pm.bad{color:#ffb3c3}
 .hrc p.ch{color:#f3d48a}.hrc p.ne{color:#ffb3c3}
 .dl0{margin:6px 0 0;color:var(--mut);font-size:14px}
 .rpidk{display:block;margin-top:9px;color:var(--mut);font-size:13px}
@@ -863,7 +870,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   $('z-form').addEventListener('input', e => {
     nazadOk = false;
     const f = e.target.closest('.f'); if (f) f.classList.remove('need');
-    const rr = e.target.closest('.ryad'); if (rr) { rr.classList.remove('sent'); razom(); }
+    const rr = e.target.closest('.ryad'); if (rr) { rr.classList.remove('sent'); razom(); if (MN && f && +f.dataset.i === idx(MN.suma)) { delete rr.dataset.reshta; delete rr.dataset.vidav; delete rr.dataset.rozkl; } }
     if (MN) { dupOk = ''; vnVsi(); }
     if (!document.querySelector('#z-polia .need')) { $('z-msg').style.color = ''; $('z-msg').textContent = K.povtor || ''; }
   });
@@ -990,7 +997,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (x) { el.dataset.kv = x.kv || ''; el.dataset.ryadok = x.ryadok || ''; el._dani = x.dani; if (x.kv) el.classList.add('sent'); }
     const z = x ? x.dani : kop || {};
     K.polia.forEach((p, i) => { if (jeRyad(p)) { if (z[p.h] != null && z[p.h] !== '') setV(rEl(n, i), z[p.h]); else if (p.zam) setV(rEl(n, i), p.zam); } });
-    if (VNP >= 0 && !(x && x.dani && x.dani['Внесок']) && !(kop && kop['Внесок']) && VN && VN.vnesky.length) rEl(n, VNP).value = VN.vnesky[VN.vnesky.length - 1].n;   // новий рядок — найсвіжіший внесок
+    if (VNP >= 0 && !(x && x.dani && x.dani['Внесок']) && !(kop && kop['Внесок']) && VN && VN.vnesky.length) rEl(n, VNP).value = vnTyp();   // новий рядок — звичайний внесок за строком, як у «Після сходин» (Vn.typovyi), 12.11
     nomery(); ruhVsi(); vnVsi(); fotoVsi(); return el;
   }
   function ryadDani(el) { const o = {}; K.polia.forEach((p, i) => { if (jeRyad(p)) o[p.h] = rEl(el.dataset.r, i).value.trim(); }); return o; }
@@ -1008,6 +1015,13 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (t.closest('[data-den]')) return denZavantazhyty();
       if (t.closest('[data-vyp]')) { const r = denR.find(x => x.ryadok === +t.closest('[data-vyp]').dataset.vyp); if (r) pochatyRed(r); return; }
       if (t.closest('[data-skas]')) return skasuvatyRyadok(t.closest('[data-skas]'));
+      if (t.closest('[data-rz]')) return vnRozklasty(t.closest('.ryad'), t.closest('[data-rz]').dataset.rz);   // 12.11: «Усе на внески» / «Лише за …»
+      if (t.closest('[data-vidav]')) { t.closest('.ryad').dataset.vidav = '1'; return vnVsi(); }
+      if (t.closest('[data-dopl]')) {   // старий борг: окремий рядок за той місяць, одразу під цим
+        const el = t.closest('.ryad'), bt = t.closest('[data-dopl]'), d = ryadDani(el);
+        const nw = dodatyRyad(null, {[MN.imya]: d[MN.imya], 'Внесок': bt.dataset.dopl, [MN.suma]: kom(bt.dataset.s), 'Опис': 'внесок: ' + bt.dataset.dopl, 'Як платили': d['Як платили']});
+        el.after(nw); dupOk = ''; nomery(); return vnVsi();
+      }
       if (t.closest('[data-zal="vnesok"]')) return zalVRyadku(t.closest('.ryad'), t.closest('[data-zal]'));
       if (t.closest('[data-zal="suma"]')) { const el = t.closest('.ryad'); rEl(el.dataset.r, idx(MN.suma)).value = String(t.closest('[data-zal]').dataset.s).replace('.', ','); razom(); vnVsi(); return; }
       if (t.closest('[data-foto]')) { fotoDlia = +t.closest('[data-foto]').dataset.foto; return fotoInp.click(); }
@@ -1033,7 +1047,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     $('z-polia').addEventListener('change', e => {
       const f = e.target.closest('.f'); if (!f) return;
       const h = K.polia[+f.dataset.i].h;
-      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок') vnDopovnyty(e.target.closest('.ryad')); if (h === 'Квитанція №') e.target.dataset.auto = ''; if (h === 'Як платили') ruhVsi(); vnVsi(); return; }
+      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок') { const rr = e.target.closest('.ryad'); delete rr.dataset.reshta; delete rr.dataset.vidav; delete rr.dataset.rozkl; vnDopovnyty(rr); } if (h === 'Квитанція №') e.target.dataset.auto = ''; if (h === 'Як платили') ruhVsi(); vnVsi(); return; }
       if (MN.vsim && h === MN.vsim.pole) { vsimVydno(); vnVsi(); }
       if (K.den && h === 'Дата') denZavantazhyty();
       if (MN.avto && h === MN.avto.pole) { const c = spilneEl(MN.avto.tsil), x = MN.avto.mapa[e.target.value]; if (c && x && !c.value) c.value = x; }
@@ -1054,11 +1068,12 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if ($('z-rl')) [...$('z-rl').children].forEach(el => {
       const s = rEl(el.dataset.r, VNP), was = s.value;
       s.innerHTML = opts(K.polia[VNP].opt, '— виберіть —');
-      if (was) setV(s, was); else if (VN.vnesky.length) s.value = VN.vnesky[VN.vnesky.length - 1].n;
+      if (was) setV(s, was); else if (VN.vnesky.length) s.value = vnTyp();
     });
     vnVsi(); malVn(); if (HR && $('z-hr') && !$('z-hr').querySelector('.pf')) hrZavantazhyty(); else vtMal();
   }
   const vnTrebaSuma = Vn.treba;
+  const vnTyp = () => Vn.typovyi(VN, spilneEl('Дата') ? spilneEl('Дата').value : '');
   function vnStan(el) {   // для рядка: {x, im, treba, bulo, brak} або null
     const d = ryadDani(el), im = d[MN.imya], v = d['Внесок'];
     if (!VN || !im || !v || !vnTreba()) return null;
@@ -1084,7 +1099,57 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
       if (tut && zaive > 0 && zaive <= -b + 0.001) { k = 'ok'; t = t.replace(/Це на .*$/, '') + `Зайві ${groshi(zaive)} закриють борг перед гуртком (${st.im}) — після «Надіслати» сайт зарахує сам.`; }
       dod = `<span class="zl">${esc(st.im)} винен(-на) гуртку ${groshi(-b)}. Можна взяти разом із внеском: ${groshi(raz)}. ${tut !== raz ? `<button type="button" class="lnk" data-zal="suma" data-s="${raz}">Вписати ${groshi(raz)}</button>` : ''}</span>`;
     }
-    box.className = 'vh' + (k ? ' ' + k : ''); box.innerHTML = esc(t) + dod; box.hidden = false;
+    // 12.11: як у «Після сходин» — старі борги, «сплачено до…», більше, ніж бракує: «Усе на внески» / «Лише за … — віддати решту»
+    const dA = vnDod(el, st.im), dZ = Object.assign({}, dA, {[st.v]: okr((dA[st.v] || 0) + tut)}), zz = Vn.vse(VN, st.im, st.v, dZ);
+    const sB = Vn.stan(VN, st.im, st.v, dA[st.v] || 0), g = ryadDani(el)['Як платили'] === 'готівка', resh = okr(+el.dataset.reshta || 0);
+    let dal = '';
+    if (zz && zz.st.brak <= 0 && zz.do_ && tut > 0) t += ' Сплачено ' + Vn.nazva(zz.do_, 'do', st.v) + '.';
+    if (resh > 0) dal += el.dataset.vidav ? `<span class="zl ok">✓ Решту ${groshi(resh)} ${g ? 'віддано' : 'повернуто'}.</span>`
+      : `<span class="zl">${g ? 'Дав ' + groshi(okr(tut + resh)) + ' — віддати' : 'Повернути'} решту ${groshi(resh)}. <button type="button" class="rsh" data-vidav="1" title="Торкніться, коли віддали"><u>${g ? 'віддав' : 'повернули'}</u></button></span>`;
+    else if (sB && tut > Math.max(sB.brak, 0) + 0.001 && !(b < 0)) {   // переплата (хто винен гуртку — зайве йде в борг, див. вище)
+      const rz = Vn.rozklasty(VN, st.im, st.v, tut, dA, true), por = Vn.poriadok(VN).map(x => x.n);
+      const po = rz.slice().sort((x, y) => por.indexOf(x.v) - por.indexOf(y.v)), dali = rz.length > 1 || (rz[0] && rz[0].v !== st.v);
+      if (dali || sB.brak > 0) {
+        k = 'warn'; t = `${g ? 'Дав' : 'Заплатив'} ${groshi(tut)} — ` + (sB.brak > 0 ? `це більше, ніж бракує ${Vn.nazva(st.v, 'za', st.v)} (${groshi(sB.brak)}).` : `${Vn.nazva(st.v, 'za', st.v)} уже сплачено.`) + ' Як записати?';
+        dal += '<span class="vyb">' + (dali ? `<button type="button" class="vyb-b" data-rz="vse"><b>Усе на внески</b><span>${esc(po.map(y => Vn.nazva(y.v, '', st.v) + ' ' + groshi(y.suma)).join(' + '))}</span></button>` : '')
+          + (sB.brak > 0 ? `<button type="button" class="vyb-b" data-rz="lyshe"><b>Лише ${esc(Vn.nazva(st.v, 'za', st.v))} ${groshi(sB.brak)}</b><span>${g ? 'Віддати решту' : 'Повернути'}: ${groshi(okr(tut - sB.brak))}</span></button>` : '') + '</span>';
+      }
+    }
+    if (zz) zz.borhy.forEach(x => { dal += `<span class="zl">${esc(Vn.nazva(x.v, 'za', st.v).replace(/^за /, 'За '))} бракує ${groshi(x.brak)}. <button type="button" class="lnk" data-dopl="${esc(x.v)}" data-s="${x.brak}">доплатити ${groshi(x.brak)}</button></span>`; });
+    box.className = 'vh' + (k ? ' ' + k : ''); box.innerHTML = esc(t) + dod + dal; box.hidden = false;
+  }
+  function vnDod(el, im) {   // платежі цієї людини, вписані на сторінці, крім рядка el: {внесок: сума} (виправлення — без старої суми)
+    const d = {};
+    for (const r of $('z-rl').children) {
+      if (r === el || r.dataset.kv) continue;
+      const o = ryadDani(r); if (o[MN.imya] === im && o['Внесок']) d[o['Внесок']] = okr((d[o['Внесок']] || 0) + chyslo(o[MN.suma]));
+    }
+    if (red && red.orig && red.orig.im === im && red.orig.v) d[red.orig.v] = okr((d[red.orig.v] || 0) - red.orig.s);
+    return d;
+  }
+  const kom = x => String(x).replace('.', ',');
+  function vnRozklasty(el, yak) {   // «Усе на внески» / «Лише за …» (12.11, як у «Після сходин»)
+    const d = ryadDani(el), im = d[MN.imya], v = d['Внесок'], tut = chyslo(d[MN.suma]), dA = vnDod(el, im), n = el.dataset.r, si = idx(MN.suma), oi = idx('Опис');
+    if (yak === 'lyshe') {
+      const s = Vn.stan(VN, im, v, dA[v] || 0); if (!s || s.brak <= 0) return;
+      el.dataset.reshta = okr(tut - s.brak); delete el.dataset.vidav; rEl(n, si).value = kom(s.brak);
+    } else {
+      const rz = Vn.rozklasty(VN, im, v, tut, dA, true); if (!rz.length) return;
+      rEl(n, si).value = kom(rz[0].suma);
+      if (rz[0].v !== v) { setV(rEl(n, VNP), rz[0].v); if (rEl(n, oi).value.trim() === 'внесок: ' + v) rEl(n, oi).value = 'внесок: ' + rz[0].v; }
+      let pr = el; el.dataset.rozkl = '1';
+      rz.slice(1).forEach(y => { const nw = dodatyRyad(null, {[MN.imya]: im, 'Внесок': y.v, [MN.suma]: kom(y.suma), 'Опис': 'внесок: ' + y.v, 'Як платили': d['Як платили']}); nw.dataset.rozkl = '1'; pr.after(nw); pr = nw; });
+      delete el.dataset.reshta;
+    }
+    dupOk = ''; nomery(); vnVsi();
+  }
+  function vnPerevaha(el) {   // перед «Надіслати»: більше, ніж бракує, і не вибрано — розкласти «Усе на внески» (як у «Після сходин»)
+    if (el.dataset.kv || el.dataset.reshta || !VN || !vnTreba()) return false;
+    const d = ryadDani(el), im = d[MN.imya], v = d['Внесок'], tut = chyslo(d[MN.suma]); if (!im || !v || !tut) return false;
+    if (okr((HR && HR.borhy || {})[im] || 0) < 0) return false;   // винен гуртку — зайве закриє борг
+    const dA = vnDod(el, im), s = Vn.stan(VN, im, v, dA[v] || 0); if (!s || tut <= Math.max(s.brak, 0) + 0.001) return false;
+    const rz = Vn.rozklasty(VN, im, v, tut, dA, true); if (!(rz.length > 1 || (rz[0] && rz[0].v !== v))) return false;
+    vnRozklasty(el, 'vse'); return true;
   }
   async function zalVRyadku(el, btn) {   // «Зарахувати» під рядком внеску: борг гуртка → у внесок
     const st = vnStan(el), khto = $('z-khto').value, m = $('z-msg'); if (!st) return;
@@ -1120,7 +1185,13 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   function vnVsi() {
     if (VNP < 0 || !$('z-rl')) return;
     const pok = !!spilneEl('Категорія') && spilneEl('Категорія').value === 'внески';   // «За який внесок» — лише для внесків
-    [...$('z-rl').children].forEach(el => { const f = rEl(el.dataset.r, VNP).closest('.f'); f.hidden = !pok; vnPidk(el); });
+    const si = idx(MN.suma), sl = K.polia[si] ? (K.polia[si].l || K.polia[si].h) : '';
+    [...$('z-rl').children].forEach(el => {
+      const f = rEl(el.dataset.r, VNP).closest('.f'); f.hidden = !pok;
+      const sp = si >= 0 && rEl(el.dataset.r, si).closest('.f').querySelector('span');   // готівкою — «Дав грошима, €» (12.11, як у «Після сходин»)
+      if (sp) sp.firstChild.textContent = (pok && VN && ryadDani(el)['Як платили'] === 'готівка' && !el.dataset.reshta && !el.dataset.rozkl ? 'Дав грошима, €' : sl) + (K.polia[si].req ? ' ' : '');
+      vnPidk(el);
+    });
   }
   function vnDopovnyty(el) {   // вибрали, хто платить / за що — сума, якої бракує, і опис
     const st = vnStan(el);
@@ -1135,7 +1206,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     }
     const n = el.dataset.r, si = idx(MN.suma), oi = idx('Опис');
     if (!rEl(n, si).value.trim() && st.brak > 0) rEl(n, si).value = String(st.brak).replace('.', ',');
-    if (!rEl(n, oi).value.trim()) rEl(n, oi).value = 'внесок: ' + st.v;
+    if (!rEl(n, oi).value.trim() || /^внесок: /.test(rEl(n, oi).value.trim())) rEl(n, oi).value = 'внесок: ' + st.v;   // підставлений опис іде за внеском
     razom();
   }
   function vnVsimBrak() {   // «Рядок кожному учаснику», коли внески є в книзі
@@ -1812,6 +1883,10 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     if (brak.length) { msg.textContent = 'Заповніть: ' + brak.join(', ') + '.'; return fokus(); }
     if (chys) { msg.textContent = '«' + chys + '» — лише число (напр. 10 або 12,50).'; return fokus(); }
     const khto = $('z-khto').value; if (!khto) { msg.textContent = 'Виберіть, хто записав.'; return $('z-khto').focus(); }
+    if (VNP >= 0 && spil['Категорія'] === 'внески') {   // 12.11: більше, ніж бракує, і не вибрано — розкладаємо «Усе на внески» й показуємо
+      const rozkl = aktyvni.filter(x => vnPerevaha(x.el)).map(x => x.d[MN.imya]);
+      if (rozkl.length) { msg.style.color = '#f0c060'; msg.textContent = 'Більше, ніж бракує: ' + [...new Set(rozkl)].join(', ') + ' — розкладено на старі борги й наступні внески («Усе на внески»). Перевірте рядки й натисніть «Надіслати» ще раз.'; return; }
+    }
     if (K.den && !red) {   // подвійний запис? те саме ім'я (або опис), та сама сума й рух — у книзі за цей день чи двічі в списку
       const pp = d => [norm(d[MN.imya]) || norm(d['Опис']), chyslo(d[MN.suma]).toFixed(2), d['Рух']].join('|');
       const nazva = d => (d[MN.imya] || d['Опис']) + ' — ' + groshi(chyslo(d[MN.suma]));
