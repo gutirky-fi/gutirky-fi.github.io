@@ -221,6 +221,8 @@ a.tile{text-decoration:none}
 .reshta .dal{width:70px;padding:7px 8px;border-radius:9px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);text-align:right;font-size:16px}
 .reshta button{padding:7px 10px;border-radius:9px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer}.reshta button:hover{border-color:var(--d)}
 .reshta .rv{flex:1 1 100%;font-size:20px;color:var(--ok-t)}.reshta .rv:empty{display:none}.reshta .rv.mal{color:#f3d48a}
+.pk .rl1{flex:1 1 auto;font-size:14px;font-weight:600;color:var(--mut);line-height:1.2}.pk .rl1 small{display:block;font-weight:400;font-size:12.5px}
+.reshta .rl small{font-weight:400}
 .vse-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 10px 14px;border-radius:12px;background:#14171a;border:1px solid rgba(61,175,110,.55);color:var(--ok-t);font-weight:700;font-size:15px}.vse-ok[hidden]{display:none}
 .pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:13px;font-weight:600;color:#f3d48a}
 .pk .ok1{flex:1 1 auto;min-width:0;font-size:15px;color:var(--body)}.pk .ok1 b{color:var(--ok-t)}.pk .ok1 small{color:var(--mut);font-size:13px}
@@ -1020,9 +1022,9 @@ window.Vn = (function () {
       const p = r.p, inshyi = VN && r.n && r.n !== ref, vo = VN ? Vn.poriadok(VN).map(x => `<option value="${esc(x.n)}"${x.n === r.n ? ' selected' : ''}>${esc(x.n)} — ${fmt(x.suma)}</option>`).join('') : '';
       return `<div class="pk" data-id="${p.id}"><div class="l1"><span class="ok1">${r.suma > 0 ? '<b>✓ ' + fmt(r.suma) + '</b>' : '<b style="color:#f3d48a">сума?</b>'} · ${esc(pYak(p))}${inshyi ? ' <small>· ' + esc(Vn.nazva(r.n, 'za', ref)) + '</small>' : ''}</span>`
         + (p.open ? '' : '<button type="button" class="zm-b" data-a="zm">змінити</button>') + '</div>'   // 12.11, 04:25: ✕ — лише всередині «змінити» (щоб не видалити платіж випадково)
-        + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="r1"><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" value="${p.suma > 0 ? num(p.suma) : ''}"><span style="color:var(--mut);font-size:14px">€</span></div>`
+        + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="r1"><span class="rl1">Платить, €<small>піде в книгу</small></span><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" value="${p.suma > 0 ? num(p.suma) : ''}"></div>`
         + `<div class="yak" role="group" aria-label="Як платили">${['готівка', 'MobilePay', 'переказ'].map(y => `<button type="button" data-y="${y}" aria-pressed="${pYak(p) === y}">${y}</button>`).join('')}</div>`
-        + (pYak(p) === 'готівка' ? `<div class="reshta"><span class="rl">Дали готівкою</span><input class="dal" inputmode="decimal" maxlength="6" aria-label="Скільки дали готівкою" value="${p.dal ? num(p.dal) : ''}"><button type="button" data-dal="50">50 €</button><button type="button" data-dal="100">100 €</button><b class="rv"></b></div>` : '')   // 12.11, 04:45: калькулятор решти — у книгу не йде
+        + (pYak(p) === 'готівка' ? `<div class="reshta"><span class="rl">Дали готівкою <small>— лише щоб порахувати решту, у книгу не йде</small></span><input class="dal" inputmode="decimal" maxlength="6" aria-label="Скільки дали готівкою" value="${p.dal ? num(p.dal) : ''}"><button type="button" data-dal="50">50 €</button><button type="button" data-dal="100">100 €</button><b class="rv"></b></div>` : '')   // 12.11, 04:45: калькулятор решти — у книгу не йде
         + (VN ? `<label class="f"><span>За який внесок</span><select class="in pk-vn">${vo}</select></label>` : '')
         + '<div class="zm-dii"><button type="button" class="x-b" data-a="x">Прибрати платіж</button><button type="button" class="ok-b" data-a="zm">Готово</button></div>' + `</div><div class="vh" hidden></div></div>`;
     };
