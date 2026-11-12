@@ -453,9 +453,9 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
           <div class="vn-l" id="p-vn-l" hidden><span id="p-vn-t"></span><button type="button" class="lnk" id="p-vn-zm">змінити</button><select class="in" id="p-vn" hidden aria-label="За який внесок"></select></div>
           <div class="paybar">
             <label class="f" id="p-suma-l"><span>Внесок, €</span><input class="in" id="p-suma" inputmode="decimal" value="5" maxlength="6"></label>
-            <div class="f" style="flex:1 1 0;min-width:0"><span class="yak-l">Як платили<span class="tot">разом <b id="p-tot">0 €</b></span></span><div class="yak" id="p-yak" role="group" aria-label="Як платили"><button type="button" data-y="готівка" aria-pressed="true">готівка</button><button type="button" data-y="MobilePay" aria-pressed="false">MobilePay</button><button type="button" data-y="переказ" aria-pressed="false">переказ</button></div></div>
+            <div class="f" style="flex:1 1 0;min-width:0"><span class="yak-l">Як платять найчастіше<span class="tot">разом <b id="p-tot">0 €</b></span></span><div class="yak" id="p-yak" role="group" aria-label="Як платили"><button type="button" data-y="готівка" aria-pressed="true">готівка</button><button type="button" data-y="MobilePay" aria-pressed="false">MobilePay</button><button type="button" data-y="переказ" aria-pressed="false">переказ</button></div></div>
           </div>
-          <p class="pay-hnt">Готівка — у книзі одразу ✓; MobilePay і переказ чекають вашої «Перевірки каси».</p>
+          <p class="pay-hnt">Це — для наступних «заплатив»; уже записаних не міняє (у кого інакше — «змінити» біля імені). Готівка — у книзі одразу ✓; MobilePay і переказ чекають «Перевірки каси».</p>
           <button class="pay-all" type="button" id="p-all" hidden>Усім, хто був і не сплатив — на суму, якої бракує</button>
           <div id="p-wrap">
           <ul class="pay" id="p-list"></ul>
@@ -952,10 +952,10 @@ window.Vn = (function () {
   const num = v => String(v).replace('.', ',');
   const nCur = () => VN ? $('p-vn').value : '';
   const pVn = p => p.vn !== null ? p.vn : nCur();   // «за який внесок»: свій чи звичайний (зверху)
-  const pYak = p => p.yak || yak;
+  const pYak = p => p.yak || yak;   // 12.11, 04:20: верхній вибір — лише для НОВИХ платежів (nova бере його в мить дотику); записані платежі він не міняє
   /* 12.11 «Кнопки внесків»: платіж має справжню суму з першої миті (не підказ у полі); «заплатив 20 €» — один дотик = повний внесок;
      прибрати платіж — лише ✕; під іменем — один стан з урахуванням уписаних платежів, старі борги й «сплачено до …». */
-  const nova = (im, suma, vn, vidkryty) => ({id: ++pid, im, suma, yak: null, vn: vn === undefined || vn === nCur() ? null : vn, open: !!vidkryty});
+  const nova = (im, suma, vn, vidkryty) => ({id: ++pid, im, suma, yak, vn: vn === undefined || vn === nCur() ? null : vn, open: !!vidkryty});
   let vseVidkr = false;   // «✓ сплатили всі» — крок згорнуто, поки виховник не торкнеться «записати платіж»
   const dodDlia = (im, krim) => { const d = {}; plat.forEach(p => { if (p.im === im && p !== krim && p.suma > 0) { const n = pVn(p); d[n] = Vn.okr((d[n] || 0) + p.suma); } }); return d; };
   const stanIm = im => VN && nCur() ? Vn.vse(VN, im, nCur(), dodDlia(im)) : null;   // з урахуванням платежів на сторінці
