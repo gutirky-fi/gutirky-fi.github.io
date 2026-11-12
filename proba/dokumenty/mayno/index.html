@@ -1912,7 +1912,7 @@ window.Vn = (function () {
     $('z-polia').addEventListener('change', e => {
       const f = e.target.closest('.f'); if (!f) return;
       const h = K.polia[+f.dataset.i].h;
-      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок') { const rr = e.target.closest('.ryad'); delete rr.dataset.reshta; delete rr.dataset.vidav; delete rr.dataset.rozkl; vnDopovnyty(rr); } if (h === 'Квитанція №') e.target.dataset.auto = ''; if (h === 'Як платили') ruhVsi(); vnVsi(); return; }
+      if (e.target.closest('.ryad')) { if (h === MN.imya || h === 'Внесок' || h === 'Як платили') { const rr = e.target.closest('.ryad'); delete rr.dataset.reshta; delete rr.dataset.vidav; delete rr.dataset.rozkl; vnDopovnyty(rr); } if (h === 'Квитанція №') e.target.dataset.auto = ''; if (h === 'Як платили') ruhVsi(); vnVsi(); return; }
       if (MN.vsim && h === MN.vsim.pole) { vsimVydno(); vnVsi(); }
       if (K.den && h === 'Дата') denZavantazhyty();
       if (MN.avto && h === MN.avto.pole) { const c = spilneEl(MN.avto.tsil), x = MN.avto.mapa[e.target.value]; if (c && x && !c.value) c.value = x; }
@@ -1974,11 +1974,11 @@ window.Vn = (function () {
     else if (sB && tut > Math.max(sB.brak, 0) + 0.001 && !(b < 0)) {   // переплата (хто винен гуртку — зайве йде в борг, див. вище)
       const rz = Vn.rozklasty(VN, st.im, st.v, tut, dA, true), por = Vn.poriadok(VN).map(x => x.n);
       const po = rz.slice().sort((x, y) => por.indexOf(x.v) - por.indexOf(y.v)), dali = rz.length > 1 || (rz[0] && rz[0].v !== st.v);
-      if (dali || sB.brak > 0) {
+      if (dali || (sB.brak > 0 && g)) {   // 12.11, 05:35: MobilePay/переказ — вся сума, як у банку; «Лише … віддати решту» — лише для готівки
         k = 'warn'; t = `${g ? 'Дали' : 'Заплатили'} ${groshi(tut)} — ` + (sB.brak > 0 ? `це більше, ніж бракує ${Vn.nazva(st.v, 'za', st.v)} (${groshi(sB.brak)}).` : `${Vn.nazva(st.v, 'za', st.v)} уже сплачено.`) + ' Як записати?';
         dal += '<span class="vyb">' + (dali ? `<button type="button" class="vyb-b" data-rz="vse"><b>Усе на внески</b><span>${esc(po.map(y => Vn.nazva(y.v, '', st.v) + ' ' + groshi(y.suma)).join(' + '))}</span></button>` : '')
-          + (sB.brak > 0 ? `<button type="button" class="vyb-b" data-rz="lyshe"><b>Лише ${esc(Vn.nazva(st.v, 'za', st.v))} ${groshi(sB.brak)}</b><span>${g ? 'Віддати решту' : 'Повернути'}: ${groshi(okr(tut - sB.brak))}</span></button>` : '') + '</span>';
-      }
+          + (sB.brak > 0 && g ? `<button type="button" class="vyb-b" data-rz="lyshe"><b>Лише ${esc(Vn.nazva(st.v, 'za', st.v))} ${groshi(sB.brak)}</b><span>Віддати решту: ${groshi(okr(tut - sB.brak))}</span></button>` : '') + '</span>';
+      } else if (!g) { k = 'warn'; t = `Заплатили ${groshi(tut)} — це більше, ніж бракує. Записуємо всю суму, як у банку: зайві ${groshi(okr(tut - Math.max(sB.brak, 0)))} — переплата. Наступного року зарахуєте у внесок («Де зараз гроші» → «Переплачені внески»).`; }
     }
     if (zz) zz.borhy.forEach(x => { dal += `<span class="zl">${esc(Vn.nazva(x.v, 'za', st.v).replace(/^за /, 'За '))} бракує ${groshi(x.brak)}. <button type="button" class="lnk" data-dopl="${esc(x.v)}" data-s="${x.brak}">доплатити ${groshi(x.brak)}</button></span>`; });
     box.className = 'vh' + (k ? ' ' + k : ''); box.innerHTML = esc(t) + dod + dal; box.hidden = false;

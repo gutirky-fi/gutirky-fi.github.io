@@ -849,11 +849,12 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         const rz = Vn.rozklasty(VN, r.p.im, r.n, r.suma, dodDlia(r.p.im, r.p), !r.p.vn), ref2 = ref;
         const po = rz.slice().sort((x, y) => Vn.poriadok(VN).findIndex(z => z.n === x.v) - Vn.poriadok(VN).findIndex(z => z.n === y.v));
         const g = pYak(r.p) === 'готівка';
-        if (rz.length < 2 && r.st.brak <= 0) { h.className = 'vh warn'; h.textContent = x.t; h.hidden = false; return; }   // нема куди розкласти — лише попередження
+        const lyshe = g && r.st.brak > 0;   // 12.11, 05:35: MobilePay/переказ — у книзі вся сума, як у банку (інакше «Перевірка каси» не зійдеться); решту не «повертаємо»
+        if (rz.length < 2 && !lyshe) { h.className = 'vh warn'; h.textContent = g ? x.t : 'Це більше, ніж бракує. Записуємо всю суму, як у банку: зайві ' + fmt(Vn.okr(r.suma - Math.max(r.st.brak, 0))) + ' — переплата. Наступного року зарахуєте у внесок (Каса → «Переплачені внески»).'; h.hidden = false; return; }   // нема куди розкласти — лише попередження
         h.className = 'vh vyb'; h.hidden = false;
         h.innerHTML = (r.st.brak > 0 ? 'Це більше, ніж бракує (' + fmt(r.st.brak) + '). Як бути?' : 'Цей внесок уже сплачено. Як бути?')
           + (rz.length > 1 ? `<button type="button" class="vyb-b" data-a="vse"><b>Усе на внески</b><span>${esc(po.map(y => Vn.nazva(y.v, '', ref2) + ' ' + fmt(y.suma)).join(' + '))}</span></button>` : '')
-          + (r.st.brak > 0 ? `<button type="button" class="vyb-b" data-a="lyshe"><b>Лише ${esc(Vn.nazva(r.n, 'za', ref2))} ${fmt(r.st.brak)}</b><span>${g ? 'Віддати решту' : 'Повернути'}: ${fmt(Vn.okr(r.suma - r.st.brak))}</span></button>` : '');
+          + (lyshe ? `<button type="button" class="vyb-b" data-a="lyshe"><b>Лише ${esc(Vn.nazva(r.n, 'za', ref2))} ${fmt(r.st.brak)}</b><span>Віддати решту: ${fmt(Vn.okr(r.suma - r.st.brak))}</span></button>` : '');
         return;
       }
       h.className = 'vh warn'; h.innerHTML = t; h.hidden = false;
