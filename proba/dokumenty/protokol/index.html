@@ -1233,16 +1233,18 @@ window.Vn = (function () {
   }
   /* Переплату за внесок n розкласти на наступні: [{v, suma}] (перший — n). dod — як у vse, БЕЗ цього платежу.
      Останній може бути неповним; внесків не вистачило — решта лишається на останньому. */
-  function rozklasty(VN, im, n, suma, dod) {
+  function rozklasty(VN, im, n, suma, dod, zBorhamy) {   // zBorhamy — спершу закрити старі борги (жовтень), потім n і далі
     dod = dod || {};
     const vs = poriadok(VN), i = vs.findIndex(x => x.n === n), out = [];
+    const bv = zBorhamy ? ((vse(VN, im, n, dod) || {borhy: []}).borhy.map(b => vs.find(x => x.n === b.v))) : [];
     let zal = okr(suma);
-    vs.slice(Math.max(i, 0)).forEach(x => {
+    bv.concat(vs.slice(Math.max(i, 0))).forEach(x => {
       if (zal <= 0) return;
       const b = stan(VN, im, x.n, dod[x.n] || 0).brak; if (b <= 0 && x.n !== n) return;
       const s = Math.min(zal, Math.max(b, 0)); if (s <= 0) return;
       out.push({v: x.n, suma: okr(s)}); zal = okr(zal - s);
     });
+    const pn = out.findIndex(y => y.v === n); if (pn > 0) out.unshift(out.splice(pn, 1)[0]);   // перший — сам цей платіж (за n), борги й наступні — нові рядки
     if (zal > 0) { if (out.length) out[out.length - 1].suma = okr(out[out.length - 1].suma + zal); else out.push({v: n, suma: zal}); }
     return out;
   }

@@ -211,6 +211,11 @@ a.tile{text-decoration:none}
 .zm-dii{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
 .zm-dii .x-b{white-space:nowrap;padding:9px 12px;border-radius:10px;border:1px solid rgba(200,40,74,.6);background:none;color:#ffb3c3;font-weight:600;font-size:14px;cursor:pointer}
 .zm-dii .ok-b{flex:0 1 160px;padding:10px 16px;border-radius:10px;border:0;background:var(--d);color:#0e1f15;font-weight:800;font-size:15px;cursor:pointer}
+.pay .pr>button:not(.lnk):not([aria-pressed=true]):hover,.zm-b:hover{border-color:var(--d);background:#2b333b;color:var(--ink)}
+.pay .lnk:hover,.vn-l .lnk:hover,.vse-ok .lnk:hover,.pay .bh .lnk:hover,.pay-all:hover,.inshi>summary:hover{color:#8fe3b4!important;text-decoration:underline}
+.yak button:not([aria-pressed=true]):hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.zm-dii .x-b:hover{background:rgba(200,40,74,.18);color:#ffd0da}.zm-dii .ok-b:hover{background:#4cc07f}
+.pay button:focus-visible,.zm-b:focus-visible,.yak button:focus-visible,.zm-dii button:focus-visible{outline:2px solid var(--ok-t);outline-offset:2px}
 .vse-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 10px 14px;border-radius:12px;background:#14171a;border:1px solid rgba(61,175,110,.55);color:var(--ok-t);font-weight:700;font-size:15px}.vse-ok[hidden]{display:none}
 .pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:13px;font-weight:600;color:#f3d48a}
 .pk .ok1{flex:1 1 auto;min-width:0;font-size:15px;color:var(--body)}.pk .ok1 b{color:var(--ok-t)}.pk .ok1 small{color:var(--mut);font-size:13px}
@@ -586,16 +591,18 @@ window.Vn = (function () {
   }
   /* Переплату за внесок n розкласти на наступні: [{v, suma}] (перший — n). dod — як у vse, БЕЗ цього платежу.
      Останній може бути неповним; внесків не вистачило — решта лишається на останньому. */
-  function rozklasty(VN, im, n, suma, dod) {
+  function rozklasty(VN, im, n, suma, dod, zBorhamy) {   // zBorhamy — спершу закрити старі борги (жовтень), потім n і далі
     dod = dod || {};
     const vs = poriadok(VN), i = vs.findIndex(x => x.n === n), out = [];
+    const bv = zBorhamy ? ((vse(VN, im, n, dod) || {borhy: []}).borhy.map(b => vs.find(x => x.n === b.v))) : [];
     let zal = okr(suma);
-    vs.slice(Math.max(i, 0)).forEach(x => {
+    bv.concat(vs.slice(Math.max(i, 0))).forEach(x => {
       if (zal <= 0) return;
       const b = stan(VN, im, x.n, dod[x.n] || 0).brak; if (b <= 0 && x.n !== n) return;
       const s = Math.min(zal, Math.max(b, 0)); if (s <= 0) return;
       out.push({v: x.n, suma: okr(s)}); zal = okr(zal - s);
     });
+    const pn = out.findIndex(y => y.v === n); if (pn > 0) out.unshift(out.splice(pn, 1)[0]);   // перший — сам цей платіж (за n), борги й наступні — нові рядки
     if (zal > 0) { if (out.length) out[out.length - 1].suma = okr(out[out.length - 1].suma + zal); else out.push({v: n, suma: zal}); }
     return out;
   }
@@ -1038,9 +1045,9 @@ window.Vn = (function () {
       const x = Vn.pidkazka(r.st, r.suma, fmt, true);
       if (x.k !== 'warn') { h.hidden = true; return; }
       let t = esc(x.t);
-      if (r.suma > r.st.brak) {   // переплата: запропонувати розкласти на наступні внески
-        const rz = Vn.rozklasty(VN, r.p.im, r.n, r.suma, dodDlia(r.p.im, r.p));
-        if (rz.length > 1) t += ` <button type="button" class="lnk" data-a="rozkl">розкласти: ${esc(rz.map(y => Vn.nazva(y.v, '', ref) + ' ' + fmt(y.suma)).join(', '))}</button>`;
+      if (r.suma > r.st.brak) {   // переплата: «Готово» розкладе на старі борги й наступні внески
+        const rz = Vn.rozklasty(VN, r.p.im, r.n, r.suma, dodDlia(r.p.im, r.p), !r.p.vn);
+        if (rz.length > 1) { h.className = 'vh ok'; h.innerHTML = '«Готово» розкладе ' + fmt(r.suma) + ': ' + esc(rz.slice().sort((x, y) => Vn.poriadok(VN).findIndex(z => z.n === x.v) - Vn.poriadok(VN).findIndex(z => z.n === y.v)).map(y => Vn.nazva(y.v, 'za', ref) + ' ' + fmt(y.suma)).join(', ')) + '.'; h.hidden = false; return; }
       }
       h.className = 'vh warn'; h.innerHTML = t; h.hidden = false;
     });
@@ -1070,12 +1077,18 @@ window.Vn = (function () {
     if (a === 'tak') { const z = stanIm(im); plat.push(nova(im, z ? z.st.brak : suma())); }   // один дотик = повний внесок звичайним способом; другого дотику немає (кнопка зникає)
     else if (a === 'dopl') { const z = stanIm(im), bg = z && z.borhy.find(x => x.v === b.dataset.v); if (bg) plat.push(nova(im, bg.brak, bg.v)); }
     else if (a === 'shche') { const x = naNovyi(im); plat.push(nova(im, x.suma, x.vn, true)); fokus = true; }
-    else if (a === 'zm' && p) { if (p.open && !(p.suma > 0)) return; p.open = !p.open; }
-    else if (a === 'x' && p) plat = plat.filter(x => x !== p);
-    else if (a === 'rozkl' && p) {
-      const rz = Vn.rozklasty(VN, p.im, pVn(p), p.suma, dodDlia(p.im, p)), i = plat.indexOf(p);
-      plat.splice(i, 1, ...rz.map(y => Object.assign(nova(p.im, y.suma, y.v), {yak: p.yak})));
+    else if (a === 'zm' && p) {
+      if (p.open && !(p.suma > 0)) return;
+      if (p.open && VN) {   // «Готово»: більше, ніж бракує, — розкласти (спершу старі борги, потім цей місяць і наступні)
+        const n = pVn(p), st = Vn.stan(VN, p.im, n, (dodDlia(p.im, p))[n] || 0);
+        if (st && p.suma > st.brak) {
+          const rz = Vn.rozklasty(VN, p.im, n, p.suma, dodDlia(p.im, p), !p.vn), i = plat.indexOf(p);
+          if (rz.length > 1) { plat.splice(i, 1, ...rz.map(y => Object.assign(nova(p.im, y.suma, y.v), {yak: p.yak}))); skladPl(); return; }
+        }
+      }
+      p.open = !p.open;
     }
+    else if (a === 'x' && p) plat = plat.filter(x => x !== p);
     else if (b.dataset.y && p) p.yak = b.dataset.y;
     else return;
     skladPl();
