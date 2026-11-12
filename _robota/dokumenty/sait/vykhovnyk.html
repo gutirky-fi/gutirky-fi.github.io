@@ -803,7 +803,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const p = r.p, ref = nCur(), inshyi = VN && r.n && r.n !== ref;
     return (r.suma > 0 ? '<b>✓ ' + fmt(r.suma) + '</b>' : '<b style="color:#f3d48a">сума?</b>') + ' · ' + esc(pYak(p)) + (inshyi ? ' <small>· ' + esc(Vn.nazva(r.n, 'za', ref)) + '</small>' : '')
       + (!p.reshta ? '' : p.vidav ? ' <small>· ✓ решту ' + fmt(p.reshta) + ' віддано</small>'
-         : ' <button type="button" class="rsh" data-a="vidav" title="Торкніться, коли віддали">· віддати решту ' + fmt(p.reshta) + ' <u>віддав</u></button>');   // 12.11, 05:00: віддав — напис гасне
+         : ' <button type="button" class="rsh" data-a="vidav" title="Торкніться, коли віддали">· віддати решту ' + fmt(p.reshta) + ' <u>віддано</u></button>');   // 12.11, 05:00: віддав — напис гасне
   }
   function skladPl() {   // перемалювати крок «Внески»
     const R = rakhuy(), buly = imena.filter(im => prys[im] === '+'), inshi = imena.filter(im => prys[im] !== '+'), ref = nCur();
@@ -815,7 +815,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       const p = r.p, inshyi = VN && r.n && r.n !== ref, vo = VN ? Vn.poriadok(VN).map(x => `<option value="${esc(x.n)}"${x.n === r.n ? ' selected' : ''}>${esc(x.n)} — ${fmt(x.suma)}</option>`).join('') : '';
       return `<div class="pk" data-id="${p.id}"><div class="l1"><span class="ok1">${okTekst(r)}</span>`
         + (p.open ? '' : '<button type="button" class="zm-b" data-a="zm">змінити</button>') + '</div>'   // 12.11, 04:25: ✕ — лише всередині «змінити» (щоб не видалити платіж випадково)
-        + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="r1"><span class="rl1">${pYak(p) === 'готівка' ? 'Дав грошима, €' : 'Сума, €'}</span><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" value="${p.suma > 0 ? num(p.suma) : ''}">${pYak(p) === 'готівка' ? '<button type="button" class="dal-b" data-dal="50">50 €</button><button type="button" class="dal-b" data-dal="100">100 €</button>' : ''}</div><div class="vh" hidden></div>`
+        + `<div class="zmin"${p.open ? '' : ' hidden'}><div class="r1"><span class="rl1">${pYak(p) === 'готівка' ? 'Дали грошима, €' : 'Сума, €'}</span><input class="sum" inputmode="decimal" maxlength="6" aria-label="Сума для ${esc(p.im)}" value="${p.suma > 0 ? num(p.suma) : ''}">${pYak(p) === 'готівка' ? '<button type="button" class="dal-b" data-dal="50">50 €</button><button type="button" class="dal-b" data-dal="100">100 €</button>' : ''}</div><div class="vh" hidden></div>`
         + `<div class="yak" role="group" aria-label="Як платили">${['готівка', 'MobilePay', 'переказ'].map(y => `<button type="button" data-y="${y}" aria-pressed="${pYak(p) === y}">${y}</button>`).join('')}</div>`
         + (VN ? `<label class="f"><span>За який внесок</span><select class="in pk-vn">${vo}</select></label>` : '')
         + '<div class="zm-dii"><button type="button" class="x-b" data-a="x">Прибрати платіж</button><button type="button" class="ok-b" data-a="zm">Готово</button></div>' + `</div></div>`;
