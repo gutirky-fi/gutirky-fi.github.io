@@ -252,6 +252,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
           <label class="f"><span>Дата</span><input class="in" id="z-data" type="date" required></label>
           <label class="f"><span>№ сходин</span><input class="in" id="z-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
         </div>
+        <p class="stan ye" id="z-nrw" hidden></p>
         <label class="f"><span>Тема</span><input class="in" id="z-tema" maxlength="80" placeholder="про що були сходини"></label>
         <p class="stan" id="z-stan" hidden></p>
         <div class="cnt">
@@ -413,6 +414,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
       await new Promise(r => setTimeout(r, t.dija === 'stan' ? 300 : 650));
       if (t.kod !== '1234') return {ok: false, pomylka: 'Невірний код гуртка.'};
       if (t.dija === 'imena') return {ok: true, imena: DEMO_IM};
+      if (t.dija === 'nomery') return {ok: true, nomery: Object.keys(DDB).map(d => ({d, n: DDB[d].dani['№ сходин']})).filter(x => x.n)};   // проба: усі № з пробної книги
       if (t.dija === 'stan') { const x = DDB[t.dani['Дата']]; return x ? {ok: true, ye: true, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: x.dani, prys: x.prys} : {ok: true, ye: false}; }
       if (t.dija === 'zapys') {
         const d = t.dani['Дата'], x = DDB[d];
@@ -451,33 +453,42 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
       <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
       || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
     $('z-khto').innerHTML = '<option value="">— виберіть —</option>' + imena.map(im => `<option>${esc(im)}</option>`).join('') + '<option>виховник</option>';
-    lichba(); $('z-msg').textContent = 'Одні сходини — один запис: якщо ця дата вже записана, ви побачите це вище й зможете виправити.';
+    NRS = null; avtoNr = ''; $('z-nrw').hidden = true; lichba(); $('z-msg').textContent = 'Одні сходини — один запис: якщо ця дата вже записана, ви побачите це вище й зможете виправити.';
     zatv = false; zamok(false); $('z-stan').hidden = true; if (kod) setTimeout(perevirStan, 0);
   }
   // ---- одна дата — один запис: щойно вибрали дату — питаємо книгу ----
-  let zatv = false, zapovn = false, stanN = 0;
+  let zatv = false, zapovn = false, stanN = 0, NRS = null, avtoNr = '';   // NRS — усі № сходин з книги (stan.js): наступний № сам і попередження про повтор
   function zamok(tak) {
     $('z-names').classList.toggle('lock', tak); ['z-all', 'z-send', 'z-khto', 'z-nr', 'z-tema'].forEach(id => { $(id).disabled = tak; });
   }
   async function perevirStan() {
     const b = $('z-stan'), d = $('z-data').value; if (!d) { b.hidden = true; return; }
     const moye = ++stanN; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
-    const v = await Stan.zapys(zapyt, kod, 'Відвідуваність', d);   // спільне зі «Вхід виховника → Після сходин» (stan.js)
+    if (avtoNr && $('z-nr').value === avtoNr) $('z-nr').value = '';   // підказка з іншої дати — прибрати (якщо не міняли самі)
+    avtoNr = '';
+    const [v, nrs] = await Promise.all([Stan.zapys(zapyt, kod, 'Відвідуваність', d), Stan.nomery(zapyt, kod)]);   // спільне зі «Вхід виховника → Після сходин» (stan.js)
     if (moye !== stanN) return;
+    NRS = nrs;
     if (!v || !v.ok || !v.ye) {
       b.hidden = true; zatv = false; zamok(false);
       if (zapovn) { prys = {}; $('z-nr').value = ''; $('z-tema').value = ''; lichba(); zapovn = false; }
-      $('z-send').lastChild.textContent = 'Надіслати в книгу'; return;
+      if (NRS && !$('z-nr').value.trim()) { avtoNr = Stan.nastupnyi(NRS); $('z-nr').value = avtoNr; }   // № ще немає в книзі: наступний сам (останній + 1)
+      nrPopered(); $('z-send').lastChild.textContent = 'Надіслати в книгу'; return;
     }
     const dd = d.split('-').reverse().join('.');
     prys = Object.assign({}, v.prys || {}); $('z-nr').value = (v.dani || {})['№ сходин'] || ''; $('z-tema').value = (v.dani || {})['Тема'] || '';
-    lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv);
+    lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv); nrPopered();
     if (zatv) { b.className = 'stan zt'; b.innerHTML = `✓ <b>Сходини ${esc(dd)} затвердив виховник.</b> Змінити відвідуваність може лише він.`; }
     else {
       b.className = 'stan ye'; b.innerHTML = `<b>Відвідуваність за ${esc(dd)} уже записано</b>${Stan.khto(v) ? ' (' + esc(Stan.khto(v)) + ')' : ''}. Нижче — що записано. Виправте й надішліть — зміни ляжуть у той самий запис.`;
       $('z-send').lastChild.textContent = 'Надіслати виправлення';
     }
   }
+  function nrPopered() {   // «№ 12 уже є — 08.11.2026»: лише попередження, надіслати можна
+    const w = $('z-nrw'), t = Stan.poperedzhennia(NRS, $('z-nr').value, $('z-data').value);
+    w.hidden = !t; w.textContent = t;
+  }
+  $('z-nr').addEventListener('input', nrPopered);
   $('z-data').addEventListener('change', perevirStan);
   function lichba() {
     const v = Object.values(prys);

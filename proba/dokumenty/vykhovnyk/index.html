@@ -456,6 +456,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
             <label class="f"><span>Дата</span><input class="in" id="s-data" type="date"></label>
             <label class="f"><span>№ сходин</span><input class="in" id="s-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
           </div>
+          <p class="stan ye" id="s-nrw" hidden></p>
           <p class="stan" id="s-stan" hidden></p>
           <label class="f"><span>Тема</span><input class="in" id="s-tema" maxlength="80" placeholder="про що були сходини"></label>
           <label class="f"><span>Програма коротко <small style="font-weight:400">— необов'язково</small></span><input class="in" id="s-prog" maxlength="160" placeholder="напр. вузли, гра, пісня"></label>
@@ -665,7 +666,36 @@ window.Stan = (function () {
     return {vnesky: out, inshi};
   }
 
-  return {dd, zapys, den, khto, vnesky};
+  /* № сходин (13.11): «наступний № сам» і «такий № уже є». Спільне для «Відвідуваності» і «Після сходин».
+     Усі № з книги: [{d: '2026-11-08', n: '12'}] або null (немає зв'язку). Нова версія приймача має дію 'nomery' (її бачать і юнаки);
+     у старій виховник усе одно прочитає аркуш «Сходини» через 'zvit' — а юнаки без оновлення приймача просто не побачать підказки. */
+  const iso = s => { s = String(s || '').trim(); let m = s.match(/^(\d{4})-(\d\d)-(\d\d)/); if (m) return m[0];
+    m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : ''; };
+  async function nomery(zapyt, kod) {
+    try { const v = await zapyt({kod, dija: 'nomery'}); if (v && v.ok && Array.isArray(v.nomery)) return v.nomery.map(x => ({d: iso(x.d), n: String(x.n).trim()})).filter(x => x.d && x.n); } catch (x) {}
+    try {
+      const v = await zapyt({kod, dija: 'zvit', arkush: 'Сходини'}), z = (v && v.zaholovky) || [], cd = z.indexOf('Дата'), cn = z.indexOf('№');
+      if (v && v.ok && cd >= 0 && cn >= 0) return (v.ryadky || []).map(r => ({d: iso(r[cd]), n: String(r[cn] === null || r[cn] === undefined ? '' : r[cn]).trim()})).filter(x => x.d && x.n);
+    } catch (x) {}
+    return null;
+  }
+  const chyslo = n => /^\d{1,4}$/.test(n) ? +n : null;
+  // наступний вільний № — після № найпізніших сходин (а якщо раптом зайнятий — далі); порожня книга → «1»
+  function nastupnyi(spysok) {
+    if (!spysok) return '';
+    const zajniati = new Set(spysok.map(x => chyslo(x.n)).filter(x => x !== null));
+    const z = spysok.filter(x => chyslo(x.n) !== null).sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : chyslo(b.n) - chyslo(a.n))[0];
+    let n = z ? chyslo(z.n) + 1 : 1; while (zajniati.has(n)) n++;
+    return String(n);
+  }
+  // такий № уже є на ІНШУ дату? → {d, n} (рядок для попередження «№ 12 уже є — 08.11.2026»); та сама дата — це той самий запис
+  function povtor(spysok, nr, d) {
+    const n = chyslo(String(nr || '').trim()); if (!spysok || n === null) return null;
+    return spysok.find(x => chyslo(x.n) === n && x.d !== d) || null;
+  }
+  const poperedzhennia = (spysok, nr, d) => { const p = povtor(spysok, nr, d); return p ? '№ ' + chyslo(String(nr).trim()) + ' уже є — ' + dd(p.d) + '. Наступний вільний — ' + nastupnyi(spysok) + '.' : ''; };
+
+  return {dd, zapys, den, khto, vnesky, nomery, nastupnyi, povtor, poperedzhennia};
 })();
 </script>
 <script>
@@ -730,6 +760,7 @@ window.Stan = (function () {
       if (!rol) return {ok: false, pomylka: 'Невірний код.'};
       if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
       if (t.dija === 'vnesky') return {ok: true, vnesky: JSON.parse(JSON.stringify(DVN)), splacheno: JSON.parse(JSON.stringify(DSP))};
+      if (t.dija === 'nomery') { const out = []; [['Сходини', '№'], ['Відвідуваність', '№ сходин']].forEach(a => Object.keys(DST[a[0]]).forEach(d => { const n = DST[a[0]][d].dani[a[1]]; if (n) out.push({d, n}); })); return {ok: true, nomery: out}; }   // проба: усі № з пробної книги
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
       if (t.dija === 'uchasnyky') return {ok: true, uchasnyky: DUCH.map(u => Object.assign({}, u))};
       if (t.dija === 'uchasnyk') {
@@ -1026,7 +1057,7 @@ window.Stan = (function () {
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   function chysto() {
     prys = {}; plat = []; sent = {}; ryad = {}; zat = {}; znyato = {}; pid = 0; vnRuch = false; yak = 'готівка'; vseVidkr = false; $('p-vn').hidden = true;
-    stanN++; stanIde = false; KN = null; SVd = ''; avto = {}; avtoP = {}; DENVN = []; DENINSHI = 0; $('s-stan').hidden = true; $('p-vzhe').hidden = true; $('ps-send').lastChild.textContent = 'Надіслати в книгу';
+    stanN++; stanIde = false; KN = null; SVd = ''; avto = {}; avtoP = {}; DENVN = []; DENINSHI = 0; $('s-stan').hidden = true; $('p-vzhe').hidden = true; NRS = null; $('s-nrw').hidden = true; $('ps-send').lastChild.textContent = 'Надіслати в книгу';
     $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.y === yak)));
     $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-vml', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
     $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
@@ -1167,23 +1198,24 @@ window.Stan = (function () {
      Вибрали дату — питаємо книгу: Відвідуваність, Сходини і платежі каси цього дня. Що вже є — підтягуємо в ПОРОЖНІ поля
      й неозначені імена (своє виховник не втрачає); внески, які вже записав скарбник, показуємо зверху кроку 3 — вони вже
      пораховані в «сплачено / бракує», тож удруге їх не запишуть. Затверджені сходини: при надсиланні ✓ знімається, запис оновлюється, ✓ ставиться знову. */
-  let stanN = 0, stanIde = false, KN = null, SVd = '', avto = {}, avtoP = {}, DENVN = [], DENINSHI = 0;
+  let stanN = 0, stanIde = false, KN = null, SVd = '', avto = {}, avtoP = {}, DENVN = [], DENINSHI = 0, NRS = null;   // NRS — усі № сходин із книги (stan.js), для «наступний № сам» і попередження про повтор
   async function perevirStan() {
     const b = $('s-stan'), d = $('s-data').value, moye = ++stanN;
     Object.keys(avto).forEach(id => { if ($(id).value === avto[id]) $(id).value = ''; });   // підтягнуте з іншої дати — прибрати (якщо виховник не змінив)
     Object.keys(avtoP).forEach(im => { if (prys[im] === avtoP[im]) delete prys[im]; });
     avto = {}; avtoP = {}; KN = null; SVd = ''; DENVN = []; DENINSHI = 0;
     $('ps-send').lastChild.textContent = 'Надіслати в книгу';
-    if (!d) { b.hidden = true; stanIde = false; malVzhe(); onovyty(); return; }
+    if (!d) { b.hidden = true; stanIde = false; malVzhe(); nrPopered(); onovyty(); return; }
     stanIde = true; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
-    const v = await Stan.den(zapyt, kod, d);
+    const [v, nrs] = await Promise.all([Stan.den(zapyt, kod, d), Stan.nomery(zapyt, kod)]);
     if (moye !== stanN) return;
-    stanIde = false; KN = v; SVd = d;
+    stanIde = false; KN = v; SVd = d; NRS = nrs;
     const vid = v.vid && v.vid.ye ? v.vid : null, skh = v.skh && v.skh.ye ? v.skh : null;
     const sd = skh ? skh.dani || {} : {}, vd = vid ? vid.dani || {} : {};
     let inakshe = 0;   // де виховник уже вписав своє, а в книзі інше
     const pole = (id, x) => { x = x === undefined || x === null ? '' : String(x).trim(); const y = $(id).value.trim(); if (x && !y) { $(id).value = x; avto[id] = x; } else if (x && y !== x) inakshe++; };
     pole('s-nr', sd['№'] || vd['№ сходин']); pole('s-tema', sd['Тема'] || vd['Тема']); pole('s-prog', sd['Програма (коротко)']);
+    if (NRS && !$('s-nr').value.trim()) { const n = Stan.nastupnyi(NRS); $('s-nr').value = n; avto['s-nr'] = n; }   // № сходин, якого ще немає в книзі: наступний сам (останній + 1); інша дата — підказка стирається, як і підтягнуте
     pole('s-gut', sd['Гутірка / гра з бібліотеки']); pole('s-vml', sd['Проба / вмілість (якщо стосується)']); pole('s-mis', sd['Місце']); pole('s-prym', sd['Примітка']);
     if (vid) Object.keys(vid.prys || {}).forEach(im => {
       const m = vid.prys[im]; if (imena.indexOf(im) < 0 || ['+', '−', 'в'].indexOf(m) < 0) return;
@@ -1204,8 +1236,13 @@ window.Stan = (function () {
         + (inakshe ? ' Де ви вже вписали своє (' + inakshe + '), лишилось ваше — надішлете, і воно замінить записане.' : '');
       $('ps-send').lastChild.textContent = 'Надіслати виправлення';
     }
-    malVzhe(); onovyty();
+    malVzhe(); nrPopered(); onovyty();
   }
+  function nrPopered() {   // «№ 12 уже є — 08.11.2026»: лише попередження, надіслати можна (напр. новий рік — нумерація спочатку)
+    const w = $('s-nrw'), t = Stan.poperedzhennia(NRS, $('s-nr').value, $('s-data').value);
+    w.hidden = !t; w.textContent = t;
+  }
+  $('s-nr').addEventListener('input', nrPopered);
   function malVzhe() {   // зверху кроку 3: внески цієї дати, які вже в книзі
     const box = $('p-vzhe');
     if (!DENVN.length && !DENINSHI) { box.hidden = true; return; }
@@ -1663,7 +1700,7 @@ window.Stan = (function () {
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника). «Після сходин»: спробуйте дату 08.11.2026 (уже записали діловоди) і 01.11.2026 (затверджено).';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника). «Після сходин»: спробуйте дату 08.11.2026 (уже записали діловоди) і 01.11.2026 (затверджено). Нова дата (напр. 15.11.2026) — № 13 стає сам; впишіть 10 — з\'явиться попередження.';
     document.body.prepend(n); $('z-noaddr').hidden = true;
     $('z-kod').value = '123456'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }

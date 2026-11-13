@@ -119,6 +119,7 @@ function doPost(e) {
     if (z.dija === 'spysok') return vidpovid(spysok(z.arkush));
     if (z.dija === 'nazvy') return vidpovid(nazvy());
     if (z.dija === 'stan') return vidpovid(stan(z.arkush, z.dani));
+    if (z.dija === 'nomery') return vidpovid(nomery());
     if (z.dija === 'zatverdyty') return vidpovid(zatverdyty(z.arkush, z.ryadok, z.hasOwnProperty('znach') ? z.znach : (z.tak !== false ? 'так' : '')));
     if (z.dija === 'hroshi') return vidpovid(hroshi());
     if (z.dija === 'kasa') return vidpovid(kasa());
@@ -689,6 +690,22 @@ function stan(arkush, dani) {
   if (!r) return {ok: true, ye: false};
   var m = vmist(sh, zag, arkush, r);
   return {ok: true, ye: true, ryadok: r, zatverdzheno: m.zatverdzheno, khto: m.khto, koly: m.koly, dani: m.dani, prys: m.prys};
+}
+
+// № сходин, які вже є в книзі (13.11): сайт сам ставить наступний № і попереджає про повтор. Доступно й юнакам (діловодам).
+// Віддає лише дату й №, нічого іншого. Джерела — «Сходини» (стовпець «№») і «Відвідуваність» («№ сходин»).
+function nomery() {
+  var ss = SpreadsheetApp.getActive(), out = [];
+  [['Сходини', '№'], ['Відвідуваність', '№ сходин']].forEach(function (a) {
+    var sh = ss.getSheetByName(a[0]); if (!sh) return;
+    var z = zaholovky(sh), cd = z.indexOf('Дата'), cn = z.indexOf(a[1]);
+    if (cd < 0 || cn < 0) return;
+    ryadky(sh).forEach(function (r) {
+      var n = String(r[cn] === null || r[cn] === undefined ? '' : r[cn]).trim();
+      if (r[cd] instanceof Date && n) out.push({d: iso(r[cd]), n: n});
+    });
+  });
+  return {ok: true, nomery: out};
 }
 
 function zatverdyty(arkush, ryadok, znach) {
