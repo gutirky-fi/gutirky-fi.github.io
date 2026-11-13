@@ -32,6 +32,7 @@ KARTKY = {
     'za_volyu_ukrainy':   ('za_volyu_ukrainy.png',   (24, 128, 102), ('w', 56.0), 'За волю України'),
     'syl_kras_ober_byst': ('syl_kras_ober_byst.png', (0, 0, 0),      ('w', 56.0), 'Сильно Красно Обережно Бистро'),
     'chotyry_symvoly':    ('chotyry_symvoly.png',    (0, 0, 0),      ('w', 56.0), 'Чотири символи'),
+    'litera_a':           ('litera_a.png',           (49, 49, 49),   ('w', 56.0), 'Літера А з лампочками'),
 }
 
 PAGE_W, PAGE_H = 297*mm, 420*mm
