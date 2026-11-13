@@ -82,6 +82,7 @@ def main(src, nazva, nizy=None):
     ys, xs = np.where(alpha > 0.05)
     y0, y1, x0, x1 = max(ys.min()-3, 0), ys.max()+4, max(xs.min()-3, 0), xs.max()+4
     rgba = np.dstack([rgb, (alpha*255).round().astype(np.uint8)])[y0:y1, x0:x1]
+    print('рамка предмета у вхідній картинці (x0,y0,x1,y1): %d,%d,%d,%d' % (x0, y0, x1, y1))
     from PIL import Image
     out = os.path.join(TUT, 'malyunky', nazva + '.png')
     Image.fromarray(rgba, 'RGBA').save(out)

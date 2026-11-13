@@ -3,6 +3,7 @@
     python3 lystivka.py taksa                  # одна листівка з таблиці KARTKY
     python3 lystivka.py taksa --fon 254,247,237  # лицьова панель залита кольором
     python3 lystivka.py vsi                    # усі листівки з таблиці
+    python3 lystivka.py litera_a --foto        # лицьова - фото на всю панель (див. foto_na_lytsovu.py)
 
 Результат: gotovi/lystivky_<назва>_A3_bez_fonu.pdf (або _z_fonom.pdf).
 
@@ -35,6 +36,9 @@ KARTKY = {
     'litera_a':           ('litera_a.png',           (49, 49, 49),   ('w', 56.0), 'Літера А з лампочками'),
 }
 
+# листівки, де лицьова - ФОТО на всю панель (готує foto_na_lytsovu.py); вмикається прапорцем --foto
+FOTO = {'litera_a': 'litera_a_lytsova.jpg'}
+
 PAGE_W, PAGE_H = 297*mm, 420*mm
 PW, PH = 70*mm, 95*mm              # одна панель (зворот або лицьова)
 COLS, ROWS = 2, 4
@@ -58,7 +62,7 @@ def lileya(kolir):
     return out, im.size
 
 
-def zibraty(nazva, fon=None):
+def zibraty(nazva, fon=None, foto=False):
     fail, kolir, (os_, rozmir), zaholovok = KARTKY[nazva]
     art_path = os.path.join(TUT, 'malyunky', fail)
     art = Image.open(art_path).convert('RGBA')
@@ -70,10 +74,13 @@ def zibraty(nazva, fon=None):
     cx, cy = (bx0+bx1)/2, (by0+by1)/2
     print('%s: малюнок %.1f x %.1f мм, %.0f точок на дюйм' % (nazva, (bx1-bx0)*s/mm, (by1-by0)*s/mm, 25.4*mm/s))
 
+    if foto and nazva not in FOTO:
+        sys.exit('для %s немає фото-лицьової (див. FOTO)' % nazva)
+    foto_path = os.path.join(TUT, 'malyunky', FOTO[nazva]) if foto else None
     lpath, (lw0, lh0) = lileya(kolir)
     lh, lw = LILY_H, LILY_H*lw0/lh0
 
-    out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A3_%s.pdf' % (nazva, 'z_fonom' if fon else 'bez_fonu'))
+    out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A3_%s.pdf' % (nazva, 'z_fonom' if fon else ('foto_lytsova' if foto else 'bez_fonu')))
     c = canvas.Canvas(out, pagesize=(PAGE_W, PAGE_H))
     c.setTitle('Листівка «%s» - А3, 8 шт, розріз по центру' % zaholovok)
     for r in range(ROWS):
@@ -83,6 +90,15 @@ def zibraty(nazva, fon=None):
             if fon:
                 c.setFillColorRGB(*(v/255 for v in fon))
                 c.rect(x+PW, y-BL_V, PW+(BL_R if k == COLS-1 else 0), PH+2*BL_V, stroke=0, fill=1)
+            if foto:                       # фото на всю панель + запас під різ; праворуч запас лише в останнього стовпця
+                last = (k == COLS-1)
+                c.saveState()
+                clip = c.beginPath()
+                clip.rect(x+PW, y-BL_V, PW+(BL_R if last else 0), PH+2*BL_V)
+                c.clipPath(clip, stroke=0, fill=0)
+                c.drawImage(foto_path, x+PW, y-BL_V, PW+BL_R, PH+2*BL_V)
+                c.restoreState()
+                continue
             px = x+PW+PW/2 - cx*s
             py = y+PH/2 - (ah-cy)*s
             c.drawImage(art_path, px, py, aw*s, ah*s, mask='auto')
@@ -111,10 +127,12 @@ def zibraty(nazva, fon=None):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    fon = None
+    fon, foto = None, False
+    if '--foto' in args:
+        foto = True; args.remove('--foto')
     if '--fon' in args:
         i = args.index('--fon'); fon = tuple(int(v) for v in args[i+1].split(',')); del args[i:i+2]
     if not args or args[0] not in list(KARTKY) + ['vsi']:
         print(__doc__); print('Листівки:', ', '.join(KARTKY)); sys.exit(1)
-    for n in (KARTKY if args[0] == 'vsi' else [args[0]]):
-        zibraty(n, fon)
+    for n in ((FOTO if foto else KARTKY) if args[0] == 'vsi' else [args[0]]):
+        zibraty(n, fon, foto)
