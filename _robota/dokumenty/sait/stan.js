@@ -34,34 +34,47 @@ window.Stan = (function () {
     return {vnesky: out, inshi};
   }
 
-  /* № сходин (13.11): «наступний № сам» і «такий № уже є». Спільне для «Відвідуваності» і «Після сходин».
-     Усі № з книги: [{d: '2026-11-08', n: '12'}] або null (немає зв'язку). Нова версія приймача має дію 'nomery' (її бачать і юнаки);
+  /* № сходин (13.11): усі № з книги. Спільне для «Відвідуваності», «Після сходин» і звітів.
+     Усі сходини книги: [{d: '2026-11-08', n: '12'}] (n може бути порожнім — дата все одно рахується) або null (немає зв'язку). Нова версія приймача має дію 'nomery' (її бачать і юнаки);
      у старій виховник усе одно прочитає аркуш «Сходини» через 'zvit' — а юнаки без оновлення приймача просто не побачать підказки. */
   const iso = s => { s = String(s || '').trim(); let m = s.match(/^(\d{4})-(\d\d)-(\d\d)/); if (m) return m[0];
     m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/); return m ? m[3] + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0') : ''; };
   async function nomery(zapyt, kod) {
-    try { const v = await zapyt({kod, dija: 'nomery'}); if (v && v.ok && Array.isArray(v.nomery)) return v.nomery.map(x => ({d: iso(x.d), n: String(x.n).trim()})).filter(x => x.d && x.n); } catch (x) {}
+    try { const v = await zapyt({kod, dija: 'nomery'}); if (v && v.ok && Array.isArray(v.nomery)) return v.nomery.map(x => ({d: iso(x.d), n: String(x.n === null || x.n === undefined ? '' : x.n).trim()})).filter(x => x.d); } catch (x) {}
     try {
       const v = await zapyt({kod, dija: 'zvit', arkush: 'Сходини'}), z = (v && v.zaholovky) || [], cd = z.indexOf('Дата'), cn = z.indexOf('№');
-      if (v && v.ok && cd >= 0 && cn >= 0) return (v.ryadky || []).map(r => ({d: iso(r[cd]), n: String(r[cn] === null || r[cn] === undefined ? '' : r[cn]).trim()})).filter(x => x.d && x.n);
+      if (v && v.ok && cd >= 0 && cn >= 0) return (v.ryadky || []).map(r => ({d: iso(r[cd]), n: String(r[cn] === null || r[cn] === undefined ? '' : r[cn]).trim()})).filter(x => x.d);
     } catch (x) {}
     return null;
   }
   const chyslo = n => /^\d{1,4}$/.test(n) ? +n : null;
-  // наступний вільний № — після № найпізніших сходин (а якщо раптом зайнятий — далі); порожня книга → «1»
-  function nastupnyi(spysok) {
-    if (!spysok) return '';
-    const zajniati = new Set(spysok.map(x => chyslo(x.n)).filter(x => x !== null));
-    const z = spysok.filter(x => chyslo(x.n) !== null).sort((a, b) => a.d < b.d ? 1 : a.d > b.d ? -1 : chyslo(b.n) - chyslo(a.n))[0];
-    let n = z ? chyslo(z.n) + 1 : 1; while (zajniati.has(n)) n++;
-    return String(n);
+  /* № сходин РАХУЄТЬСЯ САМ ЗА ДАТАМИ (рішення власника 13.11, 23:21 і 23:43), а не «останній + 1»:
+     № = порядкове місце сходин серед усіх дат у книзі (найраніша — перша), підряд за весь час виховника, щороку НЕ скидається
+     («скільки сходин за рік» — окремо, у звіті). Внесли пропущені сходини потім — номери після них зсуваються самі.
+     Початок лічби — № найраніших сходин книги (зазвичай 1; якщо є старі записи попереднього виховника — «перші сходини в книзі — № …»).
+     У Google-таблиці число лежить так, як було записано, тому сайт і звіти ЗАВЖДИ рахують за датами (nomer / zaDatamy), а не читають його як є. */
+  const daty = spysok => [...new Set((spysok || []).map(x => x.d).filter(Boolean))].sort();
+  // початок лічби: № найранішого запису, де він є числом (мінус кількість ранішніх дат без №); порожня книга → 1
+  function pochatok(spysok) {
+    const dl = daty(spysok);
+    for (let i = 0; i < dl.length; i++) {
+      const k = spysok.filter(x => x.d === dl[i]).map(x => chyslo(x.n)).filter(x => x !== null);
+      if (k.length) return Math.max(1, Math.min(...k) - i);
+    }
+    return 1;
   }
-  // такий № уже є на ІНШУ дату? → {d, n} (рядок для попередження «№ 12 уже є — 08.11.2026»); та сама дата — це той самий запис
-  function povtor(spysok, nr, d) {
-    const n = chyslo(String(nr || '').trim()); if (!spysok || n === null) return null;
-    return spysok.find(x => chyslo(x.n) === n && x.d !== d) || null;
+  // № сходин цієї дати; null — немає зв'язку з книгою (тоді № не пишемо)
+  function nomer(spysok, d) { return !spysok || !d ? null : pochatok(spysok) + daty(spysok).filter(x => x < d).length; }
+  // ці сходини — найраніші в книзі (або книга порожня): лише тут можна «змінити» початок лічби
+  const pershi = (spysok, d) => !!spysok && !!d && !daty(spysok).some(x => x < d);
+  // усі дати книги → № (для звітів): {'2026-11-01': 1, '2026-11-08': 2, …}
+  function zaDatamy(spysok) { const o = {}, p = pochatok(spysok); daty(spysok).forEach((d, i) => { o[d] = p + i; }); return o; }
+  // 14 → «14-ті сходини» (1-ші, 2-гі, 3-ті … 7-мі, 8-мі … 11-ті … 21-ші, 40-ві)
+  function slovom(n) {
+    const k = n % 100, o = n % 10;
+    const z = k >= 11 && k <= 19 ? 'ті' : k === 40 ? 'ві' : o === 1 ? 'ші' : o === 2 ? 'гі' : (o === 7 || o === 8) ? 'мі' : 'ті';
+    return n + '-' + z + ' сходини';
   }
-  const poperedzhennia = (spysok, nr, d) => { const p = povtor(spysok, nr, d); return p ? '№ ' + chyslo(String(nr).trim()) + ' уже є — ' + dd(p.d) + '. Наступний вільний — ' + nastupnyi(spysok) + '.' : ''; };
 
-  return {dd, zapys, den, khto, vnesky, nomery, nastupnyi, povtor, poperedzhennia};
+  return {dd, zapys, den, khto, vnesky, nomery, nomer, pershi, zaDatamy, slovom};
 })();

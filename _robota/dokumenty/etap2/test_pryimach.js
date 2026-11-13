@@ -108,10 +108,10 @@ ok(vx && vx.prys['Олесь'] === '+' && vx.zatverdzheno === true, 'Що нов
 const J = '2468';
 let x = post({ kod: J, dija: 'imena' }); ok(x.ok && x.rol === 'd' && post({ kod: K, dija: 'perevirka' }).rol === 'v', 'два коди: юнаки «d», виховник «v»');
 ok(!post({ kod: J, dija: 'novi' }).ok && !post({ kod: J, dija: 'zvit', arkush: 'Фінанси' }).ok && !post({ kod: J, dija: 'zvity' }).ok && !post({ kod: J, dija: 'zatverdyty', arkush: 'Сходини', ryadok: 11 }).ok, 'кодом юнаків не прочитати звітів і «Що нового», не затвердити');
-// ---- № сходин, що вже є (13.11): доступно й юнакам; віддає лише дату й № ----
+// ---- сходини, що вже є (13.11): доступно й юнакам; віддає лише дату й № (сайт рахує № за порядком дат) ----
 const nm = post({ kod: J, dija: 'nomery' }), nmv = post({ kod: K, dija: 'nomery' });
 ok(nm.ok && nmv.ok && Array.isArray(nm.nomery) && nm.nomery.length > 0 && nm.nomery.length === nmv.nomery.length, '№ сходин: є і в юнаків, і в виховника (' + nm.nomery.length + ')');
-ok(nm.nomery.every(r => Object.keys(r).sort().join() === 'd,n' && /^\d{4}-\d\d-\d\d$/.test(r.d) && String(r.n).length > 0), '№ сходин: лише дата й № (без тем, імен, прізвищ)');
+ok(nm.nomery.every(r => Object.keys(r).sort().join() === 'd,n' && /^\d{4}-\d\d-\d\d$/.test(r.d) && typeof r.n === 'string'), '№ сходин: лише дата й № (№ може бути порожнім; без тем, імен, прізвищ)');
 ok(!post({ kod: 'не-той', dija: 'nomery' }).ok, '№ сходин: без правильного коду не віддається');
 const skhN = () => sheets['Сходини']._f.slice(3).filter(r => r[0] instanceof Date).length, n0 = skhN();
 x = post({ kod: J, dija: 'zapys', arkush: 'Сходини', khto: 'Дана', dani: { 'Дата': '2026-10-24', 'Тема': 'Орієнтування й компас', 'Місце': '' } });

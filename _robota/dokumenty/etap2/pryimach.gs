@@ -692,8 +692,8 @@ function stan(arkush, dani) {
   return {ok: true, ye: true, ryadok: r, zatverdzheno: m.zatverdzheno, khto: m.khto, koly: m.koly, dani: m.dani, prys: m.prys};
 }
 
-// № сходин, які вже є в книзі (13.11): сайт сам ставить наступний № і попереджає про повтор. Доступно й юнакам (діловодам).
-// Віддає лише дату й №, нічого іншого. Джерела — «Сходини» (стовпець «№») і «Відвідуваність» («№ сходин»).
+// Сходини, які вже є в книзі (13.11): сайт сам рахує № за порядком дат (разом із № з таблиці як початок лічби). Доступно й юнакам (діловодам).
+// Віддає лише дату й № (№ може бути порожнім), нічого іншого. Джерела — «Сходини» (стовпець «№») і «Відвідуваність» («№ сходин»).
 function nomery() {
   var ss = SpreadsheetApp.getActive(), out = [];
   [['Сходини', '№'], ['Відвідуваність', '№ сходин']].forEach(function (a) {
@@ -702,7 +702,7 @@ function nomery() {
     if (cd < 0 || cn < 0) return;
     ryadky(sh).forEach(function (r) {
       var n = String(r[cn] === null || r[cn] === undefined ? '' : r[cn]).trim();
-      if (r[cd] instanceof Date && n) out.push({d: iso(r[cd]), n: n});
+      if (r[cd] instanceof Date) out.push({d: iso(r[cd]), n: n});   // і без №: дата все одно рахується в порядку сходин
     });
   });
   return {ok: true, nomery: out};

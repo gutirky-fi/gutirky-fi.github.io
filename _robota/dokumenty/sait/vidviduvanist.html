@@ -57,6 +57,7 @@ button{cursor:pointer}
 .in{width:100%;padding:11px 13px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--ink);font-size:17px}
 .in:focus{border-color:#6b7480;outline:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.nrt{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;min-height:46px;padding:10px 0;font-size:17px;color:var(--ink)}.nrt b{font-weight:700;white-space:nowrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;border-radius:13px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:16px;text-decoration:none}
 .btn:hover{border-color:#5a6573}
 .btn svg{width:18px;height:18px;flex:none}
@@ -250,9 +251,8 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
         <div class="fhead"><h2>Сходини</h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
         <div class="row2">
           <label class="f"><span>Дата</span><input class="in" id="z-data" type="date" required></label>
-          <label class="f"><span>№ сходин</span><input class="in" id="z-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
+          <div class="f"><span>Номер сходин</span><div class="nrt"><b id="z-nrt">—</b></div></div>
         </div>
-        <p class="stan ye" id="z-nrw" hidden></p>
         <label class="f"><span>Тема</span><input class="in" id="z-tema" maxlength="80" placeholder="про що були сходини"></label>
         <p class="stan" id="z-stan" hidden></p>
         <div class="cnt">
@@ -448,47 +448,43 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   let prys = {};
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   function formaChysta() {
-    prys = {}; $('z-data').value = den(); $('z-nr').value = ''; $('z-tema').value = '';
+    prys = {}; $('z-data').value = den(); $('z-tema').value = '';
     $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
       <button type="button" data-m="+" aria-pressed="false">+<small>був</small></button><button type="button" data-m="−" aria-pressed="false">−<small>не був</small></button><button type="button" data-m="в" aria-pressed="false">в<small>поважна</small></button></span></li>`).join('')
       || '<li><span class="nm" style="color:var(--mut)">У книзі ще немає учасників (аркуш «Учасники»).</span></li>';
     $('z-khto').innerHTML = '<option value="">— виберіть —</option>' + imena.map(im => `<option>${esc(im)}</option>`).join('') + '<option>виховник</option>';
-    NRS = null; avtoNr = ''; $('z-nrw').hidden = true; lichba(); $('z-msg').textContent = 'Одні сходини — один запис: якщо ця дата вже записана, ви побачите це вище й зможете виправити.';
+    NRS = null; pokazNr(); lichba(); $('z-msg').textContent = 'Одні сходини — один запис: якщо ця дата вже записана, ви побачите це вище й зможете виправити.';
     zatv = false; zamok(false); $('z-stan').hidden = true; if (kod) setTimeout(perevirStan, 0);
   }
   // ---- одна дата — один запис: щойно вибрали дату — питаємо книгу ----
-  let zatv = false, zapovn = false, stanN = 0, NRS = null, avtoNr = '';   // NRS — усі № сходин з книги (stan.js): наступний № сам і попередження про повтор
+  let zatv = false, zapovn = false, stanN = 0, NRS = null;   // NRS — усі сходини книги (stan.js): № рахується сам за порядком дат (юнаки його не вписують)
   function zamok(tak) {
-    $('z-names').classList.toggle('lock', tak); ['z-all', 'z-send', 'z-khto', 'z-nr', 'z-tema'].forEach(id => { $(id).disabled = tak; });
+    $('z-names').classList.toggle('lock', tak); ['z-all', 'z-send', 'z-khto', 'z-tema'].forEach(id => { $(id).disabled = tak; });
   }
   async function perevirStan() {
-    const b = $('z-stan'), d = $('z-data').value; if (!d) { b.hidden = true; return; }
+    const b = $('z-stan'), d = $('z-data').value; if (!d) { b.hidden = true; pokazNr(); return; }
     const moye = ++stanN; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
-    if (avtoNr && $('z-nr').value === avtoNr) $('z-nr').value = '';   // підказка з іншої дати — прибрати (якщо не міняли самі)
-    avtoNr = '';
+    pokazNr();   // інша дата — № знову за порядком дат
     const [v, nrs] = await Promise.all([Stan.zapys(zapyt, kod, 'Відвідуваність', d), Stan.nomery(zapyt, kod)]);   // спільне зі «Вхід виховника → Після сходин» (stan.js)
     if (moye !== stanN) return;
-    NRS = nrs;
+    NRS = nrs; pokazNr();
     if (!v || !v.ok || !v.ye) {
       b.hidden = true; zatv = false; zamok(false);
-      if (zapovn) { prys = {}; $('z-nr').value = ''; $('z-tema').value = ''; lichba(); zapovn = false; }
-      if (NRS && !$('z-nr').value.trim()) { avtoNr = Stan.nastupnyi(NRS); $('z-nr').value = avtoNr; }   // № ще немає в книзі: наступний сам (останній + 1)
-      nrPopered(); $('z-send').lastChild.textContent = 'Надіслати в книгу'; return;
+      if (zapovn) { prys = {}; $('z-tema').value = ''; lichba(); zapovn = false; }
+      $('z-send').lastChild.textContent = 'Надіслати в книгу'; return;
     }
     const dd = d.split('-').reverse().join('.');
-    prys = Object.assign({}, v.prys || {}); $('z-nr').value = (v.dani || {})['№ сходин'] || ''; $('z-tema').value = (v.dani || {})['Тема'] || '';
-    lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv); nrPopered();
+    prys = Object.assign({}, v.prys || {}); $('z-tema').value = (v.dani || {})['Тема'] || '';
+    lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv);
     if (zatv) { b.className = 'stan zt'; b.innerHTML = `✓ <b>Сходини ${esc(dd)} затвердив виховник.</b> Змінити відвідуваність може лише він.`; }
     else {
       b.className = 'stan ye'; b.innerHTML = `<b>Відвідуваність за ${esc(dd)} уже записано</b>${Stan.khto(v) ? ' (' + esc(Stan.khto(v)) + ')' : ''}. Нижче — що записано. Виправте й надішліть — зміни ляжуть у той самий запис.`;
       $('z-send').lastChild.textContent = 'Надіслати виправлення';
     }
   }
-  function nrPopered() {   // «№ 12 уже є — 08.11.2026»: лише попередження, надіслати можна
-    const w = $('z-nrw'), t = Stan.poperedzhennia(NRS, $('z-nr').value, $('z-data').value);
-    w.hidden = !t; w.textContent = t;
-  }
-  $('z-nr').addEventListener('input', nrPopered);
+  /* № сходин — САМ, за порядком дат (stan.js; рішення власника 13.11): «14-ті сходини». Юнаки його не вписують і не міняють. */
+  function nrDlya() { const d = $('z-data').value; return !d || !NRS ? null : Stan.nomer(NRS, d); }   // null — немає зв'язку з книгою (№ не пишемо)
+  function pokazNr() { const d = $('z-data').value, n = nrDlya(); $('z-nrt').textContent = n !== null ? Stan.slovom(n) : d ? 'порахую, щойно буде зв\'язок з книгою' : 'оберіть дату'; }
   $('z-data').addEventListener('change', perevirStan);
   function lichba() {
     const v = Object.values(prys);
@@ -518,7 +514,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     }
     if (!$('z-khto').value) { msg.textContent = 'Виберіть, хто записав.'; msg.style.color = 'var(--d-t)'; return $('z-khto').focus(); }
     const b = $('z-send'); b.disabled = true; msg.textContent = 'Надсилаю в книгу…';
-    const dani = {'Дата': $('z-data').value, '№ сходин': $('z-nr').value.trim(), 'Тема': $('z-tema').value.trim(), 'присутність': Object.assign({}, prys)};
+    const dani = {'Дата': $('z-data').value, '№ сходин': nrDlya() === null ? '' : String(nrDlya()), 'Тема': $('z-tema').value.trim(), 'присутність': Object.assign({}, prys)};
     try {
       const v = await zapyt({kod, dija: 'zapys', arkush: 'Відвідуваність', dani, khto: $('z-khto').value});
       if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');

@@ -234,6 +234,7 @@
 </div>
 
 <script>/*PAPIR*/</script>
+<script>/*STAN*/</script>
 <script>
 (function () {
   'use strict';
@@ -320,6 +321,13 @@
 
   /* ---------- спільні розрахунки ---------- */
   // присутність: імена — стовпці між «Відсутні» і «Хто записав» (як у книзі: F–U)
+  // № сходин — за порядком дат у ВСІЙ книзі (не лише в періоді звіту; щороку не скидається); спільне правило — stan.js
+  let NSKH = null;   // {d: книга, m: {дата → №}} — перераховується, коли завантажено іншу книгу
+  function nomeryUsikh() {
+    if (!NSKH || NSKH.d !== D) NSKH = {d: D, m: Stan.zaDatamy([['Відвідуваність', '№ сходин'], ['Сходини', '№']].reduce((l, [ark, h]) =>
+      l.concat(A(ark).map(r => ({d: dt(r['Дата']), n: t(r[h])})).filter(x => x.d)), []))};
+    return NSKH.m;
+  }
   function prysutnist(vid, doo) {
     const s = D.arkushi['Відвідуваність'] || {z: [], v: []};
     const a = s.z.indexOf('Відсутні') + 1, b = s.z.indexOf('Хто записав');
@@ -458,7 +466,7 @@
     const imena = at.imena.filter(im => at.o[im].n || (uch[im] && t(uch[im]['Статус']) !== 'вибув'));
     const kl = m => m === '+' ? 'p' : (m === '−' || m === '-') ? 'x' : m === 'в' ? 'v' : 'e';
     const ost = at.ryad.slice(-2), davno = ost.length === 2 ? imena.filter(im => ost.every(r => (t(r[im]) === '−' || t(r[im]) === '-'))) : [];
-    const head = `<tr><th class="nm">Ім'я</th>${at.ryad.map(r => `<th class="dt">${ddk(r._d)}<small>${esc(r['№ сходин'])}</small></th>`).join('')}<th class="sv">був</th><th class="sv">−</th><th class="sv">в</th><th class="sv">%</th></tr>`;
+    const head = `<tr><th class="nm">Ім'я</th>${at.ryad.map(r => `<th class="dt">${ddk(r._d)}<small>${nomeryUsikh()[r._d] || ''}</small></th>`).join('')}<th class="sv">був</th><th class="sv">−</th><th class="sv">в</th><th class="sv">%</th></tr>`;
     const body = imena.map(im => { const o = at.o[im]; return `<tr><td class="nm">${esc(im)}</td>${at.ryad.map(r => { const m = t(r[im]); return `<td class="${kl(m)}">${m ? esc(m) : '·'}</td>`; }).join('')}<td class="sv">${o.p}</td><td class="sv">${o.x}</td><td class="sv">${o.v}</td><td class="sv">${o.n ? pct(o.p / o.n) : '—'}</td></tr>`; }).join('');
     const foot = `<tr><td class="nm">Присутніх</td>${at.ryad.map(r => `<td>${at.imena.filter(im => t(r[im]) === '+').length}</td>`).join('')}<td colspan="4">${pct(at.ser)}</td></tr>`;
     return `<div class="ppr land">${shapka('Присутність', 'Хто на яких сходинах був · з аркуша «Відвідуваність»', 'заступник')}
