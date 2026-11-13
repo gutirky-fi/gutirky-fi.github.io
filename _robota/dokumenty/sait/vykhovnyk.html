@@ -44,6 +44,16 @@ a.tile{text-decoration:none}
 .hubhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
 .hubhead h2{margin:0;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 /* форма «Після сходин» */
+.stan{margin:12px 0 14px;padding:11px 14px;border-radius:12px;font-size:15px;line-height:1.4}
+.stan.chk{background:#14171a;border:1px solid var(--ln);color:var(--mut)}
+.stan.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
+.stan.zt{background:rgba(61,175,110,.14);border:1px solid rgba(61,175,110,.5);color:var(--ok-t)}
+.vzhe{margin:0 0 12px;padding:11px 14px;border-radius:12px;background:#14171a;border:1px solid var(--ln);font-size:15px;line-height:1.45}
+.vzhe b{color:var(--body)}
+.vzhe ul{margin:6px 0 4px;padding:0 0 0 18px}
+.vzhe li{margin:2px 0}
+.vzhe small{color:var(--mut)}
+.pp .vz{display:block;color:var(--mut);font-weight:400}
 .nvc{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:12px 14px;border-radius:14px;font-weight:700;font-size:16px}
 .nvc.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
 .nvc.ok{background:rgba(61,175,110,.14);border:1px solid rgba(61,175,110,.5);color:var(--ok-t)}
@@ -340,6 +350,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
             <label class="f"><span>Дата</span><input class="in" id="s-data" type="date"></label>
             <label class="f"><span>№ сходин</span><input class="in" id="s-nr" inputmode="numeric" maxlength="4" placeholder="напр. 12"></label>
           </div>
+          <p class="stan" id="s-stan" hidden></p>
           <label class="f"><span>Тема</span><input class="in" id="s-tema" maxlength="80" placeholder="про що були сходини"></label>
           <label class="f"><span>Програма коротко <small style="font-weight:400">— необов'язково</small></span><input class="in" id="s-prog" maxlength="160" placeholder="напр. вузли, гра, пісня"></label>
           <div class="row3">
@@ -358,6 +369,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         </div>
 
         <div class="step"><h3><em>3</em>Внески <small>хто заплатив сьогодні</small></h3>
+          <div class="vzhe" id="p-vzhe" hidden></div>
           <div class="vse-ok" id="p-vse" hidden><span id="p-vse-t">✓ Сплатили всі</span><button type="button" class="lnk" id="p-vse-b">записати платіж</button></div>
           <div id="p-body">
           <div class="vn-l" id="p-vn-l" hidden><span id="p-vn-t"></span><button type="button" class="lnk" id="p-vn-zm">змінити</button><select class="in" id="p-vn" hidden aria-label="За який внесок"></select></div>
@@ -404,6 +416,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 </div>
 
 <script>/*VNESKY*/</script>
+<script>/*STAN*/</script>
 <script>
 (function () {
   'use strict';
@@ -446,8 +459,16 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     {ryadok: 34, khto: 'Дана', koly: '08.11.2026 18:40', dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Соломія', 'Сума, €': 20, 'Квитанція №': 'К-7', 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}},
     {ryadok: 35, khto: 'Дана', koly: '08.11.2026 21:15', dani: {'Дата': '2026-11-08', 'Рух': 'видаток', 'Категорія': 'виряд', 'Опис': 'мотузки 2 шт.', 'Сума, €': 14.9, 'Квитанція №': 'Ч-4', 'Як платили': 'картка', 'Фото чека': 'https://drive.google.com/file/d/demo/view'}}];
   let KS = {};
+  // проба «вже записано» (13.11): 08.11 — Ярко записав хто був, Олесь — тему, Дана — внески; 01.11 — затверджено
+  const DST = {'Відвідуваність': {
+      '2026-11-08': {ryadok: 12, khto: 'Ярко', koly: '08.11.2026 19:30', dani: {'№ сходин': '12', 'Тема': 'Вузли'}, prys: {'Олесь': '+', 'Мирося': '+', 'Дана': '+', 'Ярко': '+', 'Соломія': 'в', 'Остап': '+', 'Зоряна': '+'}},
+      '2026-11-01': {ryadok: 11, khto: 'Ярко', koly: '01.11.2026 19:55', zatv: true, dani: {'№ сходин': '10', 'Тема': 'Мапа й компас'}, prys: {'Олесь': '+', 'Мирося': '+', 'Дана': '−', 'Ярко': '+', 'Соломія': '+', 'Остап': '+', 'Зоряна': '+'}}},
+    'Сходини': {
+      '2026-11-08': {ryadok: 12, khto: 'Олесь', koly: '08.11.2026 19:40', dani: {'№': '12', 'Тема': 'Вузли', 'Програма (коротко)': 'відкриття · гутірка · гра «Потужний СКОБ!» · завершення', 'Гутірка / гра з бібліотеки': 'гра «Потужний СКОБ!»', 'Проба / вмілість (якщо стосується)': 'вмілість «Мандрівник»', 'Відповідальний': 'Олесь', 'Місце': 'домівка'}},
+      '2026-11-01': {ryadok: 11, khto: 'Олесь', koly: '01.11.2026 20:05', zatv: true, dani: {'№': '10', 'Тема': 'Мапа й компас', 'Відповідальний': 'Олесь', 'Місце': 'парк'}}}};
+  const DDEN = [{ryadok: 32, khto: 'Дана', koly: '08.11.2026 18:35', zatv: true, dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Мирося', 'Сума, €': 20, 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}}];   // уже перевірений (у «Перевірці каси» його немає)
   const DVN = /[?&]bezvn\b/.test(location.search) ? [] : [{n: 'Жовтень 2026', suma: 20, termin: '2026-10-05', osobl: {}}, {n: 'Листопад 2026', suma: 20, termin: '2026-11-02', osobl: {}}, {n: 'Грудень 2026', suma: 20, termin: '2026-12-07', osobl: {}}, {n: 'Січень 2027', suma: 20, termin: '2027-01-04', osobl: {}}];   // ?bezvn — проба книги без аркуша «Внески»   // проба: 20 € на місяць, строк — перші сходини місяця
-  const DSP = {}; DEMO_IM.forEach(im => { DSP[im] = {'Жовтень 2026': 20}; }); DSP['Зоряна']['Жовтень 2026'] = 10;   // у жовтні сплатили всі, Зоряна — 10 з 20 (старий борг)
+  const DSP = {}; DEMO_IM.forEach(im => { DSP[im] = {'Жовтень 2026': 20}; }); DSP['Зоряна']['Жовтень 2026'] = 10; DSP['Олесь']['Листопад 2026'] = 10; DSP['Соломія']['Листопад 2026'] = 20; DSP['Мирося']['Листопад 2026'] = 20;   // листопад — рядки каси з DK і DDEN (Ярко ✕ — не рахується)   // у жовтні сплатили всі, Зоряна — 10 з 20 (старий борг)
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0, borhy: {'Остап': 14.5, 'Зоряна': 3.2, 'Мирося': -0.5}, bezCheka: {'Зоряна': [{data: '2026-11-05', opys: 'свічки', suma: 3.2}]}};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length, vy = Object.values(DH.borhy).filter(x => x > 0).reduce((a, x) => a + x, 0); return Object.assign({ok: true}, JSON.parse(JSON.stringify(DH)), {vynen: vy, vilni: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano - vy) * 100) / 100, razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
@@ -476,6 +497,16 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       if (t.dija === 'zapys' && t.arkush === 'Фінанси') {   // проба: рядок потрапляє в «Перевірку каси» (неперевірений), поки його не позначили ✓; внески запам'ятовуються, поки сторінка відкрита
         if (t.dani['Внесок']) { const im = t.dani["Хто (ім'я)"], v = t.dani['Внесок']; DSP[im] = DSP[im] || {}; DSP[im][v] = Math.round(((DSP[im][v] || 0) + t.dani['Сума, €']) * 100) / 100; }
         const r = ++demoKasaRow; DK.push({ryadok: r, khto: t.khto || 'виховник', koly: 'щойно', dani: JSON.parse(JSON.stringify(t.dani))}); return {ok: true, ryadok: r};
+      }
+      if (t.dija === 'stan' && DST[t.arkush]) { const x = DST[t.arkush][t.dani['Дата']]; return x ? {ok: true, ye: true, ryadok: x.ryadok, zatverdzheno: !!x.zatv, khto: x.khto, koly: x.koly, dani: JSON.parse(JSON.stringify(x.dani)), prys: Object.assign({}, x.prys || {})} : {ok: true, ye: false}; }
+      if (t.dija === 'den') { const d = t.dani['Дата'], vs = DK.concat(DDEN).filter(x => x.dani['Дата'] === d); return {ok: true, ryadky: JSON.parse(JSON.stringify(vs)).map(x => ({ryadok: x.ryadok, dani: x.dani, khto: x.khto, koly: x.koly, zatverdzheno: !!x.zatv, ne: !!x.ne}))}; }
+      if (t.dija === 'zatverdyty' && DST[t.arkush] && 'znach' in t) { const x = Object.values(DST[t.arkush]).find(y => y.ryadok === t.ryadok); if (x) x.zatv = t.znach === 'так'; return {ok: true, znach: t.znach}; }
+      if (t.dija === 'zapys' && DST[t.arkush]) {   // проба: як справжня книга — та сама дата = той самий рядок; затверджений не переписується
+        const d = t.dani['Дата'], x = DST[t.arkush][d];
+        if (x && x.zatv) return {ok: false, zatverdzheno: true, pomylka: 'Цей запис уже затвердив виховник — змінити його може лише він.'};
+        const dani = Object.assign({}, t.dani); delete dani['присутність'];
+        const y = DST[t.arkush][d] = {ryadok: x ? x.ryadok : ++demoRow, khto: t.khto || 'виховник', koly: 'щойно', dani: Object.assign((x || {}).dani || {}, dani), prys: Object.assign((x || {}).prys || {}, t.dani['присутність'] || {})};
+        return {ok: true, ryadok: y.ryadok, onovleno: !!x};
       }
       if (t.dija === 'zapys') return {ok: true, ryadok: ++demoRow};
       if (t.dija === 'kasa') return {ok: true, ryadky: JSON.parse(JSON.stringify(DK)).map(x => Object.assign(x, {sposib: x.dani['Як платили'] === 'готівка' ? 'gotivka' : 'rakhunok', versiya: 'v'})), hroshi: dHroshi(), zvirky: DZV.slice()};
@@ -512,7 +543,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   function vyity() { kod = ''; imena = []; chysto(); ekran('v-lock-wrap'); }
   document.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', vyity));
   window.addEventListener('pagehide', () => { kod = ''; });
-  $('go-ps').addEventListener('click', () => { chysto(); ekran('v-ps'); vnZavantazhyty(); });
+  $('go-ps').addEventListener('click', () => { chysto(); ekran('v-ps'); vnZavantazhyty(); perevirStan(); });
   // внески з книги (аркуш «Внески»): за який внесок і скільки кому бракує. Вся логіка — у спільному vnesky.js (Vn), як у Касі.
   let VN = null;
   async function vnZavantazhyty() {
@@ -530,7 +561,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   }
   $('p-vn').addEventListener('change', () => { vnRuch = true; vnSuma(); $('p-vn').hidden = true; onovyty(); });
   $('p-vn-zm').addEventListener('click', () => { $('p-vn').hidden = !$('p-vn').hidden; if (!$('p-vn').hidden) $('p-vn').focus(); });
-  $('s-data').addEventListener('change', () => { vnTypovyi(); onovyty(); });
+  $('s-data').addEventListener('change', () => { vnTypovyi(); onovyty(); perevirStan(); vnZavantazhyty(); });   // інша дата — питаємо книгу знову (і свіжі внески: скарбник міг щойно записати)
   $('ps-back').addEventListener('click', () => ekran('v-hub'));
   // ---- що нового (журнал «Зміни» з книги) ----
   const DIJA = {'запис': '', 'оновлення': 'on', 'виправлення': 'vy', 'скасування': 'sk', 'блокування': 'bl', 'затвердження': 'zt', 'зняття затвердження': 'zt', 'немає': 'sk', 'звірка': 'zt'};
@@ -740,10 +771,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   /* ---------- форма ---------- */
   /* Внески — за логікою Каси (спільний код Vn, файл vnesky.js): кожен платіж має свою суму, спосіб і внесок;
      платіж не залежить від присутності (переказ може прийти й від того, кого не було); той самий платіж ще раз — рядок додається, суми складаються. */
-  let prys = {}, plat = [], sent = {}, ryad = {}, zat = {}, pid = 0, vnRuch = false, inshiOpen = false, yak = 'готівка';   // plat — платежі; sent — що вже дійшло (щоб при повторі не задвоїти); ryad — номер рядка в «Фінансах» для записаного платежу; zat — де вже стоїть ✓ (готівка)
+  let prys = {}, plat = [], sent = {}, ryad = {}, zat = {}, znyato = {}, pid = 0, vnRuch = false, inshiOpen = false, yak = 'готівка';   // plat — платежі; sent — що вже дійшло (щоб при повторі не задвоїти); ryad — номер рядка в «Фінансах» для записаного платежу; zat — де вже стоїть ✓ (готівка)
   const den = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
   function chysto() {
-    prys = {}; plat = []; sent = {}; ryad = {}; zat = {}; pid = 0; vnRuch = false; yak = 'готівка'; vseVidkr = false; $('p-vn').hidden = true;
+    prys = {}; plat = []; sent = {}; ryad = {}; zat = {}; znyato = {}; pid = 0; vnRuch = false; yak = 'готівка'; vseVidkr = false; $('p-vn').hidden = true;
+    stanN++; stanIde = false; KN = null; SVd = ''; avto = {}; avtoP = {}; DENVN = []; DENINSHI = 0; $('s-stan').hidden = true; $('p-vzhe').hidden = true; $('ps-send').lastChild.textContent = 'Надіслати в книгу';
     $('p-yak').querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.y === yak)));
     $('s-data').value = den(); ['s-nr', 's-tema', 's-prog', 's-gut', 's-vml', 's-mis', 's-prym', 'p-kv'].forEach(id => { $(id).value = ''; });
     $('z-names').innerHTML = imena.map((im, i) => `<li data-i="${i}"><span class="nm">${esc(im)}</span><span class="tri" role="group" aria-label="${esc(im)}">
@@ -827,7 +859,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       else if (!mine.length) kn = '<button type="button" class="lnk npr" data-a="shche">+ наперед</button>';
       else kn = brak || !VN ? '<button type="button" class="lnk" data-a="shche">+ ще платіж</button>' : '';
       const bh = z ? z.borhy.map(b => `<div class="bh"><span>${esc(Vn.nazva(b.v, 'za', ref))} бракує ${fmt(b.brak)}</span><button type="button" class="lnk" data-a="dopl" data-v="${esc(b.v)}">доплатити ${fmt(b.brak)}</button></div>`).join('') : '';
-      return `<li class="pp" data-im="${esc(im)}"><div class="pr"><span class="nm">${esc(im)}${stanTekst(z)}</span>${kn}</div>${bh}` + mine.map(karta).join('') + '</li>';
+      const vz = DENVN.filter(x => x.im === im && !x.ne), vzT = vz.length ? `<small class="vz">уже в книзі сьогодні: ${vz.map(x => fmt(x.suma)).join(' + ')}${vz[0].khto ? ' (' + esc(vz[0].khto) + ')' : ''}</small>` : '';
+      return `<li class="pp" data-im="${esc(im)}"><div class="pr"><span class="nm">${esc(im)}${stanTekst(z)}${vzT}</span>${kn}</div>${bh}` + mine.map(karta).join('') + '</li>';
     };
     $('p-list').innerHTML = buly.length ? buly.map(li).join('') : '<li style="display:block"><p class="empty" style="border:0;padding:0">Спершу позначте, хто був, — тут з\'являться їхні імена.</p></li>';
     $('p-list2').innerHTML = inshi.map(li).join('');
@@ -878,6 +911,60 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   });
   $('z-all').addEventListener('click', () => { imena.forEach(im => { if (!prys[im]) prys[im] = '+'; }); onovyty(); });
   $('p-vse-b').addEventListener('click', () => { vseVidkr = true; skladPl(); });
+
+  /* ---- «Ця дата вже записана?» (13.11, аудит п. 1) — як у «Відвідуваності», спільний stan.js ----
+     Вибрали дату — питаємо книгу: Відвідуваність, Сходини і платежі каси цього дня. Що вже є — підтягуємо в ПОРОЖНІ поля
+     й неозначені імена (своє виховник не втрачає); внески, які вже записав скарбник, показуємо зверху кроку 3 — вони вже
+     пораховані в «сплачено / бракує», тож удруге їх не запишуть. Затверджені сходини: при надсиланні ✓ знімається, запис оновлюється, ✓ ставиться знову. */
+  let stanN = 0, stanIde = false, KN = null, SVd = '', avto = {}, avtoP = {}, DENVN = [], DENINSHI = 0;
+  async function perevirStan() {
+    const b = $('s-stan'), d = $('s-data').value, moye = ++stanN;
+    Object.keys(avto).forEach(id => { if ($(id).value === avto[id]) $(id).value = ''; });   // підтягнуте з іншої дати — прибрати (якщо виховник не змінив)
+    Object.keys(avtoP).forEach(im => { if (prys[im] === avtoP[im]) delete prys[im]; });
+    avto = {}; avtoP = {}; KN = null; SVd = ''; DENVN = []; DENINSHI = 0;
+    $('ps-send').lastChild.textContent = 'Надіслати в книгу';
+    if (!d) { b.hidden = true; stanIde = false; malVzhe(); onovyty(); return; }
+    stanIde = true; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
+    const v = await Stan.den(zapyt, kod, d);
+    if (moye !== stanN) return;
+    stanIde = false; KN = v; SVd = d;
+    const vid = v.vid && v.vid.ye ? v.vid : null, skh = v.skh && v.skh.ye ? v.skh : null;
+    const sd = skh ? skh.dani || {} : {}, vd = vid ? vid.dani || {} : {};
+    let inakshe = 0;   // де виховник уже вписав своє, а в книзі інше
+    const pole = (id, x) => { x = x === undefined || x === null ? '' : String(x).trim(); const y = $(id).value.trim(); if (x && !y) { $(id).value = x; avto[id] = x; } else if (x && y !== x) inakshe++; };
+    pole('s-nr', sd['№'] || vd['№ сходин']); pole('s-tema', sd['Тема'] || vd['Тема']); pole('s-prog', sd['Програма (коротко)']);
+    pole('s-gut', sd['Гутірка / гра з бібліотеки']); pole('s-vml', sd['Проба / вмілість (якщо стосується)']); pole('s-mis', sd['Місце']); pole('s-prym', sd['Примітка']);
+    if (vid) Object.keys(vid.prys || {}).forEach(im => {
+      const m = vid.prys[im]; if (imena.indexOf(im) < 0 || ['+', '−', 'в'].indexOf(m) < 0) return;
+      if (!prys[im]) { prys[im] = m; avtoP[im] = m; } else if (prys[im] !== m) inakshe++;
+    });
+    const f = Stan.vnesky(v.fin); DENVN = f.vnesky; DENINSHI = f.inshi.length;
+    const dd = Stan.dd(d);
+    if (!v.vid || !v.skh) {
+      b.className = 'stan chk'; b.textContent = 'Не вдалося перевірити, чи ці сходини вже записані (немає зв\'язку з книгою). Заповнювати можна: та сама дата ляже в той самий запис, не вдруге.';
+    } else if (!vid && !skh) b.hidden = true;
+    else {
+      const khto = [vid ? 'хто був — ' + (Stan.khto(vid) || 'без імені') : '', skh ? 'тема й програма — ' + (Stan.khto(skh) || 'без імені') : ''].filter(Boolean).join('; ');
+      const zt = (vid && vid.zatverdzheno) || (skh && skh.zatverdzheno);
+      b.className = zt ? 'stan zt' : 'stan ye';
+      b.innerHTML = (zt ? '✓ <b>Сходини ' + esc(dd) + ' ви вже затвердили</b>' : '<b>Сходини ' + esc(dd) + ' уже записано</b>')
+        + ' (' + esc(khto) + '). Нижче — що є в книзі. '
+        + (zt ? 'Зміните й надішлете — запис оновиться, ✓ лишиться.' : 'Допишіть чи виправте й надішліть — ляже в той самий запис, не вдруге.')
+        + (inakshe ? ' Де ви вже вписали своє (' + inakshe + '), лишилось ваше — надішлете, і воно замінить записане.' : '');
+      $('ps-send').lastChild.textContent = 'Надіслати виправлення';
+    }
+    malVzhe(); onovyty();
+  }
+  function malVzhe() {   // зверху кроку 3: внески цієї дати, які вже в книзі
+    const box = $('p-vzhe');
+    if (!DENVN.length && !DENINSHI) { box.hidden = true; return; }
+    const st = x => x.ne ? '✕ не знайдено в банку' : x.zatv ? '✓' : 'чекає перевірки';
+    box.hidden = false;
+    box.innerHTML = (DENVN.length ? '<b>Уже в книзі за ' + esc(Stan.dd(SVd)) + '</b> — записали діловоди:<ul>'
+        + DENVN.map(x => '<li>' + esc(x.im) + ' — ' + fmt(x.suma) + (x.yak ? ' · ' + esc(x.yak) : '') + (x.vn ? ' · ' + esc(x.vn) : '') + ' · ' + st(x) + (x.khto ? ' <small>(' + esc(x.khto) + ')</small>' : '') + '</li>').join('')
+        + '</ul><small>Вони вже пораховані в «сплачено / бракує» нижче — удруге не записуйте. Виправити чи скасувати — у «Перевірці каси» або «Касі».</small>' : '')
+      + (DENINSHI ? (DENVN.length ? '<br>' : '') + '<small>Ще ' + DENINSHI + ' ' + (DENINSHI === 1 ? 'запис' : DENINSHI < 5 ? 'записи' : 'записів') + ' каси за цей день (не внески) — у «Перевірці каси».</small>' : '');
+  }
   $('p-wrap').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     const li = b.closest('li[data-im]'), im = li && li.dataset.im, a = b.dataset.a, pk = b.closest('.pk'), p = pk && plat.find(x => x.id === +pk.dataset.id);
@@ -913,7 +1000,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     p.suma = isFinite(v) && v > 0 ? Vn.okr(v) : null; p.reshta = 0;
     // оновити лише рядок платежу, стани й підсумок — без перемальовування поля (щоб не збити курсор)
     const R = rakhuy(), r = R.find(x => x.p === p); pk.querySelector('.ok1').innerHTML = okTekst(r);
-    const nm = pk.closest('li[data-im]').querySelector('.nm'); nm.innerHTML = esc(p.im) + stanTekst(stanIm(p.im));
+    const nm = pk.closest('li[data-im]').querySelector('.nm'), vz = nm.querySelector('.vz'); nm.innerHTML = esc(p.im) + stanTekst(stanIm(p.im)) + (vz ? vz.outerHTML : '');
     pidkPl();
   });
   $('p-wrap').addEventListener('focusout', e => { if (e.target.classList.contains('sum')) setTimeout(() => { if (!$('p-wrap').contains(document.activeElement) || !document.activeElement.classList.contains('sum')) skladPl(); }, 0); });   // вийшли з поля — кнопки «+ ще платіж» / «доплатити» за новою сумою
@@ -1256,6 +1343,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const msg = $('ps-msg'); msg.classList.remove('bad');
     const stop = (t, el) => { msg.textContent = t; msg.classList.add('bad'); if (el) el.focus(); };
     if (!$('s-data').value) return stop('Вкажіть дату сходин.', $('s-data'));
+    if (stanIde) return stop('Секунду — перевіряю, чи ці сходини вже записані. Натисніть ще раз.');
     if (!$('s-tema').value.trim()) return stop('Вкажіть тему сходин.', $('s-tema'));
     const brak = imena.filter(im => !prys[im]);
     if (brak.length) {
@@ -1271,10 +1359,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     if (R.some(r => !(r.suma > 0))) { const p = R.find(r => !(r.suma > 0)).p; p.open = true; skladPl(); return stop('Вкажіть суму платежу: ' + p.im + '.', document.querySelector('#p-wrap .pk[data-id="' + p.id + '"] .sum')); }
 
     const d = $('s-data').value, kv = $('p-kv').value.trim();
+    const bv = KN && SVd === d && KN.vid && KN.vid.ye ? KN.vid : null, bs = KN && SVd === d && KN.skh && KN.skh.ye ? KN.skh : null;   // що вже є в книзі за цю дату
     const zadachi = [
-      {id: 'vid', t: 'Відвідуваність', z: {arkush: 'Відвідуваність', dani: {'Дата': d, '№ сходин': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'присутність': Object.assign({}, prys)}}},
-      {id: 'skh', t: 'Сходини', z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
-        'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Проба / вмілість (якщо стосується)': $('s-vml').value.trim(), 'Відповідальний': KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
+      {id: 'vid', t: 'Відвідуваність', znovu: bv && bv.zatverdzheno ? bv.ryadok : 0, z: {arkush: 'Відвідуваність', dani: {'Дата': d, '№ сходин': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'присутність': Object.assign({}, prys)}}},
+      {id: 'skh', t: 'Сходини', znovu: bs && bs.zatverdzheno ? bs.ryadok : 0, z: {arkush: 'Сходини', dani: {'Дата': d, '№': $('s-nr').value.trim(), 'Тема': $('s-tema').value.trim(), 'Програма (коротко)': $('s-prog').value.trim(),
+        'Гутірка / гра з бібліотеки': $('s-gut').value.trim(), 'Проба / вмілість (якщо стосується)': $('s-vml').value.trim(), 'Відповідальний': (bs && (bs.dani || {})['Відповідальний']) || KHTO, 'Місце': $('s-mis').value.trim(), 'Примітка': $('s-prym').value.trim()}}}
     ].concat(R.map(r => ({id: 'f:' + r.p.id, gotivka: pYak(r.p) === 'готівка', t: 'Внесок — ' + r.p.im + ', ' + fmt(r.suma) + ' · ' + pYak(r.p) + (r.n ? ' («' + r.n + '»)' : ''),   // gotivka — гроші виховник узяв у руки: після запису одразу ✓
       z: {arkush: 'Фінанси', dani: {'Дата': d, 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': r.n ? 'внесок: ' + r.n : 'Внесок', "Хто (ім'я)": r.p.im, 'Сума, €': r.suma, 'Квитанція №': kv, 'Як платили': pYak(r.p), 'Внесок': r.n}}})));
 
@@ -1283,19 +1372,25 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const b = $('ps-send'); b.disabled = true; msg.textContent = 'Надсилаю в книгу…';
     let pomylky = 0, bezZat = 0, ostannya = '';
     for (const z of zadachi) {
-      if (sent[z.id] && !(z.gotivka && !zat[z.id])) continue;   // уже дійшло (і ✓ для готівки теж) — не чіпаємо, щоб не задвоїти запис
+      const zn = z.gotivka || z.znovu > 0;   // після запису треба ✓: готівка в руках виховника або сходини, які він уже затверджував
+      if (sent[z.id] && !(zn && !zat[z.id])) continue;   // уже дійшло (і ✓ для готівки теж) — не чіпаємо, щоб не задвоїти запис
       const li = pr.querySelector(`li[data-id="${CSS.escape(z.id)}"]`); li.className = 'go';
       if (!sent[z.id]) {
         try {
+          if (z.znovu > 0 && !znyato[z.id]) {   // затверджений запис книга не дає переписати — спершу знімаємо ✓ (потім ставимо знову)
+            const w = await zapyt({kod, dija: 'zatverdyty', arkush: z.z.arkush, ryadok: z.znovu, znach: ''});
+            if (!w.ok) throw new Error(w.pomylka || 'Не вдалося оновити затверджений запис.');
+            znyato[z.id] = true;
+          }
           const v = await zapyt(Object.assign({kod, dija: 'zapys', khto: KHTO}, z.z));
           if (!v.ok) throw new Error(v.pomylka || 'Книга не прийняла запис.');
           sent[z.id] = true; ryad[z.id] = v.ryadok; li.className = 'ok';
         } catch (x) { pomylky++; ostannya = ludsky(x); li.className = 'no'; continue; }
       }
-      if (z.gotivka && !zat[z.id]) {   // готівка, яку виховник узяв у руки, — гроші вже в касі: ✓ одразу (MobilePay і переказ ✓ не отримують — їх звіряють з банком у «Перевірці каси»)
+      if (zn && !zat[z.id]) {   // готівка, яку виховник узяв у руки, — гроші вже в касі: ✓ одразу (MobilePay і переказ ✓ не отримують — їх звіряють з банком у «Перевірці каси»)
         try {
           if (!(ryad[z.id] > 0)) throw new Error('Книга не повернула номер рядка.');
-          const w = await zapyt({kod, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: ryad[z.id], znach: 'так'});
+          const w = await zapyt({kod, dija: 'zatverdyty', arkush: z.z.arkush, ryadok: ryad[z.id], znach: 'так'});
           if (!w.ok) throw new Error(w.pomylka || 'Книга не поставила ✓.');
           zat[z.id] = true; li.className = 'ok';
         } catch (x) { bezZat++; ostannya = ludsky(x); li.className = 'no'; li.textContent = z.t + ' — записано, але ✓ не поставилось'; }
@@ -1303,7 +1398,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     }
     b.disabled = false;
     if (pomylky) { stop('Не все дійшло (' + (pomylky + bezZat) + '). ' + ostannya + ' Натисніть «Надіслати» ще раз — дошлеться лише червоне, запис не задвоїться.'); return; }
-    if (bezZat) { stop('Платежі записано, але ✓ для готівки не поставилось (' + bezZat + '). ' + ostannya + ' Натисніть «Надіслати» ще раз — запис не задвоїться, дошлеться лише ✓. Або поставте ✓ самі в «Перевірці каси».'); return; }
+    if (bezZat) { stop('Записано, але ✓ не поставилось (' + bezZat + '). ' + ostannya + ' Натисніть «Надіслати» ще раз — запис не задвоїться, дошлеться лише ✓. Або поставте ✓ самі: готівку — у «Перевірці каси», сходини — у «Що нового».'); return; }
     const p = Object.values(prys).filter(x => x === '+').length, nv = R.length;
     const tot = R.reduce((a, r) => a + r.suma, 0);
     const gR = R.filter(r => pYak(r.p) === 'готівка'), iR = R.filter(r => pYak(r.p) !== 'готівка');
@@ -1317,7 +1412,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
   if (DEMO) {
     const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника).';
+    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника). «Після сходин»: спробуйте дату 08.11.2026 (уже записали діловоди) і 01.11.2026 (затверджено).';
     document.body.prepend(n); $('z-noaddr').hidden = true;
     $('z-kod').value = '123456'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }

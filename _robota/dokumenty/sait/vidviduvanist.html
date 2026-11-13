@@ -283,6 +283,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 </div>
 
 <script>/*PAPIR*/</script>
+<script>/*STAN*/</script>
 <script>
 (function () {
   'use strict';
@@ -461,7 +462,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   async function perevirStan() {
     const b = $('z-stan'), d = $('z-data').value; if (!d) { b.hidden = true; return; }
     const moye = ++stanN; b.hidden = false; b.className = 'stan chk'; b.textContent = 'Перевіряю, чи ці сходини вже записані…';
-    let v; try { v = await zapyt({kod, dija: 'stan', arkush: 'Відвідуваність', dani: {'Дата': d}}); } catch (x) { v = null; }
+    const v = await Stan.zapys(zapyt, kod, 'Відвідуваність', d);   // спільне зі «Вхід виховника → Після сходин» (stan.js)
     if (moye !== stanN) return;
     if (!v || !v.ok || !v.ye) {
       b.hidden = true; zatv = false; zamok(false);
@@ -473,7 +474,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     lichba(); zapovn = true; zatv = !!v.zatverdzheno; zamok(zatv);
     if (zatv) { b.className = 'stan zt'; b.innerHTML = `✓ <b>Сходини ${esc(dd)} затвердив виховник.</b> Змінити відвідуваність може лише він.`; }
     else {
-      b.className = 'stan ye'; b.innerHTML = `<b>Відвідуваність за ${esc(dd)} уже записано</b>${v.khto ? ' (' + esc(v.khto) + (v.koly ? ', ' + esc(v.koly) : '') + ')' : ''}. Нижче — що записано. Виправте й надішліть — зміни ляжуть у той самий запис.`;
+      b.className = 'stan ye'; b.innerHTML = `<b>Відвідуваність за ${esc(dd)} уже записано</b>${Stan.khto(v) ? ' (' + esc(Stan.khto(v)) + ')' : ''}. Нижче — що записано. Виправте й надішліть — зміни ляжуть у той самий запис.`;
       $('z-send').lastChild.textContent = 'Надіслати виправлення';
     }
   }
