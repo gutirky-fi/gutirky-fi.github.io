@@ -202,16 +202,6 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 .chip[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#fff}
 .chip[aria-pressed=true] small{color:#ffd9e1}
 .chip.zd small{color:var(--ok-t)}
-.rz{margin:0 0 14px}
-.rz h4{margin:0 0 7px;font:600 14px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
-.rz h4 b{color:var(--d-t);margin-right:6px}
-.tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-.t{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:2px 8px;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--body);text-align:left;font-size:13px;line-height:1.2;min-height:52px}
-.t b{font:600 17px/1 var(--disp);color:var(--ink);padding-top:1px}
-.t i{grid-column:2;font-style:normal;font-size:11.5px;color:var(--ok-t)}
-.t[aria-pressed=true]{background:rgba(200,40,74,.24);border-color:var(--d);color:var(--ink);box-shadow:inset 0 0 0 1px var(--d)}
-.t.ye{background:rgba(61,175,110,.1);border-color:rgba(61,175,110,.4);color:var(--mut);cursor:default}
-.t.ye b{color:var(--ok-t)}
 .vl{display:flex;gap:8px;margin-bottom:14px}
 .vl .in{flex:1}
 .svod{margin:4px 0 14px;padding:11px 14px;border-radius:12px;background:#14171a;border:1px solid var(--ln);font-size:15px;color:var(--body)}
@@ -326,6 +316,21 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
 .ppr .tb .ok,.ppr .tb .zh,.ppr .tb .no{font-weight:700}
 .ppr .tb .ok{color:var(--ok)}.ppr .tb .zh{color:var(--zh)}.ppr .tb .no{color:var(--acc)}
 
+/* Кнопки точок проби (спільне: proby.html + vykhovnyk.html; JS — tochky.js). Контейнер має клас tkv. 14.11.2026 */
+.tkv .rz{margin:0 0 14px}
+.tkv .rz h4{margin:0 0 7px;display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 14px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.tkv .rz h4 b{color:var(--d-t);margin-right:6px}
+.tkv .tk-all{flex:none;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:#14171a;color:var(--body);font:600 12.5px/1.2 var(--txt);letter-spacing:0;text-transform:none}
+.tkv .tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
+.tkv .t{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:2px 8px;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--body);text-align:left;font-size:13px;line-height:1.2;min-height:52px}
+.tkv .t b{font:600 17px/1 var(--disp);color:var(--ink);padding-top:1px}
+.tkv .t i{grid-column:2;font-style:normal;font-size:11.5px;color:var(--ok-t)}
+.tkv .t[aria-pressed=true]{background:rgba(200,40,74,.24);background:color-mix(in srgb,var(--d) 26%,transparent);border-color:var(--d);color:var(--ink);box-shadow:inset 0 0 0 1px var(--d)}
+.tkv .t.ye{background:rgba(61,175,110,.1);border-color:rgba(61,175,110,.4);color:var(--mut);cursor:default}
+.tkv .t.ye b{color:var(--ok-t)}
+.tkv .pust{margin:0 0 14px;padding:12px 14px;border-radius:12px;border:1px dashed var(--ln);color:var(--mut);font-size:15px}
+.tkv .tk-vl{display:flex;gap:8px;margin-bottom:14px}.tkv .tk-vl .in{flex:1}
+
 </style>
 </head>
 <body>
@@ -395,7 +400,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
           <div class="lbl"><span class="n"><i>2</i>Хто виконав</span><button class="all" type="button" id="z-vsi">Усі</button></div>
           <ul class="chips" id="z-im"></ul>
           <div class="lbl"><span class="n"><i>3</i>Які точки підписано</span><small id="z-ttn"></small></div>
-          <div id="z-tt"></div>
+          <div id="z-tt" class="tkv"></div>
           <div class="lbl"><span class="n"><i>4</i>Коли й хто підписав</span></div>
           <div class="row2">
             <label class="f"><span>Дата підпису</span><input class="in" id="z-data" type="date"></label>
@@ -1044,6 +1049,98 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   window.Papir = {fit: fit, view: view};
 })();
 </script>
+<script>/* Вибір точок проби кнопками — СПІЛЬНЕ для «Проб» (proby.html) і «Вхід виховника → Прийшов, перейшов, пішов → Що вже має» (vykhovnyk.html). 14.11.2026.
+   Дані — офіційні бланки КБ УПЮ 2021 (вбудовує zibraty.py з etap2/indeks_prob.json) або аркуш книги «Індекс проб» (приймач віддає його в дії {dija:'proby'} → indeks;
+   приймач перевіряє точки саме за ним, тому сторінка бере книжний індекс, коли він є).
+   Правило проєкту: міняєте, як вибираються точки, — міняйте ТУТ, а не в сторінках.
+   Використання:
+     const TK = Tochky.stvoryty(INDEKS);          // INDEKS = [{pr, nazva, dodatok, rozdily:[{l, n, t:[…]}]}]
+     TK.knyha(v.indeks);                          // індекс з книги (необов'язково)
+     box.innerHTML = TK.knopky(pr, vybraniSet, {status, rozdil});   // кнопки
+     TK.klik(e, box, pr, vybraniSet) → 'tochka' | 'zmina' | null    // 'zmina' — треба перемалювати, 'tochka' — лише оновити лічильник
+   Стилі — у spilne.css (блок .tkv): контейнер кнопок має клас tkv. */
+window.Tochky = (function () {
+  'use strict';
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+
+  function stvoryty(IXV) {
+    IXV = IXV || [];
+    const PROBY = IXV.map(p => p.pr), META = Object.fromEntries(IXV.map(p => [p.pr, p]));
+    let IXK = {};   // з книги: {проба: [{t, rz, k}]}
+    const knyha = ix => { IXK = ix || {}; };
+
+    function rozdily(pr) {   // [{nazva, tt:[{t, k}]}]
+      const kn = IXK[pr];
+      if (kn && kn.length) {
+        const out = []; kn.forEach(x => { let r = out[out.length - 1]; if (!r || r.nazva !== x.rz) out.push(r = {nazva: x.rz, tt: []}); r.tt.push({t: x.t, k: x.k}); });
+        return out;
+      }
+      return (META[pr] ? META[pr].rozdily : []).map(r => ({nazva: r.l ? r.l + ' · ' + r.n : '', tt: r.t.map((k, i) => ({t: r.l + (i + 1), k}))}));
+    }
+    const tochky = pr => rozdily(pr).flatMap(r => r.tt);
+    const nazvaPr = pr => { const M = META[pr]; if (!M) return pr; const d = M.dodatok || ''; return M.nazva + (!d ? '' : d[0] === '«' ? ' ' + d : ' (' + d + ')'); };
+
+    // перелік точок стисло: А1–А4, Б2
+    function stysno(tt) {
+      const out = []; let i = 0;
+      while (i < tt.length) {
+        const m = /^(\D*)(\d+)$/.exec(tt[i]); let j = i;
+        if (m) while (j + 1 < tt.length) { const n = /^(\D*)(\d+)$/.exec(tt[j + 1]); if (!n || n[1] !== m[1] || +n[2] !== +m[2] + (j + 1 - i)) break; j++; }
+        out.push(j - i >= 2 ? tt[i] + '–' + tt[j] : tt.slice(i, j + 1).join(', ')); i = j + 1;
+      }
+      return out.join(', ');
+    }
+
+    // вибрані точки в порядку бланка (власні, яких на бланку немає, — наприкінці)
+    function vporyadkuvaty(pr, vybr) {
+      const poryadok = tochky(pr).map(x => x.t), v = [...vybr];
+      const idx = t => { const i = poryadok.indexOf(t); return i < 0 ? 1e6 : i; };
+      return v.map((t, i) => [t, i]).sort((a, b) => idx(a[0]) - idx(b[0]) || a[1] - b[1]).map(x => x[0]);
+    }
+
+    /* Кнопки точок. o.status(t) → {vsi: true, text} (точка вже є в усіх вибраних — кнопка заблокована) | {text} (дрібний підпис) | null;
+       o.rozdil — біля заголовка розділу кнопка «весь розділ». Якщо бланка немає — поле «впишіть точку, як на бланку». */
+    function knopky(pr, vybr, o) {
+      o = o || {};
+      const rz = rozdily(pr);
+      if (!rz.length) {
+        const svoi = [...vybr];
+        return `<p class="pust">Бланка «${esc(nazvaPr(pr))}» у книзі ще немає (аркуш «Індекс проб»). Впишіть точку так, як на бланку, і натисніть «Додати».</p>
+          <div class="tk-vl"><input class="in" data-tk="vl" maxlength="8" placeholder="напр. А3"><button class="btn" type="button" data-tk="vlb">Додати</button></div>
+          ${svoi.length ? '<div class="tt">' + svoi.map(t => `<button type="button" class="t" data-t="${esc(t)}" aria-pressed="true"><b>${esc(t)}</b><span>вписано вручну</span></button>`).join('') + '</div>' : ''}`;
+      }
+      return rz.map((r, ri) => {
+        const [l, ...n] = r.nazva.split(' · ');
+        const vsiBtn = o.rozdil && r.tt.length > 1 ? `<button type="button" class="tk-all" data-tk="rz" data-i="${ri}">весь розділ</button>` : '';
+        return `<div class="rz">${r.nazva ? `<h4><span><b>${esc(l)}</b>${esc(n.join(' · '))}</span>${vsiBtn}</h4>` : ''}<div class="tt">` + r.tt.map(x => {
+          const st = o.status ? o.status(x.t) : null, vsi = !!(st && st.vsi);
+          return `<button type="button" class="t${vsi ? ' ye' : ''}" data-t="${esc(x.t)}" aria-pressed="${vybr.has(x.t) && !vsi}"${vsi ? ' aria-disabled="true"' : ''} title="${esc(x.k)}"><b>${esc(x.t)}</b><span>${esc(x.k)}</span>${st && st.text ? `<i>${esc(st.text)}</i>` : ''}</button>`;
+        }).join('') + '</div></div>';
+      }).join('');
+    }
+
+    // клік у блоці кнопок: змінює множину vybr; → 'tochka' (змінилась одна кнопка — вже оновлена), 'zmina' (перемалювати), null
+    function klik(e, box, pr, vybr) {
+      const vlb = e.target.closest('[data-tk="vlb"]');
+      if (vlb) { const inp = box.querySelector('[data-tk="vl"]'), v = inp ? inp.value.trim().replace(/\s+/g, '').toUpperCase() : ''; if (!v) return null; vybr.add(v); return 'zmina'; }
+      const all = e.target.closest('[data-tk="rz"]');
+      if (all) {
+        const div = all.closest('.rz'), bb = [...div.querySelectorAll('.t:not(.ye)')], ts = bb.map(b => b.dataset.t);
+        if (ts.every(t => vybr.has(t))) ts.forEach(t => vybr.delete(t)); else ts.forEach(t => vybr.add(t));
+        return 'zmina';
+      }
+      const b = e.target.closest('.t[data-t]'); if (!b || b.classList.contains('ye')) return null;
+      const t = b.dataset.t; if (vybr.has(t)) vybr.delete(t); else vybr.add(t);
+      b.setAttribute('aria-pressed', String(vybr.has(t)));
+      return rozdily(pr).length ? 'tochka' : 'zmina';
+    }
+
+    return {PROBY, META, rozdily, tochky, nazvaPr, stysno, vporyadkuvaty, knyha, knopky, klik};
+  }
+
+  return {stvoryty};
+})();
+</script>
 <script>
 (function () {
   'use strict';
@@ -1056,28 +1153,8 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
 
   /* ---------- індекс проб: з бланків (вбудовано при збиранні) або з книги (аркуш «Індекс проб») ---------- */
   const IXV = [{"pr": "прихильник", "nazva": "Прихильник", "dodatok": "нульова", "dzherelo": "Бланк «Відзнака пластуна-прихильника», КБ УПЮ, 2021", "posvidka": "дата іменування прихильником", "rozdily": [{"l": "", "n": "", "t": ["11 років, заява подана", "Розмовляє українською", "Повний однострій", "Знає свою парафію, бере участь у Літургії", "Що таке Пласт; Три Головні Обов'язки", "Пластове привітання; відзнака", "Щонайменше 6 сходин гуртка", "Мандрівка з гуртком чи куренем", "Опікун Пласту, патрон куреня, назва гуртка", "Знає гурток і провід, має контакти", "Членська вкладка сплачена"]}]}, {"pr": "1-ша проба", "nazva": "1-ша проба", "dodatok": "«Скобине крило»", "dzherelo": "Бланк першої проби «Скобине крило», КБ УПЮ, 2021", "posvidka": "посвідку підписує впорядник(-ця)", "rozdily": [{"l": "А", "n": "Три головні обов'язки пластуна", "t": ["Три Головні Обов'язки напам'ять", "Релігійна практика", "14 точок Пластового Закону", "Національні символи; Гімн, Герб, прапор", "Українська щодня; мова в пристроях", "Добре діло; добре діло з гуртком", "Географія й новітня історія України", "Історія свого міста чи села", "Українці у світі; проект", "Добре навчається (документ)", "Розповідь про прочитану книгу"]}, {"l": "Б", "n": "Пластова ідея", "t": ["Хто заснував скаутинг і Пласт", "Пластовий Обіт; автори", "Гасло СКОБ і символи", "Пластовий Гімн і Гімн Закарпатських Пластунів", "Пластова відзнака; бренд-бук", "Патрон Пласту", "Патрон(еса) свого куреня"]}, {"l": "В", "n": "Пластова організація", "t": ["Організація гуртка; своє діловодство", "Організація куреня, провід", "Станичний провід", "Відзначення й перестороги"]}, {"l": "Г", "n": "Пластові заняття", "t": ["4 народні й 4 пластові пісні", "Впорядові накази в гуртку", "Чесна гра; провести 3 гри", "Пластові публікації; допис", "3 пластові заходи", "Прогулянка (екскурсія) з гуртком"]}, {"l": "Ґ", "n": "Життя в природі", "t": ["Дбає про довкілля", "10 рослин, 10 тварин, 6 слідів", "Гніздо для вогню, 3 сірники", "Виряд на одноденну прогульку", "Виряд на табір", "6 вузлів і в'язання; піонірка", "Ніж, сокира, лопата, пила", "Шатро; екологічне таборування", "Мандрівка з нічлігом", "Курінний чи окружний табір"]}, {"l": "Д", "n": "Життєва зарадність", "t": ["Виклик служб; розклад транспорту", "Допомога: рана, сонце, опік, холод", "Сторони світу; орієнтувати карту", "Топографічна карта; навігація", "Пошта, інтернет, телефон", "Добра поведінка; гутірка", "Правила руху: пішохід, велосипед", "Іноземна мова A2; діалог", "Дискусія", "Безпека в інтернеті", "Організація свого часу"]}, {"l": "Е", "n": "Тіловиховання", "t": ["Щоденна руханка; спорт", "Проплисти 50 м", "ВФВ (за бажанням)"]}, {"l": "Є", "n": "Юнацькі вмілості", "t": ["Де перелік вмілостей, де пришивати", "Вмілість «Перша допомога І»", "5 вмілостей першої проби"]}]}, {"pr": "2-га проба", "nazva": "2-га проба", "dodatok": "«Скобиний хват»", "dzherelo": "Бланк другої проби «Скобиний хват», КБ УПЮ, 2021", "posvidka": "посвідку підписують зв'язковий(-а) і впорядник(-ця)", "rozdily": [{"l": "А", "n": "Три головні обов'язки пластуна", "t": ["Дискусія про Три Головні Обов'язки", "Свій обряд; інші релігії", "Дискусія про Пластовий Закон", "Історія національної символіки", "Читає українські видання", "Проект: народні релігійні традиції", "Проект: добре діло", "Проект: громадянське виховання", "Права й обов'язки громадянина", "Успішність у школі (документ)"]}, {"l": "Б", "n": "Пластова ідея та організація", "t": ["Дискусія: чому я в Пласті", "Історія Пласту: шість етапів", "Діловодство щонайменше 6 місяців", "Крайова організація й світовий Пласт"]}, {"l": "В", "n": "Пластові заняття", "t": ["20 пісень (по 5 чотирьох видів)", "Впорядові накази в курені", "Теренова гра", "Гутірка з презентацією", "Серія сходин з гуртком", "Гурток на захід: змаг, гра, табір", "Прогулянка (екскурсія)"]}, {"l": "Г", "n": "Життя в природі", "t": ["Екологія регіону й України", "Природоохоронні об'єкти; 10 слідів", "Ватри; 2 сірники", "Обід з двох страв на польовій кухні", "10 вузлів і 2 в'язання; споруда", "Кухня в природі; відпадки", "Дві мандрівки з нічлігом", "Окружний чи крайовий табір", "Лисячий біг (орієнтування)"]}, {"l": "Ґ", "n": "Життєва зарадність", "t": ["Курс долікарської допомоги", "Орієнтування в області; карта", "Електронний календар; планування", "Кошторис і фінансовий звіт", "Іноземна мова B1 (одне з А–Г)"]}, {"l": "Д", "n": "Тіловиховання", "t": ["Здоров'я; руханка з гуртком", "ВФВ (за бажанням)"]}, {"l": "Е", "n": "Юнацькі вмілості", "t": ["5 вмілостей другої проби"]}]}, {"pr": "3-тя проба", "nazva": "3-тя проба", "dodatok": "", "dzherelo": "", "posvidka": "", "rozdily": []}];   // [{pr, nazva, dodatok, dzherelo, posvidka, rozdily:[{l, n, t:[…]}]}]
-  const PROBY = IXV.map(p => p.pr), META = Object.fromEntries(IXV.map(p => [p.pr, p]));
-  let IXK = {};   // з книги: {проба: [{t, rz, k}]}
-  function rozdily(pr) {   // [{nazva, tt:[{t, k}]}]
-    const kn = IXK[pr];
-    if (kn && kn.length) {
-      const out = []; kn.forEach(x => { let r = out[out.length - 1]; if (!r || r.nazva !== x.rz) out.push(r = {nazva: x.rz, tt: []}); r.tt.push({t: x.t, k: x.k}); });
-      return out;
-    }
-    return (META[pr] ? META[pr].rozdily : []).map(r => ({nazva: r.l ? r.l + ' · ' + r.n : '', tt: r.t.map((k, i) => ({t: r.l + (i + 1), k}))}));
-  }
-  const tochky = pr => rozdily(pr).flatMap(r => r.tt);
-  const nazvaPr = pr => { const M = META[pr]; if (!M) return pr; const d = M.dodatok || ''; return M.nazva + (!d ? '' : d[0] === '«' ? ' ' + d : ' (' + d + ')'); };
-  // перелік точок стисло: А1–А4, Б2
-  function stysno(tt) {
-    const out = []; let i = 0;
-    while (i < tt.length) {
-      const m = /^(\D*)(\d+)$/.exec(tt[i]); let j = i;
-      if (m) while (j + 1 < tt.length) { const n = /^(\D*)(\d+)$/.exec(tt[j + 1]); if (!n || n[1] !== m[1] || +n[2] !== +m[2] + (j + 1 - i)) break; j++; }
-      out.push(j - i >= 2 ? tt[i] + '–' + tt[j] : tt.slice(i, j + 1).join(', ')); i = j + 1;
-    }
-    return out.join(', ');
-  }
+  const TK = Tochky.stvoryty(IXV);   // спільне з «Входом виховника» (tochky.js): бланки, кнопки точок
+  const {PROBY, META, rozdily, tochky, nazvaPr, stysno} = TK;
 
   /* ---------- перемикач ---------- */
   const tabs = [$('t-b'), $('t-z')];
@@ -1240,7 +1317,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   async function zavantazhyty() {
     const v = await zapyt({kod, dija: 'proby'});
     if (!v.ok) throw new Error(v.pomylka || 'Не вдалося прочитати проби з книги.');
-    RR = v.ryadky || []; IXK = v.indeks || {};
+    RR = v.ryadky || []; TK.knyha(v.indeks);
   }
 
   /* ---------- що в кого є ---------- */
@@ -1272,24 +1349,13 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
     $('z-vsi').textContent = S.im.size === imena.length && imena.length ? 'Нікого' : 'Усі';
   }
   function malTochky() {
-    const rz = rozdily(S.pr), vybr = [...S.im], N = tochky(S.pr).length;
+    const vybr = [...S.im], N = tochky(S.pr).length;
     $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : N ? N + ' точок на бланку' : '';
-    if (!rz.length) {
-      const svoi = [...S.tt];
-      $('z-tt').innerHTML = `<p class="pust">Бланка «${esc(nazvaPr(S.pr))}» у книзі ще немає (аркуш «Індекс проб»). Впишіть точку так, як на бланку, і натисніть «Додати».</p>
-        <div class="vl"><input class="in" id="z-vl" maxlength="8" placeholder="напр. А3"><button class="btn" type="button" id="z-vlb">Додати</button></div>
-        ${svoi.length ? '<div class="tt">' + svoi.map(t => `<button type="button" class="t" data-t="${esc(t)}" aria-pressed="true"><b>${esc(t)}</b><span>вписано вручну</span></button>`).join('') + '</div>' : ''}`;
-      return;
-    }
     const sk = vybr.map(im => maie(im, S.pr));
-    $('z-tt').innerHTML = rz.map(r => {
-      const [l, ...n] = r.nazva.split(' · ');
-      return `<div class="rz">${r.nazva ? `<h4><b>${esc(l)}</b>${esc(n.join(' · '))}</h4>` : ''}<div class="tt">` + r.tt.map(x => {
-        const ye = sk.filter(m => m.has(x.t)).length, vsi = vybr.length && ye === vybr.length;
-        const i = vsi ? `<i>✓ ${vybr.length === 1 ? 'є · ' + dd(sk[0].get(x.t)) : 'є в усіх'}</i>` : ye ? `<i>є в ${ye} з ${vybr.length}</i>` : '';
-        return `<button type="button" class="t${vsi ? ' ye' : ''}" data-t="${esc(x.t)}" aria-pressed="${S.tt.has(x.t) && !vsi}"${vsi ? ' aria-disabled="true"' : ''} title="${esc(x.k)}"><b>${esc(x.t)}</b><span>${esc(x.k)}</span>${i}</button>`;
-      }).join('') + '</div></div>';
-    }).join('');
+    $('z-tt').innerHTML = TK.knopky(S.pr, S.tt, {status: t => {
+      const ye = sk.filter(m => m.has(t)).length, vsi = vybr.length && ye === vybr.length;
+      return vsi ? {vsi: true, text: '✓ ' + (vybr.length === 1 ? 'є · ' + dd(sk[0].get(t)) : 'є в усіх')} : ye ? {text: 'є в ' + ye + ' з ' + vybr.length} : null;
+    }});
   }
   function plan() {   // що справді піде в книгу
     const nove = [], vzhe = [];
@@ -1347,13 +1413,11 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
   });
   $('z-vsi').addEventListener('click', () => { if (S.im.size === imena.length) S.im.clear(); else imena.forEach(im => { if (!posv(im, S.pr)) S.im.add(im); }); malImena(); malTochky(); malSvod(); });
   $('z-tt').addEventListener('click', e => {
-    if (e.target.id === 'z-vlb') { const v = $('z-vl').value.trim().replace(/\s+/g, '').toUpperCase(); if (v) { S.tt.add(v); malTochky(); malSvod(); setTimeout(() => $('z-vl') && $('z-vl').focus(), 0); } return; }
-    const b = e.target.closest('[data-t]'); if (!b || b.classList.contains('ye')) return;
-    const t = b.dataset.t; if (S.tt.has(t)) S.tt.delete(t); else S.tt.add(t);
-    b.setAttribute('aria-pressed', String(S.tt.has(t))); $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : ''; malSvod();
-    if (!rozdily(S.pr).length) malTochky();
+    const r = TK.klik(e, $('z-tt'), S.pr, S.tt); if (!r) return;
+    if (r === 'zmina') { malTochky(); malSvod(); const v = $('z-tt').querySelector('[data-tk="vl"]'); if (v) setTimeout(() => v.focus(), 0); return; }
+    $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : ''; malSvod();
   });
-  $('z-tt').addEventListener('keydown', e => { if (e.target.id === 'z-vl' && e.key === 'Enter') { e.preventDefault(); $('z-vlb').click(); } });
+  $('z-tt').addEventListener('keydown', e => { if (e.target.dataset && e.target.dataset.tk === 'vl' && e.key === 'Enter') { e.preventDefault(); $('z-tt').querySelector('[data-tk="vlb"]').click(); } });
 
   /* ---------- надіслати ---------- */
   let ostanni = [];   // квитки щойно надісланого — для «Скасувати»

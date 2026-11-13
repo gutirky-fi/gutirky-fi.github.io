@@ -23,6 +23,13 @@ VNESKY = (TUT / 'vnesky.js').read_text(encoding='utf-8')   # спільна ло
 assert '</script' not in VNESKY and '{{' not in VNESKY
 STAN = (TUT / 'stan.js').read_text(encoding='utf-8')   # спільне «ця дата вже записана?»: Відвідуваність + «Після сходин», 13.11
 assert '</script' not in STAN and '{{' not in STAN
+TOCHKY = (TUT / 'tochky.js').read_text(encoding='utf-8')   # спільні кнопки точок проби: Проби + «Що вже має» у вході виховника, 14.11
+assert '</script' not in TOCHKY and '{{' not in TOCHKY
+TOCHKYCSS = (TUT / 'tochky.css').read_text(encoding='utf-8')
+BORHY = (TUT / 'borhy.js').read_text(encoding='utf-8')   # спільні борги «свої гроші»: заліки, «Повернули» — Каса + «Перевірка каси», 14.11
+assert '</script' not in BORHY and '{{' not in BORHY
+NAZVY = (TUT / 'nazvy.js').read_text(encoding='utf-8')   # спільна підказка й попередження про назви нашивок: Відзначки + «Що вже має», 14.11
+assert '</script' not in NAZVY and '{{' not in NAZVY
 import json, re, html
 FORMA = (TUT / 'forma.html').read_text(encoding='utf-8')
 FORMY = {k: v for k, v in json.loads((TUT / 'formy.json').read_text(encoding='utf-8')).items() if k != '_'}
@@ -63,6 +70,9 @@ for nazva in ('index', 'vidviduvanist', 'proby', 'vykhovnyk', 'zvity', 'knyha', 
     s = s.replace('/*PAPIR*/', PAPIR)
     s = s.replace('/*VNESKY*/', VNESKY)
     s = s.replace('/*STAN*/', STAN)
+    s = s.replace('/*TOCHKY*/', TOCHKY).replace('/*TOCHKYCSS*/', TOCHKYCSS)
+    s = s.replace('/*BORHY*/', BORHY)
+    s = s.replace('/*NAZVY*/', NAZVY)
     s = s.replace('<!--DATALISTS-->', DL)
     s = s.replace('/*INDEKS*/null/*/INDEKS*/', json.dumps(INDEKS, ensure_ascii=False).replace('</', '<\\/'))
     s = s.replace('/*DEMOZVITY*/null/*/DEMOZVITY*/', DEMOZVITY.replace('</', '<\\/'))

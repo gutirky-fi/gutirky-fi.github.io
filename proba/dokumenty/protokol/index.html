@@ -1259,6 +1259,103 @@ window.Vn = (function () {
   return {okr, treba, stan, pidkazka, typovyi, neSplatyly, poriadok, nazva, vse, rozklasty};
 })();
 </script>
+<script>/* Борги «свої гроші»: заліки («у внесок», «переплата → у борг гуртка») і «Повернули» — СПІЛЬНЕ для «Каси» (forma.html) і «Вхід виховника → Перевірка каси» (vykhovnyk.html). 14.11.2026.
+   Тут — логіка (кому й куди можна зарахувати), виклик приймача і слова. Кнопки й форми кожна сторінка малює у своєму стилі.
+   Потрібен Vn (vnesky.js). VN — відповідь приймача на {dija:'vnesky'}: {vnesky:[…], splacheno:{ім'я:{внесок: сума}}}.
+   Правило проєкту: міняєте, що можна зарахувати чи як про це написано, — міняйте ТУТ, а не в одній зі сторінок. */
+window.Borhy = (function () {
+  'use strict';
+  const okr = x => Math.round(x * 100) / 100;
+  const maeVn = VN => !!VN && Array.isArray(VN.vnesky) && VN.vnesky.length > 0;
+  // скільки людині бракує за внеском x
+  const brak = (VN, im, x) => okr(Vn.treba(x, im) - (((VN.splacheno || {})[im] || {})[x.n] || 0));
+
+  /* Гурток винен людині (купувала за свої) → «На прохання — у внесок»: у найдавніший внесок, якого їй ще не вистачає. null — немає куди. */
+  function zalNa(VN, im) {
+    if (!maeVn(VN)) return null;
+    return Vn.poriadok(VN).find(x => brak(VN, im, x) > 0) || null;
+  }
+
+  /* Переплачені внески: [{im, x, p}] — хто, за який внесок і на скільки більше, ніж треба. */
+  function pereplaty(VN) {
+    const l = []; if (!maeVn(VN)) return l;
+    const vs = Vn.poriadok(VN);
+    Object.keys(VN.splacheno || {}).forEach(im => vs.forEach(x => { const p = -brak(VN, im, x); if (p > 0) l.push({im, x, p}); }));
+    return l;
+  }
+  const PEREPLATA_POYASNENNIA = 'Переплату зараховують у борг: гурток буде винен — потім «Повернули» або «У внесок» (наступний). Якщо людина сама винна гуртку — борг зменшиться.';
+  const ZALIK_POYASNENNIA = 'Залік — без грошей: борг гуртка зараховується у внесок, у книзі лишається рядок «залік».';
+
+  /* Залік через приймач. kudy: 'vnesok' (борг гуртка → у внесок) | 'borh' (переплата → у борг гуртка). zapyt — функція сторінки.
+     khto — лише якщо сторінка знає, хто записує (виховник: приймач підставить «виховник» сам). → відповідь приймача {ok, suma, borh, brak} або {ok:false, pomylka}. */
+  async function zalik(zapyt, kod, o) {
+    const z = {kod, dija: 'zalik', imya: o.im, vnesok: o.n, kudy: o.kudy};
+    if (o.khto) z.khto = o.khto;
+    try { return await zapyt(z); } catch (x) { return {ok: false, pomylka: 'Немає зв\'язку.'}; }
+  }
+  /* Речення про результат заліку. groshi — як сторінка пише суму. */
+  function pidsumokZaliku(kudy, v, im, n, groshi) {
+    return kudy === 'vnesok'
+      ? `Зараховано ${groshi(v.suma)} боргу гуртка у «${n}» (${im}) — без грошей.${v.brak > 0 ? ' Доплатити ще ' + groshi(v.brak) + '.' : ' Внесок сплачено ✓.'}`
+      : `Переплату ${groshi(v.suma)} («${n}», ${im}) зараховано: ` + (v.borh > 0 ? `гурток винен ${groshi(v.borh)}.` : v.borh < 0 ? `${im} ще винен(-на) гуртку ${groshi(-v.borh)}.` : '✓ розраховано.');
+  }
+
+  /* «Повернули»: людина віддала s, гурток був винен b. Якщо різниця є — пояснення й два варіанти (слова однакові на обох сторінках).
+     → null (різниці немає) | {bil, mal, tekst, zaokr, borh}; mal — різниця до 1 €: за замовчуванням «заокруглення». */
+  function riznytsia(b, s, im, groshi) {
+    const r = okr(s - b); if (!s || !r) return null;
+    const bil = r > 0, a = groshi(Math.abs(r));
+    return {bil, mal: Math.abs(r) <= 1,
+      tekst: `Віддали на ${a} ${bil ? 'більше' : 'менше'}, ніж винні (${groshi(b)}).`,
+      zaokr: 'лишити як заокруглення' + (bil ? ' (гурток доплатив)' : ''),
+      borh: `${bil ? im + ' поверне ' + a : 'гурток доплатить ' + a} — борг лишається`};
+  }
+  /* Речення про результат «Повернули»; zl — що лишилось (okr(v.zalyshok)): >0 гурток ще винен, <0 людина винна гуртку. */
+  function pidsumokPovernennia(im, s, zl, groshi) {
+    return `Записано: ${im} — повернули ${groshi(s)}. ` + (zl > 0 ? `Гурток ще винен ${groshi(zl)}.` : zl < 0 ? `${im} винен(-на) гуртку ${groshi(-zl)} — коли віддасть, запишіть «повернення боргу».` : '✓ Розраховано.');
+  }
+
+  return {okr, brak, zalNa, pereplaty, zalik, pidsumokZaliku, riznytsia, pidsumokPovernennia, PEREPLATA_POYASNENNIA, ZALIK_POYASNENNIA};
+})();
+</script>
+<script>/* Назви нашивок і відзнак: підказка зі списку книги + м'яке попередження «такої назви ще немає» — СПІЛЬНЕ для «Відзначок» (forma.html)
+   і «Вхід виховника → Прийшов, перейшов, пішов → Що вже має» (vykhovnyk.html). 14.11.2026.
+   Навіщо: книга рахує нашивки за назвою; «Табір 2025» і «табір 2025» чи зайвий пробіл — для неї різні, тож підказуємо, що вже є.
+   Приймач: {dija:'nazvy'} → {ok, nazvy:[…]} — назви з аркушів «Вмілості», «Відзначки», «Замовлення», «Запас» (без повторів).
+   Правило проєкту: міняєте, як порівнюються назви чи що кажемо, — міняйте ТУТ. */
+window.Nazvy = (function () {
+  'use strict';
+  const norm = x => String(x == null ? '' : x).trim().toLowerCase();
+  const maye = (spysok, v) => (spysok || []).some(x => norm(x) === norm(v));
+  const NEMAE = 'Такої назви ще немає в книзі. Нова нашивка — усе гаразд. Якщо така вже є — перевірте, як вона написана: інакше книга порахує її окремо.';
+  const NEMAE_VMIL = 'Такої вмілості немає в каталозі й ще немає в книзі. Нова — усе гаразд. Якщо така вже є — перевірте, як вона написана: інакше книга порахує її окремо.';
+
+  /* Текст попередження або '' (усе гаразд). spysok — назви з книги (порожній — ще не завантажено: мовчимо);
+     katalog — назви каталогу вмілостей (лише для вмілостей: назва з каталогу — теж гаразд). */
+  function poperedzhennia(spysok, v, katalog) {
+    v = String(v == null ? '' : v).trim();
+    if (!v || !(spysok || []).length) return '';
+    if (maye(spysok, v)) return '';
+    if (katalog) return maye(katalog, v) ? '' : NEMAE_VMIL;
+    return NEMAE;
+  }
+
+  // назви з книги; null — немає зв'язку (сторінка просто працює без підказок)
+  async function zavantazhyty(zapyt, kod) {
+    try { const v = await zapyt({kod, dija: 'nazvy'}); return v && v.ok ? (v.nazvy || []) : null; } catch (x) { return null; }
+  }
+
+  // показати / прибрати попередження під полем (f — обгортка поля, .f)
+  function pokazaty(f, tekst) {
+    let w = f.querySelector('.dlw');
+    if (!tekst) { if (w) w.remove(); return; }
+    if (!w) { w = document.createElement('small'); w.className = 'dlw'; f.append(w); }
+    w.textContent = tekst;
+  }
+
+  return {norm, maye, poperedzhennia, zavantazhyty, pokazaty, NEMAE, NEMAE_VMIL};
+})();
+</script>
 <script>
 (function () {
   'use strict';
@@ -1773,7 +1870,7 @@ window.Vn = (function () {
       if (!vypr) ost = v.kvytok ? {kvytok: v.kvytok} : null;
       if (ost) { ost.dani = dani; ost.khto = khto; }
       if (DLK) { const nz = dani[DLK.h]; if (nz && !dlSpysok.some(x => norm(x) === norm(nz))) { dlSpysok.push(nz); dlNapovnyty(); } }
-      if (DLN) { const nz = dani[DLN.h]; if (nz && !dlNazvy.some(x => norm(x) === norm(nz))) { dlNazvy.push(nz); dlNazvyNapovnyty(); } }
+      if (DLN) { const nz = dani[DLN.h]; if (nz && !Nazvy.maye(dlNazvy, nz)) { dlNazvy.push(nz); dlNazvyNapovnyty(); } }
       gotovo(vypr || v.onovleno ? 'Виправлено в книзі' : 'Записано в книгу', !!ost);
       const dd = isoDd(dani[K.polia[0].h] || '');
       $('z-sum').textContent = `${K.forma || K.t}: ${dd}${dani[K.pidsumok] ? ' · ' + dani[K.pidsumok] : ''}.` + (v.ryadok ? ` Рядок у книзі — ${v.ryadok}.` : '');
@@ -1836,15 +1933,11 @@ window.Vn = (function () {
   function dlNazvyNapovnyty() { const d = $('dl-nazvy'); if (d) d.innerHTML = dlNazvy.map(x => `<option value="${esc(x)}">`).join(''); }
   async function dlNazvyZavantazhyty() {
     if (!DLN) return;
-    try { const v = await zapyt({kod, dija: 'nazvy'}); if (v.ok) { dlNazvy = v.nazvy || []; dlNazvyNapovnyty(); dlNazvyPerevirka(); } } catch (x) {}
+    const sp = await Nazvy.zavantazhyty(zapyt, kod); if (sp) { dlNazvy = sp; dlNazvyNapovnyty(); dlNazvyPerevirka(); }   // спільний nazvy.js
   }
   function dlNazvyPerevirka() {
     const el = DLN && $('z-p' + K.polia.indexOf(DLN)); if (!el) return;
-    const f = el.closest('.f'), v = el.value.trim(); let w = f.querySelector('.dlw');
-    const nema = v && dlNazvy.length && !dlNazvy.some(x => norm(x) === norm(v));
-    if (!nema) { if (w) w.remove(); return; }
-    if (!w) { w = document.createElement('small'); w.className = 'dlw'; f.append(w); }
-    w.textContent = 'Такої назви ще немає в книзі. Нова нашивка — усе гаразд. Якщо така вже є — перевірте, як вона написана: інакше книга порахує її окремо.';
+    Nazvy.pokazaty(el.closest('.f'), Nazvy.poperedzhennia(dlNazvy, el.value));
   }
   $('z-polia').addEventListener('change', e => { if (DLN && e.target.id === 'z-p' + K.polia.indexOf(DLN)) dlNazvyPerevirka(); });
 
@@ -2343,26 +2436,23 @@ window.Vn = (function () {
     return h + pereplatyHtml();
   }
   const vnBrak = (im, x) => okr(vnTrebaSuma(x, im) - ((VN.splacheno[im] || {})[x.n] || 0));
-  function zalBtn(im) {   // гурток винен → у найдавніший несплачений внесок
-    if (!VN || !VN.vnesky.length) return '';
-    const x = VN.vnesky.find(y => vnBrak(im, y) > 0); if (!x) return '';
+  function zalBtn(im) {   // гурток винен → у найдавніший внесок, якого людині не вистачає (логіка — спільний borhy.js)
+    const x = Borhy.zalNa(VN, im); if (!x) return '';
     return ` <button type="button" class="btn bp" data-zv="${esc(x.n)}">На прохання — у внесок «${esc(x.n)}»</button>`;
   }
   function pereplatyHtml() {   // переплачені внески: у борг гуртка (потім «Повернули» або в інший внесок)
-    if (!VN || !VN.vnesky.length) return '';
-    const l = []; Object.keys(VN.splacheno).forEach(im => VN.vnesky.forEach(x => { const p = -vnBrak(im, x); if (p > 0) l.push({im, x, p}); }));
+    const l = Borhy.pereplaty(VN);
     if (!l.length) return '';
-    return `<div class="bg"><h4>Переплачені внески</h4><ul>${l.map(o => `<li data-im="${esc(o.im)}"><div class="bt"><span>${esc(o.im)} · «${esc(o.x.n)}»</span><b>+${groshi(o.p)}</b></div><button type="button" class="btn bp" data-pp="${esc(o.x.n)}">У борг гуртка</button></li>`).join('')}</ul><p class="bn">Переплату зараховують у борг: гурток буде винен — потім «Повернули» або «У внесок» (наступний). Якщо людина сама винна гуртку — борг зменшиться.</p></div>`;
+    return `<div class="bg"><h4>Переплачені внески</h4><ul>${l.map(o => `<li data-im="${esc(o.im)}"><div class="bt"><span>${esc(o.im)} · «${esc(o.x.n)}»</span><b>+${groshi(o.p)}</b></div><button type="button" class="btn bp" data-pp="${esc(o.x.n)}">У борг гуртка</button></li>`).join('')}</ul><p class="bn">${Borhy.PEREPLATA_POYASNENNIA}</p></div>`;
   }
   async function zalikZBoku(btn, im, n, kudy) {
     const khto = $('z-khto') ? $('z-khto').value : '', m = $('z-msg');
     if (!khto) { m.style.color = 'var(--d-t)'; m.textContent = 'Спершу виберіть унизу форми, хто ви («Хто записав»).'; return $('z-khto').focus(); }
     btn.disabled = true; btn.textContent = 'Зараховую…';
-    let v; try { v = await zapyt({kod, dija: 'zalik', imya: im, vnesok: n, kudy, khto}); } catch (x) { v = {ok: false, pomylka: 'Немає зв\'язку.'}; }
+    const v = await Borhy.zalik(zapyt, kod, {im, n, kudy, khto});
     if (!v.ok) { btn.disabled = false; m.style.color = 'var(--d-t)'; m.textContent = v.pomylka || 'Не вдалося.'; return; }
     m.style.color = 'var(--ok-t)';
-    m.textContent = kudy === 'vnesok' ? `Зараховано ${groshi(v.suma)} боргу гуртка у «${n}» (${im}) — без грошей.${v.brak > 0 ? ' Доплатити ще ' + groshi(v.brak) + '.' : ' Внесок сплачено ✓.'}`
-      : `Переплату ${groshi(v.suma)} («${n}», ${im}) зараховано: ` + (v.borh > 0 ? `гурток винен ${groshi(v.borh)}.` : v.borh < 0 ? `${im} ще винен(-на) гуртку ${groshi(-v.borh)}.` : '✓ розраховано.');
+    m.textContent = Borhy.pidsumokZaliku(kudy, v, im, n, groshi);
     await vnZavantazhyty(); hrZavantazhyty(); if (spilneEl('Дата') && spilneEl('Дата').value === den()) denZavantazhyty();
   }
   function povForma(li, im) {   // маленька форма під ім'ям: скільки віддали, як; різниця — заокруглення чи борг
@@ -2373,13 +2463,13 @@ window.Vn = (function () {
       <div class="pz" hidden></div><div class="pb"><button type="button" class="btn ok" data-pgo="1">Записати повернення</button><button type="button" class="lnk" data-px="1">не зараз</button></div><p class="pm"></p></div>`);
     const pf = li.querySelector('.pf'), inp = pf.querySelector('input'), pz = pf.querySelector('.pz');
     const malZ = () => {
-      const s = chyslo(inp.value), r = okr(s - b);
-      if (!s || !r) { pz.hidden = true; pz.innerHTML = ''; return; }
-      const bil = r > 0, mal = Math.abs(r) <= 1, was = pz.querySelector('input:checked');
-      const zg = was ? was.value === 'z' : mal;   // до 1 € — за замовчуванням заокруглення
-      pz.innerHTML = `<p>Віддали на ${groshi(Math.abs(r))} ${bil ? 'більше' : 'менше'}, ніж винні (${groshi(b)}).</p>`
-        + `<label class="rb"><input type="radio" name="pz-${esc(im)}" value="z"${zg ? ' checked' : ''}> лишити як заокруглення${bil ? ' (гурток доплатив)' : ''}</label>`
-        + `<label class="rb"><input type="radio" name="pz-${esc(im)}" value="b"${zg ? '' : ' checked'}> ${bil ? esc(im) + ' поверне ' + groshi(Math.abs(r)) : 'гурток доплатить ' + groshi(Math.abs(r))} — борг лишається</label>`;
+      const rz = Borhy.riznytsia(b, chyslo(inp.value), im, groshi);   // слова — спільні з «Перевіркою каси»
+      if (!rz) { pz.hidden = true; pz.innerHTML = ''; return; }
+      const was = pz.querySelector('input:checked');
+      const zg = was ? was.value === 'z' : rz.mal;   // до 1 € — за замовчуванням заокруглення
+      pz.innerHTML = `<p>${esc(rz.tekst)}</p>`
+        + `<label class="rb"><input type="radio" name="pz-${esc(im)}" value="z"${zg ? ' checked' : ''}> ${esc(rz.zaokr)}</label>`
+        + `<label class="rb"><input type="radio" name="pz-${esc(im)}" value="b"${zg ? '' : ' checked'}> ${esc(rz.borh)}</label>`;
       pz.hidden = false;
     };
     inp.addEventListener('input', malZ); malZ(); inp.focus();
@@ -2397,7 +2487,7 @@ window.Vn = (function () {
     if (!v.ok) { m.className = 'pm bad'; m.textContent = v.pomylka || 'Не вдалося.'; return; }
     const zl = okr(v.zalyshok || 0);
     $('z-msg').style.color = 'var(--ok-t)';
-    $('z-msg').textContent = `Записано: ${im} — повернули ${groshi(chyslo(suma))}. ` + (zl > 0 ? `Гурток ще винен ${groshi(zl)}.` : zl < 0 ? `${im} винен(-на) гуртку ${groshi(-zl)} — коли віддасть, запишіть «повернення боргу».` : '✓ Розраховано.') + ' Виховник перевірить у «Перевірці каси».';
+    $('z-msg').textContent = Borhy.pidsumokPovernennia(im, chyslo(suma), zl, groshi) + ' Виховник перевірить у «Перевірці каси».';
     hrZavantazhyty(); if (spilneEl('Дата') && spilneEl('Дата').value === den()) denZavantazhyty();
   }
   if (K.hroshi) $('z-side').addEventListener('click', e => {

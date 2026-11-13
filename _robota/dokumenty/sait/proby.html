@@ -202,16 +202,6 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 .chip[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#fff}
 .chip[aria-pressed=true] small{color:#ffd9e1}
 .chip.zd small{color:var(--ok-t)}
-.rz{margin:0 0 14px}
-.rz h4{margin:0 0 7px;font:600 14px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
-.rz h4 b{color:var(--d-t);margin-right:6px}
-.tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-.t{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:2px 8px;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--body);text-align:left;font-size:13px;line-height:1.2;min-height:52px}
-.t b{font:600 17px/1 var(--disp);color:var(--ink);padding-top:1px}
-.t i{grid-column:2;font-style:normal;font-size:11.5px;color:var(--ok-t)}
-.t[aria-pressed=true]{background:rgba(200,40,74,.24);border-color:var(--d);color:var(--ink);box-shadow:inset 0 0 0 1px var(--d)}
-.t.ye{background:rgba(61,175,110,.1);border-color:rgba(61,175,110,.4);color:var(--mut);cursor:default}
-.t.ye b{color:var(--ok-t)}
 .vl{display:flex;gap:8px;margin-bottom:14px}
 .vl .in{flex:1}
 .svod{margin:4px 0 14px;padding:11px 14px;border-radius:12px;background:#14171a;border:1px solid var(--ln);font-size:15px;color:var(--body)}
@@ -264,6 +254,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   .pg tr{break-inside:avoid}
 }
 /*PAPIRCSS*/
+/*TOCHKYCSS*/
 </style>
 </head>
 <body>
@@ -333,7 +324,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
           <div class="lbl"><span class="n"><i>2</i>Хто виконав</span><button class="all" type="button" id="z-vsi">Усі</button></div>
           <ul class="chips" id="z-im"></ul>
           <div class="lbl"><span class="n"><i>3</i>Які точки підписано</span><small id="z-ttn"></small></div>
-          <div id="z-tt"></div>
+          <div id="z-tt" class="tkv"></div>
           <div class="lbl"><span class="n"><i>4</i>Коли й хто підписав</span></div>
           <div class="row2">
             <label class="f"><span>Дата підпису</span><input class="in" id="z-data" type="date"></label>
@@ -392,6 +383,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 </div>
 
 <script>/*PAPIR*/</script>
+<script>/*TOCHKY*/</script>
 <script>
 (function () {
   'use strict';
@@ -404,28 +396,8 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
 
   /* ---------- індекс проб: з бланків (вбудовано при збиранні) або з книги (аркуш «Індекс проб») ---------- */
   const IXV = /*INDEKS*/null/*/INDEKS*/;   // [{pr, nazva, dodatok, dzherelo, posvidka, rozdily:[{l, n, t:[…]}]}]
-  const PROBY = IXV.map(p => p.pr), META = Object.fromEntries(IXV.map(p => [p.pr, p]));
-  let IXK = {};   // з книги: {проба: [{t, rz, k}]}
-  function rozdily(pr) {   // [{nazva, tt:[{t, k}]}]
-    const kn = IXK[pr];
-    if (kn && kn.length) {
-      const out = []; kn.forEach(x => { let r = out[out.length - 1]; if (!r || r.nazva !== x.rz) out.push(r = {nazva: x.rz, tt: []}); r.tt.push({t: x.t, k: x.k}); });
-      return out;
-    }
-    return (META[pr] ? META[pr].rozdily : []).map(r => ({nazva: r.l ? r.l + ' · ' + r.n : '', tt: r.t.map((k, i) => ({t: r.l + (i + 1), k}))}));
-  }
-  const tochky = pr => rozdily(pr).flatMap(r => r.tt);
-  const nazvaPr = pr => { const M = META[pr]; if (!M) return pr; const d = M.dodatok || ''; return M.nazva + (!d ? '' : d[0] === '«' ? ' ' + d : ' (' + d + ')'); };
-  // перелік точок стисло: А1–А4, Б2
-  function stysno(tt) {
-    const out = []; let i = 0;
-    while (i < tt.length) {
-      const m = /^(\D*)(\d+)$/.exec(tt[i]); let j = i;
-      if (m) while (j + 1 < tt.length) { const n = /^(\D*)(\d+)$/.exec(tt[j + 1]); if (!n || n[1] !== m[1] || +n[2] !== +m[2] + (j + 1 - i)) break; j++; }
-      out.push(j - i >= 2 ? tt[i] + '–' + tt[j] : tt.slice(i, j + 1).join(', ')); i = j + 1;
-    }
-    return out.join(', ');
-  }
+  const TK = Tochky.stvoryty(IXV);   // спільне з «Входом виховника» (tochky.js): бланки, кнопки точок
+  const {PROBY, META, rozdily, tochky, nazvaPr, stysno} = TK;
 
   /* ---------- перемикач ---------- */
   const tabs = [$('t-b'), $('t-z')];
@@ -588,7 +560,7 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   async function zavantazhyty() {
     const v = await zapyt({kod, dija: 'proby'});
     if (!v.ok) throw new Error(v.pomylka || 'Не вдалося прочитати проби з книги.');
-    RR = v.ryadky || []; IXK = v.indeks || {};
+    RR = v.ryadky || []; TK.knyha(v.indeks);
   }
 
   /* ---------- що в кого є ---------- */
@@ -620,24 +592,13 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
     $('z-vsi').textContent = S.im.size === imena.length && imena.length ? 'Нікого' : 'Усі';
   }
   function malTochky() {
-    const rz = rozdily(S.pr), vybr = [...S.im], N = tochky(S.pr).length;
+    const vybr = [...S.im], N = tochky(S.pr).length;
     $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : N ? N + ' точок на бланку' : '';
-    if (!rz.length) {
-      const svoi = [...S.tt];
-      $('z-tt').innerHTML = `<p class="pust">Бланка «${esc(nazvaPr(S.pr))}» у книзі ще немає (аркуш «Індекс проб»). Впишіть точку так, як на бланку, і натисніть «Додати».</p>
-        <div class="vl"><input class="in" id="z-vl" maxlength="8" placeholder="напр. А3"><button class="btn" type="button" id="z-vlb">Додати</button></div>
-        ${svoi.length ? '<div class="tt">' + svoi.map(t => `<button type="button" class="t" data-t="${esc(t)}" aria-pressed="true"><b>${esc(t)}</b><span>вписано вручну</span></button>`).join('') + '</div>' : ''}`;
-      return;
-    }
     const sk = vybr.map(im => maie(im, S.pr));
-    $('z-tt').innerHTML = rz.map(r => {
-      const [l, ...n] = r.nazva.split(' · ');
-      return `<div class="rz">${r.nazva ? `<h4><b>${esc(l)}</b>${esc(n.join(' · '))}</h4>` : ''}<div class="tt">` + r.tt.map(x => {
-        const ye = sk.filter(m => m.has(x.t)).length, vsi = vybr.length && ye === vybr.length;
-        const i = vsi ? `<i>✓ ${vybr.length === 1 ? 'є · ' + dd(sk[0].get(x.t)) : 'є в усіх'}</i>` : ye ? `<i>є в ${ye} з ${vybr.length}</i>` : '';
-        return `<button type="button" class="t${vsi ? ' ye' : ''}" data-t="${esc(x.t)}" aria-pressed="${S.tt.has(x.t) && !vsi}"${vsi ? ' aria-disabled="true"' : ''} title="${esc(x.k)}"><b>${esc(x.t)}</b><span>${esc(x.k)}</span>${i}</button>`;
-      }).join('') + '</div></div>';
-    }).join('');
+    $('z-tt').innerHTML = TK.knopky(S.pr, S.tt, {status: t => {
+      const ye = sk.filter(m => m.has(t)).length, vsi = vybr.length && ye === vybr.length;
+      return vsi ? {vsi: true, text: '✓ ' + (vybr.length === 1 ? 'є · ' + dd(sk[0].get(t)) : 'є в усіх')} : ye ? {text: 'є в ' + ye + ' з ' + vybr.length} : null;
+    }});
   }
   function plan() {   // що справді піде в книгу
     const nove = [], vzhe = [];
@@ -695,13 +656,11 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   });
   $('z-vsi').addEventListener('click', () => { if (S.im.size === imena.length) S.im.clear(); else imena.forEach(im => { if (!posv(im, S.pr)) S.im.add(im); }); malImena(); malTochky(); malSvod(); });
   $('z-tt').addEventListener('click', e => {
-    if (e.target.id === 'z-vlb') { const v = $('z-vl').value.trim().replace(/\s+/g, '').toUpperCase(); if (v) { S.tt.add(v); malTochky(); malSvod(); setTimeout(() => $('z-vl') && $('z-vl').focus(), 0); } return; }
-    const b = e.target.closest('[data-t]'); if (!b || b.classList.contains('ye')) return;
-    const t = b.dataset.t; if (S.tt.has(t)) S.tt.delete(t); else S.tt.add(t);
-    b.setAttribute('aria-pressed', String(S.tt.has(t))); $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : ''; malSvod();
-    if (!rozdily(S.pr).length) malTochky();
+    const r = TK.klik(e, $('z-tt'), S.pr, S.tt); if (!r) return;
+    if (r === 'zmina') { malTochky(); malSvod(); const v = $('z-tt').querySelector('[data-tk="vl"]'); if (v) setTimeout(() => v.focus(), 0); return; }
+    $('z-ttn').textContent = S.tt.size ? 'вибрано ' + S.tt.size : ''; malSvod();
   });
-  $('z-tt').addEventListener('keydown', e => { if (e.target.id === 'z-vl' && e.key === 'Enter') { e.preventDefault(); $('z-vlb').click(); } });
+  $('z-tt').addEventListener('keydown', e => { if (e.target.dataset && e.target.dataset.tk === 'vl' && e.key === 'Enter') { e.preventDefault(); $('z-tt').querySelector('[data-tk="vlb"]').click(); } });
 
   /* ---------- надіслати ---------- */
   let ostanni = [];   // квитки щойно надісланого — для «Скасувати»

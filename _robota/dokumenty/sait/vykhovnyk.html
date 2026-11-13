@@ -198,6 +198,8 @@ a.tile{text-decoration:none}
 .mr .rx{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut)}.mr .rx svg{width:16px;height:16px}
 .mr .rok{margin:0 0 10px;color:var(--ok-t);font-weight:700;font-size:14px}
 .mr .row2{align-items:start}.mr .row2 .chk.sm{margin:-4px 0 10px}
+.mr .lbl-tk{font-size:14px;font-weight:600;color:var(--mut);margin:0 0 8px}.mr .lbl-tk small{font-weight:400}
+.f small.dlw{display:block;margin-top:5px;font-size:13px;line-height:1.35;font-weight:600;color:#f0b429}
 .mr .f{margin-bottom:10px}.mr .in{font-size:16px;padding:9px 11px}
 .chk.sm{padding:8px 12px;margin-bottom:10px;font-size:14.5px;background:none}
 .note.sm{font-size:13.5px;margin:-4px 0 10px}
@@ -214,6 +216,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 @media (max-width:900px){.ps{grid-template-columns:1fr}.tiles{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){.tiles{grid-template-columns:1fr}.tile.main{grid-column:auto}.tile{min-height:0}.row3{grid-template-columns:1fr}
   .pay .pr{padding-left:12px;gap:4px}.pay .pr>button{min-width:96px;padding:8px 8px}}
+/*TOCHKYCSS*/
 </style>
 </head>
 <body>
@@ -260,12 +263,22 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
       <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>і все, що було до нас або поза гуртком: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок.</span></button>
-      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
-      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет.</span><i>готується</i></button>
+      <button class="tile" type="button" id="go-gm"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
+      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет: каса й майно гуртка.</span></button>
       <a class="tile" href="../zvity/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
       <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span></button>
       <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Чи гроші справді є: банк, коробка, чеки. Раз на місяць — звірка.</span></button>
     </div>
+  </section>
+
+  <!-- гроші й майно -->
+  <section id="v-gm" hidden>
+    <div class="hubhead"><h2>Гроші й майно</h2><button class="leave" type="button" id="gm-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+    <div class="tiles">
+      <a class="tile" href="../kasa/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Каса</b><span>Внески й видатки гуртка: кожен платіж — окремий рядок із квитанцією, борги «свої гроші», фото чеків.</span></a>
+      <a class="tile" href="../mayno/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg></span><b>Майно</b><span>Що має гурток і де воно лежить: одна річ — один рядок; хто що взяв, що списали.</span></a>
+    </div>
+    <div class="card pravylo">Каса й Майно — окремі сторінки: код гуртка там уведете знову. Чи гроші справді є — у плитці «Перевірка каси» на попередній сторінці.</div>
   </section>
 
   <!-- прийшов, перейшов, пішов -->
@@ -317,6 +330,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="ps">
       <div class="card">
         <div class="fhead"><h2>Перевірка каси</h2><button class="leave" type="button" id="kp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <p class="nvc ok" id="kp-zm" hidden></p>
         <div id="kp-hr"></div>
         <div id="kp-list"><p class="empty">Завантажую…</p></div>
         <div class="kg"><h3>Звірка <small>раз на місяць</small></h3>
@@ -418,7 +432,10 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 </div>
 
 <script>/*VNESKY*/</script>
+<script>/*BORHY*/</script>
+<script>/*NAZVY*/</script>
 <script>/*STAN*/</script>
+<script>/*TOCHKY*/</script>
 <script>
 (function () {
   'use strict';
@@ -470,7 +487,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       '2026-11-01': {ryadok: 11, khto: 'Олесь', koly: '01.11.2026 20:05', zatv: true, dani: {'№': '10', 'Тема': 'Мапа й компас', 'Відповідальний': 'Олесь', 'Місце': 'парк'}}}};
   const DDEN = [{ryadok: 32, khto: 'Дана', koly: '08.11.2026 18:35', zatv: true, dani: {'Дата': '2026-11-08', 'Рух': 'надходження', 'Категорія': 'внески', 'Опис': 'внесок: Листопад 2026', "Хто (ім'я)": 'Мирося', 'Сума, €': 20, 'Як платили': 'готівка', 'Внесок': 'Листопад 2026'}}];   // уже перевірений (у «Перевірці каси» його немає)
   const DVN = /[?&]bezvn\b/.test(location.search) ? [] : [{n: 'Жовтень 2026', suma: 20, termin: '2026-10-05', osobl: {}}, {n: 'Листопад 2026', suma: 20, termin: '2026-11-02', osobl: {}}, {n: 'Грудень 2026', suma: 20, termin: '2026-12-07', osobl: {}}, {n: 'Січень 2027', suma: 20, termin: '2027-01-04', osobl: {}}];   // ?bezvn — проба книги без аркуша «Внески»   // проба: 20 € на місяць, строк — перші сходини місяця
-  const DSP = {}; DEMO_IM.forEach(im => { DSP[im] = {'Жовтень 2026': 20}; }); DSP['Зоряна']['Жовтень 2026'] = 10; DSP['Олесь']['Листопад 2026'] = 10; DSP['Соломія']['Листопад 2026'] = 20; DSP['Мирося']['Листопад 2026'] = 20;   // листопад — рядки каси з DK і DDEN (Ярко ✕ — не рахується)   // у жовтні сплатили всі, Зоряна — 10 з 20 (старий борг)
+  const DSP = {}; DEMO_IM.forEach(im => { DSP[im] = {'Жовтень 2026': 20}; }); DSP['Зоряна']['Жовтень 2026'] = 10; DSP['Олесь']['Листопад 2026'] = 10; DSP['Соломія']['Листопад 2026'] = 20; DSP['Мирося']['Листопад 2026'] = 20; DSP['Мирося']['Жовтень 2026'] = 25;   // листопад — рядки каси з DK і DDEN (Ярко ✕ — не рахується)   // у жовтні сплатили всі, Зоряна — 10 з 20 (старий борг)
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0, borhy: {'Остап': 14.5, 'Зоряна': 3.2, 'Мирося': -0.5}, bezCheka: {'Зоряна': [{data: '2026-11-05', opys: 'свічки', suma: 3.2}]}};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length, vy = Object.values(DH.borhy).filter(x => x > 0).reduce((a, x) => a + x, 0); return Object.assign({ok: true}, JSON.parse(JSON.stringify(DH)), {vynen: vy, vilni: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano - vy) * 100) / 100, razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
@@ -480,6 +497,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       const rol = t.kod === '123456' ? 'v' : t.kod === '1234' ? 'd' : null;
       if (!rol) return {ok: false, pomylka: 'Невірний код.'};
       if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
+      if (t.dija === 'nazvy') return {ok: true, nazvy: ['Шиття', 'Якірництво', 'нашивка табору «Літо 2026»', 'нашивка 1-ї проби']};
       if (t.dija === 'vnesky') return {ok: true, vnesky: JSON.parse(JSON.stringify(DVN)), splacheno: JSON.parse(JSON.stringify(DSP))};
       if (t.dija === 'nomery') { const out = []; [['Сходини', '№'], ['Відвідуваність', '№ сходин']].forEach(a => Object.keys(DST[a[0]]).forEach(d => { const n = DST[a[0]][d].dani[a[1]]; if (n) out.push({d, n}); })); return {ok: true, nomery: out}; }   // проба: усі № з пробної книги
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
@@ -492,6 +510,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         if (t.polia && t.polia['Статус']) x.st = t.polia['Статус'];
         return {ok: true, ryadok: 4 + DUCH.indexOf(x), novyi: !u};
       }
+      if (t.dija === 'proby') return {ok: true, ryadky: [], indeks: {}};
       if (t.dija === 'probyZapys') return {ok: true, zapysano: t.tochky.map(x => ({im: t.imena[0], t: x, ryadok: ++demoRow})), vzhe: []};
       if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(t.dani['Де здобуто'] === 'до нас' && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
       if (t.dija === 'vypadok') { DVY.unshift({ryadok: ++demoRow, 'Дата': den(), "Ім'я": t.imya, 'Випадок': 'особливий випадок', 'Що сталося': t.shcho, 'Що вже має': t.maie, 'Чого не знаємо': t.ne, 'Що пропоную': t.propoz, 'Статус': 'відкрито', 'Хто записав': 'виховник'}); return {ok: true, ryadok: demoRow}; }
@@ -516,6 +535,16 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       if (t.dija === 'zatverdyty' && t.arkush === 'Фінанси' && 'znach' in t) { const i = DK.findIndex(x => x.ryadok === t.ryadok); if (t.znach === 'так' && i >= 0) DK.splice(i, 1); else if (i >= 0) DK[i].ne = t.znach === 'ні'; return {ok: true, znach: t.znach}; }
       if (t.dija === 'zvirka') { const y = parseFloat(String(t.ye).replace(',', '.')); if (!isFinite(y) || y < 0) return {ok: false, pomylka: 'Скільки є насправді — число, до центів.'}; const m = t.shcho === 'готівка' ? DH.gotivka : DH.rakhunok; DZV.unshift({'Дата': 'сьогодні', 'Що звіряли': t.shcho, 'Мало бути, €': m, 'Є насправді, €': y, 'Різниця, €': Math.round((y - m) * 100) / 100, 'Примітка': t.prymitka}); return {ok: true, malo: m, ye: y, riznytsia: Math.round((y - m) * 100) / 100}; }
       if (t.dija === 'spysaty') { if (!DH.borhy[t.imya]) return {ok: false, pomylka: 'Боргів немає.'}; if (t.prychyna === 'інше' && !t.prymitka.trim()) return {ok: false, pomylka: 'Причина «інше» — напишіть пояснення.'}; if (Math.abs(DH.borhy[t.imya]) > 10 && !t.pidstava.trim()) return {ok: false, pomylka: 'Більше 10 € — потрібна підстава: № протоколу гурткової ради або хто погодив.'}; delete DH.borhy[t.imya]; delete DH.bezCheka[t.imya]; return {ok: true}; }
+      if (t.dija === 'zalik') {   // проба: залік без грошей — «у внесок» (гурток винен людині) або «переплата → у борг гуртка»
+        const x = DVN.find(y => y.n === t.vnesok); if (!x) return {ok: false, pomylka: 'Немає такого внеску.'};
+        const sp = (DSP[t.imya] || (DSP[t.imya] = {}))[t.vnesok] || 0, brak = Math.round(((x.osobl && t.imya in x.osobl ? x.osobl[t.imya] : x.suma) - sp) * 100) / 100, b = DH.borhy[t.imya] || 0;
+        if (t.kudy === 'vnesok' && DH.bezCheka[t.imya]) return {ok: false, pomylka: 'Без чека не зараховуємо: спершу фото чека — ' + t.imya + '.'};
+        const maks = t.kudy === 'vnesok' ? Math.min(b, brak) : -brak; if (!(maks > 0)) return {ok: false, pomylka: 'Зараховувати нічого.'};
+        const s = Math.round(maks * 100) / 100, sg = t.kudy === 'vnesok' ? 1 : -1;
+        DSP[t.imya][t.vnesok] = Math.round((sp + sg * s) * 100) / 100; DH.borhy[t.imya] = Math.round((b - sg * s) * 100) / 100; if (!DH.borhy[t.imya]) delete DH.borhy[t.imya];
+        DK.push({ryadok: 50 + DK.length, khto: 'виховник', koly: 'щойно', dani: {'Дата': den(), 'Рух': t.kudy === 'vnesok' ? 'надходження' : 'видаток', 'Категорія': 'внески', 'Опис': t.kudy === 'vnesok' ? 'залік: борг гуртка → у внесок' : 'залік: переплата внеску → у борг', "Хто (ім'я)": t.imya, 'Внесок': t.vnesok, 'Сума, €': s, 'Як платили': 'свої гроші'}});
+        return {ok: true, suma: s, borh: DH.borhy[t.imya] || 0, brak: Math.round((brak - sg * s) * 100) / 100};
+      }
       if (t.dija === 'povernuty') { const b = DH.borhy[t.imya] || 0, x = parseFloat(String(t.suma).replace(',', '.')); if (!(b > 0)) return {ok: false, pomylka: 'Гурток нічого не винен: ' + t.imya}; if (DH.bezCheka[t.imya]) return {ok: false, pomylka: 'Без чека не повертаємо.'}; if (!(x > 0)) return {ok: false, pomylka: 'Скільки віддали — число.'}; if (t.yak === 'готівка' && x > DH.gotivka) return {ok: false, pomylka: 'За книгою готівкою лише ' + DH.gotivka + ' €.'}; DH[t.yak === 'готівка' ? 'gotivka' : 'rakhunok'] -= x; DH.borhy[t.imya] = t.zaokr ? 0 : Math.round((b - x) * 100) / 100; if (!DH.borhy[t.imya]) delete DH.borhy[t.imya]; return {ok: true, zalyshok: DH.borhy[t.imya] || 0}; }
       if (t.dija === 'nakhunok') { const x = parseFloat(String(t.suma).replace(',', '.')); if (!(x > 0)) return {ok: false, pomylka: 'Сума — додатне число.'}; if (x > DH.gotivka) return {ok: false, pomylka: 'За книгою готівкою лише ' + DH.gotivka + ' € — більше на рахунок не здати.'}; DH.gotivka -= x; DH.rakhunok += x; return {ok: true, hroshi: dHroshi()}; }
       if (t.dija === 'zatverdyty') { const x = DNV.find(y => y.arkush === t.arkush && y.ryadok === t.ryadok); if (x) x.zatverdzheno = t.tak !== false; return {ok: true, zatverdzheno: t.tak !== false}; }
@@ -529,7 +558,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
-  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -622,7 +651,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   $('nv-ov').addEventListener('click', e => { if (e.target.closest('#nv-ovb')) { ekran('v-pp'); UCH_OK = uchZavantazhyty(); ppVidkryty('osobl'); } });
 
   /* ---------- перевірка каси ---------- */
-  let KR = [], KH = null;
+  let KR = [], KH = null, VNK = null;   // VNK — внески з книги (для «У внесок» і «Переплат»; окремо від VN у «Після сходин»)
   const fmt2 = v => (Math.round(v * 100) / 100).toFixed(2).replace('.', ',') + ' €';   // гроші в касі — завжди з центами
   const GR = [['rakhunok', 'Перекази, MobilePay, картка', 'є в банку?', '✓ є в банку', '✗ немає в банку', 'цей платіж у банку'],
               ['gotivka', 'Готівка', 'гроші справді є?', '✓ гроші є', '✗ немає', 'цих грошей'],
@@ -634,14 +663,20 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   /* ---------- борги «свої гроші»: хто купив за свої, «Повернули» ---------- */
   const okr2 = x => Math.round(x * 100) / 100, chys = v => { const x = parseFloat(String(v || '').replace(',', '.')); return isNaN(x) ? 0 : x; };
   function borhyHtml(h) {
-    const B = h.borhy || {}, my = Object.keys(B).filter(im => B[im] > 0), vony = Object.keys(B).filter(im => B[im] < 0), bez = h.bezCheka || {};
-    if (!my.length && !vony.length) return '';
-    return `<div class="kg bor"><h3>Борги «свої гроші» <small>— купили для гуртка за власні</small></h3><ul class="kl">`
+    const B = h.borhy || {}, my = Object.keys(B).filter(im => B[im] > 0), vony = Object.keys(B).filter(im => B[im] < 0), bez = h.bezCheka || {}, pp = Borhy.pereplaty(VNK);
+    if (!my.length && !vony.length && !pp.length) return '';
+    const zalBtn = im => { const x = Borhy.zalNa(VNK, im); return x ? `<button type="button" data-zv="${esc(x.n)}">На прохання — у внесок «${esc(x.n)}»</button>` : ''; };   // логіка — спільний borhy.js
+    let o = '';
+    if (my.length || vony.length) o += `<div class="kg bor"><h3>Борги «свої гроші» <small>— купили для гуртка за власні</small></h3><ul class="kl">`
       + my.map(im => `<li data-im="${esc(im)}"><div class="kt"><span>Гурток винен: ${esc(im)}</span><span class="minus">${fmt2(B[im])}</span></div>`
         + ((bez[im] || []).length ? `<span class="fot no"><i class="ik ik-foto"></i>без чека: ${bez[im].map(x => esc(ddd(x.data) + ' «' + x.opys + '» ' + fmt2(+x.suma))).join('; ')} — без чека не повертаємо</span>`
-          : `<div class="kb"><button type="button" class="tak" data-pov="1">Повернули</button><button type="button" data-sp="1">Списати</button></div>`) + '</li>').join('')
+          : `<div class="kb"><button type="button" class="tak" data-pov="1">Повернули</button>${zalBtn(im)}<button type="button" data-sp="1">Списати</button></div>`) + '</li>').join('')
       + vony.map(im => `<li data-im="${esc(im)}"><div class="kt"><span>${esc(im)} винен(-на) гуртку</span><span class="plus">${fmt2(-B[im])}</span></div><div class="kd">Коли віддасть — скарбник записує «повернення боргу» або бере разом із внеском (залік).</div><div class="kb"><button type="button" data-sp="1">Списати</button></div></li>`).join('')
       + `</ul>${my.length ? `<p class="kd">Вільних грошей після боргів: <b>${fmt2(h.vilni != null ? h.vilni : h.razom - (h.vynen || 0))}</b></p>` : ''}</div>`;
+    if (pp.length) o += `<div class="kg bor"><h3>Переплачені внески <small>— заплатили більше, ніж треба</small></h3><ul class="kl">`
+      + pp.map(x => `<li data-im="${esc(x.im)}"><div class="kt"><span>${esc(x.im)} · «${esc(x.x.n)}»</span><span class="plus">+${fmt2(x.p)}</span></div><div class="kb"><button type="button" data-pp="${esc(x.x.n)}">У борг гуртка</button></div></li>`).join('')
+      + `</ul><p class="kd">${Borhy.PEREPLATA_POYASNENNIA}</p></div>`;
+    return o;
   }
   // «Списати»: причина (обов'язково), понад 10 € — підстава; повне речення перед підтвердженням
   const SPYS_MEZHA = 10;
@@ -665,18 +700,26 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 </div><div class="pz"></div><button class="btn main" type="button" data-pgo="1">Записати повернення</button><p class="rez" hidden></p>`);
     const inp = li.querySelector('.pf input'), pz = li.querySelector('.pz');
     const malZ = () => {
-      const r = okr2(chys(inp.value) - b), was = pz.querySelector('input:checked');
-      if (!chys(inp.value) || !r) { pz.innerHTML = ''; return; }
-      const zg = was ? was.value === 'z' : Math.abs(r) <= 1, bil = r > 0;
-      pz.innerHTML = `<p class="kd">Віддали на ${fmt2(Math.abs(r))} ${bil ? 'більше' : 'менше'}, ніж винні (${fmt2(b)}).</p>
-        <label class="rb"><input type="radio" name="pz" value="z"${zg ? ' checked' : ''}> лишити як заокруглення</label>
-        <label class="rb"><input type="radio" name="pz" value="b"${zg ? '' : ' checked'}> ${bil ? esc(im) + ' поверне' : 'гурток доплатить'} ${fmt2(Math.abs(r))} — борг лишається</label>`;
+      const rz = Borhy.riznytsia(b, chys(inp.value), im, fmt2), was = pz.querySelector('input:checked');   // слова — спільні з «Касою» юнаків
+      if (!rz) { pz.innerHTML = ''; return; }
+      const zg = was ? was.value === 'z' : rz.mal;
+      pz.innerHTML = `<p class="kd">${esc(rz.tekst)}</p>
+        <label class="rb"><input type="radio" name="pz" value="z"${zg ? ' checked' : ''}> ${esc(rz.zaokr)}</label>
+        <label class="rb"><input type="radio" name="pz" value="b"${zg ? '' : ' checked'}> ${esc(rz.borh)}</label>`;
     };
     inp.addEventListener('input', malZ); malZ(); inp.focus();
   }
   $('kp-hr').addEventListener('click', async e => {
     const li = e.target.closest('li[data-im]'); if (!li) return;
     if (e.target.closest('[data-pov]')) return povForma(li);
+    const zb = e.target.closest('[data-zv],[data-pp]');
+    if (zb) {   // «На прохання — у внесок» / «У борг гуртка» (залік без грошей; логіка й слова — спільний borhy.js)
+      const kudy = zb.dataset.zv ? 'vnesok' : 'borh', n = zb.dataset.zv || zb.dataset.pp, im = li.dataset.im, m = $('kp-zm'), t0 = zb.textContent;
+      zb.disabled = true; zb.textContent = 'Зараховую…'; m.hidden = true;
+      const v = await Borhy.zalik(zapyt, kod, {im, n, kudy});
+      if (!v.ok) { zb.disabled = false; zb.textContent = t0; m.className = 'nvc ye'; m.textContent = v.pomylka || 'Не вдалося.'; m.hidden = false; return; }
+      await kasa(); m.className = 'nvc ok'; m.textContent = Borhy.pidsumokZaliku(kudy, v, im, n, fmt2); m.hidden = false; return;
+    }
     if (e.target.closest('[data-sp]')) return spForma(li);
     if (e.target.closest('[data-spx]')) { li.querySelector('.spf').remove(); li.querySelector('.kb').hidden = false; return; }
     const sg = e.target.closest('[data-spgo]');
@@ -695,7 +738,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     try {
       const v = await zapyt({kod, dija: 'povernuty', imya: im, suma: li.querySelector('.pf input').value.trim(), yak: li.querySelector('.pf select').value, zaokr: !!z && z.value === 'z'});
       if (!v.ok) throw new Error(v.pomylka);
-      await kasa();
+      const suma = chys(li.querySelector('.pf input').value);
+      await kasa(); const m = $('kp-zm'); m.className = 'nvc ok'; m.textContent = Borhy.pidsumokPovernennia(im, suma, okr2(v.zalyshok || 0), fmt2); m.hidden = false;
     } catch (er) { rez.className = 'rez bad'; rez.textContent = ludsky(er); rez.hidden = false; b.disabled = false; }
   });
   const ddd = iso => String(iso || '').split('-').reverse().join('.');
@@ -723,10 +767,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     $('zv-ost').innerHTML = (z || []).map(o => { const r = +o['Різниця, €'] || 0; return `<li>${esc(o['Дата'])} · ${esc(o['Що звіряли'])}: мало ${fmt2(+o['Мало бути, €'] || 0)}, є ${fmt2(+o['Є насправді, €'] || 0)} — ${r ? '<b class="bad">різниця ' + (r > 0 ? '+' : '−') + fmt2(Math.abs(r)) + '</b>' : 'збігається ✓'}${o['Примітка'] ? ' · ' + esc(o['Примітка']) : ''}</li>`; }).join('') || '<li>Ще не було.</li>';
   }
   async function kasa() {
-    $('kp-list').innerHTML = '<p class="empty">Завантажую…</p>';
+    $('kp-list').innerHTML = '<p class="empty">Завантажую…</p>'; $('kp-zm').hidden = true;
+    const vp = zapyt({kod, dija: 'vnesky'}).then(r => r && r.ok && r.vnesky && r.vnesky.length ? r : null, () => null);   // без внесків «У внесок» і «Переплати» просто не показуються
     try {
       const v = await zapyt({kod, dija: 'kasa'}); if (!v.ok) throw new Error(v.pomylka);
-      KR = v.ryadky || []; KH = v.hroshi || null; KS = v.syroty || {}; malKasu(); malZvirky(v.zvirky);
+      KR = v.ryadky || []; KH = v.hroshi || null; KS = v.syroty || {}; VNK = await vp; malKasu(); malZvirky(v.zvirky);
     } catch (x) { $('kp-list').innerHTML = `<p class="empty">${esc(ludsky(x))}</p>`; }
   }
   $('kp-list').addEventListener('click', async e => {
@@ -765,6 +810,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     finally { b.disabled = false; }
   });
   $('go-kp').addEventListener('click', () => { ekran('v-kp'); kasa(); });
+  $('go-gm').addEventListener('click', () => ekran('v-gm'));
+  $('gm-back').addEventListener('click', () => ekran('v-hub'));
   $('kp-back').addEventListener('click', () => ekran('v-hub'));
   $('kp-re').addEventListener('click', kasa);
   $('nv-back').addEventListener('click', () => ekran('v-hub'));
@@ -1153,16 +1200,61 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const dat = (lab, req) => `<label class="f"><span>${lab}</span><input class="in" type="date" data-k="data"></label>${req ? '' : '<label class="chk sm"><input type="checkbox" data-k="nezn"> дата невідома</label>'}`;
     const T = {
       proba: ['Проба здобута (посвідка)', `<div class="row2"><label class="f"><span>Проба</span>${prS()}</label><div>${dat('Дата посвідки')}</div></div><label class="f"><span>Хто підписав посвідку</span><input class="in" data-k="khto" maxlength="60"></label>`],
-      tochky: ['Точки проби з бланка', `<div class="row2"><label class="f"><span>Проба</span>${prS()}</label><label class="f"><span>Дата (з бланка)</span><input class="in" type="date" data-k="data"></label></div><label class="f"><span>Які точки <small>— як на бланку, через пробіл</small></span><input class="in" data-k="tochky" maxlength="200" placeholder="напр. А1 А3 Б2"></label><p class="note sm">Різні дати на бланку — додайте кількома рядками «+ Точки проби».</p><label class="f"><span>Хто підписав</span><input class="in" data-k="khto" maxlength="60"></label>`],
+      tochky: ['Точки проби з бланка', `<div class="row2"><label class="f"><span>Проба</span>${prS()}</label><label class="f"><span>Дата (з бланка)</span><input class="in" type="date" data-k="data"></label></div><div class="lbl-tk">Які точки підписано <small>— торкніться кожної</small></div><div class="tkv" data-tkbox></div><p class="note sm" data-tkn></p><p class="note sm">Різні дати на бланку — додайте кількома рядками «+ Точки проби».</p><label class="f"><span>Хто підписав</span><input class="in" data-k="khto" maxlength="60"></label>`],
       vmil: ['Вмілість', `<label class="f"><span>Вмілість</span><input class="in" data-k="nazva" list="dl-vmilNazvy" maxlength="60" placeholder="почніть писати…"></label><div class="row2"><div>${dat('Дата здобуття', dez === 'поза гуртком')}</div><label class="f"><span>Хто прийняв</span><input class="in" data-k="khto" maxlength="60" placeholder="інструктор"></label></div><label class="chk sm"><input type="checkbox" data-k="nash"${dez !== 'у нас' ? ' checked' : ''}> нашивка вже є — не замовляти</label><label class="chk sm"><input type="checkbox" data-k="posv" checked> є посвідка</label>`],
-      vidzn: ['Відзнака', `<div class="row2"><label class="f"><span>Відзнака</span><input class="in" data-k="nazva" maxlength="60" placeholder="напр. нашивка табору"></label><label class="f"><span>Вид</span><select class="in" data-k="vyd"><option>табір</option><option>проба</option><option>відзначення</option><option>інша</option></select></label></div><div class="row2"><div>${dat('Коли отримав(-ла)')}</div><label class="f"><span>За що</span><input class="in" data-k="pidst" maxlength="80"></label></div>`]
+      vidzn: ['Відзнака', `<div class="row2"><label class="f"><span>Відзнака</span><input class="in" data-k="nazva" list="dl-nazvyKnyhy" maxlength="60" placeholder="напр. нашивка табору"></label><label class="f"><span>Вид</span><select class="in" data-k="vyd"><option>табір</option><option>проба</option><option>відзначення</option><option>інша</option></select></label></div><div class="row2"><div>${dat('Коли отримав(-ла)')}</div><label class="f"><span>За що</span><input class="in" data-k="pidst" maxlength="80"></label></div>`]
     };
     const [nz, h] = T[typ];
     $('pp-maie').insertAdjacentHTML('beforeend', `<div class="mr" data-r="${n}" data-t="${typ}"><div class="mh"><b>${nz}</b><button type="button" class="rx" aria-label="Прибрати">${SV('<path d="M18 6L6 18M6 6l12 12"/>')}</button></div>${h}
       <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div>
       <label class="chk sm"><input type="checkbox" data-k="per"> потребує перевірки (немає документа чи не все відомо)</label><p class="rok" hidden>✓ у книзі</p></div>`);
+    if (typ === 'tochky') { const nr = $('pp-maie').lastElementChild; nr._tt = new Set(); tkMaluy(nr); tkKnyha(); }
+    if (typ === 'vidzn' || typ === 'vmil') { nzKnyha(); nzPerevirka($('pp-maie').lastElementChild); }
   }
+
+  /* ---- назви відзнак і вмілостей: підказка з книги + попередження «такої назви ще немає» (спільний nazvy.js, як у «Відзначках» юнаків) ---- */
+  let nzSpysok = [], nzZavant = false;
+  document.body.insertAdjacentHTML('beforeend', '<datalist id="dl-nazvyKnyhy"></datalist>');
+  const nzKatalog = () => [...document.querySelectorAll('#dl-vmilNazvy option')].map(o => o.value);
+  function nzPerevirka(r) {
+    const el = r.querySelector('[data-k="nazva"]'); if (!el) return;
+    Nazvy.pokazaty(el.closest('.f'), Nazvy.poperedzhennia(nzSpysok, el.value, r.dataset.t === 'vmil' ? nzKatalog() : null));
+  }
+  async function nzKnyha() {   // раз: назви з книги (приймач, дія 'nazvy')
+    if (nzZavant) return; nzZavant = true;
+    const sp = await Nazvy.zavantazhyty(zapyt, kod); if (!sp) { nzZavant = false; return; }
+    nzSpysok = sp; $('dl-nazvyKnyhy').innerHTML = sp.map(x => `<option value="${esc(x)}">`).join('');
+    document.querySelectorAll('#pp-maie .mr[data-t="vidzn"], #pp-maie .mr[data-t="vmil"]').forEach(nzPerevirka);
+  }
+  $('pp-body').addEventListener('change', e => { const r = e.target.closest('.mr'); if (r && (r.dataset.t === 'vidzn' || r.dataset.t === 'vmil') && e.target.matches('[data-k="nazva"]')) nzPerevirka(r); });
+
+  /* ---- точки проби кнопками: спільний код tochky.js (як у «Пробах» юнаків) ---- */
+  const TK = Tochky.stvoryty(/*INDEKS*/null/*/INDEKS*/);
+  let tkZavant = false;
+  function tkKnyha() {   // раз: індекс проб з книги — приймач перевіряє точки саме за ним (аркуш «Індекс проб»)
+    if (tkZavant) return; tkZavant = true;
+    zapyt({kod, dija: 'proby'}).then(v => { if (v && v.ok && v.indeks) { TK.knyha(v.indeks); document.querySelectorAll('#pp-maie .mr[data-t="tochky"]').forEach(tkMaluy); } }, () => { tkZavant = false; });
+  }
+  function tkMaluy(r) {
+    const pr = pole(r, 'proba'), box = r.querySelector('[data-tkbox]'); if (!box) return;
+    if (TK.rozdily(pr).length) { const ok = new Set(TK.tochky(pr).map(x => x.t)); [...r._tt].forEach(t => { if (!ok.has(t)) r._tt.delete(t); }); }
+    box.innerHTML = TK.knopky(pr, r._tt, {rozdil: true});
+    tkLichylnyk(r);
+  }
+  function tkLichylnyk(r) {
+    const pr = pole(r, 'proba'), n = r._tt.size, N = TK.tochky(pr).length, p = r.querySelector('[data-tkn]'); if (!p) return;
+    p.textContent = n ? `Позначено ${n}${N ? ' з ' + N : ''}: ${TK.stysno(TK.vporyadkuvaty(pr, r._tt))}` : N ? `На бланку ${N} точок. Позначте ті, що підписані.` : '';
+  }
+  $('pp-body').addEventListener('change', e => { const r = e.target.closest('.mr[data-t="tochky"]'); if (r && e.target.matches('[data-k="proba"]')) { r._tt.clear(); tkMaluy(r); } });
+  $('pp-body').addEventListener('keydown', e => { if (e.target.dataset && e.target.dataset.tk === 'vl' && e.key === 'Enter') { e.preventDefault(); e.target.closest('[data-tkbox]').querySelector('[data-tk="vlb"]').click(); } });
   $('pp-body').addEventListener('click', e => {
+    const tb = e.target.closest('[data-tkbox]');
+    if (tb) {
+      const r = tb.closest('.mr'); if (PP.sent['r' + r.dataset.r]) return;   // уже в книзі — не міняти
+      const res = TK.klik(e, tb, pole(r, 'proba'), r._tt);
+      if (res === 'zmina') { tkMaluy(r); const v = tb.querySelector('[data-tk="vl"]'); if (v) setTimeout(() => v.focus(), 0); } else if (res === 'tochka') tkLichylnyk(r);
+      return;
+    }
     const d = e.target.closest('[data-d]'); if (d) return dodatyRyad(d.dataset.d);
     const x = e.target.closest('.rx'); if (x) { const r = x.closest('.mr'); if (!PP.sent['r' + r.dataset.r]) r.remove(); }
   });
@@ -1179,8 +1271,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         const e = bezDaty('Вкажіть дату посвідки (або «дата невідома»).'); if (e) return [e, r];
         out.push({id, t: pole(r, 'proba') + ' — посвідка' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Проби', dani: {"Ім'я": im, 'Проба': pole(r, 'proba'), 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': d, 'Хто підтвердив': pole(r, 'khto'), 'Примітка': prym, 'Де здобуто': dzK}}});
       } else if (typ === 'tochky') {
-        const tt = pole(r, 'tochky').split(/[\s,;]+/).filter(Boolean);
-        if (!tt.length) return ['Які точки підписано? Напишіть, як на бланку (А1 А3 Б2).', r];
+        const tt = TK.vporyadkuvaty(pole(r, 'proba'), r._tt);
+        if (!tt.length) return ['Які точки підписано? Позначте їх кнопками, як на бланку.', r];
         if (!d) return ['Точки — з датою з бланка (різні дати — кількома рядками).', r];
         out.push({id, t: pole(r, 'proba') + ': точки ' + tt.join(' ') + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'probyZapys', proba: pole(r, 'proba'), imena: [im], tochky: tt, data: d, pidtv: pole(r, 'khto'), prymitka: prym, dez: dzK}});
       } else if (typ === 'vmil') {
