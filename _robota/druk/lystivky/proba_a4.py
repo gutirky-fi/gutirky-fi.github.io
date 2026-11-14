@@ -40,22 +40,30 @@ def slot(i):                       # лівий нижній кут листів
     return gx + k*2*PW, gy + gh - (r+1)*PH
 
 
-def kartka(c, nazva, x, y):
+def kartka(c, nazva, x, y, zvorot=None):
+    """zvorot: None - як заведено; 'obydva' лілея+орел; 'orel' лише орел; 'lileya' лише лілея; 'nichoho' чистий."""
     fail, kolir, (os_, rozmir), zaholovok = L.KARTKY[nazva]
     foto = nazva in L.FOTO
-    orel = nazva in RIZDVO
+    if zvorot is None:
+        zvorot = 'obydva' if nazva in RIZDVO else 'lileya'
     lpath, (lw0, lh0) = L.lileya(kolir)
     lh, lw = L.LILY_H, L.LILY_H*lw0/lh0
-    if orel:
+    if zvorot in ('obydva', 'orel'):
         oa = np.asarray(Image.open(os.path.join(TUT, 'malyunky', 'orly_voli.png')).convert('RGBA')).copy()
         oa[..., :3] = kolir
         opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % kolir)
         Image.fromarray(oa, 'RGBA').save(opath)
+    if zvorot == 'obydva':
         c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+8*mm, lw, lh, mask='auto')
         c.drawImage(opath, x+PW/2-6*mm, y+13*mm, 12*mm, 12*mm, mask='auto')
         c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
         c.drawCentredString(x+PW/2, y+8.5*mm, L.OREL_PIDPYS)
-    else:
+    elif zvorot == 'orel':                         # орел замість лілеї, того ж розміру, підпис під ним
+        d = 30*mm
+        c.drawImage(opath, x+PW/2-d/2, y+PH/2-d/2+3*mm, d, d, mask='auto')
+        c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
+        c.drawCentredString(x+PW/2, y+8.5*mm, L.OREL_PIDPYS)
+    elif zvorot == 'lileya':
         c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
     if foto:
         c.saveState()
@@ -106,6 +114,21 @@ for st in range(0, len(VSI), COLS*ROWS):
     c.showPage()
 c.save()
 print('->', os.path.relpath(out, TUT), '(%d листівок, %d аркушів)' % (len(VSI), -(-len(VSI)//4)))
+
+# звороти: одна листівка, чотири варіанти звороту
+out3 = os.path.join(TUT, 'gotovi', 'proba_A4_zvoroty.pdf')
+c = canvas.Canvas(out3, pagesize=(PAGE_W, PAGE_H))
+c.setTitle('Проба: чотири варіанти звороту')
+c.setFillColorRGB(.55, .55, .55); c.setFont('Lora', 6.5)
+for i, (zv, pidp) in enumerate([('obydva', 'А. Лілея + орел'), ('orel', 'Б. Лише орел'),
+                                ('lileya', 'В. Лише лілея'), ('nichoho', 'Г. Чистий зворот')]):
+    x, y = slot(i)
+    kartka(c, 'kit_yalynka', x, y, zv)
+    c.setFillColorRGB(.55, .55, .55); c.setFont('Lora', 6.5)
+    c.drawString(x+1*mm, y+PH+2.5*mm if i < COLS else y-4.5*mm, pidp)
+mitky(c)
+c.save()
+print('->', os.path.relpath(out3, TUT))
 
 out2 = os.path.join(TUT, 'gotovi', 'proba_A4_vseredyni.pdf')
 c = canvas.Canvas(out2, pagesize=(PAGE_W, PAGE_H))
