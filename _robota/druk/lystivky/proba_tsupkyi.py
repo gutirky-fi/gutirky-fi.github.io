@@ -3,7 +3,8 @@
     python3 proba_tsupkyi.py    # gotovi/proba_tsupkyi_1_arkush.pdf (2 сторінки: лицьова і зворот аркуша)
 
 Листівки підібрано, щоб перевірити все: велике чорне (чорний кіт-ялинка), фото на всю панель (кіт на пледі),
-світлий кольоровий малюнок (крокодил), коричневий (кіт-ялинка). Звороти - кожен своїм кольором.
+кольорове фото (коргі), коричневий (кіт-ялинка). На кожній - інший варіант звороту (1-4), своїм кольором;
+номер варіанта - дрібно «зворот N» у лівому верхньому куті панелі.
 Угорі й унизу в полях - підпис «гурток «Орли волі»» у 8 кольорах (чорний і запасні) - видно, який лягає чітко.
 Сторінка 2 - внутрішній бік («Веселих свят! СКОБ!»), друкувати на звороті того самого аркуша
 (перевертати за КОРОТКОЮ стороною).
@@ -16,13 +17,27 @@ import proba_a4 as P
 import proba_kolory as K
 
 TUT = os.path.dirname(os.path.abspath(__file__))
-NABIR = ['kit_yalynka_chornyi', 'kit_chornyi_hirlianda', 'krokodyl', 'kit_yalynka']
+# (листівка, варіант звороту): 1 лише лілея · 2 + емблема · 3 + рік · 4 + назва і рік - кожен на іншій картинці
+NABIR = [('kit_yalynka_chornyi', 1), ('kit_chornyi_hirlianda', 2), ('korgi', 3), ('kit_yalynka', 4)]
 out = os.path.join(TUT, 'gotovi', 'proba_tsupkyi_1_arkush.pdf')
 c = canvas.Canvas(out, pagesize=(P.PAGE_W, P.PAGE_H))
 c.setTitle('Проба на цупкому папері: 1 аркуш')
-for i, n in enumerate(NABIR):
+import numpy as np
+from PIL import Image
+for i, (n, v) in enumerate(NABIR):
     x, y = P.slot(i)
-    P.kartka(c, n, x, y)
+    P.kartka(c, n, x, y, 'nichoho')
+    k = L.KARTKY[n][1]
+    lpath, (lw0, lh0) = L.lileya(k); lh, lw = L.LILY_H, L.LILY_H*lw0/lh0
+    if v == 1:
+        c.drawImage(lpath, x+P.PW/2-lw/2, y+P.PH/2-lh/2, lw, lh, mask='auto')
+    else:
+        oa = np.asarray(Image.open(os.path.join(TUT, 'malyunky', 'orly_voli.png')).convert('RGBA')).copy(); oa[..., :3] = k
+        opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % k); Image.fromarray(oa, 'RGBA').save(opath)
+        L.zvorot_orel(c, x, y, k, lpath, lw, lh, opath,
+                      [[], [(L.RIK_RIZDVA, 7.5)], [(L.GURTOK, 8), (L.RIK_RIZDVA, 7)]][v-2])
+    c.setFillColorRGB(.6, .6, .6); c.setFont('Lora', 5.5)
+    c.drawString(x+1*mm, y+P.PH-3*mm, 'зворот %d' % v)
 P.mitky(c)
 krok = (P.gw - 2*mm) / 4
 for j, (k, nazva) in enumerate(K.KOLORY):
