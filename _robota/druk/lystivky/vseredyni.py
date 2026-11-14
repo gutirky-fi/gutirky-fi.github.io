@@ -1,6 +1,10 @@
 """Внутрішній бік листівок: друкується на ЗВОРОТІ того самого аркуша А3.
 
-    python3 vseredyni.py            # gotovi/vseredyni_linii_A3.pdf і gotovi/vseredyni_klitynky_A3.pdf
+    python3 vseredyni.py            # gotovi/vseredyni_linii_A3.pdf, vseredyni_klitynky_A3.pdf, vseredyni_svyata_A3.pdf
+
+«svyata» - на правій внутрішній половинці напис «Веселих свят!» і «СКОБ!», під ним лінії; ліва - лінії.
+Права внутрішня = зворот панелі з лілеєю (при перевертанні за довгою стороною аркуш дзеркалиться,
+тож на звороті аркуша вона стоїть праворуч у кожній парі).
 
 Розклад той самий, що в lystivka.py (8 листівок, проміжок 10 мм посередині), він симетричний,
 тому при двосторонньому друці (перевертати за довгою стороною) усе збігається з лицьовим боком.
@@ -10,17 +14,28 @@
 import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 from lystivka import PAGE_W, PAGE_H, PW, PH, COLS, ROWS, gx, row_y
 
 TUT = os.path.dirname(os.path.abspath(__file__))
 VIDSTUP = 7*mm
+SHR = os.path.join(TUT, '..', 'shryfty')
+pdfmetrics.registerFont(TTFont('LoraI', os.path.join(SHR, 'Lora-Italic-Variable.ttf')))
+pdfmetrics.registerFont(TTFont('Lora', os.path.join(SHR, 'Lora-Variable.ttf')))
+NAPYS, PIDPYS = 'Веселих свят!', 'С К О Б !'
 
 
-def panel(c, x, y, vyd):
+def panel(c, x, y, vyd, napys=False):
     x0, x1, y0, y1 = x+VIDSTUP, x+PW-VIDSTUP, y+VIDSTUP, y+PH-VIDSTUP
+    if napys:
+        c.setFillColorRGB(0.2, 0.2, 0.2)
+        c.setFont('LoraI', 17); c.drawCentredString(x+PW/2, y1-10*mm, NAPYS)
+        c.setFillColorRGB(0.45, 0.45, 0.45)
+        c.setFont('Lora', 8.5); c.drawCentredString(x+PW/2, y1-17*mm, PIDPYS)
     if vyd == 'linii':
         c.setStrokeColorRGB(0.72, 0.72, 0.72); c.setLineWidth(0.4)
-        yy = y1 - 6*mm                                  # верх лишаємо під звертання
+        yy = y1 - (30*mm if napys else 6*mm)            # верх лишаємо під звертання / напис
         while yy >= y0:
             c.line(x0, yy, x1, yy); yy -= 8*mm
     else:
@@ -34,13 +49,14 @@ def panel(c, x, y, vyd):
             c.line(ox, oy+j*k, ox+nx*k, oy+j*k)
 
 
-for vyd, nazva in [('linii', 'лінії'), ('klitynky', 'клітинки')]:
-    out = os.path.join(TUT, 'gotovi', 'vseredyni_%s_A3.pdf' % vyd)
+for fail, vyd, nazva in [('linii', 'linii', 'лінії'), ('klitynky', 'klitynky', 'клітинки'),
+                         ('svyata', 'linii', 'Веселих свят! СКОБ! + лінії')]:
+    out = os.path.join(TUT, 'gotovi', 'vseredyni_%s_A3.pdf' % fail)
     c = canvas.Canvas(out, pagesize=(PAGE_W, PAGE_H))
     c.setTitle('Листівки - внутрішній бік (%s), А3' % nazva)
     for r in range(ROWS):
         for k in range(COLS):
             x, y = gx + k*2*PW, row_y(r)
-            panel(c, x, y, vyd); panel(c, x+PW, y, vyd)
+            panel(c, x, y, vyd); panel(c, x+PW, y, vyd, napys=(fail == 'svyata'))
     c.save()
     print('->', os.path.relpath(out, TUT))
