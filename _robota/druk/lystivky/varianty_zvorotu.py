@@ -1,4 +1,4 @@
-# Проба 3 варіантів звороту на коті-ялинці: 1 лілея+емблема, 2 + «Різдво 2026», 3 + «гурток «Орли волі»» і «Різдво 2026». Пише /tmp/zvoroty3.pdf → копія в gotovi/proba_A4_varianty_zvorotu.pdf
+# Проба 4 варіантів звороту на коті-ялинці: 1 лише лілея, 2 лілея+емблема, 3 + «Різдво 2026», 4 + «гурток «Орли волі»» і «Різдво 2026». Пише /tmp/zvoroty3.pdf → копія в gotovi/proba_A4_varianty_zvorotu.pdf
 import sys, os
 sys.path.insert(0, '/home/claude/gutirky-fi.github.io/_robota/druk/lystivky')
 import numpy as np
@@ -32,14 +32,17 @@ def ramka(x, y, t):
 def pidpys(x, yy, t='Орли волі · Різдво 2026', size=7):
     c.setFillColorRGB(*(v/255 for v in kol)); c.setFont('LoraI', size); c.drawCentredString(x+PW/2, yy, t)
 def back(x, y, ryadky):
+    if ryadky is None:                                  # лише лілея, по центру
+        c.drawImage(lp, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto'); return
     c.drawImage(lp, x+PW/2-lw/2, y+PH/2-lh/2+10*mm, lw, lh, mask='auto')
     d = 12*mm; oy = y+16*mm if ryadky else y+11*mm
     c.drawImage(orel_k, x+PW/2-d/2, oy, d, d, mask='auto')
     for j, (t, sz) in enumerate(ryadky):
         pidpys(x, oy-4.5*mm-j*4*mm, t, sz)
-VAR = [('1 — лілея + емблема', []),
-       ('2 — лілея + емблема + рік', [('Різдво 2026', 7.5)]),
-       ('3 — лілея + емблема + назва + рік', [('гурток «Орли волі»', 8), ('Різдво 2026', 7)])]
+VAR = [('1 — лише лілея', None),
+       ('2 — лілея + емблема', []),
+       ('3 — лілея + емблема + рік', [('Різдво 2026', 7.5)]),
+       ('4 — лілея + емблема + назва + рік', [('гурток «Орли волі»', 8), ('Різдво 2026', 7)])]
 for (x, y), (t, r) in zip(pos, VAR):
     ramka(x, y, t); front(x, y); back(x, y, r)
 c.save()
