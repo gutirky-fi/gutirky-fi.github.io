@@ -464,6 +464,9 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
 /* відкрито з «Входу виховника» (?v): колір виховника, як у vykhovnyk.html (14.11) */
 html.vykh{--d:#3daf6e;--d-t:#62cf93}
 html.vykh .back span{display:inline!important}
+html.vykh #z-hr,html.vykh #z-vt{display:none!important}   /* у виховника це є в «Перевірці каси» (14.11) */
+.vkh{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}
+.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
 html.vykh .btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}html.vykh .btn.main:hover{background:#4cc07f}
 </style>
 </head>
@@ -1585,6 +1588,10 @@ window.Nazvy = (function () {
   }
   if (/podaty/.test(location.hash) || hm) show(1);
 
+  if (VYKH && K.hroshi) {   // Каса з «Входу виховника»: що тут робити і де решта (для нового виховника, 14.11)
+    const d = DEMO ? '?demo' : '';
+    $('p-z').insertAdjacentHTML('afterbegin', `<div class="vkh"><b>Ви тут як виховник.</b> Тут лише <b>записують</b> гроші: внесок, видаток, повернення — поки в гуртку немає скарбника, або коли щось пропустив. Що вже записано цієї дати — видно під датою, щоб не записати двічі.<br><b>Скільки грошей у касі, борги, ✓ «гроші є», звірка</b> — у <a href="../vykhovnyk/${d}#kp">«Перевірці каси»</a>.</div>`);
+  }
   $('z-side').innerHTML = (K.ohliad ? '<div class="card ohc" id="z-oh" hidden></div>' : '') + (K.hroshi ? '<div class="card hrc" id="z-hr" hidden></div>' : '') + (K.vytiah ? '<div class="card vtc" id="z-vt" hidden></div>' : '') + [['Куди це піде', K.kudy]].concat(K.pravylo ? [['Що є доказом', K.pravylo]] : [], [['Що лишається на телефоні', ['Нічого з записів: після «Надіслати» форма чиста.', 'Код не зберігається — після «Вийти» або закриття сторінки треба ввести знову.']],
     ['Немає мережі?', ['Відкрийте «Бланк», запишіть на папері, а вдома перенесіть сюди.']]])
     .map(([h, l]) => `<div class="card"><h3>${esc(h)}</h3><ul>${l.map(x => `<li>${x}</li>`).join('')}</ul></div>`).join('');

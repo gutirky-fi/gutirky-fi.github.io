@@ -447,6 +447,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   /* адреса книги — з посилання виховника (#p=…), на пристрої лише адреса (як у «Відвідуваності») */
   const KEY = 'dokumenty:pryimach';
   let addr = '';
+  const DOKP = /#kp\b/.test(location.hash);   // з «Каси» виховника: одразу «Перевірка каси» (14.11)
   try { addr = localStorage.getItem(KEY) || ''; } catch (x) {}
   const hm = /[#&]p=([^&]+)/.exec(location.hash);
   if (hm) {
@@ -569,6 +570,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
       if (v.rol !== 'v') throw new Error('Це вхід виховника — потрібен код виховника, а не код юнаків.');
       kod = k; imena = v.imena || []; $('z-kod').value = ''; ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
+      if (DOKP) { history.replaceState(null, '', location.pathname + location.search); $('go-kp').click(); }
     } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
     finally { b.disabled = false; b.textContent = 'Увійти'; }
   });
