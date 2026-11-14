@@ -143,7 +143,7 @@ body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
 .hn{font:600 clamp(1.3rem,2.6vw,2rem)/1.2 var(--txt);color:var(--ac)}.hn small{display:block;font-size:.55em;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
 .wr{color:#ff9a8a;font-weight:700;font-size:clamp(1rem,1.6vw,1.3rem)}
 .rule{color:var(--mut);font-size:15px;margin:0}
-#run .stage{justify-content:flex-start;overflow:auto;padding-top:6px}#run .win b{font-size:clamp(2.6rem,6vw,4.6rem)}#run .fact{font-size:clamp(1.9rem,4.2vw,3.6rem)}
+#run{--k:1}#run .stage{justify-content:flex-start;overflow:hidden;padding-top:6px}#run .win b{font-size:calc(var(--k)*clamp(2.6rem,6vw,4.6rem))}#run .fact{font-size:calc(var(--k)*clamp(1.9rem,4.2vw,3.6rem))}#run .hn{font-size:calc(var(--k)*clamp(1.3rem,2.6vw,2rem))}#run .win small,#run .win span,#run .wr,#run .ask{font-size:calc(var(--k)*clamp(1rem,1.8vw,1.4rem))}#run .dots i{width:calc(var(--k)*22px);height:calc(var(--k)*22px)}
 .gn{display:flex;flex-wrap:wrap;gap:8px}
 .score{display:flex;gap:28px;justify-content:center;align-items:baseline;margin:10px 0}.score b{font:600 clamp(3rem,7vw,5rem)/1 var(--disp);color:var(--gd)}.score span{color:var(--mut);font-weight:700}
 .top5{margin:8px auto;display:inline-block;text-align:left;font-size:1.25rem;color:#cfd5dc}
@@ -1183,7 +1183,16 @@ function paintFakt() {
   $('#run .rule').hidden = it.done;
   $('#fprev').disabled = fi === 0;
   $('#fnext').textContent = fi < items.length - 1 ? 'Наступний факт →' : 'Кінець →';
+  fitRun();
 }
+/* без прокрутки, як в інших іграх: якщо не вміщується — зменшуємо текст (до 55 %) */
+function fitRun() {
+  const r = $('#run'), st = $('#fst'); if (r.hidden) return;
+  let k = 1; r.style.setProperty('--k', k);
+  const over = () => st.scrollHeight > st.clientHeight + 1 || r.scrollHeight > r.clientHeight + 1;
+  while (over() && k > 0.55) { k = Math.round((k - 0.05) * 100) / 100; r.style.setProperty('--k', k); }
+}
+addEventListener('resize', () => { if (phase === 'fakt') fitRun(); });
 function paintMy() {
   const n = votes[qi].size, tot = Math.max(0, online());
   $('#mn').textContent = 'Хто з нас… · питання ' + (qi + 1) + ' з ' + QS.length;
