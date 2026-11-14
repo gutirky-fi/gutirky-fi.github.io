@@ -3,6 +3,7 @@
     python3 vyrizaty.py vkhid/nova.png nova
     python3 vyrizaty.py vkhid/nova.png nova --ramka 886,150,1595,971   # якщо треба вказати місце вручну
     python3 vyrizaty.py vkhid/nova.png nova --porih 0.06               # більше - чистіший фон, але світлі місця теж зникають
+    python3 vyrizaty.py vkhid/nova.png nova --zapovnyty 6000           # світлі дірки всередині предмета (хутро) зробити непрозорими; число - найбільша дірка в точках
 
 Вхід: або розгорт 1654x1122 (малюнок у правій половині), або просто картинка.
 Вихід: malyunky/<назва>.png (прозорий фон) і malyunky/_perevirka_<назва>.png (як буде на кремовому папері).
@@ -22,7 +23,7 @@ import scipy.ndimage as ndi
 TUT = os.path.dirname(os.path.abspath(__file__))
 
 
-def main(src, nazva, ramka=None, porih=0.05):
+def main(src, nazva, ramka=None, porih=0.05, zapovnyty=0):
     im = np.asarray(Image.open(src).convert('RGB')).astype(float)
     H, W, _ = im.shape
     if ramka:
@@ -54,6 +55,16 @@ def main(src, nazva, ramka=None, porih=0.05):
         small = np.isin(lab, [i+1 for i, s in enumerate(sizes) if s < 30])
         a[ndi.binary_dilation(small, iterations=3) & ~ndi.binary_dilation(big, iterations=1)] = 0
         a[~ndi.binary_dilation(big, iterations=3) & (a < 0.3)] = 0
+    if zapovnyty:
+        # світле хутро/деталі всередині предмета, що стали «дірками» (папір просвічує): робимо непрозорими
+        sil = ndi.binary_fill_holes(ndi.binary_closing(a > 0.12, iterations=2))
+        dirky = sil & (a <= 0.12)
+        lab, n = ndi.label(dirky)
+        if n:
+            sizes = ndi.sum(dirky, lab, range(1, n+1))
+            mala = np.isin(lab, [i+1 for i, s in enumerate(sizes) if s <= zapovnyty])
+            a[ndi.binary_dilation(mala, iterations=2) & sil] = 1.0
+            print('заповнено дірок: %d' % int(sum(1 for s in sizes if s <= zapovnyty)))
     safe = np.maximum(a, 1e-6)[..., None]
     ink = np.clip((plate - bg*(1-a[..., None])) / safe, 0, 255)
     ink[a == 0] = 0
@@ -76,11 +87,13 @@ def main(src, nazva, ramka=None, porih=0.05):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    ramka, porih = None, 0.05
+    ramka, porih, zapovnyty = None, 0.05, 0
     if '--ramka' in args:
         i = args.index('--ramka'); ramka = [int(v) for v in args[i+1].split(',')]; del args[i:i+2]
     if '--porih' in args:
         i = args.index('--porih'); porih = float(args[i+1]); del args[i:i+2]
+    if '--zapovnyty' in args:
+        i = args.index('--zapovnyty'); zapovnyty = int(args[i+1]); del args[i:i+2]
     if len(args) != 2:
         print(__doc__); sys.exit(1)
-    main(args[0], args[1], ramka, porih)
+    main(args[0], args[1], ramka, porih, zapovnyty)

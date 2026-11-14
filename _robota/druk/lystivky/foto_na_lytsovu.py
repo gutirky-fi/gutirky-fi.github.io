@@ -11,6 +11,8 @@
   --verkh y    y верху предмета у вхідному фото
   --shyryna w  скільки пікселів вхідного фото = 70 мм ширини панелі (чим менше, тим предмет більший)
   --zverhu mm  відступ від верху панелі до верху предмета, мм (за замовчуванням 16)
+  --dzerkalo K1,K2  фон з візерунком (плед, шпалери, текстиль): замість гладкого фону добудувати його ДЗЕРКАЛОМ
+                    верхніх K1 і нижніх K2 рядків фото (взяти лише ті рядки, де немає предмета); зерно оригіналу лишається
 Вихід: malyunky/<назва>_lytsova.jpg - панель + запас під різ (1,5 мм зверху й знизу, 1 мм праворуч).
 Далі: python3 lystivka.py <назва> --foto
 """
@@ -22,7 +24,7 @@ TUT = os.path.dirname(os.path.abspath(__file__))
 PW, PH, BL_V, BL_R = 70.0, 95.0, 1.5, 1.0      # мм, як у lystivka.py
 
 
-def main(src, nazva, tsentr, verkh, shyryna, zverhu=16.0):
+def main(src, nazva, tsentr, verkh, shyryna, zverhu=16.0, dzerkalo=None):
     im = cv2.imread(src).astype(np.float32)
     H, W = im.shape[:2]
     ppm = shyryna / PW                                   # пікселів на мм
@@ -44,18 +46,27 @@ def main(src, nazva, tsentr, verkh, shyryna, zverhu=16.0):
         return cv2.GaussianBlur(r[None], (0, 0), 28, borderType=cv2.BORDER_REFLECT)[0]
 
     top_n, bot_n = dy, ch-dy-H
-    base_t, base_b = smooth_row(im[:10]), smooth_row(im[-10:])
-    d_t = np.arange(top_n, 0, -1, dtype=np.float32)[:, None, None]    # 1.. від шва вгору
-    ext_t = base_t[None] * (1 - 0.15*(1 - np.exp(-d_t/(0.5*ppm*10))))
-    d_b = np.arange(1, bot_n+1, dtype=np.float32)[:, None, None]
-    ext_b = base_b[None] * (1 - 0.06*(1 - np.exp(-d_b/(0.5*ppm*10))))
-    out = np.concatenate([ext_t, im, ext_b], axis=0)
-    # зерно тільки на добудованих смугах (оригінал має своє)
-    grain = rng.normal(0, 1, (ch, cw)).astype(np.float32)
-    grain = cv2.GaussianBlur(grain, (0, 0), 0.7)
-    grain *= sd / grain.std()
-    mask = np.zeros(ch, np.float32); mask[:top_n] = 1; mask[top_n+H:] = 1
-    out += (grain * mask[:, None])[..., None]
+    if dzerkalo:
+        k1, k2 = dzerkalo
+        def refl(i, k):                                  # номер рядка при багаторазовому відзеркаленні смуги з k рядків
+            i = i % (2*k)
+            return i if i < k else 2*k - 1 - i
+        ext_t = np.stack([im[refl(top_n-1-j, k1)] for j in range(top_n)]) if top_n else im[:0]
+        ext_b = np.stack([im[H-1-refl(j, k2)] for j in range(bot_n)]) if bot_n else im[:0]
+        out = np.concatenate([ext_t, im, ext_b], axis=0)
+    else:
+        base_t, base_b = smooth_row(im[:10]), smooth_row(im[-10:])
+        d_t = np.arange(top_n, 0, -1, dtype=np.float32)[:, None, None]    # 1.. від шва вгору
+        ext_t = base_t[None] * (1 - 0.15*(1 - np.exp(-d_t/(0.5*ppm*10))))
+        d_b = np.arange(1, bot_n+1, dtype=np.float32)[:, None, None]
+        ext_b = base_b[None] * (1 - 0.06*(1 - np.exp(-d_b/(0.5*ppm*10))))
+        out = np.concatenate([ext_t, im, ext_b], axis=0)
+        # зерно тільки на добудованих смугах (оригінал має своє)
+        grain = rng.normal(0, 1, (ch, cw)).astype(np.float32)
+        grain = cv2.GaussianBlur(grain, (0, 0), 0.7)
+        grain *= sd / grain.std()
+        mask = np.zeros(ch, np.float32); mask[:top_n] = 1; mask[top_n+H:] = 1
+        out += (grain * mask[:, None])[..., None]
     out = np.clip(out, 0, 255).round().astype(np.uint8)
     path = os.path.join(TUT, 'malyunky', nazva + '_lytsova.jpg')
     cv2.imwrite(path, out, [cv2.IMWRITE_JPEG_QUALITY, 93])
@@ -68,7 +79,10 @@ if __name__ == '__main__':
         if name in a:
             i = a.index(name); v = a[i+1]; del a[i:i+2]; return float(v)
         return default
+    dz = None
+    if '--dzerkalo' in a:
+        i = a.index('--dzerkalo'); dz = tuple(int(v) for v in a[i+1].split(',')); del a[i:i+2]
     tsentr, verkh, shyryna, zverhu = opt('--tsentr'), opt('--verkh'), opt('--shyryna'), opt('--zverhu', 16.0)
     if len(a) != 2 or None in (tsentr, verkh, shyryna):
         print(__doc__); sys.exit(1)
-    main(a[0], a[1], tsentr, verkh, shyryna, zverhu)
+    main(a[0], a[1], tsentr, verkh, shyryna, zverhu, dz)

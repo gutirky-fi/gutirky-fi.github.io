@@ -34,10 +34,12 @@ KARTKY = {
     'syl_kras_ober_byst': ('syl_kras_ober_byst.png', (0, 0, 0),      ('w', 56.0), 'Сильно Красно Обережно Бистро'),
     'chotyry_symvoly':    ('chotyry_symvoly.png',    (0, 0, 0),      ('w', 56.0), 'Чотири символи'),
     'litera_a':           ('litera_a.png',           (49, 49, 49),   ('w', 56.0), 'Літера А з лампочками'),
+    'kit_yalynka':        ('kit_yalynka.png',        (96, 80, 68),   ('w', 56.0), 'Кіт-ялинка'),
+    'kit_chornyi_hirlianda': ('kit_chornyi_hirlianda_lytsova.jpg', (38, 18, 16), ('w', 70.0), 'Чорний кіт у гірлянді'),
 }
 
 # листівки, де лицьова - ФОТО на всю панель (готує foto_na_lytsovu.py); вмикається прапорцем --foto
-FOTO = {'litera_a': 'litera_a_lytsova.jpg'}
+FOTO = {'litera_a': 'litera_a_lytsova.jpg', 'kit_chornyi_hirlianda': 'kit_chornyi_hirlianda_lytsova.jpg'}
 
 PAGE_W, PAGE_H = 297*mm, 420*mm
 PW, PH = 70*mm, 95*mm              # одна панель (зворот або лицьова)
