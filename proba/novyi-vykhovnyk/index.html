@@ -126,12 +126,18 @@ textarea.f{min-height:96px;resize:vertical}
 .zb{width:min(1100px,100%);margin:auto;display:flex;flex-direction:column;gap:10px}
 .zb h1{margin:0;font:600 clamp(2.2rem,5vw,3.6rem)/1.05 var(--disp)}
 #run .stage,#my .stage{gap:10px}
+/* ноутбук: усе на одному екрані без прокрутки */
+body.s2 #krok1 .qr,body.s2 #krok2 .qr{width:min(230px,calc(100vh - 430px));min-width:150px}
+body.s2 #krok2 .code{font-size:clamp(2rem,6vh,3.2rem)}
+body.s2 #krok1 h2,body.s2 #krok2 h2{margin:0 0 2px}body.s2 #krok1 p,body.s2 #krok2 p{margin:0 0 6px}
+body.s2 #lobby{padding-bottom:8px}body.s2 #lobby .qlist{font-size:15px;margin-top:2px}body.s2 #lobby .qlist li{margin:1px 0}
+.igr{margin-top:8px}.igr .s2l{margin-top:0}.igr .names{max-height:max(34px,calc(100vh - 620px));overflow:hidden;margin-top:4px}.igr .names span{font-size:14px;padding:3px 11px}
 body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
 .kg{display:grid;grid-template-columns:1fr 1fr;gap:24px;text-align:center;margin-top:12px}.kg h3{margin:0 0 8px;font:600 22px var(--disp);text-transform:uppercase}.kg .qr{margin:0 auto 8px;width:min(260px,34vh)}
 #qrv{margin:6px auto 10px;box-shadow:0 0 0 1px rgba(47,210,192,.6),0 0 28px -6px rgba(47,210,192,.6)}
 .vst{color:var(--mut);font-size:14px;margin:0}
 .vlink{margin-top:10px;background:none;border:0;color:var(--mut);text-decoration:underline;font-size:13px;padding:4px}
-.vok{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 12px;padding:8px 12px;border-radius:12px;background:rgba(47,210,192,.12);color:var(--ac);font-weight:700;font-size:14px}
+.vok{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:5px 10px;border-radius:99px;background:rgba(47,210,192,.12);color:var(--ac);font-weight:700;font-size:14px}
 .vok button{background:none;border:1px solid rgba(47,210,192,.5);color:var(--ac);border-radius:99px;padding:3px 12px;font-size:13px;font-weight:700}
 .dots{display:flex;gap:10px;margin:4px 0}.dots i{width:22px;height:22px;border-radius:50%;background:var(--gd)}.dots i.off{background:transparent;border:2px solid var(--ln)}
 .hn{font:600 clamp(1.3rem,2.6vw,2rem)/1.2 var(--txt);color:var(--ac)}.hn small{display:block;font-size:.55em;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
@@ -1249,7 +1255,8 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
   const j = el('aside', 's2j', '<div id="krok1"><h2>Хто вгадує?</h2><p>Скануй цей код — і ти вгадуєш.<br>Підключається лише один телефон.</p><div class="qr" id="qrv"></div><p class="vst" id="vst">Готуємо код…</p><button type="button" class="vlink" id="vskip">Вгадувати з цього екрана</button></div>'
     + '<div id="krok2"><div class="vok" id="vok"></div><h2>Грають усі інші</h2><p>Скануйте QR-код і впишіть своє імʼя.</p></div>');
   const inl = q('inl'), inn = q('inn'); inl.className = 's2l';
-  j.querySelector('#krok2').append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'), inl, inn);
+  j.querySelector('#krok2').append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'));
+  const ig = el('div', 'igr'); ig.append(inl, inn); m.append(ig);   /* хто в грі — ліворуч, щоб картка з QR не росла */
   const L = el('div', 'l2'); L.append(m, j); lb.replaceWith(L);
   if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'znay', m, x: null, knopky: { start: 'play', edit: 'edit' }, strilky: ['fprev', 'fnext', 'mprev', 'mnext', 'zback', 'zgo'] });
 }
