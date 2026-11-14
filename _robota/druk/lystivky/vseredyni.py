@@ -2,6 +2,7 @@
 
     python3 vseredyni.py            # gotovi/vseredyni_linii_A3.pdf, vseredyni_klitynky_A3.pdf, vseredyni_svyata_A3.pdf
 
+«orly_voli» - те саме, але над написом знак гуртка (орел), унизу «гурток «Орли волі»».
 «svyata» - на правій внутрішній половинці напис «Веселих свят!» і «СКОБ!», під ним лінії; ліва - лінії.
 Права внутрішня = зворот панелі з лілеєю (при перевертанні за довгою стороною аркуш дзеркалиться,
 тож на звороті аркуша вона стоїть праворуч у кожній парі).
@@ -24,10 +25,25 @@ SHR = os.path.join(TUT, '..', 'shryfty')
 pdfmetrics.registerFont(TTFont('LoraI', os.path.join(SHR, 'Lora-Italic-Variable.ttf')))
 pdfmetrics.registerFont(TTFont('Lora', os.path.join(SHR, 'Lora-Variable.ttf')))
 NAPYS, PIDPYS = 'Веселих свят!', 'С К О Б !'
+OREL = os.path.join(TUT, 'malyunky', 'orly_voli.png')       # знак гуртка (зі знімка нашивки, вичищено)
+GURTOK = 'гурток «Орли волі»'
 
 
-def panel(c, x, y, vyd, napys=False):
+def panel(c, x, y, vyd, napys=False, orel=False):
     x0, x1, y0, y1 = x+VIDSTUP, x+PW-VIDSTUP, y+VIDSTUP, y+PH-VIDSTUP
+    if orel:                                            # орел угорі, привітання під ним, підпис гуртка внизу
+        d = 16*mm
+        c.drawImage(OREL, x+PW/2-d/2, y1-d, d, d, mask='auto')
+        c.setFillColorRGB(0.2, 0.2, 0.2)
+        c.setFont('LoraI', 17); c.drawCentredString(x+PW/2, y1-26*mm, NAPYS)
+        c.setFillColorRGB(0.45, 0.45, 0.45)
+        c.setFont('Lora', 8.5); c.drawCentredString(x+PW/2, y1-32*mm, PIDPYS)
+        c.setFont('LoraI', 8); c.drawCentredString(x+PW/2, y0+1*mm, GURTOK)
+        c.setStrokeColorRGB(0.72, 0.72, 0.72); c.setLineWidth(0.4)
+        yy = y1 - 44*mm
+        while yy >= y0 + 7*mm:
+            c.line(x0, yy, x1, yy); yy -= 8*mm
+        return
     if napys:
         c.setFillColorRGB(0.2, 0.2, 0.2)
         c.setFont('LoraI', 17); c.drawCentredString(x+PW/2, y1-10*mm, NAPYS)
@@ -50,13 +66,14 @@ def panel(c, x, y, vyd, napys=False):
 
 
 for fail, vyd, nazva in [('linii', 'linii', 'лінії'), ('klitynky', 'klitynky', 'клітинки'),
-                         ('svyata', 'linii', 'Веселих свят! СКОБ! + лінії')]:
+                         ('svyata', 'linii', 'Веселих свят! СКОБ! + лінії'),
+                         ('orly_voli', 'linii', 'орел гуртка + Веселих свят! СКОБ! + лінії')]:
     out = os.path.join(TUT, 'gotovi', 'vseredyni_%s_A3.pdf' % fail)
     c = canvas.Canvas(out, pagesize=(PAGE_W, PAGE_H))
     c.setTitle('Листівки - внутрішній бік (%s), А3' % nazva)
     for r in range(ROWS):
         for k in range(COLS):
             x, y = gx + k*2*PW, row_y(r)
-            panel(c, x, y, vyd); panel(c, x+PW, y, vyd, napys=(fail == 'svyata'))
+            panel(c, x, y, vyd); panel(c, x+PW, y, vyd, napys=(fail == 'svyata'), orel=(fail == 'orly_voli'))
     c.save()
     print('->', os.path.relpath(out, TUT))
