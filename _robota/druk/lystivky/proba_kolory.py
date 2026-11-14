@@ -21,22 +21,40 @@ KOLORY = [((0, 0, 0), '1 чорний'), ((33, 37, 41), '2 графіт'), ((40,
 W, H = 297*mm, 210*mm
 PW, PH = L.PW, L.PH
 gx, gy = (W-4*PW)/2, (H-2*PH)/2
+# аркуші 2-3: кольори, що СТОЯТЬ на листівках зараз (з KARTKY), з назвами листівок
+NA_LYSTIVKAKH = {}
+for n in P.VSI:
+    NA_LYSTIVKAKH.setdefault(L.KARTKY[n][1], []).append(L.KARTKY[n][3])
+NA_LYSTIVKAKH = [(k, ', '.join(v)) for k, v in NA_LYSTIVKAKH.items()]
+
 out = os.path.join(TUT, 'gotovi', 'proba_A4_kolory_zvorotu.pdf')
 c = canvas.Canvas(out, pagesize=(W, H))
 c.setTitle('Проба кольорів звороту')
-for i, (k, nazva) in enumerate(KOLORY):
-    r, col = divmod(i, 4)
-    x, y = gx + col*PW, gy + (1-r)*PH
-    lpath, (lw0, lh0) = L.lileya(k); lh, lw = L.LILY_H, L.LILY_H*lw0/lh0
-    oa = np.asarray(Image.open(os.path.join(TUT, 'malyunky', 'orly_voli.png')).convert('RGBA')).copy(); oa[..., :3] = k
-    opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % k); Image.fromarray(oa, 'RGBA').save(opath)
-    L.zvorot_orel(c, x, y, k, lpath, lw, lh, opath, [(L.GURTOK, 8), (L.RIK_RIZDVA, 7)])
-    c.setFillColorRGB(.5, .5, .5); c.setFont('Lora', 7)
-    c.drawString(x+2*mm, y+PH+2.5*mm if r == 0 else y-5*mm, '%s  (%d, %d, %d)' % (nazva, *k))
-c.setStrokeColorRGB(.85, .85, .85); c.setLineWidth(.3)
-for col in range(5):
-    c.line(gx+col*PW, gy, gx+col*PW, gy+2*PH)
-for r in range(3):
-    c.line(gx, gy+r*PH, gx+4*PW, gy+r*PH)
+
+
+def arkush(spysok, zaholovok):
+    c.setFillColorRGB(.3, .3, .3); c.setFont('Lora', 8); c.drawString(gx, H-6*mm, zaholovok)
+    for i, (k, nazva) in enumerate(spysok):
+        r, col = divmod(i, 4)
+        x, y = gx + col*PW, gy + (1-r)*PH
+        lpath, (lw0, lh0) = L.lileya(k); lh, lw = L.LILY_H, L.LILY_H*lw0/lh0
+        oa = np.asarray(Image.open(os.path.join(TUT, 'malyunky', 'orly_voli.png')).convert('RGBA')).copy(); oa[..., :3] = k
+        opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % k); Image.fromarray(oa, 'RGBA').save(opath)
+        L.zvorot_orel(c, x, y, k, lpath, lw, lh, opath, [(L.GURTOK, 8), (L.RIK_RIZDVA, 7)])
+        c.setFillColorRGB(.5, .5, .5); c.setFont('Lora', 5.5)
+        t = '%s  (%d, %d, %d)' % (nazva, *k)
+        if len(t) > 70: t = t[:68] + '…'
+        c.drawString(x+1*mm, y+PH+2*mm if r == 0 else y-4.5*mm, t)
+    c.setStrokeColorRGB(.85, .85, .85); c.setLineWidth(.3)
+    for col in range(5):
+        c.line(gx+col*PW, gy, gx+col*PW, gy+2*PH)
+    for r in range(3):
+        c.line(gx, gy+r*PH, gx+4*PW, gy+r*PH)
+    c.showPage()
+
+
+arkush(KOLORY, 'Аркуш 1: чорний і запасні кольори')
+for st in range(0, len(NA_LYSTIVKAKH), 8):
+    arkush(NA_LYSTIVKAKH[st:st+8], 'Аркуш %d: кольори, що зараз стоять на листівках (під кожним - на яких)' % (2 + st//8))
 c.save()
-print('->', os.path.relpath(out, TUT))
+print('->', os.path.relpath(out, TUT), '(%d кольорів на листівках)' % len(NA_LYSTIVKAKH))
