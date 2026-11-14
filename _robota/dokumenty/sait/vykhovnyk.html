@@ -1113,6 +1113,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     perekhid: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
     povernuvsia: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-4"/>',
     poza: '<path d="M2 20h20M12 4L3.5 20M12 4l8.5 16M12 13l-3 7M12 13l3 7"/>',
+    pereryva: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
     yde: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
     hurtok: '<circle cx="12" cy="7" r="3"/><circle cx="5" cy="10" r="2.3"/><circle cx="19" cy="10" r="2.3"/><path d="M7 21a5 5 0 0 1 10 0M1.5 20a3.5 3.5 0 0 1 5-3.2M22.5 20a3.5 3.5 0 0 0-5-3.2"/>',
     osobl: '<circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.4M12 17.6v.01"/>',
@@ -1130,22 +1131,25 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     perekhid: {t: 'З іншого гуртка, краю чи з України', s: 'має щось від попереднього гуртка', khto: 'nove-abo', pol: ['status', 'vid', 'plast', 'zvidky', 'prym'], maie: 'до нас',
       prosyty: ['Посвідки проб і вмілостей — фото на телефон.', 'Бланк поточної проби з підписами — щоб перенести вже підписані точки.', 'Хто був попереднім виховником (на випадок, якщо щось незрозуміло).', 'Нашивки, що вже пришиті, — «нашивка вже є», щоб не замовляти вдруге.'],
       dali: ['Копії посвідок — «Вмілості» й «Проби» (кнопка «Копія»), коли будуть фото.', 'Без документа — спитайте попереднього виховника; поки що лишіть «потребує перевірки».', 'Прізвище — у Таблиці, аркуш «Учасники» (якщо новий у книзі).']},
-    povernuvsia: {t: 'Повернувся після перерви', s: 'вже був у нашому гуртку', khto: 'vsi', pol: ['dataP', 'prymDe'], maie: 'до нас', maieNeobov: true,
+    povernuvsia: {t: 'Повернувся після перерви', s: 'вже був у нашому гуртку — після перерви чи довгої відсутності', khto: 'vsi', pol: ['dataP', 'prymDe'], maie: 'до нас', maieNeobov: true,
       prosyty: ['Що здобув(-ла) за перерву деінде (інший гурток, табір) — якщо так, додайте нижче.', 'Інакше нічого не треба: старі записи на місці, нічого не стиралось.'],
       dali: ['Статус — «активний», ім\'я знову в списках сходин.']},
     poza: {t: 'Здобув щось поза гуртком', s: 'табір, вишкіл — уже бувши в нас', khto: 'exist', pol: [], maie: 'поза гуртком',
       prosyty: ['Посвідку або підпис інструктора — фото.', 'Дату й де саме (назва табору чи вишколу).', 'Чи дали нашивку одразу (тоді «нашивка вже є» — не замовляти).'],
       dali: ['Копію посвідки — «Вмілості» (кнопка «Копія»).', 'У звітах гуртка це рахується як наш здобуток — він уже був нашим юнаком.']},
-    yde: {t: 'Пішов від нас чи на перерву', s: 'на перерву, в інший гурток, до старших або вибуває. Повернеться — «Повернувся після перерви».', khto: 'exist', pol: ['kudy', 'prym'],
-      prosyty: ['Куди саме або чому на перерву — щоб потім знати, звідки юнак і коли чекати назад.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
-      dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.', '<b>На перерву:</b> запис лишається; коли людина повернеться — «Повернувся після перерви», і ім\'я знову в списках.']},
+    pereryva: {t: 'Пішов на перерву', s: 'ненадовго — не ходитиме, але повернеться; нічого не видаляється', khto: 'exist', pol: ['pererva', 'prym'],
+      prosyty: ['Чому й на скільки, якщо відомо, — щоб знати, коли чекати назад.', 'Чи не лишилось у нього майна гуртка (намет, книжка) — або нехай лишає, якщо повертається.'],
+      dali: ['Ім\'я зникне зі списків сходин, але все записане — проби, вмілості, історія — лишається.', 'Повернеться — плитка <b>«Повернувся після перерви»</b>: ім\'я знову в списках.']},
+    yde: {t: 'Пішов від нас', s: 'назовсім: в інший гурток, до старших або з Пласту', khto: 'exist', pol: ['kudy', 'prym'],
+      prosyty: ['Куди саме — щоб новий виховник знав, звідки юнак.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
+      dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.']},
     hurtok: {t: 'Цілий гурток', s: 'беру гурток, який хтось уже вів, — або передаю свій', khto: '', pol: []},
     osobl: {t: 'Особливий випадок', s: 'не підходить ні під що — розберемось', khto: '', pol: []},
     maie: {t: 'Дописати, що вже має', s: '', khto: 'exist', pol: [], maie: 'у нас', skryto: true,
       prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; здобуте в іншому гуртку — «до нас».'],
       dali: ['Копії — «Вмілості» й «Проби» (кнопка «Копія»).']}
   };
-  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'povernuvsia', 'poza', 'yde', 'osobl'];
+  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'pereryva', 'povernuvsia', 'yde', 'poza', 'osobl'];   // події по порядку: прийшов → перерва → повернувся → пішов → решта
   $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
 
   let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
@@ -1180,7 +1184,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const nove = `<label class="f" id="pp-imn"><span>Ім'я <small>— як кличуть у гуртку, без прізвища</small></span><input class="in" id="pp-im" maxlength="40" autocomplete="off" placeholder="напр. Богдан"></label>`;
     return nove + (c.khto === 'nove-abo' ? `<label class="chk"><input type="checkbox" id="pp-vzhe"> Уже є в книзі — вибрати зі списку</label>` + vyb : '');
   }
-  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставиться через «Пішов від нас чи на перерву»)';
+  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставлять плитки «Пішов на перерву» і «Пішов від нас»)';
   const PH_STATUS_K = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється';
   const PH_VID = 'рік, з якого він у цьому гуртку';
   const POLE = {
@@ -1193,9 +1197,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     prymN: () => `<label class="f"><span>Що пам'ятати з новацтва <small>— за бажанням, для картки</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. був вістовим рою"></label>`,
     dataP: () => `<label class="f"><span>Коли повернувся(-лась)</span><input class="in" id="pp-dp" type="date" value="${den()}"></label>`,
     prymDe: () => `<label class="f"><span>Де був(-ла) <small>— коротко, за бажанням</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. рік у Львові"></label>`,
-    kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>на перерву</option><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
+    pererva: () => `<label class="f"><span>З якого дня</span><input class="in" id="pp-dv" type="date" value="${den()}"></label>
+      <label class="f"><span>Чому <small>— коротко, за бажанням</small></span><input class="in" id="pp-kds" maxlength="120" placeholder="напр. іспити, переїзд, хворіє"></label>`,
+    kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
       <label class="f"><span>Коли</span><input class="in" id="pp-dv" type="date" value="${den()}"></label></div>
-      <label class="f"><span>Куди саме чи чому <small>— гурток, курінь, місто або причина перерви</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
+      <label class="f"><span>Куди саме <small>— гурток, курінь, місто</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
   };
 
   let ZH = false;   // форма «Цілий гурток» відкрита з головної: «Назад» веде до вибору, а не до списку випадків
@@ -1363,6 +1369,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     if (v('pp-zv') && v('pp-zv') !== 'новацтво — рій') polia['Звідки прийшов'] = v('pp-zv');
     let prym = v('pp-pm');
     if (VK === 'povernuvsia') { polia['Статус'] = 'активний'; prym = 'повернувся(-лась) ' + ddd(v('pp-dp') || den()) + (prym ? ' (' + prym + ')' : ''); }
+    if (VK === 'pereryva') { polia['Статус'] = 'вибув'; polia['Пішов (коли, куди)'] = ddd(v('pp-dv') || den()) + ' — на перерву' + (v('pp-kds') ? ': ' + v('pp-kds') : ''); }
     if (VK === 'yde') { polia['Статус'] = 'вибув'; polia['Пішов (коли, куди)'] = ddd(v('pp-dv') || den()) + ' — ' + v('pp-kd') + (v('pp-kds') ? ': ' + v('pp-kds') : ''); }
     if (novyi || Object.keys(polia).length || prym)
       zad.push({id: 'u', t: novyi ? 'Учасники: ' + im + ' (' + (polia['Статус'] || 'кандидат') + ')' : 'Учасники: ' + im + (polia['Статус'] ? ' → ' + polia['Статус'] : ''), zupyn: true,
