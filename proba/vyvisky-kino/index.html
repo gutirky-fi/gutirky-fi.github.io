@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Від знаку до вивіски — кіно</title>
+<style>
+@font-face{font-family:Wix;src:url(wix.ttf);font-weight:400 800;font-display:block}
+@font-face{font-family:Golos;src:url(golos.ttf);font-weight:400 900;font-display:block}
+:root{--pap:#f6efe3;--g:clamp(20px,5vw,76px)}
+*{margin:0;box-sizing:border-box}
+html,body{height:100%;background:#050505;color:var(--pap);font-family:Golos,system-ui,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+.sl{position:fixed;inset:0;visibility:hidden;overflow:hidden}
+.ph{position:absolute;inset:-3%;background:url(k1.webp) center/cover;will-change:transform,filter}
+.lit{opacity:1}
+.sh{position:absolute;inset:0;pointer-events:none}
+.grain{position:fixed;inset:-50%;pointer-events:none;z-index:8;opacity:.09;mix-blend-mode:overlay;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");}
+@keyframes gr{25%{transform:translate(3%,-2%)}50%{transform:translate(-2%,3%)}75%{transform:translate(2%,2%)}}
+.bar{position:fixed;left:0;right:0;height:12vh;background:#050505;z-index:7}.bar.t{top:0}.bar.b{bottom:0}
+.flash{position:fixed;inset:0;background:#fff3dc;opacity:0;z-index:6;pointer-events:none}
+.top{position:fixed;left:var(--g);right:var(--g);top:clamp(18px,4.5vh,44px);display:flex;justify-content:space-between;font:500 clamp(11px,1.05vw,15px)/1.2 Golos;z-index:5;opacity:0}
+.top b{font-weight:500;opacity:.72}
+.seal{position:fixed;right:clamp(16px,2.4vw,32px);top:clamp(14px,2.6vh,28px);width:clamp(22px,2vw,30px);opacity:0;z-index:5;pointer-events:none}
+.tx{position:absolute;z-index:2;text-shadow:0 2px 30px rgba(0,0,0,.5)}
+[class*='-mask']{padding-bottom:.16em;margin-bottom:-.16em}
+/* 1 */
+#s1 .sh{background:linear-gradient(90deg,rgba(5,5,5,.78) 0%,rgba(5,5,5,.45) 30%,transparent 55%),linear-gradient(0deg,rgba(5,5,5,.55),transparent 35%)}
+#s1 .tx{left:var(--g);bottom:clamp(44px,14vh,130px);max-width:min(620px,86vw)}
+#s1 h1{font:800 clamp(50px,8.2vw,120px)/.95 Wix;letter-spacing:-.035em}
+#s1 p{margin-top:clamp(16px,3vh,28px);font:400 clamp(16px,1.5vw,22px)/1.5 Golos;max-width:430px;opacity:.88}
+/* вулиця */
+#sv .sh{background:linear-gradient(180deg,rgba(5,5,5,.55) 0%,transparent 45%),linear-gradient(90deg,rgba(5,5,5,.55),transparent 50%)}
+#sv .tx{left:var(--g);top:clamp(80px,17vh,170px);max-width:min(560px,86vw)}
+#sv small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sv h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#sv p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:420px;opacity:.9}
+/* ескіз */
+#sk .sh{background:linear-gradient(90deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,.35) 32%,transparent 55%)}
+#sk .tx{left:var(--g);bottom:clamp(50px,15vh,140px);max-width:min(480px,80vw)}
+#sk small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sk h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#sk p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:340px;opacity:.9}
+/* лазер */
+#sl .sh{background:linear-gradient(90deg,rgba(5,5,5,.6) 0%,transparent 45%),linear-gradient(180deg,rgba(5,5,5,.4),transparent 40%)}
+#sl .tx{left:var(--g);top:clamp(80px,17vh,170px);max-width:min(520px,80vw)}
+#sl small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sl h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#sl p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:380px;opacity:.9}
+.beam{position:fixed;top:0;bottom:0;left:0;width:3px;background:#ffd08a;box-shadow:0 0 12px #ff9a2e,0 0 40px #ff7a10,0 0 90px #ff7a10;z-index:6;opacity:0;pointer-events:none}
+/* збірка */
+#sz .sh{background:linear-gradient(90deg,rgba(5,5,5,.75) 0%,rgba(5,5,5,.35) 30%,transparent 50%)}
+#sz .tx{left:var(--g);bottom:clamp(50px,14vh,130px);max-width:min(500px,80vw)}
+#sz small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sz h2{font:800 clamp(42px,6.2vw,90px)/.95 Wix;letter-spacing:-.035em}
+#sz p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:360px;opacity:.9}
+/* світлодіоди */
+#se .sh{background:linear-gradient(90deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,.3) 28%,transparent 46%),linear-gradient(180deg,rgba(5,5,5,.45),transparent 40%)}
+#se .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(460px,80vw)}
+#se small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#se h2{font:800 clamp(42px,6.2vw,90px)/.95 Wix;letter-spacing:-.035em}
+#se p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:360px;opacity:.9}
+/* монтаж */
+#sm .sh{background:linear-gradient(90deg,rgba(5,5,5,.5) 0%,transparent 45%)}
+#sm .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(480px,80vw)}
+#sm small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#sm h2{font:800 clamp(42px,6.2vw,90px)/.95 Wix;letter-spacing:-.035em}
+#sm p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:380px;opacity:.9}
+/* табір */
+#st .sh{background:linear-gradient(90deg,rgba(5,5,5,.55) 0%,transparent 40%)}
+#st .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(460px,80vw)}
+#st small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#st h2{font:800 clamp(42px,6.6vw,96px)/.95 Wix;letter-spacing:-.035em}
+#st p{margin-top:clamp(14px,2.5vh,24px);font:400 clamp(16px,1.45vw,21px)/1.5 Golos;max-width:360px;opacity:.9}
+.mark{position:absolute;left:64.6%;top:33.4%;width:19%;transform:rotate(-7deg) skewY(-3deg);fill:none;stroke:#2b1709;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;opacity:.82;mix-blend-mode:multiply}
+.mark *{stroke-dasharray:400;stroke-dashoffset:400}
+@media (max-aspect-ratio:1/1){.mark{display:none}}
+/* 2 — «всередині світла» */
+#s2 .ph{background-image:url(k10.webp);background-position:70% 50%}
+#s2 .sh{background:linear-gradient(90deg,rgba(5,5,5,.6) 0%,transparent 50%),linear-gradient(0deg,rgba(5,5,5,.55),transparent 45%)}
+#s2 .tx{left:var(--g);right:var(--g);bottom:clamp(44px,12vh,110px);display:flex;align-items:flex-end;gap:clamp(16px,3vw,44px)}
+#s2 .n{font:800 clamp(100px,18vw,250px)/.78 Wix;letter-spacing:-.05em;color:transparent;-webkit-text-stroke:2px var(--pap)}
+#s2 small{display:block;font:500 clamp(13px,1.2vw,17px) Golos;opacity:.8;margin-bottom:12px}
+#s2 h2{font:800 clamp(38px,6vw,86px)/.98 Wix;letter-spacing:-.03em}
+/* 3 — думка */
+#s3 .ph{background-image:url(k9.webp);background-position:100% 50%}
+#s3 .sh{background:linear-gradient(90deg,rgba(5,5,5,.7) 0%,rgba(5,5,5,.35) 35%,transparent 55%),linear-gradient(180deg,rgba(5,5,5,.35),transparent 35%)}
+#s3 .tx{left:var(--g);top:clamp(80px,16vh,160px);max-width:min(560px,82vw)}
+#s3 q{display:block;quotes:none;font:800 clamp(34px,4.8vw,70px)/1.02 Wix;letter-spacing:-.03em;max-width:13ch;text-wrap:balance}
+#s3 p{margin-top:22px;font:400 clamp(15px,1.35vw,20px)/1.5 Golos;opacity:.78}
+.nav{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:flex;gap:8px;z-index:9}
+.nav i{width:26px;height:3px;border-radius:2px;background:rgba(246,239,227,.22);transition:background .4s}.nav i.on{background:var(--pap)}
+.hint{position:fixed;right:18px;bottom:11px;font:500 12px Golos;opacity:.4;z-index:9}
+@media (max-aspect-ratio:1/1){.ph{background-position:72% 50%}#s1 .sh{background:linear-gradient(0deg,rgba(5,5,5,.9) 0%,rgba(5,5,5,.6) 40%,transparent 70%)}}
+</style></head><body>
+<section class="sl" id="s1"><div class="ph dark" style="filter:brightness(.12) saturate(.6)"></div><div class="ph lit"></div><div class="sh"></div>
+  <div class="tx"><h1>Від знаку<br>до вивіски</h1><p>Як простий малюнок стає знаком, а знак — вивіскою, що світиться на стіні.</p></div></section>
+<section class="sl" id="sv" data-o="70% 31%"><div class="ph" style="background-image:url(k2.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина перша</small><h2>Знак,<br>що говорить</h2><p>Скільки вивісок ви бачили сьогодні дорогою сюди? А яку запамʼятали?</p></div></section>
+<section class="sl" id="sk" data-o="64% 55%"><div class="ph" style="background-image:url(k3.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина друга</small><h2>Хороший<br>знак</h2><p>Простий. Впізнаваний. Видно здалеку. Працює в одному кольорі.</p></div></section>
+<section class="sl" id="s3" data-o="80.5% 38.5%"><div class="ph"></div><div class="sh"></div>
+  <div class="tx"><q>Хороший знак упізнають за секунду — навіть здалеку.</q><p>Тому в ньому мало деталей і великі прості форми.</p></div></section>
+<section class="sl" id="sl" data-o="75.5% 49.5%"><div class="ph" style="background-image:url(k4.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина третя</small><h2>Як роблять<br>вивіску</h2><p>Верстат вирізає деталі точно за векторним файлом — лінія в лінію.</p></div></section>
+<section class="sl" id="sz" data-o="57% 7%"><div class="ph" style="background-image:url(k5.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина третя · збірка</small><h2>З плоского<br>в обʼємне</h2><p>Борт вигинають точно по контуру літери й кріплять до основи. Так зʼявляється глибина.</p></div></section>
+<section class="sl" id="s2"><div class="ph"></div><div class="sh"></div>
+  <div class="tx"><div><small>Частина четверта</small><h2>Як вивіска<br>починає<br>світитися</h2></div></div></section>
+<section class="sl" id="se"><div class="ph dark" style="background-image:url(k6.webp);filter:brightness(.1) saturate(.5)"></div><div class="ph lit" style="background-image:url(k6.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина четверта · світло</small><h2>Світло<br>всередині</h2><p>Рівні ряди світлодіодів світять крізь акрилове лице літери. Струм дає блок живлення — підключає лише фахівець.</p></div></section>
+<section class="sl" id="sm"><div class="ph" style="background-image:url(k7.webp)"></div><div class="sh"></div>
+  <div class="tx"><small>Частина четверта · монтаж</small><h2>Останній<br>крок</h2><p>Фахівці на підйомнику кріплять літери до фасаду й підключають світло. Тепер знак бачить уся вулиця.</p></div></section>
+<section class="sl" id="st"><div class="ph" style="background-image:url(k8.webp)"><svg class="mark" viewBox="0 0 200 120" aria-hidden="true"><circle cx="60" cy="60" r="42"/><path d="M28 82 58 34 72 56 80 46 96 82"/><path d="M114 52h44M114 72h30"/></svg></div><div class="sh"></div>
+  <div class="tx"><small>Частина пʼята · практика</small><h2>Наш знак</h2><p>Придумайте знак свого гуртка — і зробіть з нього вивіску для табору.</p></div></section>
+<img class="seal" src="lileya.webp" alt=""><div class="top"><b>Пласт у Фінляндії</b><b>Гутірка для юнацтва · 12–17 років</b></div>
+<div class="bar t"></div><div class="bar b"></div><div class="flash"></div><div class="beam"></div><div class="grain"></div>
+<div class="nav"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="hint">← → або дотик</div>
+<script src="../../lib/gsap-3/gsap.min.js"></script>
+<script src="../../lib/gsap-3/SplitText.min.js"></script>
+<script>
+(() => {
+  gsap.registerPlugin(SplitText);
+  const RM = matchMedia('(prefers-reduced-motion: reduce)').matches, $ = s => document.querySelector(s);
+  const S = [...document.querySelectorAll('.sl')], N = [...document.querySelectorAll('.nav i')];
+  let cur = -1, tl = null, split;
+  const words = i => split[i].flatMap(s => s.words);
+  function textIn(i) {
+    const t = gsap.timeline();
+    t.fromTo(words(i), { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: RM ? .01 : .9, ease: 'expo.out', stagger: .04 })
+     .fromTo(S[i].querySelectorAll('p,small'), { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: RM ? .01 : .9, ease: 'power3.out', stagger: .1 }, '-=.75');
+    return t;
+  }
+  /* «повільна камера» — легкий наїзд і погойдування на кожному слайді */
+  const drift = i => gsap.fromTo(S[i].querySelectorAll('.ph'), { scale: 1.12 }, { scale: 1.02, duration: 16, ease: 'power1.out' });
+  function show(i) { S.forEach((s, k) => s.style.visibility = k === i ? 'visible' : 'hidden'); N.forEach((n, k) => n.classList.toggle('on', k === i)); }
+
+  /* відкриття: темрява → лампочки мерехтять і вмикаються → «кіношні» смуги розʼїжджаються → текст */
+  function intro() {
+    show(0); drift(0);
+    const lit = $('#s1 .lit'), t = gsap.timeline();
+    gsap.set(lit, { opacity: 0 });
+    t.fromTo('#s1', { opacity: 0 }, { opacity: 1, duration: 1.2, ease: 'power1.out' })
+     .to(lit, { opacity: .7, duration: .05 }, 1.0).to(lit, { opacity: .1, duration: .07 }, 1.1)
+     .to(lit, { opacity: .9, duration: .05 }, 1.35).to(lit, { opacity: .25, duration: .08 }, 1.45)
+     .to(lit, { opacity: 1, duration: .5, ease: 'power2.out' }, 1.7)
+     .to('.bar.t', { yPercent: -100, duration: 1.4, ease: 'expo.inOut' }, 2.0).to('.bar.b', { yPercent: 100, duration: 1.4, ease: 'expo.inOut' }, 2.0)
+     .add(textIn(0), 2.5).to('.top', { opacity: 1, duration: 1 }, 3.0);
+    if (RM) t.progress(1);
+    return t;
+  }
+  /* 1 → 2: камера «влітає» в лампочку, спалах, і ми — всередині світла */
+  function into(a, b, col = '#fff3dc') {
+    gsap.set('.flash', { background: col });
+    const t = gsap.timeline(), ph = S[a].querySelectorAll('.ph');
+    gsap.set(ph, { transformOrigin: S[a].dataset.o || '81% 56%' });
+    t.to(S[a].querySelector('.tx'), { opacity: 0, y: -20, filter: 'blur(8px)', duration: .5, ease: 'power2.in' })
+     .to(ph, { scale: 7, duration: 1.5, ease: 'expo.in' }, .1)
+     .to('.flash', { opacity: 1, duration: .45, ease: 'power2.in' }, 1.15)
+     .add(() => { show(b); gsap.set(S[a].querySelector('.tx'), { opacity: 1, y: 0, filter: 'none' }); gsap.set(ph, { scale: 1 }); drift(b); })
+     .to('.flash', { opacity: 0, duration: 1.1, ease: 'power2.out' })
+     .add(textIn(b), '-=.7');
+    return t;
+  }
+  /* швидка панорама (whip pan): кадр «злітає» вбік з розмиттям руху, новий влітає з другого боку */
+  function whip(a, b, dir, ax = 'x') {
+    const P = ax === 'x' ? 'xPercent' : 'yPercent';
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, x: -40 * dir, duration: .35, ease: 'power2.in' })
+     .to(A, { [P]: -100 * dir, filter: 'blur(18px)', duration: .9, ease: 'expo.inOut' }, .15)
+     .add(() => { B.style.visibility = 'visible'; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); }, .15)
+     .fromTo(B, { [P]: 100 * dir, filter: 'blur(18px)' }, { [P]: 0, filter: 'blur(0px)', duration: .9, ease: 'expo.inOut' }, .15)
+     .add(() => { A.style.visibility = 'hidden'; gsap.set(A, { xPercent: 0, yPercent: 0, filter: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1, x: 0 }); })
+     .add(textIn(b), '-=.35');
+    return t;
+  }
+  /* «лазерний розріз»: світна лінія пробігає екраном і відкриває новий кадр */
+  function laser(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .35 })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); })
+     .set('.beam', { opacity: 1, x: 0 })
+     .fromTo(B, { clipPath: 'inset(0 100% 0 0)' }, { clipPath: 'inset(0 0% 0 0)', duration: 1.3, ease: 'power2.inOut' })
+     .fromTo('.beam', { x: 0 }, { x: () => innerWidth, duration: 1.3, ease: 'power2.inOut' }, '<')
+     .to('.beam', { opacity: 0, duration: .2 })
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(B, { clipPath: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), '-=.6');
+    return t;
+  }
+  /* «монтажна склейка»: одна літера перетікає в іншу — кадри проступають один крізь одного з наїздом */
+  function match(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .4 })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); })
+     .to(A.querySelectorAll('.ph'), { scale: 1.18, duration: 1.6, ease: 'power2.inOut' }, 0)
+     .fromTo(B, { opacity: 0 }, { opacity: 1, duration: 1.4, ease: 'power1.inOut' }, .3)
+     .fromTo(B.querySelectorAll('.ph'), { scale: 1.2 }, { scale: 1.02, duration: 2.2, ease: 'power2.out' }, .3)
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(A.querySelectorAll('.ph'), { scale: 1 }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), 1.3);
+    return t;
+  }
+  /* «вмикання стрічки»: темрява, і світлодіоди загоряються ділянками, як справжня LED-стрічка */
+  function ledOn(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b], lit = B.querySelector('.lit');
+    t.to(A, { opacity: 0, duration: .7, ease: 'power2.in' })
+     .add(() => { show(b); gsap.set(A, { opacity: 1 }); drift(b); gsap.set(lit, { clipPath: 'inset(0 100% 0 0)' }); })
+     .to(lit, { clipPath: 'inset(0 0% 0 0)', duration: 1.4, ease: 'steps(14)' }, '+=.35')
+     .add(textIn(b), '-=.5');
+    return t;
+  }
+  /* «вогонь»: новий кадр розкривається колом від вогнища, потім на табличці «випалюється» знак */
+  function iris(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .35 })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); gsap.set(B.querySelectorAll('.mark *'), { strokeDashoffset: 400 }); })
+     .fromTo(B, { clipPath: 'circle(0% at 33% 84%)' }, { clipPath: 'circle(150% at 33% 84%)', duration: 1.8, ease: 'power2.inOut' })
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(B, { clipPath: 'none' }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), '-=.7')
+     .to(B.querySelectorAll('.mark *'), { strokeDashoffset: 0, duration: 1.6, ease: 'power1.inOut', stagger: .35 }, '-=.2');
+    return t;
+  }
+  /* «від ескізу до вивіски»: камера влітає в намальоване коло — і відʼїжджає вже від світного знака на будинку */
+  function zoomMatch(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b], pa = A.querySelectorAll('.ph'), pb = B.querySelectorAll('.ph');
+    gsap.set(pa, { transformOrigin: A.dataset.o }); gsap.set(pb, { transformOrigin: B.dataset.o });
+    t.to(A.querySelector('.tx'), { opacity: 0, duration: .4 })
+     .to(pa, { scale: 6, duration: 1.4, ease: 'expo.in' }, .1)
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); }, 1.05)
+     .fromTo(B, { opacity: 0 }, { opacity: 1, duration: .45, ease: 'none' }, 1.05)
+     .fromTo(pb, { scale: 6 }, { scale: 1.02, duration: 2.6, ease: 'expo.out' }, 1.05)
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(pa, { scale: 1 }); gsap.set(A.querySelector('.tx'), { opacity: 1 }); })
+     .add(textIn(b), 2.2);
+    return t;
+  }
+  /* основний перехід: короткий наїзд із розчиненням — без розмиття, щоб не гальмувало */
+  function cross(a, b) {
+    const t = gsap.timeline(), A = S[a], B = S[b];
+    t.to(A.querySelector('.tx'), { opacity: 0, y: -12, duration: .3, ease: 'power2.in' })
+     .add(() => { B.style.visibility = 'visible'; B.style.zIndex = 3; N.forEach((n, k) => n.classList.toggle('on', k === b)); drift(b); }, .1)
+     .to(A.querySelectorAll('.ph'), { scale: '+=.06', duration: .9, ease: 'power2.in' }, 0)
+     .fromTo(B, { opacity: 0 }, { opacity: 1, duration: .8, ease: 'power1.inOut' }, .1)
+     .add(() => { A.style.visibility = 'hidden'; B.style.zIndex = ''; gsap.set(A.querySelector('.tx'), { opacity: 1, y: 0 }); })
+     .add(textIn(b), .5);
+    if (B.id === 'st') t.fromTo(B.querySelectorAll('.mark *'), { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 1.4, ease: 'power1.inOut', stagger: .3 }, 1.2);
+    return t;
+  }
+  /* 2 → 3 і назад: «фокусування» — один кадр розмивається, інший проявляється з туману */
+  function focus(a, b) {
+    const t = gsap.timeline();
+    t.to(S[a], { filter: 'blur(24px)', opacity: 0, scale: 1.06, duration: 1.1, ease: 'power2.in' })
+     .add(() => { show(b); gsap.set(S[a], { filter: 'none', opacity: 1, scale: 1 }); drift(b); })
+     .fromTo(S[b], { filter: 'blur(24px)', opacity: 0, scale: .97 }, { filter: 'blur(0px)', opacity: 1, scale: 1, duration: 1.3, ease: 'power3.out' })
+     .add(textIn(b), '-=.8');
+    return t;
+  }
+  function go(i, instant) {
+    if (i < 0 || i >= S.length || i === cur) return;
+    if (tl) tl.progress(1);
+    const a = cur; cur = i;
+    if (instant) { show(i); gsap.set('.bar.t', { yPercent: -100 }); gsap.set('.bar.b', { yPercent: 100 }); gsap.set('.top', { opacity: i === 0 ? 1 : 0 }); gsap.set('.seal', { opacity: i === 0 ? 0 : .5 }); if (S[i].id === 'st') gsap.set(S[i].querySelectorAll('.mark *'), { strokeDashoffset: 0 }); tl = textIn(i); drift(i); return; }
+    const key = S[a] ? S[a].id + '>' + S[i].id : '';
+    tl = a === -1 ? intro() : key === 'sk>s3' ? zoomMatch(a, i) : key === 's3>sl' ? laser(a, i) : cross(a, i);
+    gsap.to('.top', { opacity: i === 0 ? 1 : 0, duration: .4 }); gsap.to('.seal', { opacity: i === 0 ? 0 : .5, duration: .6 });
+  }
+  addEventListener('keydown', e => { if (['ArrowRight', ' ', 'PageDown', 'Enter'].includes(e.key)) go(cur + 1); if (['ArrowLeft', 'PageUp'].includes(e.key)) go(cur - 1); });
+  let x0 = null;
+  addEventListener('pointerdown', e => x0 = e.clientX);
+  addEventListener('pointerup', e => { if (x0 === null) return; const dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1)); else go(cur + (e.clientX > innerWidth / 3 ? 1 : -1)); });
+  /* легкий паралакс від мишки */
+  addEventListener('pointermove', e => { if (RM) return; gsap.to('.ph', { x: (e.clientX / innerWidth - .5) * -14, y: (e.clientY / innerHeight - .5) * -10, duration: 1.2, ease: 'power2.out', overwrite: 'auto' }); });
+  const q = +new URLSearchParams(location.search).get('s');
+  document.fonts.ready.then(() => { split = S.map(s => [...s.querySelectorAll('h1,h2,q,.n')].map(el => new SplitText(el, { type: 'lines,words', mask: 'lines' }))); go(q ? q - 1 : 0, !!q); });
+})();
+</script>
+</body></html>

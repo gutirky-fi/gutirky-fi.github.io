@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Перевірка звʼязку пульта</title>
+<!-- Перевірка для пристрою, на якому відкрита гутірка (ноутбук, проектор із браузером): що вміє браузер і до яких серверів пульта дістає.
+     Свідомо простий код (без новітнього синтаксису), щоб працював і в старих вбудованих браузерах. -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--ln:#3a3f46;--ink:#eef1f4;--mut:#a3abb5;--ok:#3daf6e;--bad:#e5534b;--wait:#ffc247}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/1.4 'Source Sans 3',Arial,sans-serif;padding:20px}
+h1{margin:0 0 4px;font-size:30px}
+p.l{margin:0 0 16px;color:var(--mut)}
+ul{list-style:none;margin:0;padding:0;max-width:900px}
+li{display:flex;gap:12px;align-items:baseline;padding:10px 14px;margin:0 0 8px;border-radius:12px;background:var(--card);border:1px solid var(--ln)}
+li b{flex:none;width:34px;text-align:center;font-size:24px}
+li span{flex:1}
+li small{display:block;color:var(--mut);font-size:15px}
+.ok b{color:var(--ok)}.bad b{color:var(--bad)}.wait b{color:var(--wait)}
+#sum{max-width:900px;margin:16px 0 0;padding:14px 16px;border-radius:12px;font-size:22px;font-weight:700;background:var(--card);border:2px solid var(--ln)}
+#ua{max-width:900px;margin-top:14px;color:var(--mut);font-size:14px;word-break:break-all}
+</style>
+</head>
+<body>
+<h1>Перевірка звʼязку пульта</h1>
+<p class="l">Відкрийте цю сторінку на пристрої, де показуєте гутірку (ноутбук або проектор). Зачекайте 15 секунд і сфотографуйте екран.</p>
+<ul id="list"></ul>
+<div id="sum">Перевіряю…</div>
+<div id="ua"></div>
+<script>
+(function () {
+  var list = document.getElementById('list'), rows = {}, res = {};
+  function row(id, name) { var li = document.createElement('li'); li.className = 'wait'; li.innerHTML = '<b>…</b><span>' + name + '<small></small></span>'; list.appendChild(li); rows[id] = li; }
+  function set(id, ok, note) { var li = rows[id]; res[id] = ok; li.className = ok ? 'ok' : 'bad'; li.querySelector('b').textContent = ok ? '✓' : '✗'; li.querySelector('small').textContent = note || ''; summary(); }
+  document.getElementById('ua').textContent = 'Браузер: ' + navigator.userAgent;
+  row('ws', 'WebSocket (потрібен для запасного звʼязку)');
+  row('cr', 'Шифрування (crypto.subtle)');
+  row('rtc', 'WebRTC (основний звʼязок PeerJS)');
+  var B = [['b1', 'wss://broker.emqx.io:8084/mqtt', 'Запасний сервер 1 (EMQX)'], ['b2', 'wss://broker.hivemq.com:8884/mqtt', 'Запасний сервер 2 (HiveMQ)'], ['b3', 'wss://test.mosquitto.org:8081/mqtt', 'Запасний сервер 3 (Mosquitto)']];
+  B.forEach(function (b) { row(b[0], b[2]); });
+  row('pj', 'Сервер PeerJS');
+  set('ws', typeof WebSocket === 'function');
+  set('cr', !!(window.crypto && crypto.subtle && window.TextEncoder), window.isSecureContext === false ? 'сторінка не захищена (не https)' : '');
+  set('rtc', typeof RTCPeerConnection === 'function' || typeof webkitRTCPeerConnection === 'function');
+  // MQTT: CONNECT → чекаємо CONNACK
+  function enc(s) { var o = []; for (var i = 0; i < s.length; i++) o.push(s.charCodeAt(i)); return o; }
+  B.forEach(function (b) {
+    if (typeof WebSocket !== 'function') return set(b[0], false, 'немає WebSocket');
+    var t0 = Date.now(), done = false, ws;
+    function fin(ok, n) { if (done) return; done = true; try { ws.close(); } catch (e) {} set(b[0], ok, n); }
+    try { ws = new WebSocket(b[1], ['mqtt']); } catch (e) { return fin(false, 'не вдалося відкрити'); }
+    ws.binaryType = 'arraybuffer';
+    ws.onopen = function () { var id = enc('gfchk' + Math.floor(Math.random() * 1e6)); var body = [0, 4].concat(enc('MQTT'), [4, 2, 0, 30, 0, id.length], id); ws.send(new Uint8Array([0x10, body.length].concat(body))); };
+    ws.onmessage = function (e) { var d = new Uint8Array(e.data); fin(d[0] === 0x20 && d[3] === 0, 'відповів за ' + (Date.now() - t0) + ' мс'); };
+    ws.onerror = function () { fin(false, 'немає зʼєднання'); };
+    ws.onclose = function () { fin(false, 'зʼєднання закрилося'); };
+    setTimeout(function () { fin(false, 'не відповів за 12 с'); }, 12000);
+  });
+  // PeerJS: сервер видає id
+  (function () {
+    var t0 = Date.now(), x; try { x = new XMLHttpRequest(); } catch (e) { return set('pj', false, 'немає XMLHttpRequest'); }
+    x.open('GET', 'https://0.peerjs.com/peerjs/id?ts=' + Date.now()); x.timeout = 12000;
+    x.onload = function () { set('pj', x.status === 200, x.status === 200 ? 'відповів за ' + (Date.now() - t0) + ' мс' : 'помилка ' + x.status); };
+    x.onerror = x.ontimeout = function () { set('pj', false, 'не відповідає'); };
+    x.send();
+  })();
+  function summary() {
+    var s = document.getElementById('sum'), anyB = res.b1 || res.b2 || res.b3, allDone = ['ws', 'cr', 'rtc', 'b1', 'b2', 'b3', 'pj'].every(function (k) { return k in res; });
+    var base = res.ws && res.cr;
+    if (base && anyB) { s.textContent = '✓ Пульт тут працюватиме (через запасні сервери' + (res.rtc && res.pj ? ' або PeerJS' : '') + ').'; s.style.borderColor = 'var(--ok)'; }
+    else if (res.rtc && res.pj) { s.textContent = '✓ Пульт тут працюватиме через PeerJS.'; s.style.borderColor = 'var(--ok)'; }
+    else if (allDone) { s.textContent = '✗ Цей браузер не може зʼєднатися з пультом. Сфотографуйте екран і надішліть.'; s.style.borderColor = 'var(--bad)'; }
+  }
+})();
+</script>
+</body>
+</html>

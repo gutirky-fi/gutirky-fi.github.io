@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Тестовий режим · ТБ</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--f:#ffd23f}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:400 20px/1.35 'Source Sans 3',system-ui,sans-serif;overflow:hidden}
+#app{width:1280px;height:720px;position:absolute;transform-origin:0 0;padding:44px 80px}
+.logo{height:46px}
+.kick{margin-top:26px;font:600 15px 'Source Sans 3';letter-spacing:.3em;text-transform:uppercase;color:var(--f)}
+h1{font:600 52px/1 Oswald,sans-serif;text-transform:uppercase;margin:6px 0 2px}
+.hand{font:600 28px Caveat,cursive;color:#2fd2c0}
+.cols{display:flex;gap:40px;margin-top:30px}
+.v{flex:1;display:flex;flex-direction:column;border-radius:20px;background:var(--card);border:2px solid var(--ln);overflow:hidden;text-decoration:none;color:inherit;transition:transform .14s,box-shadow .14s}
+.v img{display:block;width:100%;height:210px;object-fit:cover;object-position:top;background:#111}
+.v .t{padding:16px 22px 20px}
+.v b{display:block;font:600 30px/1.05 Oswald,sans-serif;text-transform:uppercase}
+.v b i{font-style:normal;color:var(--f);margin-right:10px}
+.v span{display:block;margin-top:6px;color:var(--body);font-size:18px}
+.v:focus{outline:none;transform:scale(1.04);border-color:var(--f);box-shadow:0 0 0 4px var(--f),0 18px 40px rgba(0,0,0,.6)}
+.low{position:absolute;left:80px;right:80px;bottom:30px;display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:16px}
+.low a{color:var(--body);text-decoration:none;padding:8px 18px;border:1px solid var(--ln);border-radius:12px;font-weight:700}
+.low a:focus{outline:4px solid var(--f);outline-offset:3px}
+</style>
+</head>
+<body>
+<div id="app">
+  <img class="logo" src="../proba/tv/img/plast-fi-logo-hd.png" alt="Пласт">
+  <div class="kick">Тестовий режим · проєктор</div>
+  <h1>Який вигляд кращий?</h1>
+  <div class="hand">погортайте обидва пультом, «Назад» — повернутися сюди</div>
+  <div class="cols">
+    <a class="v" href="../proba/tv/stary.html" tabindex="0"><img src="v1.png" alt=""><div class="t"><b><i>1</i>Окремий ТБ-вигляд</b><span>Як YouTube на телевізорі: меню значками збоку, полиці карток, велика афіша.</span></div></a>
+    <a class="v" href="../tv-proba.html" tabindex="0"><img src="v2.png" alt=""><div class="t"><b><i>2</i>Той самий сайт</b><span>Як на ноутбуці, лише більший, з жовтою рамкою. Вхід виховника — QR на телефон.</span></div></a>
+  </div>
+  <div class="low"><span>Це макети: справжній сайт поки не змінено.</span><a href="../?tv=0" id="zv">Звичайний сайт</a></div>
+</div>
+<script>
+const L=[...document.querySelectorAll('.v,#zv')]; let i=0;
+const go=n=>{i=Math.max(0,Math.min(L.length-1,n));L[i].focus();};
+addEventListener('keydown',e=>{const k=e.key;
+  if(k==='ArrowLeft'){e.preventDefault();go(i===2?1:i-1);} else if(k==='ArrowRight'){e.preventDefault();go(i+1);}
+  else if(k==='ArrowDown'){e.preventDefault();go(2);} else if(k==='ArrowUp'){e.preventDefault();go(i===2?1:i);}
+});
+try{sessionStorage.setItem('tv-vybir','1');}catch(e){}
+function fit(){const a=document.getElementById('app'),s=Math.min(innerWidth/1280,innerHeight/720);a.style.transform='scale('+s+')';a.style.left=(innerWidth-1280*s)/2+'px';a.style.top=(innerHeight-720*s)/2+'px';}
+addEventListener('resize',fit);fit();go(0);
+</script>
+</body>
+</html>
