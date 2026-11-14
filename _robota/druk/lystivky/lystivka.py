@@ -20,6 +20,8 @@ import numpy as np
 from PIL import Image
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 TUT = os.path.dirname(os.path.abspath(__file__))
 LILEYA = os.path.join(TUT, '..', 'lileya.png')
@@ -50,6 +52,7 @@ gw, gh = COLS*2*PW, ROWS*PH + CGAP
 gx, gy = (PAGE_W-gw)/2, (PAGE_H-gh)/2
 BL_V, BL_R = 1.5*mm, 1.0*mm       # заліз фону за лінію різу (лише коли --fon)
 LILY_H = 31*mm
+OREL_PIDPYS = 'Орли волі · 2026'   # дрібно під орлом на звороті (з --orel); рік міняти тут
 
 
 def row_y(r):                      # низ ряду r (0 - верхній)
@@ -86,6 +89,7 @@ def zibraty(nazva, fon=None, foto=False, orel=False):
         oa[..., :3] = kolir
         opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % kolir)
         Image.fromarray(oa, 'RGBA').save(opath)
+        pdfmetrics.registerFont(TTFont('LoraI', os.path.join(TUT, '..', 'shryfty', 'Lora-Italic-Variable.ttf')))
     lh, lw = LILY_H, LILY_H*lw0/lh0
 
     out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A3_%s%s.pdf' % (nazva, 'z_fonom' if fon else ('foto_lytsova' if foto else 'bez_fonu'), '_orel' if orel else ''))
@@ -95,8 +99,10 @@ def zibraty(nazva, fon=None, foto=False, orel=False):
         for k in range(COLS):
             x, y = gx + k*2*PW, row_y(r)
             if orel:                   # лілея трохи вище, орел 12 мм унизу
-                c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+6*mm, lw, lh, mask='auto')
-                c.drawImage(opath, x+PW/2-6*mm, y+9*mm, 12*mm, 12*mm, mask='auto')
+                c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+8*mm, lw, lh, mask='auto')
+                c.drawImage(opath, x+PW/2-6*mm, y+13*mm, 12*mm, 12*mm, mask='auto')
+                c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
+                c.drawCentredString(x+PW/2, y+8.5*mm, OREL_PIDPYS)
             else:
                 c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
             if fon:

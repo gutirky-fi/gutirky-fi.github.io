@@ -4,7 +4,7 @@
 
 «orly_voli» - БЕЗ ЛІНІЙ: праворуч знак гуртка (орел), «Веселих свят! СКОБ!», унизу «гурток «Орли волі»»; ліва чиста.
 «svyata_chysto» - для листівок з орлом ЗЗОВНІ (lystivka.py --orel): праворуч лише «Веселих свят! СКОБ!»,
-    унизу «гурток «Орли волі» · 2026» (рік - RIK), без ліній; ліва чиста. Вибір власника 14.11.
+    без ліній; ліва чиста (назва й рік - ззовні під орлом, OREL_PIDPYS у lystivka.py). Вибір власника 14.11.
 «svyata» - на правій внутрішній половинці напис «Веселих свят!» і «СКОБ!», під ним лінії; ліва - лінії.
 Права внутрішня = зворот панелі з лілеєю (при перевертанні за довгою стороною аркуш дзеркалиться,
 тож на звороті аркуша вона стоїть праворуч у кожній парі).
@@ -48,8 +48,7 @@ def panel(c, x, y, vyd, napys=False, orel=False):
         c.setFont('LoraI', 17); c.drawCentredString(x+PW/2, y1-10*mm, NAPYS)
         c.setFillColorRGB(0.45, 0.45, 0.45)
         c.setFont('Lora', 8.5); c.drawCentredString(x+PW/2, y1-16*mm, PIDPYS)
-        c.setFont('LoraI', 8); c.drawCentredString(x+PW/2, y0+1*mm, GURTOK + ' · ' + RIK)
-        return
+        return                                          # назва гуртка й рік тепер ззовні під орлом (власник 14.11)
     if napys:
         c.setFillColorRGB(0.2, 0.2, 0.2)
         c.setFont('LoraI', 17); c.drawCentredString(x+PW/2, y1-10*mm, NAPYS)
