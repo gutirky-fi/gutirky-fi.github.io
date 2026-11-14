@@ -39,10 +39,22 @@ KARTKY = {
     'litera_a':           ('litera_a.png',           (49, 49, 49),   ('w', 56.0), 'Літера А з лампочками'),
     'kit_yalynka':        ('kit_yalynka.png',        (96, 80, 68),   ('w', 56.0), 'Кіт-ялинка'),
     'kit_chornyi_hirlianda': ('kit_chornyi_hirlianda_lytsova.jpg', (38, 18, 16), ('w', 70.0), 'Чорний кіт у гірлянді'),
+    'kit_klubochok':      ('kit_klubochok.png',      (25, 25, 25),   ('w', 56.0), 'Кіт-клубочок у гірлянді'),
+    'kit_khvist_yalynka': ('kit_khvist_yalynka.png', (25, 25, 25),   ('w', 56.0), 'Кіт із хвостом-ялинкою'),
+    'kit_zirka':          ('kit_zirka.png',          (25, 25, 25),   ('h', 80.0), 'Кіт із зіркою'),
+    'vedmid_lys':         ('vedmid_lys.png',         (100, 72, 52),  ('w', 56.0), 'Ведмідь і лис'),
+    'kit_yalynka_chornyi': ('kit_yalynka_chornyi.png', (25, 25, 25), ('w', 56.0), 'Чорний кіт-ялинка'),
+    'kit_kovpak':         ('kit_kovpak.png',         (25, 25, 25),   ('w', 56.0), 'Кіт у ковпаку з хвостом-ялинкою'),
+    'kit_yalynka_smuhastyi': ('kit_yalynka_smuhastyi.png', (25, 25, 25), ('w', 56.0), 'Кіт-ялинка зі смугастим хвостом'),
+    'kit_svitlyachok':    ('kit_svitlyachok_lytsova.jpg', (25, 25, 25), ('w', 70.0), 'Кіт-світлячок'),
+    'kit_oleni_rizhky':   ('kit_oleni_rizhky_lytsova.jpg', (25, 25, 25), ('w', 70.0), 'Кіт з оленячими ріжками (крафт)'),
+    'korgi':              ('korgi_lytsova.jpg',      (110, 80, 58),  ('w', 70.0), 'Коргі з гірляндою'),
 }
 
 # листівки, де лицьова - ФОТО на всю панель (готує foto_na_lytsovu.py); вмикається прапорцем --foto
-FOTO = {'litera_a': 'litera_a_lytsova.jpg', 'kit_chornyi_hirlianda': 'kit_chornyi_hirlianda_lytsova.jpg'}
+FOTO = {'litera_a': 'litera_a_lytsova.jpg', 'kit_chornyi_hirlianda': 'kit_chornyi_hirlianda_lytsova.jpg',
+        'kit_svitlyachok': 'kit_svitlyachok_lytsova.jpg', 'kit_oleni_rizhky': 'kit_oleni_rizhky_lytsova.jpg',
+        'korgi': 'korgi_lytsova.jpg'}
 
 PAGE_W, PAGE_H = 297*mm, 420*mm
 PW, PH = 70*mm, 95*mm              # одна панель (зворот або лицьова)
