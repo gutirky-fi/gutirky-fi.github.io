@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1b1d21">
+<title>Новий виховник — грати</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<!-- «Новий виховник» — сторінка юнака на телефоні: імʼя, факт, голос. Джерело: _robota/proby/novyi-vykhovnyk/hra.html -->
+<style>
+:root{--bg:#1b1d21;--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:#f2f4f6;--mut:#a3abb5;--ok:#3daf6e;--gd:#ffc247;--ac:#2fd2c0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--bg);color:var(--ink);font:17px/1.4 var(--txt);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+[hidden]{display:none!important}
+.in{max-width:520px;margin:0 auto;padding:14px 14px 40px}
+.top{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.top b{font:600 20px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.top .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
+h1{margin:12px 0 6px;font:600 28px/1.1 var(--disp);text-transform:uppercase}
+.m{color:var(--mut);margin:0 0 14px}
+label{display:block;font-weight:700;font-size:14px;color:var(--mut);margin:12px 0 4px}
+input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font-size:20px}
+.btn{width:100%;min-height:56px;margin-top:14px;border-radius:16px;border:0;background:var(--ac);color:#06201d;font:700 19px var(--txt)}
+.btn:disabled{background:var(--card2);color:var(--mut)}
+.err{color:#ff9a8a;min-height:1.3em;margin-top:6px}
+.qn{color:var(--ac);font:600 14px var(--disp);letter-spacing:.06em;text-transform:uppercase}
+.qt{margin:4px 0 16px;font:600 26px/1.15 var(--disp)}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opts button{min-height:62px;padding:10px 16px;border-radius:16px;border:2px solid var(--ln);background:var(--card);font-weight:700;font-size:19px;text-align:left;display:flex;align-items:center;gap:12px}
+.opts button[aria-pressed=true]{border-color:var(--ac);background:rgba(47,210,192,.16)}
+.opts button[aria-pressed=true]::after{content:"✓";margin-left:auto;color:var(--ac);font-size:22px}
+.opts button:disabled{opacity:.6}
+.stars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.stars button{aspect-ratio:1;border-radius:16px;border:2px solid var(--ln);background:var(--card);font-size:34px;line-height:1;display:grid;place-items:center;gap:2px}
+.stars button small{font:700 14px var(--txt);color:var(--mut)}
+.stars button[aria-pressed=true]{border-color:var(--ac);background:rgba(47,210,192,.16)}
+.ok{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(47,210,192,.12);color:var(--ac);font-weight:700;text-align:center}
+.wait{padding:30px 10px;text-align:center;color:var(--mut)}
+.wait b{display:block;font:600 24px var(--disp);color:var(--ink);margin-bottom:6px}
+.res{margin-top:18px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.res h2{margin:0 0 8px;font:700 14px var(--txt);color:var(--mut)}
+.rb{display:grid;grid-template-columns:1fr 46px;gap:4px 10px;align-items:center;margin:6px 0;font-weight:700;font-size:15px}
+.rb .tr{grid-column:1/-1;height:10px;border-radius:6px;background:var(--card2);overflow:hidden}
+.rb .fl{display:block;height:100%;background:var(--ac);border-radius:6px}
+.rb span:nth-child(2){text-align:right;color:var(--mut)}
+.words{display:flex;flex-wrap:wrap;gap:6px}
+.words span{padding:4px 10px;border-radius:99px;background:var(--card2);font-weight:700}
+textarea{width:100%;min-height:120px;padding:12px 14px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font:inherit;font-size:19px;color:inherit;resize:vertical}
+textarea:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
+.big{margin:8px 0 4px;font:600 44px/1.05 var(--disp);color:var(--gd)}
+.hint{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--ln);color:#cfd5dc}
+.mine{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,194,71,.14);color:var(--gd);font-weight:700;text-align:center}
+body.s3t #send{border-radius:99px;background:var(--gd);color:#16130a}body.s3t #send.sec{background:var(--card2);color:var(--ink);border:1px solid var(--ln)}
+body.s3t #go{border-radius:99px;background:var(--gd);color:#16130a}
+body.s3t .opts button{border-radius:99px;border-width:1px;padding:10px 22px}
+body.s3t .opts button[aria-pressed=true]{border-color:#ffc247;background:rgba(255,194,71,.16)}
+body.s3t .opts button[aria-pressed=true]::after{color:#ffc247}
+</style>
+<style>
+/* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
+   Вмикається класом body.fam (поки проба: ?dyz=fam). Кожна гра має своє «обличчя» — логотип .fm-logo:
+     .sq — квадратні плитки (СКОБ), .balls — кульки (бінго), .board — клітинки табла (змаг), .stovp — стовпчики (опитування).
+   Вбудовується в сторінки ігор їхніми zibraty.py. */
+body.fam{--bg:#15171b;--card:#22262b;--card2:#272b31;--ln:#3b4048;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--ok:#3ee08f;
+  --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;
+  background:radial-gradient(80% 70% at 50% 40%,#232a33,#15171b 75%) fixed #15171b;color:var(--ink);font-family:var(--txt)}
+body.fam::before{display:none}
+
+/* ---- логотип гри ---- */
+.fm-logo{display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1;font-family:var(--disp);vertical-align:middle}
+.fm-logo small{font:600 .34em/1 var(--disp);letter-spacing:.32em;text-transform:uppercase;color:#ffc247;margin:0 0 .2em .06em;white-space:nowrap}
+.fm-lt{display:flex;gap:.08em;align-items:center}
+.fm-lt i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font:600 .78em/1 var(--disp);font-style:normal;color:#fff}
+.fm-lt i.c0{background:#d64541}.fm-lt i.c1{background:#2f6fd0}.fm-lt i.c2{background:#e8b02a;color:#1d1606}.fm-lt i.c3{background:#2e8f55}.fm-lt i.c4{background:#8a5bd1}
+.fm-lt b{font:600 .9em/1 var(--disp);color:#ffc247;margin-left:.06em}
+.fm-logo.balls .fm-lt i{border-radius:50%;box-shadow:inset -.07em -.09em 0 rgba(0,0,0,.2),inset .05em .06em 0 rgba(255,255,255,.18)}
+.fm-logo.board .fm-lt i{background:#22262b;box-shadow:inset 0 0 0 .045em #ffc247;color:#ffc247;border-radius:.14em}
+.fm-logo.board .fm-lt i.on{background:#ffc247;color:#1d1606;box-shadow:none}
+.fm-logo.stovp .fm-lt{align-items:flex-end;gap:.06em}
+.fm-logo.stovp .fm-lt i{width:.3em;border-radius:.07em}
+.fm-logo.stovp .fm-lt span{font:600 .78em/1 var(--disp);letter-spacing:.02em;margin-left:.16em;text-transform:uppercase;color:#fff}
+.fm-logo.sm{font-size:30px}.fm-logo.sm small{display:none}
+
+/* ---- шапка й кнопки-«пігулки» ---- */
+body.fam .top{background:none;border:0;padding:max(10px,env(safe-area-inset-top)) 14px 0 18px}
+body.fam .chip{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 15px var(--txt);gap:8px}
+body.fam .chip:hover{border-color:var(--gd)}
+body.fam .chip .dot{width:9px;height:9px;background:#6b7480}body.fam .chip .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+body.fam .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:99px;border:1px solid var(--ln);background:rgba(34,38,43,.9);color:var(--ink);font:600 16px var(--txt)}
+body.fam .btn:hover:not(:disabled){border-color:var(--gd)}
+body.fam .btn.main{min-height:54px;padding:0 28px;background:var(--gd);border-color:var(--gd);color:#16130a;font-size:18px;font-weight:700}
+body.fam .btn.ok{background:#2e8f55;border-color:#2e8f55;color:#fff}
+body.fam .btn.no{background:#d64541;border-color:#d64541;color:#fff}
+
+/* ---- підписи як у СКОБ ---- */
+.fm-hand{font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Segoe Print',cursive;color:#2fd2c0}/* 4.11: рукопис — точно як на сайті */
+.fm-lbl{margin:10px 0 4px;color:#a0a8b2;font:600 14px var(--txt);letter-spacing:.12em;text-transform:uppercase}
+.fm-or{display:flex;align-items:center;gap:12px;margin:12px 0 8px;color:#6b7480;font-size:14px}
+.fm-or::before,.fm-or::after{content:"";flex:1;height:1px;background:#383d44}
+.fm-h3{display:flex;align-items:baseline;gap:10px;margin:16px 0 8px;font:600 20px var(--disp);letter-spacing:.08em;text-transform:uppercase}
+.fm-h3 span{color:#ffc247}
+
+/* ---- вікно «Запросити гравців» (як лобі СКОБ) ---- */
+.fm-ov{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,12,15,.9)}
+.fm-box{position:relative;width:min(1060px,100%);max-height:100%;overflow:auto;padding:24px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;box-shadow:0 24px 90px #000a;text-align:left}
+.fm-box .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
+.fm-box .fm-logo{font-size:clamp(44px,6vw,66px)}
+.fm-join{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
+.fm-join .qr{width:min(380px,46vh,70vw);aspect-ratio:1;border-radius:20px;display:grid;place-items:center;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+.fm-join .qr svg{width:100%;height:100%}
+.fm-s1{margin:0;font:600 clamp(1.1rem,1.7vw,1.5rem)/1.25 var(--txt);color:#fff}
+.fm-url{font:600 clamp(1.4rem,2.6vw,2.2rem)/1.1 var(--disp);color:#fff;letter-spacing:.02em;overflow-wrap:anywhere}
+.fm-code{font:600 clamp(2.6rem,6vw,4.8rem)/1 var(--disp);letter-spacing:.08em;color:#ffc247;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.fm-join{grid-template-columns:1fr}.fm-join .qr{margin:0 auto}}
+
+/* ---- пʼєдестал: золото, срібло, бронза (як у СКОБ) ---- */
+body.fam .pod .bl{color:#16130a;text-shadow:none;border:0;border-radius:14px 14px 0 0;box-shadow:none;background:#d9925b}
+body.fam .pod .p[data-pl="1"] .bl{background:#ffc247}
+body.fam .pod .p[data-pl="2"] .bl{background:#cfd5dc}
+body.fam .pod .nm{font:700 clamp(1rem,2vw,1.8rem) var(--txt);text-transform:none;letter-spacing:0;color:#fff}
+body.fam .pod .nm::before{content:"";display:inline-block;width:.55em;height:.55em;border-radius:50%;background:var(--c);margin-right:.35em;vertical-align:.08em}
+body.fam .pod .sc2{font:600 clamp(.9rem,1.5vw,1.4rem) var(--disp);color:#cfd5dc;margin-bottom:8px}
+
+/* ---- телефон ---- */
+body.fam .in>.top{padding:0}
+body.fam input{border-radius:14px;background:#22262b;border:1px solid var(--ln)}
+body.fam input:focus{border-color:var(--gd);outline:0}
+
+/* ---- лобі (варіант Б): панель ведучого ліворуч, запрошення праворуч ---- */
+body.fam.lob .top{display:none}
+body.fam #lobby{padding:0;display:block}
+body.fam .l3{display:grid;grid-template-columns:minmax(340px,400px) 1fr;height:100%}
+body.fam .pn{display:flex;flex-direction:column;padding:22px 26px 20px;background:#1f2328;border-right:1px solid #33383f;overflow:auto}
+body.fam .pn-h{display:flex;align-items:center;gap:14px}
+body.fam .pn-b{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;border:1px solid #33383f;color:#cfd5dc}
+body.fam .pn-b:hover{border-color:var(--gd)}
+body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
+body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
+body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
+body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
+body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
+body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
+body.fam .pn .team input{flex:1;min-width:0;width:auto;border:0;background:none;padding:6px 2px;font:700 18px var(--txt);color:#f2f4f6;border-radius:6px}
+body.fam .pn .team input:focus{background:#1f2328}
+body.fam .pn .team small{display:block;font:600 14px var(--txt);color:#3ee08f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+body.fam .pn .team button{width:32px;height:32px;border:0;background:none;color:#6b7480;border-radius:8px}
+body.fam .pn .team button:hover{color:#fff;background:#33383f}
+body.fam .pn-a{align-self:flex-start;margin-top:10px;border:0;background:none;padding:2px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .pn-a:hover,body.fam .pn-k button:hover{color:#fff}
+body.fam .pn .modes{display:flex;gap:0;margin:0;padding:4px;border-radius:12px;background:#15171b;border:1px solid #33383f}
+body.fam .pn .modes button{flex:auto;min-height:0;border:0;background:none;border-radius:9px;padding:9px 10px;font:600 14px var(--txt);color:#9aa3ad;white-space:nowrap}
+body.fam .pn .modes button small{display:none}
+body.fam .pn .modes button[aria-pressed=true]{background:#33383f;color:#fff}
+body.fam .pn .mdesc{margin:8px 0 0;color:#9aa3ad;font-size:14px}
+body.fam .pn-sp{flex:1;min-height:22px}
+body.fam .pn #start{width:100%;min-height:60px;border-radius:12px;font-size:20px}
+body.fam .pn-k{display:flex;justify-content:space-between;margin-top:14px}
+body.fam .pn-k button{border:0;background:none;padding:4px 0;color:#9aa3ad;font:600 15px var(--txt);cursor:pointer}
+body.fam .rt{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;overflow:auto}
+body.fam .rt .qr{width:min(320px,44vh);aspect-ratio:1;border-radius:20px;box-shadow:0 0 0 1px rgba(255,194,71,.4),0 0 32px -6px rgba(255,194,71,.45)}
+body.fam .rt-s{margin:24px 0 4px;font:600 20px var(--txt);color:#f2f4f6}
+body.fam .rt-u{font:600 clamp(1.5rem,2.4vw,2.1rem)/1.15 var(--disp);color:#fff;overflow-wrap:anywhere}
+body.fam .rt-c{margin-top:6px;font:600 clamp(4rem,8vw,6.4rem)/1 var(--disp);letter-spacing:.06em;color:#ffc247;font-variant-numeric:tabular-nums}
+body.fam .rt-pl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center;margin-top:14px;min-height:34px}
+body.fam .rt-pl span{padding:5px 14px;border-radius:99px;background:#22262b;font-weight:600;font-size:15px}
+body.fam .rt-pl em{font-style:normal;color:#9aa3ad;font-size:15px}
+body.fam .rt .resume{position:absolute;left:28px;right:28px;top:22px;width:auto;margin:0;border-radius:14px;background:#2b2618;border:1px solid #6b5520;text-align:left}
+body.fam .rt .resume .btn{min-height:44px;border-radius:12px}
+body.fam .ved{margin-top:0}
+body.fam .fm-ov .opt{margin-top:14px}
+body.fam .fm-ov .sub{margin:12px 0 0}
+@media (max-width:860px){body.fam .l3{grid-template-columns:1fr;height:auto}body.fam #lobby{overflow:auto}body.fam .pn{border-right:0}}
+
+/* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
+   Вмикається класом body.s2 (проба: ?dyz=2). Шапка з логотипом Пласту, заголовок ліворуч, налаштування під ним,
+   праворуч картка з QR-кодом, унизу розкривний блок «Для ведучого». Вбудовується zibraty.py бінго й опитування. */
+body.s2{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;--pad:max(24px,calc(50vw - 620px));background:var(--bg)}
+body.s2 .top{padding:14px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln);gap:12px}
+body.s2 .logo{display:flex;align-items:center;gap:14px;font:600 22px/1 var(--disp);letter-spacing:.02em;text-transform:uppercase;color:var(--ink)}
+body.s2 .logo i,body.s2 .logo svg{display:none}
+body.s2 .logo .plast{height:38px;width:auto;display:block}
+body.s2 .logo .nm{padding-left:14px;border-left:1px solid var(--ln)}
+body.s2 .chip{min-height:38px;padding:6px 12px;font:600 14px var(--txt);background:transparent;color:var(--mut);border-radius:12px}
+body.s2 .chip b{color:var(--ink)}
+body.s2 #home{width:38px;justify-content:center;padding:0;color:var(--ink)}
+body.s2 main{padding:92px var(--pad) 24px}
+body.s2 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 16px var(--txt);border-radius:12px;min-height:46px;padding:10px 18px;border:1px solid var(--ln);background:var(--card);color:var(--ink)}
+body.s2 .btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
+body.s2 #lobby{display:block;overflow:auto}
+body.s2 #lobby .l2{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start}
+body.s2 .eyb{margin:0 0 6px;font:600 14px var(--txt);letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+body.s2 #lobby h1{margin:0;font:600 clamp(3rem,6vw,5rem)/.95 var(--disp);text-transform:uppercase;letter-spacing:.005em}
+body.s2 .hand{margin:8px 0 22px;font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Segoe Print',cursive;color:#2fd2c0}/* 4.11: рукопис — точно як на сайті */
+body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
+body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
+body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 13px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
+body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
+body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
+body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+body.s2 .s2a .btn{min-height:54px;font-size:18px;padding:12px 24px}
+body.s2 .s2j{position:sticky;top:0;padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd);text-align:center}
+body.s2 .s2j h2{margin:0;font:600 24px var(--disp);text-transform:uppercase;letter-spacing:.02em}
+body.s2 .s2j p{margin:2px 0 14px;color:var(--mut);font-size:15px}
+body.s2 .s2j .qr{width:100%;max-width:260px;margin:0 auto;box-shadow:none;border-radius:14px}
+body.s2 .s2j .url{margin-top:12px;font:600 15px var(--txt);color:var(--body);word-break:break-all;letter-spacing:0}
+body.s2 .s2j .s2l{margin:14px 0 2px}
+body.s2 .s2j .code{font:600 54px/1 var(--disp);letter-spacing:.06em;color:var(--gd)}
+body.s2 .s2j .pl{justify-content:center;margin-top:14px;min-height:0}
+body.s2 .s2x{width:100%;margin-top:34px;border-top:1px solid var(--ln);padding-top:14px;color:var(--mut)}
+body.s2 .s2x summary{cursor:pointer;font:700 15px var(--txt);list-style:none}
+body.s2 .s2x summary::-webkit-details-marker{display:none}
+body.s2 .s2x summary::before{content:"▸ "}body.s2 .s2x[open] summary::before{content:"▾ "}
+body.s2 .s2xi{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:14px;color:var(--body)}
+body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:12px}
+@media (max-width:900px){body.s2 #lobby .l2{grid-template-columns:1fr}body.s2 .s2j{position:static}}
+
+</style>
+<script>
+/* «Стиль 3» на телефоні (?dyz=3): логотип гри «значок + назва» вгорі й на першому екрані. Виклик: IHRY_TEL3('zmag'|'bingo'|'opyt') */
+window.IHRY_TEL3 = function (gra) {
+  if (!/dyz=3/.test(location.search)) return;
+  const Z = {
+    skob: ['Потужний', 'СКОБ!', '<svg viewBox="0 0 40 40"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg>'],
+    zmag: ['Інтелектуальний', 'Змаг', '<svg viewBox="0 0 40 40"><g fill="none" stroke="#ffc247" stroke-width="2.4"><rect x="1.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="1.2" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="14.7" width="10.6" height="10.6" rx="2.6"/><rect x="1.2" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="14.7" y="28.2" width="10.6" height="10.6" rx="2.6"/><rect x="28.2" y="28.2" width="10.6" height="10.6" rx="2.6"/></g><rect x="13.5" y="13.5" width="13" height="13" rx="3" fill="#ffc247"/></svg>'],
+    bingo: ['Пластове', 'Бінго', '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ffc247"/><circle cx="20" cy="20" r="11.5" fill="#fff"/><path d="M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z" fill="#1d1606"/></svg>'],
+    opyt: ['Швидке', 'Опитування', '<svg viewBox="0 0 40 40"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg>'],
+    znay: ['Новий', 'Виховник', '<svg viewBox="0 0 40 40"><circle cx="16" cy="16" r="11.5" fill="none" stroke="#ffc247" stroke-width="5"/><path d="M25 25l10.5 10.5" stroke="#2fd2c0" stroke-width="7" stroke-linecap="round"/></svg>']
+  };
+  const z = Z[gra]; if (!z) return;
+  document.body.classList.add('s3t');
+  const st = document.createElement('style');
+  st.textContent = 'body.s3t .t3{display:inline-flex;align-items:center;gap:9px}body.s3t .t3 svg{width:34px;height:34px;flex:none}body.s3t .t3>span{display:flex;flex-direction:column}body.s3t .t3 small{font:600 10px/1 Oswald,sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#ffc247;margin-bottom:3px}body.s3t .t3 b{font:600 24px/.9 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6}body.s3t .t3 b.ln{font-size:19px}' +
+    'body.s3t .j3{display:flex;flex-direction:column;align-items:flex-start;margin:14px 0 10px}body.s3t .j3 small{font:600 13px/1 Oswald,sans-serif;letter-spacing:.3em;text-transform:uppercase;color:#ffc247;margin:0 0 9px 1px}body.s3t .j3 .w{display:flex;align-items:center;gap:12px}body.s3t .j3 svg{width:40px;height:40px;flex:none}body.s3t .j3 b{font:600 48px/.8 Oswald,sans-serif;text-transform:uppercase;color:#f2f4f6;padding-top:2px}' +
+    'body.s3t .qn{font:700 14px "Source Sans 3",sans-serif;text-transform:none;letter-spacing:.02em;color:#a0a8b2}body.s3t #play h1,body.s3t #play h2{text-transform:none}body.s3t .btn{border-radius:12px}body.s3t .top .logo,body.s3t .top>b:not(.t3){display:none}';
+  document.head.append(st);
+  const top = document.querySelector('.top');
+  if (top) top.insertAdjacentHTML('afterbegin', '<span class="t3" aria-label="' + z[0] + ' ' + z[1] + '">' + z[2] + '<span><small>' + z[0] + '</small><b' + (z[1].length > 7 ? ' class="ln"' : '') + '>' + z[1] + '</b></span></span>');
+  const h = document.querySelector('#join h1');
+  if (h) h.outerHTML = '<div class="j3" role="heading" aria-level="1" aria-label="' + z[0] + ' ' + z[1] + '"><small>' + z[0] + '</small><div class="w">' + z[2] + '<b>' + z[1] + '</b></div></div>';
+
+  /* 4.11: на екрані входу великий логотип уже є — маленький у шапці ховаємо, щоб не було двох поспіль */
+  setInterval(() => { const j = document.querySelector('.j3'), t = document.querySelector('.t3'); if (j && t) t.style.visibility = j.offsetParent !== null ? 'hidden' : ''; }, 300);
+};
+
+</script>
+<script>
+/* «Репетиція» (4.11.2026): тестові гравці, щоб ведучий міг прогнати гру сам, без юнаків.
+   1) На сторінці гравця (СКОБ, Бінго, Опитування, Змаг): якщо в адресі є ?bot=N — сторінка сама входить у гру
+      під тестовим іменем і сама грає (відповідає, позначає кульки, голосує, тисне «Відповідаю!»).
+      Свій «запис» у сховищі браузера (bot.N.…), щоб тестові гравці не плутались між собою й зі справжнім.
+   2) На екрані ведучого: window.REPETYTSIIA(urlFn, n) — додає n невидимих тестових гравців (iframe), повторний виклик — прибирає. */
+(function () {
+  'use strict';
+  const q = new URLSearchParams(location.search), BOT = q.get('bot');
+  if (BOT !== null && /^\d{1,2}$/.test(BOT)) {
+    /* --- тестовий гравець --- */
+    const N = +BOT, pre = 'bot.' + N + '.';
+    [Storage.prototype].forEach(P => {
+      const g = P.getItem, s = P.setItem, r = P.removeItem;
+      P.getItem = function (k) { return g.call(this, pre + k); };
+      P.setItem = function (k, v) { return s.call(this, pre + k, v); };
+      P.removeItem = function (k) { return r.call(this, pre + k); };
+    });
+    const NAMES = ['Тарас', 'Оксана', 'Богдан', 'Мирослава', 'Устим', 'Зоряна', 'Остап', 'Леся', 'Назар', 'Ярина'];
+    const name = 'Тест ' + NAMES[N % NAMES.length];
+    const $ = s => document.querySelector(s), vis = el => !!(el && el.offsetParent !== null && !el.disabled);
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const done = new Set(); let busy = false;
+    const later = (key, ms, fn) => { if (done.has(key) || busy) return; done.add(key); busy = true; setTimeout(() => { busy = false; try { fn(); } catch (e) { /* ok */ } }, ms); };
+    const fill = (el, v) => { el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); };
+    const WORDS = ['похід', 'ігри', 'вогнище', 'пісні', 'мандрівка', 'вузли', 'табір'];
+    setInterval(() => {
+      /* вхід */
+      const fn = $('#f-name');
+      if (vis(fn)) { if (!fn.value) fill(fn, name); const go = $('#go') || $('#s-join button.main') || $('form button.main'); if (vis(go)) later('join', rnd(300, 1500), () => go.click()); return; }
+      const goOnly = $('#join:not([hidden]) #go'); if (goOnly && vis(goOnly) && !$('#f-name')) { later('join', rnd(300, 1500), () => goOnly.click()); return; }
+      /* Змаг: вибір команди */
+      const tp = document.querySelectorAll('#tp button'); if (tp.length && vis(tp[0])) { later('team', rnd(400, 1200), () => { const t = document.querySelectorAll('#tp button'); if (t.length) t[N % t.length].click(); }); return; }
+      /* СКОБ: варіанти відповіді */
+      const ans = document.querySelectorAll('#ans button');
+      if (ans.length && vis(ans[0])) { const k = 'q:' + ($('#a-q') ? $('#a-q').textContent : ''), o = Math.floor(Math.random() * ans.length); later(k, rnd(1500, 7000), () => { const x = document.querySelectorAll('#ans button')[o]; if (x) x.click(); }); return; }
+      /* Бінго: позначити витягнуте, натиснути «БІНГО!» */
+      const card = document.querySelectorAll('#card button[data-k]');
+      if (card.length) {
+        const ba = $('#ba') ? $('#ba').textContent.replace(/^→\s*/, '').trim() : '', ball = ba || ($('#bn') && $('#bn').lastChild ? $('#bn').lastChild.textContent.trim().split(/\s+/).pop() : '');   /* «Б 7» → «7»; у словах — відповідь після «Показати відповідь» */
+        const b = [...card].find(x => x.textContent.trim() === ball && x.getAttribute('aria-pressed') !== 'true' && !x.classList.contains('on'));
+        if (b && ball) later('m:' + ball, rnd(800, 4000), () => { const x = [...document.querySelectorAll('#card button[data-k]')].find(y => y.textContent.trim() === ball); if (x && x.getAttribute('aria-pressed') !== 'true') x.click(); });   /* кнопки перемальовуються — шукаємо знову */
+        const sk = $('#skob'); if (vis(sk)) later('bingo:' + ball, rnd(500, 2500), () => { const x = $('#skob'); if (x && !x.disabled) x.click(); });
+        return;
+      }
+      /* Опитування */
+      const opts = document.querySelectorAll('#body button[data-v]');
+      if (opts.length && vis(opts[0]) && ![...opts].some(x => x.getAttribute('aria-pressed') === 'true')) { const k = 'v:' + document.body.innerText.slice(0, 80); const o = Math.floor(Math.random() * opts.length); later(k, rnd(1000, 5000), () => { const x = document.querySelectorAll('#body button[data-v]')[o]; if (x) x.click(); }); return; }
+      const w = $('#w'), send = $('#send'); if (w && vis(w) && vis(send) && !w.value) { const k = 'w:' + document.body.innerText.slice(0, 80); later(k, rnd(1500, 6000), () => { const w2 = $('#w'), s2 = $('#send'); if (w2 && s2) { fill(w2, WORDS[Math.floor(Math.random() * WORDS.length)]); s2.click(); } }); return; }
+      /* Змаг: кнопка «Відповідаю!» — тисне не кожен і не одразу */
+      const bz = $('#bz'); if (vis(bz)) { const k = 'bz:' + ($('#q') ? $('#q').textContent : ''); if (!done.has(k)) { done.add(k); if (Math.random() < 0.6) setTimeout(() => { if (vis(bz)) bz.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })); }, rnd(1500, 6000)); } }
+    }, 600);
+    return;
+  }
+  /* --- екран ведучого --- */
+  let frames = [];
+  window.REPETYTSIIA = function (urlFn, n) {
+    if (frames.length) { frames.forEach(f => f.remove()); frames = []; return false; }
+    const base = urlFn && urlFn(); if (!base) return null;
+    for (let i = 0; i < (n || 4); i++) {
+      const f = document.createElement('iframe');
+      f.src = base + (base.includes('?') ? '&' : '?') + 'bot=' + i;
+      f.setAttribute('aria-hidden', 'true'); f.tabIndex = -1; f.title = 'Тестовий гравець';
+      f.style.cssText = 'position:fixed;left:-2000px;top:0;width:360px;height:640px;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(f); frames.push(f);
+    }
+    return true;
+  };
+  window.REPETYTSIIA_ON = () => frames.length > 0;
+})();
+
+</script>
+</head>
+<body>
+<div class="in">
+  <div class="top"><b>Новий виховник</b><span class="sp"></span><span class="chip"><span class="dot" id="dot"></span><span id="st">…</span></span></div>
+
+  <section id="join">
+    <h1>Новий виховник</h1>
+    <p class="m">Гурток знайомить виховника з собою. Впиши своє імʼя — так тебе побачать у грі.</p>
+    <div id="cw"><label for="f-code">Код з екрана</label><input id="f-code" inputmode="numeric" maxlength="7" placeholder="123 456" autocomplete="off"></div>
+    <label for="f-name">Твоє імʼя</label><input id="f-name" maxlength="20" placeholder="Оленка" autocomplete="given-name">
+    <button type="button" class="btn" id="go">Увійти в гру</button>
+    <div class="err" id="err"></div>
+  </section>
+
+  <section id="play" hidden>
+    <div id="body"></div>
+  </section>
+</div>
+
+<script>
+/* Звʼязок пульта з гутіркою — з запасними каналами (з 22.10.2026).
+   window.GutirkaNet(PeerJS) → клас, схожий на Peer з PeerJS (той самий API для pult-host-file.js і сторінки пульта),
+   але працює одразу двома шляхами:
+     1) PeerJS (безкоштовний сервер 0.peerjs.com) — як і раніше;
+     2) запасний: кілька публічних MQTT-брокерів через WebSocket (повідомлення йдуть через усі, повтори відкидаються).
+   Пульт підключається тим шляхом, що відповів першим. Якщо PeerJS-сервер «лежить» — працює запасний, і навпаки.
+   Запасні повідомлення зашифровані (AES-GCM, ключ — з коду й ключа з QR), адреса гутірки — хеш коду.
+   Брокери можна замінити: window.GUTIRKA_MQTT = ['wss://…', …] (перед завантаженням). */
+(function () {
+  'use strict';
+  if (window.GutirkaNet) return;
+  const BROKERS = () => window.GUTIRKA_MQTT || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const NS = 'gutirky-fi/v1/';
+  const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(b => (b % 36).toString(36)).join(''); };
+  class Em {
+    constructor() { this._h = {}; }
+    on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
+    off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
+    emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+
+  /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
+  const te = new TextEncoder(), td = new TextDecoder();
+  const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255, ...b]; };
+  const len = n => { const o = []; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; o.push(d); } while (n > 0); return o; };
+  const pkt = (h, body) => { const b = body instanceof Uint8Array ? body : Uint8Array.from(body); const L = len(b.length); const o = new Uint8Array(1 + L.length + b.length); o[0] = h; o.set(L, 1); o.set(b, 1 + L.length); return o; };
+  class Mqtt extends Em {
+    constructor(url) { super(); this.url = url; this.subs = new Set(); this.ok = false; this.dead = false; this.tries = 0; this.buf = new Uint8Array(0); this.open(); }
+    open() {
+      if (this.dead) return;
+      let ws; try { ws = new WebSocket(this.url, ['mqtt']); } catch (e) { return this.retry(); }
+      this.ws = ws; ws.binaryType = 'arraybuffer';
+      const to = setTimeout(() => { if (!this.ok) try { ws.close(); } catch (e) { /* ok */ } }, 8000);
+      ws.onopen = () => {
+        const id = 'gf' + rnd(12);
+        ws.send(pkt(0x10, [...str('MQTT'), 4, 2, 0, 45, ...str(id)]));   // CONNECT, clean session, keepalive 45 с
+      };
+      ws.onmessage = ev => { const d = new Uint8Array(ev.data); const b = new Uint8Array(this.buf.length + d.length); b.set(this.buf); b.set(d, this.buf.length); this.buf = b; this.parse(); };
+      ws.onclose = ws.onerror = () => { clearTimeout(to); clearInterval(this.ping); const was = this.ok; this.ok = false; if (this.ws === ws) { this.ws = null; if (was) this.emit('down'); this.retry(); } };
+    }
+    retry() { if (this.dead) return; this.tries++; clearTimeout(this.rt); this.rt = setTimeout(() => this.open(), Math.min(20000, 1000 * 2 ** Math.min(this.tries, 4))); }
+    parse() {
+      for (;;) {
+        const b = this.buf; if (b.length < 2) return;
+        let m = 1, v = 0, i = 1, d;
+        do { if (i >= b.length) return; d = b[i++]; v += (d & 127) * m; m *= 128; } while (d & 128);
+        if (b.length < i + v) return;
+        const t = b[0] >> 4, body = b.subarray(i, i + v); this.buf = b.slice(i + v);
+        if (t === 2) {   // CONNACK
+          if (body[1] !== 0) { try { this.ws.close(); } catch (e) { /* ok */ } return; }
+          this.ok = true; this.tries = 0;
+          this.ping = setInterval(() => { try { this.ws.send(Uint8Array.of(0xC0, 0)); } catch (e) { /* ok */ } }, 20000);
+          this.subs.forEach(s => this.sendSub(s));
+          this.emit('up');
+        } else if (t === 3) {   // PUBLISH (QoS 0)
+          const tl = (body[0] << 8) | body[1], topic = td.decode(body.subarray(2, 2 + tl));
+          this.emit('msg', topic, td.decode(body.subarray(2 + tl)));
+        }
+      }
+    }
+    sendSub(topic) { try { this.ws.send(pkt(0x82, [0, 1, ...str(topic), 0])); } catch (e) { /* ok */ } }
+    sub(topic) { this.subs.add(topic); if (this.ok) this.sendSub(topic); }
+    pub(topic, text) { if (!this.ok) return false; const t = str(topic), p = te.encode(text); const b = new Uint8Array(t.length + p.length); b.set(t); b.set(p, t.length); try { this.ws.send(pkt(0x30, b)); return true; } catch (e) { return false; } }
+    close() { this.dead = true; clearTimeout(this.rt); clearInterval(this.ping); const ws = this.ws; this.ws = null; this.ok = false; if (ws) { try { ws.send(Uint8Array.of(0xE0, 0)); } catch (e) { /* ok */ } try { ws.close(); } catch (e) { /* ok */ } } }
+  }
+
+  /* ---------------- шифрування й адреси ---------------- */
+  const b64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const sha = async s => new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(s)));
+  const hex = a => [...a].map(x => x.toString(16).padStart(2, '0')).join('');
+  const KEYS = {};
+  const aesKey = (code, k) => KEYS[code + '|' + k] || (KEYS[code + '|' + k] = sha('gutirky-fi|' + code + '|' + (k || '')).then(h => crypto.subtle.importKey('raw', h, 'AES-GCM', false, ['encrypt', 'decrypt'])));
+  const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
+  async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
+  async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
+
+  /* ---------------- запасний «Peer» поверх брокерів ---------------- */
+  const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
+  class RelayConn extends Em {
+    constructor(peer, cid, to, key) { super(); this.p = peer; this.cid = cid; this.to = to; this.key = key; this.open = false; this.parts = {}; this.peer = to; }
+    send(d) {
+      if (!this.open) return;
+      const s = JSON.stringify(d), mid = rnd(10);
+      if (s.length <= PART) return this.p.out(this.to, this.key, { k: 'data', cid: this.cid, from: this.p.inbox, s });
+      const n = Math.ceil(s.length / PART);
+      for (let i = 0; i < n; i++) this.p.out(this.to, this.key, { k: 'part', cid: this.cid, from: this.p.inbox, m: mid, i, n, s: s.slice(i * PART, (i + 1) * PART) });
+    }
+    got(m) {
+      let s = m.s;
+      if (m.k === 'part') { const P = this.parts[m.m] = this.parts[m.m] || []; P[m.i] = m.s; if (P.filter(x => x != null).length < m.n) return; s = P.join(''); delete this.parts[m.m]; }
+      let d; try { d = JSON.parse(s); } catch (e) { return; }
+      this.emit('data', d);
+    }
+    close() { if (!this.open) return; this.open = false; this.p.out(this.to, this.key, { k: 'close', cid: this.cid, from: this.p.inbox }); delete this.p.conns[this.cid]; setTimeout(() => this.emit('close'), 0); }
+  }
+  class RelayPeer extends Em {
+    constructor(id) {
+      super();
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.code = codeOf(this.id);
+      this.brokers = BROKERS().map(u => new Mqtt(u));
+      (async () => {
+        this.inbox = this.host ? await hostTopic(this.id) : NS + 'p/' + this.id;
+        this.brokers.forEach(b => {
+          b.on('up', () => { if (!this.isOpen && !this.destroyed) { this.isOpen = true; this.emit('open', this.id); } });
+          b.on('msg', (t, text) => { if (t === this.inbox) this.inMsg(text); });
+          b.sub(this.inbox);
+        });
+      })();
+      this.failT = setTimeout(() => { if (!this.isOpen && !this.destroyed) this.emit('error', { type: 'network' }); }, 15000);
+    }
+    up() { return this.brokers.some(b => b.ok); }
+    out(to, key, msg) {
+      msg.mid = rnd(10);
+      seal(key, msg).then(text => { this.brokers.forEach(b => b.pub(to, text)); });
+    }
+    async inMsg(text) {
+      // гутірка: пробуємо ключ з QR, тоді — лише код (пульт, де код ввели вручну); пульт: ключ свого зʼєднання
+      let m = null, key = null;
+      if (this.host) { for (const k of [window.GUTIRKA_NET_KEY || '', '']) { key = aesKey(this.code, k); m = await open(key, text); if (m) break; } }
+      else for (const c of Object.values(this.conns)) { m = await open(c.key, text); if (m) { key = c.key; break; } }
+      if (!m || this.seen.has(m.mid)) return;
+      this.seen.add(m.mid); if (this.seen.size > 800) this.seen = new Set([...this.seen].slice(-400));
+      let c = this.conns[m.cid];
+      if (m.k === 'conn' && this.host) {
+        if (!c) { c = this.conns[m.cid] = new RelayConn(this, m.cid, m.from, key); c.open = true; this.emit('connection', c); setTimeout(() => c.emit('open'), 0); }
+        this.out(m.from, key, { k: 'ack', cid: m.cid, from: this.inbox });
+      } else if (m.k === 'ack' && c && !c.open) { c.open = true; clearInterval(c.knock); c.emit('open'); }
+      else if ((m.k === 'data' || m.k === 'part') && c) c.got(m);
+      else if (m.k === 'close' && c) { c.open = false; delete this.conns[m.cid]; c.emit('close'); }
+    }
+    connect(id) {
+      const cid = rnd(12), key = aesKey(codeOf(id), window.GUTIRKA_NET_KEY || '');
+      const c = this.conns[cid] = new RelayConn(this, cid, null, key);
+      hostTopic(id).then(to => {
+        c.to = to; c.peer = id;
+        const knock = () => { if (!c.open && !this.destroyed) this.out(to, key, { k: 'conn', cid, from: this.inbox }); };
+        knock(); c.knock = setInterval(knock, 2500);   // повторюємо, поки гутірка не відповість
+        setTimeout(() => { if (!c.open) { clearInterval(c.knock); c.emit('error', { type: 'peer-unavailable' }); } }, 12000);
+      });
+      return c;
+    }
+    destroy() { this.destroyed = true; clearTimeout(this.failT); Object.values(this.conns).forEach(c => { try { c.close(); } catch (e) { /* ok */ } clearInterval(c.knock); }); this.brokers.forEach(b => b.close()); }
+    disconnect() {} reconnect() {}
+  }
+
+  /* ---------------- спільний Peer: PeerJS + запасний одночасно ---------------- */
+  window.GutirkaNet = function (PJ) {
+    class NetConn extends Em {
+      constructor(peer, id, opts) {
+        super(); this.peer = id; this.open = false; this.win = null; this.tries = []; this.failed = 0; this.n = 0;
+        const add = c => {
+          this.n++; this.tries.push(c);
+          c.on('open', () => {
+            if (this.win || this.closed) { if (this.win !== c) try { c.close(); } catch (e) { /* ok */ } return; }
+            this.win = c; this.open = true;
+            this.tries.forEach(x => { if (x !== c) try { x.close(); } catch (e) { /* ok */ } });
+            c.on('data', d => this.emit('data', d));
+            c.on('close', () => { if (this.win === c) { this.open = false; this.emit('close'); } });
+            this.emit('open');
+          });
+          c.on('error', e => { if (this.win === c) { this.emit('error', e); return; } if (++this.failed >= this.need()) { peer.emit('error', e && e.type ? e : { type: 'peer-unavailable' }); this.emit('error', e); } });
+        };
+        this.need = () => peer.inner.length;
+        peer.inner.forEach(p => { if (p.isUp) { try { add(p.connect(id, opts)); } catch (e) { this.failed++; } } else p._gq.push(() => { if (!this.win && !this.closed) try { add(p.connect(id, opts)); } catch (e) { this.failed++; } }); });
+      }
+      send(d) { if (this.win) this.win.send(d); }
+      close() { this.closed = true; this.open = false; this.tries.forEach(c => { try { c.close(); } catch (e) { /* ok */ } }); }
+    }
+    class NetPeer extends Em {
+      constructor(id, opts) {
+        super(); this.id = id; this.inner = []; this.destroyed = false; this.opened = false; this.errs = 0;
+        const add = (p, kind) => {
+          p.kind = kind; p.isUp = false; p._gq = []; this.inner.push(p);
+          p.on('open', pid => { p.isUp = true; if (!this.id) this.id = pid; p._gq.splice(0).forEach(f => f()); if (!this.opened) { this.opened = true; this.emit('open', this.id); } });
+          p.on('connection', c => this.emit('connection', c));
+          p.on('error', e => {
+            const ty = e && e.type;
+            if (ty === 'unavailable-id' || ty === 'browser-incompatible') { this.emit('error', e); return; }   // код зайнятий — гутірка сама візьме інший
+            if (ty === 'peer-unavailable') return;   // це вирішує NetConn
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) this.emit('error', e);   // помилка лише тоді, коли не працює жоден шлях
+          });
+          p.on('disconnected', () => {
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) { this.emit('disconnected'); return; }
+            // інший шлях працює — цей відновлюємо самі, тихо
+            const again = () => { if (this.destroyed || p.destroyed || !p.disconnected) return; try { p.reconnect(); } catch (e) { /* ok */ } setTimeout(again, 10000); };
+            setTimeout(again, 3000);
+          });
+          p.on('close', () => { p.isUp = false; if (!this.destroyed && !this.inner.some(x => x.isUp)) this.emit('close'); });
+        };
+        if (PJ) { try { add(new PJ(id, opts), 'peerjs'); } catch (e) { /* без PeerJS */ } }
+        try { add(new RelayPeer(id), 'relay'); } catch (e) { /* без запасного */ }
+      }
+      get disconnected() { return !this.inner.some(x => x.isUp); }
+      connect(id, opts) { return new NetConn(this, id, opts); }
+      reconnect() { this.inner.forEach(p => { if (p.disconnected && !p.destroyed) try { p.reconnect(); } catch (e) { /* ok */ } }); }
+      destroy() { this.destroyed = true; this.inner.forEach(p => { try { p.destroy(); } catch (e) { /* ok */ } }); }
+    }
+    return NetPeer;
+  };
+  window.GutirkaNet.RelayPeer = RelayPeer;
+})();
+
+</script>
+<script>
+(function () {
+'use strict';
+if (window.IHRY_TEL3) IHRY_TEL3('znay');
+const $ = s => document.querySelector(s);
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const KEY = 'znay.ses';
+const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
+const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
+let ses = load();
+if (!ses.tok) { ses.tok = Math.random().toString(36).slice(2) + Date.now().toString(36); save(ses); }
+const qk = (new URLSearchParams(location.search).get('k') || '').replace(/\D/g, '').slice(0, 6);
+if (qk.length === 6) { $('#f-code').value = qk; $('#cw').hidden = true; }
+if (ses.name) $('#f-name').value = ses.name;
+
+/* ---------- звʼязок ---------- */
+const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.async = true; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+async function getPeer() { if (!window.Peer) for (const u of LIBS) { try { await loadScript(u); if (window.Peer) break; } catch (e) { /* далі */ } } return window.GutirkaNet ? window.GutirkaNet(window.Peer || null) : window.Peer; }
+let peer = null, conn = null, att = 0, lastRx = 0, hb = 0, st = null, draft = '';
+function chip(on, t) { $('#dot').className = 'dot' + (on ? ' on' : ''); $('#st').textContent = t; }
+function stop() { att++; clearInterval(hb); try { conn && conn.close(); } catch (e) { /* ok */ } try { peer && peer.destroy(); } catch (e) { /* ok */ } conn = peer = null; }
+async function connect() {
+  stop(); const my = att; chip(false, 'Підключаємось…');
+  let P; try { P = await getPeer(); } catch (e) { P = null; }
+  if (my !== att) return;
+  if (!P) { chip(false, 'Немає звʼязку'); return; }
+  const p = peer = new P(undefined, window.GUTIRKA_PEER_OPTS || {});
+  const tmo = setTimeout(() => { if (my === att && !(conn && conn.open)) retry(my, 'Не знайшли гру — перевір код'); }, 15000);
+  p.on('error', e => { if (my !== att) return; if (e && e.type === 'peer-unavailable') { clearTimeout(tmo); retry(my, 'Гру з таким кодом не знайдено'); } });
+  p.on('open', () => {
+    if (my !== att) return;
+    const c = conn = p.connect('gutirky-znay-' + ses.code, { reliable: true });
+    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'join', tok: ses.tok, name: ses.name }); chip(true, 'На звʼязку');
+      hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 5000); });
+    c.on('data', d => { if (my === att) { lastRx = Date.now(); if (d && d.t === 'st') { st = d; render(); } } });
+    c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
+  });
+}
+function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' · пробуємо знову'); setTimeout(connect, 3000); }
+
+/* ---------- екран ---------- */
+let lastK = '';
+function render() {
+  $('#join').hidden = true; $('#play').hidden = false;
+  const B = $('#body'), nm = esc(st.name || ses.name || '');
+  const k = st.ph + ':' + (st.i == null ? '' : st.i); if (k !== lastK) { lastK = k; draft = ''; }
+  let h = '';
+  if (st.ph === 'lobby') h = `<div class="wait"><b>Ти в грі, ${nm}!</b>Дивись на екран — ведучий скоро почне.</div>`;
+  else if (st.ph === 'end') h = `<div class="wait"><b>Дякуємо!</b>${esc(st.sum || 'Раунд завершено.')}</div>`;
+  else if (st.ph === 'zbir') {
+    h = `<div class="qn">Вгадай, хто?</div><h1 class="qt">Напиши факт про себе</h1><p class="m">Те, чого ніхто в гуртку не знає. Наприклад: «Я вмію жонглювати» чи «Я бачив вовка в лісі». Факт бачить лише ведучий, доки не покаже на екрані — без твого імені.</p>`
+      + `<textarea id="w" maxlength="140" placeholder="Мій факт…">${esc(draft || st.my || '')}</textarea><button type="button" class="btn${st.my ? ' sec' : ''}" id="send">${st.my ? 'Змінити факт' : 'Надіслати'}</button>`;
+    if (st.my) h += '<div class="ok">✓ Факт прийнято. Можна змінити, поки ведучий не почав.</div>';
+  }
+  else if (st.ph === 'fakt') {
+    h = `<div class="qn">Факт ${st.i + 1} з ${st.n}</div><h1 class="qt">«${esc(st.fakt)}»</h1>`;
+    if (st.rev) h += `<div class="big">Це — ${esc(st.who)}!</div>` + (st.mine ? '<div class="mine">Твій факт! Розкажи коротко, як це було.</div>' : '');
+    else if (st.mine) h += '<div class="mine">Це твій факт — не видавай себе!</div>';
+    else h += '<div class="hint">Підказуй виховнику вголос: «тепло» чи «холодно». Імені не називай!</div>';
+  }
+  else if (st.ph === 'my') {
+    const dis = st.open ? '' : ' disabled';
+    h = `<div class="qn">Хто з нас… · питання ${st.i + 1} з ${st.n}</div><h1 class="qt">${esc(st.q)}</h1>`;
+    const btns = st.o.map((o, j) => j === st.me ? '' : `<button type="button" data-v="${j}" aria-pressed="${st.my === j}"${dis}>${esc(o)}</button>`).join('');
+    h += btns ? `<div class="opts">${btns}</div>` : '<div class="hint">Поки в грі нікого, крім тебе.</div>';
+    if (st.my !== null) h += '<div class="ok">✓ Голос прийнято. Ніхто не бачить, за кого ти голосуєш.</div>';
+    if (st.win) h += st.win.length ? `<div class="res"><h2>Найбільше голосів</h2><div class="big">${st.win.map(esc).join(', ')}</div></div>` : '';
+  }
+  const foc = document.activeElement && document.activeElement.id === 'w';
+  B.innerHTML = h;
+  if (foc && $('#w')) { const w = $('#w'); w.focus(); w.setSelectionRange(w.value.length, w.value.length); }
+}
+function send(o) { try { conn && conn.send(o); } catch (e) { /* ok */ } if (navigator.vibrate) navigator.vibrate(30); }
+$('#body').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b || !st) return;
+  if (b.dataset.v != null && st.ph === 'my' && st.open) { st.my = +b.dataset.v; render(); send({ t: 'vote', i: st.i, v: +b.dataset.v }); }
+  else if (b.id === 'send') { const w = $('#w').value.replace(/\s+/g, ' ').trim(); if (w) { st.my = w; draft = ''; render(); send({ t: 'fakt', v: w }); } }
+});
+$('#body').addEventListener('input', e => { if (e.target.id === 'w') draft = e.target.value; });
+
+function join(cd, nm) { ses.code = cd; ses.name = nm; save(ses); $('#err').textContent = ''; $('#join').hidden = true; $('#play').hidden = false; $('#body').innerHTML = '<div class="wait"><b>Підключаємось…</b></div>'; connect(); }
+$('#go').addEventListener('click', () => {
+  const cd = $('#f-code').value.replace(/\D/g, ''), nm = $('#f-name').value.replace(/\s+/g, ' ').trim();
+  if (cd.length !== 6) { $('#cw').hidden = false; $('#err').textContent = 'Код — 6 цифр з екрана.'; return; }
+  if (!nm) { $('#err').textContent = 'Впиши своє імʼя.'; $('#f-name').focus(); return; }
+  join(cd, nm.slice(0, 20));
+});
+['#f-code', '#f-name'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') $('#go').click(); }));
+['#f-code', '#f-name'].forEach(s => $(s).addEventListener('input', () => { $('#err').textContent = ''; }));
+})();
+</script>
+</body>
+</html>
