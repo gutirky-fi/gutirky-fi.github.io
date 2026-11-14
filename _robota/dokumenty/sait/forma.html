@@ -409,12 +409,12 @@ html.vykh .btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}html
   const K = /*KONFIG*/{}/*/KONFIG*/;
   const $ = id => document.getElementById(id);
   const DEMO = /*DEMO*/false/*/DEMO*/ || /[?&]demo\b/.test(location.search);
-  /* Відкрито з «Вхід виховника → Гроші й майно» (?v, 14.11): зелений колір виховника, «← До подій», вхід без повторного коду
+  /* Відкрито з «Вхід виховника → Гроші й майно» (?v, 14.11): зелений колір виховника, «← До вибору», вхід без повторного коду
      (код лежить лише в sessionStorage цієї вкладки — до «Вийти» чи закриття вкладки; на пристрої після закриття не лишається). */
   const VYKH = /[?&]v\b/.test(location.search), VKOD = 'dokumenty:vkod';
   if (VYKH) {
     document.documentElement.classList.add('vykh');
-    const bk = document.querySelector('a.back'); if (bk) { bk.href = '../vykhovnyk/' + (DEMO && /[?&]demo\b/.test(location.search) ? '?demo' : ''); bk.querySelector('span').textContent = 'До подій'; }
+    const bk = document.querySelector('a.back'); if (bk) { bk.href = '../vykhovnyk/' + (DEMO && /[?&]demo\b/.test(location.search) ? '?demo' : ''); bk.querySelector('span').textContent = 'До вибору'; }
   }   // у пробах (proba/) збирання ставить true: без коду; на справжньому сайті — false
   const EMB = '{{LILY}}';
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));

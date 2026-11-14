@@ -190,6 +190,10 @@ a.tile{text-decoration:none}
 .tiles.vyp .tile b{font-size:18px}
 .tiles.vyp .tile span{font-size:14px}
 .tile i{border-color:rgba(217,166,64,.55);color:#f3d48a}
+.vkh{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
+.row2 .f{align-content:start}
+.ph{margin:-2px 0 12px;color:var(--mut);font-size:14px;line-height:1.4}.ph b{color:var(--body);font-weight:600}
+.nov{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d)}.nov .nt{flex:1 1 260px;min-width:0}.nov .nt b{display:block;margin-bottom:3px;color:var(--ink);font-size:17px}.nov .nt span{color:var(--mut);font-size:15px}.nov.pusto{border-color:rgba(61,175,110,.55);background:rgba(61,175,110,.08)}.nov .btn{flex:0 0 auto}
 .pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
 .maie{display:grid;gap:10px;margin:0 0 10px}
 .mr{padding:12px 14px 4px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
@@ -233,7 +237,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <span class="ey">Документи гуртка</span>
     <h1>Вхід виховника</h1>
     <p class="hand">усе за подіями — без пошуку по посадах</p>
-    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за вашим кодом виховника — і кілька кнопок: що сталося, те й записуєте. Книга сама розкладе записи по своїх аркушах.</p>
+    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за вашим кодом виховника — і кілька кнопок: оберіть, що записуєте. Книга сама розкладе записи по своїх аркушах.</p>
   </section>
 
   <!-- вхід -->
@@ -259,32 +263,35 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
   <!-- події -->
   <section id="v-hub" hidden>
-    <div class="hubhead"><h2>Що сталося?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="hubhead"><h2>Що записуємо?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="vkh"><b>Як тут працювати.</b> Оберіть, що ви хочете записати, — книга сама розкладе запис по своїх аркушах. Були сходини — <b>«Після сходин»</b>. Хтось прийшов, пішов чи перейшов — <b>«Прийшов, перейшов, пішов»</b>. Гроші — <b>«Гроші й майно»</b>.</div>
+    <div class="nov" id="go-hg-wrap"><div class="nt"><b>Ви новий виховник у цьому гуртку?</b><span id="hg-pidk">Гурток уже був до вас — запишіть усіх, хто в ньому є, одним разом, і що вони вже мають.</span></div><button class="btn main" type="button" id="go-hg">Беру гурток</button></div>
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
-      <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>і все, що було до нас або поза гуртком: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок.</span></button>
+      <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>Запис про людину: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок. Навіщо: щоб список і історія юнака в книзі були точні.</span></button>
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
       <button class="tile" type="button" id="go-gm"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет: каса й майно гуртка.</span></button>
       <a class="tile" href="../zvity/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
-      <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span></button>
-      <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Чи гроші справді є: банк, коробка, чеки. Раз на місяць — звірка.</span></button>
+      <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
+      <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Ви — «другі очі»: звіряєте записані платежі з банком і коробкою. Без вашого ✓ внесок не вважається сплаченим.</span></button>
     </div>
   </section>
 
   <!-- гроші й майно -->
   <section id="v-gm" hidden>
-    <div class="hubhead"><h2>Гроші й майно</h2><button class="leave" type="button" id="gm-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+    <div class="hubhead"><h2>Гроші й майно</h2><button class="leave" type="button" id="gm-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До вибору</button></div>
     <div class="tiles">
       <a class="tile" href="../kasa/?v" data-vkod><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Каса</b><span>Внески й видатки гуртка: кожен платіж — окремий рядок із квитанцією, борги «свої гроші», фото чеків.</span></a>
       <a class="tile" href="../mayno/?v" data-vkod><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg></span><b>Майно</b><span>Що має гурток і де воно лежить: одна річ — один рядок; хто що взяв, що списали.</span></a>
     </div>
-    <div class="card pravylo">Каса й Майно відкриються у вашому кольорі, без повторного коду; «До подій» — назад сюди. Чи гроші справді є — у плитці «Перевірка каси» на попередній сторінці.</div>
+    <div class="card pravylo">Каса й Майно відкриються у вашому кольорі, без повторного коду; «До вибору» — назад сюди. Чи гроші справді є — у плитці «Перевірка каси» на попередній сторінці.</div>
   </section>
 
   <!-- прийшов, перейшов, пішов -->
   <section id="v-pp" hidden>
     <div id="pp-vyb">
-      <div class="hubhead"><h2>Який у вас випадок?</h2><button class="leave" type="button" id="pp-back0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+      <div class="hubhead"><h2>Який у вас випадок?</h2><button class="leave" type="button" id="pp-back0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До вибору</button></div>
+      <div class="vkh"><b>Що це.</b> Запис про людину в гуртку. Оберіть випадок — форма покаже лише потрібні поля й підкаже, що попросити в юнака чи батьків.</div>
       <div class="tiles vyp" id="pp-tiles"></div>
       <div class="card pravylo"><b>Одне правило на все.</b> Не знаєте точно — пишіть, що відомо, і позначте «потребує перевірки»: нічого не блокується, виправити можна пізніше. Дати — справжні, з посвідки, а не сьогоднішні.</div>
     </div>
@@ -301,7 +308,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <p id="pp-sum"></p>
         <ul id="pp-what"></ul>
         <div class="dali" id="pp-dali"></div>
-        <div class="btns" style="max-width:360px;margin:16px auto 0"><button class="btn" type="button" id="pp-znov">Ще один випадок</button><button class="btn" type="button" id="pp-hub">До подій</button></div>
+        <div class="btns" style="max-width:360px;margin:16px auto 0"><button class="btn" type="button" id="pp-znov">Ще один випадок</button><button class="btn" type="button" id="pp-hub">До вибору</button></div>
       </div>
       <aside class="side" id="pp-side"></aside>
     </div>
@@ -311,7 +318,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   <section id="v-nv" hidden>
     <div class="ps">
       <div class="card">
-        <div class="fhead"><h2>Що нового</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="fhead"><h2>Що вже записали діловоди</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Юнаки-діловоди записують самі, з телефона. Тут видно все, що вони вже записали; ваша справа — переглянути й <b>затвердити</b>.</div>
         <p class="note" style="margin-bottom:14px">Кожен запис з сайту — один раз, найновіший угорі. Натисніть на запис, щоб побачити його повністю й затвердити.</p>
         <p class="nvc" id="nv-cnt" hidden></p>
         <p class="nvc ye" id="nv-ov" hidden></p>
@@ -330,6 +338,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="ps">
       <div class="card">
         <div class="fhead"><h2>Перевірка каси</h2><button class="leave" type="button" id="kp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Гроші записують діловоди, а ви перевіряєте: чи платіж справді є в банку чи в коробці. Поки ви не поставили ✓, внесок не вважається сплаченим.</div>
         <p class="nvc ok" id="kp-zm" hidden></p>
         <div id="kp-hr"></div>
         <div id="kp-list"><p class="empty">Завантажую…</p></div>
@@ -359,6 +368,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="ps">
       <div class="card" id="ps-form">
         <div class="fhead"><h2>Після сходин</h2><button class="leave" type="button" id="ps-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Одна форма на все: тема, хто був, хто заплатив. Після «Надіслати» книга сама запише сходини, відвідуваність і внески.</div>
 
         <div class="step"><h3><em>1</em>Сходини</h3>
           <div class="row2">
@@ -419,7 +429,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <h2>Сходини записано</h2>
         <p id="ps-sum"></p>
         <ul id="ps-what"></ul><br>
-        <button class="btn" type="button" id="ps-hub">До подій</button>
+        <button class="btn" type="button" id="ps-hub">До вибору</button>
       </div>
 
       <aside class="side">
@@ -559,7 +569,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
-  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function hurtokPidkazka() {   // нова книга без учасників — «Беру гурток» стає головною підказкою (14.11)
+    const pusto = !imena.length; $('go-hg-wrap').classList.toggle('pusto', pusto);
+    $('hg-pidk').textContent = pusto ? 'У книзі ще немає жодного учасника — почніть звідси: запишіть усіх, хто є в гуртку, одним разом, і що вони вже мають.' : 'Гурток уже був до вас — запишіть усіх, хто в ньому є, одним разом, і що вони вже мають.';
+  }
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); const bk = document.querySelector('header.top .back'); if (bk) bk.hidden = !(id === 'v-lock-wrap' || id === 'v-hub');   /* усередині — лише свої «Назад» (14.11) */ scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -569,7 +583,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
       if (v.rol !== 'v') throw new Error('Це вхід виховника — потрібен код виховника, а не код юнаків.');
-      kod = k; imena = v.imena || []; $('z-kod').value = ''; ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
+      kod = k; imena = v.imena || []; $('z-kod').value = ''; hurtokPidkazka(); ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
       if (DOKP) { history.replaceState(null, '', location.pathname + location.search); $('go-kp').click(); }
     } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
     finally { b.disabled = false; b.textContent = 'Увійти'; }
@@ -1140,6 +1154,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   }
   let UCH_OK = null;
   $('go-pp').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); });
+  $('go-hg').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); ppVidkryty('hurtok'); });
   $('pp-back0').addEventListener('click', () => ekran('v-hub'));
   $('pp-back').addEventListener('click', ppVybir);
   $('pp-hub').addEventListener('click', () => ekran('v-hub'));
@@ -1161,9 +1176,12 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const nove = `<label class="f" id="pp-imn"><span>Ім'я <small>— як кличуть у гуртку, без прізвища</small></span><input class="in" id="pp-im" maxlength="40" autocomplete="off" placeholder="напр. Богдан"></label>`;
     return nove + (c.khto === 'nove-abo' ? `<label class="chk"><input type="checkbox" id="pp-vzhe"> Уже є в книзі — вибрати зі списку</label>` + vyb : '');
   }
+  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставиться через «Йде від нас»)';
+  const PH_STATUS_K = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється';
+  const PH_VID = 'рік, з якого він у цьому гуртку';
   const POLE = {
-    status: () => `<label class="f"><span>Статус</span><select class="in" id="pp-st"><option>кандидат</option><option>активний</option></select></label>`,
-    vid: () => `<label class="f"><span>У гуртку від (рік)</span><input class="in" id="pp-vid" inputmode="numeric" maxlength="4" value="${RIK}"></label>`,
+    status: () => `<label class="f"><span>Статус</span><select class="in" id="pp-st"><option>кандидат</option><option>активний</option></select><span class="ph">${PH_STATUS}</span></label>`,
+    vid: () => `<label class="f"><span>У гуртку від (рік)</span><input class="in" id="pp-vid" inputmode="numeric" maxlength="4" value="${RIK}"><span class="ph">${PH_VID}</span></label>`,
     plast: c => `<label class="f"><span>У Пласті від (рік) <small>— якщо знаєте</small></span><input class="in" id="pp-plast" inputmode="numeric" maxlength="4" value="${c.plastD || ''}" placeholder="напр. 2022"></label>`,
     zvidky: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" placeholder="гурток / курінь / станиця, місто, країна"></label>`,
     zvidkyN: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" value="новацтво — рій " placeholder="новацтво — рій …"></label>`,
@@ -1357,7 +1375,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       <div id="hg-beru">
         <div class="step"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
           <label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
-          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"></label></div>
+          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select><span class="ph">${PH_STATUS_K}</span></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"><span class="ph">${PH_VID}</span></label></div>
           <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
           <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
         <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
