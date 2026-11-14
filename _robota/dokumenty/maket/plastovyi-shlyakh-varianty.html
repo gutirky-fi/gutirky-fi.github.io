@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Пластовий шлях — варіанти Б і В (макет)</title>
+<style>
+@font-face{font-family:Oswald;src:url(../../druk/shryfty/Oswald.ttf)}
+@font-face{font-family:SS;src:url(../../druk/shryfty/SourceSans3.ttf)}
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+body{margin:0;background:#8a8f96;font:10.5pt/1.4 SS,sans-serif;color:#1d2126}
+.a4{width:210mm;height:297mm;margin:0 auto 10mm;background:#fff;position:relative;overflow:hidden;page-break-after:always}
+.makt{position:absolute;top:5mm;left:0;right:0;text-align:center;font-size:8pt;color:#b0281d;letter-spacing:.06em;text-transform:uppercase;z-index:3}
+
+/* ===== Б: Свідоцтво ===== */
+.b{padding:16mm 18mm;text-align:center}
+.b .ramka{position:absolute;inset:9mm;border:1.2mm solid #1d2126;border-radius:3mm}
+.b .ramka::after{content:"";position:absolute;inset:2mm;border:.3mm solid #1d2126;border-radius:2mm}
+.b .wm{position:absolute;left:50%;top:52%;width:150mm;transform:translate(-50%,-50%);opacity:.05}
+.b .in{position:relative;z-index:2;padding-top:6mm}
+.b img.l{height:28mm}
+.b .org{font:500 9pt Oswald;letter-spacing:.24em;text-transform:uppercase;color:#5b636c;margin-top:3mm}
+.b h1{margin:4mm 0 1mm;font:600 36pt/1 Oswald;letter-spacing:.08em;text-transform:uppercase}
+.b .tsym{font-size:11pt;color:#5b636c}
+.b .im{margin:9mm 0 1mm;font:600 26pt Oswald;letter-spacing:.04em}
+.b .pid{font-size:11pt;color:#333;max-width:150mm;margin:0 auto}
+.b .uk{display:grid;grid-template-columns:repeat(3,1fr);gap:5mm;margin:10mm 0 0;text-align:left}
+.b .uk div{border-top:2mm solid var(--c);padding-top:3mm}
+.b .uk h3{margin:0;font:600 13pt Oswald;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.b .uk .r{font-size:9pt;color:#5b636c;margin-bottom:2mm}
+.b .uk ul{margin:0;padding-left:4mm;font-size:9.5pt}
+.b .uk li{margin:.6mm 0}
+.b .sp{margin-top:9mm;font-size:10.5pt}
+.b .sp b{font-family:Oswald;font-size:12pt;letter-spacing:.04em}
+.b .pp{position:absolute;left:24mm;right:24mm;bottom:22mm;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10mm;z-index:2}
+.b .pp div{border-top:1px solid #1d2126;padding-top:1.5mm;font-size:8.5pt;color:#5b636c;text-align:center}
+.b .pp b{display:block;color:#1d2126;font-size:9.5pt}
+.b .nom{position:absolute;bottom:13mm;left:0;right:0;font-size:7.5pt;color:#8a929b;z-index:2}
+
+/* ===== В: Стрічка часу ===== */
+.v{padding:14mm 16mm}
+.v header{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:2.5px solid #1d2126;padding-bottom:4mm}
+.v header .t small{font:500 9pt Oswald;letter-spacing:.2em;text-transform:uppercase;color:#5b636c}
+.v h1{margin:1mm 0 0;font:600 28pt/1 Oswald;letter-spacing:.04em;text-transform:uppercase}
+.v .im{font:600 16pt Oswald;letter-spacing:.03em}
+.v header img{height:20mm}
+.v .os{display:flex;gap:8mm;margin:3mm 0 6mm;font-size:9.5pt;color:#5b636c}
+.v .os b{color:#1d2126}
+.v .tl{position:relative;padding-left:30mm}
+.v .tl::before{content:"";position:absolute;left:24mm;top:1mm;bottom:1mm;width:1.4mm;background:linear-gradient(#4a8fd0 0 22%,#d9a20f 22% 50%,#b8234a 50% 94%,#2f8f58 94%);border-radius:1mm}
+.v .rik{position:relative;margin:0 0 2.2mm;min-height:6mm}
+.v .rik .y{position:absolute;left:-30mm;width:20mm;text-align:right;font:600 12pt Oswald;color:var(--c)}
+.v .rik::before{content:"";position:absolute;left:-7.4mm;top:1.3mm;width:3.6mm;height:3.6mm;border-radius:50%;background:#fff;border:1mm solid var(--c)}
+.v .rik.big::before{width:5mm;height:5mm;left:-8.1mm;top:.6mm;background:var(--c)}
+.v .rik p{margin:0;font-size:9.8pt}
+.v .rik .u{display:inline-block;font:600 8pt Oswald;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--c);padding:.3mm 2mm;border-radius:1mm;margin-right:2mm}
+.v .zd{font-size:8.3pt;color:#7a828b}
+.v .niz{position:absolute;left:16mm;right:16mm;bottom:14mm}
+.v .kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm;margin-bottom:8mm}
+.v .kpi div{border:1px solid #d5d9de;border-radius:2mm;padding:2mm;text-align:center}
+.v .kpi b{display:block;font:600 16pt/1 Oswald}
+.v .kpi small{font-size:7.6pt;color:#5b636c}
+.v .pp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8mm}
+.v .pp div{border-top:1px solid #1d2126;padding-top:1.5mm;font-size:8.5pt;color:#5b636c}
+.v .pp b{display:block;color:#1d2126;font-size:9.5pt}
+@media print{body{background:#fff}.a4{margin:0}}
+</style>
+</head>
+<body>
+
+<!-- ВАРІАНТ Б — СВІДОЦТВО -->
+<section class="a4 b" id="b">
+  <div class="makt">Варіант Б · «Свідоцтво» · макет, людина вигадана, назви умовні</div>
+  <div class="ramka"></div>
+  <img class="wm" src="../../druk/lileya.png" alt="">
+  <div class="in">
+    <img class="l" src="../../druk/lileya.png" alt="">
+    <div class="org">Пласт у Фінляндії · осередок Гельсінкі</div>
+    <h1>Пластовий шлях</h1>
+    <div class="tsym">свідоцтво про пластове життя</div>
+    <div class="im">Олесь Коваленко</div>
+    <div class="pid">у Пласті з вересня 2015 року — 11 років; пройшов уклади пташат, новацтва й юнацтва, з вересня 2026 — у старшому пластунстві</div>
+    <div class="uk">
+      <div style="--c:#4a8fd0"><h3>Пташата</h3><div class="r">2015–2018 · гніздо «Сонечка»</div><ul><li>перший пташачий знак, 2016</li><li>літній табір пташат, 2017</li></ul></div>
+      <div style="--c:#d9a20f"><h3>Новацтво</h3><div class="r">2018–2022 · рій «Вовчики»</div><ul><li>новацький ступінь I, 2019</li><li>вмілості: Плавець, Кухар, Художник</li><li>вістовий рою</li><li>табір «Лісова країна», 2021</li></ul></div>
+      <div style="--c:#b8234a"><h3>Юнацтво</h3><div class="r">2022–2026 · гурток «Лелеки»</div><ul><li>1-ша проба, 2023 · 2-га проба, 2025</li><li>Пластова присяга, 2023</li><li>скарбник, гуртковий</li><li>6 вмілостей · відзнака гуртка</li></ul></div>
+    </div>
+    <div class="sp">Усього: <b>2 проби</b> · <b>9 вмілостей</b> · <b>5 відзнак</b> · <b>6 таборів</b> · <b>118 сходин</b> у юнацтві</div>
+  </div>
+  <div class="pp">
+    <div><b>Максим</b>виховник гуртка</div>
+    <div><b>&nbsp;</b>голова осередку</div>
+    <div><b>14.11.2026</b>дата · печатка</div>
+  </div>
+  <div class="nom">№ ПШ-2026-07 · докладний перелік з датами й номерами посвідок — на звороті / у додатку</div>
+</section>
+
+<!-- ВАРІАНТ В — СТРІЧКА ЧАСУ -->
+<section class="a4 v" id="v">
+  <div class="makt">Варіант В · «Стрічка часу» · макет, людина вигадана, назви умовні</div>
+  <header>
+    <div class="t"><small>Пласт у Фінляндії</small><h1>Пластовий шлях</h1><div class="im">Олесь Коваленко</div></div>
+    <img src="../../druk/lileya.png" alt="">
+  </header>
+  <div class="os"><span>у Пласті від <b>09.2015</b></span><span>осередок <b>Гельсінкі</b></span><span>зараз <b>старше пластунство</b></span><span>№ ПШ-2026-07 · 14.11.2026</span></div>
+  <div class="tl">
+    <div class="rik big" style="--c:#4a8fd0"><span class="y">2015</span><p><span class="u">Пташата</span><b>прийшов у Пласт</b> — гніздо «Сонечка», виховниця Оксана</p></div>
+    <div class="rik" style="--c:#4a8fd0"><span class="y">2016</span><p>перший пташачий знак <span class="zd">(назва умовна)</span></p></div>
+    <div class="rik" style="--c:#4a8fd0"><span class="y">2017</span><p>літній табір пташат</p></div>
+    <div class="rik big" style="--c:#d9a20f"><span class="y">2018</span><p><span class="u">Новацтво</span><b>рій «Вовчики»</b>, виховник Андрій</p></div>
+    <div class="rik" style="--c:#d9a20f"><span class="y">2019</span><p>новацький ступінь I · вмілість «Плавець»</p></div>
+    <div class="rik" style="--c:#d9a20f"><span class="y">2020</span><p>вістовий рою · вмілості «Кухар», «Художник»</p></div>
+    <div class="rik" style="--c:#d9a20f"><span class="y">2021</span><p>табір «Лісова країна»</p></div>
+    <div class="rik big" style="--c:#b8234a"><span class="y">2022</span><p><span class="u">Юнацтво</span><b>гурток «Лелеки»</b>, виховник Максим · прихильник</p></div>
+    <div class="rik" style="--c:#b8234a"><span class="y">2023</span><p><b>1-ша проба</b> <span class="zd">(посв. № 12)</span> · <b>Пластова присяга</b> · скарбник гуртка · «Кераміка», «Вузли»</p></div>
+    <div class="rik" style="--c:#b8234a"><span class="y">2024</span><p>гуртковий · табір вмілостей в Україні · «Перша допомога», «Табірник»</p></div>
+    <div class="rik" style="--c:#b8234a"><span class="y">2025</span><p><b>2-га проба</b> <span class="zd">(посв. № 31)</span> · відзнака гуртка</p></div>
+    <div class="rik big" style="--c:#2f8f58"><span class="y">2026</span><p><span class="u">Старше пластунство</span>вмілості «Мандрівник», «Ватра» · 3-тя проба розпочата</p></div>
+  </div>
+  <div class="niz">
+    <div class="kpi">
+      <div><b>11</b><small>років у Пласті</small></div><div><b>2</b><small>проби</small></div><div><b>9</b><small>вмілостей</small></div><div><b>5</b><small>відзнак</small></div><div><b>118</b><small>сходин (юнацтво)</small></div>
+    </div>
+    <div class="pp"><div><b>Максим</b>виховник гуртка</div><div><b>&nbsp;</b>голова осередку</div><div><b>14.11.2026</b>дата · печатка</div></div>
+  </div>
+</section>
+</body>
+</html>
