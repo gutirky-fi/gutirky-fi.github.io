@@ -4,7 +4,7 @@
     python3 lystivka.py taksa --fon 254,247,237  # лицьова панель залита кольором
     python3 lystivka.py vsi                    # усі листівки з таблиці
     python3 lystivka.py litera_a --foto        # лицьова - фото на всю панель (див. foto_na_lytsovu.py)
-    python3 lystivka.py kit_yalynka --orel     # на звороті під лілеєю маленький знак гуртка «Орли волі» (файл ..._orel.pdf)
+    python3 lystivka.py kit_yalynka --orel     # на звороті лілея + емблема «Орли волі» + підпис (файл ..._orel.pdf)
 
 Результат: gotovi/lystivky_<назва>_A3_bez_fonu.pdf (або _z_fonom.pdf).
 
@@ -64,7 +64,27 @@ gw, gh = COLS*2*PW, ROWS*PH + CGAP
 gx, gy = (PAGE_W-gw)/2, (PAGE_H-gh)/2
 BL_V, BL_R = 1.5*mm, 1.0*mm       # заліз фону за лінію різу (лише коли --fon)
 LILY_H = 31*mm
-OREL_PIDPYS = 'Орли волі · Різдво 2026'   # дрібно під орлом на звороті (з --orel); рік міняти тут
+# Зворот з --orel (вибір власника 14.11, варіант 4): лілея, під нею емблема гуртка, під емблемою
+# «гурток «Орли волі»», а в різдвяних - ще «Різдво 2026». Рік міняти тут.
+GURTOK = 'гурток «Орли волі»'
+RIK_RIZDVA = 'Різдво 2026'
+RIZDVO = {'kit_yalynka', 'kit_chornyi_hirlianda', 'kit_klubochok', 'kit_khvist_yalynka', 'kit_zirka',
+          'kit_yalynka_chornyi', 'kit_kovpak', 'kit_yalynka_smuhastyi', 'kit_svitlyachok', 'kit_oleni_rizhky',
+          'korgi'}                 # інші (дні народження, ведмідь і лис, патріотичні) - без «Різдво»
+
+
+def pidpysy(nazva):
+    return [(GURTOK, 8)] + ([(RIK_RIZDVA, 7)] if nazva in RIZDVO else [])
+
+
+def zvorot_orel(c, x, y, kolir, lpath, lw, lh, opath, ryadky):
+    """Лілея вгорі, емблема 12 мм, під нею рядки підпису (того самого кольору)."""
+    c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+10*mm, lw, lh, mask='auto')
+    oy = y + 16*mm
+    c.drawImage(opath, x+PW/2-6*mm, oy, 12*mm, 12*mm, mask='auto')
+    c.setFillColorRGB(*(v/255 for v in kolir))
+    for j, (t, sz) in enumerate(ryadky):
+        c.setFont('LoraI', sz); c.drawCentredString(x+PW/2, oy-4.5*mm-j*4*mm, t)
 
 
 def row_y(r):                      # низ ряду r (0 - верхній)
@@ -111,10 +131,7 @@ def zibraty(nazva, fon=None, foto=False, orel=False):
         for k in range(COLS):
             x, y = gx + k*2*PW, row_y(r)
             if orel:                   # лілея трохи вище, орел 12 мм унизу
-                c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+8*mm, lw, lh, mask='auto')
-                c.drawImage(opath, x+PW/2-6*mm, y+13*mm, 12*mm, 12*mm, mask='auto')
-                c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
-                c.drawCentredString(x+PW/2, y+8.5*mm, OREL_PIDPYS)
+                zvorot_orel(c, x, y, kolir, lpath, lw, lh, opath, pidpysy(nazva))
             else:
                 c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
             if fon:

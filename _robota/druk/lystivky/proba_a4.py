@@ -45,7 +45,7 @@ def kartka(c, nazva, x, y, zvorot=None):
     fail, kolir, (os_, rozmir), zaholovok = L.KARTKY[nazva]
     foto = nazva in L.FOTO
     if zvorot is None:
-        zvorot = 'obydva' if nazva in RIZDVO else 'lileya'
+        zvorot = 'obydva'                          # усі листівки - лілея + емблема + підпис (власник 14.11)
     lpath, (lw0, lh0) = L.lileya(kolir)
     lh, lw = L.LILY_H, L.LILY_H*lw0/lh0
     if zvorot in ('obydva', 'orel'):
@@ -54,15 +54,12 @@ def kartka(c, nazva, x, y, zvorot=None):
         opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % kolir)
         Image.fromarray(oa, 'RGBA').save(opath)
     if zvorot == 'obydva':
-        c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+8*mm, lw, lh, mask='auto')
-        c.drawImage(opath, x+PW/2-6*mm, y+13*mm, 12*mm, 12*mm, mask='auto')
-        c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
-        c.drawCentredString(x+PW/2, y+8.5*mm, L.OREL_PIDPYS)
+        L.zvorot_orel(c, x, y, kolir, lpath, lw, lh, opath, L.pidpysy(nazva))
     elif zvorot == 'orel':                         # орел замість лілеї, того ж розміру, підпис під ним
         d = 30*mm
         c.drawImage(opath, x+PW/2-d/2, y+PH/2-d/2+3*mm, d, d, mask='auto')
         c.setFillColorRGB(*(v/255 for v in kolir)); c.setFont('LoraI', 7)
-        c.drawCentredString(x+PW/2, y+8.5*mm, L.OREL_PIDPYS)
+        c.drawCentredString(x+PW/2, y+8.5*mm, L.GURTOK)
     elif zvorot == 'lileya':
         c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
     if foto:
