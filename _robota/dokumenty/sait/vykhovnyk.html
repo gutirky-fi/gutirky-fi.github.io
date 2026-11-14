@@ -192,6 +192,7 @@ a.tile{text-decoration:none}
 .tile i{border-color:rgba(217,166,64,.55);color:#f3d48a}
 .vkh{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
 .row2 .f{align-content:start}
+.rare{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:22px 0 0;padding:14px 18px;border-radius:16px;border:1px dashed var(--ln);color:var(--mut)}.rare .rt{flex:1 1 260px;min-width:0}.rare .rt b{display:block;margin-bottom:2px;color:var(--body);font:600 16px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}.rare .rt span{font-size:15px}.rare .rb{display:flex;flex-wrap:wrap;gap:8px}
 .ph{margin:-2px 0 12px;color:var(--mut);font-size:14px;line-height:1.4}.ph b{color:var(--body);font-weight:600}
 .nov{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d)}.nov .nt{flex:1 1 260px;min-width:0}.nov .nt b{display:block;margin-bottom:3px;color:var(--ink);font-size:17px}.nov .nt span{color:var(--mut);font-size:15px}.nov.pusto{border-color:rgba(61,175,110,.55);background:rgba(61,175,110,.08)}.nov .btn{flex:0 0 auto}
 .pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
@@ -265,7 +266,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   <section id="v-hub" hidden>
     <div class="hubhead"><h2>Що записуємо?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
     <div class="vkh"><b>Як тут працювати.</b> Оберіть, що ви хочете записати, — книга сама розкладе запис по своїх аркушах. Були сходини — <b>«Після сходин»</b>. Хтось прийшов, пішов чи перейшов — <b>«Прийшов, перейшов, пішов»</b>. Гроші — <b>«Гроші й майно»</b>.</div>
-    <div class="nov" id="go-hg-wrap"><div class="nt"><b>Ви новий виховник у цьому гуртку?</b><span id="hg-pidk">Гурток уже був до вас — запишіть усіх, хто в ньому є, одним разом, і що вони вже мають.</span></div><button class="btn main" type="button" id="go-hg">Беру гурток</button></div>
+    <div class="nov pusto" id="go-hg-wrap" hidden><div class="nt"><b>У книзі ще немає учасників</b><span id="hg-pidk">Почніть звідси: запишіть усіх, хто є в гуртку, одним разом, і що вони вже мають.</span></div><button class="btn main" type="button" id="go-hg">Беру гурток</button></div>
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
       <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>Запис про людину: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок. Навіщо: щоб список і історія юнака в книзі були точні.</span></button>
@@ -275,6 +276,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
       <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Ви — «другі очі»: звіряєте записані платежі з банком і коробкою. Без вашого ✓ внесок не вважається сплаченим.</span></button>
     </div>
+    <div class="rare" id="hub-rare"><div class="rt"><b>Раз на гурток</b><span>Усе про гурток цілком — не щодня: ви вперше берете гурток або віддаєте свій.</span></div><div class="rb"><button class="btn" type="button" id="go-hg-beru">Беру гурток</button><button class="btn" type="button" id="go-hg-peredaiu">Передаю гурток</button></div></div>
   </section>
 
   <!-- гроші й майно -->
@@ -570,8 +572,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
   function hurtokPidkazka() {   // нова книга без учасників — «Беру гурток» стає головною підказкою (14.11)
-    const pusto = !imena.length; $('go-hg-wrap').classList.toggle('pusto', pusto);
-    $('hg-pidk').textContent = pusto ? 'У книзі ще немає жодного учасника — почніть звідси: запишіть усіх, хто є в гуртку, одним разом, і що вони вже мають.' : 'Гурток уже був до вас — запишіть усіх, хто в ньому є, одним разом, і що вони вже мають.';
+    $('go-hg-wrap').hidden = !!imena.length;   // верхня картка — лише коли книга порожня; завжди є секція «Раз на гурток» унизу
   }
   function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); const bk = document.querySelector('header.top .back'); if (bk) bk.hidden = !(id === 'v-lock-wrap' || id === 'v-hub');   /* усередині — лише свої «Назад» (14.11) */ scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
@@ -1135,16 +1136,16 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     poza: {t: 'Здобув щось поза гуртком', s: 'табір, вишкіл — уже бувши в нас', khto: 'exist', pol: [], maie: 'поза гуртком',
       prosyty: ['Посвідку або підпис інструктора — фото.', 'Дату й де саме (назва табору чи вишколу).', 'Чи дали нашивку одразу (тоді «нашивка вже є» — не замовляти).'],
       dali: ['Копію посвідки — «Вмілості» (кнопка «Копія»).', 'У звітах гуртка це рахується як наш здобуток — він уже був нашим юнаком.']},
-    yde: {t: 'Йде від нас', s: 'в інший гурток, до старших, або вибуває', khto: 'exist', pol: ['kudy', 'prym'],
-      prosyty: ['Куди саме — щоб новий виховник знав, звідки юнак.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
-      dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.']},
+    yde: {t: 'Пішов від нас чи на перерву', s: 'на перерву, в інший гурток, до старших або вибуває. Повернеться — «Повернувся після перерви».', khto: 'exist', pol: ['kudy', 'prym'],
+      prosyty: ['Куди саме або чому на перерву — щоб потім знати, звідки юнак і коли чекати назад.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
+      dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.', '<b>На перерву:</b> запис лишається; коли людина повернеться — «Повернувся після перерви», і ім\'я знову в списках.']},
     hurtok: {t: 'Цілий гурток', s: 'беру гурток, який хтось уже вів, — або передаю свій', khto: '', pol: []},
     osobl: {t: 'Особливий випадок', s: 'не підходить ні під що — розберемось', khto: '', pol: []},
     maie: {t: 'Дописати, що вже має', s: '', khto: 'exist', pol: [], maie: 'у нас', skryto: true,
       prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; здобуте в іншому гуртку — «до нас».'],
       dali: ['Копії — «Вмілості» й «Проби» (кнопка «Копія»).']}
   };
-  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'povernuvsia', 'poza', 'yde', 'hurtok', 'osobl'];
+  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'povernuvsia', 'poza', 'yde', 'osobl'];
   $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
 
   let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
@@ -1154,9 +1155,12 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   }
   let UCH_OK = null;
   $('go-pp').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); });
-  $('go-hg').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); ppVidkryty('hurtok'); });
+  const hurtokZHuba = vkl => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); return ppVidkryty('hurtok', true).then(() => { if (vkl === 'peredaiu') $('hg-seg').querySelector('[data-h="peredaiu"]').click(); }); };
+  $('go-hg').addEventListener('click', () => hurtokZHuba('beru'));
+  $('go-hg-beru').addEventListener('click', () => hurtokZHuba('beru'));
+  $('go-hg-peredaiu').addEventListener('click', () => hurtokZHuba('peredaiu'));
   $('pp-back0').addEventListener('click', () => ekran('v-hub'));
-  $('pp-back').addEventListener('click', ppVybir);
+  $('pp-back').addEventListener('click', () => { if (ZH) { ZH = false; ekran('v-hub'); } else ppVybir(); });
   $('pp-hub').addEventListener('click', () => ekran('v-hub'));
   $('pp-znov').addEventListener('click', ppVybir);
   $('pp-tiles').addEventListener('click', e => { const b = e.target.closest('[data-vyp]'); if (b) ppVidkryty(b.dataset.vyp); });
@@ -1176,7 +1180,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     const nove = `<label class="f" id="pp-imn"><span>Ім'я <small>— як кличуть у гуртку, без прізвища</small></span><input class="in" id="pp-im" maxlength="40" autocomplete="off" placeholder="напр. Богдан"></label>`;
     return nove + (c.khto === 'nove-abo' ? `<label class="chk"><input type="checkbox" id="pp-vzhe"> Уже є в книзі — вибрати зі списку</label>` + vyb : '');
   }
-  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставиться через «Йде від нас»)';
+  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставиться через «Пішов від нас чи на перерву»)';
   const PH_STATUS_K = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється';
   const PH_VID = 'рік, з якого він у цьому гуртку';
   const POLE = {
@@ -1189,12 +1193,14 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     prymN: () => `<label class="f"><span>Що пам'ятати з новацтва <small>— за бажанням, для картки</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. був вістовим рою"></label>`,
     dataP: () => `<label class="f"><span>Коли повернувся(-лась)</span><input class="in" id="pp-dp" type="date" value="${den()}"></label>`,
     prymDe: () => `<label class="f"><span>Де був(-ла) <small>— коротко, за бажанням</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. рік у Львові"></label>`,
-    kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
+    kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>на перерву</option><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
       <label class="f"><span>Коли</span><input class="in" id="pp-dv" type="date" value="${den()}"></label></div>
-      <label class="f"><span>Куди саме <small>— гурток, курінь, місто</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
+      <label class="f"><span>Куди саме чи чому <small>— гурток, курінь, місто або причина перерви</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
   };
 
-  async function ppVidkryty(k) {
+  let ZH = false;   // форма «Цілий гурток» відкрита з головної: «Назад» веде до вибору, а не до списку випадків
+  async function ppVidkryty(k, zHuba) {
+    ZH = !!zHuba; $('pp-back').lastChild.textContent = ZH ? 'До вибору' : 'Інший випадок';
     if (UCH_OK) { $('pp-tiles').style.opacity = .5; await UCH_OK; $('pp-tiles').style.opacity = ''; }
     VK = k; PP = {ryad: [], sent: {}, n: 0};
     const c = VYP[k];
