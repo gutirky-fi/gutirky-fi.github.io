@@ -16,9 +16,13 @@ import lystivka as L
 TUT = os.path.dirname(os.path.abspath(__file__))
 KARTKY = {   # назва: (картинка на всю лицьову, колір знаків, заголовок)
     'rybka': ('rybka_lytsova.png', (125, 28, 38), 'Рибка-крик'),
+    'rybka_rozmova': ('rybka_lytsova.png', (125, 28, 38), 'Рибка-крик: розмова'),
 }
 # повідомлення-«бульбашки» як у месенджері поверх лицьової (ліворуч унизу), за бажанням
-BULBASHKY = {'rybka': ['Ну ок', 'Скоб', 'Хахахаха']}
+BULBASHKY = {'rybka': ['Ну ок', 'Скоб', 'Хахахаха'], 'rybka_rozmova': ['Ну ок', 'Скоб', 'Хахахаха']}
+# своє повідомлення - зеленою бульбашкою праворуч, вище (рядки)
+PYTANNIA = {'rybka_rozmova': 'Ти тепер наш виховник?'}   # її питання - темна бульбашка вгорі ліворуч
+MOYI = {'rybka_rozmova': ['Привіт! Так, тепер я буду', 'вашим виховником :) СКОБ!']}
 PW, PH = 95*mm, 70*mm          # лицьова панель
 PAGE_W, PAGE_H = 210*mm, 297*mm
 COLS, ROWS = 2, 2
@@ -52,6 +56,18 @@ def bulbashky(c, x, y, ryadky):
         yy -= h + gap
 
 
+def moya_bulbashka(c, x, y, ryadky):
+    sz, lh = 8, 3.9*mm
+    w = max(c.stringWidth(t, 'DejaVu', sz) for t in ryadky) + 6*mm
+    h = len(ryadky)*lh + 3*mm
+    bx, by = x+PW-4*mm-w, y+PH-32*mm
+    c.setFillColorRGB(0.0, 0.36, 0.29)                 # зелений WhatsApp
+    c.roundRect(bx, by, w, h, 2.2*mm, stroke=0, fill=1)
+    c.setFillColorRGB(1, 1, 1); c.setFont('DejaVu', sz)
+    for i, t in enumerate(ryadky):
+        c.drawString(bx+3*mm, by+h-2.2*mm-(i+0.75)*lh+1*mm, t)
+
+
 def zibraty(nazva):
     fail, kolir, zaholovok = KARTKY[nazva]
     from reportlab.pdfbase import pdfmetrics
@@ -73,6 +89,14 @@ def zibraty(nazva):
             c.restoreState()
             if nazva in BULBASHKY:
                 bulbashky(c, x, y, BULBASHKY[nazva])
+            if nazva in PYTANNIA:
+                t, sz, h = PYTANNIA[nazva], 8, 6*mm
+                w = c.stringWidth(t, 'DejaVu', sz) + 6*mm
+                by = y + PH - 17*mm
+                c.setFillColorRGB(0.13, 0.17, 0.20); c.roundRect(x+4*mm, by, w, h, 2.2*mm, stroke=0, fill=1)
+                c.setFillColorRGB(1, 1, 1); c.setFont('DejaVu', sz); c.drawString(x+7*mm, by+h/2-sz*0.35, t)
+            if nazva in MOYI:
+                moya_bulbashka(c, x, y, MOYI[nazva])
             # зворот: над лицьовою, повернутий на 180°
             c.saveState(); c.translate(x+PW, y+2*PH); c.rotate(180)
             zvorot(c, 0, 0, kolir)
