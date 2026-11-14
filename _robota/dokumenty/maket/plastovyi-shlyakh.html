@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<title>Пластовий шлях — макет (вигаданий юнак)</title>
+<style>
+@font-face{font-family:Oswald;src:url(../../druk/shryfty/Oswald.ttf)}
+@font-face{font-family:SS;src:url(../../druk/shryfty/SourceSans3.ttf)}
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+body{margin:0;background:#8a8f96;font:10.5pt/1.4 SS,sans-serif;color:#1d2126}
+.a4{width:210mm;min-height:297mm;margin:0 auto 10mm;background:#fff;padding:14mm 16mm 12mm;position:relative;overflow:hidden;page-break-after:always}
+.wm{position:absolute;right:-18mm;top:40mm;width:120mm;opacity:.045}
+.makt{position:absolute;top:5mm;left:16mm;font-size:8pt;color:#b0281d;letter-spacing:.06em;text-transform:uppercase}
+header{display:flex;align-items:center;gap:6mm;border-bottom:2.5px solid #1d2126;padding-bottom:5mm}
+header img{height:24mm}
+header .t{flex:1}
+.org{font:500 9pt Oswald;letter-spacing:.2em;text-transform:uppercase;color:#5b636c}
+h1{margin:1mm 0 0;font:600 30pt/1 Oswald;letter-spacing:.04em;text-transform:uppercase}
+.pid{margin-top:1.5mm;color:#5b636c;font-size:10pt}
+.nom{text-align:right;font-size:8.5pt;color:#5b636c;line-height:1.5}
+.osoba{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:3mm 6mm;margin:6mm 0 5mm}
+.osoba div{border-bottom:1px solid #c8cdd3;padding-bottom:1.2mm}
+.osoba small{display:block;font-size:7.5pt;text-transform:uppercase;letter-spacing:.12em;color:#7a828b}
+.osoba b{font-size:12pt}
+.osoba .im b{font:600 17pt Oswald;letter-spacing:.03em}
+.shkala{display:flex;height:9mm;border-radius:2mm;overflow:hidden;margin:2mm 0 1.5mm;font:600 8pt Oswald;letter-spacing:.08em;text-transform:uppercase}
+.shkala span{display:flex;align-items:center;justify-content:center;color:#fff}
+.lg{display:flex;justify-content:space-between;font-size:8pt;color:#5b636c;margin-bottom:5mm}
+.kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm;margin-bottom:6mm}
+.kpi div{border:1px solid #d5d9de;border-radius:2mm;padding:2.5mm 3mm;text-align:center}
+.kpi b{display:block;font:600 18pt/1 Oswald}
+.kpi small{font-size:7.8pt;color:#5b636c}
+.ulad{margin:0 0 5mm;border-left:4mm solid var(--c);padding:0 0 0 5mm;break-inside:avoid}
+.ulad h2{margin:0;font:600 15pt/1.1 Oswald;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.ulad .ps{font-size:9pt;color:#5b636c;margin:0.5mm 0 2mm}
+table{width:100%;border-collapse:collapse;font-size:9.5pt}
+td{padding:1.3mm 2mm;border-bottom:1px solid #e3e6ea;vertical-align:top}
+td:first-child{width:24mm;white-space:nowrap;color:#5b636c}
+td b{color:#1d2126}
+.zd{font-size:8.3pt;color:#7a828b}
+.pidsum{display:grid;grid-template-columns:1fr 1fr;gap:4mm 10mm;margin-top:4mm}
+.pidsum h3{margin:0 0 1.5mm;font:600 11pt Oswald;letter-spacing:.08em;text-transform:uppercase}
+.pidsum ul{margin:0;padding-left:4.5mm;font-size:9.5pt}
+.slovo{margin-top:5mm;border:1px solid #d5d9de;border-radius:2mm;padding:3mm 4mm;font-size:10pt;font-style:italic;color:#333}
+.pidpys{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8mm;margin-top:12mm}
+.pidpys div{border-top:1px solid #1d2126;padding-top:1.5mm;font-size:8.5pt;color:#5b636c}
+.pidpys b{display:block;color:#1d2126;font-size:9.5pt}
+footer{position:absolute;left:16mm;right:16mm;bottom:8mm;display:flex;justify-content:space-between;font-size:7.5pt;color:#8a929b;border-top:1px solid #e3e6ea;padding-top:2mm}
+@media print{body{background:#fff}.a4{margin:0}}
+</style>
+</head>
+<body>
+
+<!-- СТОРІНКА 1 -->
+<section class="a4">
+  <div class="makt">Макет · вигадана людина · назви проб і ступенів умовні</div>
+  <img class="wm" src="../../druk/lileya.png" alt="">
+  <header>
+    <img src="../../druk/lileya.png" alt="">
+    <div class="t">
+      <div class="org">Пласт — Національна скаутська організація України · Пласт у Фінляндії</div>
+      <h1>Пластовий шлях</h1>
+      <div class="pid">Виписка з книг гуртків — усе пластове життя від першого дня</div>
+    </div>
+    <div class="nom">№ ПШ-2026-07<br>видано 14.11.2026<br>Гельсінкі</div>
+  </header>
+
+  <div class="osoba">
+    <div class="im"><small>Ім'я та прізвище</small><b>Олесь Коваленко</b></div>
+    <div><small>У Пласті від</small><b>вересень 2015</b></div>
+    <div><small>Уклад зараз</small><b>старше пластунство</b></div>
+    <div><small>Осередок</small><b>Гельсінкі</b></div>
+    <div><small>Останній гурток</small><b>«Лелеки»</b></div>
+    <div><small>Курінь</small><b>—</b></div>
+  </div>
+
+  <div class="shkala">
+    <span style="flex:3;background:#4a8fd0">Пташата</span>
+    <span style="flex:4;background:#d9a20f">Новацтво</span>
+    <span style="flex:4;background:#b8234a">Юнацтво</span>
+    <span style="flex:1;background:#2f8f58">СП</span>
+  </div>
+  <div class="lg"><span>2015</span><span>2018</span><span>2022</span><span>2026</span></div>
+
+  <div class="kpi">
+    <div><b>11</b><small>років у Пласті</small></div>
+    <div><b>3</b><small>уклади пройдено</small></div>
+    <div><b>9</b><small>вмілостей</small></div>
+    <div><b>5</b><small>відзнак</small></div>
+    <div><b>6</b><small>таборів</small></div>
+  </div>
+
+  <div class="ulad" style="--c:#4a8fd0">
+    <h2>Пташата</h2>
+    <div class="ps">2015–2018 · гніздо «Сонечка», Гельсінкі · виховниця Оксана</div>
+    <table>
+      <tr><td>09.2015</td><td><b>Прийшов у Пласт</b> — гніздо «Сонечка»</td></tr>
+      <tr><td>05.2016</td><td>Перший пташачий знак <span class="zd">(назва умовна)</span></td></tr>
+      <tr><td>07.2017</td><td>Літній табір пташат</td></tr>
+      <tr><td>06.2018</td><td><b>Перейшов до новацтва</b></td></tr>
+    </table>
+  </div>
+
+  <div class="ulad" style="--c:#d9a20f">
+    <h2>Новацтво</h2>
+    <div class="ps">2018–2022 · рій «Вовчики», Гельсінкі · виховник Андрій</div>
+    <table>
+      <tr><td>09.2018</td><td><b>Прийшов до рою</b> «Вовчики»</td></tr>
+      <tr><td>05.2019</td><td>Новацький ступінь I <span class="zd">(назва умовна)</span></td></tr>
+      <tr><td>2019–2021</td><td>Вмілості: <b>«Плавець», «Кухар», «Художник»</b></td></tr>
+      <tr><td>2020–2021</td><td>Посада: <b>вістовий рою</b></td></tr>
+      <tr><td>07.2021</td><td>Новацький табір «Лісова країна»</td></tr>
+      <tr><td>06.2022</td><td><b>Перейшов до юнацтва</b> · новацька обіцянка — так</td></tr>
+    </table>
+  </div>
+
+  <footer><span>Пластовий шлях · Олесь Коваленко</span><span>сторінка 1 з 2</span></footer>
+</section>
+
+<!-- СТОРІНКА 2 -->
+<section class="a4">
+  <div class="makt">Макет · вигадана людина · назви проб і ступенів умовні</div>
+  <img class="wm" src="../../druk/lileya.png" alt="">
+
+  <div class="ulad" style="--c:#b8234a">
+    <h2>Юнацтво</h2>
+    <div class="ps">2022–2026 · гурток «Лелеки», Гельсінкі · виховник Максим</div>
+    <table>
+      <tr><td>09.2022</td><td><b>Прийшов до гуртка</b> «Лелеки» · прихильник</td></tr>
+      <tr><td>04.2023</td><td><b>1-ша проба</b> — посвідку підписано <span class="zd">(посвідка № 12, ст. пл. Ірина)</span></td></tr>
+      <tr><td>05.2023</td><td><b>Пластова присяга</b></td></tr>
+      <tr><td>2023–2024</td><td>Посада: <b>скарбник гуртка</b></td></tr>
+      <tr><td>2023–2025</td><td>Вмілості: <b>«Кераміка», «Вузли», «Перша допомога», «Табірник»</b></td></tr>
+      <tr><td>07.2024</td><td>Табір вмілостей, Україна</td></tr>
+      <tr><td>05.2025</td><td><b>2-га проба</b> — посвідку підписано <span class="zd">(посвідка № 31)</span></td></tr>
+      <tr><td>2024–2026</td><td>Посада: <b>гуртковий</b></td></tr>
+      <tr><td>2025</td><td>Відзнака «За активну участь у житті гуртка»</td></tr>
+      <tr><td>06.2026</td><td>Вмілості: <b>«Мандрівник», «Ватра»</b></td></tr>
+      <tr><td>09.2026</td><td><b>Перейшов до старшого пластунства</b> — 3-тя проба розпочата (5 з 18 точок)</td></tr>
+    </table>
+    <div class="ps" style="margin-top:2mm">Сходин відвідано за 4 роки: <b>118</b> · присутність у середньому <b>86 %</b></div>
+  </div>
+
+  <div class="pidsum">
+    <div>
+      <h3>Здобуто</h3>
+      <ul>
+        <li>Проби: прихильник · 1-ша проба · 2-га проба</li>
+        <li>Пластова присяга — 05.2023</li>
+        <li>Вмілості (9): Плавець, Кухар, Художник, Кераміка, Вузли, Перша допомога, Табірник, Мандрівник, Ватра</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Посади й табори</h3>
+      <ul>
+        <li>Вістовий рою (новацтво)</li>
+        <li>Скарбник, гуртковий (юнацтво)</li>
+        <li>Таборів: 6 (2 пташачі, 2 новацькі, 2 юнацькі)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="slovo">Слово виховника: Олесь — надійний і уважний до молодших; добре вів касу гуртка й перший брав відповідальність на мандрівках. <span style="color:#8a929b">(вписує виховник — або від руки)</span></div>
+
+  <p style="font-size:8.5pt;color:#5b636c;margin-top:5mm">Оригінали посвідок проб і вмілостей — у самого пластуна; тут — перелік із датами й номерами. Документ видано особисто пластунові (або батькам); не пересилати в загальні чати.</p>
+
+  <div class="pidpys">
+    <div><b>Максим</b>виховник гуртка «Лелеки»</div>
+    <div><b>&nbsp;</b>голова осередку (за потреби)</div>
+    <div><b>14.11.2026</b>дата · місце для печатки</div>
+  </div>
+
+  <footer><span>Пластовий шлях · Олесь Коваленко · створено з книг гуртків</span><span>сторінка 2 з 2</span></footer>
+</section>
+</body>
+</html>
