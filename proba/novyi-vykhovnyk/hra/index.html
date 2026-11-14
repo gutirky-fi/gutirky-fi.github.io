@@ -63,6 +63,12 @@ textarea:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .st{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.st button{min-height:36px;padding:4px 12px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);font-size:14px;font-weight:700}
 .hn{margin:6px 0;color:var(--ac);font-weight:700;font-size:18px}.hn small{display:block;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
 .wr{color:#ff9a8a;font-weight:700;margin:6px 0}
+.vb{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.vb button{min-height:58px;border-radius:16px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:19px}.vb button:disabled{opacity:.35;text-decoration:line-through}
+.vbig{width:100%;min-height:58px;margin-top:14px;border-radius:99px;border:0;background:var(--gd);color:#16130a;font:700 19px var(--txt)}.vsec{width:100%;min-height:48px;margin-top:10px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font:700 16px var(--txt)}
+.dots{display:flex;gap:8px;margin:2px 0 10px}.dots i{width:16px;height:16px;border-radius:50%;background:var(--gd)}.dots i.off{background:transparent;border:2px solid var(--ln)}
+.scr{display:flex;justify-content:space-between;color:var(--mut);font-weight:700;font-size:14px;margin-bottom:6px}
+.pl{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.pl span{padding:4px 11px;border-radius:99px;background:var(--card2);font-weight:700;font-size:14px}.pl span.ok{color:var(--ac)}
+.rd{display:flex;flex-direction:column;gap:8px;margin-top:10px}.rd button{min-height:50px;border-radius:14px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:17px;text-align:left;padding:8px 14px}.rd button[aria-pressed=true]{border-color:var(--gd);background:rgba(255,194,71,.14)}
 .mine{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(255,194,71,.14);color:var(--gd);font-weight:700;text-align:center}
 body.s3t #send{border-radius:99px;background:var(--gd);color:#16130a}body.s3t #send.sec{background:var(--card2);color:var(--ink);border:1px solid var(--ln)}
 body.s3t #go{border-radius:99px;background:var(--gd);color:#16130a}
@@ -338,7 +344,7 @@ window.IHRY_TEL3 = function (gra) {
 
   <section id="join">
     <h1>Вгадай, хто?</h1>
-    <p class="m">Хто є хто в гуртку. Впиши своє імʼя — так тебе побачать у грі.</p>
+    <p class="m" id="jm">Факти з телефонів — вгадуємо, чий. Впиши своє імʼя — так тебе побачать у грі.</p>
     <div id="cw"><label for="f-code">Код з екрана</label><input id="f-code" inputmode="numeric" maxlength="7" placeholder="123 456" autocomplete="off"></div>
     <label for="f-name">Твоє імʼя</label><input id="f-name" maxlength="20" placeholder="Оленка" autocomplete="given-name">
     <button type="button" class="btn" id="go">Увійти в гру</button>
@@ -565,7 +571,8 @@ window.IHRY_TEL3 = function (gra) {
 if (window.IHRY_TEL3) IHRY_TEL3('znay');
 const $ = s => document.querySelector(s);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const KEY = 'znay.ses';
+const VV = /[?&]v=1(&|$)/.test(location.search);   /* телефон того, хто вгадує */
+const KEY = VV ? 'znay.v' : 'znay.ses';
 const load = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; } };
 const save = o => { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) { /* ok */ } };
 let ses = load();
@@ -573,6 +580,7 @@ if (!ses.tok) { ses.tok = Math.random().toString(36).slice(2) + Date.now().toStr
 const qk = (new URLSearchParams(location.search).get('k') || '').replace(/\D/g, '').slice(0, 6);
 if (qk.length === 6) { $('#f-code').value = qk; $('#cw').hidden = true; }
 if (ses.name) $('#f-name').value = ses.name;
+if (VV) { $('#jm').textContent = 'Ти вгадуєш: на твоєму телефоні — імена для відповіді й кнопка «Далі». Фактів не пишеш.'; $('#go').textContent = 'Я вгадую'; }
 
 /* ---------- звʼязок ---------- */
 const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
@@ -593,9 +601,9 @@ async function connect() {
   p.on('open', () => {
     if (my !== att) return;
     const c = conn = p.connect('gutirky-znay-' + ses.code, { reliable: true });
-    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'join', tok: ses.tok, name: ses.name }); chip(true, 'На звʼязку');
+    c.on('open', () => { if (my !== att) return; clearTimeout(tmo); lastRx = Date.now(); c.send({ t: 'join', tok: ses.tok, name: ses.name, v: VV ? 1 : 0 }); chip(true, 'На звʼязку');
       hb = setInterval(() => { try { c.send({ t: 'ping' }); } catch (e) { /* ok */ } if (Date.now() - lastRx > 16000) retry(my, 'Звʼязок перервався'); }, 5000); });
-    c.on('data', d => { if (my === att) { lastRx = Date.now(); if (d && d.t === 'st') { st = d; render(); } } });
+    c.on('data', d => { if (my === att) { lastRx = Date.now(); if (d && d.t === 'st') { st = d; render(); } else if (d && d.t === 'kick') { kicked(); } } });
     c.on('close', () => { if (my === att) retry(my, 'Звʼязок перервався'); });
   });
 }
@@ -603,8 +611,38 @@ function retry(my, why) { if (my !== att) return; stop(); chip(false, why + ' ·
 
 /* ---------- екран ---------- */
 let lastK = '';
+function kicked() { stop(); att++; $('#body').innerHTML = '<div class="wait"><b>Тепер вгадує інший телефон</b>Хочеш знову — відскануй код «Хто вгадує» на екрані.</div>'; chip(false, 'Відключено'); }
+function cmd(a, v) { try { conn && conn.send({ t: 'cmd', a, v }); } catch (e) { /* ok */ } if (navigator.vibrate) navigator.vibrate(30); }
+function vRender() {
+  const B = $('#body'); let h = '';
+  const sc = st.sc ? `<div class="scr"><span>Ти: ${st.sc[0]}</span><span>Гурток: ${st.sc[1]}</span></div>` : '';
+  if (st.ph === 'lobby') {
+    h = `<div class="qn">Ти вгадуєш</div><h1 class="qt">Що граємо?</h1><div class="rd">${st.rounds.map(([k, t]) => `<button type="button" data-r="${k}" aria-pressed="${k === st.gra}">${esc(t)}</button>`).join('')}</div>`
+      + `<p class="m" style="margin-top:14px">Фактів не пиши. Решта сканують код на екрані й вписують імена.</p><div class="qn">У грі: ${st.pl.length}</div><div class="pl">${st.pl.map(([n, on]) => `<span${on ? '' : ' style="opacity:.5"'}>${esc(n)}</span>`).join('') || '<span>поки нікого</span>'}</div>`
+      + `<button type="button" class="vbig" data-c="start"${st.pl.length ? '' : ' disabled'}>Почати</button>`;
+  } else if (st.ph === 'zbir') {
+    const f = st.pl.filter(x => x[2]).length;
+    h = `<div class="qn">Вгадай, хто?</div><h1 class="qt">Пишуть факти: ${f} з ${st.pl.length}</h1><div class="pl">${st.pl.map(([n, , k]) => `<span class="${k ? 'ok' : ''}">${k ? '✓ ' : ''}${esc(n)}</span>`).join('')}</div>`
+      + `<button type="button" class="vbig" data-c="next"${f ? '' : ' disabled'}>Почати вгадувати</button><button type="button" class="vsec" data-c="prev">Назад</button>`;
+  } else if (st.ph === 'fakt') {
+    h = sc + `<div class="qn">Факт ${st.i + 1} з ${st.n}</div><h1 class="qt">«${esc(st.fakt)}»</h1>`;
+    if (!st.done) h += `<div class="dots">${[0, 1, 2].map(k => `<i class="${k < 3 - st.tries ? '' : 'off'}"></i>`).join('')}</div>`;
+    h += st.h.map((x, k) => `<div class="hn"><small>Підказка ${k + 1}</small>${esc(x)}</div>`).join('');
+    if (st.wrong.length) h += `<div class="wr">Ні, це не ${st.wrong.map(esc).join(' і не ')}</div>`;
+    if (st.done) h += `<div class="big">${st.ok ? 'Так! Це — ' : 'Це — '}${esc(st.who)}!</div><div class="${st.ok ? 'ok' : 'hint'}">${st.ok ? 'Ти вгадав! +' + st.pts : 'Цього разу бал гуртку'}</div><button type="button" class="vbig" data-c="next">${st.last ? 'Рахунок' : 'Наступний факт'}</button>`;
+    else h += `<p class="m" style="margin:10px 0 0">Хто це? Скажи вголос і натисни:</p><div class="vb">${st.o.map(([j, n, w]) => `<button type="button" data-g="${j}"${w ? ' disabled' : ''}>${esc(n)}</button>`).join('')}</div><button type="button" class="vsec" data-c="give">Здаюся — показати</button>`;
+  } else if (st.ph === 'my') {
+    h = `<div class="qn">Хто з нас… · ${st.i + 1} з ${st.n}</div><h1 class="qt">${esc(st.q)}</h1><p class="m">Проголосували: ${st.cnt}${st.tot ? ' з ' + st.tot : ''}</p>`
+      + (st.shown && st.win ? `<div class="big">${st.win.map(esc).join(', ') || '—'}</div>` : '')
+      + `<button type="button" class="vbig" data-c="${st.shown ? 'next' : 'show'}">${st.shown ? (st.last ? 'Кінець' : 'Наступне питання') : 'Показати, кого вибрали'}</button>`;
+  } else if (st.ph === 'end') {
+    h = `<div class="wait"><b>Дякуємо!</b>${esc(st.sum || 'Раунд завершено.')}</div>` + (st.top && st.top.length ? `<p class="m">Хто з гуртка найкраще знає своїх:</p><div class="pl">${st.top.map(([n, p]) => `<span>${esc(n)} — ${p}</span>`).join('')}</div>` : '') + `<button type="button" class="vbig" data-c="start">Ще раунд</button>`;
+  }
+  B.innerHTML = h;
+}
 function render() {
   $('#join').hidden = true; $('#play').hidden = false;
+  if (st.v) return vRender();
   const B = $('#body'), nm = esc(st.name || ses.name || '');
   const k = st.ph + ':' + (st.i == null ? '' : st.i); if (k !== lastK) { lastK = k; draft = null; edit = false; }
   if (st.ph === 'zbir' && document.activeElement && document.activeElement.closest('#body') && document.activeElement.matches('input,textarea')) return;   /* не перемальовувати, поки юнак пише */
@@ -664,6 +702,7 @@ function render() {
 function send(o) { try { conn && conn.send(o); } catch (e) { /* ok */ } if (navigator.vibrate) navigator.vibrate(30); }
 $('#body').addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !st) return;
+  if (st.v) { if (b.dataset.c) cmd(b.dataset.c); else if (b.dataset.g != null) cmd('g', +b.dataset.g); else if (b.dataset.r) cmd('r', b.dataset.r); return; }
   if (b.dataset.v != null && st.ph === 'my' && st.open) { st.my = +b.dataset.v; render(); send({ t: 'vote', i: st.i, v: +b.dataset.v }); }
   else if (b.dataset.v != null && st.ph === 'fakt' && !st.done) { st.my = +b.dataset.v; render(); send({ t: 'zdog', i: st.i, v: +b.dataset.v }); }
   else if (b.dataset.st) { const i = $('[data-k="' + b.dataset.st + '"]'); i.value = /…$/.test(b.textContent) ? b.textContent.replace('…', ' ') : b.textContent + ', '; keep(); i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
@@ -697,6 +736,8 @@ $('#go').addEventListener('click', () => {
 });
 ['#f-code', '#f-name'].forEach(s => $(s).addEventListener('keydown', e => { if (e.key === 'Enter') $('#go').click(); }));
 ['#f-code', '#f-name'].forEach(s => $(s).addEventListener('input', () => { $('#err').textContent = ''; }));
+/* вибило чи перезавантажили сторінку: та сама гра й уже є імʼя — заходимо одразу, з тими самими фактами й балами */
+if (qk.length === 6 && ses.code === qk && ses.name && !BOT) join(qk, ses.name);
 })();
 </script>
 </body>
