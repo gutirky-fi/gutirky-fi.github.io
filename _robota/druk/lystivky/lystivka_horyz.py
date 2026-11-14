@@ -17,6 +17,8 @@ TUT = os.path.dirname(os.path.abspath(__file__))
 KARTKY = {   # назва: (картинка на всю лицьову, колір знаків, заголовок)
     'rybka': ('rybka_lytsova.png', (125, 28, 38), 'Рибка-крик'),
 }
+# повідомлення-«бульбашки» як у месенджері поверх лицьової (ліворуч унизу), за бажанням
+BULBASHKY = {'rybka': ['Ну ок', 'Скоб', 'Хахахаха']}
 PW, PH = 95*mm, 70*mm          # лицьова панель
 PAGE_W, PAGE_H = 210*mm, 297*mm
 COLS, ROWS = 2, 2
@@ -37,11 +39,25 @@ def zvorot(c, x, y, kolir):
     c.drawCentredString(ox, y+PH/2-d/2-1*mm, L.GURTOK)
 
 
+def bulbashky(c, x, y, ryadky):
+    """Темні «бульбашки» WhatsApp (білий текст), стовпчиком від лівого нижнього кута."""
+    sz, h, gap = 9, 6.2*mm, 1.6*mm
+    yy = y + 4*mm + (len(ryadky)-1)*(h+gap)
+    for t in ryadky:
+        w = c.stringWidth(t, 'DejaVu', sz) + 6*mm
+        c.setFillColorRGB(0.13, 0.17, 0.20)
+        c.roundRect(x+4*mm, yy, w, h, 2.2*mm, stroke=0, fill=1)
+        c.setFillColorRGB(1, 1, 1); c.setFont('DejaVu', sz)
+        c.drawString(x+7*mm, yy+h/2-sz*0.35, t)
+        yy -= h + gap
+
+
 def zibraty(nazva):
     fail, kolir, zaholovok = KARTKY[nazva]
     from reportlab.pdfbase import pdfmetrics
     from reportlab.pdfbase.ttfonts import TTFont
     pdfmetrics.registerFont(TTFont('LoraI', os.path.join(TUT, '..', 'shryfty', 'Lora-Italic-Variable.ttf')))
+    pdfmetrics.registerFont(TTFont('DejaVu', os.path.join(TUT, '..', 'shryfty', 'DejaVuSans.ttf')))
     img = os.path.join(TUT, 'malyunky', fail); iw, ih = Image.open(img).size
     out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A4_horyz.pdf' % nazva)
     c = canvas.Canvas(out, pagesize=(PAGE_W, PAGE_H))
@@ -55,6 +71,8 @@ def zibraty(nazva):
             c.saveState(); p = c.beginPath(); p.rect(x-BL, y-BL, bw, PH+BL); c.clipPath(p, stroke=0, fill=0)
             c.drawImage(img, x+PW/2-iw*s/2, y+PH-ih*s, iw*s, ih*s)   # верх картинки - рівно по згину (очі не зрізати)
             c.restoreState()
+            if nazva in BULBASHKY:
+                bulbashky(c, x, y, BULBASHKY[nazva])
             # зворот: над лицьовою, повернутий на 180°
             c.saveState(); c.translate(x+PW, y+2*PH); c.rotate(180)
             zvorot(c, 0, 0, kolir)
