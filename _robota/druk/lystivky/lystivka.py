@@ -4,6 +4,7 @@
     python3 lystivka.py taksa --fon 254,247,237  # лицьова панель залита кольором
     python3 lystivka.py vsi                    # усі листівки з таблиці
     python3 lystivka.py litera_a --foto        # лицьова - фото на всю панель (див. foto_na_lytsovu.py)
+    python3 lystivka.py kit_yalynka --orel     # на звороті під лілеєю маленький знак гуртка «Орли волі» (файл ..._orel.pdf)
 
 Результат: gotovi/lystivky_<назва>_A3_bez_fonu.pdf (або _z_fonom.pdf).
 
@@ -64,7 +65,7 @@ def lileya(kolir):
     return out, im.size
 
 
-def zibraty(nazva, fon=None, foto=False):
+def zibraty(nazva, fon=None, foto=False, orel=False):
     fail, kolir, (os_, rozmir), zaholovok = KARTKY[nazva]
     art_path = os.path.join(TUT, 'malyunky', fail)
     art = Image.open(art_path).convert('RGBA')
@@ -80,15 +81,24 @@ def zibraty(nazva, fon=None, foto=False):
         sys.exit('для %s немає фото-лицьової (див. FOTO)' % nazva)
     foto_path = os.path.join(TUT, 'malyunky', FOTO[nazva]) if foto else None
     lpath, (lw0, lh0) = lileya(kolir)
+    if orel:                                   # знак гуртка тим самим кольором, що й лілея
+        oa = np.asarray(Image.open(os.path.join(TUT, 'malyunky', 'orly_voli.png')).convert('RGBA')).copy()
+        oa[..., :3] = kolir
+        opath = os.path.join(TUT, 'malyunky', '_orel_%d_%d_%d.png' % kolir)
+        Image.fromarray(oa, 'RGBA').save(opath)
     lh, lw = LILY_H, LILY_H*lw0/lh0
 
-    out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A3_%s.pdf' % (nazva, 'z_fonom' if fon else ('foto_lytsova' if foto else 'bez_fonu')))
+    out = os.path.join(TUT, 'gotovi', 'lystivky_%s_A3_%s%s.pdf' % (nazva, 'z_fonom' if fon else ('foto_lytsova' if foto else 'bez_fonu'), '_orel' if orel else ''))
     c = canvas.Canvas(out, pagesize=(PAGE_W, PAGE_H))
     c.setTitle('Листівка «%s» - А3, 8 шт, розріз по центру' % zaholovok)
     for r in range(ROWS):
         for k in range(COLS):
             x, y = gx + k*2*PW, row_y(r)
-            c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
+            if orel:                   # лілея трохи вище, орел 12 мм унизу
+                c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2+6*mm, lw, lh, mask='auto')
+                c.drawImage(opath, x+PW/2-6*mm, y+9*mm, 12*mm, 12*mm, mask='auto')
+            else:
+                c.drawImage(lpath, x+PW/2-lw/2, y+PH/2-lh/2, lw, lh, mask='auto')
             if fon:
                 c.setFillColorRGB(*(v/255 for v in fon))
                 c.rect(x+PW, y-BL_V, PW+(BL_R if k == COLS-1 else 0), PH+2*BL_V, stroke=0, fill=1)
@@ -129,7 +139,9 @@ def zibraty(nazva, fon=None, foto=False):
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    fon, foto = None, False
+    fon, foto, orel = None, False, False
+    if '--orel' in args:
+        orel = True; args.remove('--orel')
     if '--foto' in args:
         foto = True; args.remove('--foto')
     if '--fon' in args:
@@ -137,4 +149,4 @@ if __name__ == '__main__':
     if not args or args[0] not in list(KARTKY) + ['vsi']:
         print(__doc__); print('Листівки:', ', '.join(KARTKY)); sys.exit(1)
     for n in ((FOTO if foto else KARTKY) if args[0] == 'vsi' else [args[0]]):
-        zibraty(n, fon, foto)
+        zibraty(n, fon, foto, orel)
