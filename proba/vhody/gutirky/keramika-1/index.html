@@ -105,6 +105,7 @@ body.yun .for-v,body:not(.yun) .for-y{display:none!important}
 #cmenu svg{flex:none;width:19px;height:19px;color:#a0a8b2}
 #cmenu button:hover svg,#cmenu a:hover svg{color:var(--gd)}
 #cmenu #home-link{margin-top:6px;border-top:1px solid #383d44;border-radius:0 0 12px 12px;padding-top:12px}
+#cmenu .cm-sec{margin-top:6px;padding:12px 12px 4px;border-top:1px solid #383d44;color:var(--gd);font:500 12px/1.3 var(--disp);letter-spacing:.16em;text-transform:uppercase}
 #b-skob b{margin-left:auto;color:var(--gd);font-family:var(--disp)}
 #phone-mode .pd-dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-left:auto;background:#6b7480}
 #phone-mode .pd-dot.ok{background:#3ee08f;box-shadow:0 0 8px #3ee08f}#phone-mode .pd-dot.warn{background:#ffc247}#phone-mode .pd-dot.bad{background:#ff5d5d}
@@ -261,7 +262,7 @@ html body #pult-ask{background:#22262b;border-color:#ffc247;border-radius:18px}
 .door.yun{box-shadow:inset 0 4px 0 var(--upyu)}.door.yun i{color:var(--upyu-t)}.door.yun:hover{border-color:var(--upyu-t)}
 .doors.for-y .door i{color:var(--upyu-t)}.doors.for-y .door:hover{border-color:var(--upyu-t)}
 .doors.for-y .door.main{background:var(--upyu);border-color:var(--upyu);color:#fff}.doors.for-y .door.main i,.doors.for-y .door.main span{color:#ffdbe3}
-#cmenu #mode-label,#b-skob b{color:var(--vyh-t)}
+#cmenu #mode-label,#cmenu .cm-sec,#b-skob b{color:var(--vyh-t)}
 #cmenu button:hover svg,#cmenu a:hover svg{color:var(--vyh-t)}
 html body #pult-dlg .pd-box{border-top-color:var(--vyh)}
 html body #pult-dlg .pd-b.go{background:var(--vyh);border-color:var(--vyh);color:var(--vyh-on)}
@@ -457,6 +458,9 @@ html[data-dir=back]::view-transition-new(root){animation-name:gvInB}
       <button id="b-skob" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2" fill="#d64541"/><rect x="13" y="3" width="8" height="8" rx="2" fill="#2f6fd0"/><rect x="3" y="13" width="8" height="8" rx="2" fill="#e8b02a"/><rect x="13" y="13" width="8" height="8" rx="2" fill="#2e8f55"/></svg><span>Потужний СКОБ!</span><b id="skob-n"></b></button>
       <button id="phone-mode" type="button" aria-label="Керування презентацією з телефона"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><span>Пульт</span></button>
       <button id="b-fs" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>На весь екран</span></button>
+      <div class="cm-sec">Інструменти</div>
+      <a id="cm-hto" href="../../hto/" target="_blank" rel="noopener"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#2fd2c0" stroke-width="3"/><path d="M20 3a17 17 0 0 1 17 17H20z" fill="#ffc247"/><circle cx="20" cy="20" r="4" fill="#f2f4f6"/><path d="M20 20l-9 9" stroke="#f2f4f6" stroke-width="3" stroke-linecap="round"/></svg><span>Жеребкування</span></a>
+      <a id="cm-opyt" href="../../opytuvannia/?dyz=3" target="_blank" rel="noopener"><svg viewBox="0 0 40 40" aria-hidden="true"><rect y="18" width="11" height="22" rx="3" fill="#2fd2c0"/><rect x="14.5" width="11" height="40" rx="3" fill="#ffc247"/><rect x="29" y="10" width="11" height="30" rx="3" fill="#cfd5dc"/></svg><span>Швидке опитування</span></a>
       <a id="home-link" href="../../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg><span>Бібліотека</span></a>
     </nav></div>
   <div id="stage"><div id="art"></div><div id="panel" aria-live="polite"></div></div>
@@ -1294,7 +1298,7 @@ html[data-dir=back]::view-transition-new(root){animation-name:gvInB}
       ns.querySelector('.dot').className = 'dot ' + (net === 'on' ? 'ok' : net === 'off' ? '' : 'wait');
       ns.querySelector('.t').textContent = net === 'on' ? 'Можна підключатися' : net === 'starting' ? 'Вмикаємо звʼязок…' : 'Відновлюємо звʼязок…';
       b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><b>' + n + '</b>' + (w ? ' · чекають: ' + w : '');
-      b.title = 'Гравці на звʼязку — натисніть, щоб запросити ще'; if (!n && !w) b.innerHTML = b.innerHTML.replace(/<b>0<\/b>/, '<span>Запросити гравців</span>'); b.setAttribute('aria-label', 'Гравців: ' + n + '. Запросити гравців');
+      b.title = 'Гравці на звʼязку — натисніть, щоб запросити ще';   /* 15.11.2026: і при 0 — «📱 0», як в інших іграх */ b.setAttribute('aria-label', 'Гравців: ' + n + '. Запросити гравців');
     } else
     b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}${w ? ` · чекають: ${w}` : ''}`;
   }
@@ -2485,6 +2489,8 @@ document.addEventListener('pointerdown', e => {
   if (!corner.contains(e.target)) { clearTimeout(cornerT); corner.classList.remove('open'); }
 }, true);
 $('#cmenu').addEventListener('click', e => { const b = e.target.closest('button,a'); if (!b) return; clearTimeout(cornerT); corner.classList.remove('open'); if (e.detail > 0) setTimeout(() => { try { b.blur(); } catch (er) {} }, 0); });
+/* інструменти виховника в меню відкриваються в новій вкладці — гутірка лишається як є (на сайті /hto/, у пробі /proba/hto/) */
+{ const base = location.pathname.startsWith('/proba/') ? '/proba/' : '/'; $('#cm-hto').href = base + 'hto/'; $('#cm-opyt').href = base + 'opytuvannia/?dyz=3'; }
 /* пульт на телефоні (pult-host-file.js) керує гутіркою через window.GUTIRKA */
 let T0 = 0;
 const strip = h => String(h || '').replace(/<[^>]+>/g, '');

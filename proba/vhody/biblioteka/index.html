@@ -1769,7 +1769,7 @@ next:()=>{lbOut();adv(1)},prev:()=>{lbOut();adv(-1)},jump:i=>{if(i>=0&&i<S.lengt
       ns.querySelector('.dot').className = 'dot ' + (net === 'on' ? 'ok' : net === 'off' ? '' : 'wait');
       ns.querySelector('.t').textContent = net === 'on' ? 'Можна підключатися' : net === 'starting' ? 'Вмикаємо звʼязок…' : 'Відновлюємо звʼязок…';
       b.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg><b>' + n + '</b>' + (w ? ' · чекають: ' + w : '');
-      b.title = 'Гравці на звʼязку — натисніть, щоб запросити ще'; if (!n && !w) b.innerHTML = b.innerHTML.replace(/<b>0<\/b>/, '<span>Запросити гравців</span>'); b.setAttribute('aria-label', 'Гравців: ' + n + '. Запросити гравців');
+      b.title = 'Гравці на звʼязку — натисніть, щоб запросити ще';   /* 15.11.2026: і при 0 — «📱 0», як в інших іграх */ b.setAttribute('aria-label', 'Гравців: ' + n + '. Запросити гравців');
     } else
     b.innerHTML = `<span class="dot ${net === 'on' ? (n ? 'ok' : 'wait') : net === 'off' ? '' : 'wait'}"></span>${n ? `Гравців: ${n}` : 'Запросити гравців'}${w ? ` · чекають: ${w}` : ''}`;
   }
