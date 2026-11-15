@@ -511,10 +511,21 @@ window.IHRY_S3 = function (o) {
   const over = b => b.scrollHeight - b.clientHeight > 1;
   function zoomOf(b) { return +(b.dataset.fz || 1); }
   function setZoom(b, z) { b.dataset.fz = z; [...b.children].forEach(c => { c.style.zoom = z === 1 ? '' : String(z); }); }
+  /* великий екран (проєктор 1920×1080): перший екран (лобі) більшає, як на ноутбуці 1366×768, — без порожніх смуг (15.11.2026).
+     Лише лобі; екрани самої гри — як були. Поля збоку звужуємо, щоб збільшене лобі мало ширину (1240 px × масштаб). */
+  const lobi = b => b.id === 'lobby' || !!b.closest('#skob.pick');
+  const bigZ = () => { const z = Math.floor(Math.min(1.6, innerWidth / 1366, innerHeight / 768) * 100) / 100; return z >= 1.08 ? z : 1; };
+  function pad(b, z) {
+    const v = z > 1 ? Math.max(24, Math.round((innerWidth - 1240 * z) / 2)) + 'px' : '';
+    const top = b.closest('#skob') ? b.closest('#skob').querySelector('.sk-top') : document.querySelector('body > .top');   // шапка — по тих самих краях
+    [b, top].forEach(e => { if (e && e.style.paddingLeft !== v) { e.style.paddingLeft = v; e.style.paddingRight = v; } });
+  }
   function fit() {
     boxes().forEach(b => {
       let z = zoomOf(b);
-      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); } }
+      if (lobi(b)) { const t = bigZ(); if (t > 1 && z !== t && !(z < t && b.dataset.fzt === String(t))) { pad(b, t); setZoom(b, t); z = t; b.dataset.fzt = t; } if (t === 1 && z > 1) { setZoom(b, 1); z = 1; } pad(b, z); }
+      else if (z > 1) { setZoom(b, 1); z = 1; pad(b, 1); }
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (lobi(b)) pad(b, z); } }
       else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
         const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
       }
