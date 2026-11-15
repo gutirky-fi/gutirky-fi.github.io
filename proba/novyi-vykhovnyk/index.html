@@ -122,6 +122,40 @@ textarea.f{min-height:96px;resize:vertical}
 .win small{color:var(--mut);font-size:clamp(1.1rem,2vw,1.5rem);font-weight:700}
 .win b{font:600 clamp(3.4rem,9vw,6.5rem)/1.02 var(--disp);color:var(--gd)}
 .win span{color:#cfd5dc;font-size:clamp(1.1rem,2vw,1.5rem)}
+/* «Хто з нас…»: оголошення, нічия, титули, друк (15.11.2026) */
+#my .stage{position:relative;overflow:hidden}
+.win.tie .names{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px}.win.tie .and{font:600 clamp(1.4rem,3vw,2.4rem) var(--disp);font-style:normal;color:var(--mut)}.win.tie .names b{font-size:clamp(2.6rem,6.5vw,4.8rem)}
+.win .ttl{margin-top:4px;color:#cfd5dc;font-size:clamp(1.1rem,2vw,1.5rem)}
+.win .ttl em{font:600 1.2em var(--disp);font-style:normal;color:var(--ac);letter-spacing:.03em;text-transform:uppercase}
+.win b{animation:znpop .7s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes znpop{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
+.drum{display:grid;place-items:center;gap:16px;color:var(--mut);font-size:clamp(1.3rem,2.6vw,2rem);font-weight:700;text-align:center}
+.drum .dots{display:flex;gap:16px}
+.drum .dots i{width:clamp(18px,3vw,30px);height:clamp(18px,3vw,30px);border-radius:50%;background:var(--gd);animation:zndrum .9s ease-in-out infinite}
+.drum .dots i:nth-child(2){animation-delay:.15s}.drum .dots i:nth-child(3){animation-delay:.3s}
+@keyframes zndrum{0%,100%{transform:scale(.55);opacity:.5}50%{transform:scale(1.15);opacity:1}}
+.conf{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.conf i{position:absolute;top:-6%;left:var(--x);width:10px;height:18px;border-radius:2px;background:var(--c);opacity:0;animation:znfall var(--t) var(--d) ease-in forwards}
+@keyframes znfall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(120vh) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){.conf{display:none}.win b,.drum .dots i{animation:none}}
+.nqs{display:inline-flex;gap:6px;margin-left:8px;vertical-align:middle}
+.nqs button{min-height:34px;min-width:44px;padding:0 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--ink);font:700 15px var(--txt);cursor:pointer}
+.nqs button[aria-pressed=true]{border-color:var(--gd);box-shadow:inset 0 0 0 1px var(--gd)}
+.tit{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin:18px 0}
+.tc{padding:16px 18px;border-radius:16px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
+.tc b{display:block;margin-bottom:8px;font:600 clamp(1.6rem,3vw,2.2rem)/1.1 var(--disp);text-transform:uppercase}
+.tc ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:4px}
+.tc li{color:var(--gd);font-weight:700;font-size:clamp(1.05rem,1.7vw,1.3rem)}.tc li.sp{color:var(--ac)}
+@media print{
+ html,body{height:auto!important;overflow:visible!important;background:#fff!important;color:#111!important}
+ body::before,body::after{display:none!important}
+ .top,#lobby,#zbir,#run,#my,#end .row,#end .sub,#toast,.ov{display:none!important}
+ #end{display:block!important;position:static!important;overflow:visible!important;height:auto!important;padding:0!important}
+ #end h1{color:#111!important;text-align:center;margin-bottom:8mm}
+ .tit{grid-template-columns:1fr 1fr;gap:8mm}
+ .tc{break-inside:avoid;min-height:50mm;background:#fff!important;color:#111!important;border:2px solid #111!important;border-top:8px solid #ffc247!important}
+ .tc b{color:#111!important}.tc li{color:#7a5400!important}.tc li.sp{color:#0b6f65!important}
+}
 .sc2{font:600 clamp(1.1rem,1.8vw,1.4rem) var(--txt);color:#cfd5dc}
 .zb{width:min(1100px,100%);margin:auto;display:flex;flex-direction:column;gap:10px}
 .zb h1{margin:0;font:600 clamp(2.2rem,5vw,3.6rem)/1.05 var(--disp)}
@@ -737,6 +771,41 @@ body.s3 #lobby .igr #inl{display:none}
 })();
 
 </script>
+<script>
+/* Звуки ігор (4.11.2026): ті самі справжні звуки, що в Змагу (SFX Kit, CC0) — для СКОБ і Бінго.
+   Файли лежать поруч зі Змагом: ../svoya-hra/zvuky/*.mp3. Завантажуються після першого дотику (так вимагає браузер).
+   window.IHRY_ZVUK.play('ok'|'no'|'tick'|'time'|'open'|'roll'|'rise'|'win'), .toggle(), .on, .chip(el) — кнопка 🔊 у шапці. */
+(function () {
+  'use strict';
+  const BASE = new URL('../svoya-hra/zvuky/', location.href).href, K = 'ihry.zvuk';
+  const N = ['ok', 'no', 'tick', 'tick2', 'time', 'open', 'rise', 'tada', 'applause', 'roll1', 'roll2', 'roll3'];
+  let on = true; try { on = localStorage.getItem(K) !== '0'; } catch (e) { /* ok */ }
+  let A = null, loaded = false; const B = {};
+  const ac = () => { A = A || new (window.AudioContext || window.webkitAudioContext)(); if (A.state === 'suspended') A.resume(); return A; };
+  function load() {
+    if (loaded) return; loaded = true;
+    try { const a = ac(); N.forEach(n => fetch(BASE + n + '.mp3').then(r => r.ok ? r.arrayBuffer() : Promise.reject()).then(b => new Promise((ok, no) => a.decodeAudioData(b, ok, no))).then(buf => { B[n] = buf; }).catch(() => { /* без звуку */ })); } catch (e) { /* ok */ }
+  }
+  document.addEventListener('pointerdown', load, { once: true }); document.addEventListener('keydown', load, { once: true });
+  function snd(n, vol, at) { if (!on || !B[n]) return; try { const a = ac(), s = a.createBufferSource(), g = a.createGain(); s.buffer = B[n]; g.gain.value = vol == null ? 1 : vol; s.connect(g); g.connect(a.destination); s.start(a.currentTime + (at || 0)); } catch (e) { /* ok */ } }
+  const MAP = {
+    ok: () => snd('ok', .8), no: () => snd('no', .5), tick: () => snd('tick', .6), time: () => snd('time', .7), open: () => snd('open', .55), rise: () => snd('rise', .6),
+    roll: () => snd('roll' + (1 + Math.floor(Math.random() * 3)), .7),
+    win: () => { snd('tada', .9); snd('applause', .7, .8); }
+  };
+  const chips = [];
+  const paint = () => chips.forEach(c => { c.setAttribute('aria-pressed', String(on)); c.title = on ? 'Звук увімкнено — натисніть, щоб вимкнути' : 'Звук вимкнено — натисніть, щоб увімкнути';
+    c.innerHTML = on ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></svg>'
+      : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="m22 9-6 6M16 9l6 6"/></svg>'; });
+  window.IHRY_ZVUK = {
+    play(k) { load(); if (MAP[k]) MAP[k](); },
+    get on() { return on; },
+    toggle() { on = !on; try { localStorage.setItem(K, on ? '1' : '0'); } catch (e) { /* ok */ } paint(); if (on) { load(); MAP.ok(); } },
+    chip(el) { if (!el) return; chips.push(el); el.setAttribute('aria-label', 'Звук'); el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); window.IHRY_ZVUK.toggle(); }); paint(); }
+  };
+})();
+
+</script>
 </head>
 <body>
 <div class="top"><a class="chip" href="../" id="home" aria-label="На головну">←</a>
@@ -744,6 +813,7 @@ body.s3 #lobby .igr #inl{display:none}
   <span class="chip" id="netc"><span class="dot"></span><span id="nett">Вмикаємо звʼязок…</span></span>
   <button type="button" class="chip" id="kody">Коди для входу</button>
   <span class="chip" title="Учасників на звʼязку"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M11 18h2"/></svg><span class="sr">На звʼязку:</span> <b id="pn">0</b></span>
+  <button type="button" class="chip" id="snd" aria-label="Звук"></button>
 </div>
 
 <main id="lobby">
@@ -811,13 +881,13 @@ body.s3 #lobby .igr #inl{display:none}
   <div class="sum">
     <h1>Дякуємо!</h1>
     <div id="es"></div>
-    <div class="row"><button type="button" class="btn main" id="again">Ще раунд</button></div>
+    <div class="row"><button type="button" class="btn" id="tprint" hidden>Друк грамоток</button><button type="button" class="btn main" id="again">Ще раунд</button></div>
   </div>
 </main>
 
 <div class="ov" id="edov" hidden><div class="box"><button type="button" class="x" id="edx" aria-label="Закрити">✕</button>
   <h2>Питання «Хто з нас…»</h2>
-  <p class="sub">Кожне питання — з нового рядка. Лише добрі питання: за кого голосують, той має радіти, а не соромитися.</p>
+  <p class="sub">Кожне питання — з нового рядка. Лише добрі питання: за кого голосують, той має радіти, а не соромитися. Після риски « | » можна дописати титул для переможця: <i>Хто найкраще співає біля ватри? | Соловей гуртка</i>. Без титулу переможець отримає саме питання.</p>
   <textarea class="f" id="edt" style="min-height:300px"></textarea>
   <div class="row"><button type="button" class="btn" id="edbase">Повернути готові</button><span style="flex:1"></span><button type="button" class="btn main" id="edok">Зберегти</button></div>
 </div></div>
@@ -1216,7 +1286,9 @@ let tt; function toast(t) { const e = $('#toast'); e.textContent = t; e.hidden =
 
 /* ---------- раунди й питання ---------- */
 const ROUNDS = { hto: ['Вгадай, хто?', 'кожен пише факти про себе — той, хто вгадує, і решта вгадують, чий'], my: ['Хто з нас…', 'питання на екрані — юнаки голосують за когось із гуртка'] };
-const BASEQ = ['Хто з нас — головний генератор ідей?', 'Хто розсмішить гурток, коли всім сумно?', 'З ким найкраще йти в мандрівку?', 'Хто першим прийде на допомогу?', 'Хто найкраще вʼяже вузли?', 'Хто найкраще розпалить ватру?', 'Хто найкраще співає біля ватри?', 'Хто завжди памʼятає, що треба взяти?', 'Хто найкраще пояснить нову гру?', 'Хто з нас найсміливіший?', 'Хто найкраще готує на таборі?', 'Хто найкраще заспокоїть, коли щось пішло не так?'];
+const BASEQ_T = [["Хто з нас — головний генератор ідей?", "Головний генератор ідей"], ["Хто першим прийде на допомогу?", "Той, хто приходить першим"], ["Хто завжди памʼятає, що треба взяти?", "Той, хто памʼятає все"], ["Хто найкраще заспокоїть, коли щось пішло не так?", "Тиха гавань"], ["Хто найкраще пояснить нову гру?", "Головний пояснювач"], ["З ким найкраще йти в мандрівку?", "Найкращий супутник"], ["Хто найкраще вислухає, коли комусь треба виговоритись?", "Найкращий слухач"], ["Хто найкраще підтримає, коли щось не виходить?", "Підтримка гуртка"], ["Хто першим привітає з днем народження?", "Міністр привітань"], ["Хто найкраще приведе нову людину в гурток?", "Той, хто згуртовує"], ["Хто завжди каже правду, але добрими словами?", "Добре слово"], ["Хто з нас найтерплячіший?", "Залізні нерви"], ["Хто розсмішить гурток, коли всім сумно?", "Головний сміхотун"], ["Хто найкраще розповідає історії біля ватри?", "Баєчник"], ["Хто найшвидше засинає в наметі?", "Король сну"], ["Хто не загубиться в лісі навіть без карти?", "Живий компас"], ["Хто найкраще імпровізує, коли нічого не підготовлено?", "Майстер імпровізації"], ["Хто виживе на безлюдному острові довше за всіх?", "Робінзон гуртка"], ["Хто найкраще імітує голоси й звуки?", "Майстер голосів"], ["Хто завжди має в рюкзаку щось корисне?", "Рюкзак-чарівник"], ["Хто найвеселіше танцює?", "Зірка танцю"], ["Хто найкраще склав би кумедну пісню?", "Поет гуртка"], ["Хто найкраще викрутиться з будь-якої халепи?", "Майстер викрутитись"], ["Хто найкраще вʼяже вузли?", "Володар вузлів"], ["Хто найкраще розпалить ватру?", "Хранитель вогню"], ["Хто найкраще співає біля ватри?", "Соловей гуртка"], ["Хто найкраще готує на таборі?", "Шеф табору"], ["Хто з нас найсміливіший?", "Найсміливіший"], ["Хто найкраще зорієнтується за зірками?", "Зоряний провідник"], ["Хто найкраще поставить намет?", "Майстер наметів"], ["Хто першим скаже «я зроблю»?", "Той, хто зголошується першим"], ["Хто найкраще знає пластові традиції й історії?", "Хранитель традицій"], ["Хто найкраще надасть першу допомогу?", "Лікар гуртка"], ["Хто завжди тримає слово?", "Слово честі"], ["Хто найкраще організує гру для менших?", "Улюбленець менших"], ["Хто найкраще розбереться в будь-якій схемі чи карті?", "Штурман гуртка"]];   // [питання, титул] — 36 штук: теплі, смішні, пластові
+const BASEQ = BASEQ_T.map(([q, t]) => q + ' | ' + t);
+const qObj = s => { s = String(s); const i = s.indexOf('|'); const q = (i < 0 ? s : s.slice(0, i)).trim(); let t = i < 0 ? '' : s.slice(i + 1).trim(); if (!t) { const f = BASEQ_T.find(x => x[0] === q); t = f ? f[1] : ''; } return { q, t }; };   // «питання | титул»; для старих збережених списків титул береться з готових
 const LSQ = 'znay.qs';
 let QS; try { QS = JSON.parse(localStorage.getItem(LSQ) || 'null'); } catch (e) { QS = null; }
 if (!Array.isArray(QS) || !QS.length) QS = BASEQ.slice();
@@ -1225,7 +1297,9 @@ const saveQs = () => { try { localStorage.setItem(LSQ, JSON.stringify(QS)); } ca
 /* ---------- стан (усе лише в памʼяті цієї сторінки: закрили — зникло) ---------- */
 let gra = 'hto', phase = 'lobby';
 let items = [], fi = 0, candF = [];   // «Вгадай, хто?»: факти {tok, f, h1, h2, tries, wrong[], done, ok, g: Map tok->{g, s}}
-let qi = 0, votes = [], cand = [], open = true, shownMy = false;   // «Хто з нас…»: голоси tok->tok, кандидати
+let qi = 0, votes = [], cand = [], open = true, shownMy = false;
+let rq = [], revealing = false, revT = 0, revQ = -1, confQ = -1, confH = '', mstCache = '', titles = null, nQ = 10;   // раунд «Хто з нас…»: питання цього раунду, оголошення, титули, скільки питань
+try { const sv = localStorage.getItem('znay.n'); if (sv !== null && [0, 6, 10, 15].includes(+sv)) nQ = +sv; } catch (e) { /* ok */ }   // «Хто з нас…»: голоси tok->tok, кандидати
 const players = new Map();   // tok -> {conn, t, on, name, fakty: [{f, h1, h2}]}
 const named = () => [...players.entries()].filter(([, P]) => P.name && !P.v);
 const online = () => [...players.values()].filter(P => P.on && P.name && !P.v).length;
@@ -1259,7 +1333,7 @@ function onConn(c) {
   c.on('data', d => {
     if (!d || typeof d !== 'object') return;
     if (d.t === 'join') {
-      tok = String(d.tok || Math.random()).slice(0, 40);
+      tok = String(d.tok || Math.random()).slice(0, 60);
       const n = String(d.name || '').replace(/\s+/g, ' ').trim().slice(0, 20);
       const P = players.get(tok) || { name: '', fakty: [] };
       P.conn = c; P.t = Date.now(); P.on = true;
@@ -1299,8 +1373,8 @@ function stateFor(tok) {
   if (phase === 'fakt') { const it = items[fi], g = it.g.get(tok);
     return Object.assign(b, { i: fi, n: items.length, fakt: it.f, h: hintsOf(it), tries: it.tries, wrong: it.wrong.map(nameOf), done: it.done, who: it.done ? nameOf(it.tok) : null, mine: it.tok === tok,
       o: candF.map(nameOf), me: candF.indexOf(tok), my: g ? candF.indexOf(g.g) : null, won: it.done && g && g.g === it.tok ? 3 - g.s : null, pts: pointsOf(tok) }); }
-  if (phase === 'my') { const v = votes[qi].get(tok); return Object.assign(b, { i: qi, n: QS.length, q: QS[qi], o: cand.map(nameOf), me: cand.indexOf(tok), open, my: v === undefined ? null : cand.indexOf(v), win: shownMy ? leaders(qi) : null }); }
-  if (phase === 'end') return Object.assign(b, { sum: sumText(), pts: pointsOf(tok), last: gra });
+  if (phase === 'my') { const v = votes[qi].get(tok); return Object.assign(b, { i: qi, n: rq.length, q: rq[qi].q, o: cand.map(nameOf), me: cand.indexOf(tok), open, my: v === undefined ? null : cand.indexOf(v), win: shownMy ? leaders(qi) : null, wt: shownMy ? rq[qi].t : '', rev: revealing }); }
+  if (phase === 'end') return Object.assign(b, { sum: sumText(), pts: pointsOf(tok), last: gra, titles: gra === 'my' ? titlesOf(tok) : [] });
   return b;
 }
 function sendTo(tok) { const P = players.get(tok); try { if (P && P.conn && P.conn.open) P.conn.send(stateFor(tok)); } catch (e) { /* ok */ } }
@@ -1332,7 +1406,7 @@ function paintLobby() {
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   $('#polls').innerHTML = Object.entries(ROUNDS).map(([k, [t, s]]) => `<button type="button" data-r="${k}" aria-pressed="${k === gra}">${esc(t)}<small>${esc(s)}</small></button>`).join('');
-  $('#qlist').innerHTML = gra === 'my' ? QS.slice(0, 4).map(q => `<li>${esc(q)}</li>`).join('') + (QS.length > 4 ? `<li style="list-style:none"><small>…і ще ${QS.length - 4} — «Змінити питання»</small></li>` : '') : '<li>Кожен пише на телефоні два факти про себе, до кожного — дві підказки</li><li>Факт на екрані: той, хто вгадує, називає імʼя (3 спроби, після помилки — підказка), решта — потай на телефонах</li><li>Бали 3 / 2 / 1 — за вгадане з першої, другої, третьої спроби</li>';
+  $('#qlist').innerHTML = gra === 'my' ? QS.slice(0, 3).map(x => `<li>${esc(qObj(x).q)}</li>`).join('') + `<li style="list-style:none"><small>…питання випадкові з ${QS.length} (можна змінити). Кожне питання дає переможцю титул.</small></li><li style="list-style:none">Скільки питань: <span class="nqs">${[6, 10, 15, 0].map(k => `<button type="button" data-nq="${k}" aria-pressed="${k === nQ}">${k || 'Усі'}</button>`).join('')}</span></li>` : '<li>Кожен пише на телефоні два факти про себе, до кожного — дві підказки</li><li>Факт на екрані: той, хто вгадує, називає імʼя (3 спроби, після помилки — підказка), решта — потай на телефонах</li><li>Бали 3 / 2 / 1 — за вгадане з першої, другої, третьої спроби</li>';
   $('#edit').hidden = gra !== 'my';
   const nm = named();
   $('#inl').textContent = nm.length ? 'У грі: ' + nm.length : 'Чекаємо на учасників — кожен вписує своє імʼя';
@@ -1377,15 +1451,53 @@ function fitRun() {
 addEventListener('resize', () => { if (phase === 'fakt') fitRun(); });
 function paintMy() {
   const n = votes[qi].size, tot = Math.max(0, online());
-  $('#mn').textContent = 'Хто з нас… · питання ' + (qi + 1) + ' з ' + QS.length;
+  $('#mn').textContent = 'Хто з нас… · питання ' + (qi + 1) + ' з ' + rq.length;
   $('#mc').textContent = '· проголосували ' + n + (tot ? ' з ' + tot : '');
-  $('#mq').textContent = QS[qi];
-  const L = leaders(qi);
-  $('#mst').innerHTML = shownMy ? (L.length ? `<div class="win"><small>Найбільше голосів:</small><b>${L.map(esc).join(', ')}</b><span>${L.length > 1 ? 'Розкажіть по черзі, чому так' : 'Розкажи, чому, на твою думку, так'}</span></div>` : '<div class="hid">Ще ніхто не проголосував</div>') : `<div class="hid"><b>${n}</b>${n === 1 ? 'голос' : 'голосів'} · результат сховано</div>`;
-  $('#mrev').textContent = shownMy ? 'Сховати' : 'Показати, кого вибрали';
+  $('#mq').textContent = rq[qi].q;
+  const L = leaders(qi), T = rq[qi].t;
+  let h;
+  if (revealing) h = '<div class="drum"><div class="dots"><i></i><i></i><i></i></div><span>Рахуємо голоси…</span></div>';
+  else if (shownMy) {
+    if (!L.length) h = '<div class="hid">Ще ніхто не проголосував</div>';
+    else {
+      const tt = T ? `<div class="ttl">Титул: <em>${esc(T)}</em></div>` : '';
+      h = L.length > 1 ? `<div class="win tie"><small>Нічия — однаково голосів:</small><div class="names">${L.map(x => `<b>${esc(x)}</b>`).join('<i class="and">і</i>')}</div>${tt}<span>Розкажіть по черзі, чому так</span></div>`
+        : `<div class="win"><small>Найбільше голосів:</small><b>${esc(L[0])}</b>${tt}<span>Розкажи, чому, на твою думку, так</span></div>`;
+      if (confQ === qi) h += confH;
+    }
+  } else { const m = n % 10, k = n % 100; h = `<div class="hid"><b>${n}</b>${m === 1 && k !== 11 ? 'голос' : m >= 2 && m <= 4 && (k < 12 || k > 14) ? 'голоси' : 'голосів'} · результат сховано</div>`; }
+  if (h !== mstCache) { mstCache = h; $('#mst').innerHTML = h; }   // не перемальовуємо те саме — інакше анімація починається знову
+  $('#mrev').textContent = revealing ? 'Рахуємо…' : shownMy ? 'Сховати' : 'Показати, кого вибрали';
+  $('#mrev').disabled = revealing;
   $('#mprev').disabled = qi === 0;
-  $('#mnext').textContent = qi < QS.length - 1 ? 'Наступне питання →' : 'Кінець →';
+  $('#mnext').textContent = qi < rq.length - 1 ? 'Наступне питання →' : 'Кінець →';
 }
+/* оголошення переможця: пауза з барабанним дрібом, потім ім'я, конфеті й оплески */
+const CC = ['#ffc247', '#2fd2c0', '#ff6b6b', '#5aa8ff', '#7ddc8f', '#f2f4f6'];
+const confetti = () => '<div class="conf" aria-hidden="true">' + Array.from({ length: 32 }, (_, i) => `<i style="--x:${Math.round(Math.random() * 100)}%;--c:${CC[i % CC.length]};--d:${(Math.random() * .7).toFixed(2)}s;--t:${(1.6 + Math.random() * 1.2).toFixed(2)}s;--r:${Math.round(180 + Math.random() * 540)}deg"></i>`).join('') + '</div>';
+const cancelRev = () => { clearTimeout(revT); revealing = false; };
+function reveal() {
+  if (revealing) return;
+  if (!leaders(qi).length) { shownMy = true; paintMy(); bcast(); return; }
+  revealing = true; revQ = qi; paintMy(); bcast();
+  if (window.IHRY_ZVUK) IHRY_ZVUK.play('roll');
+  revT = setTimeout(() => {
+    if (!revealing || phase !== 'my' || qi !== revQ) return;
+    revealing = false; shownMy = true; confQ = qi; confH = confetti();
+    if (window.IHRY_ZVUK) IHRY_ZVUK.play('win');
+    paintMy(); bcast();
+  }, 2300);
+}
+/* титули наприкінці: хто вигравав питання — отримує титул; хто не вигравав жодного — теплий запасний */
+const SPARE = ['Тихий скарб гуртка', 'Незамінний за кадром', 'Темна конячка гуртка', 'Секретна зброя гуртка', 'Серце гуртка'];
+function makeTitles() {
+  const m = new Map(cand.map(t => [t, { win: [], spare: [] }]));
+  rq.forEach((o, i) => { const cnt = new Map(); (votes[i] || new Map()).forEach(t => cnt.set(t, (cnt.get(t) || 0) + 1)); const mx = Math.max(0, ...cnt.values()); if (!mx) return; cnt.forEach((c, t) => { if (c === mx && m.has(t)) m.get(t).win.push(o.t || o.q); }); });
+  const sp = shuffle(SPARE.slice()); let k = 0;
+  m.forEach(v => { if (!v.win.length) v.spare.push(sp[k++ % sp.length]); });
+  return m;
+}
+const titlesOf = tok => { const v = titles && titles.get(tok); return v ? v.win.concat(v.spare) : []; };
 function paintAll() { paintTop(); if (phase === 'lobby') paintLobby(); else if (phase === 'zbir') paintZbir(); else if (phase === 'fakt') paintFakt(); else if (phase === 'my') paintMy(); }
 function show(id) { ['lobby', 'zbir', 'run', 'my', 'end'].forEach(m => { $('#' + m).hidden = m !== id; }); document.body.classList.toggle('run', id !== 'lobby'); }
 function go(ph) {
@@ -1394,8 +1506,12 @@ function go(ph) {
   else if (ph === 'zbir') show('zbir');
   else if (ph === 'fakt') show('run');
   else if (ph === 'my') show('my');
-  else if (ph === 'end') { show('end');
-    if (gra === 'hto' && doneN()) { const T = top().slice(0, 5); $('#es').innerHTML = `<div class="score"><div><b>${vPts()}</b><span> вгадує</span></div><div><b>${gPts()}</b><span> гурток</span></div></div>` + (T.length ? `<p class="sub">Хто з гуртка найкраще знає своїх:</p><ol class="top5">${T.map(([n, p]) => `<li>${esc(n)} — ${p}</li>`).join('')}</ol>` : ''); }
+  else if (ph === 'end') { show('end'); $('#end h1').textContent = 'Дякуємо!'; $('#tprint').hidden = true;
+    if (gra === 'my' && rq.length) {
+      titles = makeTitles(); $('#end h1').textContent = 'Титули гуртка'; $('#tprint').hidden = false;
+      $('#es').innerHTML = '<p class="sub">Так вас бачить гурток. Кожен — особливий.</p><div class="tit">' + [...titles].map(([t, v]) => `<div class="tc"><b>${esc(nameOf(t))}</b><ul>${v.win.map(x => `<li>${esc(x)}</li>`).join('')}${v.spare.map(x => `<li class="sp">${esc(x)}</li>`).join('')}</ul></div>`).join('') + '</div>';
+      if (window.IHRY_ZVUK) IHRY_ZVUK.play('win'); }
+    else if (gra === 'hto' && doneN()) { const T = top().slice(0, 5); $('#es').innerHTML = `<div class="score"><div><b>${vPts()}</b><span> вгадує</span></div><div><b>${gPts()}</b><span> гурток</span></div></div>` + (T.length ? `<p class="sub">Хто з гуртка найкраще знає своїх:</p><ol class="top5">${T.map(([n, p]) => `<li>${esc(n)} — ${p}</li>`).join('')}</ol>` : ''); }
     else $('#es').innerHTML = '<p class="sub">Раунд завершено.</p>'; }
   paintAll(); bcast();
 }
@@ -1406,12 +1522,13 @@ function startFakt() {
   shuffle(all); for (let i = 1; i < all.length; i++) if (all[i].tok === all[i - 1].tok) { const j = all.findIndex((x, k) => k > i && x.tok !== all[i].tok); if (j > 0) [all[i], all[j]] = [all[j], all[i]]; }   /* та сама людина — не двічі поспіль */
   items = all; fi = 0; candF = named().map(([t]) => t); go('fakt');
 }
-function startMy() { cand = named().map(([t]) => t); qi = 0; open = true; shownMy = false; votes = QS.map(() => new Map()); go('my'); }
+function startMy() { cand = named().map(([t]) => t); qi = 0; open = true; shownMy = false; cancelRev(); confQ = -1; titles = null; mstCache = ''; const all = QS.map(qObj); rq = nQ ? shuffle(all).slice(0, nQ) : all; votes = rq.map(() => new Map()); go('my'); }
 
 /* ---------- кнопки ---------- */
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.r) { gra = b.dataset.r; paintLobby(); return; }
+  if (b.dataset.nq != null) { nQ = +b.dataset.nq; try { localStorage.setItem('znay.n', String(nQ)); } catch (e) { /* ok */ } paintLobby(); return; }
   if (b.dataset.g != null) { guess(candF[+b.dataset.g]); return; }
   switch (b.id) {
     case 'start': if (gra === 'hto') { players.forEach(P => { P.fakty = []; }); items = []; go('zbir'); } else startMy(); break;
@@ -1420,13 +1537,14 @@ document.addEventListener('click', e => {
     case 'fgive': { const it = items[fi]; if (it && !it.done) { it.done = true; it.ok = false; paintAll(); bcast(); } break; }
     case 'fprev': if (fi > 0) { fi--; paintFakt(); bcast(); } break;
     case 'fnext': if (fi < items.length - 1) { fi++; paintFakt(); bcast(); } else go('end'); break;
-    case 'mrev': shownMy = !shownMy; paintMy(); bcast(); break;
-    case 'mprev': if (qi > 0) { qi--; shownMy = true; paintMy(); bcast(); } break;
-    case 'mnext': if (qi < QS.length - 1) { qi++; shownMy = false; open = true; paintMy(); bcast(); } else go('end'); break;
+    case 'mrev': if (revealing) break; if (shownMy) { shownMy = false; paintMy(); bcast(); } else reveal(); break;
+    case 'mprev': if (qi > 0) { cancelRev(); qi--; shownMy = true; paintMy(); bcast(); } break;
+    case 'mnext': cancelRev(); if (qi < rq.length - 1) { qi++; shownMy = false; open = true; paintMy(); bcast(); } else go('end'); break;
     case 'again': gra = gra === 'hto' ? 'my' : 'hto'; go('lobby'); break;
     case 'edit': $('#edt').value = QS.join('\n'); $('#edov').hidden = false; setTimeout(() => $('#edt').focus(), 30); break;
     case 'edbase': $('#edt').value = BASEQ.join('\n'); break;
-    case 'edok': { const q = $('#edt').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 40); if (!q.length) { toast('Потрібне хоча б одне питання'); return; } QS = q; saveQs(); $('#edov').hidden = true; paintLobby(); toast('Збережено на цьому пристрої'); break; }
+    case 'tprint': window.print(); break;
+    case 'edok': { const q = $('#edt').value.split('\n').map(s => s.trim()).filter(Boolean).slice(0, 60); if (!q.length) { toast('Потрібне хоча б одне питання'); return; } QS = q; saveQs(); $('#edov').hidden = true; paintLobby(); toast('Збережено на цьому пристрої'); break; }
     case 'edx': $('#edov').hidden = true; break;
   }
 });
@@ -1450,6 +1568,7 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
   const ig = el('div', 'igr'); ig.append(inl, inn); m.append(ig);   /* хто в грі — ліворуч, щоб картка з QR не росла */
   const L = el('div', 'l2'); L.append(m, j); lb.replaceWith(L);
   if (new URLSearchParams(location.search).get('dyz') === '3' && window.IHRY_S3) IHRY_S3({ gra: 'znay', m, x: null, knopky: { start: 'play', edit: 'edit' }, strilky: ['fprev', 'fnext', 'mprev', 'mnext', 'zback', 'zgo'] });
+  if (window.IHRY_ZVUK) IHRY_ZVUK.chip(document.getElementById('snd'));
 }
 /* ---------- крок 1 «Хто вгадує?»: окремий телефон (hra/?v=1), лише один; новий відключає старого ---------- */
 let vSkip = false, vShow = false;
@@ -1476,7 +1595,7 @@ function vState(b) {
   if (phase === 'fakt') { const it = items[fi];
     Object.assign(b, { i: fi, n: items.length, fakt: it.f, h: hintsOf(it), tries: it.tries, wrong: it.wrong.map(nameOf), done: it.done, ok: it.ok, who: it.done ? nameOf(it.tok) : null, pts: it.ok ? 3 - it.tries : 0,
       o: candF.map((t, j) => [j, nameOf(t), it.wrong.includes(t)]), sc: [vPts(), gPts()], last: fi === items.length - 1 }); }
-  if (phase === 'my') Object.assign(b, { i: qi, n: QS.length, q: QS[qi], cnt: votes[qi].size, tot: online(), shown: shownMy, win: shownMy ? leaders(qi) : null, last: qi === QS.length - 1 });
+  if (phase === 'my') Object.assign(b, { i: qi, n: rq.length, q: rq[qi].q, cnt: votes[qi].size, tot: online(), shown: shownMy, win: shownMy ? leaders(qi) : null, wt: shownMy ? rq[qi].t : '', rev: revealing, last: qi === rq.length - 1 });
   if (phase === 'end') Object.assign(b, { sum: sumText(), sc: [vPts(), gPts()], top: top().slice(0, 5), last: gra });
   return b;
 }
@@ -1520,13 +1639,13 @@ window.GUTIRKA = {
       ix.nx = items[fi + 1] ? '«' + items[fi + 1].f + '»' : 'Рахунок — це останній факт';
       return Object.assign(base, { canPrev: fi > 0, nextL: fi < items.length - 1 ? 'Наступний факт' : 'Кінець', index: fi, total: items.length + 1, title: ix.meta[0], ix }); }
     if (phase === 'my') { const n = votes[qi].size, L = leaders(qi);
-      const ix = { v: 'gra', meta: ['Питання ' + (qi + 1) + ' / ' + QS.length, shownMy ? 'видно на екрані' : 'бачите лише ви'], q: QS[qi],
+      const ix = { v: 'gra', meta: ['Питання ' + (qi + 1) + ' / ' + rq.length, shownMy ? 'видно на екрані' : 'бачите лише ви'], q: rq[qi].q,
         who: [(n === 1 ? 'Проголосував 1' : 'Проголосували: ' + n) + (on ? ' з ' + on : ''), '', n, Math.max(on, n)],
-        b: [['mrev', shownMy ? 'Сховати з екрана' : 'Показати на екрані']], end: ['finish', '✕ Завершити', 'Завершити раунд?'],
+        b: [['mrev', revealing ? 'Рахуємо голоси…' : shownMy ? 'Сховати з екрана' : 'Показати на екрані']], end: ['finish', '✕ Завершити', 'Завершити раунд?'],
         hint: 'На екрані — лише хто набрав найбільше, без рахунку голосів.' };
       if (L.length) { ix.okL = 'Найбільше голосів'; ix.ok = L.join(', '); }
-      ix.nx = QS[qi + 1] ? QS[qi + 1] : 'Кінець — це останнє питання';
-      return Object.assign(base, { canPrev: qi > 0, nextL: qi < QS.length - 1 ? 'Наступне питання' : 'Кінець', index: qi, total: QS.length + 1, title: ix.meta[0], ix }); }
+      ix.nx = rq[qi + 1] ? rq[qi + 1].q : 'Кінець — це останнє питання';
+      return Object.assign(base, { canPrev: qi > 0, nextL: qi < rq.length - 1 ? 'Наступне питання' : 'Кінець', index: qi, total: rq.length + 1, title: ix.meta[0], ix }); }
     return Object.assign(base, { noPrev: true, nextL: 'Ще раунд', index: 1, total: 2, title: 'Кінець', ix: { v: 'gra', h: 'Дякуємо!', hint: sumText() || 'Раунд завершено.' } });
   },
   next() { const id = { lobby: 'start', zbir: 'zgo', fakt: 'fnext', my: 'mnext', end: 'again' }[phase]; const b = $('#' + id); if (b && !b.disabled) b.click(); },

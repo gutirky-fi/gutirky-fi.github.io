@@ -45,6 +45,7 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .ok{margin-top:14px;padding:12px 14px;border-radius:14px;background:rgba(47,210,192,.12);color:var(--ac);font-weight:700;text-align:center}
 .wait{padding:30px 10px;text-align:center;color:var(--mut)}
 .wait b{display:block;font:600 24px var(--disp);color:var(--ink);margin-bottom:6px}
+.tl{display:flex;flex-direction:column;gap:8px;margin-top:6px}.tl b{display:block;font:600 24px/1.15 var(--disp);color:var(--gd)}
 .res{margin-top:18px;padding:14px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
 .res h2{margin:0 0 8px;font:700 14px var(--txt);color:var(--mut)}
 .rb{display:grid;grid-template-columns:1fr 46px;gap:4px 10px;align-items:center;margin:6px 0;font-weight:700;font-size:15px}
@@ -633,8 +634,9 @@ function vRender() {
     else h += `<p class="m" style="margin:10px 0 0">Хто це? Скажи вголос і натисни:</p><div class="vb">${st.o.map(([j, n, w]) => `<button type="button" data-g="${j}"${w ? ' disabled' : ''}>${esc(n)}</button>`).join('')}</div><button type="button" class="vsec" data-c="give">Здаюся — показати</button>`;
   } else if (st.ph === 'my') {
     h = `<div class="qn">Хто з нас… · ${st.i + 1} з ${st.n}</div><h1 class="qt">${esc(st.q)}</h1><p class="m">Проголосували: ${st.cnt}${st.tot ? ' з ' + st.tot : ''}</p>`
-      + (st.shown && st.win ? `<div class="big">${st.win.map(esc).join(', ') || '—'}</div>` : '')
-      + `<button type="button" class="vbig" data-c="${st.shown ? 'next' : 'show'}">${st.shown ? (st.last ? 'Кінець' : 'Наступне питання') : 'Показати, кого вибрали'}</button>`;
+      + (st.rev ? '<p class="m">Рахуємо голоси…</p>' : '')
+      + (st.shown && st.win ? `<div class="big">${st.win.map(esc).join(', ') || '—'}</div>` + (st.win.length > 1 ? '<p class="m">Нічия!</p>' : '') + (st.wt ? `<p class="m">Титул: <b style="display:inline;font-size:inherit">${esc(st.wt)}</b></p>` : '') : '')
+      + `<button type="button" class="vbig" data-c="${st.shown ? 'next' : 'show'}"${st.rev ? ' disabled' : ''}>${st.rev ? 'Рахуємо…' : st.shown ? (st.last ? 'Кінець' : 'Наступне питання') : 'Показати, кого вибрали'}</button>`;
   } else if (st.ph === 'end') {
     h = `<div class="wait"><b>Дякуємо!</b>${esc(st.sum || 'Раунд завершено.')}</div>` + (st.top && st.top.length ? `<p class="m">Хто з гуртка найкраще знає своїх:</p><div class="pl">${st.top.map(([n, p]) => `<span>${esc(n)} — ${p}</span>`).join('')}</div>` : '') + `<button type="button" class="vbig" data-c="start">Ще раунд</button>`;
   }
@@ -648,7 +650,7 @@ function render() {
   if (st.ph === 'zbir' && document.activeElement && document.activeElement.closest('#body') && document.activeElement.matches('input,textarea')) return;   /* не перемальовувати, поки юнак пише */
   let h = '';
   if (st.ph === 'lobby') h = `<div class="wait"><b>Ти в грі, ${nm}!</b>Дивись на екран — ведучий скоро почне.</div>`;
-  else if (st.ph === 'end') h = `<div class="wait"><b>Дякуємо!</b>${esc(st.sum || 'Раунд завершено.')}${st.last === 'hto' ? '<br>Твої бали: <b style="display:inline;font-size:inherit">' + st.pts + '</b>' : ''}</div>`;
+  else if (st.ph === 'end') h = `<div class="wait"><b>Дякуємо!</b>${esc(st.sum || 'Раунд завершено.')}${st.last === 'hto' ? '<br>Твої бали: <b style="display:inline;font-size:inherit">' + st.pts + '</b>' : ''}</div>` + (st.titles && st.titles.length ? `<div class="res"><h2>Твої титули</h2><div class="tl">${st.titles.map(t => '<b>' + esc(t) + '</b>').join('')}</div></div>` : '');
   else if (st.ph === 'zbir') {
     if (st.my && !edit) {
       h = `<div class="qn">Вгадай, хто?</div><h1 class="qt">Готово!</h1><div class="ok">✓ Прийнято: ${st.my.length === 1 ? '1 факт' : st.my.length + ' факти'}. Дивись на екран — скоро почнемо.</div>`
@@ -695,7 +697,8 @@ function render() {
     const btns = st.o.map((o, j) => j === st.me ? '' : `<button type="button" data-v="${j}" aria-pressed="${st.my === j}"${dis}>${esc(o)}</button>`).join('');
     h += btns ? `<div class="opts">${btns}</div>` : '<div class="hint">Поки в грі нікого, крім тебе.</div>';
     if (st.my !== null) h += '<div class="ok">✓ Голос прийнято. Ніхто не бачить, за кого ти голосуєш.</div>';
-    if (st.win) h += st.win.length ? `<div class="res"><h2>Найбільше голосів</h2><div class="big">${st.win.map(esc).join(', ')}</div></div>` : '';
+    if (st.rev) h += '<div class="res"><div class="hint">Рахуємо голоси…</div></div>';
+    if (st.win) h += st.win.length ? `<div class="res"><h2>${st.win.length > 1 ? 'Нічия — однаково голосів' : 'Найбільше голосів'}</h2><div class="big">${st.win.map(esc).join(', ')}</div>${st.wt ? `<p class="m">Титул: <b style="display:inline;font-size:inherit">${esc(st.wt)}</b></p>` : ''}</div>` : '';
   }
   B.innerHTML = h;
 }
