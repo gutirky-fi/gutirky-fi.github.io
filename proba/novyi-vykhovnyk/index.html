@@ -143,7 +143,22 @@ body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
 .hn{font:600 clamp(1.3rem,2.6vw,2rem)/1.2 var(--txt);color:var(--ac)}.hn small{display:block;font-size:.55em;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
 .wr{color:#ff9a8a;font-weight:700;font-size:clamp(1rem,1.6vw,1.3rem)}
 .rule{color:var(--mut);font-size:15px;margin:0}
-#run{--k:1}#run .stage{justify-content:flex-start;overflow:hidden;padding-top:6px}#run .win b{font-size:calc(var(--k)*clamp(2.6rem,6vw,4.6rem))}#run .fact{font-size:calc(var(--k)*clamp(1.9rem,4.2vw,3.6rem))}#run .hn{font-size:calc(var(--k)*clamp(1.3rem,2.6vw,2rem))}#run .win small,#run .win span,#run .wr,#run .ask{font-size:calc(var(--k)*clamp(1rem,1.8vw,1.4rem))}#run .dots i{width:calc(var(--k)*22px);height:calc(var(--k)*22px)}
+#run{--k:1}
+#run .fh{display:flex;align-items:center}#run .fh .sp{flex:1}
+.sco{display:flex;gap:8px}.sco span{display:inline-flex;align-items:baseline;gap:6px;padding:6px 14px;border-radius:99px;background:var(--card);border:1px solid var(--ln);font-weight:700;color:var(--mut);font-size:15px}.sco b{font:600 22px var(--disp);color:var(--gd)}
+#run .fact{text-align:center;max-width:none;margin:calc(var(--k)*6px) auto calc(var(--k)*14px)}
+.fg{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(14px,2vw,28px);width:min(1250px,100%);margin:0 auto;flex:1;min-height:0}
+.fg .col{display:flex;flex-direction:column;gap:clamp(10px,1.5vh,16px);min-height:0}
+.hc{flex:1;display:flex;flex-direction:column;justify-content:center;padding:calc(var(--k)*14px) 22px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.hc small{color:var(--mut);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:calc(var(--k)*13px);margin-bottom:4px}
+.hc b{font:600 calc(var(--k)*clamp(1.4rem,2.7vw,2.2rem))/1.2 var(--txt);color:var(--ac)}
+.hc.zak{background:transparent;border:2px dashed var(--ln)}.hc.zak b{color:#5d646d;font-size:calc(var(--k)*clamp(1rem,1.6vw,1.3rem))}
+.rc{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:calc(var(--k)*10px);padding:18px;border-radius:18px;background:var(--card);border:1px solid var(--ln)}
+.rc.ok{border-color:rgba(255,194,71,.6);box-shadow:0 0 40px -12px rgba(255,194,71,.5)}
+.rc .dots{gap:16px}.rc .dots i{width:calc(var(--k)*clamp(30px,4.5vh,48px));height:calc(var(--k)*clamp(30px,4.5vh,48px))}
+.rc small{color:var(--mut);font-weight:700;font-size:calc(var(--k)*clamp(1.05rem,2.2vh,1.6rem))}
+.rc>small:first-child{color:var(--ink);font:600 calc(var(--k)*clamp(1.6rem,4.4vh,2.8rem)) var(--disp);text-transform:uppercase;letter-spacing:.03em}
+#run .rc .wr{font-size:calc(var(--k)*clamp(1.1rem,2.6vh,1.8rem))}#run .rc .ask{font-size:calc(var(--k)*clamp(1rem,2.2vh,1.4rem))}#run .stage{justify-content:flex-start;overflow:hidden;padding-top:0;display:flex}#run .win b{font-size:calc(var(--k)*clamp(2.6rem,6vw,4.6rem))}#run .fact{font-size:calc(var(--k)*clamp(1.9rem,4.2vw,3.6rem))}#run .hn{font-size:calc(var(--k)*clamp(1.3rem,2.6vw,2rem))}#run .win small,#run .win span,#run .wr,#run .ask{font-size:calc(var(--k)*clamp(1rem,1.8vw,1.4rem))}#run .dots i{width:calc(var(--k)*22px);height:calc(var(--k)*22px)}
 .gn{display:flex;flex-wrap:wrap;gap:8px}
 .score{display:flex;gap:28px;justify-content:center;align-items:baseline;margin:10px 0}.score b{font:600 clamp(3rem,7vw,5rem)/1 var(--disp);color:var(--gd)}.score span{color:var(--mut);font-weight:700}
 .top5{margin:8px auto;display:inline-block;text-align:left;font-size:1.25rem;color:#cfd5dc}
@@ -601,7 +616,7 @@ window.IHRY_S3 = function (o) {
 </main>
 
 <main id="run" hidden>
-  <div class="qh"><span class="qn" id="fn"></span><span class="cnt" id="fs"></span></div>
+  <div class="qh fh"><span class="qn" id="fn"></span><span class="sp"></span><span class="sco" id="fs"></span></div>
   <p class="fact" id="ft"></p>
   <div class="stage" id="fst"></div>
   <p class="rule">Не видавай себе й інших! Свою здогадку тисни на телефоні — потай.</p>
@@ -1167,18 +1182,19 @@ function paintFakt() {
   const it = items[fi]; if (!it) return;
   const voters = candF.filter(t => t !== it.tok && (players.get(t) || {}).on).length;
   $('#fn').textContent = 'Факт ' + (fi + 1) + ' з ' + items.length;
-  $('#fs').textContent = '· вгадує ' + vPts() + ' : ' + gPts() + ' гурток' + (it.done ? '' : ' · здогадки решти: ' + it.g.size + (voters ? ' з ' + voters : ''));
+  $('#fs').innerHTML = `<span>Вгадує <b>${vPts()}</b></span><span>Гурток <b>${gPts()}</b></span>`;
   $('#ft').textContent = it.f;
-  const H = hintsOf(it);
-  let h = it.done ? '' : `<div class="dots" aria-label="Спроб лишилось: ${3 - it.tries}">${[0, 1, 2].map(k => `<i class="${k < 3 - it.tries ? '' : 'off'}"></i>`).join('')}</div>`;
-  h += H.map((x, k) => `<div class="hn"><small>Підказка ${k + 1}${k ? ' — легша' : ''}</small>${esc(x)}</div>`).join('');
-  if (it.wrong.length) h += `<div class="wr">Ні, це не ${it.wrong.map(t => esc(nameOf(t))).join(' і не ')}</div>`;
+  const hc = (k, x) => x != null ? `<div class="hc"><small>Підказка ${k}${k === 2 ? ' — легша' : ''}</small><b>${esc(x)}</b></div>` : `<div class="hc zak"><small>Підказка ${k}</small><b>відкриється після ${k === 1 ? 'першої' : 'другої'} помилки</b></div>`;
+  const op = it.done || it.tries >= 1, op2 = it.done || it.tries >= 2;
+  let r;
   if (it.done) {
     const right = [...it.g].filter(([, g]) => g.g === it.tok).map(([t]) => nameOf(t));
-    h += `<div class="win"><small>${it.ok ? 'Так! Це —' : 'Не вгадав! Це —'}</small><b>${esc(nameOf(it.tok))}!</b><span>${it.ok ? 'Тому, хто вгадує, +' + (3 - it.tries) : 'Бал гуртку'}${right.length ? ' · вгадали з гуртка: ' + right.map(esc).join(', ') : ''}</span><span>Розкажи коротко, як це було</span></div>`;
-  } else if (!it.tries) h += '<p class="ask">Чий це факт? Той, хто вгадує, — вголос, решта — потай на телефонах.</p>';
-  $('#fst').innerHTML = h;
-  $('#fgn').innerHTML = it.done ? '' : candF.filter(t => !it.wrong.includes(t)).map(t => `<button type="button" class="btn sm" data-g="${candF.indexOf(t)}">${esc(nameOf(t))}</button>`).join('');
+    r = `<div class="rc${it.ok ? ' ok' : ''}"><div class="win" style="align-items:center"><small>${it.ok ? 'Так! Це —' : 'Не вгадали! Це —'}</small><b>${esc(nameOf(it.tok))}!</b><span>${it.ok ? 'Тому, хто вгадує, +' + (3 - it.tries) : 'Бал гуртку'}${right.length ? ' · вгадали з гуртка: ' + right.map(esc).join(', ') : ''}</span><span>Розкажи коротко, як це було</span></div>${it.wrong.length ? `<div class="wr">Ні, це не ${it.wrong.map(t => esc(nameOf(t))).join(' і не ')}</div>` : ''}</div>`;
+  } else {
+    r = `<div class="rc"><small>Чий це факт?</small><div class="dots" aria-label="Спроб лишилось: ${3 - it.tries}">${[0, 1, 2].map(k => `<i class="${k < 3 - it.tries ? '' : 'off'}"></i>`).join('')}</div><small>${3 - it.tries === 1 ? 'остання спроба' : 'спроб лишилось: ' + (3 - it.tries)}</small>${it.wrong.length ? `<div class="wr">Ні, це не ${it.wrong.map(t => esc(nameOf(t))).join(' і не ')}</div>` : '<p class="ask" style="margin:0">Той, хто вгадує, — вголос, решта — потай на телефонах</p>'}<small>Здогадки решти: ${it.g.size}${voters ? ' з ' + voters : ''}</small></div>`;
+  }
+  $('#fst').innerHTML = `<div class="fg"><div class="col">${hc(1, op ? it.h1 : null)}${hc(2, op2 ? it.h2 : null)}</div><div class="col">${r}</div></div>`;
+  $('#fgn').innerHTML = it.done || vOn() ? '' : candF.filter(t => !it.wrong.includes(t)).map(t => `<button type="button" class="btn sm" data-g="${candF.indexOf(t)}">${esc(nameOf(t))}</button>`).join('');
   $('#fgive').hidden = it.done;
   $('#run .rule').hidden = it.done;
   $('#fprev').disabled = fi === 0;
