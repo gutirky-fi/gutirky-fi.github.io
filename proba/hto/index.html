@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#1b1d21">
-<title>Хто? — групи, пари й рулетка</title>
+<title>Жеребкування — хто наступний, групи й пари</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
-<!-- «Хто?» — інструмент виховника: рулетка «хто наступний», поділ на групи й пари на великому екрані.
+<!-- «Жеребкування» — інструмент виховника: рулетка «хто наступний», поділ на групи й пари на великому екрані.
      Джерело: _robota/proby/hto/ (zibraty.py підставляє логотип і лілею). Імена — лише в цьому браузері (localStorage), нікуди не надсилаються. -->
 <style>
 :root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;
@@ -38,7 +38,7 @@ main{position:absolute;inset:0;padding:96px var(--pad) 28px;overflow:auto}
 .lg small{display:block;font:600 18px/1 var(--disp);letter-spacing:.3em;text-transform:uppercase;color:var(--gd);margin:0 0 12px 2px}
 .lg .w{display:flex;align-items:center;gap:17px}
 .lg svg{width:56px;height:56px;flex:none}
-.lg b{font:600 72px/.8 var(--disp);text-transform:uppercase;padding-top:3px}
+.lg b{font:600 60px/.8 var(--disp);text-transform:uppercase;padding-top:3px}
 .hand{margin:16px 0 22px;font:500 32px/1.1 Caveat,'Segoe Print',cursive;color:var(--hand)}
 .lbl{display:flex;justify-content:space-between;gap:10px;margin:18px 0 8px;font-weight:700;font-size:14px;color:var(--mut)}
 textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-radius:14px;border:1px solid var(--ln);background:#14171a;font-size:18px;line-height:1.5}
@@ -83,7 +83,7 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
 .g ul{list-style:none;margin:0;padding:0}
 .g li{font:600 var(--fs,clamp(1.4rem,2.6vw,2.4rem))/1.3 var(--txt)}
 @keyframes in{to{opacity:1;transform:none}}
-@media (max-width:900px){body{overflow:auto}.ed{grid-template-columns:1fr;gap:24px}.lg b{font-size:52px}.lg svg{width:40px;height:40px}.groups{grid-template-columns:repeat(2,minmax(0,1fr))}textarea{min-height:200px}}
+@media (max-width:900px){body{overflow:auto}.ed{grid-template-columns:1fr;gap:24px}.lg b{font-size:38px}.lg svg{width:40px;height:40px}.groups{grid-template-columns:repeat(2,minmax(0,1fr))}textarea{min-height:200px}}
 @media (prefers-reduced-motion:reduce){.g{animation:none;opacity:1;transform:none}}
 </style>
 <script>
@@ -98,18 +98,57 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
   const over = b => b.scrollHeight - b.clientHeight > 1;
   function zoomOf(b) { return +(b.dataset.fz || 1); }
   function setZoom(b, z) { b.dataset.fz = z; [...b.children].forEach(c => { c.style.zoom = z === 1 ? '' : String(z); }); }
+  /* великий екран (проєктор 1920×1080): перший екран (лобі) більшає, як на ноутбуці 1366×768, — без порожніх смуг (15.11.2026).
+     Лише лобі; екрани самої гри — як були. Поля збоку звужуємо, щоб збільшене лобі мало ширину (1240 px × масштаб). */
+  const lobi = b => b.id === 'lobby' || !!b.closest('#skob.pick');
+  const bigZ = () => { const z = Math.floor(Math.min(1.6, innerWidth / 1366, innerHeight / 768) * 100) / 100; return z >= 1.08 ? z : 1; };
+  function pad(b, z) {
+    const v = z > 1 ? Math.max(24, Math.round((innerWidth - 1240 * z) / 2)) + 'px' : '';
+    const top = b.closest('#skob') ? b.closest('#skob').querySelector('.sk-top') : document.querySelector('body > .top');   // шапка — по тих самих краях
+    if (b.style.paddingLeft !== v) { b.style.paddingLeft = v; b.style.paddingRight = v; }
+    if (top) {   // шапка теж більшає (кнопки й написи на проєкторі того ж масштабу), поля — у її власних одиницях
+      const tv = z > 1 ? Math.round(parseFloat(v) / z) + 'px' : '', tz = z > 1 ? String(z) : '';
+      if (top.style.zoom !== tz) top.style.zoom = tz;
+      if (top.style.paddingLeft !== tv) { top.style.paddingLeft = tv; top.style.paddingRight = tv; }
+    }
+  }
   function fit() {
     boxes().forEach(b => {
+      const L = lobi(b), top = L ? bigZ() : 1;
       let z = zoomOf(b);
-      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); } }
-      else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
-        const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
+      if (z > top) { z = top; setZoom(b, z); }
+      if (L) pad(b, z); else if (b.style.paddingLeft) pad(b, 1);
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (L) pad(b, z); } }
+      else while (z < top) {   // місця побільшало (вікно збільшили, список скоротився, великий екран) — більшаємо, доки вміщається
+        const t = Math.min(top, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (L) pad(b, t);
+        if (over(b)) { setZoom(b, z); if (L) pad(b, z); break; } z = t;
       }
     });
   }
+  window.IHRY_FITNOW = fit;
+  /* Без блимання (15.11.2026): поки сторінка не підігнана (шрифти, розмір, картка «На звʼязку»), її не показуємо —
+     перший кадр уже готовий. Запасний вихід: через 1,5 с покажеться сама (CSS), навіть якщо скрипт помилився. */
+  const root = document.documentElement;
+  const st = document.createElement('style');
+  st.textContent = 'html.ihry-wait body{opacity:0!important;animation:ihry-show 0s 1.5s forwards}@keyframes ihry-show{to{opacity:1}}';
+  (document.head || root).append(st); root.classList.add('ihry-wait');
+  function settle() { for (let i = 0; i < 3; i++) { if (window.IHRY_LOBINOW) window.IHRY_LOBINOW(); fit(); } }
+  let shown = false;
+  function reveal() { if (shown) return; shown = true; settle(); requestAnimationFrame(() => root.classList.remove('ihry-wait')); }
+  function ready() {
+    settle();
+    const f = document.fonts && document.fonts.ready; if (f) Promise.race([f, new Promise(r => setTimeout(r, 1000))]).then(reveal); else reveal();
+    setTimeout(reveal, 1200);
+  }
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', ready); else ready();
   addEventListener('resize', fit);
-  addEventListener('load', fit);
+  addEventListener('load', () => { settle(); reveal(); });
   setInterval(fit, 700);   // список гравців росте, екрани змінюються
+  /* зміна екрана всередині гри (лобі → гра, наступне питання): підганяємо до наступного кадру, а не за пів секунди */
+  let q = 0;
+  const again = () => { if (q) return; q = requestAnimationFrame(() => { q = 0; if (window.IHRY_LOBINOW) window.IHRY_LOBINOW(); fit(); }); };
+  const watch = () => { if (document.body) new MutationObserver(recs => { if (recs.some(r => !(r.target.closest && r.target.closest('.lpl')))) again(); }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'class'] }); };
+  if (document.body) watch(); else addEventListener('DOMContentLoaded', watch);
 })();
 
 </script>
@@ -125,7 +164,7 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
 <main id="v-ed">
   <div class="ed">
     <div>
-      <div class="lg" role="heading" aria-level="1" aria-label="Хто? Жеребкування"><small>Жеребкування</small><div class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#2fd2c0" stroke-width="3"/><path d="M20 3a17 17 0 0 1 17 17H20z" fill="#ffc247"/><circle cx="20" cy="20" r="4" fill="#f2f4f6"/><path d="M20 20l-9 9" stroke="#f2f4f6" stroke-width="3" stroke-linecap="round"/></svg><b>Хто?</b></div></div>
+      <div class="lg" role="heading" aria-level="1" aria-label="Жеребкування — для виховника"><small>Для виховника</small><div class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="none" stroke="#2fd2c0" stroke-width="3"/><path d="M20 3a17 17 0 0 1 17 17H20z" fill="#ffc247"/><circle cx="20" cy="20" r="4" fill="#f2f4f6"/><path d="M20 20l-9 9" stroke="#f2f4f6" stroke-width="3" stroke-linecap="round"/></svg><b>Жеребкування</b></div></div>
       <p class="hand">групи, пари й рулетка — чесно й швидко</p>
       <div class="lbl"><span>Імена — кожне з нового рядка</span><span id="cnt"></span></div>
       <textarea id="names" spellcheck="false" placeholder="Остап&#10;Соломія&#10;Дмитро&#10;…"></textarea>
