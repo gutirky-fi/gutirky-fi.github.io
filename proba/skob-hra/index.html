@@ -268,6 +268,33 @@ details[open]>summary::before{transform:rotate(90deg)}
 
 </script>
 <script>
+/* Без прокрутки на екрані ведучого (15.11.2026): якщо екран гри (лобі з QR тощо) вищий за вікно —
+   трохи зменшуємо його вміст (CSS zoom, не менше 0.72), доки не вміститься; більше місця — знову більшає.
+   Спільне для всіх ігор: вставляється в екран ведучого (ihry-styl3.js, СКОБ, «Хто?»). */
+(function () {
+  if (window.IHRY_FIT) return; window.IHRY_FIT = true;
+  if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
+  const MIN = 0.72, STEP = 0.04;
+  const boxes = () => [...document.querySelectorAll('main, .sk-stage')].filter(e => e.offsetParent !== null && e.clientHeight > 0 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
+  const over = b => b.scrollHeight - b.clientHeight > 1;
+  function zoomOf(b) { return +(b.dataset.fz || 1); }
+  function setZoom(b, z) { b.dataset.fz = z; [...b.children].forEach(c => { c.style.zoom = z === 1 ? '' : String(z); }); }
+  function fit() {
+    boxes().forEach(b => {
+      let z = zoomOf(b);
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); } }
+      else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
+        const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
+      }
+    });
+  }
+  addEventListener('resize', fit);
+  addEventListener('load', fit);
+  setInterval(fit, 700);   // список гравців росте, екрани змінюються
+})();
+
+</script>
+<script>
 /* «Як провести гру» (4.11.2026): аркуш A4 для ведучого — що підготувати, як почати, під час гри, якщо щось не так.
    window.JAK_PROVESTY('skob'|'bingo'|'opyt'|'zmag') — відкриває аркуш і друк. Шапка — як у всіх друкованих матеріалах ігор. */
 (function () {

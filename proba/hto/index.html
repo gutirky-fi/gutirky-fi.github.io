@@ -86,6 +86,33 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
 @media (max-width:900px){body{overflow:auto}.ed{grid-template-columns:1fr;gap:24px}.lg b{font-size:52px}.lg svg{width:40px;height:40px}.groups{grid-template-columns:repeat(2,minmax(0,1fr))}textarea{min-height:200px}}
 @media (prefers-reduced-motion:reduce){.g{animation:none;opacity:1;transform:none}}
 </style>
+<script>
+/* Без прокрутки на екрані ведучого (15.11.2026): якщо екран гри (лобі з QR тощо) вищий за вікно —
+   трохи зменшуємо його вміст (CSS zoom, не менше 0.72), доки не вміститься; більше місця — знову більшає.
+   Спільне для всіх ігор: вставляється в екран ведучого (ihry-styl3.js, СКОБ, «Хто?»). */
+(function () {
+  if (window.IHRY_FIT) return; window.IHRY_FIT = true;
+  if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
+  const MIN = 0.72, STEP = 0.04;
+  const boxes = () => [...document.querySelectorAll('main, .sk-stage')].filter(e => e.offsetParent !== null && e.clientHeight > 0 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
+  const over = b => b.scrollHeight - b.clientHeight > 1;
+  function zoomOf(b) { return +(b.dataset.fz || 1); }
+  function setZoom(b, z) { b.dataset.fz = z; [...b.children].forEach(c => { c.style.zoom = z === 1 ? '' : String(z); }); }
+  function fit() {
+    boxes().forEach(b => {
+      let z = zoomOf(b);
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); } }
+      else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
+        const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
+      }
+    });
+  }
+  addEventListener('resize', fit);
+  addEventListener('load', fit);
+  setInterval(fit, 700);   // список гравців росте, екрани змінюються
+})();
+
+</script>
 </head>
 <body>
 <div class="top">
