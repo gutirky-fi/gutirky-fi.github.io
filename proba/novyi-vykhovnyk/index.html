@@ -538,9 +538,30 @@ window.IHRY_S3 = function (o) {
       }
     });
   }
+  window.IHRY_FITNOW = fit;
+  /* Без блимання (15.11.2026): поки сторінка не підігнана (шрифти, розмір, картка «На звʼязку»), її не показуємо —
+     перший кадр уже готовий. Запасний вихід: через 1,5 с покажеться сама (CSS), навіть якщо скрипт помилився. */
+  const root = document.documentElement;
+  const st = document.createElement('style');
+  st.textContent = 'html.ihry-wait body{opacity:0!important;animation:ihry-show 0s 1.5s forwards}@keyframes ihry-show{to{opacity:1}}';
+  (document.head || root).append(st); root.classList.add('ihry-wait');
+  function settle() { for (let i = 0; i < 3; i++) { if (window.IHRY_LOBINOW) window.IHRY_LOBINOW(); fit(); } }
+  let shown = false;
+  function reveal() { if (shown) return; shown = true; settle(); requestAnimationFrame(() => root.classList.remove('ihry-wait')); }
+  function ready() {
+    settle();
+    const f = document.fonts && document.fonts.ready; if (f) Promise.race([f, new Promise(r => setTimeout(r, 1000))]).then(reveal); else reveal();
+    setTimeout(reveal, 1200);
+  }
+  if (document.readyState === 'loading') addEventListener('DOMContentLoaded', ready); else ready();
   addEventListener('resize', fit);
-  addEventListener('load', fit);
+  addEventListener('load', () => { settle(); reveal(); });
   setInterval(fit, 700);   // список гравців росте, екрани змінюються
+  /* зміна екрана всередині гри (лобі → гра, наступне питання): підганяємо до наступного кадру, а не за пів секунди */
+  let q = 0;
+  const again = () => { if (q) return; q = requestAnimationFrame(() => { q = 0; if (window.IHRY_LOBINOW) window.IHRY_LOBINOW(); fit(); }); };
+  const watch = () => { if (document.body) new MutationObserver(recs => { if (recs.some(r => !(r.target.closest && r.target.closest('.lpl')))) again(); }).observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['hidden', 'class'] }); };
+  if (document.body) watch(); else addEventListener('DOMContentLoaded', watch);
 })();
 
 /* Стандарт першого екрана ігор (15.11.2026) — однаково в усіх іграх родини (зразок — Змаг):
@@ -639,6 +660,7 @@ body.s3 #lobby .igr #inl{display:none}
     if (mo) mo.disconnect(); clamp(c);
     mo = new MutationObserver(() => { mo.disconnect(); clamp(c); mo.observe(c, { childList: true }); }); mo.observe(c, { childList: true });
   }
+  window.IHRY_LOBINOW = tick;
   addEventListener('load', tick); setInterval(tick, 700);
 })();
 
@@ -1472,6 +1494,7 @@ document.addEventListener('click', e => {
   else if (b.id === 'kodyx') $('#kodyov').hidden = true;
   else if (b.id === 'test') { const r = window.REPETYTSIIA && window.REPETYTSIIA(window.GUTIRKA_BOT_URL, 4); b.textContent = r ? 'Прибрати тестових гравців' : 'Спробувати з тестовими гравцями'; }
 });
+try { paintKrok(); } catch (e) { /* ще не все готово — вистачить таймера */ }   // 15.11: одразу один крок, а не обидва до першого таймера (блимання)
 setInterval(() => { if (phase === 'lobby') paintKrok(); }, 700);
 paintLobby(); paintTop(); startNet();
 window.ZNAY = { state: () => ({ phase, gra, code, fi, n: items.length, it: items[fi] ? { who: nameOf(items[fi].tok), tries: items[fi].tries, done: items[fi].done, ok: items[fi].ok, g: items[fi].g.size } : null, v: vPts(), gr: gPts(), top: top(), qi, shownMy, players: named().map(([, P]) => [P.name, P.fakty.length]), votes: votes[qi] ? votes[qi].size : 0, leaders: phase === 'my' ? leaders(qi) : null }) };
