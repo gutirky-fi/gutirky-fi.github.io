@@ -649,16 +649,23 @@ window.IHRY_S3 = function (o) {
   function pad(b, z) {
     const v = z > 1 ? Math.max(24, Math.round((innerWidth - 1240 * z) / 2)) + 'px' : '';
     const top = b.closest('#skob') ? b.closest('#skob').querySelector('.sk-top') : document.querySelector('body > .top');   // шапка — по тих самих краях
-    [b, top].forEach(e => { if (e && e.style.paddingLeft !== v) { e.style.paddingLeft = v; e.style.paddingRight = v; } });
+    if (b.style.paddingLeft !== v) { b.style.paddingLeft = v; b.style.paddingRight = v; }
+    if (top) {   // шапка теж більшає (кнопки й написи на проєкторі того ж масштабу), поля — у її власних одиницях
+      const tv = z > 1 ? Math.round(parseFloat(v) / z) + 'px' : '', tz = z > 1 ? String(z) : '';
+      if (top.style.zoom !== tz) top.style.zoom = tz;
+      if (top.style.paddingLeft !== tv) { top.style.paddingLeft = tv; top.style.paddingRight = tv; }
+    }
   }
   function fit() {
     boxes().forEach(b => {
+      const L = lobi(b), top = L ? bigZ() : 1;
       let z = zoomOf(b);
-      if (lobi(b)) { const t = bigZ(); if (t > 1 && z !== t && !(z < t && b.dataset.fzt === String(t))) { pad(b, t); setZoom(b, t); z = t; b.dataset.fzt = t; } if (t === 1 && z > 1) { setZoom(b, 1); z = 1; } pad(b, z); }
-      else if (z > 1) { setZoom(b, 1); z = 1; pad(b, 1); }
-      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (lobi(b)) pad(b, z); } }
-      else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
-        const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
+      if (z > top) { z = top; setZoom(b, z); }
+      if (L) pad(b, z); else if (b.style.paddingLeft) pad(b, 1);
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (L) pad(b, z); } }
+      else while (z < top) {   // місця побільшало (вікно збільшили, список скоротився, великий екран) — більшаємо, доки вміщається
+        const t = Math.min(top, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (L) pad(b, t);
+        if (over(b)) { setZoom(b, z); if (L) pad(b, z); break; } z = t;
       }
     });
   }
@@ -688,7 +695,8 @@ body.s3 .lnote{margin:12px 0 0;color:var(--mut,#a0a8b2);font-size:15px}
 .lpl .lpl-c{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:6px;margin:8px 0 0!important;padding:0!important;max-height:70px;overflow:hidden;min-height:0!important;border:0!important;background:none!important}
 .lpl .lpl-c:empty{display:none!important}
 .lpl .lpl-c>*{display:inline-flex!important;align-items:center;gap:4px;height:32px;margin:0!important;padding:0 10px!important;border-radius:99px!important;border:0!important;background:#2a2f35!important;color:var(--ink,#f2f4f6)!important;font:600 14px 'Source Sans 3',system-ui,sans-serif!important;white-space:nowrap;max-width:100%}
-.lpl .lpl-c>.off{opacity:.5}
+.lpl .lpl-c>.off,.lpl .lpl-c>.no{opacity:.5}
+body.s3 #lobby .igr #inl{display:none}
 .lpl .lpl-c>.empty{display:none!important}
 .lpl .lpl-c>* small{font-size:12px;color:var(--mut,#a0a8b2)}
 .lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:12px}
@@ -714,6 +722,7 @@ body.s3 .lnote{margin:12px 0 0;color:var(--mut,#a0a8b2);font-size:15px}
     if (skob) return { card: skob, list: skob.querySelector('.chips:not(.pchips)'), n: () => skob.querySelectorAll('.chips:not(.pchips) .chip:not(.off)').length };
     const card = $('#lobby .l2j, #lobby .s2j'); if (!card || card.offsetParent === null) return null;
     if ($('#pl') && card.contains($('#pl'))) return { card, list: $('#pl'), n: () => num($('#pln')) };   // Бінго
+    if (window.ZNAY && $('#inn')) return { card, list: $('#inn'), n: () => num($('#pn')) };   // Вгадай, хто? — імена з середини переходять у картку
     if (window.SVOYA) return { card, names: () => window.SVOYA.state().players.filter(P => P.on).map(P => P.name), n: () => num($('#pn')) };   // Змаг
     if (/opytuvannia/.test(location.pathname)) return { card, n: () => num($('#pn')), anon: true };   // Опитування — анонімно, лише число
     return { card, n: () => num($('#pn') || $('#pln')) };

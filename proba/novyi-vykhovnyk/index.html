@@ -518,22 +518,128 @@ window.IHRY_S3 = function (o) {
   function pad(b, z) {
     const v = z > 1 ? Math.max(24, Math.round((innerWidth - 1240 * z) / 2)) + 'px' : '';
     const top = b.closest('#skob') ? b.closest('#skob').querySelector('.sk-top') : document.querySelector('body > .top');   // шапка — по тих самих краях
-    [b, top].forEach(e => { if (e && e.style.paddingLeft !== v) { e.style.paddingLeft = v; e.style.paddingRight = v; } });
+    if (b.style.paddingLeft !== v) { b.style.paddingLeft = v; b.style.paddingRight = v; }
+    if (top) {   // шапка теж більшає (кнопки й написи на проєкторі того ж масштабу), поля — у її власних одиницях
+      const tv = z > 1 ? Math.round(parseFloat(v) / z) + 'px' : '', tz = z > 1 ? String(z) : '';
+      if (top.style.zoom !== tz) top.style.zoom = tz;
+      if (top.style.paddingLeft !== tv) { top.style.paddingLeft = tv; top.style.paddingRight = tv; }
+    }
   }
   function fit() {
     boxes().forEach(b => {
+      const L = lobi(b), top = L ? bigZ() : 1;
       let z = zoomOf(b);
-      if (lobi(b)) { const t = bigZ(); if (t > 1 && z !== t && !(z < t && b.dataset.fzt === String(t))) { pad(b, t); setZoom(b, t); z = t; b.dataset.fzt = t; } if (t === 1 && z > 1) { setZoom(b, 1); z = 1; } pad(b, z); }
-      else if (z > 1) { setZoom(b, 1); z = 1; pad(b, 1); }
-      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (lobi(b)) pad(b, z); } }
-      else if (z < 1) {   // місця побільшало (вікно збільшили, список скоротився) — пробуємо більше
-        const t = Math.min(1, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (over(b)) setZoom(b, z);
+      if (z > top) { z = top; setZoom(b, z); }
+      if (L) pad(b, z); else if (b.style.paddingLeft) pad(b, 1);
+      if (over(b)) { while (over(b) && z > MIN) { z = Math.max(MIN, Math.round((z - STEP) * 100) / 100); setZoom(b, z); if (L) pad(b, z); } }
+      else while (z < top) {   // місця побільшало (вікно збільшили, список скоротився, великий екран) — більшаємо, доки вміщається
+        const t = Math.min(top, Math.round((z + STEP) * 100) / 100); setZoom(b, t); if (L) pad(b, t);
+        if (over(b)) { setZoom(b, z); if (L) pad(b, z); break; } z = t;
       }
     });
   }
   addEventListener('resize', fit);
   addEventListener('load', fit);
   setInterval(fit, 700);   // список гравців росте, екрани змінюються
+})();
+
+/* Стандарт першого екрана ігор (15.11.2026) — однаково в усіх іграх родини (зразок — Змаг):
+   картка QR ліворуч · логотип гри · своє лише посередині (налаштування — рівними картками на всю ширину) · «Почати гру».
+   «Гравці» — у картці QR: «На звʼязку: N» + плашки імен максимум у 2 рядки, далі «+N» (картка не росте).
+   Вставляється в екран ведучого разом з ihry-fit.js (zibraty.py кожної гри). */
+(function () {
+  if (window.IHRY_LOBI) return; window.IHRY_LOBI = true;
+  if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції»
+  const CSS = `
+/* середина: варіанти рівними картками на всю ширину (Бінго, Опитування; у Змагу — як було) */
+body.s3.s2 #lobby .modes,body.s3.s2 #lobby .polls{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+body.s3.s2 #lobby .modes button,body.s3.s2 #lobby .polls button{width:auto;min-width:0;min-height:64px;margin:0}
+body.s3.s2 #lobby .pats button{min-height:52px;justify-content:center;text-align:center}
+body.s3 .lnote{margin:12px 0 0;color:var(--mut,#a0a8b2);font-size:15px}
+/* картка QR: однаковий блок «На звʼязку» */
+.lpl{margin-top:16px;padding-top:14px;border-top:1px solid var(--ln,#383d44);text-align:center}
+.lpl-h{font:700 14px 'Source Sans 3',system-ui,sans-serif;color:var(--mut,#a0a8b2)}
+.lpl-h b{font:600 18px Oswald,sans-serif;color:var(--ink,#f2f4f6);margin-left:4px}
+.lpl-h small{display:block;margin-top:2px;font-weight:500;font-size:13px}
+.lpl .lpl-c{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:6px;margin:8px 0 0!important;padding:0!important;max-height:70px;overflow:hidden;min-height:0!important;border:0!important;background:none!important}
+.lpl .lpl-c:empty{display:none!important}
+.lpl .lpl-c>*{display:inline-flex!important;align-items:center;gap:4px;height:32px;margin:0!important;padding:0 10px!important;border-radius:99px!important;border:0!important;background:#2a2f35!important;color:var(--ink,#f2f4f6)!important;font:600 14px 'Source Sans 3',system-ui,sans-serif!important;white-space:nowrap;max-width:100%}
+.lpl .lpl-c>.off,.lpl .lpl-c>.no{opacity:.5}
+body.s3 #lobby .igr #inl{display:none}
+.lpl .lpl-c>.empty{display:none!important}
+.lpl .lpl-c>* small{font-size:12px;color:var(--mut,#a0a8b2)}
+.lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:12px}
+.lpl .lpl-c>.more{background:none!important;border:1px dashed #4a5058!important;color:var(--mut,#a0a8b2)!important}
+.lpl .lpl-c>.lpl-hid{display:none!important}
+/* СКОБ: ті самі розміри, що в Змагу */
+#skob.s3 .sk3-lb{display:block;margin:18px 0 8px;font:700 14px 'Source Sans 3',sans-serif;color:#a0a8b2;letter-spacing:0;text-transform:none}
+#skob.s3 .sk3-pact .sk-btn{min-height:46px;padding:0 18px;font:700 16px 'Source Sans 3',sans-serif;border-radius:12px}
+#skob.s3 .sk3-opts .ch{min-height:44px;font-size:16px}
+#skob.s3 .sk3-note{display:none}
+#skob-lobby.inl .qr{width:260px}
+#skob-lobby.inl .st{display:none}
+#skob-lobby.inl .box{padding:22px}
+#skob-lobby.inl .box>h3:not(.lpl-keep){display:none}
+`;
+  const st = document.createElement('style'); st.textContent = CSS; (document.head || document.documentElement).append(st);
+
+  const $ = s => document.querySelector(s);
+  const num = el => el ? (parseInt((el.textContent.match(/\d+/) || ['0'])[0], 10) || 0) : 0;
+  /* звідки брати гравців у кожній грі */
+  function src() {
+    const skob = $('#skob-lobby.inl .box');
+    if (skob) return { card: skob, list: skob.querySelector('.chips:not(.pchips)'), n: () => skob.querySelectorAll('.chips:not(.pchips) .chip:not(.off)').length };
+    const card = $('#lobby .l2j, #lobby .s2j'); if (!card || card.offsetParent === null) return null;
+    if ($('#pl') && card.contains($('#pl'))) return { card, list: $('#pl'), n: () => num($('#pln')) };   // Бінго
+    if (window.ZNAY && $('#inn')) return { card, list: $('#inn'), n: () => num($('#pn')) };   // Вгадай, хто? — імена з середини переходять у картку
+    if (window.SVOYA) return { card, names: () => window.SVOYA.state().players.filter(P => P.on).map(P => P.name), n: () => num($('#pn')) };   // Змаг
+    if (/opytuvannia/.test(location.pathname)) return { card, n: () => num($('#pn')), anon: true };   // Опитування — анонімно, лише число
+    return { card, n: () => num($('#pn') || $('#pln')) };
+  }
+  let box = null, home = null;
+  /* СКОБ посеред гри відкриває те саме лобі вікном («Запросити гравців») — там список повертаємо на старе місце */
+  function restore() {
+    if (!box) return; const L = document.getElementById('skob-lobby');
+    if (!L || L.classList.contains('inl') || !L.contains(box)) return;
+    if (home) { const [el, par, nx] = home; el.classList.remove('lpl-c'); [...el.querySelectorAll('.lpl-hid,.more')].forEach(e => e.classList.contains('more') ? e.remove() : e.classList.remove('lpl-hid')); par.insertBefore(el, nx && nx.parentNode === par ? nx : null); }
+    if (mo) mo.disconnect(); box.remove(); box = null; home = null;
+  }
+  function ensure(s) {
+    if (box && s.card.contains(box)) return;
+    box = document.createElement('div'); box.className = 'lpl';
+    box.innerHTML = '<div class="lpl-h">На звʼязку:<b>0</b>' + (s.anon ? '<small>Відповіді анонімні — імен не видно.</small>' : '') + '</div>';
+    if (s.list) { home = [s.list, s.list.parentNode, s.list.nextSibling]; s.list.classList.add('lpl-c'); box.append(s.list); }   // свій список гри (з кнопками ✕) — переносимо сюди
+    else if (!s.anon) { const c = document.createElement('div'); c.className = 'lpl-c'; box.append(c); }
+    s.card.append(box);
+    /* Бінго: «Гравці» і «можна паперовими» — підпис стає зайвим у картці; підказка про папір — посередині */
+    [...s.card.querySelectorAll('.s2l')].forEach(e => { if (/^Гравці$/.test(e.textContent.trim())) e.remove(); });
+    const pats = $('#pats'); if (pats && !$('.lnote')) pats.insertAdjacentHTML('afterend', '<p class="lnote">Можна грати й без телефонів — паперовими картками.</p>');
+  }
+  /* не більше двох рядків: решта ховається, наприкінці — «+N» */
+  function clamp(c) {
+    [...c.querySelectorAll(':scope>.more')].forEach(e => e.remove());
+    const items = [...c.children].filter(e => !e.classList.contains('empty'));
+    items.forEach(e => e.classList.remove('lpl-hid'));
+    if (items.length < 2) return;
+    const tops = [...new Set(items.map(e => e.offsetTop))].sort((a, b) => a - b);
+    if (tops.length <= 2) return;
+    const lim = tops[1]; let hid = items.filter(e => e.offsetTop > lim); hid.forEach(e => e.classList.add('lpl-hid'));
+    const m = document.createElement('span'); m.className = 'more'; c.append(m);
+    const vis = items.filter(e => !e.classList.contains('lpl-hid'));
+    for (;;) { m.textContent = '+' + (items.length - vis.length); if (m.offsetTop <= lim || !vis.length) break; vis.pop().classList.add('lpl-hid'); }
+  }
+  let mo = null;
+  function tick() {
+    restore();
+    const s = src(); if (!s) return;
+    ensure(s);
+    box.querySelector('.lpl-h b').textContent = s.n();
+    const c = box.querySelector('.lpl-c'); if (!c) return;
+    if (s.names) { const h = s.names().map(n => '<span>' + String(n).replace(/[&<>"]/g, x => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[x])) + '</span>').join(''); if (c.dataset.h !== h) { c.dataset.h = h; c.innerHTML = h; } }
+    if (mo) mo.disconnect(); clamp(c);
+    mo = new MutationObserver(() => { mo.disconnect(); clamp(c); mo.observe(c, { childList: true }); }); mo.observe(c, { childList: true });
+  }
+  addEventListener('load', tick); setInterval(tick, 700);
 })();
 
 </script>
