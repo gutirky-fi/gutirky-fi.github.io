@@ -1018,7 +1018,7 @@ window.Tochky = (function () {
       }
       if (t.dija === 'proby') return {ok: true, ryadky: [], indeks: {}};
       if (t.dija === 'probyZapys') return {ok: true, zapysano: t.tochky.map(x => ({im: t.imena[0], t: x, ryadok: ++demoRow})), vzhe: []};
-      if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(t.dani['Де здобуто'] === 'до нас' && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
+      if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(['до нас', 'за попереднього виховника'].includes(t.dani['Де здобуто']) && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
       if (t.dija === 'vypadok') { DVY.unshift({ryadok: ++demoRow, 'Дата': den(), "Ім'я": t.imya, 'Випадок': 'особливий випадок', 'Що сталося': t.shcho, 'Що вже має': t.maie, 'Чого не знаємо': t.ne, 'Що пропоную': t.propoz, 'Статус': 'відкрито', 'Хто записав': 'виховник'}); return {ok: true, ryadok: demoRow}; }
       if (t.dija === 'vypadky') return {ok: true, vypadky: JSON.parse(JSON.stringify(DVY))};
       if (t.dija === 'vyrishyty') { const x = DVY.find(y => y.ryadok === t.ryadok); if (t.status === 'вирішено' && !t.yak) return {ok: false, pomylka: 'Напишіть коротко, як вирішили.'}; x['Статус'] = t.status; x['Як вирішили'] = t.yak || x['Як вирішили']; x['Вирішено'] = t.status === 'вирішено' ? den() : ''; return {ok: true}; }
@@ -1639,14 +1639,14 @@ window.Tochky = (function () {
     hurtok: {t: 'Цілий гурток', s: 'беру гурток, який хтось уже вів, — або передаю свій', khto: '', pol: []},
     osobl: {t: 'Особливий випадок', s: 'не підходить ні під що — розберемось', khto: '', pol: []},
     maie: {t: 'Дописати, що вже має', s: '', khto: 'exist', pol: [], maie: 'у нас', skryto: true,
-      prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; здобуте в іншому гуртку — «до нас».'],
+      prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас: є посвідка чи бланк — «у нас» зі справжньою датою; документів немає — «за попереднього виховника»; здобуте в іншому гуртку — «до нас».'],
       dali: ['Копії — «Вмілості» й «Проби» (кнопка «Копія»).']}
   };
   const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'pereryva', 'povernuvsia', 'yde', 'poza', 'osobl'];   // події по порядку: прийшов → перерва → повернувся → пішов → решта
   $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
 
   let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
-  const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
+  const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)'], ['за попереднього виховника', 'за попереднього виховника (без документів)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
   async function uchZavantazhyty() {
     try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = v.uchasnyky || []; } catch (x) {}
   }
@@ -1791,9 +1791,9 @@ window.Tochky = (function () {
     const out = [];
     for (const r of $('pp-maie') ? $('pp-maie').querySelectorAll('.mr') : []) {
       const typ = r.dataset.t, id = 'r' + r.dataset.r, dez = pole(r, 'dez'), de = pole(r, 'de'), per = pole(r, 'per'), nezn = pole(r, 'nezn'), d = pole(r, 'data');
-      const prym = [dez === 'до нас' ? 'до нас' + (de ? ': ' + de : '') : dez === 'поза гуртком' ? 'поза гуртком' + (de ? ': ' + de : '') : de, per ? 'потребує перевірки' : ''].filter(Boolean).join('; ');
+      const prym = [dez === 'до нас' ? 'до нас' + (de ? ': ' + de : '') : dez === 'за попереднього виховника' ? 'за попереднього виховника, без документів' + (de ? ': ' + de : '') : dez === 'поза гуртком' ? 'поза гуртком' + (de ? ': ' + de : '') : de, per ? 'потребує перевірки' : ''].filter(Boolean).join('; ');
       const dzK = dez === 'у нас' ? '' : dez;
-      const bezDaty = msg => { if (!d && !nezn) return msg; if (!d && nezn && dez !== 'до нас') return 'Без дати можна лише для «до нас». ' + msg; if (!d && nezn && !de) return 'Дата невідома — напишіть у «Звідки / де», звідки це.'; return ''; };
+      const bezDaty = msg => { if (!d && !nezn) return msg; if (!d && nezn && dez !== 'до нас' && dez !== 'за попереднього виховника') return 'Без дати можна лише для «до нас» і «за попереднього виховника». ' + msg; if (!d && nezn && !de && dez === 'до нас') return 'Дата невідома — напишіть у «Звідки / де», звідки це.'; return ''; };
       if (typ === 'proba') {
         const e = bezDaty('Вкажіть дату посвідки (або «дата невідома»).'); if (e) return [e, r];
         out.push({id, t: pole(r, 'proba') + ' — посвідка' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Проби', dani: {"Ім'я": im, 'Проба': pole(r, 'proba'), 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': d, 'Хто підтвердив': pole(r, 'khto'), 'Примітка': prym, 'Де здобуто': dzK}}});
@@ -1885,7 +1885,7 @@ window.Tochky = (function () {
           <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
           <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
         <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
-          <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; в іншому гуртку — «до нас».</p>
+          <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас: є посвідка чи бланк — «у нас» зі справжньою датою; документів немає — «за попереднього виховника»; в іншому гуртку — «до нас».</p>
           <button class="btn" type="button" id="hg-maie" style="margin-top:10px">${SV(IKO.maie)}Дописати, що вже має</button></div>
         <div class="step"><h3><em>3</em>Минуле гуртка<small>за бажанням — можна пропустити</small></h3>
           <ul class="spl"><li>Стара книга чи папери — сфотографуйте або відскануйте в папку Диска, а в Таблиці, аркуш <b>«Архів»</b>, — рядок: рік, що це, посилання.</li><li>Минулі роки — лише якщо є дані: аркуші <b>«Роки»</b> й <b>«Історія учасників»</b> (вручну). Немає — нічого страшного: книга почнеться з вашого року.</li><li>Прізвища — у Таблиці, аркуш «Учасники».</li></ul></div>
