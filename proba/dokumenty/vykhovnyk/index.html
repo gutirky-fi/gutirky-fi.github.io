@@ -1646,6 +1646,7 @@ window.Tochky = (function () {
   $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
 
   let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
+  const DEZ_N = {'у нас': 'Здобуто в нашому гуртку; є посвідка чи бланк зі справжньою датою.', 'до нас': 'Здобуто в іншому гуртку чи краю, ще до того як людина прийшла до нас.', 'поза гуртком': 'Табір, вишкіл чи інше поза гуртком.', 'за попереднього виховника': 'Теж у нашому гуртку, але до вас і без жодних документів. Перевірте точки й видайте посвідку — тоді змініть на «у нас».'};   // підказка під полем «Де здобуто»
   const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)'], ['за попереднього виховника', 'за попереднього виховника (без документів)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
   async function uchZavantazhyty() {
     try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = v.uchasnyky || []; } catch (x) {}
@@ -1713,7 +1714,7 @@ window.Tochky = (function () {
         <div class="dodaty"><button class="btn" type="button" data-d="proba">+ Проба здобута</button><button class="btn" type="button" data-d="tochky">+ Точки проби</button><button class="btn" type="button" data-d="vmil">+ Вмілість</button><button class="btn" type="button" data-d="vidzn">+ Відзнака</button></div></div>` : '')
       + `<button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Надіслати</button>`;
     $('pp-side').innerHTML = `<div class="card"><h3>Що попросити</h3><ul>${c.prosyty.map(x => `<li>${x}</li>`).join('')}</ul></div>`
-      + `<div class="card"><h3>Одне правило</h3><ul><li>Не знаєте точно — пишіть, що відомо, і позначте <b>«потребує перевірки»</b>. Нічого не блокується.</li><li>Дати — справжні, з посвідки. Невідома — позначте «дата невідома» і напишіть, звідки.</li>${c.maie === 'до нас' ? '<li>«До нас» — звіти гуртка не рахують це як наш здобуток; «Картка учасника» покаже окремо.</li>' : ''}</ul></div>`;
+      + `<div class="card"><h3>Одне правило</h3><ul><li>Не знаєте точно — пишіть, що відомо, і позначте <b>«потребує перевірки»</b>. Нічого не блокується.</li><li>Дати — справжні, з посвідки. Невідома — позначте «дата невідома» і напишіть, звідки.</li>${c.maie === 'до нас' ? '<li>«До нас» — звіти гуртка не рахують це як наш здобуток; «Картка учасника» покаже окремо.</li>' : ''}${c.maie ? '<li>«За попереднього виховника» — здобуто в нашому гуртку до вас і без документів. Звіти гуртка теж не рахують це за ваш здобуток; після перевірки змініть на «у нас».</li>' : ''}</ul></div>`;
     const vz = $('pp-vzhe'); if (vz) vz.addEventListener('change', () => { $('pp-imv').hidden = !vz.checked; $('pp-imn').hidden = vz.checked; ['pp-st', 'pp-vid'].forEach(id => { const el = $(id); if (el) el.closest('.f').hidden = vz.checked; }); });
     if (k === 'poza') dodatyRyad('vmil');
     $('pp-send').addEventListener('click', ppNadislaty);
@@ -1733,7 +1734,7 @@ window.Tochky = (function () {
     };
     const [nz, h] = T[typ];
     $('pp-maie').insertAdjacentHTML('beforeend', `<div class="mr" data-r="${n}" data-t="${typ}"><div class="mh"><b>${nz}</b><button type="button" class="rx" aria-label="Прибрати">${SV('<path d="M18 6L6 18M6 6l12 12"/>')}</button></div>${h}
-      <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div>
+      <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div><p class="note sm" data-dezn>${DEZ_N[dez] || ''}</p>
       <label class="chk sm"><input type="checkbox" data-k="per"> потребує перевірки (немає документа чи не все відомо)</label><p class="rok" hidden>✓ у книзі</p></div>`);
     if (typ === 'tochky') { const nr = $('pp-maie').lastElementChild; nr._tt = new Set(); tkMaluy(nr); tkKnyha(); }
     if (typ === 'vidzn' || typ === 'vmil') { nzKnyha(); nzPerevirka($('pp-maie').lastElementChild); }
@@ -1753,6 +1754,7 @@ window.Tochky = (function () {
     nzSpysok = sp; $('dl-nazvyKnyhy').innerHTML = sp.map(x => `<option value="${esc(x)}">`).join('');
     document.querySelectorAll('#pp-maie .mr[data-t="vidzn"], #pp-maie .mr[data-t="vmil"]').forEach(nzPerevirka);
   }
+  $('pp-body').addEventListener('change', e => { if (!e.target.matches('[data-k="dez"]')) return; const r = e.target.closest('.mr'), p = r && r.querySelector('[data-dezn]'); if (p) p.textContent = DEZ_N[e.target.value] || ''; });
   $('pp-body').addEventListener('change', e => { const r = e.target.closest('.mr'); if (r && (r.dataset.t === 'vidzn' || r.dataset.t === 'vmil') && e.target.matches('[data-k="nazva"]')) nzPerevirka(r); });
 
   /* ---- точки проби кнопками: спільний код tochky.js (як у «Пробах» юнаків) ---- */
