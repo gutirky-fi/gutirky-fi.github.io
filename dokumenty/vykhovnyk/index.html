@@ -32,6 +32,7 @@ button{cursor:pointer}
 .back{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);color:var(--body);font:700 15px var(--txt);text-decoration:none}
 .back:hover{color:var(--ink)}
 .back svg{width:16px;height:16px}
+@media (max-width:700px){.top{padding-top:14px}.logo img{height:46px}.back span{display:none}.back{padding:9px 12px}}   /* шапка на телефоні — однакова на всіх сторінках (брендбук, пункт 5, 17.11) */
 
 .hero{position:relative;display:grid;gap:4px;padding-block:44px 28px}
 .hero .wm{position:absolute;right:20px;top:10px;height:300px;opacity:.06;pointer-events:none}
@@ -98,7 +99,7 @@ button{cursor:pointer}
 .names .nm{font-weight:700;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tri{display:grid;grid-template-columns:repeat(3,auto);gap:4px}
 .tri button{min-width:52px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:15px;line-height:1.1}
-.tri button small{display:block;font-size:11px;font-weight:600}
+.tri button small{display:block;font-size:14px;font-weight:600}
 .tri button[aria-pressed=true][data-m="+"]{background:var(--ok);border-color:var(--ok);color:#0e1f15}
 .tri button[aria-pressed=true][data-m="−"]{background:var(--d);border-color:var(--d);color:#fff}
 .tri button[aria-pressed=true][data-m="в"]{background:#d9a640;border-color:#d9a640;color:#241800}
@@ -146,11 +147,11 @@ a.tile{text-decoration:none}
 .tile.main{grid-column:span 2;border-top:5px solid var(--d)}
 .tile.main b{font-size:26px;color:var(--ok-t)}
 .tile[disabled]{cursor:default;opacity:.62}
-.tile i{margin-top:auto;align-self:flex-start;font-style:normal;font-size:12.5px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mut)}
+.tile i{margin-top:auto;align-self:flex-start;font-style:normal;font-size:14px;font-weight:600;padding:1px 9px;border-radius:99px;border:1px solid var(--ln);color:var(--mut)}
 .hubhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 16px}
 .hubhead h2{margin:0;font:600 24px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
 /* форма «Після сходин» */
-.nrt{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;min-height:46px;padding:10px 0;font-size:17px;color:var(--ink)}.nrt b{font-weight:700;white-space:nowrap}.nrzm{border:0;background:none;color:var(--mut);font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 2px}
+.nrt{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;min-height:46px;padding:10px 0;font-size:17px;color:var(--ink)}.nrt b{font-weight:700;white-space:nowrap}.nrzm{border:0;background:none;color:var(--mut);font-size:14px;text-decoration:underline;cursor:pointer;padding:4px 2px}
 .stan{margin:12px 0 14px;padding:11px 14px;border-radius:12px;font-size:15px;line-height:1.4}
 .stan.chk{background:#14171a;border:1px solid var(--ln);color:var(--mut)}
 .stan.ye{background:rgba(217,166,64,.14);border:1px solid rgba(217,166,64,.45);color:#f3d48a}
@@ -170,14 +171,14 @@ a.tile{text-decoration:none}
 .nv li.zt{border-color:rgba(61,175,110,.55)}
 .nv li.blk{border-color:rgba(200,40,74,.7)}
 .nv .row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 14px;align-items:start;width:100%;padding:12px 14px;border:0;background:none;color:inherit;text-align:left;font:inherit}
-.nv .k{grid-row:span 2;font-size:13px;color:var(--mut);white-space:nowrap;padding-top:2px}
+.nv .k{grid-row:span 2;font-size:14px;color:var(--mut);white-space:nowrap;padding-top:2px}
 .nv .k b{display:block;font-size:15px;color:var(--body)}
 .nv .t{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-weight:700}
 .nv .s{grid-column:2/4;color:var(--body);font-size:15px;overflow-wrap:anywhere}
-.nv .d{font-size:12.5px;font-weight:700;padding:1px 9px;border-radius:99px;background:rgba(61,175,110,.16);color:var(--ok-t)}
+.nv .d{font-size:14px;font-weight:700;padding:1px 9px;border-radius:99px;background:rgba(61,175,110,.16);color:var(--ok-t)}
 .nv .d.vy,.nv .d.on{background:rgba(217,166,64,.16);color:#f0c060}.nv .d.sk,.nv .d.bl{background:rgba(200,40,74,.18);color:#ff9db2}.nv .d.zt{background:rgba(160,168,178,.16);color:var(--body)}
 .nv .h{font-weight:400;color:var(--mut);font-size:14px}
-.nv .st{font-size:13px;font-weight:700;white-space:nowrap;padding:3px 10px;border-radius:99px}
+.nv .st{font-size:14px;font-weight:700;white-space:nowrap;padding:3px 10px;border-radius:99px}
 .nv .st.ch{background:rgba(217,166,64,.16);color:#f0c060}.nv .st.ok{background:rgba(61,175,110,.18);color:var(--ok-t)}.nv .st.no{background:#22262b;color:var(--mut)}
 .nv .more{padding:2px 14px 14px;border-top:1px dashed var(--ln)}
 .nv .pl{width:100%;border-collapse:collapse;margin:10px 0 12px;font-size:15px}
@@ -187,7 +188,7 @@ a.tile{text-decoration:none}
 .nv .pr b{display:inline-block;min-width:92px;color:var(--mut);font-weight:600}
 .nv .act{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .nv .act .btn{padding:10px 16px}
-.nv .act small{color:var(--mut);font-size:13px}
+.nv .act small{color:var(--mut);font-size:14px}
 .ps{display:grid;grid-template-columns:minmax(0,640px) minmax(0,1fr);gap:22px;align-items:start}
 .step{margin:0 0 16px}
 .step>h3{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 12px;font:600 19px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}
@@ -198,7 +199,7 @@ a.tile{text-decoration:none}
 .pay li.pp{border-radius:14px;background:#14171a;border:1px solid var(--ln);overflow:hidden}
 .pay .pr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:6px;padding:6px 6px 6px 14px}
 .pay .nm{font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pay .nm small{display:block;font-weight:600;font-size:12.5px;color:#f3d48a;white-space:normal;line-height:1.3}.pay .nm small.y{color:var(--ok-t)}
+.pay .nm small{display:block;font-weight:600;font-size:14px;color:#f3d48a;white-space:normal;line-height:1.3}.pay .nm small.y{color:var(--ok-t)}
 .pay .pr>button{min-width:112px;padding:8px 10px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--mut);font-weight:700;font-size:14.5px}
 .pay .pr>button[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#0e1f15}
 .pay .lnk{min-width:0!important;border:0!important;background:none!important;color:var(--ok-t)!important;padding:8px 6px!important;font-weight:600!important;font-size:14px!important;cursor:pointer}
@@ -216,7 +217,7 @@ a.tile{text-decoration:none}
 .vn-l .lnk,.vse-ok .lnk,.pay .bh .lnk,.pk .vh .lnk{border:0;background:none;color:var(--ok-t);padding:6px 4px;font-weight:600;font-size:14px;cursor:pointer}
 #p-suma-l[hidden],#p-body[hidden]{display:none}
 #p-body .paybar{flex-wrap:nowrap}#p-body .paybar .f{flex:0 0 72px}#p-body .paybar .yak{min-width:0}#p-body .paybar .yak button{min-width:0;padding:8px 2px}#p-body .paybar .yak button{padding:8px 4px;font-size:14px}#p-body .yak-l{display:flex;align-items:baseline;justify-content:space-between;gap:8px}#p-body .paybar .tot{margin:0;padding:0;border:0;background:none;font-weight:600}
-.pay .pr>button.lnk.npr{color:var(--mut)!important;font-size:13.5px!important}
+.pay .pr>button.lnk.npr{color:var(--mut)!important;font-size:14px!important}
 .pk .vh .lnk{display:block;white-space:normal;text-align:left;padding:6px 0 0}
 .zm-b{flex:none;padding:7px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer}
 .zm-dii{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
@@ -235,7 +236,7 @@ a.tile{text-decoration:none}
 .vyb-b b{font-size:15.5px}.vyb-b span{color:var(--ok-t);font-weight:700}.vyb-b:hover{border-color:var(--d);background:#2b333b}
 .pk .rsh{display:inline;padding:0;border:0;background:none;color:#f3d48a;font-weight:700;font-size:inherit;text-align:left;cursor:pointer}.pk .rsh u{margin-left:4px;padding:2px 8px;border-radius:8px;border:1px solid rgba(217,166,64,.6);text-decoration:none;white-space:nowrap}.pk .rsh:hover u{background:rgba(217,166,64,.18)}
 .vse-ok{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;padding:10px 12px 10px 14px;border-radius:12px;background:#14171a;border:1px solid rgba(61,175,110,.55);color:var(--ok-t);font-weight:700;font-size:15px}.vse-ok[hidden]{display:none}
-.pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:13px;font-weight:600;color:#f3d48a}
+.pay .bh{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 6px 6px 14px;margin-top:-2px;font-size:14px;font-weight:600;color:#f3d48a}
 .pk .ok1{flex:1 1 auto;min-width:0;font-size:15px;color:var(--body)}.pk .ok1 b{color:var(--ok-t)}.pk .ok1 small{color:var(--mut);font-size:13px}
 .pk .zmin .r1{display:flex;align-items:center;gap:8px}
 .pay-hnt{margin:0 0 10px;color:var(--mut);font-size:14px;line-height:1.4}
@@ -243,7 +244,7 @@ a.tile{text-decoration:none}
 .inshi{margin:10px 0 0}.inshi>summary{cursor:pointer;color:var(--ok-t);font-weight:600;font-size:14.5px;padding:6px 0}.inshi .pay{margin-top:6px}
 .vsum{margin:10px 0 0;padding:9px 12px;border-radius:12px;font-size:14.5px;line-height:1.4;background:#14171a;border:1px solid rgba(217,166,64,.55);color:#f3d48a}
 .vsum.ok{color:var(--ok-t);border-color:rgba(61,175,110,.55)}.vsum[hidden]{display:none}
-.vsum-n{margin:6px 0 0;color:var(--mut);font-size:13.5px;line-height:1.4}
+.vsum-n{margin:6px 0 0;color:var(--mut);font-size:14px;line-height:1.4}
 .paybar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:0 0 10px}
 .paybar .f{margin:0;flex:0 0 130px}
 .yak{display:flex;gap:4px;padding:4px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
@@ -264,7 +265,7 @@ a.tile{text-decoration:none}
 /* перевірка каси */
 .hrg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0 0 14px}
 .hrg div{padding:10px 12px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
-.hrg small{display:block;color:var(--mut);font-size:12.5px;font-weight:600}
+.hrg small{display:block;color:var(--mut);font-size:14px;font-weight:600}
 .hrg b{font:600 22px/1.15 var(--disp);color:var(--ink)}
 .hrg .rz b{color:var(--ok-t)}
 .kg{margin:0 0 18px}
@@ -275,9 +276,9 @@ a.tile{text-decoration:none}
 .kl li.ne{border-color:rgba(200,40,74,.65)}
 .kl .kt{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .kl .kt .plus{color:var(--ok-t);white-space:nowrap}.kl .kt .minus{color:#ff7d99;white-space:nowrap}
-.kl .kd{color:var(--mut);font-size:13.5px;margin-top:2px;line-height:1.35}
+.kl .kd{color:var(--mut);font-size:14px;margin-top:2px;line-height:1.35}
 .kl .fot{display:inline-block;margin-top:5px;font-size:14px;font-weight:700;color:var(--ok-t)}.kl .fot.no{color:#f3d48a}
-.kl .neb{display:block;margin-top:4px;font-size:13px;font-weight:700;color:#ffb3c3}
+.kl .neb{display:block;margin-top:4px;font-size:14px;font-weight:700;color:#ffb3c3}
 .kl .kb{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .kl .kb button{padding:8px 14px;border-radius:10px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14.5px}
 .kl .kb button.tak{background:var(--d);border-color:var(--d);color:#0e1f15}
@@ -310,10 +311,10 @@ a.tile{text-decoration:none}
 .mr .rok{margin:0 0 10px;color:var(--ok-t);font-weight:700;font-size:14px}
 .mr .row2{align-items:start}.mr .row2 .chk.sm{margin:-4px 0 10px}
 .mr .lbl-tk{font-size:14px;font-weight:600;color:var(--mut);margin:0 0 8px}.mr .lbl-tk small{font-weight:400}
-.f small.dlw{display:block;margin-top:5px;font-size:13px;line-height:1.35;font-weight:600;color:#f0b429}
+.f small.dlw{display:block;margin-top:5px;font-size:14px;line-height:1.35;font-weight:600;color:#f0b429}
 .mr .f{margin-bottom:10px}.mr .in{font-size:16px;padding:9px 11px}
 .chk.sm{padding:8px 12px;margin-bottom:10px;font-size:14.5px;background:none}
-.note.sm{font-size:13.5px;margin:-4px 0 10px}
+.note.sm{font-size:14px;margin:-4px 0 10px}
 .dodaty{display:flex;flex-wrap:wrap;gap:8px}.dodaty .btn{padding:9px 14px;font-size:15px}
 .spl{margin:0;padding-left:20px;color:var(--body);font-size:15.5px}.spl li{margin:4px 0}
 textarea.in{resize:vertical;font:inherit;line-height:1.4}
@@ -331,11 +332,11 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 .tkv .rz{margin:0 0 14px}
 .tkv .rz h4{margin:0 0 7px;display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 14px/1.2 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
 .tkv .rz h4 b{color:var(--d-t);margin-right:6px}
-.tkv .tk-all{flex:none;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:#14171a;color:var(--body);font:600 12.5px/1.2 var(--txt);letter-spacing:0;text-transform:none}
+.tkv .tk-all{flex:none;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:#14171a;color:var(--body);font:600 14px/1.2 var(--txt);letter-spacing:0;text-transform:none}
 .tkv .tt{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px}
-.tkv .t{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:2px 8px;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--body);text-align:left;font-size:13px;line-height:1.2;min-height:52px}
+.tkv .t{display:grid;grid-template-columns:auto 1fr;align-items:start;gap:2px 8px;padding:8px 10px;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--body);text-align:left;font-size:14px;line-height:1.2;min-height:52px}
 .tkv .t b{font:600 17px/1 var(--disp);color:var(--ink);padding-top:1px}
-.tkv .t i{grid-column:2;font-style:normal;font-size:11.5px;color:var(--ok-t)}
+.tkv .t i{grid-column:2;font-style:normal;font-size:14px;color:var(--ok-t)}
 .tkv .t[aria-pressed=true]{background:rgba(200,40,74,.24);background:color-mix(in srgb,var(--d) 26%,transparent);border-color:var(--d);color:var(--ink);box-shadow:inset 0 0 0 1px var(--d)}
 .tkv .t.ye{background:rgba(61,175,110,.1);border-color:rgba(61,175,110,.4);color:var(--mut);cursor:default}
 .tkv .t.ye b{color:var(--ok-t)}
@@ -345,7 +346,18 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 </style>
 </head>
 <body>
-<div class="ribbon rozrob">Розділ у розробці. Бланки, форми й звіти працюють; запис у Google Таблицю гуртка вмикається після налаштування книги. Позначка «готується» — ще не зроблено. <a href="/proba/dokumenty/" style="color:inherit;text-decoration:underline">Подивитись, як це працює, на прикладі з вигаданим гуртком</a>.</div>
+<style>
+.ribbon.rb{padding:7px 14px;background:#cfd5dc;color:#16181c;text-align:center;font-weight:700;font-size:14px;line-height:1.35}
+.ribbon.rb.rozrob{background:#ffc247}
+.ribbon.rb .rb-m{display:none;margin:-6px 0 -6px 4px;padding:6px 8px;border:0;background:none;color:inherit;font:inherit;text-decoration:underline;cursor:pointer}
+.ribbon.rb .rb-d{margin-left:6px;font-weight:600}
+.ribbon.rb .rb-d a{color:inherit;text-decoration:underline;white-space:nowrap}
+@media (max-width:700px){
+  .ribbon.rb .rb-m{display:inline}
+  .ribbon.rb .rb-d{display:none;margin:3px 0 0}
+  .ribbon.rb.open .rb-d{display:block}
+}
+</style><div class="ribbon rb rozrob" role="note"><span class="rb-s">Розділ у розробці.</span><button type="button" class="rb-m" aria-expanded="false">докладніше</button> <span class="rb-d">Бланки, форми й звіти працюють; запис у Google Таблицю гуртка вмикається після налаштування книги. Позначка «готується» — ще не зроблено. <a href="/proba/dokumenty/">Подивитись, як це працює, на прикладі з вигаданим гуртком</a>.</span></div><script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.ribbon.rb .rb-m');if(!b)return;var r=b.parentNode,o=r.classList.toggle('open');b.setAttribute('aria-expanded',o);b.textContent=o?'згорнути':'докладніше'})</script>
 <datalist id="dl-gutirky"><option value="гутірка «Кераміка України»"><option value="гра «Потужний СКОБ!»"><option value="гра «Пластове Бінго»"><option value="гра «Інтелектуальний Змаг»"><option value="гра «Швидке Опитування»"></datalist><datalist id="dl-vmilosti"><option value="1-ша проба"><option value="2-га проба"><option value="3-тя проба"><option value="вмілість «30-ліття Пласту в Польщі»"><option value="вмілість «Авіамоделювання»"><option value="вмілість «Авіаційна метеорологія»"><option value="вмілість «Автознавство»"><option value="вмілість «Аеродинаміка»"><option value="вмілість «Аеронавігація та повітряний рух»"><option value="вмілість «Акторство»"><option value="вмілість «Альпіністика»"><option value="вмілість «Археологія»"><option value="вмілість «Астрономія»"><option value="вмілість «Безпека»"><option value="вмілість «Безпека руху»"><option value="вмілість «Бібліотекарство»"><option value="вмілість «Борець»"><option value="вмілість «Бортова механіка»"><option value="вмілість «Будівництво суден»"><option value="вмілість «Будова літальних апаратів»"><option value="вмілість «Вебмайстер»"><option value="вмілість «Веломандрівництво»"><option value="вмілість «Взаємодія із людьми з інвалідністю»"><option value="вмілість «Вифлеємський Вогонь Миру»"><option value="вмілість «Вишивання»"><option value="вмілість «Військовик»"><option value="вмілість «Вільний художник/вільна художниця»"><option value="вмілість «Вітрильництво»"><option value="вмілість «Водне лещетарство»"><option value="вмілість «Водне рятівництво»"><option value="вмілість «Водолаження»"><option value="вмілість «Волонтерська служба»"><option value="вмілість «Впоряд»"><option value="вмілість «Генеалогія»"><option value="вмілість «Готовність до надзвичайних ситуацій»"><option value="вмілість «Графіка»"><option value="вмілість «Графічний дизайн»"><option value="вмілість «Громадське здоров’я»"><option value="вмілість «Громадянин країни»"><option value="вмілість «Громадянин міста»"><option value="вмілість «Громадянин світу»"><option value="вмілість «Два пера»"><option value="вмілість «Дельтапланеризм»"><option value="вмілість «Догляд за кіньми»"><option value="вмілість «Домашня зарадність»"><option value="вмілість «Еколог»"><option value="вмілість «Екологія»"><option value="вмілість «Економіст»"><option value="вмілість «Етнограф»"><option value="вмілість «Журналістика»"><option value="вмілість «Запобігання злочинності»"><option value="вмілість «Зброєзнавство»"><option value="вмілість «Знавець… (назва комп’ютерної програми)»"><option value="вмілість «Знавець комп’ютерів»"><option value="вмілість «Знавець народного календаря»"><option value="вмілість «Знавець української спадщини в Польщі»"><option value="вмілість «Інструктор веломандрівництва»"><option value="вмілість «Історія авіації»"><option value="вмілість «Їзда верхи»"><option value="вмілість «Їзда на велосипеді»"><option value="вмілість «Їзда на сніговій дошці»"><option value="вмілість «Їзда підводою»"><option value="вмілість «Їзда санями»"><option value="вмілість «Кавалерія»"><option value="вмілість «Кайнокарство»"><option value="вмілість «Картографія»"><option value="вмілість «Кераміка»"><option value="вмілість «Керівник проєктів»"><option value="вмілість «Кінна ветеринарія»"><option value="вмілість «Кінне мандрівництво»"><option value="вмілість «Командний гравець»"><option value="вмілість «Комп’ютерна верстка»"><option value="вмілість «Комп’ютерна графіка»"><option value="вмілість «Комунікація»"><option value="вмілість «Користувач інтернету»"><option value="вмілість «Краєзнавство»"><option value="вмілість «Куховарення»"><option value="вмілість «Легка атлетика»"><option value="вмілість «Лещетарство альпійського стилю»"><option value="вмілість «Лещетарство нордійського стилю»"><option value="вмілість «Лещетарське мандрівництво»"><option value="вмілість «Літаючий диск»"><option value="вмілість «Лучник»"><option value="вмілість «Любитель/ка мистецтва»"><option value="вмілість «Мандрівництво»"><option value="вмілість «Маскування»"><option value="вмілість «Моделювання»"><option value="вмілість «Морська навігація»"><option value="вмілість «Музика»"><option value="вмілість «Народні танки»"><option value="вмілість «Настільні ігри»"><option value="вмілість «Нумізматика»"><option value="вмілість «Образотворче мистецтво»"><option value="вмілість «Огородництво»"><option value="вмілість «Одне перо»"><option value="вмілість «Онлайн-діловод»"><option value="вмілість «Освіта»"><option value="вмілість «Особисте здоров’я»"><option value="вмілість «Особистий менеджмент»"><option value="вмілість «Парапланеризм»"><option value="вмілість «Перекладина»"><option value="вмілість «Перша допомога»"><option value="вмілість «Писанкарство»"><option value="вмілість «Піклування дітьми»"><option value="вмілість «Пілотаж»"><option value="вмілість «Піонірство»"><option value="вмілість «Плавання»"><option value="вмілість «Пластуй онлайн: COVID19»"><option value="вмілість «Плетення»"><option value="вмілість «Плетіння»"><option value="вмілість «Погодознавство»"><option value="вмілість «Полум’я Братерства»"><option value="вмілість «Правник»"><option value="вмілість «Природознавство»"><option value="вмілість «Приятель тварин»"><option value="вмілість «Приятель/ка тварин»"><option value="вмілість «Провідництво»"><option value="вмілість «Провідництво туристів»"><option value="вмілість «Програміст/-ка … (мова програмування)»"><option value="вмілість «Публічні виступи»"><option value="вмілість «Радіоаматор»"><option value="вмілість «Радіотехніка»"><option value="вмілість «Рибальство»"><option value="вмілість «Різьбярство»"><option value="вмілість «Робітничий рух в Україні»"><option value="вмілість «Родинне життя»"><option value="вмілість «Розвідництво»"><option value="вмілість «Рольовик»"><option value="вмілість «Семиборець»"><option value="вмілість «Сигналізація»"><option value="вмілість «Сигналізація-комунікація»"><option value="вмілість «Скаутське побратимство»"><option value="вмілість «Скелелазіння»"><option value="вмілість «Скіперство»"><option value="вмілість «Скульптура»"><option value="вмілість «Слідознавство»"><option value="вмілість «Сноубордизм»"><option value="вмілість «Спелеотуризм»"><option value="вмілість «Спів»"><option value="вмілість «Спортові ігри»"><option value="вмілість «Сталість довкілля»"><option value="вмілість «Стрілець»"><option value="вмілість «Стріляння з лука»"><option value="вмілість «Стріляння з рушниці»"><option value="вмілість «Суднознавство»"><option value="вмілість «Табірництво»"><option value="вмілість «Тайм-менеджмент»"><option value="вмілість «Тактична медицина»"><option value="вмілість «Танки»"><option value="вмілість «Теренові ігри та змаги»"><option value="вмілість «Техніка гребка на катамарані»"><option value="вмілість «Техніка гребка стоячи на дошці»"><option value="вмілість «Три пера»"><option value="вмілість «Український амбасадор»"><option value="вмілість «Український ґердан»"><option value="вмілість «Фандрейзинг»"><option value="вмілість «Філателія»"><option value="вмілість «Філокартія»"><option value="вмілість «Фільмування»"><option value="вмілість «Фотографування»"><option value="вмілість «Хороводи-гагілки»"><option value="вмілість «Читання»"><option value="вмілість «Шахи»"><option value="вмілість «Шиття»"><option value="вмілість «Якірництво»"></datalist><datalist id="dl-vmilNazvy"><option value="30-ліття Пласту в Польщі"><option value="Інструктор веломандрівництва"><option value="Історія авіації"><option value="Їзда верхи"><option value="Їзда на велосипеді"><option value="Їзда на сніговій дошці"><option value="Їзда підводою"><option value="Їзда санями"><option value="Автознавство"><option value="Авіамоделювання"><option value="Авіаційна метеорологія"><option value="Аеродинаміка"><option value="Аеронавігація та повітряний рух"><option value="Акторство"><option value="Альпіністика"><option value="Археологія"><option value="Астрономія"><option value="Безпека"><option value="Безпека руху"><option value="Борець"><option value="Бортова механіка"><option value="Будова літальних апаратів"><option value="Будівництво суден"><option value="Бібліотекарство"><option value="Вебмайстер"><option value="Веломандрівництво"><option value="Взаємодія із людьми з інвалідністю"><option value="Вифлеємський Вогонь Миру"><option value="Вишивання"><option value="Водне лещетарство"><option value="Водне рятівництво"><option value="Водолаження"><option value="Волонтерська служба"><option value="Впоряд"><option value="Військовик"><option value="Вільний художник/вільна художниця"><option value="Вітрильництво"><option value="Генеалогія"><option value="Готовність до надзвичайних ситуацій"><option value="Графіка"><option value="Графічний дизайн"><option value="Громадське здоров’я"><option value="Громадянин країни"><option value="Громадянин міста"><option value="Громадянин світу"><option value="Два пера"><option value="Дельтапланеризм"><option value="Догляд за кіньми"><option value="Домашня зарадність"><option value="Еколог"><option value="Екологія"><option value="Економіст"><option value="Етнограф"><option value="Журналістика"><option value="Запобігання злочинності"><option value="Зброєзнавство"><option value="Знавець комп’ютерів"><option value="Знавець народного календаря"><option value="Знавець української спадщини в Польщі"><option value="Знавець… (назва комп’ютерної програми)"><option value="Кавалерія"><option value="Кайнокарство"><option value="Картографія"><option value="Кераміка"><option value="Керівник проєктів"><option value="Командний гравець"><option value="Комп’ютерна верстка"><option value="Комп’ютерна графіка"><option value="Комунікація"><option value="Користувач інтернету"><option value="Краєзнавство"><option value="Куховарення"><option value="Кінна ветеринарія"><option value="Кінне мандрівництво"><option value="Легка атлетика"><option value="Лещетарство альпійського стилю"><option value="Лещетарство нордійського стилю"><option value="Лещетарське мандрівництво"><option value="Лучник"><option value="Любитель/ка мистецтва"><option value="Літаючий диск"><option value="Мандрівництво"><option value="Маскування"><option value="Моделювання"><option value="Морська навігація"><option value="Музика"><option value="Народні танки"><option value="Настільні ігри"><option value="Нумізматика"><option value="Образотворче мистецтво"><option value="Огородництво"><option value="Одне перо"><option value="Онлайн-діловод"><option value="Освіта"><option value="Особисте здоров’я"><option value="Особистий менеджмент"><option value="Парапланеризм"><option value="Перекладина"><option value="Перша допомога"><option value="Писанкарство"><option value="Плавання"><option value="Пластуй онлайн: COVID19"><option value="Плетення"><option value="Плетіння"><option value="Погодознавство"><option value="Полум’я Братерства"><option value="Правник"><option value="Природознавство"><option value="Приятель тварин"><option value="Приятель/ка тварин"><option value="Провідництво"><option value="Провідництво туристів"><option value="Програміст/-ка … (мова програмування)"><option value="Публічні виступи"><option value="Піклування дітьми"><option value="Пілотаж"><option value="Піонірство"><option value="Радіоаматор"><option value="Радіотехніка"><option value="Рибальство"><option value="Робітничий рух в Україні"><option value="Родинне життя"><option value="Розвідництво"><option value="Рольовик"><option value="Різьбярство"><option value="Семиборець"><option value="Сигналізація"><option value="Сигналізація-комунікація"><option value="Скаутське побратимство"><option value="Скелелазіння"><option value="Скульптура"><option value="Скіперство"><option value="Слідознавство"><option value="Сноубордизм"><option value="Спелеотуризм"><option value="Спортові ігри"><option value="Спів"><option value="Сталість довкілля"><option value="Стрілець"><option value="Стріляння з лука"><option value="Стріляння з рушниці"><option value="Суднознавство"><option value="Табірництво"><option value="Тайм-менеджмент"><option value="Тактична медицина"><option value="Танки"><option value="Теренові ігри та змаги"><option value="Техніка гребка на катамарані"><option value="Техніка гребка стоячи на дошці"><option value="Три пера"><option value="Український амбасадор"><option value="Український ґердан"><option value="Фандрейзинг"><option value="Фотографування"><option value="Філателія"><option value="Філокартія"><option value="Фільмування"><option value="Хороводи-гагілки"><option value="Читання"><option value="Шахи"><option value="Шиття"><option value="Якірництво"></datalist>
 <div class="wrap">
   <header class="top">
@@ -2054,9 +2066,9 @@ window.Tochky = (function () {
 
   if (!DEMO && addr) { let vk = ''; try { vk = sessionStorage.getItem(VKOD) || ''; } catch (x) {} if (vk) { $('z-kod').value = vk; $('z-lock').requestSubmit(); } }   // повернулись із «Каси» чи «Майна» — без коду
   if (DEMO) {
-    const n = document.createElement('div'); n.className = 'ribbon'; n.style.background = '#ffd23f';
-    n.textContent = 'Проба: нічого нікуди не надсилається. Вхід — без коду (у справжній роботі — ваш код виховника). «Після сходин»: спробуйте дату 08.11.2026 (уже записали діловоди) і 01.11.2026 (затверджено). Нова дата (напр. 15.11.2026) — № 13 стає сам; впишіть 10 — з\'явиться попередження.';
-    document.body.prepend(n); $('z-noaddr').hidden = true;
+    const n = document.getElementById('rb-t') || {};   // смужка-проба: одна на сторінку (спільний ribbon.py); тут лише докладніше
+    n.textContent = 'Вхід — без коду (у справжній роботі — ваш код виховника). «Після сходин»: спробуйте дату 08.11.2026 (уже записали діловоди) і 01.11.2026 (затверджено). Нова дата (напр. 15.11.2026) — № 13 стає сам; впишіть 10 — з\'явиться попередження.';
+    $('z-noaddr').hidden = true;
     $('z-kod').value = '123456'; $('z-lock').requestSubmit();   // проба: входимо самі, без коду
   }
 })();

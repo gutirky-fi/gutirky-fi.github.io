@@ -23,7 +23,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-off
 .top{display:flex;align-items:center;gap:8px;margin-bottom:14px}
 .top b{font:600 20px var(--disp);letter-spacing:.06em;text-transform:uppercase}
 .top .sp{flex:1}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:14px}
 .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
 h1{margin:12px 0 6px;font:600 28px/1.1 var(--disp);text-transform:uppercase}
 .m{color:var(--mut);margin:0 0 14px}
@@ -63,7 +63,7 @@ textarea:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
 .fb label{margin:12px 0 4px}.fb input{min-height:48px;font-size:17px}
 .ex{margin:4px 0 0;font-size:14px;color:var(--mut);line-height:1.45}.ex b{color:#cfd5dc}.ex .no{color:#ff9a8a}
 .st{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}.st button{min-height:36px;padding:4px 12px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);font-size:14px;font-weight:700}
-.hn{margin:6px 0;color:var(--ac);font-weight:700;font-size:18px}.hn small{display:block;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.hn{margin:6px 0;color:var(--ac);font-weight:700;font-size:18px}.hn small{display:block;color:var(--mut);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
 .wr{color:#ff9a8a;font-weight:700;margin:6px 0}
 .vb{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.vb button{min-height:58px;border-radius:16px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:19px}.vb button:disabled{opacity:.35;text-decoration:line-through}
 .vbig{width:100%;min-height:58px;margin-top:14px;border-radius:99px;border:0;background:var(--gd);color:#16130a;font:700 19px var(--txt)}.vsec{width:100%;min-height:48px;margin-top:10px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);color:var(--ink);font:700 16px var(--txt)}
@@ -159,7 +159,7 @@ body.fam .pn-b:hover{border-color:var(--gd)}
 body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
 body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
 body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
-body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn-l{margin:22px 0 8px;font:700 14px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
 body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
 body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
 body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
@@ -217,7 +217,7 @@ body.s2 .hand{margin:8px 0 22px;font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Seg
 body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
 body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
-body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 13px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
+body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 14px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
 body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
 body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
 body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -666,7 +666,7 @@ function render() {
 <p class="ex"><b>Підказка складніша</b> — щось загальне, що підходить ще кільком людям:<br>«Я юнак» · «Я юначка» · «У мене світле волосся» · «Я вищий за половину гуртка» · «Я в гуртку другий рік»</p>
 <p class="ex"><b>Підказка легша</b> — що видно саме зараз у кімнаті:<br>«Сьогодні на мені чорна кофта» · «Я сиджу біля вікна» · «У мене окуляри» · «Сиджу поруч з Оленкою»</p>
 <p class="ex">Для другого факту — <b>інші</b> підказки. Поки триває гра, сиди на місці й не знімай кофту чи кепку.</p></details>`
-        + [1, 2].map(n => `<div class="fb"><h2>Факт ${n}${n === 2 ? ' <small style="font:600 13px var(--txt);color:var(--mut)">(можна й без нього)</small>' : ''}</h2>
+        + [1, 2].map(n => `<div class="fb"><h2>Факт ${n}${n === 2 ? ' <small style="font:600 14px var(--txt);color:var(--mut)">(можна й без нього)</small>' : ''}</h2>
 <textarea ${n === 1 ? 'id="w" ' : ''}data-k="f${n}" maxlength="140" placeholder="${n === 1 ? 'Я боюся гусей' : 'Я вмію грати на скрипці'}">${v('f' + n)}</textarea>
 <label>Підказка складніша — щось загальне</label><input data-k="h${n}1" maxlength="80" placeholder="Я юнак, у мене темне волосся" value="${v('h' + n + '1')}">
 <div class="st">${['Я юнак', 'Я юначка', 'У мене…', 'Я в гуртку…'].map(t => `<button type="button" data-st="h${n}1">${t}</button>`).join('')}</div>

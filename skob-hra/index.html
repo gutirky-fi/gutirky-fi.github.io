@@ -5,13 +5,13 @@
 <script>{ let q = location.search; if (!/[?&]dyz=/.test(q)) q += (q ? '&' : '?') + 'dyz=3'; if (!/[?&]v=/.test(q)) q += '&v=b'; if (q !== location.search) history.replaceState(null, '', location.pathname + q + location.hash); }</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<meta name="theme-color" content="#16181c">
+<meta name="theme-color" content="#1b1d21">
 <title>Потужний СКОБ!</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Caveat:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
 /* «Потужний СКОБ!» — конструктор: будь-хто складає свою вікторину й грає з телефонами.
    Ігри — лише на цьому пристрої (localStorage), у файлі або в посиланні. Ні сервера, ні реєстрації. */
-:root{color-scheme:dark;--bg:#16181c;--card:#1f2328;--card2:#272b31;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--no:#ff6b5e;
+:root{color-scheme:dark;--bg:#1b1d21;--card:#1f2328;--card2:#272b31;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--ac:#2fd2c0;--no:#ff6b5e;
   --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--hand:Caveat,'Segoe Print',cursive;--mono:ui-monospace,Menlo,Consolas,monospace}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -61,7 +61,7 @@ button,input,textarea{font:inherit;color:inherit}
 .ct{flex:1;min-width:0}
 .ct h3{margin:0;font-size:19px;line-height:1.25;overflow-wrap:anywhere}
 .ct p{margin:2px 0 0;color:var(--mut);font-size:15px}
-.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);font-size:13px;font-weight:600;vertical-align:2px}
+.tag{display:inline-block;margin-left:6px;padding:0 8px;border-radius:99px;border:1px solid var(--ln);color:var(--mut);font-size:14px;font-weight:600;vertical-align:2px}
 .ca{display:flex;gap:8px;flex:none}
 .empty{margin:0;padding:22px;border:1px dashed var(--ln);border-radius:14px;color:var(--mut);text-align:center}
 .warnbox{margin:0 0 12px;padding:12px 14px;border-radius:12px;border:1px solid #6b4a1e;background:#2a2116;color:#f3d9a6;font-size:15px}
@@ -350,15 +350,15 @@ body.s3 .lnote{margin:12px 0 0;color:var(--mut,#a0a8b2);font-size:15px}
 .lpl{margin-top:16px;padding-top:14px;border-top:1px solid var(--ln,#383d44);text-align:center}
 .lpl-h{font:700 14px 'Source Sans 3',system-ui,sans-serif;color:var(--mut,#a0a8b2)}
 .lpl-h b{font:600 18px Oswald,sans-serif;color:var(--ink,#f2f4f6);margin-left:4px}
-.lpl-h small{display:block;margin-top:2px;font-weight:500;font-size:13px}
+.lpl-h small{display:block;margin-top:2px;font-weight:500;font-size:14px}
 .lpl .lpl-c{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:6px;margin:8px 0 0!important;padding:0!important;max-height:70px;overflow:hidden;min-height:0!important;border:0!important;background:none!important}
 .lpl .lpl-c:empty{display:none!important}
 .lpl .lpl-c>*{display:inline-flex!important;align-items:center;gap:4px;height:32px;margin:0!important;padding:0 10px!important;border-radius:99px!important;border:0!important;background:#2a2f35!important;color:var(--ink,#f2f4f6)!important;font:600 14px 'Source Sans 3',system-ui,sans-serif!important;white-space:nowrap;max-width:100%}
 .lpl .lpl-c>.off,.lpl .lpl-c>.no{opacity:.5}
 body.s3 #lobby .igr #inl{display:none}
 .lpl .lpl-c>.empty{display:none!important}
-.lpl .lpl-c>* small{font-size:12px;color:var(--mut,#a0a8b2)}
-.lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:12px}
+.lpl .lpl-c>* small{font-size:14px;color:var(--mut,#a0a8b2)}
+.lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:14px}
 .lpl .lpl-c>.more{background:none!important;border:1px dashed #4a5058!important;color:var(--mut,#a0a8b2)!important}
 .lpl .lpl-c>.lpl-hid{display:none!important}
 /* СКОБ: ті самі розміри, що в Змагу */
@@ -918,6 +918,7 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
   const S3 = !!window.SKOB_S3 || /[?&]dyz=3(&|$)/.test(location.search);   /* SKOB_S3 — сторінка сама вмикає стиль 3 (кіно-гутірка) */
   const LOGO3 = () => `<span class="sk3-lg" role="heading" aria-level="1" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="w"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="18.5" height="18.5" rx="4" fill="#d64541"/><rect x="21.5" width="18.5" height="18.5" rx="4" fill="#2f6fd0"/><rect y="21.5" width="18.5" height="18.5" rx="4" fill="#e8a321"/><rect x="21.5" y="21.5" width="18.5" height="18.5" rx="4" fill="#2e8f55"/></svg><b>СКОБ!</b></span></span>`;
   const CSS3 = `
+#skob.s3{background:#1b1d21}   /* тло — як в інших іграх (брендбук, пункт 2, 17.11): було градієнт до #15171b */
 #skob.s3 .sk-top{padding:12px max(24px,calc(50vw - 620px));border-bottom:1px solid #383d44;background:#1b1d21}
 #skob.s3 .sk3-pl{height:38px;width:auto;display:block}
 #skob.s3 .sk-top [data-k=x]{display:none}
@@ -951,13 +952,13 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 #skob .sk3-steps{display:flex;flex-wrap:wrap;gap:8px 26px;padding:10px 16px;margin:0 0 14px;border:1px solid #383d44;border-radius:14px;background:#1f2226;font:600 15px 'Source Sans 3',sans-serif;color:#d7dce1}
 #skob .sk3-steps span{display:flex;align-items:center;gap:9px}
 #skob .sk3-steps button{all:unset;margin-left:auto;cursor:pointer;color:#a0a8b2;font:600 14px 'Source Sans 3',sans-serif;text-decoration:underline;text-underline-offset:3px}#skob .sk3-steps button:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
-#skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 13px 'Source Sans 3',sans-serif;font-style:normal}
+#skob .sk3-steps i{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#ffc247;color:#1b1d21;font:700 14px 'Source Sans 3',sans-serif;font-style:normal}
 #skob .sk3-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
 #skob .sk3-pick .pk{all:unset;box-sizing:border-box;cursor:pointer;padding:10px 14px;border:1px solid #383d44;border-radius:12px;background:#22262b;min-width:0}
 #skob .sk3-pick .pk:hover{border-color:#5a616b}#skob .sk3-pick .pk:focus-visible{outline:3px solid #ffc247;outline-offset:2px}
 #skob .sk3-pick .pk.on{border-color:#ffc247;box-shadow:inset 0 0 0 1px #ffc247}
 #skob .sk3-pick .pk b{display:block;font:700 16px 'Source Sans 3',sans-serif;color:#f2f4f6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#skob .sk3-pick .pk small{display:block;margin-top:2px;font:400 13px 'Source Sans 3',sans-serif;color:#a0a8b2}
+#skob .sk3-pick .pk small{display:block;margin-top:2px;font:400 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob .sk3-pact{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 #skob .sk3-pact .sk-btn{min-height:38px;padding:0 14px;font:600 14px 'Source Sans 3',sans-serif;border-radius:10px}
 #skob .sk3-opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -971,7 +972,7 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 #skob .sk3-note{max-width:none!important;margin-top:10px!important;font-size:15px!important;color:#a0a8b2}
 #skob .sk3-lb{display:block;margin:18px 0 8px;font:600 14px 'Source Sans 3',sans-serif;color:#a0a8b2}
 #skob-lobby.inl{position:static;inset:auto;z-index:auto;display:block;padding:0;background:none}
-#skob-lobby.inl .box{width:340px;max-height:none;overflow:visible;padding:20px 22px;border-radius:18px;background:#1f2328;border:1px solid #383d44;border-top:4px solid #ffc247;box-shadow:none;text-align:center}
+#skob-lobby.inl .box{width:min(340px,100%);max-height:none;overflow:visible;padding:20px 22px;border-radius:18px;background:#1f2328;border:1px solid #383d44;border-top:4px solid #ffc247;box-shadow:none;text-align:center}
 #skob-lobby.inl .box::before{content:"Гравцям";display:block;font:600 24px Oswald,sans-serif;text-transform:uppercase;letter-spacing:.02em}
 #skob-lobby.inl .box::after{content:"";display:block}
 #skob-lobby.inl .x,#skob-lobby.inl>.box>.sk-logo,#skob-lobby.inl .btns,#skob-lobby.inl .note,#skob-lobby.inl .or,#skob-lobby.inl .lbl{display:none}
@@ -985,6 +986,8 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 #skob-lobby.inl .steps::after{content:"або відкрийте адресу й введіть код";color:#a0a8b2;font-size:14px;margin-top:2px}
 #skob-lobby.inl h3{justify-content:center;font-size:16px;margin:16px 0 8px}
 #skob-lobby.inl .chips{justify-content:center;min-height:0}
+@media (max-width:760px){#skob.s3 .sk-top{flex-wrap:wrap;gap:8px;padding-left:14px;padding-right:14px}#skob.s3 .sk-top .sk-btn{flex:none}#skob.s3 .sk-top .sk3-net{flex:1 1 120px;min-width:0;margin-right:0;white-space:normal;line-height:1.15;padding:5px 14px}#skob.s3 .sk-top .sk3-net .t{min-width:0}#skob.s3 .sk-top [data-k=lobby],#skob.s3 .sk-top #phone-mode,#skob.s3 .sk3-snd{margin-right:0}}
+@media (max-width:760px){#skob .sk3-in{grid-template-columns:minmax(0,1fr);gap:20px}#skob .sk3-opts{grid-template-columns:minmax(0,1fr)}#skob .sk3-pick{grid-template-columns:minmax(0,1fr)}#skob-lobby.inl .box{width:100%}}   /* телефон: все в одну колонку, як у Бінго й Змагу (брендбук, пункт 2) */
 @media (max-height:700px){#skob .sk3-lg small{font-size:15px;margin-bottom:8px}#skob .sk3-lg b{font-size:56px}#skob .sk3-lg svg{width:44px;height:44px}#skob .sk3-r .sk3-hand{margin-top:8px;font-size:26px}#skob .sk3-steps{margin-bottom:10px;padding:8px 14px}#skob .sk3-lb{margin:12px 0 6px}#skob .sk3-opts .row{padding:9px 12px}#skob .sk3-pick .pk{padding:8px 12px}#skob .sk3-r .btns{margin-top:16px}#skob-lobby.inl .box{padding-top:14px;padding-bottom:14px}}
 @media (max-width:900px){`;
   const LOGO = (cls = '') => `<span class="sk-logo ${cls}" aria-label="Потужний СКОБ!"><small>Потужний</small><span class="sk-lt">${LET.map((l, i) => `<i class="c${i}">${l}</i>`).join('')}<b>!</b></span></span>`;
@@ -1038,7 +1041,7 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 #skob{position:fixed;inset:0;z-index:40;display:flex;flex-direction:column;background:radial-gradient(80% 70% at 50% 40%,#232a33,#15171b 75%);color:#f2f4f6;font:17px/1.5 'Source Sans 3',system-ui,sans-serif;overflow:hidden}
 #skob .sk-top{display:flex;align-items:center;gap:10px;padding:max(10px,env(safe-area-inset-top)) 14px 0 18px}
 #skob .sp{flex:1}
-.sk-btn{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #3b4048;background:rgba(34,38,43,.9);color:#f2f4f6;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer;white-space:nowrap}
+.sk-btn{min-height:44px;padding:0 16px;border-radius:99px;border:1px solid #383d44;background:rgba(34,38,43,.9);color:#f2f4f6;font:600 15px 'Source Sans 3',system-ui,sans-serif;cursor:pointer;white-space:nowrap}
 .sk-btn:hover{border-color:#ffc247}.sk-btn.main{background:#ffc247;border-color:#ffc247;color:#16130a;font-size:18px;padding:0 26px;min-height:54px}
 .sk-btn.warn{border-color:#ff6b5e;color:#ffb3ab}
 .sk-btn .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#6b7480;margin-right:7px;vertical-align:1px}
@@ -1080,8 +1083,8 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 
 /* ---- лобі: QR і гравці ---- */
 #skob-lobby{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(10,12,15,.9);color:#f2f4f6;font:17px/1.5 'Source Sans 3',system-ui,sans-serif}
-#skob-lobby .box{position:relative;width:min(1060px,100%);max-height:100%;overflow:auto;padding:24px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #3b4048;box-shadow:0 24px 90px #000a}
-#skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #3b4048;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
+#skob-lobby .box{position:relative;width:min(1060px,100%);max-height:100%;overflow:auto;padding:24px 26px 22px;border-radius:22px;background:#1f2328;border:1px solid #383d44;box-shadow:0 24px 90px #000a}
+#skob-lobby .x{position:absolute;right:14px;top:12px;width:44px;height:44px;border-radius:50%;border:1px solid #383d44;background:#272b31;color:#fff;font-size:22px;cursor:pointer}
 #skob-lobby .sk-logo{font-size:clamp(44px,6vw,66px)}
 #skob-lobby .row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:24px;align-items:center;margin:18px 0 8px}
 
@@ -1100,14 +1103,14 @@ footer{margin-top:7mm;padding-top:2.5mm;border-top:.6pt solid #cfd5dc;font-size:
 #skob-lobby h3 span{color:#ffc247}
 #skob-lobby .chips{display:flex;flex-wrap:wrap;gap:8px;min-height:44px}
 #skob-lobby .chips .empty{color:#a0a8b2}
-#skob-lobby .chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px;border-radius:99px;border:1px solid #3b4048;background:#272b31;color:#f2f4f6;font:600 16px 'Source Sans 3',sans-serif;cursor:pointer;animation:skup .3s both}
+#skob-lobby .chip{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px;border-radius:99px;border:1px solid #383d44;background:#272b31;color:#f2f4f6;font:600 16px 'Source Sans 3',sans-serif;cursor:pointer;animation:skup .3s both}
 #skob-lobby .chip.off{opacity:.45}
-.chip .cx,.chip .cok{display:grid;place-items:center;width:28px;height:28px;margin:0 -8px 0 4px;border-radius:50%;border:0;background:#3b4048;color:#fff;font:700 14px sans-serif;cursor:pointer}
+.chip .cx,.chip .cok{display:grid;place-items:center;width:28px;height:28px;margin:0 -8px 0 4px;border-radius:50%;border:0;background:#383d44;color:#fff;font:700 14px sans-serif;cursor:pointer}
 .chip .cx:hover{background:#ff6b5e}.chip .cok{background:#2e8f55;margin-right:2px}.chip .cok:hover{background:#3ee08f;color:#0f1714}
 #skob-lobby .chip.wait,#skob-req .chip.wait{border-color:#ffc247}
 #skob-lobby .pend h3{color:#ffc247}
 #skob-req{position:fixed;left:max(12px,env(safe-area-inset-left));bottom:calc(12px + env(safe-area-inset-bottom));z-index:45;display:flex;flex-wrap:wrap;align-items:center;gap:8px;max-width:min(560px,calc(100% - 24px));padding:10px 14px;border-radius:16px;background:#1f2328;border:1px solid #ffc247;color:#f2f4f6;font:15px/1.4 'Source Sans 3',system-ui,sans-serif;box-shadow:0 10px 40px rgba(0,0,0,.5)}
-#skob-req .chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:4px 12px;border-radius:99px;border:1px solid #3b4048;background:#272b31;font-weight:600}
+#skob-req .chip{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:4px 12px;border-radius:99px;border:1px solid #383d44;background:#272b31;font-weight:600}
 .sk-img{display:flex;justify-content:center;height:clamp(130px,30vh,340px);margin:2px 0 8px}.sk-img svg{height:100%;width:auto;max-width:100%}
 .sk-auto{display:block;height:4px;margin-top:10px;border-radius:99px;background:#2a2f35;overflow:hidden;max-width:320px}.sk-auto i{display:block;height:100%;background:#3ee08f;transform-origin:left;animation:skauto linear forwards}
 @keyframes skauto{from{transform:scaleX(0)}to{transform:scaleX(1)}}

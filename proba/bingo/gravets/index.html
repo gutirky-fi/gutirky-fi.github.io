@@ -23,7 +23,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--gd);outline-off
 .logo i{display:grid;place-items:center;width:1.04em;height:1.04em;border-radius:.16em;font-style:normal;font-size:.78em;color:#fff}
 .logo i:nth-child(1){background:var(--rd)}.logo i:nth-child(2){background:var(--bl)}.logo i:nth-child(3){background:var(--gd);color:#1d1606}.logo i:nth-child(4){background:var(--ok)}.logo i:nth-child(5){background:#8a5bd1}
 .top .sp{flex:1}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font-weight:700;font-size:14px}
 .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gd)}.chip .dot.on{background:var(--ok)}
 [hidden]{display:none!important}
 h1{margin:16px 0 6px;font:600 30px/1.05 var(--disp);text-transform:uppercase}
@@ -35,21 +35,21 @@ input{width:100%;min-height:54px;padding:8px 14px;border-radius:14px;border:1px 
 .ball{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--ln);margin-bottom:12px}
 .ball b{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--bc,#3daf6e);color:#fff;font:600 22px var(--disp);box-shadow:inset 0 -6px 10px #0004}
 .ball div{min-width:0}
-.ball small{display:block;font-weight:700;font-size:12px;color:var(--mut);letter-spacing:.04em}
+.ball small{display:block;font-weight:700;font-size:14px;color:var(--mut);letter-spacing:.04em}
 .ball .h{font-weight:700;line-height:1.25}
 .ball .a{font:600 20px var(--disp);text-transform:uppercase;color:var(--gd)}
-.meta{display:flex;justify-content:space-between;font-size:13px;color:var(--mut);font-weight:700;margin:2px 2px 6px}
+.meta{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);font-weight:700;margin:2px 2px 6px}
 .card{display:grid;grid-template-columns:repeat(var(--gc,4),1fr);gap:6px}
 .card.n9{gap:3px}.card.n9 button.on::after{display:none}.card.n9 button{aspect-ratio:.78;border-radius:7px;font:600 clamp(15px,4.6vw,21px) var(--disp);padding:0}
 .card .hd{display:grid;place-items:center;font:600 24px var(--disp);color:var(--gd)}
 .card button.e{background:none;border-style:dashed;opacity:.3}
 .card button.fr{background:#2e5a43;border-color:var(--ok);color:var(--gd)}
-.ball b.sm{font-size:17px}.ball b.hl{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}.ball b .bl{font-size:11px;letter-spacing:.06em;opacity:.85;margin-bottom:1px}
+.ball b.sm{font-size:17px}.ball b.hl{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}.ball b .bl{font-size:14px;letter-spacing:.06em;opacity:.85;margin-bottom:1px}
 .card button{aspect-ratio:1;border-radius:12px;border:1px solid var(--ln);background:var(--card);padding:3px;font-weight:700;font-size:clamp(11px,3.2vw,14px);line-height:1.12;overflow-wrap:anywhere;position:relative}
 .card.num button{font:600 26px var(--disp)}
 .card button.long{font-size:clamp(9.5px,2.7vw,12.5px);overflow-wrap:normal;word-break:normal;hyphens:manual}
 .card button.on{background:var(--ok);border-color:var(--ok);color:#0e1f15}
-.card button.on::after{content:"✓";position:absolute;right:5px;top:2px;font-size:12px}
+.card button.on::after{content:"✓";position:absolute;right:5px;top:2px;font-size:14px}
 .card button.w{background:var(--gd);border-color:var(--gd);color:#1d1606}
 .tip{color:var(--mut);font-size:14px;margin:10px 2px 0}
 .skob{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(27,29,33,0),var(--bg) 35%)}
@@ -62,7 +62,7 @@ body.fam .logo{display:none}
 body.fam .top .fm-logo{font-size:26px}
 body.fam #join .fm-logo{font-size:52px;margin:8px 0 14px}
 body.fam .in .btn{border-radius:99px;background:var(--gd);color:#16130a;border:0}
-body.fam .chip{min-height:0;padding:5px 12px;font-size:13px;gap:6px}
+body.fam .chip{min-height:0;padding:5px 12px;font-size:14px;gap:6px}
 body.fam .ball{border:0;background:#22262b}
 body.fam .ball small{color:#9aa3ad}
 body.fam .card button{border:0;background:#22262b;border-radius:14px}
@@ -154,7 +154,7 @@ body.fam .pn-b:hover{border-color:var(--gd)}
 body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
 body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
 body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
-body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn-l{margin:22px 0 8px;font:700 14px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
 body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
 body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
 body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
@@ -212,7 +212,7 @@ body.s2 .hand{margin:8px 0 22px;font:500 clamp(1.4rem,3vw,2rem)/1.15 Caveat,'Seg
 body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
 body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
-body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 13px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
+body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 14px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
 body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
 body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
 body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}

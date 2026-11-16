@@ -44,7 +44,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 .teams{display:flex;flex-wrap:wrap;gap:8px}
 .team{display:inline-flex;align-items:center;gap:6px;padding:4px 6px 4px 12px;border-radius:12px;background:var(--card);border:1px solid var(--ln);border-left:6px solid var(--c)}
 .team input{width:9.5em;min-height:38px;border:0;background:none;font-weight:700;font-size:17px;padding:0 4px}
-.team small{color:var(--mut);font-size:13px;white-space:nowrap}
+.team small{color:var(--mut);font-size:14px;white-space:nowrap}
 .team button{width:32px;height:32px;border-radius:8px;border:0;background:none;color:var(--mut)}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
 .opt{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:15px;margin-top:10px}
@@ -60,7 +60,7 @@ main{position:absolute;inset:0;padding:74px 24px 20px;display:flex;flex-directio
 .scores{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch}
 .sc{flex:1;min-width:150px;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 14px;border-radius:14px;background:var(--card);border:1px solid var(--ln);border-top:5px solid var(--c)}
 .sc b{flex:1;font-weight:700;font-size:18px;line-height:1.15}
-.sc b small{display:block;color:var(--mut);font-weight:600;font-size:13px}
+.sc b small{display:block;color:var(--mut);font-weight:600;font-size:14px}
 .sc>span{font:600 32px/1 var(--disp)}
 .sc>span.neg{color:#ff9a8a}
 .sc .adj{display:flex;flex-direction:column;gap:3px}
@@ -102,7 +102,7 @@ body.vedon .grid button{cursor:default}
 .drw.fin b{animation:pulse .6s ease-out}
 .modes{display:flex;flex-wrap:wrap;gap:8px}
 .modes button{min-height:44px;padding:8px 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card);font-weight:700;text-align:left}
-.modes button small{display:block;font-weight:600;font-size:12px;color:var(--mut)}
+.modes button small{display:block;font-weight:600;font-size:14px;color:var(--mut)}
 .modes button[aria-pressed=true]{background:var(--gd);border-color:var(--gd);color:#1d1606}.modes button[aria-pressed=true] small{color:#5a4310}
 .ved{display:flex;gap:14px;align-items:center;margin-top:16px;padding:12px;border-radius:14px;background:var(--card);border:1px dashed #5a6390}
 .ved .vq{flex:none;width:112px;height:112px;border-radius:10px;overflow:hidden}.ved .vq svg{width:100%;height:100%}
@@ -221,7 +221,7 @@ body.v2 .lbl{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut);letter-
 body.v2 .team{border-radius:12px;border:1px solid var(--ln);border-left:1px solid var(--ln);border-top:4px solid var(--c);padding:6px 6px 6px 12px;background:var(--card)}
 body.v2 .team input{font:600 18px var(--disp);text-transform:uppercase;color:var(--c);letter-spacing:.02em;width:8em}
 body.v2 .modes button{border-radius:12px;padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt)}
-body.v2 .modes button small{font:500 13px var(--txt);margin-top:2px}
+body.v2 .modes button small{font:500 14px var(--txt);margin-top:2px}
 body.v2 .modes button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
 body.v2 .modes button[aria-pressed=true] small{color:var(--mut)}
 body.v2 .act{margin-top:26px}
@@ -248,7 +248,7 @@ body.v2 .grid button:disabled{background:transparent;border:1px dashed #2c3036;c
 body.v2 .scores{gap:12px}
 body.v2 .sc{border-radius:14px;border:1px solid var(--ln);border-top:4px solid var(--c);background:var(--card);padding:10px 12px 10px 16px}
 body.v2 .sc b{font:600 22px/1 var(--disp);text-transform:uppercase;letter-spacing:.02em;color:var(--c)}
-body.v2 .sc b small{margin-top:6px;font:600 13px var(--txt);text-transform:none;letter-spacing:0;color:var(--mut);display:flex;align-items:center;gap:3px}
+body.v2 .sc b small{margin-top:6px;font:600 14px var(--txt);text-transform:none;letter-spacing:0;color:var(--mut);display:flex;align-items:center;gap:3px}
 body.v2 .sc>span{font:600 40px/1 var(--disp);color:var(--ink)}
 body.v2 .sc.lead>span{color:var(--ink)}
 body.v2 .hb{color:var(--mut)}
@@ -303,7 +303,7 @@ body.fam .scores{gap:10px}
 body.fam .sc{border-radius:14px;border:0;background:#22262b;box-shadow:inset 5px 0 0 var(--c);padding:10px 12px 10px 20px}
 body.fam .sc.lead{background:#3a3220;box-shadow:inset 5px 0 0 #ffc247}
 body.fam .sc b{font:700 20px/1.1 var(--txt);color:var(--ink)}
-body.fam .sc b small{font:600 13px var(--txt);color:var(--mut);display:flex;align-items:center;gap:3px;margin-top:4px}
+body.fam .sc b small{font:600 14px var(--txt);color:var(--mut);display:flex;align-items:center;gap:3px;margin-top:4px}
 body.fam .sc>span{font:600 38px/1 var(--disp);color:#fff}
 body.fam .sc.lead>span{color:#ffc247}
 body.fam .sc .adj button{border-radius:99px;border-color:var(--ln);background:#272b31}
@@ -420,7 +420,7 @@ body.fam .pn-b:hover{border-color:var(--gd)}
 body.fam .pn .fm-logo{font-size:46px}body.fam .pn .fm-logo small{display:none}
 body.fam .pn-n{margin:14px 0 2px;font:700 15px var(--txt);color:#9aa3ad}
 body.fam .pn-d{margin:0;color:#cfd5dc;font-size:16px;line-height:1.4}
-body.fam .pn-l{margin:22px 0 8px;font:700 13px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
+body.fam .pn-l{margin:22px 0 8px;font:700 14px var(--txt);letter-spacing:.06em;text-transform:uppercase;color:#9aa3ad}
 body.fam .pn .teams{display:flex;flex-direction:column;gap:8px;margin:0}
 body.fam .pn .team{display:flex;align-items:center;gap:10px;height:50px;padding:0 6px 0 14px;border-radius:12px;background:#272b31;border:0}
 body.fam .pn .team::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c);flex:none}
@@ -712,15 +712,15 @@ body.s3 .lnote{margin:12px 0 0;color:var(--mut,#a0a8b2);font-size:15px}
 .lpl{margin-top:16px;padding-top:14px;border-top:1px solid var(--ln,#383d44);text-align:center}
 .lpl-h{font:700 14px 'Source Sans 3',system-ui,sans-serif;color:var(--mut,#a0a8b2)}
 .lpl-h b{font:600 18px Oswald,sans-serif;color:var(--ink,#f2f4f6);margin-left:4px}
-.lpl-h small{display:block;margin-top:2px;font-weight:500;font-size:13px}
+.lpl-h small{display:block;margin-top:2px;font-weight:500;font-size:14px}
 .lpl .lpl-c{display:flex!important;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:6px;margin:8px 0 0!important;padding:0!important;max-height:70px;overflow:hidden;min-height:0!important;border:0!important;background:none!important}
 .lpl .lpl-c:empty{display:none!important}
 .lpl .lpl-c>*{display:inline-flex!important;align-items:center;gap:4px;height:32px;margin:0!important;padding:0 10px!important;border-radius:99px!important;border:0!important;background:#2a2f35!important;color:var(--ink,#f2f4f6)!important;font:600 14px 'Source Sans 3',system-ui,sans-serif!important;white-space:nowrap;max-width:100%}
 .lpl .lpl-c>.off,.lpl .lpl-c>.no{opacity:.5}
 body.s3 #lobby .igr #inl{display:none}
 .lpl .lpl-c>.empty{display:none!important}
-.lpl .lpl-c>* small{font-size:12px;color:var(--mut,#a0a8b2)}
-.lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:12px}
+.lpl .lpl-c>* small{font-size:14px;color:var(--mut,#a0a8b2)}
+.lpl .lpl-c>* button{all:unset;cursor:pointer;padding:0 2px;color:var(--mut,#a0a8b2);font-size:14px}
 .lpl .lpl-c>.more{background:none!important;border:1px dashed #4a5058!important;color:var(--mut,#a0a8b2)!important}
 .lpl .lpl-c>.lpl-hid{display:none!important}
 /* СКОБ: ті самі розміри, що в Змагу */
