@@ -296,6 +296,11 @@ a.tile{text-decoration:none}
 .tiles.vyp .tile b{font-size:18px}
 .tiles.vyp .tile span{font-size:14px}
 .tile i{border-color:rgba(217,166,64,.55);color:#f3d48a}
+.vkh{margin:0 0 16px;padding:14px 16px;border-radius:14px;background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
+.row2 .f{align-content:start}
+.rare{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:22px 0 0;padding:14px 18px;border-radius:16px;border:1px dashed var(--ln);color:var(--mut)}.rare .rt{flex:1 1 260px;min-width:0}.rare .rt b{display:block;margin-bottom:2px;color:var(--body);font:600 16px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}.rare .rt span{font-size:15px}.rare .rb{display:flex;flex-wrap:wrap;gap:8px}
+.ph{margin:-2px 0 12px;color:var(--mut);font-size:14px;line-height:1.4}.ph b{color:var(--body);font-weight:600}
+.nov{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d)}.nov .nt{flex:1 1 260px;min-width:0}.nov .nt b{display:block;margin-bottom:3px;color:var(--ink);font-size:17px}.nov .nt span{color:var(--mut);font-size:15px}.nov.pusto{border-color:rgba(61,175,110,.55);background:rgba(61,175,110,.08)}.nov .btn{flex:0 0 auto}
 .pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
 .maie{display:grid;gap:10px;margin:0 0 10px}
 .mr{padding:12px 14px 4px;border-radius:14px;background:#14171a;border:1px solid var(--ln)}
@@ -353,7 +358,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <span class="ey">Документи гуртка</span>
     <h1>Вхід виховника</h1>
     <p class="hand">усе за подіями — без пошуку по посадах</p>
-    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за вашим кодом виховника — і кілька кнопок: що сталося, те й записуєте. Книга сама розкладе записи по своїх аркушах.</p>
+    <p class="who">Поки юнаки не мають посад, усе записуєте ви. Один вхід за вашим кодом виховника — і кілька кнопок: оберіть, що записуєте. Книга сама розкладе записи по своїх аркушах.</p>
   </section>
 
   <!-- вхід -->
@@ -379,32 +384,36 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
 
   <!-- події -->
   <section id="v-hub" hidden>
-    <div class="hubhead"><h2>Що сталося?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="hubhead"><h2>Що записуємо?</h2><button class="leave" type="button" data-out><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+    <div class="vkh"><b>Як тут працювати.</b> Оберіть, що ви хочете записати, — книга сама розкладе запис по своїх аркушах. Були сходини — <b>«Після сходин»</b>. Хтось прийшов, пішов чи перейшов — <b>«Прийшов, перейшов, пішов»</b>. Гроші — <b>«Гроші й майно»</b>.</div>
+    <div class="nov pusto" id="go-hg-wrap" hidden><div class="nt"><b>У книзі ще немає учасників</b><span id="hg-pidk">Почніть звідси: запишіть усіх, хто є в гуртку, одним разом, і що вони вже мають.</span></div><button class="btn main" type="button" id="go-hg">Беру гурток</button></div>
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
-      <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>і все, що було до нас або поза гуртком: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок.</span></button>
+      <button class="tile" type="button" id="go-pp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>Запис про людину: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок. Навіщо: щоб список і історія юнака в книзі були точні.</span></button>
       <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
       <button class="tile" type="button" id="go-gm"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет: каса й майно гуртка.</span></button>
       <a class="tile" href="../zvity/"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
-      <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що нового</b><span>Хто з діловодів що вже записав і чого ще бракує.</span></button>
-      <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Чи гроші справді є: банк, коробка, чеки. Раз на місяць — звірка.</span></button>
+      <button class="tile" type="button" id="go-nv"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
+      <button class="tile" type="button" id="go-kp"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Ви — «другі очі»: звіряєте записані платежі з банком і коробкою. Без вашого ✓ внесок не вважається сплаченим.</span></button>
     </div>
+    <div class="rare" id="hub-rare"><div class="rt"><b>Раз на гурток</b><span>Усе про гурток цілком — не щодня: ви вперше берете гурток або віддаєте свій.</span></div><div class="rb"><button class="btn" type="button" id="go-hg-beru">Беру гурток</button><button class="btn" type="button" id="go-hg-peredaiu">Передаю гурток</button></div></div>
   </section>
 
   <!-- гроші й майно -->
   <section id="v-gm" hidden>
-    <div class="hubhead"><h2>Гроші й майно</h2><button class="leave" type="button" id="gm-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+    <div class="hubhead"><h2>Гроші й майно</h2><button class="leave" type="button" id="gm-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До вибору</button></div>
     <div class="tiles">
       <a class="tile" href="../kasa/?v" data-vkod><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Каса</b><span>Внески й видатки гуртка: кожен платіж — окремий рядок із квитанцією, борги «свої гроші», фото чеків.</span></a>
       <a class="tile" href="../mayno/?v" data-vkod><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/></svg></span><b>Майно</b><span>Що має гурток і де воно лежить: одна річ — один рядок; хто що взяв, що списали.</span></a>
     </div>
-    <div class="card pravylo">Каса й Майно відкриються у вашому кольорі, без повторного коду; «До подій» — назад сюди. Чи гроші справді є — у плитці «Перевірка каси» на попередній сторінці.</div>
+    <div class="card pravylo">Каса й Майно відкриються у вашому кольорі, без повторного коду; «До вибору» — назад сюди. Чи гроші справді є — у плитці «Перевірка каси» на попередній сторінці.</div>
   </section>
 
   <!-- прийшов, перейшов, пішов -->
   <section id="v-pp" hidden>
     <div id="pp-vyb">
-      <div class="hubhead"><h2>Який у вас випадок?</h2><button class="leave" type="button" id="pp-back0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До подій</button></div>
+      <div class="hubhead"><h2>Який у вас випадок?</h2><button class="leave" type="button" id="pp-back0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До вибору</button></div>
+      <div class="vkh"><b>Що це.</b> Запис про людину в гуртку. Оберіть випадок — форма покаже лише потрібні поля й підкаже, що попросити в юнака чи батьків.</div>
       <div class="tiles vyp" id="pp-tiles"></div>
       <div class="card pravylo"><b>Одне правило на все.</b> Не знаєте точно — пишіть, що відомо, і позначте «потребує перевірки»: нічого не блокується, виправити можна пізніше. Дати — справжні, з посвідки, а не сьогоднішні.</div>
     </div>
@@ -421,7 +430,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <p id="pp-sum"></p>
         <ul id="pp-what"></ul>
         <div class="dali" id="pp-dali"></div>
-        <div class="btns" style="max-width:360px;margin:16px auto 0"><button class="btn" type="button" id="pp-znov">Ще один випадок</button><button class="btn" type="button" id="pp-hub">До подій</button></div>
+        <div class="btns" style="max-width:360px;margin:16px auto 0"><button class="btn" type="button" id="pp-znov">Ще один випадок</button><button class="btn" type="button" id="pp-hub">До вибору</button></div>
       </div>
       <aside class="side" id="pp-side"></aside>
     </div>
@@ -431,7 +440,8 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
   <section id="v-nv" hidden>
     <div class="ps">
       <div class="card">
-        <div class="fhead"><h2>Що нового</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="fhead"><h2>Що вже записали діловоди</h2><button class="leave" type="button" id="nv-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Юнаки-діловоди записують самі, з телефона. Тут видно все, що вони вже записали; ваша справа — переглянути й <b>затвердити</b>.</div>
         <p class="note" style="margin-bottom:14px">Кожен запис з сайту — один раз, найновіший угорі. Натисніть на запис, щоб побачити його повністю й затвердити.</p>
         <p class="nvc" id="nv-cnt" hidden></p>
         <p class="nvc ye" id="nv-ov" hidden></p>
@@ -450,6 +460,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="ps">
       <div class="card">
         <div class="fhead"><h2>Перевірка каси</h2><button class="leave" type="button" id="kp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Гроші записують діловоди, а ви перевіряєте: чи платіж справді є в банку чи в коробці. Поки ви не поставили ✓, внесок не вважається сплаченим.</div>
         <p class="nvc ok" id="kp-zm" hidden></p>
         <div id="kp-hr"></div>
         <div id="kp-list"><p class="empty">Завантажую…</p></div>
@@ -479,6 +490,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="ps">
       <div class="card" id="ps-form">
         <div class="fhead"><h2>Після сходин</h2><button class="leave" type="button" id="ps-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>Назад</button></div>
+        <div class="vkh"><b>Що це.</b> Одна форма на все: тема, хто був, хто заплатив. Після «Надіслати» книга сама запише сходини, відвідуваність і внески.</div>
 
         <div class="step"><h3><em>1</em>Сходини</h3>
           <div class="row2">
@@ -539,7 +551,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <h2>Сходини записано</h2>
         <p id="ps-sum"></p>
         <ul id="ps-what"></ul><br>
-        <button class="btn" type="button" id="ps-hub">До подій</button>
+        <button class="btn" type="button" id="ps-hub">До вибору</button>
       </div>
 
       <aside class="side">
@@ -1006,7 +1018,7 @@ window.Tochky = (function () {
       }
       if (t.dija === 'proby') return {ok: true, ryadky: [], indeks: {}};
       if (t.dija === 'probyZapys') return {ok: true, zapysano: t.tochky.map(x => ({im: t.imena[0], t: x, ryadok: ++demoRow})), vzhe: []};
-      if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(t.dani['Де здобуто'] === 'до нас' && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
+      if (t.dija === 'zapys' && t.arkush === 'Проби' && !t.dani['Дата виконання'] && !(['до нас', 'за попереднього виховника'].includes(t.dani['Де здобуто']) && t.dani['Примітка'])) return {ok: false, pomylka: 'Вкажіть дату посвідки (як на бланку).'};
       if (t.dija === 'vypadok') { DVY.unshift({ryadok: ++demoRow, 'Дата': den(), "Ім'я": t.imya, 'Випадок': 'особливий випадок', 'Що сталося': t.shcho, 'Що вже має': t.maie, 'Чого не знаємо': t.ne, 'Що пропоную': t.propoz, 'Статус': 'відкрито', 'Хто записав': 'виховник'}); return {ok: true, ryadok: demoRow}; }
       if (t.dija === 'vypadky') return {ok: true, vypadky: JSON.parse(JSON.stringify(DVY))};
       if (t.dija === 'vyrishyty') { const x = DVY.find(y => y.ryadok === t.ryadok); if (t.status === 'вирішено' && !t.yak) return {ok: false, pomylka: 'Напишіть коротко, як вирішили.'}; x['Статус'] = t.status; x['Як вирішили'] = t.yak || x['Як вирішили']; x['Вирішено'] = t.status === 'вирішено' ? den() : ''; return {ok: true}; }
@@ -1052,7 +1064,10 @@ window.Tochky = (function () {
 
   /* ---------- вхід / вихід ---------- */
   let kod = '', imena = [];
-  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function hurtokPidkazka() {   // нова книга без учасників — «Беру гурток» стає головною підказкою (14.11)
+    $('go-hg-wrap').hidden = !!imena.length;   // верхня картка — лише коли книга порожня; завжди є секція «Раз на гурток» унизу
+  }
+  function ekran(id) { ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); const bk = document.querySelector('header.top .back'); if (bk) bk.hidden = !(id === 'v-lock-wrap' || id === 'v-hub');   /* усередині — лише свої «Назад» (14.11) */ scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -1062,7 +1077,7 @@ window.Tochky = (function () {
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
       if (v.rol !== 'v') throw new Error('Це вхід виховника — потрібен код виховника, а не код юнаків.');
-      kod = k; imena = v.imena || []; $('z-kod').value = ''; ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
+      kod = k; imena = v.imena || []; $('z-kod').value = ''; hurtokPidkazka(); ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
       if (DOKP) { history.replaceState(null, '', location.pathname + location.search); $('go-kp').click(); }
     } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
     finally { b.disabled = false; b.textContent = 'Увійти'; }
@@ -1591,6 +1606,7 @@ window.Tochky = (function () {
     perekhid: '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
     povernuvsia: '<path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-4"/>',
     poza: '<path d="M2 20h20M12 4L3.5 20M12 4l8.5 16M12 13l-3 7M12 13l3 7"/>',
+    pereryva: '<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
     yde: '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/>',
     hurtok: '<circle cx="12" cy="7" r="3"/><circle cx="5" cy="10" r="2.3"/><circle cx="19" cy="10" r="2.3"/><path d="M7 21a5 5 0 0 1 10 0M1.5 20a3.5 3.5 0 0 1 5-3.2M22.5 20a3.5 3.5 0 0 0-5-3.2"/>',
     osobl: '<circle cx="12" cy="12" r="9"/><path d="M9.2 9a3 3 0 0 1 5.6 1c0 2-2.8 2.4-2.8 4.4M12 17.6v.01"/>',
@@ -1608,33 +1624,41 @@ window.Tochky = (function () {
     perekhid: {t: 'З іншого гуртка, краю чи з України', s: 'має щось від попереднього гуртка', khto: 'nove-abo', pol: ['status', 'vid', 'plast', 'zvidky', 'prym'], maie: 'до нас',
       prosyty: ['Посвідки проб і вмілостей — фото на телефон.', 'Бланк поточної проби з підписами — щоб перенести вже підписані точки.', 'Хто був попереднім виховником (на випадок, якщо щось незрозуміло).', 'Нашивки, що вже пришиті, — «нашивка вже є», щоб не замовляти вдруге.'],
       dali: ['Копії посвідок — «Вмілості» й «Проби» (кнопка «Копія»), коли будуть фото.', 'Без документа — спитайте попереднього виховника; поки що лишіть «потребує перевірки».', 'Прізвище — у Таблиці, аркуш «Учасники» (якщо новий у книзі).']},
-    povernuvsia: {t: 'Повернувся після перерви', s: 'вже був у нашому гуртку', khto: 'vsi', pol: ['dataP', 'prymDe'], maie: 'до нас', maieNeobov: true,
+    povernuvsia: {t: 'Повернувся після перерви', s: 'вже був у нашому гуртку — після перерви чи довгої відсутності', khto: 'vsi', pol: ['dataP', 'prymDe'], maie: 'до нас', maieNeobov: true,
       prosyty: ['Що здобув(-ла) за перерву деінде (інший гурток, табір) — якщо так, додайте нижче.', 'Інакше нічого не треба: старі записи на місці, нічого не стиралось.'],
       dali: ['Статус — «активний», ім\'я знову в списках сходин.']},
     poza: {t: 'Здобув щось поза гуртком', s: 'табір, вишкіл — уже бувши в нас', khto: 'exist', pol: [], maie: 'поза гуртком',
       prosyty: ['Посвідку або підпис інструктора — фото.', 'Дату й де саме (назва табору чи вишколу).', 'Чи дали нашивку одразу (тоді «нашивка вже є» — не замовляти).'],
       dali: ['Копію посвідки — «Вмілості» (кнопка «Копія»).', 'У звітах гуртка це рахується як наш здобуток — він уже був нашим юнаком.']},
-    yde: {t: 'Йде від нас', s: 'в інший гурток, до старших, або вибуває', khto: 'exist', pol: ['kudy', 'prym'],
+    pereryva: {t: 'Пішов на перерву', s: 'ненадовго — не ходитиме, але повернеться; нічого не видаляється', khto: 'exist', pol: ['pererva', 'prym'],
+      prosyty: ['Чому й на скільки, якщо відомо, — щоб знати, коли чекати назад.', 'Чи не лишилось у нього майна гуртка (намет, книжка) — або нехай лишає, якщо повертається.'],
+      dali: ['Ім\'я зникне зі списків сходин, але все записане — проби, вмілості, історія — лишається.', 'Повернеться — плитка <b>«Повернувся після перерви»</b>: ім\'я знову в списках.']},
+    yde: {t: 'Пішов від нас', s: 'назовсім: в інший гурток, до старших або з Пласту', khto: 'exist', pol: ['kudy', 'prym'],
       prosyty: ['Куди саме — щоб новий виховник знав, звідки юнак.', 'Чи не лишилось у нього майна гуртка (намет, книжка) і боргів у касі.'],
       dali: ['<b>Виписка для нового гуртка:</b> «Звіти» → «Картка учасника» → «Як показати» → «Виписка для нового гуртка» → Друк / PDF.', 'Нічого не видаляємо — історія лишається в книзі, а ім\'я зникне зі списків сходин.']},
     hurtok: {t: 'Цілий гурток', s: 'беру гурток, який хтось уже вів, — або передаю свій', khto: '', pol: []},
     osobl: {t: 'Особливий випадок', s: 'не підходить ні під що — розберемось', khto: '', pol: []},
     maie: {t: 'Дописати, що вже має', s: '', khto: 'exist', pol: [], maie: 'у нас', skryto: true,
-      prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; здобуте в іншому гуртку — «до нас».'],
+      prosyty: ['Посвідки й бланки проб — фото.', 'Здобуте в цьому ж гуртку ще до вас: є посвідка чи бланк — «у нас» зі справжньою датою; документів немає — «за попереднього виховника»; здобуте в іншому гуртку — «до нас».'],
       dali: ['Копії — «Вмілості» й «Проби» (кнопка «Копія»).']}
   };
-  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'povernuvsia', 'poza', 'yde', 'hurtok', 'osobl'];
+  const PORYADOK_V = ['novyi', 'novatstvo', 'perekhid', 'pereryva', 'povernuvsia', 'yde', 'poza', 'osobl'];   // події по порядку: прийшов → перерва → повернувся → пішов → решта
   $('pp-tiles').innerHTML = PORYADOK_V.map(k => `<button class="tile" type="button" data-vyp="${k}"><span class="ti">${SV(IKO[k])}</span><b>${esc(VYP[k].t)}</b><span>${esc(VYP[k].s)}</span>${k === 'osobl' ? '<i id="pp-vk" hidden></i>' : ''}</button>`).join('');
 
   let UCH = [], VK = '', PP = {};   // учасники з книги; поточний випадок; стан форми
-  const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
+  const DEZ_N = {'у нас': 'Здобуто в нашому гуртку; є посвідка чи бланк зі справжньою датою.', 'до нас': 'Здобуто в іншому гуртку чи краю, ще до того як людина прийшла до нас.', 'поза гуртком': 'Табір, вишкіл чи інше поза гуртком.', 'за попереднього виховника': 'Теж у нашому гуртку, але до вас і без жодних документів. Перевірте точки й видайте посвідку — тоді змініть на «у нас».'};   // підказка під полем «Де здобуто»
+  const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)'], ['за попереднього виховника', 'за попереднього виховника (без документів)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
   async function uchZavantazhyty() {
     try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = v.uchasnyky || []; } catch (x) {}
   }
   let UCH_OK = null;
   $('go-pp').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); });
+  const hurtokZHuba = vkl => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); return ppVidkryty('hurtok', true).then(() => { if (vkl === 'peredaiu') $('hg-seg').querySelector('[data-h="peredaiu"]').click(); }); };
+  $('go-hg').addEventListener('click', () => hurtokZHuba('beru'));
+  $('go-hg-beru').addEventListener('click', () => hurtokZHuba('beru'));
+  $('go-hg-peredaiu').addEventListener('click', () => hurtokZHuba('peredaiu'));
   $('pp-back0').addEventListener('click', () => ekran('v-hub'));
-  $('pp-back').addEventListener('click', ppVybir);
+  $('pp-back').addEventListener('click', () => { if (ZH) { ZH = false; ekran('v-hub'); } else ppVybir(); });
   $('pp-hub').addEventListener('click', () => ekran('v-hub'));
   $('pp-znov').addEventListener('click', ppVybir);
   $('pp-tiles').addEventListener('click', e => { const b = e.target.closest('[data-vyp]'); if (b) ppVidkryty(b.dataset.vyp); });
@@ -1654,9 +1678,12 @@ window.Tochky = (function () {
     const nove = `<label class="f" id="pp-imn"><span>Ім'я <small>— як кличуть у гуртку, без прізвища</small></span><input class="in" id="pp-im" maxlength="40" autocomplete="off" placeholder="напр. Богдан"></label>`;
     return nove + (c.khto === 'nove-abo' ? `<label class="chk"><input type="checkbox" id="pp-vzhe"> Уже є в книзі — вибрати зі списку</label>` + vyb : '');
   }
+  const PH_STATUS = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється · <b>вибув</b> — пішов від нас (це ставлять плитки «Пішов на перерву» і «Пішов від нас»)';
+  const PH_STATUS_K = '<b>активний</b> — ходить на сходини · <b>кандидат</b> — новенький, ще придивляється';
+  const PH_VID = 'рік, з якого він у цьому гуртку';
   const POLE = {
-    status: () => `<label class="f"><span>Статус</span><select class="in" id="pp-st"><option>кандидат</option><option>активний</option></select></label>`,
-    vid: () => `<label class="f"><span>У гуртку від (рік)</span><input class="in" id="pp-vid" inputmode="numeric" maxlength="4" value="${RIK}"></label>`,
+    status: () => `<label class="f"><span>Статус</span><select class="in" id="pp-st"><option>кандидат</option><option>активний</option></select><span class="ph">${PH_STATUS}</span></label>`,
+    vid: () => `<label class="f"><span>У гуртку від (рік)</span><input class="in" id="pp-vid" inputmode="numeric" maxlength="4" value="${RIK}"><span class="ph">${PH_VID}</span></label>`,
     plast: c => `<label class="f"><span>У Пласті від (рік) <small>— якщо знаєте</small></span><input class="in" id="pp-plast" inputmode="numeric" maxlength="4" value="${c.plastD || ''}" placeholder="напр. 2022"></label>`,
     zvidky: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" placeholder="гурток / курінь / станиця, місто, країна"></label>`,
     zvidkyN: () => `<label class="f"><span>Звідки прийшов(-ла)</span><input class="in" id="pp-zv" maxlength="120" value="новацтво — рій " placeholder="новацтво — рій …"></label>`,
@@ -1664,12 +1691,16 @@ window.Tochky = (function () {
     prymN: () => `<label class="f"><span>Що пам'ятати з новацтва <small>— за бажанням, для картки</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. був вістовим рою"></label>`,
     dataP: () => `<label class="f"><span>Коли повернувся(-лась)</span><input class="in" id="pp-dp" type="date" value="${den()}"></label>`,
     prymDe: () => `<label class="f"><span>Де був(-ла) <small>— коротко, за бажанням</small></span><input class="in" id="pp-pm" maxlength="160" placeholder="напр. рік у Львові"></label>`,
+    pererva: () => `<label class="f"><span>З якого дня</span><input class="in" id="pp-dv" type="date" value="${den()}"></label>
+      <label class="f"><span>Чому <small>— коротко, за бажанням</small></span><input class="in" id="pp-kds" maxlength="120" placeholder="напр. іспити, переїзд, хворіє"></label>`,
     kudy: () => `<div class="row2"><label class="f"><span>Куди</span><select class="in" id="pp-kd"><option>в інший гурток</option><option>до старшого пластунства</option><option>вибув(-ла) з Пласту</option><option>інше</option></select></label>
       <label class="f"><span>Коли</span><input class="in" id="pp-dv" type="date" value="${den()}"></label></div>
       <label class="f"><span>Куди саме <small>— гурток, курінь, місто</small></span><input class="in" id="pp-kds" maxlength="120"></label>`
   };
 
-  async function ppVidkryty(k) {
+  let ZH = false;   // форма «Цілий гурток» відкрита з головної: «Назад» веде до вибору, а не до списку випадків
+  async function ppVidkryty(k, zHuba) {
+    ZH = !!zHuba; $('pp-back').lastChild.textContent = ZH ? 'До вибору' : 'Інший випадок';
     if (UCH_OK) { $('pp-tiles').style.opacity = .5; await UCH_OK; $('pp-tiles').style.opacity = ''; }
     VK = k; PP = {ryad: [], sent: {}, n: 0};
     const c = VYP[k];
@@ -1683,7 +1714,7 @@ window.Tochky = (function () {
         <div class="dodaty"><button class="btn" type="button" data-d="proba">+ Проба здобута</button><button class="btn" type="button" data-d="tochky">+ Точки проби</button><button class="btn" type="button" data-d="vmil">+ Вмілість</button><button class="btn" type="button" data-d="vidzn">+ Відзнака</button></div></div>` : '')
       + `<button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Надіслати</button>`;
     $('pp-side').innerHTML = `<div class="card"><h3>Що попросити</h3><ul>${c.prosyty.map(x => `<li>${x}</li>`).join('')}</ul></div>`
-      + `<div class="card"><h3>Одне правило</h3><ul><li>Не знаєте точно — пишіть, що відомо, і позначте <b>«потребує перевірки»</b>. Нічого не блокується.</li><li>Дати — справжні, з посвідки. Невідома — позначте «дата невідома» і напишіть, звідки.</li>${c.maie === 'до нас' ? '<li>«До нас» — звіти гуртка не рахують це як наш здобуток; «Картка учасника» покаже окремо.</li>' : ''}</ul></div>`;
+      + `<div class="card"><h3>Одне правило</h3><ul><li>Не знаєте точно — пишіть, що відомо, і позначте <b>«потребує перевірки»</b>. Нічого не блокується.</li><li>Дати — справжні, з посвідки. Невідома — позначте «дата невідома» і напишіть, звідки.</li>${c.maie === 'до нас' ? '<li>«До нас» — звіти гуртка не рахують це як наш здобуток; «Картка учасника» покаже окремо.</li>' : ''}${c.maie ? '<li>«За попереднього виховника» — здобуто в нашому гуртку до вас і без документів. Звіти гуртка теж не рахують це за ваш здобуток; після перевірки змініть на «у нас».</li>' : ''}</ul></div>`;
     const vz = $('pp-vzhe'); if (vz) vz.addEventListener('change', () => { $('pp-imv').hidden = !vz.checked; $('pp-imn').hidden = vz.checked; ['pp-st', 'pp-vid'].forEach(id => { const el = $(id); if (el) el.closest('.f').hidden = vz.checked; }); });
     if (k === 'poza') dodatyRyad('vmil');
     $('pp-send').addEventListener('click', ppNadislaty);
@@ -1703,7 +1734,7 @@ window.Tochky = (function () {
     };
     const [nz, h] = T[typ];
     $('pp-maie').insertAdjacentHTML('beforeend', `<div class="mr" data-r="${n}" data-t="${typ}"><div class="mh"><b>${nz}</b><button type="button" class="rx" aria-label="Прибрати">${SV('<path d="M18 6L6 18M6 6l12 12"/>')}</button></div>${h}
-      <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div>
+      <div class="row2"><label class="f"><span>Де здобуто</span>${dzS(dez)}</label><label class="f"><span>Звідки / де <small>— для примітки</small></span><input class="in" data-k="de" maxlength="100" value="${esc(dez === 'до нас' ? zv : '')}" placeholder="${dez === 'поза гуртком' ? 'назва табору чи вишколу' : 'гурток, місто'}"></label></div><p class="note sm" data-dezn>${DEZ_N[dez] || ''}</p>
       <label class="chk sm"><input type="checkbox" data-k="per"> потребує перевірки (немає документа чи не все відомо)</label><p class="rok" hidden>✓ у книзі</p></div>`);
     if (typ === 'tochky') { const nr = $('pp-maie').lastElementChild; nr._tt = new Set(); tkMaluy(nr); tkKnyha(); }
     if (typ === 'vidzn' || typ === 'vmil') { nzKnyha(); nzPerevirka($('pp-maie').lastElementChild); }
@@ -1723,6 +1754,7 @@ window.Tochky = (function () {
     nzSpysok = sp; $('dl-nazvyKnyhy').innerHTML = sp.map(x => `<option value="${esc(x)}">`).join('');
     document.querySelectorAll('#pp-maie .mr[data-t="vidzn"], #pp-maie .mr[data-t="vmil"]').forEach(nzPerevirka);
   }
+  $('pp-body').addEventListener('change', e => { if (!e.target.matches('[data-k="dez"]')) return; const r = e.target.closest('.mr'), p = r && r.querySelector('[data-dezn]'); if (p) p.textContent = DEZ_N[e.target.value] || ''; });
   $('pp-body').addEventListener('change', e => { const r = e.target.closest('.mr'); if (r && (r.dataset.t === 'vidzn' || r.dataset.t === 'vmil') && e.target.matches('[data-k="nazva"]')) nzPerevirka(r); });
 
   /* ---- точки проби кнопками: спільний код tochky.js (як у «Пробах» юнаків) ---- */
@@ -1761,9 +1793,9 @@ window.Tochky = (function () {
     const out = [];
     for (const r of $('pp-maie') ? $('pp-maie').querySelectorAll('.mr') : []) {
       const typ = r.dataset.t, id = 'r' + r.dataset.r, dez = pole(r, 'dez'), de = pole(r, 'de'), per = pole(r, 'per'), nezn = pole(r, 'nezn'), d = pole(r, 'data');
-      const prym = [dez === 'до нас' ? 'до нас' + (de ? ': ' + de : '') : dez === 'поза гуртком' ? 'поза гуртком' + (de ? ': ' + de : '') : de, per ? 'потребує перевірки' : ''].filter(Boolean).join('; ');
+      const prym = [dez === 'до нас' ? 'до нас' + (de ? ': ' + de : '') : dez === 'за попереднього виховника' ? 'за попереднього виховника, без документів' + (de ? ': ' + de : '') : dez === 'поза гуртком' ? 'поза гуртком' + (de ? ': ' + de : '') : de, per ? 'потребує перевірки' : ''].filter(Boolean).join('; ');
       const dzK = dez === 'у нас' ? '' : dez;
-      const bezDaty = msg => { if (!d && !nezn) return msg; if (!d && nezn && dez !== 'до нас') return 'Без дати можна лише для «до нас». ' + msg; if (!d && nezn && !de) return 'Дата невідома — напишіть у «Звідки / де», звідки це.'; return ''; };
+      const bezDaty = msg => { if (!d && !nezn) return msg; if (!d && nezn && dez !== 'до нас' && dez !== 'за попереднього виховника') return 'Без дати можна лише для «до нас» і «за попереднього виховника». ' + msg; if (!d && nezn && !de && dez === 'до нас') return 'Дата невідома — напишіть у «Звідки / де», звідки це.'; return ''; };
       if (typ === 'proba') {
         const e = bezDaty('Вкажіть дату посвідки (або «дата невідома»).'); if (e) return [e, r];
         out.push({id, t: pole(r, 'proba') + ' — посвідка' + (dzK ? ' (' + dzK + ')' : ''), z: {dija: 'zapys', arkush: 'Проби', dani: {"Ім'я": im, 'Проба': pole(r, 'proba'), 'Точка': 'посвідка', 'Статус': 'здобуто', 'Дата виконання': d, 'Хто підтвердив': pole(r, 'khto'), 'Примітка': prym, 'Де здобуто': dzK}}});
@@ -1832,6 +1864,7 @@ window.Tochky = (function () {
     if (v('pp-zv') && v('pp-zv') !== 'новацтво — рій') polia['Звідки прийшов'] = v('pp-zv');
     let prym = v('pp-pm');
     if (VK === 'povernuvsia') { polia['Статус'] = 'активний'; prym = 'повернувся(-лась) ' + ddd(v('pp-dp') || den()) + (prym ? ' (' + prym + ')' : ''); }
+    if (VK === 'pereryva') { polia['Статус'] = 'вибув'; polia['Пішов (коли, куди)'] = ddd(v('pp-dv') || den()) + ' — на перерву' + (v('pp-kds') ? ': ' + v('pp-kds') : ''); }
     if (VK === 'yde') { polia['Статус'] = 'вибув'; polia['Пішов (коли, куди)'] = ddd(v('pp-dv') || den()) + ' — ' + v('pp-kd') + (v('pp-kds') ? ': ' + v('pp-kds') : ''); }
     if (novyi || Object.keys(polia).length || prym)
       zad.push({id: 'u', t: novyi ? 'Учасники: ' + im + ' (' + (polia['Статус'] || 'кандидат') + ')' : 'Учасники: ' + im + (polia['Статус'] ? ' → ' + polia['Статус'] : ''), zupyn: true,
@@ -1850,11 +1883,11 @@ window.Tochky = (function () {
       <div id="hg-beru">
         <div class="step"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
           <label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
-          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"></label></div>
+          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select><span class="ph">${PH_STATUS_K}</span></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"><span class="ph">${PH_VID}</span></label></div>
           <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
           <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
         <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
-          <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас — «у нас» зі справжньою датою; в іншому гуртку — «до нас».</p>
+          <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас: є посвідка чи бланк — «у нас» зі справжньою датою; документів немає — «за попереднього виховника»; в іншому гуртку — «до нас».</p>
           <button class="btn" type="button" id="hg-maie" style="margin-top:10px">${SV(IKO.maie)}Дописати, що вже має</button></div>
         <div class="step"><h3><em>3</em>Минуле гуртка<small>за бажанням — можна пропустити</small></h3>
           <ul class="spl"><li>Стара книга чи папери — сфотографуйте або відскануйте в папку Диска, а в Таблиці, аркуш <b>«Архів»</b>, — рядок: рік, що це, посилання.</li><li>Минулі роки — лише якщо є дані: аркуші <b>«Роки»</b> й <b>«Історія учасників»</b> (вручну). Немає — нічого страшного: книга почнеться з вашого року.</li><li>Прізвища — у Таблиці, аркуш «Учасники».</li></ul></div>

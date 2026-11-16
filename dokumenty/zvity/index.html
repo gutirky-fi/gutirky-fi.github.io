@@ -1121,7 +1121,8 @@ window.Stan = (function () {
   const MIS = ['січень', 'лютий', 'березень', 'квітень', 'травень', 'червень', 'липень', 'серпень', 'вересень', 'жовтень', 'листопад', 'грудень'];
   const sohodni = () => dt(D && D.sohodni) || new Date().toISOString().slice(0, 10);
   const nazvaH = () => t(D.nazva) || 'наш гурток';
-  const doNas = r => t(r['Де здобуто']).toLowerCase() === 'до нас';   // здобуто до переходу в наш гурток — не здобуток гуртка
+  const doNas = r => ['до нас', 'за попереднього виховника'].includes(t(r['Де здобуто']).toLowerCase());   // «за попереднього виховника» — у цьому ж гуртку, але до прийняття гуртка й без документів: рахуємо окремо, як «до нас»
+  const zaPop = r => t(r['Де здобуто']).toLowerCase() === 'за попереднього виховника';   // здобуто до переходу в наш гурток — не здобуток гуртка
   const pos = posada => { const p = A('Посади').filter(r => t(r['Посада']) === posada && t(r["Ім'я"]) && !dt(r['До'])); return p.length ? t(p[p.length - 1]["Ім'я"]) : ''; };
 
   /* ---------- період ---------- */
@@ -1390,7 +1391,7 @@ window.Stan = (function () {
     const plast = t(u['У Пласті від']), zvidky = t(u['Звідки прийшов']), pishov = t(u['Пішов (коли, куди)']);
     if (plast && (!vid || plast < vid)) khr.push({d: plast + '-00', p: plast, s: 'прийшов(-ла) в Пласт', rk: 1});
     if (vid) khr.push({d: vid + '-01', p: vid, s: 'прийшов(-ла) в гурток' + (zvidky ? ' — з: ' + esc(zvidky) : ''), rk: 1});
-    const dN = x => doNas(x) ? ' <span class="m">(до нас)</span>' : '';
+    const dN = x => zaPop(x) ? ' <span class="m">(за попереднього виховника)</span>' : doNas(x) ? ' <span class="m">(до нас)</span>' : '';
     pos.forEach(x => { if (dt(x['Від'])) khr.push({d: dt(x['Від']), s: 'посада: ' + esc(x['Посада'])}); if (dt(x['До'])) khr.push({d: dt(x['До']), s: 'закінчив(-ла) посаду ' + esc(x['Посада'])}); });
     const prRazom = {};
     pro.forEach(x => { const pr = t(x['Проба']), d = dt(x['Дата виконання']); if (!pr) return; const q = prRazom[pr] = prRazom[pr] || {t: [], pochav: '', ost: '', posv: null};
