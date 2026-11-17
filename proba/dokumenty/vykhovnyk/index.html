@@ -379,6 +379,7 @@ a.tile{text-decoration:none}
 .vkh{margin:0 0 16px;padding:14px 16px;border-radius:var(--s-r,12px);background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
 .row2 .f{align-content:start}
 .rare{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:22px 0 0;padding:14px 18px;border-radius:var(--s-r-plytka,18px);border:1px dashed var(--ln);color:var(--mut)}.rare .rt{flex:1 1 260px;min-width:0}.rare .rt b{display:block;margin-bottom:2px;color:var(--body);font:600 16px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}.rare .rt span{font-size:15px}.rare .rb{display:flex;flex-wrap:wrap;gap:8px}
+.hg-roky{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 18px;margin:4px 0 6px}.hg-roky .hr{display:flex;align-items:center;gap:8px;margin:0}.hg-roky .hr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.hg-roky .hr .in{width:4.8em;flex:none;text-align:center}
 .ph{margin:-2px 0 12px;color:var(--mut);font-size:14px;line-height:1.4}.ph b{color:var(--body);font-weight:600}
 .nov{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;border-radius:var(--s-r-plytka,18px);background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d)}.nov .nt{flex:1 1 260px;min-width:0}.nov .nt b{display:block;margin-bottom:3px;color:var(--ink);font-size:17px}.nov .nt span{color:var(--mut);font-size:15px}.nov.pusto{border-color:rgba(61,175,110,.55);background:rgba(61,175,110,.08)}.nov .btn{flex:0 0 auto}
 .pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
@@ -2008,7 +2009,8 @@ window.Tochky = (function () {
       <div id="hg-beru">
         <div class="step"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
           <label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
-          <div class="row2"><label class="f"><span>Статус</span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select><span class="ph">${PH_STATUS_K}</span></label><label class="f"><span>У гуртку від (рік) <small>— якщо знаєте</small></span><input class="in" id="hg-vid" inputmode="numeric" maxlength="4"><span class="ph">${PH_VID}</span></label></div>
+          <div class="f" id="hg-roky-w" hidden><span>У гуртку від (рік) <small>— кожному свій; не знаєте — порожньо</small></span><div class="hg-roky" id="hg-roky"></div><span class="ph">${PH_VID}</span></div>
+          <label class="f"><span>Статус <small>— для всіх</small></span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select><span class="ph">${PH_STATUS_K}</span></label>
           <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
           <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
         <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
@@ -2025,14 +2027,24 @@ window.Tochky = (function () {
     $('pp-side').innerHTML = `<div class="card"><h3>Як це працює</h3><ul><li><b>Беру гурток</b> — спершу всі імена одним разом, потім для кожного «що вже має».</li><li><b>Передаю</b> — нічого не надсилається: лише що зробити, щоб нічого не загубилось.</li></ul></div>`;
     $('hg-seg').addEventListener('click', e => { const b = e.target.closest('[data-h]'); if (!b) return; $('hg-seg').querySelectorAll('[data-h]').forEach(x => x.setAttribute('aria-selected', String(x === b))); $('hg-beru').hidden = b.dataset.h !== 'beru'; $('hg-peredaiu').hidden = b.dataset.h !== 'peredaiu'; $('pp-prog').hidden = true; $('pp-msg').textContent = ''; });
     $('hg-maie').addEventListener('click', () => ppVidkryty('maie'));
+    const hgImena = () => [...new Set($('hg-im').value.split(/\n/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean))];
+    const HG_RIK = {};   // рік кожного — не губиться, коли список імен змінюється
+    const hgRoky = () => {
+      const im = hgImena(), w = $('hg-roky');
+      $('hg-roky-w').hidden = !im.length;
+      w.innerHTML = im.map((x, i) => `<label class="hr"><b>${esc(x)}</b><input class="in" data-im="${esc(x)}" inputmode="numeric" maxlength="4" placeholder="рік" value="${esc(HG_RIK[x] || '')}" aria-label="${esc(x)} — у гуртку від (рік)"></label>`).join('');
+    };
+    $('hg-im').addEventListener('input', hgRoky);
+    $('hg-roky').addEventListener('input', e => { const i = e.target.closest('[data-im]'); if (i) HG_RIK[i.dataset.im] = i.value.trim(); });
     $('pp-send').addEventListener('click', () => {
       const msg = $('pp-msg'); msg.classList.remove('bad');
-      const im = [...new Set($('hg-im').value.split(/\n/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean))];
+      const im = hgImena();
       if (!im.length) { msg.textContent = 'Впишіть імена — кожне з нового рядка.'; msg.classList.add('bad'); return $('hg-im').focus(); }
-      const vid = $('hg-vid').value.trim();
-      if (vid && !/^\d{4}$/.test(vid)) { msg.textContent = 'Рік — чотири цифри.'; msg.classList.add('bad'); return $('hg-vid').focus(); }
+      const rik = x => (HG_RIK[x] || '').trim();
+      const zle = im.find(x => rik(x) && !/^\d{4}$/.test(rik(x)));
+      if (zle) { msg.textContent = `${zle}: рік — чотири цифри (напр. 2024) або порожньо.`; msg.classList.add('bad'); return $('hg-roky').querySelector(`[data-im="${CSS.escape(zle)}"]`)?.focus(); }
       const ye = im.filter(x => UCH.some(u => u.im.toLowerCase() === x.toLowerCase()) && !PP.sent['h:' + x]);
-      const zad = im.filter(x => !ye.includes(x)).map(x => ({id: 'h:' + x, t: x, z: {dija: 'uchasnyk', imya: x, novyi: true, polia: Object.assign({'Статус': $('hg-st').value}, vid ? {'У гуртку від (рік)': +vid} : {}), prymitka: $('hg-pm').value.trim()}}));
+      const zad = im.filter(x => !ye.includes(x)).map(x => ({id: 'h:' + x, t: x, z: {dija: 'uchasnyk', imya: x, novyi: true, polia: Object.assign({'Статус': $('hg-st').value}, rik(x) ? {'У гуртку від (рік)': +rik(x)} : {}), prymitka: $('hg-pm').value.trim()}}));
       if (!zad.length) { msg.textContent = 'Усі ці імена вже є в книзі.'; msg.classList.add('bad'); return; }
       vykonaty(zad, z => hotovo(`Записано: <b>${z.length}</b>${ye.length ? ` · уже були в книзі: ${esc(ye.join(', '))}` : ''}`, z, ['Прізвища — у Таблиці, аркуш «Учасники».', 'Для кожного, у кого вже щось є: «Цілий гурток» → «Дописати, що вже має».']));
     });
