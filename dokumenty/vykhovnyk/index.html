@@ -36,6 +36,17 @@
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 
@@ -65,6 +76,17 @@
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* Документи гуртка — спільні стилі сторінок (Д1); вставляє zibraty.py. */
@@ -118,7 +140,7 @@ button{cursor:pointer}
 .in:focus{border-color:#6b7480;outline:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 18px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:16px;text-decoration:none}
-.btn:hover{border-color:#5a6573}
+.btn:where(:not([disabled])):hover{color:var(--d-t,var(--s-upyu-t))}
 .btn svg{width:18px;height:18px;flex:none}
 .btn.main{background:var(--d);border-color:var(--d);color:#fff}
 .btn.main:hover{background:#d8345a}
@@ -278,12 +300,12 @@ a.tile{text-decoration:none}
 .pk .vh .lnk{display:block;white-space:normal;text-align:left;padding:6px 0 0}
 .zm-b{flex:none;padding:7px 14px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:var(--card2);color:var(--ink);font-weight:700;font-size:14px;cursor:pointer}
 .zm-dii{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:4px}
-.zm-dii .x-b{white-space:nowrap;padding:9px 12px;border-radius:var(--s-r,12px);border:1px solid rgba(200,40,74,.6);background:none;color:#ffb3c3;font-weight:600;font-size:14px;cursor:pointer}
+.zm-dii .x-b{white-space:nowrap;padding:9px 12px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:none;color:var(--s-pomylka);font-weight:600;font-size:14px;cursor:pointer}
 .zm-dii .ok-b{flex:0 1 160px;padding:10px 16px;border-radius:var(--s-r,12px);border:0;background:var(--d);color:#0e1f15;font-weight:800;font-size:15px;cursor:pointer}
 .pay .pr>button:not(.lnk):not([aria-pressed=true]):hover,.zm-b:hover{border-color:var(--d);background:#2b333b;color:var(--ink)}
 .pay .lnk:hover,.vn-l .lnk:hover,.vse-ok .lnk:hover,.pay .bh .lnk:hover,.pay-all:hover,.inshi>summary:hover{color:#8fe3b4!important;text-decoration:underline}
 .yak button:not([aria-pressed=true]):hover{color:var(--ink);background:rgba(255,255,255,.06)}
-.zm-dii .x-b:hover{background:rgba(200,40,74,.18);color:#ffd0da}.zm-dii .ok-b:hover{background:#4cc07f}
+.zm-dii .x-b:hover{background:rgba(255,106,106,.14);border-color:var(--s-pomylka)}.zm-dii .x-b::before{content:"✕";margin-right:.45em;font-weight:700}.zm-dii .ok-b:hover{background:#4cc07f}
 .pay button:focus-visible,.zm-b:focus-visible,.yak button:focus-visible,.zm-dii button:focus-visible{outline:2px solid var(--ok-t);outline-offset:2px}
 .pk .rl1{flex:1 1 auto;font-size:14px;font-weight:600;color:var(--mut);line-height:1.2}.pk .rl1 small{display:block;font-weight:400;font-size:12.5px}
 .pk .r1{flex-wrap:wrap}.pk .rl1{white-space:nowrap;flex:1 1 100%}.pk .r1 .sum{flex:1 1 60px;min-width:0}.zmin:has(.vh.vyb:not([hidden])) .ok-b{display:none}

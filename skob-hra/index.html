@@ -35,6 +35,17 @@
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 
