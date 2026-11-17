@@ -540,7 +540,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <button class="btn" type="button" id="nv-re" style="width:100%;margin-top:14px">Оновити</button>
       </div>
       <aside class="side">
-        <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li></ul></div>
+        <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li><li><b>Гроші</b> (внески, видатки) тут не затверджують: біля них кнопка «Перевірити в касі» — там «✓ є в банку» або «✗ немає в банку».</li></ul></div>
         <div class="card"><h3>Щось не так?</h3><ul><li>Виправте рядок просто в книзі.</li><li>Зіпсували багато — «Файл → Історія версій» у Google Таблиці поверне будь-який попередній стан.</li><li>Повна історія — аркуш «Зміни».</li></ul></div>
       </aside>
     </div>
@@ -1055,6 +1055,8 @@ window.Tochky = (function () {
 
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
   const DNV = [   // проба «Що нового»
+    {koly: '09.11.2026 20:12', dija: 'запис', arkush: 'Фінанси', ryadok: 35, khto: 'Дана', shcho: '09.11.2026 · надходження · внески · Олесь · 20 € · MobilePay', zatverdzheno: false,
+     pola: [['Дата', '09.11.2026'], ['Рух', 'надходження'], ['Категорія', 'внески'], ["Хто (ім'я)", 'Олесь'], ['Сума, €', '20'], ['Як платили', 'MobilePay']]},
     {koly: '08.11.2026 19:42', dija: 'скасування', arkush: 'Фінанси', ryadok: 17, khto: 'Дана', shcho: 'було: 08.11.2026 · надходження · внески · внесок за листопад', porozhnio: true},
     {koly: '08.11.2026 19:40', dija: 'виправлення', arkush: 'Сходини', ryadok: 12, khto: 'Олесь', shcho: '08.11.2026 · 12 · Вузли · відкриття · гутірка · гра', zatverdzheno: false,
      pola: [['Дата', '08.11.2026'], ['№', '12'], ['Тема', 'Вузли'], ['Програма (коротко)', 'відкриття · гутірка · гра «Потужний СКОБ!» · завершення'], ['Гутірка / гра з бібліотеки', 'гра «Потужний СКОБ!»'], ['Проба / вмілість (якщо стосується)', 'вмілість «Мандрівник»'], ['Відповідальний', 'Олесь'], ['Місце', 'домівка'], ['Присутніх', '6']]},
@@ -1216,7 +1218,9 @@ window.Tochky = (function () {
         + (Object.keys(gr).length ? `<div class="pr">${['+', '−', 'в'].filter(m => gr[m]).map(m => `<div><b>${ZN[m]}:</b> ${gr[m].map(esc).join(', ')}</div>`).join('')}</div>` : '')
         + `<div class="act">${x.zatverdzheno
             ? `<button class="btn" type="button" data-z="0" data-i="${i}">Зняти затвердження</button><small>Тоді діловод знову зможе виправити.</small>`
-            : `<button class="btn ok" type="button" data-z="1" data-i="${i}">✓ Затвердити</button><small>Після цього сайт запис уже не змінить.</small>`}</div></div>`;
+            : x.arkush === 'Фінанси'
+              ? `<button class="btn" type="button" data-kp="1">Перевірити в касі</button><small>Гроші затверджує лише перевірка: чи є платіж у банку, чи гроші в коробці. Тут «Затвердити» немає — щоб не пропустити платіж, якого в банку нема.</small>`
+              : `<button class="btn ok" type="button" data-z="1" data-i="${i}">✓ Затвердити</button><small>Після цього сайт запис уже не змінить.</small>`}</div></div>`;
     }
     return `<li class="${x.zatverdzheno ? 'zt' : ''}${x.dija === 'блокування' ? ' blk' : ''}" data-i="${i}"><button class="row" type="button"${x.pola ? ` aria-expanded="${!!vidkr}"` : ' disabled'}><span class="k"><b>${esc(t || '')}</b>${esc(d)}</span><span class="t"><span class="d ${DIJA[x.dija] || ''}">${esc(x.dija)}</span>${x.arkush !== '—' ? esc(x.arkush) + `<span class="h">· ${esc(x.khto || '—')}</span>` : ''}</span>${st}<span class="s">${esc(x.shcho)}</span></button>${more}</li>`;
   }
@@ -1233,6 +1237,7 @@ window.Tochky = (function () {
     } catch (x) { l.innerHTML = `<li><span class="row"><span class="s">${esc(ludsky(x))}</span></span></li>`; }
   }
   $('nv-list').addEventListener('click', async e => {
+    if (e.target.closest('button[data-kp]')) { $('go-kp').click(); return; }   // грошовий запис — у «Перевірку каси» (✓ є в банку / ✗ немає), а не загальне «Затвердити»
     const z = e.target.closest('button[data-z]');
     if (z) {
       const i = +z.dataset.i, x = NV[i], tak = z.dataset.z === '1';
