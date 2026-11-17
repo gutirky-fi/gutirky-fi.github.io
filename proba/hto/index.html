@@ -11,7 +11,41 @@
 <!-- «Жеребкування» — інструмент виховника: рулетка «хто наступний», поділ на групи й пари на великому екрані.
      Джерело: _robota/proby/hto/ (zibraty.py підставляє логотип і лілею). Імена — лише в цьому браузері (localStorage), нікуди не надсилаються. -->
 <style>
-:root{--bg:#1b1d21;--card:#22262b;--card2:#2a2f35;--ln:#383d44;--ink:#f2f4f6;--body:#cfd5dc;--mut:#a0a8b2;--gd:#ffc247;--hand:#2fd2c0;
+/*standart*/
+/* ═══ СТАНДАРТ ПЛАСТОВОЇ БІБЛІОТЕКИ — один файл для всіх сторінок ═══
+   Джерело: _robota/src/standart.css. Правити ЛИШЕ тут, потім:
+     python3 _robota/src/standart.py        (переносить у всі джерела)
+     python3 _robota/src/standart.py --perevir   (шукає відступи від стандарту)
+   Опис людською мовою — https://claude.ai/artifact/5yzwe1ZcDYs3mpzEZ8QCCi (частини 1–7).
+   Місцеві назви розділів (--bg, --gd, --d …) лише посилаються сюди: --gd на головній = --s-vyh, в іграх = --s-ihry. */
+:root{
+  /* основа — темний екран */
+  --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
+  --s-ink:#f2f4f6; --s-body:#cfd5dc; --s-mut:#a0a8b2;
+  /* улади: колір показує, для кого сторінка; «-t» — світліший, для тексту на темному; «-on» — текст на кнопці цього кольору */
+  --s-upn:#ffd23f; --s-upn-on:#1d1606;
+  --s-upyu:#c8284a; --s-upyu-t:#ff7d99; --s-upyu-on:#ffffff;
+  --s-vyh:#3daf6e; --s-vyh-t:#62cf93; --s-vyh-on:#0e1f15;
+  --s-ups:#b0773a;
+  --s-all:#c9cfd6;
+  --s-all4:linear-gradient(90deg,var(--s-upn) 0 25%,var(--s-upyu) 0 50%,var(--s-vyh) 0 75%,var(--s-ups) 0);
+  /* службові */
+  --s-ihry:#ffc247; --s-ihry-on:#1d1606;
+  --s-hand:#2fd2c0; --s-ol:#9fb57a;
+  --s-ok:#62cf93; --s-uvaga:#f0c060; --s-pomylka:#ff6a6a;
+  /* папір (бланки, звіти, PDF) */
+  --s-p-bg:#ffffff; --s-p-ink:#1d2125; --s-p-mut:#5f6873; --s-p-ln:#cfd5dc; --s-p-ac:#c8284a; --s-p-th:#f9e6ea;
+  /* шрифти */
+  --s-disp:Oswald,'Arial Narrow',sans-serif; --s-txt:'Source Sans 3',system-ui,sans-serif; --s-ruka:Caveat,'Segoe Print',cursive;
+  /* заокруглення: кнопка й поле 12, плитка 18, велика картка й вікно 20, пігулка кругла; дрібні деталі: мітка 6, смужка 3 */
+  --s-r:12px; --s-r-plytka:18px; --s-r-karta:20px; --s-r-pil:99px; --s-r-mitka:6px; --s-r-smuzhka:3px;
+  /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
+  --s-h:50px; --s-h-hra:54px;
+}
+/* ═══ кінець стандарту ═══ */
+/*/standart*/
+
+:root{--bg:var(--s-bg);--card:var(--s-card);--card2:var(--s-card2);--ln:var(--s-ln);--ink:var(--s-ink);--body:var(--s-body);--mut:var(--s-mut);--gd:var(--s-ihry);--hand:var(--s-hand);
   --disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif;--pad:max(24px,calc(50vw - 620px))}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
@@ -25,10 +59,10 @@ button{cursor:pointer}
 .top{position:fixed;left:0;right:0;top:0;z-index:5;display:flex;align-items:center;gap:12px;padding:14px var(--pad);background:var(--bg);border-bottom:1px solid var(--ln)}
 .top .sp{flex:1}
 .top .pl{height:38px;width:auto;display:block}
-.chip{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;min-width:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt);color:var(--ink);text-decoration:none}
+.chip{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;min-width:40px;padding:6px 14px;border-radius:var(--s-r-pil,99px);border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt);color:var(--ink);text-decoration:none}
 .chip.ic{padding:0;width:40px}
 main{position:absolute;inset:0;padding:96px var(--pad) 28px;overflow:auto}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 20px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font:700 16px var(--txt);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--s-h,50px);padding:10px 20px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:var(--card2);font:700 16px var(--txt);color:var(--ink)}
 .btn:hover:not(:disabled){border-color:#5a616b}
 .btn.main{background:var(--gd);border-color:var(--gd);color:#1d1606}
 .btn.main:hover:not(:disabled){background:#ffd06b}
@@ -41,23 +75,23 @@ main{position:absolute;inset:0;padding:96px var(--pad) 28px;overflow:auto}
 .lg b{font:600 60px/.8 var(--disp);text-transform:uppercase;padding-top:3px}
 .hand{margin:16px 0 22px;font:500 32px/1.1 Caveat,'Segoe Print',cursive;color:var(--hand)}
 .lbl{display:flex;justify-content:space-between;gap:10px;margin:18px 0 8px;font-weight:700;font-size:14px;color:var(--mut)}
-textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-radius:14px;border:1px solid var(--ln);background:#14171a;font-size:18px;line-height:1.5}
+textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:#14171a;font-size:18px;line-height:1.5}
 .note{margin:8px 0 0;font-size:14px;color:var(--mut)}
 .quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.quick button{min-height:38px;padding:6px 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt)}
+.quick button{min-height:38px;padding:6px 12px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:var(--card);font:700 14px var(--txt)}
 .quick button:hover{border-color:var(--gd)}
-.box{padding:22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
+.box{padding:22px;border-radius:var(--s-r-plytka,18px);background:var(--card);border:1px solid var(--ln);border-top:4px solid var(--gd)}
 .box + .box{margin-top:14px}
 .box h2{margin:0 0 4px;font:600 22px var(--disp);text-transform:uppercase;letter-spacing:.03em}
 .box p{margin:0;color:var(--mut);font-size:15px}
-.box .btn{width:100%;margin-top:14px;min-height:52px;font-size:17px}
+.box .btn{width:100%;margin-top:14px;min-height:var(--s-h,50px);font-size:17px}
 .opt{display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--body);font-size:15px}
 .opt input{width:18px;height:18px;accent-color:var(--gd)}
-.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-top:12px;border-radius:12px;background:#14171a;border:1px solid var(--ln)}
-.seg button{min-height:38px;border:0;border-radius:9px;background:none;font:700 15px var(--txt);color:var(--mut)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-top:12px;border-radius:var(--s-r,12px);background:#14171a;border:1px solid var(--ln)}
+.seg button{min-height:38px;border:0;border-radius:var(--s-r,12px);background:none;font:700 15px var(--txt);color:var(--mut)}
 .seg button[aria-pressed=true]{background:var(--card2);color:var(--ink)}
 .step{display:flex;align-items:center;gap:10px;margin-top:12px}
-.step button{width:44px;height:44px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font:700 22px var(--txt)}
+.step button{width:44px;height:44px;border-radius:var(--s-r,12px);border:1px solid var(--ln);background:var(--card2);font:700 22px var(--txt)}
 .step b{min-width:48px;text-align:center;font:600 34px var(--disp);color:var(--gd)}
 .step span{color:var(--mut);font-size:15px}
 
@@ -69,7 +103,7 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
 .reelw{flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0}
 .reel{position:relative;height:200px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
 .strip{position:absolute;left:0;top:20px;display:flex;gap:16px;will-change:transform}
-.strip .t{flex:none;width:280px;height:160px;padding:0 14px;border-radius:20px;background:var(--card);border:1px solid var(--ln);border-top:6px solid var(--c);display:grid;place-items:center;text-align:center;font:600 clamp(1.8rem,3vw,2.6rem)/1.05 var(--disp);text-transform:uppercase;overflow-wrap:anywhere}
+.strip .t{flex:none;width:280px;height:160px;padding:0 14px;border-radius:var(--s-r-karta,20px);background:var(--card);border:1px solid var(--ln);border-top:6px solid var(--c);display:grid;place-items:center;text-align:center;font:600 clamp(1.8rem,3vw,2.6rem)/1.05 var(--disp);text-transform:uppercase;overflow-wrap:anywhere}
 .strip.done .t:not(.on){filter:brightness(.38)}
 .strip .t.on{box-shadow:0 0 0 4px var(--gd),0 0 40px -6px var(--gd)}
 .mk{position:absolute;left:50%;top:0;bottom:0;width:4px;margin-left:-2px;background:var(--gd);border-radius:4px;z-index:2}
@@ -78,7 +112,7 @@ textarea{width:100%;min-height:300px;resize:vertical;padding:14px 16px;border-ra
 .won{margin-top:24px;text-align:center;font:500 34px/1.1 Caveat,'Segoe Print',cursive;color:var(--hand);min-height:40px}
 .left{margin-top:6px;text-align:center;color:var(--mut);font-size:15px}
 .groups{flex:1;display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:16px;align-content:center;margin-top:24px;overflow:auto}
-.g{padding:20px 22px;border-radius:18px;background:var(--card);border:1px solid var(--ln);border-top:6px solid var(--c);opacity:0;transform:translateY(8px);animation:in .35s ease forwards}
+.g{padding:20px 22px;border-radius:var(--s-r-plytka,18px);background:var(--card);border:1px solid var(--ln);border-top:6px solid var(--c);opacity:0;transform:translateY(8px);animation:in .35s ease forwards}
 .g h3{margin:0 0 10px;font:600 clamp(1.4rem,2vw,1.9rem) var(--disp);text-transform:uppercase;color:var(--c)}
 .g ul{list-style:none;margin:0;padding:0}
 .g li{font:600 var(--fs,clamp(1.4rem,2.6vw,2.4rem))/1.3 var(--txt)}
