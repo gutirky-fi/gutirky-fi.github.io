@@ -11,12 +11,7 @@
 <!-- «Пластове бінго» — екран гри (проектор/ноутбук). Джерело: _robota/proby/bingo/ (zibraty.py вбудовує qr.js і zvyazok.js). -->
 <style>
 /*standart*/
-/* ═══ СТАНДАРТ ПЛАСТОВОЇ БІБЛІОТЕКИ — один файл для всіх сторінок ═══
-   Джерело: _robota/src/standart.css. Правити ЛИШЕ тут, потім:
-     python3 _robota/src/standart.py        (переносить у всі джерела)
-     python3 _robota/src/standart.py --perevir   (шукає відступи від стандарту)
-   Опис людською мовою — https://claude.ai/artifact/5yzwe1ZcDYs3mpzEZ8QCCi (частини 1–7).
-   Місцеві назви розділів (--bg, --gd, --d …) лише посилаються сюди: --gd на головній = --s-vyh, в іграх = --s-ihry. */
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
 :root{
   /* основа — темний екран */
   --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
@@ -44,7 +39,7 @@
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 
-:root{--bg:var(--s-bg);--card:#24272c;--card2:#2c3036;--ln:#3a3f46;--ink:var(--s-ink);--mut:#a3abb5;--ok:var(--s-vyh);--gd:var(--s-ihry);--rd:#d64541;--bl:#2f6fd0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
+:root{--bg:var(--s-bg);--card:var(--s-card);--card2:var(--s-card2);--ln:var(--s-ln);--ink:var(--s-ink);--mut:var(--s-mut);--ok:var(--s-vyh);--gd:var(--s-ihry);--rd:#d64541;--bl:#2f6fd0;--disp:Oswald,'Arial Narrow',sans-serif;--txt:'Source Sans 3',system-ui,sans-serif}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:radial-gradient(80% 70% at 30% 30%,#232a33,var(--bg) 75%);color:var(--ink);font:18px/1.45 var(--txt);overflow:hidden}
@@ -172,12 +167,7 @@ body.fam .toast{border-radius:var(--s-r-pil,99px)}
 </style>
 <style>
 /*standart*/
-/* ═══ СТАНДАРТ ПЛАСТОВОЇ БІБЛІОТЕКИ — один файл для всіх сторінок ═══
-   Джерело: _robota/src/standart.css. Правити ЛИШЕ тут, потім:
-     python3 _robota/src/standart.py        (переносить у всі джерела)
-     python3 _robota/src/standart.py --perevir   (шукає відступи від стандарту)
-   Опис людською мовою — https://claude.ai/artifact/5yzwe1ZcDYs3mpzEZ8QCCi (частини 1–7).
-   Місцеві назви розділів (--bg, --gd, --d …) лише посилаються сюди: --gd на головній = --s-vyh, в іграх = --s-ihry. */
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
 :root{
   /* основа — темний екран */
   --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
@@ -320,12 +310,7 @@ body.fam .fm-ov .sub{margin:12px 0 0}
 @media (max-width:860px){body.fam .l3{grid-template-columns:1fr;height:auto}body.fam #lobby{overflow:auto}body.fam .pn{border-right:0}}
 
 /*standart*/
-/* ═══ СТАНДАРТ ПЛАСТОВОЇ БІБЛІОТЕКИ — один файл для всіх сторінок ═══
-   Джерело: _robota/src/standart.css. Правити ЛИШЕ тут, потім:
-     python3 _robota/src/standart.py        (переносить у всі джерела)
-     python3 _robota/src/standart.py --perevir   (шукає відступи від стандарту)
-   Опис людською мовою — https://claude.ai/artifact/5yzwe1ZcDYs3mpzEZ8QCCi (частини 1–7).
-   Місцеві назви розділів (--bg, --gd, --d …) лише посилаються сюди: --gd на головній = --s-vyh, в іграх = --s-ihry. */
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
 :root{
   /* основа — темний екран */
   --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
@@ -399,12 +384,7 @@ body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:var(
 </style>
 <style>
 /*standart*/
-/* ═══ СТАНДАРТ ПЛАСТОВОЇ БІБЛІОТЕКИ — один файл для всіх сторінок ═══
-   Джерело: _robota/src/standart.css. Правити ЛИШЕ тут, потім:
-     python3 _robota/src/standart.py        (переносить у всі джерела)
-     python3 _robota/src/standart.py --perevir   (шукає відступи від стандарту)
-   Опис людською мовою — https://claude.ai/artifact/5yzwe1ZcDYs3mpzEZ8QCCi (частини 1–7).
-   Місцеві назви розділів (--bg, --gd, --d …) лише посилаються сюди: --gd на головній = --s-vyh, в іграх = --s-ihry. */
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
 :root{
   /* основа — темний екран */
   --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
