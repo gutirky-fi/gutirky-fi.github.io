@@ -133,7 +133,7 @@ a{color:inherit}
   </section>
 
   <section class="sec" aria-labelledby="h-vy">
-    <h2 id="h-vy">Виховник<small>те, що веде лише дорослий, і вхід, де все в одному місці</small></h2>
+    <h2 id="h-vy">Виховник<small>те, що веде лише дорослий</small></h2>
     <p class="note">Повні дані юнаків (прізвища, дати народження, контакти батьків, згоди) — лише в закритій Таблиці й папці виховника. На сайт вони не потрапляють.</p>
     <div class="roles" id="roles-vy"></div>
   </section>
@@ -183,14 +183,14 @@ a{color:inherit}
     {k: 'vy', t: 'Впорядник', also: 'виховник гуртка', p: '3.3.5', duty: 'Відповідає за успіхи й безпеку юнаків, зв\'язок з батьками і звітність.',
      ob: ['Дбає про успіхи й безпеку членів гуртка.', 'Стежить за участю в програмі.', 'Тримає зв\'язок з батьками.', 'Приймає й звільняє членів.', 'Відповідає за звітність і внески.', 'Має останнє слово в рішеннях гуртка.'],
      koly: 'Постійно; підсумок — у звіті.', knyha: 'Книга впорядника (дані членів, плани, листування)',
-     d: [['Вхід виховника: усе за подіями', 'vykhovnyk/'], ['Учасники'], ['Підтвердження проб'], ['Звіт за рік']]}
+     d: []}
   ];
   const esc = s => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const arr = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
   const card = r => `<article class="role ${r.k}"><h3>${esc(r.t)}</h3><p class="also">${esc(r.also)}</p><p class="duty">${esc(r.duty)}</p>
     <details class="more"><summary>Усі обов'язки</summary><ul class="ob">${r.ob.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
       <dl><dt>Коли</dt><dd>${esc(r.koly)}</dd><dt>Веде</dt><dd>${esc(r.knyha)}</dd><dt>Джерело</dt><dd>Правильник УПЮ ч. I, п. ${r.p} (переказ)</dd></dl></details>
-    <ul class="docs">${r.d.map(([n, u]) => u ? `<li><a href="${u}">${esc(n)}${arr}</a></li>` : `<li><span>${esc(n)}<i>готується</i></span></li>`).join('')}</ul></article>`;
+    ${r.d.length ? `<ul class="docs">${r.d.map(([n, u]) => u ? `<li><a href="${u}">${esc(n)}${arr}</a></li>` : `<li><span>${esc(n)}<i>готується</i></span></li>`).join('')}</ul>` : ''}</article>`;
   document.getElementById('roles-yu').innerHTML = R.filter(r => r.k === 'yu').map(card).join('');
   document.getElementById('roles-vy').innerHTML = R.filter(r => r.k === 'vy').map(card).join('');
 })();
