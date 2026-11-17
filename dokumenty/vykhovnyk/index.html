@@ -540,7 +540,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <button class="btn" type="button" id="nv-re" style="width:100%;margin-top:14px">Оновити</button>
       </div>
       <aside class="side">
-        <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li><li><b>Гроші</b> (внески, видатки) тут не затверджують: біля них кнопка «Перевірити в касі» — там «✓ є в банку» або «✗ немає в банку».</li></ul></div>
+        <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li><li><b>Гроші</b> (внески) тут перевіряють не «Затвердити», а «✓ є в банку» / «✗ немає в банку» (готівка — «✓ гроші є» / «✗ немає»). Видатки — «Перевірити чек у касі».</li></ul></div>
         <div class="card"><h3>Щось не так?</h3><ul><li>Виправте рядок просто в книзі.</li><li>Зіпсували багато — «Файл → Історія версій» у Google Таблиці поверне будь-який попередній стан.</li><li>Повна історія — аркуш «Зміни».</li></ul></div>
       </aside>
     </div>
@@ -1208,9 +1208,18 @@ window.Tochky = (function () {
     c.className = 'nvc ' + (n ? 'ye' : 'ok');
     c.innerHTML = n ? `<b>${n}</b> ${n === 1 ? 'запис чекає' : n < 5 ? 'записи чекають' : 'записів чекають'} затвердження` : '✓ Усе затверджено';
   }
+  const _s=document.createElement('style');_s.textContent='.act .neb{display:block;margin:0 0 10px;font-size:14.5px;font-weight:700;color:var(--s-pomylka)}';document.head.appendChild(_s);
+  // грошовий запис у «Що нового»: звірка тут же, у рядку (та сама дія, що в «Перевірці каси»): гроші затверджує не «Затвердити», а «є в банку» / «немає в банку»
+  function fin(x) {
+    const f = {}; (x.pola || []).forEach(p => { f[p[0]] = p[1]; });
+    const bank = ['MobilePay', 'переказ', 'картка'].includes(f['Як платили']);
+    return bank
+      ? {vydatok: f['Рух'] === 'видаток', tak: '✓ Є в банку', ni2: '✗ Немає в банку', ni: 'платежу в банку немає', pidkazka: 'Відкрийте банк: є такий платіж — сума й дата? Немає — натисніть «Немає в банку»: платіж не рахується сплаченим, а діловод бачить позначку й може виправити.'}
+      : {vydatok: f['Рух'] === 'видаток', tak: '✓ Гроші є', ni2: '✗ Немає', ni: 'цих грошей немає', pidkazka: 'Гроші в коробці скарбника? Немає — натисніть «Немає»: діловод бачить позначку й може виправити.'};
+  }
   function punkt(x, i, vidkr) {
     const [d, t] = String(x.koly).split(' ');
-    const st = x.porozhnio ? '<span class="st no">скасовано</span>' : x.pola ? (x.zatverdzheno ? '<span class="st ok">✓ затверджено</span>' : '<span class="st ch">чекає</span>') : '';
+    const st = x.porozhnio ? '<span class="st no">скасовано</span>' : x.pola ? (x.zatverdzheno ? '<span class="st ok">✓ затверджено</span>' : x.ne ? '<span class="st no">✗ немає</span>' : '<span class="st ch">чекає</span>') : '';
     let more = '';
     if (x.pola) {
       const gr = {}; Object.entries(x.prys || {}).forEach(([im, m]) => { (gr[m] = gr[m] || []).push(im); });
@@ -1218,8 +1227,12 @@ window.Tochky = (function () {
         + (Object.keys(gr).length ? `<div class="pr">${['+', '−', 'в'].filter(m => gr[m]).map(m => `<div><b>${ZN[m]}:</b> ${gr[m].map(esc).join(', ')}</div>`).join('')}</div>` : '')
         + `<div class="act">${x.zatverdzheno
             ? `<button class="btn" type="button" data-z="0" data-i="${i}">Зняти затвердження</button><small>Тоді діловод знову зможе виправити.</small>`
+            : x.arkush === 'Фінанси' && fin(x).vydatok
+              ? `<button class="btn" type="button" data-kp="1">Перевірити чек у касі</button><small>Видаток затверджують за чеком: подивіться фото, чи збігаються сума й дата.</small>`
             : x.arkush === 'Фінанси'
-              ? `<button class="btn" type="button" data-kp="1">Перевірити в касі</button><small>Гроші затверджує лише перевірка: чи є платіж у банку, чи гроші в коробці. Тут «Затвердити» немає — щоб не пропустити платіж, якого в банку нема.</small>`
+              ? (x.ne ? `<span class="neb">✗ Ви позначили: ${fin(x).ni}. Діловод бачить це й може виправити.</span><button class="btn" type="button" data-fk="" data-i="${i}">Зняти «немає»</button>`
+                  : `<button class="btn ok" type="button" data-fk="так" data-i="${i}">${fin(x).tak}</button><button class="btn neb" type="button" data-fk="ні" data-i="${i}">${fin(x).ni2}</button>`)
+                + `<small>${fin(x).pidkazka}</small>`
               : `<button class="btn ok" type="button" data-z="1" data-i="${i}">✓ Затвердити</button><small>Після цього сайт запис уже не змінить.</small>`}</div></div>`;
     }
     return `<li class="${x.zatverdzheno ? 'zt' : ''}${x.dija === 'блокування' ? ' blk' : ''}" data-i="${i}"><button class="row" type="button"${x.pola ? ` aria-expanded="${!!vidkr}"` : ' disabled'}><span class="k"><b>${esc(t || '')}</b>${esc(d)}</span><span class="t"><span class="d ${DIJA[x.dija] || ''}">${esc(x.dija)}</span>${x.arkush !== '—' ? esc(x.arkush) + `<span class="h">· ${esc(x.khto || '—')}</span>` : ''}</span>${st}<span class="s">${esc(x.shcho)}</span></button>${more}</li>`;
@@ -1237,7 +1250,19 @@ window.Tochky = (function () {
     } catch (x) { l.innerHTML = `<li><span class="row"><span class="s">${esc(ludsky(x))}</span></span></li>`; }
   }
   $('nv-list').addEventListener('click', async e => {
-    if (e.target.closest('button[data-kp]')) { $('go-kp').click(); return; }   // грошовий запис — у «Перевірку каси» (✓ є в банку / ✗ немає), а не загальне «Затвердити»
+    if (e.target.closest('button[data-kp]')) { $('go-kp').click(); return; }
+    const fk = e.target.closest('button[data-fk]');
+    if (fk) {
+      const i = +fk.dataset.i, x = NV[i], znach = fk.dataset.fk;
+      fk.parentNode.querySelectorAll('button').forEach(q => { q.disabled = true; }); fk.textContent = 'Записую…';
+      try {
+        const v = await zapyt({kod, dija: 'zatverdyty', arkush: 'Фінанси', ryadok: x.ryadok, znach});
+        if (!v.ok) throw new Error(v.pomylka);
+        x.zatverdzheno = znach === 'так'; x.ne = znach === 'ні';
+        fk.closest('li').outerHTML = punkt(x, i, true); lichylnyk();
+      } catch (er) { fk.textContent = ludsky(er); fk.parentNode.querySelectorAll('button').forEach(q => { q.disabled = false; }); }
+      return;
+    }   // грошовий запис — у «Перевірку каси» (✓ є в банку / ✗ немає), а не загальне «Затвердити»
     const z = e.target.closest('button[data-z]');
     if (z) {
       const i = +z.dataset.i, x = NV[i], tak = z.dataset.z === '1';
