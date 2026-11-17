@@ -5,91 +5,142 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1b1d21">
-<title>Керування проєктором</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<title>Проєктор · керування</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
+:root{
+  /* основа — темний екран */
+  --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
+  --s-ink:#f2f4f6; --s-body:#cfd5dc; --s-mut:#a0a8b2;
+  /* улади: колір показує, для кого сторінка; «-t» — світліший, для тексту на темному; «-on» — текст на кнопці цього кольору */
+  --s-upn:#ffd23f; --s-upn-on:#1d1606;
+  --s-upyu:#c8284a; --s-upyu-t:#ff7d99; --s-upyu-on:#ffffff;
+  --s-vyh:#3daf6e; --s-vyh-t:#62cf93; --s-vyh-on:#0e1f15;
+  --s-ups:#b0773a;
+  --s-all:#c9cfd6;
+  --s-all4:linear-gradient(90deg,var(--s-upn) 0 25%,var(--s-upyu) 0 50%,var(--s-vyh) 0 75%,var(--s-ups) 0);
+  /* службові */
+  --s-ihry:#ffc247; --s-ihry-on:#1d1606;
+  --s-hand:#2fd2c0; --s-ol:#9fb57a;
+  --s-ok:#62cf93; --s-uvaga:#f0c060; --s-pomylka:#ff6a6a;
+  /* папір (бланки, звіти, PDF) */
+  --s-p-bg:#ffffff; --s-p-ink:#1d2125; --s-p-mut:#5f6873; --s-p-ln:#cfd5dc; --s-p-ac:#c8284a; --s-p-th:#f9e6ea;
+  /* шрифти */
+  --s-disp:Oswald,'Arial Narrow',sans-serif; --s-txt:'Source Sans 3',system-ui,sans-serif; --s-ruka:Caveat,'Segoe Print',cursive;
+  /* заокруглення: кнопка й поле 12, плитка 18, велика картка й вікно 20, пігулка кругла; дрібні деталі: мітка 6, смужка 3 */
+  --s-r:12px; --s-r-plytka:18px; --s-r-karta:20px; --s-r-pil:99px; --s-r-mitka:6px; --s-r-smuzhka:3px;
+  /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
+  --s-h:50px; --s-h-hra:54px;
+}
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
+/* ═══ кінець стандарту ═══ */
+
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
-body{background:#1b1d21;color:#f2f4f6;font:400 17px/1.35 'Source Sans 3',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
-.os{font-family:Oswald,'Arial Narrow',sans-serif;text-transform:uppercase;font-weight:600}
+body{background:var(--s-bg);color:var(--s-ink);font:400 17px/1.35 var(--s-txt);-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column}
 button{font:inherit;color:inherit;cursor:pointer}
 [hidden]{display:none!important}
-.top{display:flex;align-items:center;gap:8px;padding:12px 14px;padding-top:max(12px,env(safe-area-inset-top));border-bottom:1px solid #2c3137;flex:none}
-.top img{height:32px}
-.top .sp{flex:1}
-.pill{border:1px solid #383d44;background:#22262b;border-radius:99px;padding:8px 12px;font-weight:700;font-size:14px;white-space:nowrap}
-.pill.on{background:#ffd23f;color:#1b1d21;border-color:#ffd23f}
-#dot{font-weight:700;font-size:13px;color:#ffd23f}#dot.ok{color:#62cf93}
-main{flex:1;overflow:auto;padding:14px}
-.c{background:#22262b;border:1px solid #383d44;border-top:5px solid #3daf6e;border-radius:18px;padding:20px 18px;max-width:440px;margin:10px auto}
-h1{font-size:26px;line-height:1.1;margin:0 0 8px}
-p{color:#cfd5dc;margin:0 0 6px}
-.big{display:block;width:100%;min-height:54px;border-radius:14px;border:1px solid transparent;font-weight:700;font-size:18px;margin-top:12px}
-.y{background:#3daf6e;color:#0e1f15}.n{background:transparent;border-color:#383d44;color:#cfd5dc}
-input{width:100%;margin-top:14px;padding:14px;border-radius:12px;border:2px solid #3daf6e;background:#1b1d21;color:#f2f4f6;font:600 28px Oswald,sans-serif;letter-spacing:.3em;text-align:center}
-.err{color:#ff8a7a;font-weight:700;margin-top:10px}
-/* меню */
-h2{font-size:26px;margin:2px 0 12px}
-.tabs{display:flex;gap:6px;margin-bottom:12px;position:sticky;top:-14px;background:#1b1d21;padding:6px 0;z-index:2}
-.tabs button{flex:1;padding:11px 0;border-radius:12px;background:#262b31;border:0;font-weight:700;font-size:15px;color:#b9c1ca}
-.tabs button[aria-pressed=true]{background:#3daf6e;color:#0e1f15}
-.it{display:flex;gap:12px;align-items:center;background:#22262b;border:1px solid #383d44;border-radius:16px;padding:12px;margin-bottom:10px;width:100%;text-align:left}
-.it .im{width:54px;height:54px;border-radius:12px;flex:0 0 54px;background:var(--c,#3daf6e);display:flex;align-items:center;justify-content:center;font-size:26px}
-.it .tx{flex:1;min-width:0}.it b{display:block;font-size:17px;line-height:1.15}.it small{color:#a0a8b2;font-size:14px}
-.it .go{background:#3daf6e;color:#0e1f15;font-weight:700;border-radius:12px;padding:10px 12px;font-size:15px;white-space:nowrap}
-.it.cur{border-color:#ffd23f}.it.cur .go{background:#ffd23f}
-/* відкрите */
+.top{display:flex;align-items:center;gap:8px;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));flex:none;position:relative}
+.top::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--s-all4)}
+.top img{height:34px;margin-right:auto}
+.pil{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:var(--s-r-pil);border:1px solid var(--s-ln);background:var(--s-card);font-weight:700;font-size:14px;color:var(--s-mut);white-space:nowrap}
+.pil i{width:8px;height:8px;border-radius:50%;background:var(--s-uvaga)}
+.pil.ok{color:var(--s-ok)}.pil.ok i{background:var(--s-ok)}
+button.pil{color:var(--s-body)}
+button.pil.on{background:var(--s-ink);color:var(--s-bg);border-color:var(--s-ink)}
+main{flex:1;overflow:auto;padding:18px 16px 28px}
+.c{background:var(--s-card);border:1px solid var(--s-ln);border-top:4px solid var(--s-vyh);border-radius:var(--s-r-karta);padding:22px 18px;max-width:440px;margin:6px auto}
+.c h1{font:600 26px/1.1 var(--s-disp);text-transform:uppercase;margin:0 0 8px}
+.c p{color:var(--s-body);margin:0 0 6px}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;height:var(--s-h);border-radius:var(--s-r);border:1px solid var(--s-ln);background:var(--s-card2);font-weight:700;font-size:17px;margin-top:12px}
+.btn.main{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on)}
+input{width:100%;margin-top:14px;height:60px;border-radius:var(--s-r);border:1px solid var(--s-ln);background:var(--s-pole);color:var(--s-ink);font:600 28px var(--s-disp);letter-spacing:.3em;text-align:center}
+input:focus{outline:none;border-color:var(--s-vyh);box-shadow:0 0 0 1px var(--s-vyh)}
+.err{color:var(--s-pomylka);font-weight:700;margin-top:10px}
+.k{font-size:13px;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--s-vyh-t)}
+h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
+.ruka{font:600 22px var(--s-ruka);color:var(--s-hand);margin-bottom:16px}
+.tabs{display:flex;gap:4px;padding:4px;border-radius:var(--s-r-pil);background:var(--s-pole);border:1px solid var(--s-ln);margin-bottom:16px;position:sticky;top:-18px;z-index:2}
+.tabs button{flex:1;height:42px;border-radius:var(--s-r-pil);background:transparent;border:0;font-weight:700;font-size:15px;color:var(--s-mut)}
+.tabs button[aria-pressed=true]{background:var(--s-vyh);color:var(--s-vyh-on)}
+.it{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:12px;margin-bottom:10px;position:relative;overflow:hidden}
+.it::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+.it .im{width:64px;height:64px;border-radius:var(--s-r);flex:0 0 64px;background-color:var(--s-card2);display:flex;align-items:center;justify-content:center;font-size:30px;background-size:cover;background-position:center}
+.it .tx{flex:1;min-width:0}.it b{display:block;font-size:17px;line-height:1.2}.it small{display:block;color:var(--s-mut);font-size:14px;margin-top:2px}
+.it .go{flex:none;width:44px;height:44px;border-radius:50%;background:var(--s-vyh);color:var(--s-vyh-on);display:flex;align-items:center;justify-content:center}
+.it .go svg{width:20px;height:20px}
+.it.cur{border-color:var(--s-vyh)}
+.it.cur small{color:var(--s-ok);font-weight:700}
+.it:active{transform:translateY(2px);filter:brightness(.9)}
+.out{display:block;margin:22px auto 0;background:none;border:0;color:var(--s-mut);text-decoration:underline;font-size:15px}
 #ctl{flex:1;display:flex;flex-direction:column;min-height:0}
-#ctl .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#22262b;border-bottom:1px solid #383d44;flex:none}
-#ctl .bar b{flex:1;min-width:0;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#pf{flex:1;width:100%;border:0;background:#1b1d21}
-.pad{padding:16px 14px;flex:1;display:flex;flex-direction:column;gap:10px}
-.pad p{text-align:center;color:#a0a8b2}
+#ctl .bar{display:flex;align-items:center;gap:6px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:var(--s-card);border-bottom:1px solid var(--s-ln);flex:none}
+#ctl .bar b{flex:1;min-width:0;font:600 17px var(--s-disp);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
+#pf{flex:1;width:100%;border:0;background:var(--s-bg)}
+.pad{padding:18px 16px;flex:1;display:flex;flex-direction:column;gap:12px}
+.pad p{text-align:center;color:var(--s-body);margin:0 0 4px}
 .ar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.ar button{min-height:78px;border-radius:16px;background:#2a2f35;border:1px solid #383d44;font-size:30px}
-.ar .ok{background:#3daf6e;color:#0e1f15;font-size:20px;font-weight:700}
+.ar button{height:80px;border-radius:var(--s-r-plytka);background:var(--s-card2);border:1px solid var(--s-ln);font-size:28px}
+.ar .ok{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on);font:600 22px var(--s-disp)}
 .ar .e{visibility:hidden}
-.ar button:active,.it:active,.big:active{transform:scale(.97)}
-.row{display:flex;gap:10px}.row button{flex:1;min-height:56px;border-radius:14px;background:#22262b;border:1px solid #383d44;font-weight:700;font-size:16px}
+.ar button:active,.row button:active{transform:translateY(2px);filter:brightness(.88)}
+.mini{flex:none;display:flex;align-items:center;gap:6px;padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:var(--s-card);border-top:1px solid var(--s-ln)}
+.mini span{font-size:13px;font-weight:700;color:var(--s-mut);margin-right:2px}
+.mini button{flex:1;height:46px;border-radius:var(--s-r);background:var(--s-card2);border:1px solid var(--s-ln);font-size:18px}
+.mini .ok{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on);font-weight:700;font-size:16px}
+.row{display:flex;gap:10px}.row button{flex:1;height:var(--s-h);border-radius:var(--s-r);background:var(--s-card);border:1px solid var(--s-ln);font-weight:700;font-size:16px}
 </style>
 </head>
 <body>
 <div class="top" id="top">
   <img src="/proba/tv/img/plast-fi-logo-hd.png" alt="Пласт">
-  <span class="sp"></span>
-  <span id="dot">● Підключаємось</span>
-  <button class="pill" id="b-blk" hidden title="Чорний екран на проєкторі">⬛ Пауза</button>
+  <span class="pil" id="dot"><i></i><span>Підключаємось</span></span>
+  <button class="pil" id="b-blk" hidden aria-label="Чорний екран на проєкторі">⏸ Пауза</button>
 </div>
 
-<main id="s-msg"><div class="c"><h1 class="os" id="m-h">Підключаємось…</h1><p id="m-p">Шукаємо проєктор.</p><button class="big n" id="m-again" hidden>Спробувати ще раз</button></div></main>
+<main id="s-msg"><div class="c"><h1 id="m-h">Підключаємось…</h1><p id="m-p">Шукаємо проєктор.</p><button class="btn" id="m-again" hidden>Спробувати ще раз</button></div></main>
 
 <main id="s-kod" hidden><form class="c" id="f-kod" autocomplete="off">
-  <h1 class="os">Код виховника</h1>
+  <h1>Код виховника</h1>
   <p>Один раз на цьому телефоні — далі він памʼятатиме. На проєкторі код ніхто не побачить.</p>
   <input id="kod" type="password" inputmode="numeric" placeholder="••••" autocomplete="off">
   <div class="err" id="k-err" hidden>Код не підійшов. Спробуйте ще раз.</div>
-  <button class="big y" type="submit">Керувати проєктором</button>
+  <button class="btn main" type="submit">Керувати проєктором</button>
 </form></main>
 
 <main id="s-menu" hidden>
-  <h2 class="os">Що показати?</h2>
+  <div class="k">Проєктор</div>
+  <h2>Що показати?</h2>
+  <div class="ruka">натисніть — і відкриється на екрані</div>
   <div class="tabs" id="tabs"></div>
   <div id="list"></div>
-  <button class="big n" id="b-out" style="margin-top:22px">Відʼєднати телефон від проєктора</button>
+  <button class="out" id="b-out">Відʼєднати телефон від проєктора</button>
 </main>
 
 <div id="ctl" hidden>
-  <div class="bar"><button class="pill" id="b-menu">← Меню</button><b id="c-n"></b><button class="pill" id="b-blk2">⬛</button><button class="pill" id="b-zak">✕ Закрити</button></div>
+  <div class="bar"><button class="pil" id="b-menu">← Меню</button><b id="c-n"></b><button class="pil" id="b-blk2" aria-label="Чорний екран на проєкторі">⏸</button><button class="pil" id="b-zak">✕ Закрити</button></div>
   <iframe id="pf" title="Пульт" allow="wake-lock" hidden></iframe>
+  <div class="mini" id="mini" hidden><span>Табло:</span><button data-k="ArrowLeft" aria-label="Вліво">◀</button><button data-k="ArrowUp" aria-label="Вгору">▲</button><button data-k="ArrowDown" aria-label="Вниз">▼</button><button data-k="ArrowRight" aria-label="Вправо">▶</button><button class="ok" data-k="Enter">OK</button></div>
   <div class="pad" id="pad" hidden>
-    <p id="pad-h">Керуйте рамкою на проєкторі</p>
+    <p id="pad-h"></p>
     <div class="ar">
       <button class="e" tabindex="-1"></button><button data-k="ArrowUp" aria-label="Вгору">▲</button><button class="e" tabindex="-1"></button>
       <button data-k="ArrowLeft" aria-label="Вліво">◀</button><button class="ok" data-k="Enter">OK</button><button data-k="ArrowRight" aria-label="Вправо">▶</button>
       <button class="e" tabindex="-1"></button><button data-k="ArrowDown" aria-label="Вниз">▼</button><button class="e" tabindex="-1"></button>
     </div>
-    <div class="row" id="pad-sc"><button data-sc="-1">⇞ Вище</button><button data-sc="1">⇟ Нижче</button></div>
-    <div class="row" id="pad-gra"><button data-k=" ">Далі (пробіл)</button><button data-k="Escape">Esc</button></div>
+    <div class="row" id="pad-sc"><button data-sc="-1">Вище</button><button data-sc="1">Нижче</button></div>
+    <div class="row" id="pad-gra"><button data-k=" ">Далі</button><button data-k="Escape">Esc</button></div>
   </div>
 </div>
 
@@ -310,45 +361,54 @@ h2{font-size:26px;margin:2px 0 12px}
   const PREF = ['gutirky:', 'proba-vhody:'];
   const get = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const kodTut = () => PREF.map(p => get(p + 'kod')).find(Boolean) || '';
-  const SCR = ['msg', 'kod', 'menu'];
-  function show(id) { SCR.forEach(x => { $('#s-' + x).hidden = x !== id; }); $('#ctl').hidden = id !== 'ctl'; $('#top').hidden = id === 'ctl'; $('#b-blk').hidden = id !== 'menu'; }
+  const PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
+  function show(id) { ['msg', 'kod', 'menu'].forEach(x => { $('#s-' + x).hidden = x !== id; }); $('#ctl').hidden = id !== 'ctl'; $('#top').hidden = id === 'ctl'; $('#b-blk').hidden = id !== 'menu'; }
   const msg = (t, p, again) => { $('#m-h').textContent = t; $('#m-p').textContent = p; $('#m-again').hidden = !again; show('msg'); };
   const najty = id => Object.values(K).flat().find(x => x.id === id);
 
   /* ---------- меню ---------- */
   const TABS = [['gut', 'Гутірки'], ['ihry', 'Ігри'], ['inshe', 'Пісні й ще']];
-  let tab = 'gut', ST = {};
+  let tab = 'gut', ST = {}, chekaiu = '';
   function malTabs() {
     $('#tabs').innerHTML = TABS.map(([k, n]) => `<button aria-pressed="${k === tab}" data-t="${k}">${n}</button>`).join('');
-    $('#tabs').querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; malTabs(); malList(); send({ t: 'scr', scr: tab }); });
+    $('#tabs').querySelectorAll('button').forEach(b => b.onclick = () => { tab = b.dataset.t; malTabs(); malList(); });
   }
   function malList() {
-    $('#list').innerHTML = K[tab].map(x => `<button class="it${ST.open === x.id ? ' cur' : ''}" data-id="${x.id}" style="--c:${x.c}"><span class="im"${x.img ? ` style="background:url(${x.img}) center/cover"` : ''}>${x.img ? '' : x.i || ''}</span><span class="tx"><b>${esc(x.n)}</b><small>${esc(x.s || '')}</small></span><span class="go">${ST.open === x.id ? '● Відкрито' : tab === 'ihry' ? '▶ Почати' : '▶ Показати'}</span></button>`).join('');
-    $('#list').querySelectorAll('.it').forEach(b => b.onclick = () => { if (ST.open === b.dataset.id) { ctl(); return; } send({ t: 'open', id: b.dataset.id }); b.querySelector('.go').textContent = 'Відкриваємо…'; });
+    $('#list').innerHTML = K[tab].map(x => { const cur = ST.open === x.id;
+      return `<button class="it${cur ? ' cur' : ''}" data-id="${x.id}" style="--c:${x.c}"><span class="im"${x.img ? ` style="background-image:url(${x.img})"` : ''}>${x.img ? '' : x.i || ''}</span>` +
+        `<span class="tx"><b>${esc(x.n)}</b><small>${cur ? '● Зараз на проєкторі' : chekaiu === x.id ? 'Відкриваємо…' : esc(x.s || '')}</small></span><span class="go">${PLAY}</span></button>`; }).join('');
+    $('#list').querySelectorAll('.it').forEach(b => b.onclick = () => { const id = b.dataset.id; if (ST.open === id) { ctl(); return; } chekaiu = id; send({ t: 'open', id }); malList(); });
   }
 
-  /* ---------- відкрите на проєкторі ---------- */
+  /* ---------- відкрите: телефон сам стає потрібним пультом ---------- */
   let pultFor = '';
   function ctl() {
     const it = najty(ST.open); if (!it) { show('menu'); malList(); return; }
     $('#c-n').textContent = it.n;
     const pf = $('#pf');
-    if (it.p && ST.pc) {
-      $('#pad').hidden = true; pf.hidden = false;
-      const key = ST.pc + ST.pk;
-      if (pultFor !== key) { pultFor = key; pf.src = '/pult/?c=' + ST.pc + '&k=' + ST.pk; }
+    if (ST.pu) {
+      $('#pad').hidden = true; pf.hidden = false; $('#mini').hidden = it.k !== 'ihry';
+      if (pultFor !== ST.pu) { pultFor = ST.pu; pf.src = ST.pu; }
+    } else if (it.id === 'svoya-hra') {   // Змаг ще вантажиться — пульт ведучого підʼєднається за мить
+      pf.hidden = true; $('#pad').hidden = false; $('#pad-h').textContent = 'Відкриваємо пульт ведучого…';
+      $('#pad-sc').hidden = true; $('#pad-gra').hidden = false;
     } else {
       pf.hidden = true; pultFor = ''; pf.src = 'about:blank'; $('#pad').hidden = false;
-      $('#pad-h').textContent = it.k === 'ihry' ? 'Гра на проєкторі. Юнаки сканують її QR-код. Кнопки нижче — як пульт проєктора.' : 'Гортайте й вибирайте — на проєкторі жовта рамка.';
+      $('#pad-h').textContent = it.k === 'ihry' ? 'Гра на проєкторі — юнаки сканують її QR-код. Тут кнопки керування екраном гри.' : 'Гортайте й вибирайте — на проєкторі видно рамку.';
       $('#pad-sc').hidden = it.k === 'ihry'; $('#pad-gra').hidden = it.k !== 'ihry';
     }
+    if (!ST.pu) $('#mini').hidden = true;
     show('ctl');
   }
+  /* пульт у рамці — без власного логотипа (він уже є вгорі) */
+  $('#pf').addEventListener('load', () => { try { const d = $('#pf').contentDocument; const st = d.createElement('style'); st.textContent = '.hd .logo{display:none}'; d.head.appendChild(st); } catch (e) { /* ok */ } });
   function onStan(s) {
     const was = ST.open; ST = s;
-    $('#b-blk').classList.toggle('on', !!s.blk); $('#b-blk').textContent = s.blk ? '⬛ Увімкнути' : '⬛ Пауза'; $('#b-blk2').classList.toggle('on', !!s.blk);
-    if (s.open) { if (!$('#ctl').hidden || was !== s.open) ctl(); else malList(); }
-    else { if (!$('#ctl').hidden || $('#s-menu').hidden) { pultFor = ''; $('#pf').src = 'about:blank'; show('menu'); } malList(); }
+    if (s.open && chekaiu === s.open) chekaiu = '';
+    ['#b-blk', '#b-blk2'].forEach(b => $(b).classList.toggle('on', !!s.blk));
+    $('#b-blk').textContent = s.blk ? '▶ Показати' : '⏸ Пауза'; $('#b-blk2').textContent = s.blk ? '▶' : '⏸';
+    if (s.open) { if (was !== s.open || !$('#ctl').hidden) ctl(); else malList(); }
+    else { pultFor = ''; $('#pf').src = 'about:blank'; if (!$('#ctl').hidden || $('#s-menu').hidden) { show('menu'); malTabs(); } malList(); }
   }
 
   /* ---------- звʼязок ---------- */
@@ -362,24 +422,24 @@ h2{font-size:26px;margin:2px 0 12px}
     if (window.Peer) return window.Peer;
     throw new Error('lib');
   }
-  const dot = (ok, t) => { $('#dot').className = ok ? 'ok' : ''; $('#dot').textContent = t; };
+  const dot = (ok, t) => { $('#dot').className = 'pil' + (ok ? ' ok' : ''); $('#dot').querySelector('span').textContent = t; };
   function send(m) { try { if (conn && conn.open) { conn.send(m); return true; } } catch (e) { /* ok */ } return false; }
   function connect() {
     if (!CODE) { msg('Немає коду', 'Відскануйте QR-код на проєкторі ще раз.'); return; }
-    const my = ++att; if (!okd) msg('Підключаємось…', 'Шукаємо проєктор.'); dot(false, '● Підключаємось');
+    const my = ++att; if (!okd) msg('Підключаємось…', 'Шукаємо проєктор.'); dot(false, 'Підключаємось');
     try { if (conn) conn.close(); if (peer) peer.destroy(); } catch (e) { /* ok */ }
     (async () => {
       let P; try { P = await getPeer(); } catch (e) { msg('Немає звʼязку', 'Не вдалося завантажити звʼязок. Перевірте інтернет.', true); return; }
       if (my !== att) return;
       window.GUTIRKA_NET_KEY = KEY;
       const p = peer = new P(undefined, {});
-      const fail = () => { if (my !== att || (conn && conn.open)) return; if (okd) { dot(false, '● Немає звʼязку'); setTimeout(() => my === att && connect(), 4000); } else msg('Проєктор не знайдено', 'Перевірте, що на проєкторі відкрито екран з QR-кодом, і спробуйте ще раз.', true); };
+      const fail = () => { if (my !== att || (conn && conn.open)) return; if (okd) { dot(false, 'Немає звʼязку'); setTimeout(() => my === att && connect(), 4000); } else msg('Проєктор не знайдено', 'Перевірте, що на проєкторі відкрито екран з QR-кодом, і спробуйте ще раз.', true); };
       const tmo = setTimeout(fail, 15000);
       p.on('error', () => { clearTimeout(tmo); fail(); });
       p.on('open', () => {
         if (my !== att) return;
         const c = conn = p.connect('plast-tv-' + CODE, { reliable: true });
-        c.on('open', () => { clearTimeout(tmo); dot(true, '● Проєктор'); });
+        c.on('open', () => { clearTimeout(tmo); dot(true, 'Проєктор'); });
         c.on('data', d => {
           if (!d || my !== att) return;
           if (d.t === 'hi') { const k = kodTut(); if (k) { sent = k; send({ t: 'vhid', kod: k }); } else { show('kod'); setTimeout(() => $('#kod').focus(), 50); } }
@@ -389,7 +449,7 @@ h2{font-size:26px;margin:2px 0 12px}
           else if (d.t === 'stan') onStan(d);
           else if (d.t === 'vyishly') { okd = false; msg('Відʼєднано', 'Телефон більше не керує проєктором. Щоб знову — відскануйте QR.'); }
         });
-        c.on('close', () => { if (my !== att) return; dot(false, '● Немає звʼязку'); setTimeout(() => my === att && connect(), 2500); });
+        c.on('close', () => { if (my !== att) return; dot(false, 'Немає звʼязку'); setTimeout(() => my === att && connect(), 2500); });
       });
     })();
   }

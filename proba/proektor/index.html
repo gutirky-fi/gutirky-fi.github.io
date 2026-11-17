@@ -5,60 +5,102 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Пластова бібліотека · проєктор</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Oswald:wght@500;600&family=Source+Sans+3:wght@400;600;700&display=swap">
 <style>
-/* Екран проєктора: завжди один екран 16:9 без гортання. 1rem = 1/80 ширини 16:9-кадру (на 1280×720 — 16px). */
+/* ═══ СТАНДАРТ СТИЛЮ — кольори, шрифти, заокруглення, висота кнопок. Спільний для всіх сторінок. ═══ */
+:root{
+  /* основа — темний екран */
+  --s-bg:#1b1d21; --s-card:#22262b; --s-card2:#2a2f35; --s-pole:#14171a; --s-ln:#383d44;
+  --s-ink:#f2f4f6; --s-body:#cfd5dc; --s-mut:#a0a8b2;
+  /* улади: колір показує, для кого сторінка; «-t» — світліший, для тексту на темному; «-on» — текст на кнопці цього кольору */
+  --s-upn:#ffd23f; --s-upn-on:#1d1606;
+  --s-upyu:#c8284a; --s-upyu-t:#ff7d99; --s-upyu-on:#ffffff;
+  --s-vyh:#3daf6e; --s-vyh-t:#62cf93; --s-vyh-on:#0e1f15;
+  --s-ups:#b0773a;
+  --s-all:#c9cfd6;
+  --s-all4:linear-gradient(90deg,var(--s-upn) 0 25%,var(--s-upyu) 0 50%,var(--s-vyh) 0 75%,var(--s-ups) 0);
+  /* службові */
+  --s-ihry:#ffc247; --s-ihry-on:#1d1606;
+  --s-hand:#2fd2c0; --s-ol:#9fb57a;
+  --s-ok:#62cf93; --s-uvaga:#f0c060; --s-pomylka:#ff6a6a;
+  /* папір (бланки, звіти, PDF) */
+  --s-p-bg:#ffffff; --s-p-ink:#1d2125; --s-p-mut:#5f6873; --s-p-ln:#cfd5dc; --s-p-ac:#c8284a; --s-p-th:#f9e6ea;
+  /* шрифти */
+  --s-disp:Oswald,'Arial Narrow',sans-serif; --s-txt:'Source Sans 3',system-ui,sans-serif; --s-ruka:Caveat,'Segoe Print',cursive;
+  /* заокруглення: кнопка й поле 12, плитка 18, велика картка й вікно 20, пігулка кругла; дрібні деталі: мітка 6, смужка 3 */
+  --s-r:12px; --s-r-plytka:18px; --s-r-karta:20px; --s-r-pil:99px; --s-r-mitka:6px; --s-r-smuzhka:3px;
+  /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
+  --s-h:50px; --s-h-hra:54px;
+}
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
+/* ═══ кінець стандарту ═══ */
+
+/* Екран проєктора: один кадр 16:9 без гортання. 1rem = 1/80 ширини кадру (на 1280×720 — 16px). Кольори й шрифти — зі стандарту сайту. */
 html{font-size:calc(min(100vw,177.78vh)/80)}
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:#0f1113;cursor:none}
-body{color:#f2f4f6;font:400 1.1rem/1.3 'Source Sans 3',system-ui,sans-serif}
-.os{font-family:Oswald,'Arial Narrow',sans-serif;text-transform:uppercase;font-weight:600;letter-spacing:.01em}
-#app{position:absolute;inset:0;margin:auto;width:80rem;height:45rem;padding:3rem 4rem;display:grid;grid-template-columns:24rem minmax(0,1fr);gap:3.5rem;
-  background:radial-gradient(circle at 85% 15%,#1d2a22,transparent 55%)}
-.l{display:flex;flex-direction:column;min-height:0}
-.logo{height:4rem;align-self:flex-start}
-.qr{margin-top:2.2rem;width:19rem;height:19rem;border-radius:1.6rem;background:#000;border:.2rem solid #2c3a31;padding:1rem;display:flex}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--s-bg);cursor:none}
+body{color:var(--s-ink);font:400 1.1rem/1.35 var(--s-txt)}
+#app{position:absolute;inset:0;margin:auto;width:80rem;height:45rem;padding:3.2rem 4.5rem;display:grid;grid-template-columns:minmax(0,1fr) 22rem;grid-template-rows:auto 1fr auto;column-gap:5rem}
+#app::after{content:'';position:absolute;left:0;right:0;bottom:0;height:.45rem;background:var(--s-all4)}
+.logo{height:3.6rem;grid-column:1;align-self:start}
+.ttl{grid-column:1;grid-row:2;align-self:center}
+.k{font:600 1.05rem var(--s-txt);letter-spacing:.3em;text-transform:uppercase;color:var(--s-mut)}
+h1{font:600 6.2rem/.92 var(--s-disp);text-transform:uppercase;margin:.8rem 0 0;letter-spacing:.005em}
+.strip{width:16rem;height:.45rem;border-radius:var(--s-r-smuzhka);background:var(--s-all4);margin:1.6rem 0 1.1rem}
+.ruka{font:600 2.4rem var(--s-ruka);color:var(--s-hand)}
+.qrb{grid-column:2;grid-row:1/4;align-self:center;display:flex;flex-direction:column;align-items:center;text-align:center}
+.qr{width:22rem;height:22rem;border-radius:var(--s-r-karta);background:#000;border:1px solid var(--s-ln);padding:1.3rem}
 .qr svg{width:100%;height:100%;display:block}
-.l b{display:block;margin-top:1.4rem;font-size:1.9rem;line-height:1.1}
-.l span{color:#b9c1ca;font-size:1.3rem;margin-top:.4rem}
-#st{margin-top:auto;font-weight:700;font-size:1.25rem;color:#8d96a0}
-#st.ok{color:#62cf93}
-.r{display:flex;flex-direction:column;min-height:0}
-h1{font-size:4.6rem;line-height:.95;margin:0}
-.sub{font-size:1.5rem;color:#62cf93;margin:.5rem 0 2rem}
-.g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.3rem;align-content:start}
-.g.l3{grid-template-columns:repeat(3,minmax(0,1fr))}
-.t{all:unset;box-sizing:border-box;height:9.2rem;border-radius:1.4rem;background:#20252b;border:.2rem solid #383d44;padding:1.2rem 1.5rem;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
-.t i{font-style:normal;font-size:2.4rem;line-height:1}
-.t b{font-size:2rem;line-height:1.05;margin-top:.4rem}
-.t small{color:#b9c1ca;font-size:1.15rem}
-.g.l3 .t{height:8.6rem;padding:1rem 1.2rem}.g.l3 .t i{display:none}.g.l3 .t b{font-size:1.45rem}.g.l3 .t small{font-size:1rem;line-height:1.2}
-.t b,.t small{overflow-wrap:anywhere}
-.t::before{content:'';position:absolute;left:0;top:0;right:0;height:.35rem;background:var(--c,#3daf6e)}
-.t:focus,.t.f{border-color:#ffd23f;box-shadow:0 0 0 .4rem rgba(255,210,63,.3);outline:none}
-.t.back{background:transparent}.t.back::before{display:none}
-.hint{margin-top:auto;color:#8d96a0;font-size:1.1rem}
-/* відкрита гутірка / гра — на весь екран */
+.qrb b{font:600 1.7rem/1.1 var(--s-disp);text-transform:uppercase;margin-top:1.4rem}
+.qrb span{color:var(--s-body);font-size:1.15rem;margin-top:.4rem}
+.pil{margin-top:1.2rem;display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1.1rem;border-radius:var(--s-r-pil);border:1px solid var(--s-ln);background:var(--s-card);font-weight:700;font-size:1.05rem;color:var(--s-mut)}
+.pil i{width:.7rem;height:.7rem;border-radius:50%;background:var(--s-uvaga)}
+.pil.ok{color:var(--s-ok)}.pil.ok i{background:var(--s-ok)}
+.niz{grid-column:1;grid-row:3;color:var(--s-mut);font-size:1.15rem;align-self:end}
+/* телефон уже керує: великий напис, QR менший (для другого телефона) */
+body.tel .ttl .k{color:var(--s-vyh-t)}
+#zar{display:none;margin-top:1.4rem;font:600 2rem/1.2 var(--s-txt);color:var(--s-body)}
+body.tel #zar{display:block}
+body.tel .qr{width:13rem;height:13rem;padding:.8rem}
+body.tel .qrb b{font-size:1.2rem}body.tel .qrb span{font-size:1rem}
+/* відкрите — на весь екран */
 #fr{position:fixed;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10}
 #fr[hidden]{display:none}
 #blk{position:fixed;inset:0;background:#000;z-index:30}
 #blk[hidden]{display:none}
-#load{position:fixed;inset:0;z-index:20;background:#0f1113;display:flex;align-items:center;justify-content:center;font-size:2rem;color:#b9c1ca}
+#load{position:fixed;inset:0;z-index:20;background:var(--s-bg);display:flex;align-items:center;justify-content:center;font:600 2.4rem var(--s-disp);text-transform:uppercase;color:var(--s-mut)}
 #load[hidden]{display:none}
-#tst{position:fixed;z-index:40;left:50%;bottom:1.5rem;transform:translateX(-50%);padding:.6rem 1.2rem;border-radius:99rem;background:#101214;border:1px solid #383d44;color:#62cf93;font-weight:700;font-size:1.1rem;transition:opacity .4s}
+#tst{position:fixed;z-index:40;left:50%;bottom:1.6rem;transform:translateX(-50%);padding:.6rem 1.3rem;border-radius:var(--s-r-pil);background:var(--s-card);border:1px solid var(--s-ln);color:var(--s-ok);font-weight:700;font-size:1.1rem;transition:opacity .4s}
 #tst.off{opacity:0}
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="l">
-    <img class="logo" src="/proba/tv/img/plast-fi-logo-hd.png" alt="Пласт">
-    <div class="qr" id="qr"></div>
-    <b>Керуйте з телефона</b>
-    <span>Скануйте камерою телефона: там буде все — гутірки, ігри, пісні. Натиснули на телефоні — відкрилось тут.</span>
-    <div id="st">Підключаємось до звʼязку…</div>
+  <img class="logo" src="/proba/tv/img/plast-fi-logo-hd.png" alt="Пласт">
+  <div class="ttl">
+    <div class="k" id="k">Пласт у Фінляндії · проєктор</div>
+    <h1>Пластова<br>бібліотека</h1>
+    <div class="strip"></div>
+    <div class="ruka">гутірки, ігри й пісні — на весь екран</div>
+    <div id="zar">Виберіть на телефоні, що показати.</div>
   </div>
-  <div class="r" id="menu"></div>
+  <div class="niz" id="niz">Наведіть камеру телефона на QR-код праворуч.</div>
+  <div class="qrb">
+    <div class="qr" id="qr"></div>
+    <b id="qb">Скануйте телефоном виховника</b>
+    <span id="qs">На телефоні буде все: гутірки, ігри, пісні.</span>
+    <div class="pil" id="st"><i></i><span>Підключаємось…</span></div>
+  </div>
 </div>
 <iframe id="fr" hidden allow="autoplay; fullscreen; wake-lock" title="Відкрите на проєкторі"></iframe>
 <div id="load" hidden>Відкриваємо…</div>
@@ -457,60 +499,19 @@ h1{font-size:4.6rem;line-height:.95;margin:0}
     if (!sessionStorage.getItem('plast-tv:vhid')) PREF.forEach(p => { localStorage.removeItem(p + 'vyh'); localStorage.removeItem(p + 'kod'); });   // новий запуск — розділ виховників закритий
   } catch (e) { /* ok */ }
 
-  /* ---------------- меню на проєкторі (для звичайного пульта) ---------------- */
-  const GR = [['gut', '📖', 'Гутірки'], ['ihry', '🎲', 'Ігри'], ['inshe', '🔥', 'Співаник і підказки']];
   let scr = 'home';
-  function tile(a, i, b, s, c, img) { return `<button class="t" data-a="${a}" style="${c ? `--c:${c};` : ''}${img ? `background:linear-gradient(transparent 20%,rgba(10,12,14,.92)),url(${img}) center/cover` : ''}"><i>${i || ''}</i><b class="os">${esc(b)}</b>${s ? `<small>${esc(s)}</small>` : ''}</button>`; }
-  function menu(s) {
-    scr = s || 'home';
-    let h;
-    if (scr === 'home') {
-      h = '<h1 class="os">Пластова<br>бібліотека</h1><div class="sub">на проєкторі</div><div class="g">' +
-        GR.map(([k, i, n]) => tile('g:' + k, i, n, K[k].length + ' ' + (k === 'gut' ? 'гутірки' : k === 'ihry' ? 'ігор' : 'розділи'))).join('') +
-        tile('blk', '⬛', 'Чорний екран', 'пауза') + '</div><div class="hint">Або звичайним пультом: стрілки й OK</div>';
-    } else {
-      const g = GR.find(x => x[0] === scr);
-      h = `<h1 class="os" style="font-size:3.4rem">${esc(g[2])}</h1><div class="sub">виберіть стрілками й натисніть OK</div><div class="g l3">` +
-        K[scr].map(x => tile('o:' + x.id, x.img ? '' : x.i, x.n, x.s, x.c, x.img)).join('') + tile('home', '←', 'Назад', '') + '</div>';
-    }
-    $('#menu').innerHTML = h;
-    $('#menu').querySelectorAll('.t').forEach(b => b.addEventListener('click', () => dii(b.dataset.a)));
-    if (!OPEN) setTimeout(() => { const f = $('#menu .t'); f && f.focus(); }, 30);
-    tell(stan());
-  }
-  function dii(a) {
-    if (a === 'home') menu('home');
-    else if (a === 'blk') chorny();
-    else if (a.startsWith('g:')) menu(a.slice(2));
-    else if (a.startsWith('o:')) vidkryty(a.slice(2));
-  }
-  /* стрілки пульта в меню */
-  addEventListener('keydown', e => {
-    if (OPEN) return;
-    const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[e.key];
-    if (!$('#blk').hidden && (d || e.key === 'Enter')) { e.preventDefault(); chorny(false); return; }
-    if (d) { e.preventDefault(); kudy(...d); }
-    else if ((e.key === 'Backspace' || e.key === 'Escape' || e.key === 'GoBack' || e.key === 'BrowserBack') && scr !== 'home') { e.preventDefault(); menu('home'); }
-  });
-  function kudy(dx, dy) {
-    const L = [...document.querySelectorAll('#menu .t')], c = document.activeElement;
-    if (!L.includes(c)) { L[0] && L[0].focus(); return; }
-    const a = c.getBoundingClientRect(), cx = a.left + a.width / 2, cy = a.top + a.height / 2;
-    let best = null, bs = 1e9;
-    for (const e of L) { if (e === c) continue; const b = e.getBoundingClientRect(), x = b.left + b.width / 2 - cx, y = b.top + b.height / 2 - cy;
-      const m = dx ? x * dx : y * dy, s = dx ? Math.abs(y) : Math.abs(x); if (m <= 5) continue; const sc = m + s * 2.5; if (sc < bs) { bs = sc; best = e; } }
-    best && best.focus();
-  }
+  function menu() { tell(stan()); }
 
   /* ---------------- відкрите на весь екран ---------------- */
-  let OPEN = null, PC = '', PK = '';
+  let OPEN = null, PC = '', PK = '', PU = '';   // PU — адреса пульта для телефона (сам підключиться)
   const rnd6 = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
   const rkey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
   const najty = id => Object.values(K).flat().find(x => x.id === id);
   function vidkryty(id) {
     const it = najty(id); if (!it) return;
     OPEN = it; chorny(false);
-    if (it.p) { PC = rnd6(); PK = rkey(); try { sessionStorage.setItem('gutirka.host', JSON.stringify({ on: true, code: PC, key: PK, tokens: [] })); } catch (e) { /* ok */ } }
+    PU = '';
+    if (it.p) { PC = rnd6(); PK = rkey(); PU = '/pult/?c=' + PC + '&k=' + PK; try { sessionStorage.setItem('gutirka.host', JSON.stringify({ on: true, code: PC, key: PK, tokens: [] })); } catch (e) { /* ok */ } }
     else { PC = PK = ''; try { sessionStorage.removeItem('gutirka.host'); } catch (e) { /* ok */ } }
     const fr = $('#fr'); $('#load').hidden = false;
     fr.hidden = false; fr.src = it.u;
@@ -526,22 +527,25 @@ h1{font-size:4.6rem;line-height:.95;margin:0}
       if (OPEN.tv && !w.__plastTV) { const d = w.document; w.TV_GRA = 1;
         const l = d.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; d.head.appendChild(l);
         const s = d.createElement('script'); s.src = '/proba/tv/tv-all.js'; d.head.appendChild(s); }
+      /* Змаг: пульт ведучого — з кодом і ключем гри (телефон підключиться сам, без окремого QR) */
+      if (OPEN.id === 'svoya-hra') { const my = OPEN; let n = 0; const t = setInterval(() => { if (OPEN !== my || ++n > 60) { clearInterval(t); return; }
+        try { const S = w.SVOYA, st = S && S.state(); if (st && /^\d{6}$/.test(String(st.code || ''))) { clearInterval(t); PU = '/proba/svoya-hra/vedyuchyi/?k=' + st.code + '&v=' + S.vkey() + '&dyz=3'; tell(stan()); } } catch (e) { /* ще вантажиться */ } }, 500); }
       /* «Назад» на пульті проєктора — у меню */
       w.addEventListener('keydown', e => { if (e.key === 'GoBack' || e.key === 'BrowserBack') { e.preventDefault(); zakryty(); } }, true);
     } catch (e) { /* ok */ }
   });
   function zakryty() {
-    OPEN = null; PC = PK = '';
+    OPEN = null; PC = PK = PU = '';
     try { sessionStorage.removeItem('gutirka.host'); } catch (e) { /* ok */ }
     const fr = $('#fr'); fr.src = 'about:blank'; fr.hidden = true; $('#load').hidden = true;
-    menu(scr); tell(stan());
+    tell(stan());
   }
   function chorny(on) {
     const b = $('#blk'); b.hidden = on === undefined ? !b.hidden : !on; tell(stan());
   }
   /* клавіша з телефона — у відкриту сторінку (як пульт проєктора) */
   function knopka(key) {
-    if (!OPEN) { if (key === 'Enter') { const a = document.activeElement; a && a.click && a.click(); } else { const d = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[key]; d && kudy(...d); } return; }
+    if (!OPEN) return;
     let w, d; try { w = $('#fr').contentWindow; d = w.document; } catch (e) { return; }
     const t = d.activeElement && d.activeElement !== d.body ? d.activeElement : d;
     if (key === 'Enter' && t.click && t.matches && t.matches('a,button,summary,[role=tab],[tabindex],label')) { t.click(); return; }
@@ -555,13 +559,18 @@ h1{font-size:4.6rem;line-height:.95;margin:0}
   const url = () => location.origin + '/proba/proektor/telefon.html#c=' + NET.code + '&k=' + NET.key;
   if (window.TV_TEST_PEER) window.__tvUrl = url;
   const viy = () => { try { return sessionStorage.getItem('plast-tv:vhid') === '1'; } catch (e) { return false; } };
-  function stan() { return { t: 'stan', in: viy(), open: OPEN ? OPEN.id : '', pc: PC, pk: PK, blk: !$('#blk').hidden, scr }; }
+  function stan() { return { t: 'stan', in: viy(), open: OPEN ? OPEN.id : '', pu: PU, blk: !$('#blk').hidden }; }
   function tell(m) { NET.conns.forEach(c => { try { if (c.open && c.__ok) c.send(m); } catch (e) { /* ok */ } }); }
   let tT = 0;
   function toast(t) { const e = $('#tst'); e.textContent = t; e.classList.remove('off'); clearTimeout(tT); tT = setTimeout(() => e.classList.add('off'), 3000); }
   function malSt() {
     const s = $('#st'), n = [...NET.conns].filter(c => c.__ok).length;
-    s.className = n ? 'ok' : ''; s.textContent = n ? '● Телефон керує' : NET.up ? 'Чекаємо телефон…' : 'Підключаємось до звʼязку…';
+    s.className = 'pil' + (n ? ' ok' : ''); s.querySelector('span').textContent = n ? 'Телефон керує' : NET.up ? 'Чекаємо телефон' : 'Підключаємось…';
+    document.body.classList.toggle('tel', !!n);
+    $('#k').textContent = n ? 'Телефон виховника підключено' : 'Пласт у Фінляндії · проєктор';
+    $('#qb').textContent = n ? 'Ще один телефон' : 'Скануйте телефоном виховника';
+    $('#qs').textContent = n ? 'Наприклад, помічника.' : 'На телефоні буде все: гутірки, ігри, пісні.';
+    $('#niz').textContent = n ? 'Пауза (чорний екран) і «Закрити» — угорі на телефоні.' : 'Наведіть камеру телефона на QR-код праворуч.';
   }
   function malQR() { $('#qr').innerHTML = window.qrSvg ? qrSvg(url(), 300, { bg: '#000000' }) : ''; }
   function onConn(c) {
@@ -578,8 +587,7 @@ h1{font-size:4.6rem;line-height:.95;margin:0}
       }
       if (!c.__ok) return;   // керувати можна лише після коду виховника
       if (d.t === 'open') vidkryty(d.id);
-      else if (d.t === 'menu') { if (OPEN) zakryty(); else menu('home'); }
-      else if (d.t === 'scr') { if (!OPEN && K[d.scr]) menu(d.scr); }
+      else if (d.t === 'menu') { if (OPEN) zakryty(); }
       else if (d.t === 'blk') chorny();
       else if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' ', 'Escape'].includes(d.key)) knopka(d.key);
       else if (d.t === 'scroll') gortaty(d.n > 0 ? 1 : -1);
@@ -612,7 +620,7 @@ h1{font-size:4.6rem;line-height:.95;margin:0}
     });
     p.on('disconnected', () => { NET.up = false; malSt(); setTimeout(() => { try { p.reconnect(); } catch (x) { /* ok */ } }, Math.min(15000, 1000 * 2 ** NET.tries++)); });
   }
-  menu('home'); malQR(); host();
+  malQR(); malSt(); host();
 })();
 </script>
 </body>
