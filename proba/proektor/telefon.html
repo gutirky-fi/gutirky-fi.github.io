@@ -60,6 +60,8 @@ button{font:inherit;color:inherit;cursor:pointer}
 button.pil{color:var(--s-body)}
 button.pil.on{background:var(--s-ink);color:var(--s-bg);border-color:var(--s-ink)}
 main{flex:1;overflow:auto;padding:18px 16px 28px}
+#s-site{flex:1;display:flex;min-height:0}#sf{flex:1;width:100%;border:0;background:var(--s-bg)}
+.top img{height:30px}
 .c{background:var(--s-card);border:1px solid var(--s-ln);border-top:4px solid var(--s-vyh);border-radius:var(--s-r-karta);padding:22px 18px;max-width:440px;margin:6px auto}
 .c h1{font:600 26px/1.1 var(--s-disp);text-transform:uppercase;margin:0 0 8px}
 .c p{color:var(--s-body);margin:0 0 6px}
@@ -113,7 +115,9 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
   <img src="/proba/tv/img/plast-fi-logo-hd.png" alt="Пласт">
   <span class="pil" id="dot"><i></i><span>Підключаємось</span></span>
   <button class="pil" id="b-blk" hidden aria-label="Чорний екран на проєкторі">⏸ Пауза</button>
+  <button class="pil" id="b-spys" hidden>☰ Список</button>
 </div>
+<div id="s-site" hidden><iframe id="sf" title="Сайт"></iframe></div>
 
 <main id="s-msg"><div class="c"><h1 id="m-h">Підключаємось…</h1><p id="m-p">Шукаємо проєктор.</p><button class="btn" id="m-again" hidden>Спробувати ще раз</button></div></main>
 
@@ -135,7 +139,7 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
 </main>
 
 <div id="ctl" hidden>
-  <div class="bar"><button class="pil" id="b-menu">← Меню</button><b id="c-n"></b><button class="pil" id="b-blk2" aria-label="Чорний екран на проєкторі">⏸</button><button class="pil" id="b-zak">✕ Закрити</button></div>
+  <div class="bar"><button class="pil" id="b-menu">← Сайт</button><b id="c-n"></b><button class="pil" id="b-blk2" aria-label="Чорний екран на проєкторі">⏸</button><button class="pil" id="b-zak">✕ Закрити</button></div>
   <div class="seg" id="seg" hidden><button data-v="ekr" aria-pressed="true">Екран</button><button data-v="pult" aria-pressed="false" id="seg-p">Пульт</button></div>
   <iframe id="pf" title="Пульт" allow="wake-lock" hidden></iframe>
   <div class="ekr" id="ekr" hidden>
@@ -363,7 +367,9 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
   const get = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } };
   const kodTut = () => PREF.map(p => get(p + 'kod')).find(Boolean) || '';
   const PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5z"/></svg>';
-  function show(id) { ['msg', 'kod', 'menu'].forEach(x => { $('#s-' + x).hidden = x !== id; }); $('#ctl').hidden = id !== 'ctl'; $('#top').hidden = id === 'ctl'; $('#b-blk').hidden = id !== 'menu'; }
+  function show(id) { ['msg', 'kod', 'menu', 'site'].forEach(x => { $('#s-' + x).hidden = x !== id; }); $('#ctl').hidden = id !== 'ctl'; $('#top').hidden = id === 'ctl'; $('#b-blk').hidden = !(id === 'menu' || id === 'site'); $('#b-spys').hidden = !(id === 'menu' || id === 'site'); $('#b-spys').textContent = id === 'menu' ? '← Сайт' : '☰ Список'; $('#top img').hidden = id === 'site'; }
+  let SAIT = '/#vyh';
+  function sait() { const f = $('#sf'); if (!f.dataset.on) { f.dataset.on = 1; f.src = SAIT; } show('site'); }
   const msg = (t, p, again) => { $('#m-h').textContent = t; $('#m-p').textContent = p; $('#m-again').hidden = !again; show('msg'); };
   const najty = id => Object.values(K).flat().find(x => x.id === id);
 
@@ -390,10 +396,11 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
     if (p && pultFor !== ST.pu) { pultFor = ST.pu; $('#pf').src = ST.pu; }
   }
   function ctl() {
-    const it = najty(ST.open); if (!it) { show('menu'); malList(); return; }
+    if (!ST.open) { sait(); return; }
+    const it = najty(ST.open) || { id: ST.open, n: ST.on || '', k: ST.ok || 'inshe' };
     $('#c-n').textContent = it.n;
     $('#seg').hidden = !ST.pu;
-    $('#seg-p').textContent = it.id === 'svoya-hra' ? 'Пульт ведучого' : 'Пульт';
+    $('#seg-p').textContent = /^svoya-hra/.test(it.id) ? 'Пульт ведучого' : 'Пульт';
     if (vydFor !== it.id + !!ST.pu) { vydFor = it.id + !!ST.pu; vyd = it.k === 'gut' && ST.pu ? 'pult' : 'ekr'; }   // гутірка — одразу пульт; гра й інше — кнопки екрана
     if (!ST.pu && vyd === 'pult') vyd = 'ekr';
     if (!ST.pu) { pultFor = ''; $('#pf').src = 'about:blank'; }
@@ -421,7 +428,7 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
     ['#b-blk', '#b-blk2'].forEach(b => $(b).classList.toggle('on', !!s.blk));
     $('#b-blk').textContent = s.blk ? '▶ Показати' : '⏸ Пауза'; $('#b-blk2').textContent = s.blk ? '▶' : '⏸';
     if (s.open) { if (was !== s.open || !$('#ctl').hidden) ctl(); else malList(); }
-    else { pultFor = ''; $('#pf').src = 'about:blank'; if (!$('#ctl').hidden || $('#s-menu').hidden) { show('menu'); malTabs(); } malList(); }
+    else { pultFor = ''; $('#pf').src = 'about:blank'; if (!$('#ctl').hidden || ($('#s-menu').hidden && $('#s-site').hidden)) sait(); malList(); }
   }
 
   /* ---------- звʼязок ---------- */
@@ -457,7 +464,7 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
           if (!d || my !== att) return;
           if (d.t === 'hi') { const k = kodTut(); if (k) { sent = k; send({ t: 'vhid', kod: k }); } else { show('kod'); setTimeout(() => $('#kod').focus(), 50); } }
           else if (d.t === 'vhid-ok') { okd = true; if (sent) PREF.forEach(p => { try { localStorage.setItem(p + 'vyh', 'true'); localStorage.setItem(p + 'kod', JSON.stringify(sent)); } catch (e) { /* ok */ } });
-            try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } if ($('#ctl').hidden) { show('menu'); malTabs(); malList(); } }
+            try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } if ($('#ctl').hidden) sait(); }
           else if (d.t === 'vhid-err') { PREF.forEach(p => { try { localStorage.removeItem(p + 'kod'); } catch (e) { /* ok */ } }); show('kod'); $('#k-err').hidden = !sent; $('#kod').value = ''; }
           else if (d.t === 'stan') onStan(d);
           else if (d.t === 'ekr') { EKR = d; if (!$('#ctl').hidden) malEkr(); }
@@ -468,7 +475,25 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
     })();
   }
   $('#f-kod').onsubmit = e => { e.preventDefault(); const v = $('#kod').value.replace(/\s/g, ''); if (!v) return; $('#k-err').hidden = true; sent = v; send({ t: 'vhid', kod: v }); };
-  $('#b-menu').onclick = () => { show('menu'); malTabs(); malList(); };
+  $('#b-menu').onclick = sait;
+  $('#b-spys').onclick = () => { if (!$('#s-menu').hidden) sait(); else { show('menu'); malTabs(); malList(); } };
+  /* сайт на телефоні: гутірку чи гру, натиснуту тут, відкриваємо на проєкторі, а телефон стає пультом */
+  const KAST = /^\/(proba\/)?(gutirky\/[a-z0-9-]+\/$|biblioteka\/$|skob-hra\/$|bingo\/$|svoya-hra\/$|opytuvannia\/$|novyi-vykhovnyk\/$|hto\/$)/;
+  $('#sf').addEventListener('load', () => {
+    let d; try { d = $('#sf').contentDocument; } catch (e) { return; }
+    if (!d || d.__kast) return; d.__kast = 1;
+    try { SAIT = $('#sf').contentWindow.location.href; } catch (e) { /* ok */ }
+    d.addEventListener('click', e => {
+      const a = e.target.closest && e.target.closest('a[href]'); if (!a) return;
+      let u; try { u = new URL(a.href); } catch (x) { return; }
+      if (u.origin !== location.origin || !KAST.test(u.pathname)) return;
+      if (/gutirky\//.test(u.pathname) && u.hash && u.hash !== '#hutirka') return;   // план, «для юнаків» — читаємо на телефоні
+      if (/biblioteka\//.test(u.pathname) && !/^#(povna|vyshkil)/.test(u.hash)) return;
+      e.preventDefault(); e.stopPropagation();
+      chekaiu = '~'; send({ t: 'open', u: u.pathname + u.search + u.hash, n: (a.innerText || a.getAttribute('aria-label') || '').split('\n')[0].trim() });
+      $('#c-n').textContent = 'Відкриваємо на проєкторі…'; $('#seg').hidden = true; $('#pf').hidden = true; $('#ekr').hidden = false; $('#eg').innerHTML = '<p class="pr">Відкриваємо…</p>'; show('ctl');
+    }, true);
+  });
   $('#b-zak').onclick = () => send({ t: 'menu' });
   $('#b-blk').onclick = $('#b-blk2').onclick = () => send({ t: 'blk' });
   $('#b-out').onclick = () => send({ t: 'vyity' });

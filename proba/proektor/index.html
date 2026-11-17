@@ -507,8 +507,21 @@ body.tel .qrb b{font-size:1.2rem}body.tel .qrb span{font-size:1rem}
   const rnd6 = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
   const rkey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
   const najty = id => Object.values(K).flat().find(x => x.id === id);
-  function vidkryty(id) {
-    const it = najty(id); if (!it) return;
+  /* посилання з сайту на телефоні → що відкрити тут (гутірка — режим ведення; гра — пробна версія з ТБ-рамкою) */
+  const IHRY_P = { 'skob-hra': 1, bingo: 1, opytuvannia: 1, 'svoya-hra': 0, 'novyi-vykhovnyk': 0, hto: 0 };
+  function zAdresy(u, n) {
+    let x; try { x = new URL(u, location.origin); } catch (e) { return null; }
+    if (x.origin !== location.origin) return null;
+    const p = x.pathname.replace(/^\/proba\/(?=(skob-hra|bingo|svoya-hra|opytuvannia|novyi-vykhovnyk|hto)\/)/, '/');
+    let m = p.match(/^\/gutirky\/([a-z0-9-]+)\/$/);
+    if (m) { const k = najty('g-' + m[1]); return { id: 'g-' + m[1], k: 'gut', n: (k && k.n) || n || 'Гутірка', u: '/gutirky/' + m[1] + '/#hutirka', p: 1 }; }
+    if (/^\/biblioteka\/$/.test(p) && /^#(povna|vyshkil)/.test(x.hash)) return { id: 'b-' + x.hash.slice(1), k: 'gut', n: n || 'Кераміка України', u: p + x.hash, p: 1 };
+    m = p.match(/^\/(skob-hra|bingo|svoya-hra|opytuvannia|novyi-vykhovnyk|hto)\/$/);
+    if (m) { const k = najty(m[1]); return { id: m[1] + (x.search + x.hash ? '~' + (x.search + x.hash).length + (x.hash || '').slice(-12) : ''), k: 'ihry', n: (k && k.n) || n || 'Гра', u: '/proba/' + m[1] + '/' + (x.search || '?dyz=3') + x.hash, p: IHRY_P[m[1]] }; }
+    return null;
+  }
+  function vidkryty(id, u, n) {
+    const it = u ? zAdresy(u, n) : najty(id); if (!it) return;
     OPEN = it; $('#blk').hidden = true;
     PU = '';
     if (it.p) { PC = rnd6(); PK = rkey(); PU = '/pult/?c=' + PC + '&k=' + PK; try { sessionStorage.setItem('gutirka.host', JSON.stringify({ on: true, code: PC, key: PK, tokens: [] })); } catch (e) { /* ok */ } }
@@ -528,7 +541,7 @@ body.tel .qrb b{font-size:1.2rem}body.tel .qrb span{font-size:1rem}
         const l = d.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; d.head.appendChild(l);
         const s = d.createElement('script'); s.src = '/proba/tv/tv-all.js'; d.head.appendChild(s); }
       /* Змаг: пульт ведучого — з кодом і ключем гри (телефон підключиться сам, без окремого QR) */
-      if (OPEN.id === 'svoya-hra') { const my = OPEN; let n = 0; const t = setInterval(() => { if (OPEN !== my || ++n > 60) { clearInterval(t); return; }
+      if (OPEN.id.startsWith('svoya-hra')) { const my = OPEN; let n = 0; const t = setInterval(() => { if (OPEN !== my || ++n > 60) { clearInterval(t); return; }
         try { const S = w.SVOYA, st = S && S.state(); if (st && /^\d{6}$/.test(String(st.code || ''))) { clearInterval(t); PU = '/proba/svoya-hra/vedyuchyi/?k=' + st.code + '&v=' + S.vkey() + '&dyz=3'; tell(stan()); } } catch (e) { /* ще вантажиться */ } }, 500); }
       dzerkalo(w);
       /* «Назад» на пульті проєктора — у меню */
@@ -602,7 +615,7 @@ body.tel .qrb b{font-size:1.2rem}body.tel .qrb span{font-size:1rem}
   const url = () => location.origin + '/proba/proektor/telefon.html#c=' + NET.code + '&k=' + NET.key;
   if (window.TV_TEST_PEER) window.__tvUrl = url;
   const viy = () => { try { return sessionStorage.getItem('plast-tv:vhid') === '1'; } catch (e) { return false; } };
-  function stan() { return { t: 'stan', in: viy(), open: OPEN ? OPEN.id : '', pu: PU, blk: !$('#blk').hidden }; }
+  function stan() { return { t: 'stan', in: viy(), open: OPEN ? OPEN.id : '', on: OPEN ? OPEN.n : '', ok: OPEN ? OPEN.k : '', pu: PU, blk: !$('#blk').hidden }; }
   function tell(m) { NET.conns.forEach(c => { try { if (c.open && c.__ok) c.send(m); } catch (e) { /* ok */ } }); }
   let tT = 0;
   function toast(t) { const e = $('#tst'); e.textContent = t; e.classList.remove('off'); clearTimeout(tT); tT = setTimeout(() => e.classList.add('off'), 3000); }
@@ -629,7 +642,7 @@ body.tel .qrb b{font-size:1.2rem}body.tel .qrb span{font-size:1rem}
         return;
       }
       if (!c.__ok) return;   // керувати можна лише після коду виховника
-      if (d.t === 'open') vidkryty(d.id);
+      if (d.t === 'open') vidkryty(d.id, typeof d.u === 'string' ? d.u : '', typeof d.n === 'string' ? d.n.slice(0, 80) : '');
       else if (d.t === 'menu') { if (OPEN) zakryty(); }
       else if (d.t === 'blk') chorny();
       else if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' ', 'Escape'].includes(d.key)) knopka(d.key);
