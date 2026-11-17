@@ -79,14 +79,19 @@ svg.ic{width:1em;height:1em;vertical-align:-.14em;flex:none}
 .qrk .st.ok{color:var(--s-ok)} .qrk .st.ok i{background:var(--s-ok)}
 .qrk.mal{padding:.7rem 1.2rem;background:transparent;border-color:transparent}
 .qrk.mal .st{margin:0;font-size:1rem}
-.qrk.big{flex-direction:column;text-align:center;padding:1.1rem 1.4rem 1rem;gap:.8rem}
+.qrk.big{flex-direction:column;text-align:center;padding:.9rem;gap:.4rem;margin-top:-1rem}
+.qrk.big .st{margin:0;min-height:1.2rem}
+.qrk.big .st:not(.ok):has(i:only-child){display:none}
 .qrk.big .q{padding:.6rem}
-.qrk.big .q svg{width:13rem;height:13rem}
+.qrk.big.on{padding:2rem 2.4rem;gap:1rem;margin-top:0}
+.qrk.big.on .tbig svg.ic{width:6rem;height:6rem;color:var(--s-ok)}
+.qrk.big.on .st{font-size:1.3rem}
+.qrk.big .q svg{width:21rem;height:21rem}
 .qrk.big b{font-size:1.45rem}
 .qrk.big span{font-size:1.05rem;max-width:17rem}
 /* головна */
 .hverh{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex:none}
-.dveri{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:auto}
+.dveri{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:auto;margin-bottom:.6rem}
 .dv{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.5rem 1.5rem 1.3rem;position:relative;overflow:hidden;min-height:13.5rem;display:flex;flex-direction:column}
 .dv:before{content:"";position:absolute;left:0;right:0;top:0;height:.34rem;background:var(--c)}
 .dv h3{font:600 2.5rem var(--s-disp);text-transform:uppercase;margin:0;color:var(--ct,var(--s-ink))}
@@ -685,14 +690,15 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const CHK = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const BKS = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5h11v14H9l-6-7z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></svg>';
   const AU = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>', AD = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>', AL = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>', AR = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>';
-  const PIDK = '<div class="pidk"><span><kbd>' + AL + AR + AU + AD + '</kbd>вибрати</span><span><kbd>OK</kbd>відкрити</span><span><kbd>Назад</kbd>повернутись</span></div>';
+  const PIDK = '';
   function telKartka(big) {
     if (TEL) return '';
     const n = NET.ok.size;
     /* малий QR проєктор не показує чітко — у розділах лише позначка, QR — на головній */
-    if (!big) return `<div class="qrk mal"><div class="st${n ? ' ok' : ''}"><i></i>${n ? TELI + ' Телефон керує' : TELI + ' Телефон — QR на головній'}</div></div>`;
-    return `<div class="qrk${big ? ' big' : ''}"><div class="q">${QRSVG}</div><div><b>${n ? 'Телефон керує' : 'Телефон — пульт'}</b><span>${n ? 'Ще один телефон — скануйте ще раз' : 'Наведіть камеру телефона — і натискайте на ньому'}</span>
-      <div class="st${n ? ' ok' : ''}"><i></i>${n ? 'підключено: ' + n : NET.up ? 'чекаємо телефон' : 'підключаємось…'}</div></div></div>`;
+    /* керує лише один телефон: поки він підключений, QR не показуємо */
+    if (!big) return n ? `<div class="qrk mal"><div class="st ok"><i></i>${TELI} Телефон керує</div></div>` : '';
+    if (n) return `<div class="qrk big on"><div class="tbig">${TELI}</div><div class="st ok"><i></i>Телефон керує</div><div class="bt f" data-id="vidkl" data-go="vidkl">Відключити телефон</div></div>`;
+    return `<div class="qrk big"><div class="q">${QRSVG}</div><div class="st"><i></i>${NET.up ? '' : 'підключаємось…'}</div></div>`;
   }
 
   /* ---------------- зміст ---------------- */
@@ -853,6 +859,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     if (k === 'yunv') { const s = byId[a]; if (s && s.mat) vidkryty({ u: s.mat[b], k: 'yun', n: s.n + ' · ' + (b === 'test' ? 'Перевір себе' : 'Вивчай сам') }); return; }
     if (k === 'tip' || k === 'song' || k === 'vm') { vikno(k, a); return; }
     if (k === 'zakrDet') { zakrytyVikno(); return; }
+    if (k === 'vidkl') { vidklTel(); return; }
   }
 
   /* ---------------- вікно поверх ---------------- */
@@ -1013,10 +1020,18 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function onovKartky() { if (TEL) return; document.querySelectorAll('.qrk').forEach(t => { const big = t.classList.contains('big'); t.outerHTML = telKartka(big); }); }
   const LYSHE_V = /^(gut|var|got|ig|tool|zakr)$/;
   function onConn(c) {
-    c.on('open', () => { NET.ok.add(c); c.send(stan()); onovKartky(); toast('Телефон підключено'); });
     c.on('data', d => {
       if (!d || typeof d !== 'object') return;
-      if (d.t === 'sync') { c.send(stan()); return; }
+      if (d.t === 'sync') {   // керує лише один телефон; той самий телефон може перепідключитись
+        const id = String(d.id || '');
+        if (!NET.own || !NET.own.open || (id && id === NET.ownId)) {
+          if (NET.own && NET.own !== c) { try { NET.own.close(); } catch (e) { /* ok */ } }
+          const novyi = NET.own !== c && id !== NET.ownId;
+          NET.own = c; NET.ownId = id; NET.ok = new Set([c]); c.send(stan()); onovKartky(); if (novyi) toast('Телефон підключено');
+        } else { try { c.send({ t: 'zaynyato' }); } catch (e) { /* ok */ } setTimeout(() => { try { c.close(); } catch (e) { /* ok */ } }, 400); }
+        return;
+      }
+      if (c !== NET.own) return;
       if (d.t === 'vhid') {
         if (String(d.kod || '') === CODE) {
           uviyty(true); c.send({ t: 'vhid-ok' });
@@ -1030,7 +1045,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       if (d.t === 'a' && typeof d.go === 'string') {
         const k = d.go.split(':')[0];
         if (LYSHE_V.test(k) && !vKod()) return;
-        if (/^(kd|kx|kok|pam)$/.test(k)) return;   // код — лише на телефоні або пультом
+        if (/^(kd|kx|kok|pam|vidkl)$/.test(k)) return;   // код — лише на телефоні або пультом
         if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } }
         const el = d.id && document.querySelector(`.f[data-id="${CSS.escape(d.id)}"]`); if (el) fokus(el);
         dija(d.go); return;
@@ -1041,12 +1056,20 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(d.key)) { knopka(d.key); return; }
       if (d.t === 'scroll') { gortaty(d.n > 0 ? 1 : -1); return; }
     });
-    c.on('close', () => { NET.ok.delete(c); onovKartky(); });
+    c.on('close', () => { NET.ok.delete(c); if (NET.own === c) NET.own = null; onovKartky(); });
+  }
+  /* відключити телефон з пульта проєктора: новий QR — старий (і його фото) більше не підходить */
+  function vidklTel() {
+    const c = NET.own; NET.own = null; NET.ownId = null; NET.ok = new Set();
+    if (c) { try { c.send({ t: 'vidkl' }); } catch (e) { /* ok */ } setTimeout(() => { try { c.close(); } catch (e) { /* ok */ } }, 400); }
+    try { NET.p && NET.p.destroy(); } catch (e) { /* ok */ }
+    NET.up = false; NET.code = rnd6(); NET.key = rkey(); malQR(); malyuvaty('d-vsi'); toast('Телефон відключено');
+    setTimeout(host, 500);
   }
   async function host() {
     let P; try { P = await getPeer(); } catch (e) { setTimeout(host, 8000); return; }
     window.GUTIRKA_NET_KEY = NET.key;
-    let p; try { p = new P('plast-tv-' + NET.code, {}); } catch (e) { setTimeout(host, 8000); return; }
+    let p; try { p = NET.p = new P('plast-tv-' + NET.code, {}); } catch (e) { setTimeout(host, 8000); return; }
     p.on('open', () => { NET.up = true; NET.tries = 0; onovKartky(); });
     p.on('connection', onConn);
     p.on('error', e => {
@@ -1058,6 +1081,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   }
 
   /* ---------------- телефон ---------------- */
+  const TID = (() => { let t = ls.get('plast-proektor:tid'); if (!t) { t = rkey(); ls.set('plast-proektor:tid', t); } return t; })();
   let conn = null, peer = null, att = 0, svyaz = false, chekV = false, pultFor = '', vyd = '';
   function send(m) { try { if (conn && conn.open) { conn.send(m); return true; } } catch (e) { /* ok */ } toast('Немає звʼязку з проєктором'); return false; }
   function tStan(ok, t) { const s = $('#tb-st'); s.className = 'st' + (ok ? ' ok' : ''); s.querySelector('span').textContent = t; }
@@ -1116,10 +1140,13 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       p.on('open', () => {
         if (my !== att) return;
         const c = conn = p.connect('plast-tv-' + CODE_T, { reliable: true });
-        c.on('open', () => { clearTimeout(tmo); svyaz = true; tStan(true, 'Проєктор'); c.send({ t: 'sync' }); });
+        c.on('open', () => { clearTimeout(tmo); svyaz = true; tStan(true, 'Проєктор'); c.send({ t: 'sync', id: TID }); });
         c.on('data', d => {
           if (!d || my !== att) return;
           if (d.t === 'st') naStan(d);
+          else if (d.t === 'zaynyato' || d.t === 'vidkl') { att++; try { c.close(); } catch (e) { /* ok */ }
+            tStan(false, d.t === 'zaynyato' ? 'Зайнято' : 'Відключено'); $('#ctl').hidden = true; $('#det').hidden = true;
+            $('#app').innerHTML = `<div class="nad">Проєктор</div><h1 class="m">${d.t === 'zaynyato' ? 'Проєктором уже керує інший телефон' : 'Проєктор відключив цей телефон'}</h1><div class="lin" style="--c:var(--s-vyh)"></div><p class="porozh">${d.t === 'zaynyato' ? 'Керувати може лише один телефон.' : 'Щоб керувати знову, скануйте новий QR на головній проєктора.'}</p>`; }
           else if (d.t === 'vhid-ok') { const v = $('#tk-in').value.replace(/\s/g, ''); if (v) ls.set(K_TK, v); $('#tkod').hidden = true; chekV = false; try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } }
           else if (d.t === 'vhid-err') { ls.del(K_TK); $('#tkod').hidden = false; $('#tk-err').textContent = chekV ? '' : 'Код не підходить.'; chekV = false; $('#tk-in').value = ''; }
         });
