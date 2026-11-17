@@ -21,3 +21,9 @@ html.tv .tvq .tx{display:flex;flex-direction:column;gap:10px}
 html.tv .tvq b{font:600 26px/1.1 Oswald,sans-serif;text-transform:uppercase;color:var(--ink,#f2f4f6)}
 html.tv .tvq span{color:var(--body,#cfd5dc);font-size:17px}
 html.tv .tvq .btn.ghost{background:transparent;border:1px solid var(--ln,#383d44);color:var(--body,#cfd5dc);min-height:44px;border-radius:12px;font-weight:700;padding:0 16px;text-align:left}
+/* у грі: без збільшення (ігри самі підганяються під екран), лише рамка й стрілки */
+html.tv.tv-gra body{zoom:1;cursor:auto}
+html.tv .tvq .tvst{font-style:normal;font-weight:700;font-size:17px;color:var(--mut,#a0a8b2)}
+html.tv .tvq .tvst.ok{color:#62cf93}
+#tvpad{position:fixed;z-index:90;right:18px;bottom:18px;padding:8px 14px;border-radius:99px;background:#101214;border:1px solid #383d44;color:#62cf93;font:700 15px 'Source Sans 3',system-ui,sans-serif}
+#tvpad[hidden]{display:none}

@@ -314,6 +314,10 @@ details[open]>summary::before{transform:rotate(90deg)}
    Спільне для всіх ігор: вставляється в екран ведучого (ihry-styl3.js, СКОБ, «Хто?»). */
 (function () {
   if (window.IHRY_FIT) return; window.IHRY_FIT = true;
+  /* ТБ-режим (проєктор, пульт): якщо гру відкрили з ТБ-сайту — підвантажити спільний ТБ-шар (рамка, стрілки, «Назад»). */
+  try { if (/[?&]tv=1/.test(location.search) || /PlastTV/.test(navigator.userAgent) || sessionStorage.getItem('plast-tv') === '1' || localStorage.getItem('plast-tv') === '1') {
+    if (!/[?&]tv=0/.test(location.search)) { window.TV_GRA = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; document.head.appendChild(l);
+      const sc = document.createElement('script'); sc.src = '/proba/tv/tv-all.js'; document.head.appendChild(sc); } } } catch (e) { /* без ТБ */ }
   if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
   const MIN = 0.72, STEP = 0.04;
   const boxes = () => [...document.querySelectorAll('main, .sk-stage')].filter(e => e.offsetParent !== null && e.clientHeight > 0 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
