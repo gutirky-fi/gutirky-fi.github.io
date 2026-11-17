@@ -73,6 +73,8 @@ h1.m{font-size:3.4rem;margin-top:.3rem}
 .qrk .st{display:inline-flex;align-items:center;gap:.45rem;margin-top:.5rem;font-weight:700;font-size:.9rem;color:var(--s-mut)}
 .qrk .st i{width:.65rem;height:.65rem;border-radius:50%;background:var(--s-uvaga)}
 .qrk .st.ok{color:var(--s-ok)} .qrk .st.ok i{background:var(--s-ok)}
+.qrk.mal{padding:.7rem 1.2rem;background:transparent;border-color:transparent}
+.qrk.mal .st{margin:0;font-size:1rem}
 .qrk.big{flex-direction:column;text-align:center;padding:1.1rem 1.4rem 1rem;gap:.8rem}
 .qrk.big .q{padding:.6rem}
 .qrk.big .q svg{width:13rem;height:13rem}
@@ -678,6 +680,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function telKartka(big) {
     if (TEL) return '';
     const n = NET.ok.size;
+    /* малий QR проєктор не показує чітко — у розділах лише позначка, QR — на головній */
+    if (!big) return `<div class="qrk mal"><div class="st${n ? ' ok' : ''}"><i></i>${n ? '📱 Телефон керує' : 'Телефон — QR на головній'}</div></div>`;
     return `<div class="qrk${big ? ' big' : ''}"><div class="q">${QRSVG}</div><div><b>${n ? 'Телефон керує' : 'Телефон — пульт'}</b><span>${n ? 'Ще один телефон — скануйте ще раз' : 'Наведіть камеру телефона — і натискайте на ньому'}</span>
       <div class="st${n ? ' ok' : ''}"><i></i>${n ? 'підключено: ' + n : NET.up ? 'чекаємо телефон' : 'підключаємось…'}</div></div></div>`;
   }
@@ -748,7 +752,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     return `<div class="verh"><div><div class="nad">Пластова бібліотека · Виховники</div><h1 class="m">Вхід за кодом</h1><div class="lin" style="--c:var(--s-vyh)"></div></div>${telKartka(false)}</div>
     <div class="kod"><div class="pr">
       <p>Введіть код виховників пультом. На екрані — лише крапки.</p>
-      <p class="mal">Найкраще — <b>поки юнаків немає</b>: з «Пам'ятати до кінця дня» на сходинах розділ відкриється без коду. Або скануйте QR телефоном — тоді код вводиться на телефоні.</p>
+      <p class="mal">Найкраще — <b>поки юнаків немає</b>: з «Пам'ятати до кінця дня» на сходинах розділ відкриється без коду. Або скануйте QR на головній телефоном — тоді код вводиться на телефоні.</p>
       <div class="krapky" id="kr">${'<i></i>'.repeat(Math.max(4, CODE.length))}</div><div id="kp-msg"></div>
       <div class="pam f${PAM ? ' on' : ''}" data-id="pam" data-go="pam"><span class="b">${PAM ? '✓' : ''}</span><span>Пам'ятати до кінця дня<small>опівночі розділ знову закриється</small></span></div>
     </div>
