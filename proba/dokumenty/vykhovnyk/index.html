@@ -380,6 +380,7 @@ a.tile{text-decoration:none}
 .row2 .f{align-content:start}
 .rare{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 18px;margin:22px 0 0;padding:14px 18px;border-radius:var(--s-r-plytka,18px);border:1px dashed var(--ln);color:var(--mut)}.rare .rt{flex:1 1 260px;min-width:0}.rare .rt b{display:block;margin-bottom:2px;color:var(--body);font:600 16px/1.2 var(--disp);letter-spacing:.08em;text-transform:uppercase}.rare .rt span{font-size:15px}.rare .rb{display:flex;flex-wrap:wrap;gap:8px}
 .hg-roky{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px 18px;margin:4px 0 6px}.hg-roky .hr{display:flex;align-items:center;gap:8px;margin:0}.hg-roky .hr b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}.hg-roky .hr .in{width:4.8em;flex:none;text-align:center}
+.hg-zakr{opacity:.4}.hg-zakr .btn{pointer-events:none}.hg-sp{margin:0 0 8px;color:var(--mut);font-size:14px}.step:not(.hg-zakr) .hg-sp{display:none}.hg-ok{padding:12px 14px;border:1px solid var(--d);border-radius:10px;line-height:1.5}.hg-ok small{color:var(--mut)}.hg-ok .lnk{margin-top:6px;background:none;border:0;padding:0;color:var(--d);font:inherit;text-decoration:underline;cursor:pointer}
 .ph{margin:-2px 0 12px;color:var(--mut);font-size:14px;line-height:1.4}.ph b{color:var(--body);font-weight:600}
 .nov{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;border-radius:var(--s-r-plytka,18px);background:var(--card);border:1px solid var(--ln);border-left:5px solid var(--d)}.nov .nt{flex:1 1 260px;min-width:0}.nov .nt b{display:block;margin-bottom:3px;color:var(--ink);font-size:17px}.nov .nt span{color:var(--mut);font-size:15px}.nov.pusto{border-color:rgba(61,175,110,.55);background:rgba(61,175,110,.08)}.nov .btn{flex:0 0 auto}
 .pravylo{margin-top:16px;padding:14px 18px;color:var(--body);font-size:15.5px}.pravylo b{color:var(--ink)}
@@ -2007,24 +2008,26 @@ window.Tochky = (function () {
   function hurtokForma() {
     $('pp-body').innerHTML = `<div class="seg" role="tablist" id="hg-seg"><button type="button" role="tab" data-h="beru" aria-selected="true"><b>Беру гурток</b><small>хтось уже вів його до мене</small></button><button type="button" role="tab" data-h="peredaiu" aria-selected="false"><b>Передаю гурток</b><small>новому виховникові</small></button></div>
       <div id="hg-beru">
-        <div class="step"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
-          <label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
+        <div class="step" id="hg-k1"><h3><em>1</em>Хто вже є в гуртку<small>усіх одним разом</small></h3>
+          <div id="hg-k1b"><label class="f"><span>Імена — кожне з нового рядка <small>(без прізвищ)</small></span><textarea class="in" id="hg-im" rows="6" placeholder="Олесь&#10;Мирося&#10;Дана"></textarea></label>
           <div class="f" id="hg-roky-w" hidden><span>У гуртку від (рік) <small>— кожному свій; не знаєте — порожньо</small></span><div class="hg-roky" id="hg-roky"></div><span class="ph">${PH_VID}</span></div>
           <label class="f"><span>Статус <small>— для всіх</small></span><select class="in" id="hg-st"><option>активний</option><option>кандидат</option></select><span class="ph">${PH_STATUS_K}</span></label>
           <label class="f"><span>Примітка для всіх <small>— за бажанням</small></span><input class="in" id="hg-pm" maxlength="120" placeholder="напр. гурток вела до мене подруга Оксана (2024–2026)"></label>
           <button class="btn main" type="button" id="pp-send" style="width:100%">${SV('<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>')}Записати всіх</button></div>
-        <div class="step"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
+          <div class="hg-ok" id="hg-k1ok" hidden></div></div>
+        <div class="step hg-zakr" id="hg-k2"><h3><em>2</em>Що вже має кожен<small>лише в кого щось є</small></h3>
+          <p class="hg-sp">Відкриється, коли запишете всіх у кроці 1.</p>
           <p class="note">Для кожного — окремо: посвідки, точки проб, вмілості. Здобуте в цьому ж гуртку ще до вас: є посвідка чи бланк — «у нас» зі справжньою датою; документів немає — «за попереднього виховника»; в іншому гуртку — «до нас».</p>
           <button class="btn" type="button" id="hg-maie" style="margin-top:10px">${SV(IKO.maie)}Дописати, що вже має</button></div>
-        <div class="step"><h3><em>3</em>Минуле гуртка<small>за бажанням — можна пропустити</small></h3>
-          <ul class="spl"><li>Стара книга чи папери — сфотографуйте або відскануйте в папку Диска, а в Таблиці, аркуш <b>«Архів»</b>, — рядок: рік, що це, посилання.</li><li>Минулі роки — лише якщо є дані: аркуші <b>«Роки»</b> й <b>«Історія учасників»</b> (вручну). Немає — нічого страшного: книга почнеться з вашого року.</li><li>Прізвища — у Таблиці, аркуш «Учасники».</li></ul></div>
+        <div class="step hg-zakr" id="hg-k3"><h3><em>3</em>Минуле гуртка<small>за бажанням — можна пропустити</small></h3>
+          <ul class="spl"><li>Стара книга чи папери — сфотографуйте або відскануйте в папку Диска, а в Таблиці, аркуш <b>«Архів»</b>, — рядок: рік, що це, посилання.</li><li>Минулі роки — лише якщо є дані: аркуші <b>«Роки»</b> й <b>«Історія учасників»</b> (вручну). Немає — нічого страшного: книга почнеться з вашого року.</li><li>Прізвища — у Таблиці, аркуш «Учасники».</li></ul><p class="note">Тут нічого не надсилається — це лише що зробити в Таблиці й на Диску самому.</p></div>
       </div>
       <div id="hg-peredaiu" hidden>
         <div class="step"><h3><em>1</em>Зберегти, що є</h3><ul class="spl"><li><b>Звіти → Картка учасника → «Усі картки, і тих, хто вибув — для архіву»</b> → Друк / PDF.</li><li><b>Звіти → Звіт гуртка</b> (навчальний рік) і <b>Рік за роком</b> → PDF.</li></ul><a class="btn" href="../zvity/" style="margin-top:6px">${SV('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>')}Відкрити звіти</a></div>
         <div class="step"><h3><em>2</em>Передати книгу</h3><ul class="spl"><li>У Google Таблиці — «Поділитися» → новий виховник (редактор). Чи робити його власником — за домовленістю.</li><li>Новий виховник ставить <b>свої</b> коди: меню «Книга гуртка → Встановити код…»; ваші коди перестануть діяти.</li><li>Найпростіше — новий виховник розгортає приймач від свого імені (INSTRUKTSIIA, кроки 4–6) і дає гуртку нове посилання.</li></ul></div>
         <div class="step"><h3><em>3</em>Майно й гроші</h3><ul class="spl"><li>Майно — перелік з аркуша «Майно» (акт передачі — готується, Етап 4).</li><li>Каса — звірка («Перевірка каси») в день передачі.</li></ul></div>
       </div>`;
-    $('pp-side').innerHTML = `<div class="card"><h3>Як це працює</h3><ul><li><b>Беру гурток</b> — спершу всі імена одним разом, потім для кожного «що вже має».</li><li><b>Передаю</b> — нічого не надсилається: лише що зробити, щоб нічого не загубилось.</li></ul></div>`;
+    $('pp-side').innerHTML = `<div class="card"><h3>Як це працює</h3><ul><li><b>Беру гурток</b> — по кроках: 1 записати всіх → відкривається 2 «що вже має» → 3 минуле гуртка (за бажанням).</li><li><b>Передаю</b> — нічого не надсилається: лише що зробити, щоб нічого не загубилось.</li></ul></div>`;
     $('hg-seg').addEventListener('click', e => { const b = e.target.closest('[data-h]'); if (!b) return; $('hg-seg').querySelectorAll('[data-h]').forEach(x => x.setAttribute('aria-selected', String(x === b))); $('hg-beru').hidden = b.dataset.h !== 'beru'; $('hg-peredaiu').hidden = b.dataset.h !== 'peredaiu'; $('pp-prog').hidden = true; $('pp-msg').textContent = ''; });
     $('hg-maie').addEventListener('click', () => ppVidkryty('maie'));
     const hgImena = () => [...new Set($('hg-im').value.split(/\n/).map(x => x.trim().replace(/\s+/g, ' ')).filter(Boolean))];
@@ -2035,6 +2038,9 @@ window.Tochky = (function () {
       w.innerHTML = im.map((x, i) => `<label class="hr"><b>${esc(x)}</b><input class="in" data-im="${esc(x)}" inputmode="numeric" maxlength="4" placeholder="рік" value="${esc(HG_RIK[x] || '')}" aria-label="${esc(x)} — у гуртку від (рік)"></label>`).join('');
     };
     $('hg-im').addEventListener('input', hgRoky);
+    const hgVidkryty = () => { ['hg-k2', 'hg-k3'].forEach(id => $(id).classList.remove('hg-zakr')); };
+    if (UCH.some(u => u.st !== 'вибув')) hgVidkryty();   // у книзі вже є люди — крок 2 одразу відкритий
+    $('hg-k1ok').addEventListener('click', e => { if (!e.target.closest('[data-shche]')) return; $('hg-k1ok').hidden = true; $('hg-k1b').hidden = false; $('hg-im').value = ''; hgRoky(); PP.sent = {}; $('hg-im').focus(); });
     $('hg-roky').addEventListener('input', e => { const i = e.target.closest('[data-im]'); if (i) HG_RIK[i.dataset.im] = i.value.trim(); });
     $('pp-send').addEventListener('click', () => {
       const msg = $('pp-msg'); msg.classList.remove('bad');
@@ -2046,9 +2052,13 @@ window.Tochky = (function () {
       const ye = im.filter(x => UCH.some(u => u.im.toLowerCase() === x.toLowerCase()) && !PP.sent['h:' + x]);
       const zad = im.filter(x => !ye.includes(x)).map(x => ({id: 'h:' + x, t: x, z: {dija: 'uchasnyk', imya: x, novyi: true, polia: Object.assign({'Статус': $('hg-st').value}, rik(x) ? {'У гуртку від (рік)': +rik(x)} : {}), prymitka: $('hg-pm').value.trim()}}));
       if (!zad.length) { msg.textContent = 'Усі ці імена вже є в книзі.'; msg.classList.add('bad'); return; }
-      vykonaty(zad, z => { hotovo(`Записано: <b>${z.length}</b>${ye.length ? ` · уже були в книзі: ${esc(ye.join(', '))}` : ''}`, z, ['Прізвища — у Таблиці, аркуш «Учасники».', 'Для кожного, у кого вже щось є, — кнопка нижче.']);
-      $('pp-dali').insertAdjacentHTML('beforeend', `<button class="btn main" type="button" id="hg-dali-maie" style="margin-top:6px">${SV(IKO.maie)}Дописати, що вже має</button>`);
-      $('hg-dali-maie').addEventListener('click', () => ppVidkryty('maie')); });
+      vykonaty(zad, z => {   // крок 1 готовий — згортаємо його й відкриваємо крок 2 (на тому ж екрані)
+        $('pp-prog').hidden = true; $('pp-msg').textContent = '';
+        $('hg-k1b').hidden = true; $('hg-k1ok').hidden = false;
+        $('hg-k1ok').innerHTML = `<b>✓ Записано в книгу: ${z.length}</b> — ${esc(z.map(x => x.t).join(', '))}${ye.length ? `<br><small>уже були в книзі: ${esc(ye.join(', '))}</small>` : ''}<br><button class="lnk" type="button" data-shche>+ записати ще когось</button>`;
+        hgVidkryty(); UCH_OK = uchZavantazhyty();
+        $('hg-k2').scrollIntoView({block: 'start', behavior: 'smooth'});
+      });
     });
   }
 
