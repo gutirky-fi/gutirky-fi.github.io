@@ -45,8 +45,9 @@
 :root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 
-/* Сайт для проєктора: кадр 16:9 без гортання сторінки; керування — стрілки, OK, «Назад» звичайного пульта.
-   1rem = 1/80 ширини кадру (на 1280×720 — 16px). Кольори, шрифти, кути — лише зі стандарту сайту. */
+/* Сайт для проєктора: кадр 16:9 без гортання сторінки; керування — звичайний пульт або телефон (QR).
+   1rem = 1/80 ширини кадру (на 1280×720 — 16px). Кольори, шрифти, кути — лише зі стандарту сайту.
+   Той самий файл на телефоні (#c=…&k=…) — сайт для телефона, що керує проєктором (body.tel). */
 html{font-size:calc(min(100vw,177.78vh)/80)}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--s-bg)}
@@ -54,127 +55,209 @@ body{color:var(--s-ink);font:400 1rem/1.35 var(--s-txt)}
 body.pult{cursor:none}
 #app{position:absolute;inset:0;margin:auto;width:80rem;height:45rem;padding:2.2rem 3rem 1.4rem;display:flex;flex-direction:column;overflow:hidden}
 .verh{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex:none}
-.logo{height:3.6rem;display:block}
-.nad{font:600 .62rem var(--s-disp);letter-spacing:.32em;text-transform:uppercase;color:var(--s-mut)}
-h1{font:600 4rem/1.05 var(--s-disp);text-transform:uppercase;margin:.4rem 0 0}
-h1.m{font-size:3.1rem;margin-top:.3rem}
-.lin{height:.32rem;width:11rem;border-radius:var(--s-r-smuzhka);margin-top:.8rem;background:var(--c,var(--s-all4))}
-.ruka{font:600 1.6rem var(--s-ruka);color:var(--s-body);margin-top:.6rem}
-.wm{position:absolute;right:9rem;top:9.5rem;height:16rem;opacity:.16;pointer-events:none}
-/* фокус пульта — біла обвідка (як «біла обвідка для пульта» у брендбуку) */
+.logo{height:3.8rem;display:block}
+.nad{font:600 .75rem var(--s-disp);letter-spacing:.3em;text-transform:uppercase;color:var(--s-mut)}
+h1{font:600 5rem/1.02 var(--s-disp);text-transform:uppercase;margin:.4rem 0 0}
+h1.m{font-size:3.4rem;margin-top:.3rem}
+.lin{height:.36rem;width:12rem;border-radius:var(--s-r-smuzhka);margin-top:.8rem;background:var(--c,var(--s-all4))}
+.ruka{font:600 2rem var(--s-ruka);color:var(--s-body);margin-top:.6rem}
+/* рамка пульта — біла обвідка (брендбук: «біла обвідка для пульта») */
 .f{cursor:pointer;transition:transform .12s,box-shadow .12s}
-.f.fok{outline:.2rem solid var(--s-ink);outline-offset:.25rem;transform:translateY(-.25rem);box-shadow:0 .8rem 2rem rgba(0,0,0,.45)}
-/* картка «Телефон — пульт» */
-.tel{display:flex;gap:1rem;align-items:center;background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-karta);padding:.8rem 1.2rem .8rem .8rem;flex:none}
-.tel .ic{width:4.2rem;height:4.2rem;border-radius:var(--s-r);background:var(--s-card2);display:grid;place-items:center}
-.tel .ic svg{width:2.4rem;height:2.4rem}
-.tel b{display:block;font:600 1.05rem var(--s-disp);text-transform:uppercase;letter-spacing:.04em}
-.tel span{font-size:.8rem;color:var(--s-mut);display:block;max-width:13rem;line-height:1.3;margin-top:.2rem}
-/* головна: чотири входи */
-.dveri{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem;margin-top:auto}
-.dv{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.2rem 1.2rem 1rem;position:relative;overflow:hidden;min-height:9.5rem;display:flex;flex-direction:column}
-.dv:before{content:"";position:absolute;left:0;right:0;top:0;height:.28rem;background:var(--c)}
-.dv h3{font:600 1.75rem var(--s-disp);text-transform:uppercase;margin:0;color:var(--ct,var(--s-ink))}
-.dv p{margin:.35rem 0 0;color:var(--s-mut);font-size:.85rem;line-height:1.35}
-.dv .d{margin-top:auto;font-weight:700;font-size:.9rem;color:var(--ct,var(--s-ink));padding-top:.7rem}
+.f.fok{outline:.22rem solid var(--s-ink);outline-offset:.28rem;transform:translateY(-.25rem);box-shadow:0 .8rem 2rem rgba(0,0,0,.45)}
+/* картка QR «Телефон — пульт» */
+.qrk{display:flex;gap:1.1rem;align-items:center;background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-karta);padding:.7rem 1.2rem .7rem .7rem;flex:none}
+.qrk .q{background:#000;border-radius:var(--s-r);padding:.4rem;line-height:0}
+.qrk .q svg{width:5.6rem;height:5.6rem;display:block}
+.qrk b{display:block;font:600 1.15rem var(--s-disp);text-transform:uppercase;letter-spacing:.04em}
+.qrk span{font-size:.95rem;color:var(--s-mut);display:block;max-width:14rem;line-height:1.3;margin-top:.25rem}
+.qrk .st{display:inline-flex;align-items:center;gap:.45rem;margin-top:.5rem;font-weight:700;font-size:.9rem;color:var(--s-mut)}
+.qrk .st i{width:.65rem;height:.65rem;border-radius:50%;background:var(--s-uvaga)}
+.qrk .st.ok{color:var(--s-ok)} .qrk .st.ok i{background:var(--s-ok)}
+.qrk.big{flex-direction:column;text-align:center;padding:1.1rem 1.4rem 1rem;gap:.8rem}
+.qrk.big .q{padding:.6rem}
+.qrk.big .q svg{width:13rem;height:13rem}
+.qrk.big b{font-size:1.45rem}
+.qrk.big span{font-size:1.05rem;max-width:17rem}
+/* головна */
+.hverh{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex:none}
+.dveri{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:auto}
+.dv{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.5rem 1.5rem 1.3rem;position:relative;overflow:hidden;min-height:13.5rem;display:flex;flex-direction:column}
+.dv:before{content:"";position:absolute;left:0;right:0;top:0;height:.34rem;background:var(--c)}
+.dv h3{font:600 2.5rem var(--s-disp);text-transform:uppercase;margin:0;color:var(--ct,var(--s-ink))}
+.dv p{margin:.5rem 0 0;color:var(--s-body);font-size:1.2rem;line-height:1.35}
+.dv .d{margin-top:auto;font-weight:700;font-size:1.25rem;color:var(--ct,var(--s-ink));padding-top:.8rem}
 .dv.zg{border-style:dashed;opacity:.6}
 .yu{--c:var(--s-upyu);--ct:var(--s-upyu-t)} .vy{--c:var(--s-vyh);--ct:var(--s-vyh-t)} .vs{--c:var(--s-all4);--ct:var(--s-ink)} .nv{--c:var(--s-upn);--ct:var(--s-upn)}
 .vs:before{background:var(--s-all4)!important}
 /* вкладки-перемикач */
-.vkl{display:flex;gap:.7rem;margin-top:1.2rem;flex:none;align-items:center}
-.vkl .t{font-weight:700;font-size:.9rem;padding:.55rem 1.3rem;border-radius:var(--s-r-pil);background:var(--s-card2);color:var(--s-body);border:1px solid var(--s-ln)}
+.vkl{display:flex;gap:.8rem;margin-top:1.2rem;flex:none;align-items:center}
+.vkl .t{font-weight:700;font-size:1.25rem;padding:.65rem 1.6rem;border-radius:var(--s-r-pil);background:var(--s-card2);color:var(--s-body);border:1px solid var(--s-ln);white-space:nowrap}
 .vkl .t.on{background:var(--s-ink);color:var(--s-bg);border-color:var(--s-ink)}
-.vkl .t.zakr{margin-left:auto;color:var(--s-mut)}
-.vkl .t .n{font-weight:600;opacity:.6;margin-left:.4rem}
-/* зона з плитками: гортається сама, коли рамка пульта йде нижче */
+.vkl .t.zakr{margin-left:auto;color:var(--s-mut);font-size:1.05rem}
+.vkl .t .n{font-weight:600;opacity:.6;margin-left:.45rem}
+/* зона з плитками: гортається сама, коли рамка йде нижче */
 .zona{flex:1;min-height:0;overflow:hidden;margin:.6rem -.8rem 0;padding:.8rem .8rem 1rem}
-.sitka{display:grid;grid-template-columns:repeat(4,1fr);gap:1.1rem}
-.sitka.s6{grid-template-columns:repeat(6,1fr);gap:.9rem}
+.sitka{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.sitka.s5{grid-template-columns:repeat(5,1fr);gap:1.1rem}
 .pl{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);overflow:hidden;position:relative;display:flex;flex-direction:column}
-.pl:before{content:"";position:absolute;left:0;right:0;top:0;height:.28rem;background:var(--c,var(--s-ln));z-index:1}
-.pl .im{height:11rem;background:var(--s-card2) center/cover no-repeat;display:grid;place-items:center}
-.pl .im.ik svg{width:5rem;height:5rem}
-.pl .im.ik{background:var(--s-card2)}
-.pl .tx{padding:.75rem 1rem .9rem;display:flex;flex-direction:column;flex:1}
-.pl .nad{color:var(--ct,var(--s-mut));font-size:.5rem;letter-spacing:.28em}
-.pl h4{font:600 1.25rem/1.15 var(--s-disp);text-transform:uppercase;margin:.25rem 0 0}
-.pl p{margin:.3rem 0 0;color:var(--s-mut);font-size:.78rem;line-height:1.35}
-.pl .d{font-weight:700;font-size:.85rem;color:var(--ct,var(--s-ink));margin-top:auto;padding-top:.5rem}
-/* маленькі плитки вмілостей */
-.vm{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:.7rem .6rem .6rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.4rem;min-height:9.4rem}
-.vm .ph{width:5rem;height:5rem;display:grid;place-items:center}
+.pl:before{content:"";position:absolute;left:0;right:0;top:0;height:.34rem;background:var(--c,var(--s-ln));z-index:1}
+.pl .im{height:10.5rem;background:var(--s-card2) center/cover no-repeat;display:grid;place-items:center}
+.pl .im.ik svg{width:5.5rem;height:5.5rem}
+.pl .tx{padding:1.1rem 1.3rem 1.2rem;display:flex;flex-direction:column;flex:1}
+.pl .nad{color:var(--ct,var(--s-mut));font-size:.72rem;letter-spacing:.22em}
+.pl h4{font:600 1.8rem/1.12 var(--s-disp);text-transform:uppercase;margin:.3rem 0 0}
+.pl p{margin:.45rem 0 0;color:var(--s-body);font-size:1.1rem;line-height:1.4}
+.pl .d{font-weight:700;font-size:1.15rem;color:var(--ct,var(--s-ink));margin-top:auto;padding-top:.7rem}
+/* вмілості */
+.vm{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:.9rem .7rem .8rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.5rem;min-height:11.5rem}
+.vm .ph{width:6rem;height:6rem;display:grid;place-items:center}
 .vm .ph img{max-width:100%;max-height:100%}
-.vm .ph i{font:600 2rem var(--s-disp);color:var(--s-mut);font-style:normal}
-.vm b{font-size:.78rem;line-height:1.2}
-.vm .m{font-size:.62rem;font-weight:700;color:var(--s-upyu-t);text-transform:uppercase;letter-spacing:.08em}
+.vm .ph i{font:600 2.6rem var(--s-disp);color:var(--s-mut);font-style:normal}
+.vm b{font-size:1.05rem;line-height:1.2}
+.vm .m{font-size:.75rem;font-weight:700;color:var(--s-upyu-t);text-transform:uppercase;letter-spacing:.08em}
 /* «Цікаве» — без вибору */
-.fakt{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.4rem 1.4rem 1.2rem}
-.fakt b{font:600 2rem var(--s-disp);text-transform:uppercase;display:block}
-.fakt p{margin:.5rem 0 0;color:var(--s-body);font-size:1.05rem;line-height:1.4}
+.fakt{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.6rem 1.7rem 1.5rem}
+.fakt b{font:600 2.6rem var(--s-disp);text-transform:uppercase;display:block}
+.fakt p{margin:.6rem 0 0;color:var(--s-body);font-size:1.35rem;line-height:1.4}
 /* підказка клавіш */
-.pidk{margin-top:.8rem;display:flex;gap:2rem;color:var(--s-mut);font-size:.8rem;flex:none}
-.pidk kbd{font:700 .75rem var(--s-txt);color:var(--s-ink);background:var(--s-card2);border:1px solid var(--s-ln);border-radius:var(--s-r-mitka);padding:.1rem .45rem;margin-right:.35rem}
-.porozh{color:var(--s-mut);font-size:1.1rem;padding:2rem 0}
-/* вхід за кодом */
-.kod{display:grid;grid-template-columns:1fr 24rem;gap:4rem;margin-top:1.6rem;flex:1;min-height:0}
-.kod .pr p{color:var(--s-body);font-size:1.15rem;line-height:1.45;margin:0 0 1rem;max-width:30rem}
-.kod .pr p.mal{color:var(--s-mut);font-size:.95rem}
+.pidk{margin-top:.8rem;display:flex;gap:2.2rem;color:var(--s-mut);font-size:1rem;flex:none}
+.pidk kbd{font:700 .95rem var(--s-txt);color:var(--s-ink);background:var(--s-card2);border:1px solid var(--s-ln);border-radius:var(--s-r-mitka);padding:.12rem .5rem;margin-right:.4rem}
+.porozh{color:var(--s-mut);font-size:1.3rem;padding:2rem 0}
+/* вхід за кодом (проєктор) */
+.kod{display:grid;grid-template-columns:1fr 26rem;gap:4rem;margin-top:1.6rem;flex:1;min-height:0}
+.kod .pr p{color:var(--s-body);font-size:1.35rem;line-height:1.45;margin:0 0 1rem;max-width:32rem}
+.kod .pr p.mal{color:var(--s-mut);font-size:1.1rem}
 .krapky{display:flex;gap:1rem;margin:1.2rem 0 .6rem;height:2rem;align-items:center}
-.krapky i{width:1.3rem;height:1.3rem;border-radius:50%;border:2px solid var(--s-ln)}
+.krapky i{width:1.4rem;height:1.4rem;border-radius:50%;border:2px solid var(--s-ln)}
 .krapky i.on{background:var(--s-ink);border-color:var(--s-ink)}
 .krapky.err i{border-color:var(--s-pomylka)}
-#kp-msg{min-height:1.5rem;font-weight:700;color:var(--s-pomylka)}
+#kp-msg{min-height:1.6rem;font-weight:700;color:var(--s-pomylka);font-size:1.1rem}
 .klav{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;align-content:start}
-.klav .k{background:var(--s-card2);border:1px solid var(--s-ln);border-radius:var(--s-r);height:4.2rem;display:grid;place-items:center;font:600 1.8rem var(--s-disp)}
-.klav .k.sm{font:700 .95rem var(--s-txt);color:var(--s-body)}
-.klav .k.ok{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;font:700 1.05rem var(--s-txt)}
-.pam{display:flex;align-items:center;gap:.8rem;padding:.7rem 1rem;border-radius:var(--s-r);background:var(--s-card);border:1px solid var(--s-ln);font-weight:700;font-size:1rem;margin-top:.4rem;width:max-content}
-.pam .b{width:1.5rem;height:1.5rem;border-radius:var(--s-r-mitka);border:2px solid var(--s-mut);display:grid;place-items:center;font-size:1rem;line-height:1}
+.klav .k{background:var(--s-card2);border:1px solid var(--s-ln);border-radius:var(--s-r);height:4.6rem;display:grid;place-items:center;font:600 2rem var(--s-disp)}
+.klav .k.sm{font:700 1.05rem var(--s-txt);color:var(--s-body)}
+.klav .k.ok{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;font:700 1.15rem var(--s-txt)}
+.pam{display:flex;align-items:center;gap:.8rem;padding:.8rem 1.1rem;border-radius:var(--s-r);background:var(--s-card);border:1px solid var(--s-ln);font-weight:700;font-size:1.15rem;margin-top:.4rem;width:max-content}
+.pam .b{width:1.6rem;height:1.6rem;border-radius:var(--s-r-mitka);border:2px solid var(--s-mut);display:grid;place-items:center;font-size:1.05rem;line-height:1}
 .pam.on .b{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff}
-.pam small{display:block;font-weight:400;color:var(--s-mut);font-size:.78rem}
+.pam small{display:block;font-weight:400;color:var(--s-mut);font-size:.9rem}
 @keyframes tr{20%,60%{transform:translateX(-.5rem)}40%,80%{transform:translateX(.5rem)}}
 .krapky.err{animation:tr .4s}
 /* вікно поверх: пісня, підказка, вмілість, вибір версії */
 #det{position:fixed;inset:0;z-index:5;background:rgba(10,11,13,.82);display:flex;align-items:center;justify-content:center}
 #det[hidden]{display:none}
-#det .vk{width:72rem;max-height:40rem;background:var(--s-bg);border:1px solid var(--s-ln);border-radius:var(--s-r-karta);padding:2.2rem 2.8rem 1.8rem;display:flex;flex-direction:column;position:relative;overflow:hidden}
-#det .vk:before{content:"";position:absolute;left:0;right:0;top:0;height:.32rem;background:var(--c,var(--s-all4))}
-#det h2{font:600 2.6rem/1.05 var(--s-disp);text-transform:uppercase;margin:.3rem 0 0}
-#det .sub{color:var(--s-mut);font-size:1.05rem;margin:.4rem 0 0}
+#det .vk{width:74rem;max-height:41rem;background:var(--s-bg);border:1px solid var(--s-ln);border-radius:var(--s-r-karta);padding:2.2rem 2.8rem 1.8rem;display:flex;flex-direction:column;position:relative;overflow:hidden}
+#det .vk:before{content:"";position:absolute;left:0;right:0;top:0;height:.34rem;background:var(--c,var(--s-all4))}
+#det h2{font:600 3rem/1.05 var(--s-disp);text-transform:uppercase;margin:.3rem 0 0}
+#det .sub{color:var(--s-mut);font-size:1.25rem;margin:.4rem 0 0}
 #det .tilo{flex:1;min-height:0;overflow:hidden;margin-top:1.2rem;position:relative}
 #det .vrsh{columns:2;column-gap:3rem}
-#det .vrsh p{font-size:1.45rem;line-height:1.45;white-space:pre-line;margin:0 0 1.1rem;break-inside:avoid}
+#det .vrsh p{font-size:1.65rem;line-height:1.45;white-space:pre-line;margin:0 0 1.1rem;break-inside:avoid}
 #det .vrsh p.ch{font-style:italic;color:var(--s-body);padding-left:1.2rem;border-left:.2rem solid var(--s-ln)}
-#det ol.kr{margin:0;padding-left:2.2rem;font-size:1.45rem;line-height:1.4}
+#det ol.kr{margin:0;padding-left:2.4rem;font-size:1.65rem;line-height:1.4}
 #det ol.kr li{margin-bottom:.7rem}
-#det .morse{font:600 2.4rem var(--s-disp);letter-spacing:.2em;margin:.2rem 0 1rem}
-#det .por{color:var(--s-body);font-size:1.15rem;margin-top:1rem}
-#det .dn{display:flex;gap:1rem;margin-top:1.2rem;flex:none;align-items:center}
-#det .dn .gl{margin-left:auto;color:var(--s-mut);font-size:.85rem}
-.bt{display:inline-flex;align-items:center;gap:.6rem;padding:.75rem 1.5rem;border-radius:var(--s-r);background:var(--s-card2);border:1px solid var(--s-ln);font-weight:700;font-size:1.05rem;color:var(--s-ink)}
+#det .morse{font:600 2.6rem var(--s-disp);letter-spacing:.2em;margin:.2rem 0 1rem}
+#det .por{color:var(--s-body);font-size:1.3rem;margin-top:1rem}
+#det .dn{display:flex;gap:1rem;margin-top:1.2rem;flex:none;align-items:center;flex-wrap:wrap}
+#det .dn .gl{margin-left:auto;color:var(--s-mut);font-size:1rem}
+.bt{display:inline-flex;align-items:center;gap:.6rem;padding:.8rem 1.6rem;border-radius:var(--s-r);background:var(--s-card2);border:1px solid var(--s-ln);font-weight:700;font-size:1.2rem;color:var(--s-ink)}
 .bt.main{background:var(--c2,var(--s-vyh));border-color:var(--c2,var(--s-vyh));color:#fff}
 .skh{display:flex;gap:2rem;align-items:center}
 .skh .ph{width:9rem;height:9rem;flex:none;display:grid;place-items:center;background:var(--s-card);border-radius:var(--s-r-plytka);border:1px solid var(--s-ln)}
 .skh .ph img{max-width:85%;max-height:85%}
 .rivni{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
-.rivni span{padding:.4rem .9rem;border-radius:var(--s-r-pil);background:var(--s-card2);border:1px solid var(--s-ln);font-weight:700;font-size:.95rem;color:var(--s-body)}
+.rivni span{padding:.45rem 1rem;border-radius:var(--s-r-pil);background:var(--s-card2);border:1px solid var(--s-ln);font-weight:700;font-size:1.1rem;color:var(--s-body)}
 .matb{margin-top:1.4rem;padding:1.1rem 1.3rem;border-radius:var(--s-r-plytka);background:var(--s-card);border:1px solid var(--s-ln)}
-.matb b{font:600 1.2rem var(--s-disp);text-transform:uppercase;color:var(--s-upyu-t)}
-.matb p{margin:.4rem 0 0;color:var(--s-body);font-size:1rem}
-.vars{display:grid;grid-template-columns:repeat(2,1fr);gap:1.1rem;margin-top:1.2rem}
-.vars .pl{min-height:8rem}
+.matb b{font:600 1.4rem var(--s-disp);text-transform:uppercase;color:var(--s-upyu-t)}
+.matb p{margin:.4rem 0 0;color:var(--s-body);font-size:1.2rem}
+.vars{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin-top:1.2rem}
 /* відкрите на весь екран */
 #fr{position:fixed;inset:0;width:100%;height:100%;border:0;background:#000;z-index:10}
 #load{position:fixed;inset:0;z-index:20;background:var(--s-bg);display:flex;align-items:center;justify-content:center;font:600 2.4rem var(--s-disp);text-transform:uppercase;color:var(--s-mut)}
 #load[hidden]{display:none}
-#tst{position:fixed;z-index:40;left:50%;bottom:1.6rem;transform:translateX(-50%);padding:.6rem 1.3rem;border-radius:var(--s-r-pil);background:var(--s-card);border:1px solid var(--s-ln);color:var(--s-ink);font-weight:700;font-size:1.1rem;transition:opacity .4s}
+#tst{position:fixed;z-index:40;left:50%;bottom:1.6rem;transform:translateX(-50%);padding:.6rem 1.3rem;border-radius:var(--s-r-pil);background:var(--s-card);border:1px solid var(--s-ln);color:var(--s-ink);font-weight:700;font-size:1.2rem;transition:opacity .4s;pointer-events:none}
 #tst.off{opacity:0}
+#tbar,#ctl,#tkod{display:none}
+
+/* ================= ТЕЛЕФОН: звичайний сайт для телефона, що керує проєктором ================= */
+html.tel{font-size:16px;height:auto;overflow:auto}
+body.tel{overflow:auto;height:auto;min-height:100%}
+body.tel #app{position:static;width:auto;height:auto;margin:0;padding:4.4rem 1rem 2rem;overflow:visible}
+body.tel .qrk,body.tel .pidk,body.tel .logo-wrap .logo{display:none}
+body.tel .hverh{display:block}
+body.tel h1{font-size:2.6rem} body.tel h1.m{font-size:2.2rem}
+body.tel .ruka{font-size:1.5rem}
+body.tel .dveri{grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1.4rem}
+body.tel .dv{min-height:8.5rem;padding:1rem}
+body.tel .dv h3{font-size:1.45rem} body.tel .dv p{font-size:.9rem} body.tel .dv .d{font-size:.95rem}
+body.tel .vkl{overflow-x:auto;margin:1rem -1rem 0;padding:.2rem 1rem .4rem;gap:.5rem}
+body.tel .vkl .t{font-size:1rem;padding:.55rem 1.1rem}
+body.tel .zona{overflow:visible;margin:.4rem 0 0;padding:.4rem 0}
+body.tel .sitka{grid-template-columns:1fr!important;gap:.8rem}
+body.tel .sitka.s5{grid-template-columns:repeat(3,1fr)!important;gap:.6rem}
+body.tel .pl{flex-direction:row}
+body.tel .pl .im{height:auto;width:6.5rem;flex:none;min-height:6.5rem}
+body.tel .pl .im.ik svg{width:3rem;height:3rem}
+body.tel .pl .tx{padding:.8rem 1rem}
+body.tel .pl h4{font-size:1.2rem} body.tel .pl p{font-size:.9rem} body.tel .pl .d{font-size:.95rem;padding-top:.4rem}
+body.tel .pl .nad{font-size:.6rem}
+body.tel .vm{min-height:8rem;padding:.6rem .4rem}
+body.tel .vm .ph{width:3.6rem;height:3.6rem} body.tel .vm b{font-size:.8rem}
+body.tel .fakt{padding:1rem} body.tel .fakt b{font-size:1.6rem} body.tel .fakt p{font-size:1rem}
+body.tel .f.fok{outline:0;transform:none;box-shadow:none}
+body.tel .f:active{filter:brightness(.85)}
+body.tel #det{align-items:flex-start;padding:4rem .6rem 1rem;overflow:auto}
+body.tel #det .vk{width:100%;max-height:none;padding:1.4rem 1.2rem 1.2rem}
+body.tel #det h2{font-size:1.9rem} body.tel #det .sub{font-size:1rem}
+body.tel #det .tilo{overflow:visible}
+body.tel #det .vrsh{columns:1} body.tel #det .vrsh p,body.tel #det ol.kr{font-size:1.1rem}
+body.tel #det .dn .gl{display:none}
+body.tel .skh{gap:1rem} body.tel .skh .ph{width:5rem;height:5rem}
+body.tel .vars{grid-template-columns:1fr}
+body.tel .bt{font-size:1rem}
+body.tel #tbar{display:flex;position:fixed;left:0;right:0;top:0;z-index:30;height:3.4rem;align-items:center;gap:.6rem;padding:0 .8rem;background:var(--s-card);border-bottom:1px solid var(--s-ln)}
+#tbar button{font:700 .95rem var(--s-txt);color:var(--s-ink);background:var(--s-card2);border:1px solid var(--s-ln);border-radius:var(--s-r-pil);padding:.45rem .9rem}
+#tbar .st{margin-left:auto;display:inline-flex;align-items:center;gap:.4rem;font-weight:700;font-size:.85rem;color:var(--s-mut)}
+#tbar .st i{width:.6rem;height:.6rem;border-radius:50%;background:var(--s-uvaga)}
+#tbar .st.ok{color:var(--s-ok)} #tbar .st.ok i{background:var(--s-ok)}
+/* телефон: код виховників */
+body.tel #tkod:not([hidden]){display:block;position:fixed;inset:3.4rem 0 0;z-index:25;background:var(--s-bg);padding:1.6rem 1.2rem;overflow:auto}
+#tkod h2{font:600 2rem var(--s-disp);text-transform:uppercase;margin:.3rem 0 .8rem}
+#tkod p{color:var(--s-body);margin:0 0 1rem}
+#tkod input{font:600 1.6rem var(--s-txt);letter-spacing:.3em;width:100%;padding:.7rem 1rem;border-radius:var(--s-r);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-ink)}
+#tkod .row{display:flex;gap:.6rem;margin-top:1rem}
+#tkod button{font:700 1.05rem var(--s-txt);padding:.8rem 1.3rem;border-radius:var(--s-r);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-ink)}
+#tkod button.main{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;flex:1}
+#tkod .err{color:var(--s-pomylka);font-weight:700;min-height:1.4rem;margin-top:.6rem}
+/* телефон: щось відкрите на проєкторі — пульт */
+body.tel #ctl:not([hidden]){display:flex;flex-direction:column;position:fixed;inset:3.4rem 0 0;z-index:26;background:var(--s-bg)}
+#ctl .hd{padding:.8rem 1rem;border-bottom:1px solid var(--s-ln)}
+#ctl .hd small{color:var(--s-mut);font-weight:700;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase}
+#ctl .hd b{display:block;font:600 1.3rem var(--s-disp);text-transform:uppercase;margin-top:.15rem}
+#ctl .seg{display:flex;gap:.4rem;margin-top:.6rem}
+#ctl .seg[hidden]{display:none}
+#ctl .seg button{flex:1;font:700 .9rem var(--s-txt);padding:.45rem;border-radius:var(--s-r-pil);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-body)}
+#ctl .seg button.on{background:var(--s-ink);color:var(--s-bg)}
+#pf{flex:1;border:0;width:100%;background:var(--s-bg)}
+#pf[hidden],#str[hidden]{display:none}
+#str{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,5.2rem) auto;gap:.7rem;padding:1.4rem;align-content:center}
+#str button{font:700 1.6rem var(--s-txt);border-radius:var(--s-r-plytka);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-ink)}
+#str button.ok{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;font-size:1.2rem}
+#str .gr{grid-column:1/4;display:flex;gap:.7rem}
+#str .gr button{flex:1;font-size:1rem;padding:.8rem}
 </style>
 </head>
 <body>
+<div id="tbar"><button type="button" id="tb-nazad">← Назад</button><button type="button" id="tb-dom">Головна</button><span class="st" id="tb-st"><i></i><span>Підключаємось…</span></span></div>
 <div id="app"></div>
 <div id="det" hidden><div class="vk" id="dvk"></div></div>
 <div id="load" hidden>Відкриваємо…</div>
+<form id="tkod" hidden><div class="nad">Виховники</div><h2>Код виховників</h2><p>Код вводиться лише тут, на телефоні — на проєкторі його не видно.</p>
+  <input id="tk-in" type="password" inputmode="numeric" autocomplete="off" maxlength="12" aria-label="Код виховників">
+  <div class="err" id="tk-err"></div><div class="row"><button type="button" id="tk-x">Скасувати</button><button class="main" type="submit">Увійти</button></div></form>
+<div id="ctl" hidden><div class="hd"><small>На проєкторі</small><b id="c-n"></b><div class="seg" id="seg"><button type="button" data-v="pult">Пульт</button><button type="button" data-v="str">Стрілки</button></div></div>
+  <iframe id="pf" title="Пульт"></iframe>
+  <div id="str"><span></span><button type="button" data-k="ArrowUp">▲</button><span></span><button type="button" data-k="ArrowLeft">◀</button><button type="button" class="ok" data-k="Enter">OK</button><button type="button" data-k="ArrowRight">▶</button><span></span><button type="button" data-k="ArrowDown">▼</button><span></span>
+    <div class="gr"><button type="button" data-g="-1">Гортати вгору</button><button type="button" data-g="1">Гортати вниз</button></div></div></div>
 <div id="tst" class="off"></div>
 <script>window.DANI = {"code": "1912", "logo": "/proba/tv/img/plast-fi-logo-hd.png", "wm": "/proba/tv/img/emblem.webp", "tips": [{"t": "Прямий вузол", "s": "Зв’язати дві мотузки однакової товщини.", "steps": ["Візьміть кінці двох мотузок.", "Покладіть правий кінець на лівий і обкрутіть навколо — як перший вузлик на шнурках.", "Тепер лівий кінець — на правий, і знову обкрутіть.", "Затягніть. Кінці мають лежати поруч, уздовж мотузок, а вузол — бути пласким."], "tip": "Якщо кінці стирчать навскіс — вийшов «бабський» вузол, він розв’язується сам. Перев’яжіть."}, {"t": "Вісімка", "s": "Вузол на кінці мотузки, щоб вона не вислизнула.", "steps": ["Зробіть петлю: покладіть кінець мотузки поверх неї самої.", "Обведіть кінець ззаду навколо основної мотузки.", "Просуньте кінець у петлю спереду.", "Затягніть — вийде цифра 8."], "tip": "Вісімку легко розв’язати навіть після сильного натягу."}, {"t": "Булінь", "s": "Петля, яка не затягується: обв’язатися, прив’язати до дерева.", "steps": ["На основній мотузці зробіть маленьку петлю — «нору». Кінець має лежати зверху.", "Кролик вилазить з нори: просуньте кінець у петлю знизу.", "Кролик оббігає дерево: обведіть кінець ззаду навколо основної мотузки.", "Кролик пірнає назад у нору: поверніть кінець у ту саму петлю згори.", "Затягніть, тримаючи разом кінець і велику петлю."], "tip": "Запам’ятати легко: «з нори — навколо дерева — назад у нору»."}, {"t": "SOS азбукою Морзе", "s": "Сигнал біди: ліхтариком, свистком, стуком.", "morse": "· · ·  — — —  · · ·", "steps": ["Три короткі сигнали.", "Три довгі.", "Знову три короткі — і пауза. Повторюйте."], "tip": "Довгий сигнал — утричі довший за короткий."}, {"t": "Де північ уночі", "s": "Знайти Полярну зірку за Великим Возом.", "steps": ["Знайдіть Великий Віз — сім яскравих зірок, схожих на ківш.", "Візьміть дві крайні зірки ковша (протилежні від ручки).", "Продовжте лінію між ними вгору приблизно в п’ять разів.", "Там — Полярна зірка. Під нею — північ."], "tip": "Полярна зірка не дуже яскрава, але майже не рухається по небу."}], "songs": [{"t": "Ще не вмерла України", "a": "Державний гімн України · слова Павла Чубинського (1862)", "v": [["Ще не вмерла України і слава, і воля,\nЩе нам, браття молодії, усміхнеться доля.\nЗгинуть наші воріженьки, як роса на сонці,\nЗапануєм і ми, браття, у своїй сторонці."], ["Душу й тіло ми положим за нашу свободу,\nІ покажем, що ми, браття, козацького роду.", 1]]}, {"t": "Несе Галя воду", "a": "народна", "v": [["Несе Галя воду,\nКоромисло гнеться,\nЗа нею Іванко,\nЯк барвінок, в’ється."], ["— Галю ж моя, Галю,\nДай води напиться,\nТи така хороша —\nДай хоч подивиться!"], ["— Вода у криниці,\nПіди та й напийся,\nЯк буду в садочку —\nПрийди подивися."]]}, {"t": "Ой у лузі червона калина", "a": "стрілецька пісня"}, {"t": "Ой, чий то кінь стоїть", "a": "народна"}], "facts": [["СКОБ!", "Пластове привітання: Сильно, Красно, Обережно, Бистро."], ["1911–1912", "Пласт засновано у Львові. Засновники — Олександр Тисовський, Петро Франко та Іван Чмола."], ["Пластуни", "Назва «Пласт» — від пластунів, козаків-розвідників."], ["Будь готов!", "Пластове гасло."]], "mat": {"budova-litalnyh-aparativ-i": {"lvl": "І", "d": "Види літальних апаратів, частини літака, профіль крила, тангаж, крен і рискання, п’ять аеродинамічних схем.", "vyv": "/yunakam/budova-la-1/#vyvchy", "test": "/yunakam/budova-la-1/#test"}, "keramika-i": {"lvl": "І", "d": "Історія виробів з глини, техніки формотворення, шість видів кераміки, музей і три вироби власноруч.", "vyv": "/yunakam/keramika-1/#vyvchy", "test": "/yunakam/keramika-1/#test"}}, "art": {"budova-litalnyh-aparativ-i": "/proba/tv/img/budova-la-1.webp", "keramika-i": "/proba/tv/img/keramika-1.webp"}, "gut": [{"id": "budova-la-1", "t": "Будова літальних апаратів І", "sp": "Летунська · проба 1", "p": "Частини літака, профіль крила, 3D-літачок, гра з телефонів.", "art": "/proba/tv/img/budova-la-1.webp", "v": [["Гутірка", "/gutirky/budova-la-1/#hutirka", "40–45 хв", "Юнацтво, 12–17 років"]]}, {"id": "keramika-1", "t": "Кераміка І", "sp": "Мистецька · проба 1", "p": "Історія, пʼять технік, шість видів кераміки, дослід і гра з телефонів.", "art": "/proba/tv/img/keramika-1.webp", "v": [["Гутірка", "/gutirky/keramika-1/#hutirka", "45 хв", "Юнацтво, 12–17 років"]]}, {"id": "keramika-uk", "t": "Кераміка України", "sp": "Мистецька · історична подорож", "p": "9 регіонів, вироби, вікторина на карті.", "art": "/proba/tv/img/keramika-map.webp", "v": [["Повна гутірка", "/biblioteka/#povna", "45–50 хв", "Юнацтво, 12–17 років"], ["Вишкіл", "/biblioteka/#vyshkil", "до 20 хв", "Виховники, малі групи"]]}], "ihryVsi": [{"id": "svoya-hra", "n": "Інтелектуальний змаг", "s": "Табло з темами й балами, команди відповідають з телефонів. Свої питання — або приклад.", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"#ffc247\" stroke-width=\"2.4\"><rect x=\"1.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><\/g><rect x=\"13.5\" y=\"13.5\" width=\"13\" height=\"13\" rx=\"3\" fill=\"#ffc247\"/><\/svg>", "u": "/proba/svoya-hra/?dyz=3"}, {"id": "bingo", "n": "Пластове бінго", "s": "Ведучий тягне кульки на великому екрані, гравці — з телефонів або паперових карток. Числа або слова з гутірки.", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"#ffc247\"/><circle cx=\"20\" cy=\"20\" r=\"11.5\" fill=\"#fff\"/><path d=\"M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z\" fill=\"#1d1606\"/><\/svg>", "u": "/proba/bingo/?dyz=3"}, {"id": "skob-hra", "n": "Потужний СКОБ!", "s": "Вікторина: питання на екрані, відповіді з телефонів. Склади свою — або візьми готову з гутірки.", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><rect width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#d64541\"/><rect x=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2f6fd0\"/><rect y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#e8a321\"/><rect x=\"21.5\" y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2e8f55\"/><\/svg>", "u": "/proba/skob-hra/?dyz=3"}, {"id": "novyi-vykhovnyk", "n": "Вгадай, хто?", "s": "Знайомство гуртка: вгадуємо, чий факт, або голосуємо в «Хто з нас…» — і всі отримують титули. Грають усі з телефонів.", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><g transform=\"translate(20 11.5) scale(1.05) translate(-20 -10.8)\"><path d=\"M1.5 6.5C6 2 14 2 20 6.5 26 2 34 2 38.5 6.5 38 15 33 19.5 27 19.5 23.5 19.5 21.5 17.5 20 15.5 18.5 17.5 16.5 19.5 13 19.5 7 19.5 2 15 1.5 6.5z\" fill=\"#ffc247\"/><path d=\"M7 10.5Q11.5 6.5 16 10.5Q11.5 13.5 7 10.5z\" fill=\"#1b1d21\"/><path d=\"M24 10.5Q28.5 6.5 33 10.5Q28.5 13.5 24 10.5z\" fill=\"#1b1d21\"/><\/g><path d=\"M16.2 25.4a3.8 3.8 0 1 1 5.8 3.2c-1.1.6-2 1.3-2 2.8\" fill=\"none\" stroke=\"#2fd2c0\" stroke-width=\"4.2\" stroke-linecap=\"round\"/><circle cx=\"20\" cy=\"36.6\" r=\"2.77\" fill=\"#2fd2c0\"/><g opacity=\".85\"><path d=\"M5.4 28.4a2.6 2.6 0 1 1 3.9 2.2c-.8.4-1.3.9-1.3 1.9\" fill=\"none\" stroke=\"#2fd2c0\" stroke-width=\"3.15\" stroke-linecap=\"round\"/><circle cx=\"8\" cy=\"36\" r=\"2.1\" fill=\"#2fd2c0\"/><path d=\"M29.4 28.4a2.6 2.6 0 1 1 3.9 2.2c-.8.4-1.3.9-1.3 1.9\" fill=\"none\" stroke=\"#2fd2c0\" stroke-width=\"3.15\" stroke-linecap=\"round\"/><circle cx=\"32\" cy=\"36\" r=\"2.1\" fill=\"#2fd2c0\"/><\/g><\/svg>", "u": "/proba/novyi-vykhovnyk/?dyz=3"}], "tools": [{"id": "hto", "n": "Жеребкування", "s": "хто наступний — рулетка; поділ на групи й пари на великому екрані", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><circle cx=\"20\" cy=\"20\" r=\"17\" fill=\"none\" stroke=\"#2fd2c0\" stroke-width=\"3\"/><path d=\"M20 3a17 17 0 0 1 17 17H20z\" fill=\"#ffc247\"/><circle cx=\"20\" cy=\"20\" r=\"4\" fill=\"#f2f4f6\"/><path d=\"M20 20l-9 9\" stroke=\"#f2f4f6\" stroke-width=\"3\" stroke-linecap=\"round\"/><\/svg>", "u": "/proba/hto/"}, {"id": "opytuvannia", "n": "Швидке опитування", "s": "питання до гуртка — відповіді анонімно з телефонів", "ic": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><rect y=\"18\" width=\"11\" height=\"22\" rx=\"3\" fill=\"#2fd2c0\"/><rect x=\"14.5\" width=\"11\" height=\"40\" rx=\"3\" fill=\"#ffc247\"/><rect x=\"29\" y=\"10\" width=\"11\" height=\"30\" rx=\"3\" fill=\"#cfd5dc\"/><\/svg>", "u": "/proba/opytuvannia/?dyz=3"}], "got": [{"id": "skob-keramika-uk", "gra": "skob", "nazva": "Кераміка України", "opys": "8 питань", "dzh": "з гутірки", "u": "/proba/skob-hra/?dyz=3#g=jeyJ2IjoxLCJ0Ijoi0JrQtdGA0LDQvNGW0LrQsCDQo9C60YDQsNGX0L3QuCIsIlQiOjIwLCJtIjoxLCJxIjpbWyLQqdC-INGA0L7QsdC40YLRjCDQs9C70LjQvdGDINC60LXRgNCw0LzRltC60L7Rjj8iLFsi0KTQsNGA0LHQsCIsItCS0LjQv9Cw0Lsg0YMg0LLQvtCz0L3RliIsItCh0L7QvdGG0LUiLCLQktC-0LTQsCJdLDEsItCf0ZbRgdC70Y8g0LLQuNC_0LDQu9GDINCz0LvQuNC90LAg0YHRgtCw0ZQg0YLQstC10YDQtNC-0Y4sINGP0Log0LrQsNC80ZbQvdGMLiJdLFsi0KnQviDRgtCw0LrQtSDQsNC90LPQvtCxPyIsWyLQodC60LvQviDQt9Cy0LXRgNGF0YMiLCLQoNGW0LTQutCwINC60L7Qu9GM0L7RgNC-0LLQsCDQs9C70LjQvdCwIiwi0JLQuNC0INC_0LXRh9GWIiwi0JPQvtC90YfQsNGA0L3QuNC5INC60YDRg9CzIl0sMSwi0JDQvdCz0L7QsdC-0Lwg4oCUINGA0ZbQtNC60L7RjiDQutC-0LvRjNC-0YDQvtCy0L7RjiDQs9C70LjQvdC-0Y4g4oCUINC80LDQu9GO0Y7RgtGMINCy0ZbQt9C10YDRg9C90LrQuC4iXSxbItCd0LDQstGW0YnQviDQv9C-0YHRg9C0INC_0L7QutGA0LjQstCw0Y7RgtGMINC_0L7Qu9C40LLQvtGOPyIsWyLQqdC-0LEg0LHRg9CyINCy0LDQttGH0LjQvCIsItCp0L7QsSDQsdC70LjRidCw0LIg0ZYg0L3QtSDQv9GA0L7Qv9GD0YHQutCw0LIg0LLQvtC00YMiLCLQqdC-0LEg0YHRgtCw0LIg0YfQvtGA0L3QuNC8Iiwi0KnQvtCxINC_0LDRhdC90YPQsiJdLDEsItCf0L7Qu9C40LLQsCDigJQg0YLQvtC90LrQtSDRgdC60LvQvjog0L_QvtGB0YPQtCDQsdC70LjRidC40YLRjCDRliDQvdC1INC_0YDQvtC_0YPRgdC60LDRlCDQstC-0LTRgy4iXSxbItCU0LUg0LPQsNGA0Y_Rh9C40Lkg0L_QvtGB0YPQtCDQt9Cw0L3Rg9GA0Y7RjtGC0Ywg0YMg0LzQvtC70L7QutC-PyIsWyLQmtC-0YHRltCyIiwi0KHQu9C-0LLigJnRj9C90YHRjNC6Iiwi0J7Qv9GW0YjQvdGPIiwi0JHRg9Cx0L3RltCy0LrQsCJdLDEsItCc0L7Qu9C-0YfQtdC90LAg0LrQtdGA0LDQvNGW0LrQsCDigJQg0KHQu9C-0LLigJnRj9C90YHRjNC6LCDQodC70L7QsdC-0LbQsNC90YnQuNC90LAuIl0sWyLQr9C60LAg0LrQtdGA0LDQvNGW0LrQsCDRgNC-0LfQv9C40YHQsNC90LAg0LfQtdC70LXQvdC40LwsINC20L7QstGC0LjQvCDRliDQutC-0YDQuNGH0L3QtdCy0LjQvCDQvdCwINCx0ZbQu9C-0LzRgz8iLFsi0JrQvtGB0ZbQstGB0YzQutCwIiwi0JPQsNCy0LDRgNC10YbRjNC60LAiLCLQotGA0LjQv9GW0LvRjNGB0YzQutCwIiwi0J_QvtC70ZbRgdGM0LrQsCJdLDAsItCi0YDQuCDQutC-0LvRjNC-0YDQuCDQmtC-0YHQvtCy0LAg4oCUINCT0YPRhtGD0LvRjNGJ0LjQvdCwLiJdLFsi0JTQtSDQv9GA0LDRhtGO0ZQg0J3QsNGG0ZbQvtC90LDQu9GM0L3QuNC5INC80YPQt9C10Lkt0LfQsNC_0L7QstGW0LTQvdC40Log0YPQutGA0LDRl9C90YHRjNC60L7Qs9C-INCz0L7QvdGH0LDRgNGB0YLQstCwPyIsWyLQoyDQmtC-0YHQvtCy0ZYiLCLQoyDQkdGD0LHQvdGW0LLRhtGWIiwi0JIg0J7Qv9GW0YjQvdGWIiwi0KMg0JvRjNCy0L7QstGWIl0sMiwi0JIg0J7Qv9GW0YjQvdGWINC90LAg0J_QvtC70YLQsNCy0YnQuNC90ZYuIl0sWyLQodC60ZbQu9GM0LrQuCDRgNC-0LrRltCyINGC0YDQuNC_0ZbQu9GM0YHRjNC60L7QvNGDINC_0L7RgdGD0LTRgz8iLFsiMTAwIiwiNTAwIiwi0J_QvtC90LDQtCA1MDAwIiwiNTAiXSwyLCLQotGA0LjQv9GW0LvRjNGB0YzQutCwINC60YPQu9GM0YLRg9GA0LAg4oCUIFbigJNJSUkg0YLQuNGBLiDQtNC-INC9LiDQtS4iXSxbItCn0L7QvNGDINGE0L7RgNC80Lgg0LTQu9GPINC70LjRgtGC0Y8g0YDQvtCx0LvRj9GC0Ywg0Lcg0LPRltC_0YHRgz8iLFsi0JPRltC_0YEg0LTQtdGI0LXQstC40LkiLCLQk9GW0L_RgSDQstCx0LjRgNCw0ZQg0LLQvtC00YMiLCLQk9GW0L_RgSDQvdC1INCx0L7Rl9GC0YzRgdGPINCy0L7Qs9C90Y4iLCLQk9GW0L_RgSDQsdC70LjRidC40YLRjCJdLDEsItCT0ZbQv9GBINCy0LHQuNGA0LDRlCDQstC-0LTRgyDigJQg0L3QsCDRgdGC0ZbQvdC60LDRhSDQvdCw0YDQvtGB0YLQsNGUINGI0LDRgCDQs9C70LjQvdC4LiJdXX0"}, {"id": "skob-keramika-1", "gra": "skob", "nazva": "Кераміка І", "opys": "15 питань", "dzh": "з гутірки", "u": "/proba/skob-hra/?dyz=3#g=jeyJ2IjoxLCJ0Ijoi0JrQtdGA0LDQvNGW0LrQsCDQhiIsIlQiOjIwLCJtIjoxLCJxIjpbWyLQqdC-INC-0LfQvdCw0YfQsNGUINCz0YDQtdGG0YzQutC1INGB0LvQvtCy0L4gwqvQutC10YDQsNC80L7RgcK7PyIsWyLQktC-0LPQvtC90YwiLCLQk9C70LjQvdCwLCDQs9C70LjQvdGP0L3QuNC5INC_0L7RgdGD0LQiLCLQmtCw0LzRltC90YwiLCLQktC-0LTQsCJdLDEsIsKr0JrQtdGA0LDQvNC-0YHCuyDigJQg0LPQu9C40L3QsCwg0LPQu9C40L3Rj9C90LjQuSDQv9C-0YHRg9C0LiDQl9Cy0ZbQtNGB0Lgg4oCUIMKr0LrQtdGA0LDQvNGW0LrQsMK7LiJdLFsi0JTQtSDQv9GA0LDRhtGO0ZQg0J3QsNGG0ZbQvtC90LDQu9GM0L3QuNC5INC80YPQt9C10Lkt0LfQsNC_0L7QstGW0LTQvdC40Log0YPQutGA0LDRl9C90YHRjNC60L7Qs9C-INCz0L7QvdGH0LDRgNGB0YLQstCwPyIsWyLQoyDQmtC-0YHQvtCy0ZYiLCLQoyDQkdGD0LHQvdGW0LLRhtGWIiwi0JIg0J7Qv9GW0YjQvdGWIiwi0KMg0JLQsNGB0LjQu9GM0LrQvtCy0ZYiXSwyLCLQkiDQntC_0ZbRiNC90ZYg0L3QsCDQn9C-0LvRgtCw0LLRidC40L3RliDigJQg0LPQvtC90YfQsNGA0L3RltC5INGB0YLQvtC70LjRhtGWINCj0LrRgNCw0ZfQvdC4LiJdLFsi0KnQviDQt9GA0L7QsdC40LvQviDQv9C-0YHRg9C0INGA0ZbQstC90ZbRiNC40LwsINCwINGA0L7QsdC-0YLRgyDQs9C-0L3Rh9Cw0YDRjyDigJQg0YjQstC40LTRiNC-0Y4_IixbItCT0L7QvdGH0LDRgNC90LjQuSDQutGA0YPQsyIsItCT0LvQsNC30YPRgCIsItCV0LvQtdC60YLRgNC-0L_RltGHIiwi0KDQvtC30L_QuNGBIl0sMCwi0JPQvtC90YfQsNGA0L3QuNC5INC60YDRg9CzOiDQs9C70LjQvdCwINC-0LHQtdGA0YLQsNGU0YLRjNGB0Y8sINGWINGB0YLRltC90LrQuCDQstC40YXQvtC00Y_RgtGMINGA0ZbQstC90LjQvNC4LiJdLFsi0JLQtdC70LjQutC40Lkg0LPQvtGA0YnQuNC6INGB0LrQu9Cw0LTQsNGO0YLRjCDQt9GWINGB0YLRgNGW0YfQvtC6INCz0LvQuNC90LgsINC60ZbQu9GM0YbQtSDQt9CwINC60ZbQu9GM0YbQtdC8LiDQptC14oCmIixbItCf0YDQtdGB0YPQstCw0L3QvdGPIiwi0JvQuNGC0YLRjyIsItCo0LDQsdC70L7QvSIsItCh0YLRgNGW0YfQutC-0LLQtSDQu9GW0L_Qu9C10L3QvdGPIl0sMywi0KHRgtGA0ZbRh9C60L7QstC1INC70ZbQv9C70LXQvdC90Y86INGB0YLRgNGW0YfQutC4INGH0Lgg0LTQttCz0YPRgtC4INC60LvQsNC00YPRgtGMINC60ZbQu9GM0YbRj9C80Lgg0Lkg0LfQsNCz0LvQsNC00LbRg9GO0YLRjC4iXSxbItCv0Log0L3QsCDQt9Cw0LLQvtC00ZYg0YDQvtCx0LvRj9GC0Ywg0LrQtdGA0LDQvNGW0YfQvdGDINC_0LvQuNGC0LrRgz8iLFsi0JvRltC_0LvRj9GC0Ywg0YHRgtGA0ZbRh9C60LDQvNC4Iiwi0J_RgNC10YHRg9GO0YLRjCDRltC3INC_0L7RgNC-0YjQutC-0L_QvtC00ZbQsdC90L7RlyDQvNCw0YHQuCIsItCi0L7Rh9Cw0YLRjCDQvdCwINC60YDRg9C30ZYiLCLQl9Cw0LvQuNCy0LDRjtGC0Ywg0YjQu9GW0LrQtdGAIl0sMSwi0JzQsNC50LbQtSDRgdGD0YXRgyDQv9C-0YDQvtGI0LrQvtC_0L7QtNGW0LHQvdGDINC80LDRgdGDINGB0YLQuNGB0LrQsNGO0YLRjCDQv9GA0LXRgdC-0Lwg0YMg0YHRgtCw0LvQtdCy0ZbQuSDRhNC-0YDQvNGWLiJdLFsi0KfQvtC80YMg0YTQvtGA0LzQuCDQtNC70Y8g0LvQuNGC0YLRjyDRgNC-0LHQu9GP0YLRjCDRgdCw0LzQtSDQtyDQs9GW0L_RgdGDPyIsWyLQk9GW0L_RgSDQtNC10YjQtdCy0LjQuSDRliDQu9C10LPQutC40LkiLCLQk9GW0L_RgSDQstCx0LjRgNCw0ZQg0LLQvtC00YMiLCLQk9GW0L_RgSDQvdC1INCx0L7Rl9GC0YzRgdGPINCy0L7Qs9C90Y4iLCLQk9GW0L_RgSDQsdC70LjRidC40YLRjCJdLDEsItCT0ZbQv9GBINCy0LHQuNGA0LDRlCDQstC-0LTRgyDQt9GWINGI0LvRltC60LXRgNGDIOKAlCDRliDQsdGW0LvRjyDRgdGC0ZbQvdC-0Log0L3QsNGA0L7RgdGC0LDRlCDRiNCw0YAg0LPQu9C40L3QuC4iXSxbItCv0LrQuNC5INCy0LjQtCDQutC10YDQsNC80ZbQutC4INC_0L7RgNC40YHRgtC40Lkg0ZYg0LHQtdC3INCz0LvQsNC30YPRgNGWPyIsWyLQn9C-0YDRhtC10LvRj9C90LAiLCLQmtCw0LzigJnRj9C90LAg0LzQsNGB0LAiLCLQotC10YDQsNC60L7RgtCwIiwi0KTQsNGP0L3RgSJdLDIsItCi0LXRgNCw0LrQvtGC0LAg4oCUINGH0LXRgNCy0L7QvdCwLCDQv9C-0YDQuNGB0YLQsCwg0LHQtdC3INCz0LvQsNC30YPRgNGWLiJdLFsi0Jcg0Y_QutC-0Zcg0LHRltC70L7RlyDQs9C70LjQvdC4INGA0L7QsdC70Y_RgtGMINC_0L7RgNGG0LXQu9GP0L3Rgz8iLFsi0KjQsNC80L7RgtGDIiwi0JrQsNC-0LvRltC90YMiLCLQp9C10YDQstC-0L3QvtGXINCz0LvQuNC90LgiLCLQn9GW0YHQutGDIl0sMSwi0J7RgdC90L7QstCwINC_0L7RgNGG0LXQu9GP0L3QuCDigJQg0LrQsNC-0LvRltC9LCDQsdGW0LvQsCDQs9C70LjQvdCwLiJdLFsi0KnQviDRgtCw0LrQtSDRiNCw0LzQvtGCPyIsWyLQn9C-0LTRgNGW0LHQvdC10L3QsCDQstC40L_QsNC70LXQvdCwINCz0LvQuNC90LAg0LIg0LzQsNGB0ZYiLCLQn9GA0L7Qt9C-0YDQsCDQs9C70LDQt9GD0YAiLCLQk9C-0L3Rh9Cw0YDQvdC40Lkg0ZbQvdGB0YLRgNGD0LzQtdC90YIiLCLQktC40LQg0YDQvtC30L_QuNGB0YMiXSwwLCLQqNCw0LzQvtGCINC00L7QtNCw0Y7RgtGMINGDINCz0LvQuNC90YMg4oCUINC80LDRgdCwINGB0YLQsNGUINC80ZbRhtC90L7RjiDQuSDQstC40YLRgNC40LzRg9GUINC20LDRgC4iXSxbItCR0ZbQu9C40Lkg0L_QvtGA0LjRgdGC0LjQuSDRh9C10YDQtdC_0L7QuiDQv9GW0LQg0L_RgNC-0LfQvtGA0L7RjiDQs9C70LDQt9GD0YDigJnRjiDigJQg0YbQteKApiIsWyLQnNCw0LnQvtC70ZbQutCwIiwi0KLQtdGA0LDQutC-0YLQsCIsItCo0LDQvNC-0YIiLCLQpNCw0Y_QvdGBIl0sMywi0KTQsNGP0L3RgTog0LHRltC70LjQuSDRh9C10YDQtdC_0L7Quiwg0L_RgNC-0LfQvtGA0LAg0LPQu9Cw0LfRg9GALiJdLFsi0K_QutC40Lkg0LLQuNC0INC60LXRgNCw0LzRltC60Lgg0L_RgNC-0YHQstGW0YfRg9GUINC90LAg0YHQstGW0YLQu9GWPyIsWyLQotC10YDQsNC60L7RgtCwIiwi0KjQsNC80L7RgiIsItCf0L7RgNGG0LXQu9GP0L3QsCIsItCc0LDQudC-0LvRltC60LAiXSwyLCLQotC-0L3QutCwINC_0L7RgNGG0LXQu9GP0L3QsCDQv9GA0L7RgdCy0ZbRh9GD0ZQg0Lkg0LTQt9Cy0LXQvdC40YLRjC4iXSxbItCp0L4g0LLQsNGA0YLQviDQt-KAmdGP0YHRg9Cy0LDRgtC4INCx0ZbQu9GPINCy0LjRgNC-0LHRgyDQvdCwINCy0LjRgdGC0LDQstGG0ZY_IixbItCb0LjRiNC1INGG0ZbQvdGDIiwi0JfQstGW0LTQutC4INCy0ZbQvSwg0Y_QuiDRliDQtyDRh9C-0LPQviDQt9GA0L7QsdC70LXQvdC40LkiLCLQodC60ZbQu9GM0LrQuCDQstGW0L0g0LLQsNC20LjRgtGMIiwi0KXRgtC-INGB0YLQvtGX0YLRjCDQv9C-0YDRg9GHIl0sMSwi0JfQstGW0LTQutC4LCDRj9C6INC30YDQvtCx0LvQtdC90L4sINGP0LrQuNC5INCy0LjQtCwg0LTQu9GPINGH0L7Qs9C-INGB0LvRg9C20LjQsi4iXSxbItCk0L7RgtC-0LPRgNCw0YTRg9Cy0LDRgtC4INCyINC80YPQt9C10Zcg0L3QtSDQvNC-0LbQvdCwLiDQr9C6INC30LDQv9Cw0LzigJnRj9GC0LDRgtC4INCy0LjRgNGW0LE_IixbItCi0L7RgNC60L3Rg9GC0LjRgdGPINCy0LjRgNC-0LHRgyIsItCh0YTQvtGC0L7Qs9GA0LDRhNGD0LLQsNGC0Lgg0L_QvtGC0LDQuSIsItCd0ZbRj9C6Iiwi0JfQsNC80LDQu9GO0LLQsNGC0Lgg0Lkg0LfQsNC_0LjRgdCw0YLQuCDQvdCw0LfQstGDIl0sMywi0JfQsNC80LDQu9GO0LnRgtC1INCy0LjRgNGW0LEg0ZYg0LfQsNC_0LjRiNGW0YLRjCDQvdCw0LfQstGDIOKAlCDRhtC1INGC0LXQtiDQtNC-0LHRgNC40Lkg0YHQv9C-0YHRltCxLiJdLFsi0K_QuiDRgdGD0YjQuNGC0Lgg0YHQstGW0LbQuNC5INCz0LvQuNC90Y_QvdC40Lkg0LLQuNGA0ZbQsT8iLFsi0JHRltC70Y8g0LPQsNGA0Y_Rh9C-0Zcg0LHQsNGC0LDRgNC10ZciLCLQndCwINGB0L7QvdGG0ZYsINGI0LLQuNC00LrQviIsItCf0L7QstGW0LvRjNC90L4sINC60ZbQu9GM0LrQsCDQtNC90ZbQsiDQv9GW0LQg0L_Qu9GW0LLQutC-0Y4iLCLQoyDQvNC-0YDQvtC30LjQu9GG0ZYiXSwyLCLQn9C-0LLRltC70YzQvdC-IOKAlCDRltC90LDQutGI0LUg0LLQuNGA0ZbQsSDQv9C-0YLRgNGW0YHQutCw0ZTRgtGM0YHRjy4iXSxbItCa0YPQtNC4INCy0LjQutC40LTQsNGC0Lgg0LfQsNC70LjRiNC60Lgg0LPQu9C40L3QuD8iLFsi0KMg0LLRltC00YDQviDQsNCx0L4g0L_QsNC60LXRgiIsItCjINGA0LDQutC-0LLQuNC90YMiLCLQkiDRg9C90ZbRgtCw0LciLCLQoyDRgNGW0YfQutGDIl0sMCwi0JPQu9C40L3QsCDQt9Cw0LHQuNCy0LDRlCDRgtGA0YPQsdC4LCDRgtC-0LzRgyDigJQg0YMg0LLRltC00YDQvi4iXV19"}, {"id": "skob-budova-la-1", "gra": "skob", "nazva": "Будова літальних апаратів", "opys": "15 питань", "dzh": "з гутірки", "u": "/proba/skob-hra/?dyz=3#g=jeyJ2IjoxLCJ0Ijoi0JHRg9C00L7QstCwINC70ZbRgtCw0LvRjNC90LjRhSDQsNC_0LDRgNCw0YLRltCyIiwiVCI6MjAsIm0iOjEsInEiOltbItCv0LrQuNC5INGW0Lcg0YbQuNGFINCw0L_QsNGA0LDRgtGW0LIg4oCUINC70LXQs9GI0LjQuSDQt9CwINC_0L7QstGW0YLRgNGPPyIsWyLQn9C70LDQvdC10YAiLCLQlNC40YDQuNC20LDQsdC70YwiLCLQk9C10LvRltC60L7Qv9GC0LXRgCIsItCU0LXQu9GM0YLQsNC_0LvQsNC9Il0sMSwi0JTQuNGA0LjQttCw0LHQu9GMINC90LDQv9C-0LLQvdC10L3QuNC5INC70LXQs9C60LjQvCDQs9Cw0LfQvtC8LiDQoNC10YjRgtCwIOKAlCDQstCw0LbRh9GWINC30LAg0L_QvtCy0ZbRgtGA0Y8uIl0sWyLQqdC-INC_0ZbQtNC90ZbQvNCw0ZQg0LPQtdC70ZbQutC-0L_RgtC10YA_IixbItCb0LXQs9C60LjQuSDQs9Cw0LciLCLQoNC10LDQutGC0LjQstC90LAg0YLRj9Cz0LAiLCLQndC10YDRg9GF0L7QvNC1INC60YDQuNC70L4iLCLQk9Cy0LjQvdGCLCDQu9C-0L_QsNGC0ZYg0Y_QutC-0LPQviDigJQg0LrRgNC40LvQsCJdLDMsItCb0L7Qv9Cw0YLRliDQvdC10YHQvdC-0LPQviDQs9Cy0LjQvdGC0LAg4oCUINGG0LUg0LrRgNC40LvQsCwg0YnQviDQvtCx0LXRgNGC0LDRjtGC0YzRgdGPLiJdLFsi0K_QutCwINGH0LDRgdGC0LjQvdCwINC70ZbRgtCw0LrQsCDRgdGC0LLQvtGA0Y7RlCDQvtGB0L3QvtCy0L3RgyDQv9GW0LTQudC-0LzQvdGDINGB0LjQu9GDPyIsWyLQpNGO0LfQtdC70Y_QtiIsItCo0LDRgdGWIiwi0JrRgNC40LvQviIsItCa0ZbQu9GMIl0sMiwi0J_RltC00LnQvtC80L3RgyDRgdC40LvRgyDQtNCw0ZQg0LrRgNC40LvQvi4iXSxbItCU0LvRjyDRh9C-0LPQviDQu9GW0YLQsNC60L7QstGWINGE0Y7Qt9C10LvRj9C2PyIsWyLQodGC0LLQvtGA0Y7RlCDRgtGP0LPRgyIsItCS0LXQt9C1INC70Y7QtNC10Lkg0ZYg0LLQsNC90YLQsNC2LCDQt-KAmdGU0LTQvdGD0ZQg0YfQsNGB0YLQuNC90LgiLCLQk9Cw0YHQuNGC0Ywg0YjQstC40LTQutGW0YHRgtGMIiwi0JrQtdGA0YPRlCDQutGA0LXQvdC-0LwiXSwxLCLQpNGO0LfQtdC70Y_QtiDigJQgwqvRgtGW0LvQvsK7INC70ZbRgtCw0LrQsDog0LrQsNCx0ZbQvdCwLCDRgdCw0LvQvtC9LCDQstCw0L3RgtCw0LYuIl0sWyLQqdC-INC34oCZ0ZTQtNC90LDQvdC-INCyINCz0L7RgNC40LfQvtC90YLQsNC70YzQvdC-0LzRgyDQvtC_0LXRgNC10L3QvdGWPyIsWyLQmtGW0LvRjCDRliDRgNGD0LvRjCDQvdCw0L_RgNGP0LzQutGDIiwi0JXQu9C10YDQvtC90Lgg0Lkg0LfQsNC60YDQuNC70LrQuCIsItCh0YLQsNCx0ZbQu9GW0LfQsNGC0L7RgCDRliDRgNGD0LvRjCDQstC40YHQvtGC0LgiLCLQlNCy0LjQs9GD0L0g0ZYg0LPQstC40L3RgiJdLDIsItCT0L7RgNC40LfQvtC90YLQsNC70YzQvdC1INC-0L_QtdGA0LXQvdC90Y8g4oCUINGB0YLQsNCx0ZbQu9GW0LfQsNGC0L7RgCDQtyDRgNGD0LvQtdC8INCy0LjRgdC-0YLQuC4iXSxbItCv0Log0L3QsNC30LjQstCw0ZTRgtGM0YHRjyDQv9GA0Y_QvNCwINC80ZbQtiDQv9C10YDQtdC00L3RjNC-0Y4g0ZYg0LfQsNC00L3RjNC-0Y4g0LrRgNC-0LzQutCw0LzQuCDQv9GA0L7RhNGW0LvRjj8iLFsi0KXQvtGA0LTQsCIsItCg0L7Qt9C80LDRhSIsItCa0ZbQu9GMIiwi0JXQu9C10YDQvtC9Il0sMCwi0KXQvtGA0LTQsC4g0KDQvtC30LzQsNGFIOKAlCDQstGW0LQg0LrRltC90YbRjyDQvtC00L3QvtCz0L4g0LrRgNC40LvQsCDQtNC-INC60ZbQvdGG0Y8g0LTRgNGD0LPQvtCz0L4uIl0sWyLQp9C-0LzRgyDQstC40L3QuNC60LDRlCDQv9GW0LTQudC-0LzQvdCwINGB0LjQu9CwINC90LAg0LrRgNC40LvRlj8iLFsi0JrRgNC40LvQviDQu9C10LPRiNC1INC30LAg0L_QvtCy0ZbRgtGA0Y8iLCLQlNCy0LjQs9GD0L0g0YjRgtC-0LLRhdCw0ZQg0LrRgNC40LvQviDQstCz0L7RgNGDIiwi0J_RltC0INC60YDQuNC70L7QvCDQv9C-0LLRltGC0YDRjyDRhdC-0LvQvtC00L3RltGI0LUiLCLQl9Cy0LXRgNGF0YMg0YLQuNGB0Log0LzQtdC90YjQuNC5LCDQutGA0LjQu9C-INGB0LrQtdGA0L7QstGD0ZQg0L_QvtCy0ZbRgtGA0Y8g0LLQvdC40LciXSwzLCLQoNGW0LfQvdC40YbRjyDRgtC40YHQutGW0LIg0ZYg0L_QvtGC0ZbQuiwg0YHQutC10YDQvtCy0LDQvdC40Lkg0LTQvtC90LjQt9GDLCDRgNCw0LfQvtC8INC00LDRjtGC0Ywg0YHQuNC70YMg0LLQs9C-0YDRgy4iXSxbItCp0L4g0YHRgtCw0L3QtdGC0YzRgdGPLCDRj9C60YnQviDQutGD0YIg0LDRgtCw0LrQuCDQt9GA0L7QsdC40YLQuCDQt9Cw0LLQtdC70LjQutC40Lw_IixbItCf0ZbQtNC50L7QvNC90LAg0YHQuNC70LAg0YDQvtGB0YLQtSDQsdC10Lcg0LzQtdC2Iiwi0J_QvtGC0ZbQuiDQt9GW0YDQstC10YLRjNGB0Y8sINGB0LjQu9CwINGA0ZbQt9C60L4g0LLQv9Cw0LTQtSIsItCb0ZbRgtCw0Log0YHRgtCw0L3QtSDQu9C10LPRiNC40LwiLCLQndGW0YfQvtCz0L4g0L3QtSDQt9C80ZbQvdC40YLRjNGB0Y8iXSwxLCLQndCwINCy0LXQu9C40LrQvtC80YMg0LrRg9GC0ZYg0LDRgtCw0LrQuCDQv9C-0YLRltC6INCy0ZbQtNGA0LjQstCw0ZTRgtGM0YHRjyDigJQg0YbQtSDQt9GA0LjQsi4iXSxbItCd0ZbRgSDQu9GW0YLQsNC60LAg0L_RltC00L3RltC80LDRlNGC0YzRgdGPINC5INC-0L_Rg9GB0LrQsNGU0YLRjNGB0Y8uINCv0Log0YbQtSDQvdCw0LfQuNCy0LDRlNGC0YzRgdGPPyIsWyLQmtGA0LXQvSIsItCg0LjRgdC60LDQvdC90Y8iLCLQotCw0L3Qs9Cw0LYiLCLQqNGC0L7Qv9C-0YAiXSwyLCLQotCw0L3Qs9Cw0LYg4oCUINC90LDQstC60L7Qu9C-INC_0L7Qv9C10YDQtdGH0L3QvtGXINC-0YHRliwg0L3QuNC8INC60LXRgNGD0ZQg0YDRg9C70Ywg0LLQuNGB0L7RgtC4LiJdLFsi0KnQviDQutC10YDRg9GUINC60YDQtdC90L7QvD8iLFsi0KDRg9C70Ywg0LLQuNGB0L7RgtC4Iiwi0KDRg9C70Ywg0L3QsNC_0YDRj9C80LrRgyIsItCo0LDRgdGWIiwi0JXQu9C10YDQvtC90LgiXSwzLCLQldC70LXRgNC-0L3QuCDQvdCwINC60ZbQvdGG0Y_RhSDQutGA0LjQuyDQstGW0LTRhdC40LvRj9GO0YLRjNGB0Y8g0LIg0YDRltC30L3RliDQsdC-0LrQuC4iXSxbItCf0ZbQu9C-0YIg0L3QsNGC0LjRgdC60LDRlCDQv9C10LTQsNC70ZYuINCp0L4g0LLRltC9INCy0ZbQtNGF0LjQu9GP0ZQ_IixbItCg0YPQu9GMINC90LDQv9GA0Y_QvNC60YMiLCLQldC70LXRgNC-0L3QuCIsItCX0LDQutGA0LjQu9C60LgiLCLQodGC0LDQsdGW0LvRltC30LDRgtC-0YAiXSwwLCLQn9C10LTQsNC70ZYg4oCUINGA0YPQu9GMINC90LDQv9GA0Y_QvNC60YMsINGC0L7QsdGC0L4g0YDQuNGB0LrQsNC90L3Rjy4iXSxbItCv0LrQsCDRgdGF0LXQvNCwINCyINCx0ZbQu9GM0YjQvtGB0YLRliDQv9Cw0YHQsNC20LjRgNGB0YzQutC40YUg0LvRltGC0LDQutGW0LI_IixbItCd0L7RgNC80LDQu9GM0L3QsCIsIsKr0JvRltGC0LDRjtGH0LUg0LrRgNC40LvQvsK7IiwiwqvQmtCw0YfQutCwwrsiLCLCq9Ci0LDQvdC00LXQvMK7Il0sMCwi0J3QvtGA0LzQsNC70YzQvdCwICjQutC70LDRgdC40YfQvdCwKTog0L7Qv9C10YDQtdC90L3RjyDQv9C-0LfQsNC00YMg0LrRgNC40LvQsC4iXSxbIkNvbmNvcmRlINC90LUg0LzQsNGUINCz0L7RgNC40LfQvtC90YLQsNC70YzQvdC-0LPQviDQvtC_0LXRgNC10L3QvdGPLCDQsNC70LUg0LzQsNGUINC60ZbQu9GMLiDQr9C60LAg0YbQtSDRgdGF0LXQvNCwPyIsWyLQndC-0YDQvNCw0LvRjNC90LAiLCLCq9Ci0LDQvdC00LXQvMK7IiwiwqvQkdC10LfRhdCy0ZbRgdGC0LrQsMK7IiwiwqvQmtCw0YfQutCwwrsiXSwyLCLCq9CR0LXQt9GF0LLRltGB0YLQutCwwrs6INGC0LDQvdCz0LDQttC10Lwg0LrQtdGA0YPRjtGC0Ywg0YDRg9C70ZYg0L3QsCDRgdCw0LzQvtC80YMg0LrRgNC40LvRli4iXSxbIkItMiBTcGlyaXQg0LHQtdC3INGE0Y7Qt9C10LvRj9C20YMg0Lkg0YXQstC-0YHRgtCwIOKAlCDRhtC14oCmIixbIsKr0JvRltGC0LDRjtGH0LUg0LrRgNC40LvQvsK7IiwiwqvQotCw0L3QtNC10LzCuyIsItCd0L7RgNC80LDQu9GM0L3QsCDRgdGF0LXQvNCwIiwiwqvQmtCw0YfQutCwwrsiXSwwLCLQo9GB0LUg0LLRgdC10YDQtdC00LjQvdGWINC60YDQuNC70LAg4oCUIMKr0LvRltGC0LDRjtGH0LUg0LrRgNC40LvQvsK7LiJdLFsi0JTQstCwINC60YDQuNC70LAg0L_RgNC40LHQu9C40LfQvdC-INC-0LTQvdCw0LrQvtCy0L7Qs9C-INGA0L7Qt9C80ZbRgNGDINC-0LTQvdC1INC30LAg0L7QtNC90LjQvCDigJQg0YbQtSDRgdGF0LXQvNCw4oCmIixbIsKr0JrQsNGH0LrQsMK7Iiwi0J3QvtGA0LzQsNC70YzQvdCwIiwiwqvQkdC10LfRhdCy0ZbRgdGC0LrQsMK7IiwiwqvQotCw0L3QtNC10LzCuyJdLDMsIsKr0KLQsNC90LTQtdC8wrs6INC-0LHQuNC00LLQsCDQutGA0LjQu9CwINC90LXRgdGD0YLRjCDQu9GW0YLQsNC6LiJdXX0"}, {"id": "bingo-keramika", "gra": "bingo", "nazva": "Кераміка України", "opys": "слова з гутірки, картка 4×4", "dzh": "з гутірки", "u": "/proba/bingo/?dyz=3&gra=keramika"}], "ihryEnc": {"v": 1, "salt": "X1Fw5qDLWFCLlByeyh4gxg==", "it": 250000, "ihry": [{"iv": "u+zaheEx5VQeBCTP", "ct": "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"}]}, "ic": {"zmag": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"#ffc247\" stroke-width=\"2.4\"><rect x=\"1.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"1.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"14.7\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"1.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"14.7\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><rect x=\"28.2\" y=\"28.2\" width=\"10.6\" height=\"10.6\" rx=\"2.6\"/><\/g><rect x=\"13.5\" y=\"13.5\" width=\"13\" height=\"13\" rx=\"3\" fill=\"#ffc247\"/><\/svg>", "bingo": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><circle cx=\"20\" cy=\"20\" r=\"20\" fill=\"#ffc247\"/><circle cx=\"20\" cy=\"20\" r=\"11.5\" fill=\"#fff\"/><path d=\"M16.2 14.6h7.6v1.9l-4.3 10.3h-2.6l4.2-9.9h-4.9z\" fill=\"#1d1606\"/><\/svg>", "opyt": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><rect y=\"18\" width=\"11\" height=\"22\" rx=\"3\" fill=\"#2fd2c0\"/><rect x=\"14.5\" width=\"11\" height=\"40\" rx=\"3\" fill=\"#ffc247\"/><rect x=\"29\" y=\"10\" width=\"11\" height=\"30\" rx=\"3\" fill=\"#cfd5dc\"/><\/svg>", "hto": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><circle cx=\"20\" cy=\"20\" r=\"17\" fill=\"none\" stroke=\"#2fd2c0\" stroke-width=\"3\"/><path d=\"M20 3a17 17 0 0 1 17 17H20z\" fill=\"#ffc247\"/><circle cx=\"20\" cy=\"20\" r=\"4\" fill=\"#f2f4f6\"/><path d=\"M20 20l-9 9\" stroke=\"#f2f4f6\" stroke-width=\"3\" stroke-linecap=\"round\"/><\/svg>", "skob": "<svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><rect width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#d64541\"/><rect x=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2f6fd0\"/><rect y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#e8a321\"/><rect x=\"21.5\" y=\"21.5\" width=\"18.5\" height=\"18.5\" rx=\"4\" fill=\"#2e8f55\"/><\/svg>"}, "igName": {"zmag": "Інтелектуальний змаг", "skob": "Потужний СКОБ!", "bingo": "Пластове бінго"}, "igUrl": {"zmag": "/proba/svoya-hra/?dyz=3"}};</script>
 <script>/* Каталог вмілостей Пласту у Фінляндії (plast-finland.com/vmilosti), який бере дані з бібліотеки вмілостей Пласту (plast.global).
@@ -184,20 +267,404 @@ const SKILL_SPECS = ["Альпінізм та скелелазіння", "Вел
 const SKILL_LIST = [["30-ліття Пласту в Польщі",[4],"2026/03/30-littya-plastu-v-polshhi-ch_b.svg",[["Опис","30-littya-plastu-v-polshhi"]]],["Авіамоделювання",[6],"2024/11/aviamodeliuvannia_i_color.svg",[["І","aviamodelyuvannya-i"],["ІІ","aviamodelyuvannya-ii"],["ІІІ","aviamodelyuvannya-iii"]]],["Авіаційна метеорологія",[6],"2024/11/aviatsiina_meteorolohiia_i_color.svg",[["І–ІІ проба","aviaczijna-meteorologiya-i-ii-proba"],["ІІ–ІІІ проба","aviaczijna-meteorologiya-ii-iii-proba"]]],["Автознавство",[4],"2024/11/avtoznavstvo_i_color.svg",[["І","avtoznavstvo-i"],["ІІ","avtoznavstvo-ii"],["ІІІ","avtoznavstvo-iii"]]],["Аеродинаміка",[6],"2024/11/aerodynamika_ii_color.svg",[["ІІ проба","aerodynamika-ii-proba"]]],["Аеронавігація та повітряний рух",[6],"2024/11/aeronavihatsiia_ta_povitrianyi_rukh_i_color.svg",[["І","aeronavigacziya-ta-povitryanyj-ruh-i"],["ІІ","aeronavigacziya-ta-povitryanyj-ruh-ii"],["ІІІ","aeronavigacziya-ta-povitryanyj-ruh-iii"]]],["Акторство",[8],"2024/11/aktorstvo_i_color.svg",[["І","aktorstvo-i"],["ІІ","aktorstvo-ii"],["ІІІ","aktorstvo-iii"]]],["Альпіністика",[0],"2026/04/alpinistyka_i_color.svg",[["Опис","alpinistyka"],["І","alpinistyka-i"],["І–ІІІ проба","alpinistyka-i-iii-proba"]]],["Археологія",[4],"2024/11/arkheolohiia_i_color.svg",[["І","arheologiya-i"],["ІІ","arheologiya-ii"],["ІІІ","arheologiya-iii"]]],["Астрономія",[4],"2024/11/astronomiia_i_color.svg",[["І","astronomiya-i"],["ІІ","astronomiya-ii"],["ІІІ","astronomiya-iii"]]],["Безпека",[4],"2024/11/bezpeka_ii_color.svg",[["ІІ проба","bezpeka-ii-proba"]]],["Безпека руху",[4],"2024/11/bezpeka_rukhu_iii_color.svg",[["ІІІ проба","bezpeka-ruhu-iii-proba"]]],["Бібліотекарство",[4],"2024/11/bibliotekarstvo_ii_color.svg",[["ІІ проба","bibliotekarstvo-ii-proba"]]],["Борець",[12,2],"2026/04/borets_i_color.svg",[["І","borecz-i"],["І (відновлена)","borecz-i-vidnovlena-vmilist"],["ІІ","borecz-ii"],["ІІ (відновлена)","borecz-ii-vidnovlena-vmilist"],["ІІІ","borecz-iii"],["ІІІ (відновлена)","borecz-iii-vidnovlena-vmilist"]]],["Бортова механіка",[9],"2024/11/bortova_mekhanika_iii_color.svg",[["ІІІ проба","bortova-mehanika-iii-proba"]]],["Будівництво суден",[9],"2024/11/budivnytstvo_suden_iii_color.svg",[["ІІІ проба","budivnycztvo-suden-iii-proba"]]],["Будова літальних апаратів",[6],"2024/11/budova_litalnykh_aparativ_i_color.svg",[["І","budova-litalnyh-aparativ-i"],["ІІ","budova-litalnyh-aparativ-ii"],["ІІІ","budova-litalnyh-aparativ-iii"]]],["Вебмайстер",[4],"2026/04/vebmaister_iii_color.svg",[["Опис","vebmajster"],["ІІІ проба","vebmajster-iii-proba"]]],["Веломандрівництво",[1],"2024/11/velomandrivnytstvo_i_color.svg",[["І–ІІ проба","velomandrivnycztvo-i-ii-proba"]]],["Взаємодія із людьми з інвалідністю",[4],"2024/11/vzaiemodiia_iz_liudmy_z_invalidnistiu_ii_color.svg",[["ІІ проба","vzayemodiya-iz-lyudmy-z-invalidnistyu-ii-proba"]]],["Вифлеємський Вогонь Миру",[4],"2026/03/vyflyyemskyj-vogon-myru-1-chb-01.svg",[["І","vyfleyemskyj-vogon-myru-i"],["ІІ","vyfleyemskyj-vogon-myru-ii"],["ІІІ","vyfleyemskyj-vogon-myru-iii"]]],["Вишивання",[8],"2024/11/vyshyvannia_i_color.svg",[["І","vyshyvannya-i"],["ІІ","vyshyvannya-ii"],["ІІІ","vyshyvannya-iii"]]],["Військовик",[2],"2024/11/viiskovyk_i_color.svg",[["І","vijskovyk-i"],["ІІ","vijskovyk-ii"],["ІІІ","vijskovyk-iii"]]],["Вільний художник/вільна художниця",[8],"2026/03/vilnyj-hudozhnyk-ch_b.svg",[["І","vilnyj-hudozhnyk-vilna-hudozhnyczya-i"]]],["Вітрильництво",[9],"2024/11/vitrylnytstvo_iii_color.svg",[["ІІІ проба","vitrylnycztvo-iii-proba"]]],["Водне лещетарство",[9],"2024/11/vodne_leshchetarstvo_ii_color.svg",[["ІІ проба","vodne-leshhetarstvo-ii-proba"]]],["Водне рятівництво",[9],"2024/11/vodne_riativnytstvo_iii_color.svg",[["ІІІ проба","vodne-ryativnycztvo-iii-proba"],["ІІІ проба (2)","vodne-ryativnycztvo-iii-proba-2"]]],["Водолаження",[9],"2024/11/vodolazhennia_iii_color.svg",[["ІІІ проба","vodolazhennya-iii-proba"]]],["Волонтерська служба",[4],"2026/03/volonterska-sluzhba-1-chb-01-artboard-1.svg",[["І","volonterska-sluzhba-i"],["ІІ","volonterska-sluzhba-ii"],["ІІІ","volonterska-sluzhba-iii"]]],["Впоряд",[4],"2026/04/vporiad_i_color.svg",[["І","vporyad-i"],["ІІ","vporyad-ii"],["ІІІ","vporyad-iii"]]],["Генеалогія",[3],"2024/11/henealohiia_ii_color.svg",[["ІІ проба","genealogiya-ii-proba"]]],["Готовність до надзвичайних ситуацій",[4],"2024/11/hotovnist_do_nadzvychainykh_sytuatsii_ii_color.svg",[["ІІ проба","gotovnist-do-nadzvychajnyh-sytuaczij-ii-proba"]]],["Графіка",[8],"2024/11/hrafika_iii_color.svg",[["ІІІ проба","grafika-iii-proba"]]],["Графічний дизайн",[4],"2026/04/hrafichnyi_dyzain_i_color.svg",[["І","grafichnyj-dyzajn-i"],["ІІ","grafichnyj-dyzajn-ii"],["ІІІ","grafichnyj-dyzajn-iii"]]],["Громадське здоров’я",[4],"2024/11/hromadske_zdorovia_iii_color.svg",[["ІІІ проба","gromadske-zdorovya-iii-proba"]]],["Громадянин країни",[4],"2024/11/hromadianyn_krainy_iii_color.svg",[["ІІІ проба","gromadyanyn-krayiny-iii-proba"]]],["Громадянин міста",[4],"2024/11/hromadianyn_mista_iii_color.svg",[["ІІІ проба","gromadyanyn-mista-iii-proba"]]],["Громадянин світу",[4],"2024/11/hromadianyn_svitu_ii_color.svg",[["ІІ проба","gromadyanyn-svitu-ii-proba"]]],["Два пера",[4],"2026/07/dva_pera_color.svg",[["Опис","dva-pera-2"],["ІІ проба","dva-pera-ii-proba"],["Опис (інша версія)","dva-pera"]]],["Дельтапланеризм",[6],"2024/11/deltaplaneryzm_iii_color.svg",[["ІІІ проба","deltaplaneryzm-iii-proba"]]],["Догляд за кіньми",[5],"2024/11/dohliad_za_kinmy_i_color.svg",[["І","doglyad-za-kinmy-i"],["ІІ","doglyad-za-kinmy-ii"],["ІІІ","doglyad-za-kinmy-iii"]]],["Домашня зарадність",[4],"2026/07/domashnia_zaradnist_i_color.svg",[["І","domashnya-zaradnist-i"],["ІІ","domashnya-zaradnist-ii"],["ІІІ","domashnya-zaradnist-iii"]]],["Еколог",[4],"2024/11/ekoloh_i_color.svg",[["І","ekolog-i"],["ІІ","ekolog-ii"],["ІІІ","ekolog-iii"]]],["Екологія",[4],"2024/11/ekolohiia_iii_color.svg",[["ІІІ проба","ekologiya-iii-proba"]]],["Економіст",[4],"2026/04/ekonomist_i_color.svg",[["І","ekonomist-i"],["ІІ","ekonomist-ii"],["ІІІ","ekonomist-iii"]]],["Етнограф",[3],"2026/04/etnohraf_i_color.svg",[["І","etnograf-i"],["ІІ","etnograf-ii"],["ІІІ","etnograf-iii"]]],["Журналістика",[4],"2024/11/zhurnalistyka_i_color.svg",[["І проба","zhurnalistyka-i-proba"]]],["Запобігання злочинності",[4],"2024/11/zapobihannia_zlochynnosti_iii_color.svg",[["ІІІ проба","zapobigannya-zlochynnosti-iii-proba"]]],["Зброєзнавство",[2],"2024/11/zbroieznavstvo_i_color.svg",[["І–ІІ проба","zbroyeznavstvo-i-ii-proba"],["ІІ–ІІІ проба","zbroyeznavstvo-ii-iii-proba"]]],["Знавець… (назва комп’ютерної програми)",[4],"2024/11/znavets_komp_proh_ii_color.svg",[["ІІ проба","znavecz-nazva-kompyuternoyi-programy-ii-proba"],["Опис","znavecz-nazva-kompyuternoyi-programy"]]],["Знавець комп’ютерів",[4],"2024/11/znavets_kompiuteriv_i_color.svg",[["І","znavecz-kompyuteriv-i"],["ІІ","znavecz-kompyuteriv-ii"],["ІІІ","znavecz-kompyuteriv-iii"]]],["Знавець народного календаря",[4,3],"2026/04/znavets_narodnoho_kalendaria_i_color.svg",[["І","znavecz-narodnogo-kalendarya-i"],["ІІ","znavecz-narodnogo-kalendarya-ii"],["ІІІ","znavecz-narodnogo-kalendarya-iii"]]],["Знавець української спадщини в Польщі",[4],"2026/03/znavecz-ukrayinskoyi-spadshhyny-v-polshhi-1-ch_b.svg",[["І","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-i"],["ІІ","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-ii"],["ІІІ","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-iii"]]],["Інструктор веломандрівництва",[1],"2024/11/velomandrivnytstvo_i_color.svg",[["ІІІ проба","instruktor-velomandrivnycztva-iii-proba"]]],["Історія авіації",[6],"2024/11/istoriia_aviatsii_i_color.svg",[["І","istoriya-aviacziyi-i"],["ІІ","istoriya-aviacziyi-ii"],["ІІІ","istoriya-aviacziyi-iii"]]],["Їзда верхи",[5],"2026/07/yizda_verkhy_i_color.svg",[["І","yizda-verhy-i"],["ІІ","yizda-verhy-ii"],["ІІІ","yizda-verhy-iii"]]],["Їзда на велосипеді",[1],"2026/07/yizda_na_velosypedi_i_color.svg",[["Опис","yizda-na-velosypedi"],["І проба","yizda-na-velosypedi-i-proba"]]],["Їзда на сніговій дошці",[11],"2026/07/snoubordyzm_i_color.svg",[["І","yizda-na-snigovij-doshczi-i"],["ІІ","yizda-na-snigovij-doshczi-ii"],["ІІІ","yizda-na-snigovij-doshczi-iii"]]],["Їзда підводою",[5],"2024/11/yizda_pidvodoiu_i_color.svg",[["І–ІІ проба","yizda-pidvodoyu-i-ii-proba"],["ІІ–ІІІ проба","yizda-pidvodoyu-ii-iii-proba"]]],["Їзда санями",[5],"2024/11/yizda_saniamy_i_color.svg",[["І–ІІ проба","yizda-sanyamy-i-ii-proba"],["ІІ–ІІІ проба","yizda-sanyamy-ii-iii-proba"]]],["Кавалерія",[5],"2024/11/kavaleriia_i_color.svg",[["І","kavaleriya-i"],["ІІ","kavaleriya-ii"],["ІІІ","kavaleriya-iii"]]],["Кайнокарство",[9],"2024/11/kainokarstvo_ii_color.svg",[["ІІ проба","kajnokarstvo-ii-proba"]]],["Картографія",[4],"2026/04/kartohrafiia_ii_color.svg",[["Опис","kartografiya"],["ІІ проба","kartografiya-ii-proba"]]],["Кераміка",[8],"2024/11/keramika_i_color.svg",[["І","keramika-i"],["ІІ","keramika-ii"]]],["Керівник проєктів",[4],"2026/04/kerivnyk_proiektiv_i_color-1.svg",[["І","kerivnyk-proyektiv-i"],["І–ІІ проба","kerivnyk-proyektiv-i-ii-proba"],["ІІ","kerivnyk-proyektiv-ii"],["ІІ–ІІІ проба","kerivnyk-proyektiv-ii-iii-proba"]]],["Кінна ветеринарія",[5],"2024/11/kinna_veterynariia_i_color.svg",[["І","kinna-veterynariya-i"],["ІІ","kinna-veterynariya-ii"],["ІІІ","kinna-veterynariya-iii"]]],["Кінне мандрівництво",[5],"2024/11/kinne_mandrivnytstvo_i_color.svg",[["І–ІІ проба","kinne-mandrivnycztvo-i-ii-proba"],["ІІ–ІІІ проба","kinne-mandrivnycztvo-ii-iii-proba"]]],["Командний гравець",[4],"2026/04/komandnyi_hravets_i_color.svg",[["Опис","komandnyj-gravecz"],["І проба","komandnyj-gravecz-i-proba"]]],["Комп’ютерна верстка",[4],"2024/11/kompiuterna_verstka_iii_color.svg",[["ІІІ проба","kompyuterna-verstka-iii-proba"]]],["Комп’ютерна графіка",[4],"2024/11/kompiuterna_hrafika_ii_color.svg",[["ІІ проба","kompyuterna-grafika-ii-proba"]]],["Комунікація",[4],"2024/11/komunikatsiia_ii_color.svg",[["ІІ проба","komunikacziya-ii-proba"]]],["Користувач інтернету",[4],"2026/04/korystuvach_internetu_i_color.svg",[["І","korystuvach-internetu-i"],["ІІ","korystuvach-internetu-ii"],["І–ІІ проба","korystuvach-internetu-i-ii-proba"],["ІІ–ІІІ проба","korystuvach-internetu-ii-iii-proba"]]],["Краєзнавство",[2],"2024/11/kraieznavstvo_i_color.svg",[["І","krayeznavstvo-i"],["ІІ","krayeznavstvo-ii"],["ІІІ","krayeznavstvo-iii"]]],["Куховарення",[4],"2026/04/kukhovarennia_i_color.svg",[["Опис","kuhovarennya"],["І проба","kuhovarennya-i-proba"]]],["Легка атлетика",[12],"2024/11/lehka_atletyka_i_color.svg",[["І проба","legka-atletyka-i-proba"]]],["Лещетарство альпійського стилю",[11],"2024/11/leshchetarstvo_nordiiskoho_styliu_iii_color.svg",[["ІІ проба","leshhetarstvo-alpijskogo-stylyu-ii-proba"]]],["Лещетарство нордійського стилю",[11],"2024/11/leshchetarske_mandrivnytstvo_iii_color.svg",[["ІІІ проба","leshhetarstvo-nordijskogo-stylyu-iii-proba"]]],["Лещетарське мандрівництво",[11],"2024/11/leshchetarske_mandrivnytstvo_iii_color.svg",[["ІІІ проба","leshhetarske-mandrivnycztvo-iii-proba"]]],["Літаючий диск",[12],"2026/04/litaiuchyi_dysk_i_color.svg",[["І","litayuchyj-dysk-i"],["ІІ","litayuchyj-dysk-ii"],["ІІІ","litayuchyj-dysk-iii"]]],["Лучник",[2],"2024/11/luchnyk_i_color.svg",[["І–ІІ проба","luchnyk-i-ii-proba-onovlena-vmilist-strilba-z-luka"],["ІІ–ІІІ проба","luchnyk-ii-iii-proba-onovlena-vmilist-strilba-z-luka"]]],["Любитель/ка мистецтва",[8],"2024/11/liubytel_mystetstva_i_color.svg",[["І","lyubytel-ka-mystecztva-i"],["ІІ","lyubytel-ka-mystecztva-ii"],["ІІІ","lyubytel-ka-mystecztva-iii"]]],["Мандрівництво",[4,7],"2026/04/mandrivnytstvo_ii_color.svg",[["Опис","mandrivnycztvo"],["ІІ проба","mandrivnycztvo-ii-proba"]]],["Маскування",[2],"2024/11/maskuvannia_i_color.svg",[["І","maskuvannya-i"],["ІІ","maskuvannya-ii"]]],["Моделювання",[4],"2024/11/modeliuvannia_ii_color.svg",[["ІІ проба","modelyuvannya-ii-proba"]]],["Морська навігація",[9],"2024/11/morska_navihatsiia_iii_color.svg",[["ІІІ проба","morska-navigacziya-iii-proba"]]],["Музика",[8],"2026/04/muzyka_i_color.svg",[["І","muzyka-i"],["ІІ","muzyka-ii"],["ІІІ","muzyka-iii"]]],["Народні танки",[12],"2026/04/tanky_i_color.svg",[["І","narodni-tanky-i"],["ІІ","narodni-tanky-ii"],["ІІІ","narodni-tanky-iii"]]],["Настільні ігри",[10],"2026/01/nastilni-igry-i.png",[["І","nastilni-igry-i"],["ІІ","nastilni-igry-ii"]]],["Нумізматика",[4],"2024/11/numizmatyka_ii_color.svg",[["ІІ проба","numizmatyka-ii-proba"]]],["Образотворче мистецтво",[8],"2024/11/obrazotvorche_mystetstvo_i_color.svg",[["І–ІІ проба","obrazotvorche-mystecztvo-i-ii-proba"],["ІІ–ІІІ проба","obrazotvorche-mystecztvo-ii-iii-proba"]]],["Огородництво",[4],"2024/11/ohorodnytstvo_ii_color.svg",[["ІІ проба","ogorodnycztvo-ii-proba"]]],["Одне перо",[4],"2026/07/odne_pero_i_color.svg",[["Опис","odne-pero-2"],["І проба","odne-pero-i-proba"],["Опис (інша версія)","odne-pero"]]],["Онлайн-діловод",[4],"2026/04/onlain_dilovod_i_color.svg",[["І","onlajn-dilovod-i"],["ІІ","onlajn-dilovod-ii"],["І–ІІ проба","onlajn-dilovod-i-ii-proba"],["ІІ–ІІІ проба","onlajn-dilovod-ii-iii-proba"]]],["Освіта",[4],"2024/11/osvita_ii_color.svg",[["ІІ проба","osvita-ii-proba"]]],["Особисте здоров’я",[4],"2024/11/osobyste_zdorovia_ii_color.svg",[["ІІ проба","osobyste-zdorovya-ii-proba"]]],["Особистий менеджмент",[4],"2024/11/osobystyi_menedzhment_iii_color.svg",[["ІІІ проба","osobystyj-menedzhment-iii-proba"]]],["Парапланеризм",[6],"2024/11/paraplaneryzm_iii_color.svg",[["ІІІ проба","paraplaneryzm-iii-proba"]]],["Перекладина",[12],"2024/11/perekladyna_iemblem_color.svg",[["І","perekladyna-i"],["ІІ","perekladyna-ii"],["ІІІ","perekladyna-iii"]]],["Перша допомога",[4],"2026/07/persha_dopomoha_i_color.svg",[["І","persha-dopomoga-i"],["ІІ","persha-dopomoga-ii"]]],["Писанкарство",[8],"2024/11/pysankarstvo_ii_color.svg",[["І","pysankarstvo-i"],["ІІ","pysankarstvo-ii"],["ІІІ","pysankarstvo-iii"],["ІІ проба","pysankarstvo-ii-proba"]]],["Піклування дітьми",[4],"2024/11/pikluvannia_ditmy_iii_color.svg",[["ІІІ проба","pikluvannya-ditmy-iii-proba"]]],["Пілотаж",[9],"2024/11/pilotazh_iii_color.svg",[["ІІІ проба","pilotazh-iii-proba"]]],["Піонірство",[4],"2026/04/pionirstvo_ii_color.svg",[["Опис","pionirstvo"],["ІІ проба","pionirstvo-ii-proba"]]],["Плавання",[12,9],"2024/11/plavannia_ii_sport_color.svg",[["І","plavannya-i"],["ІІ","plavannya-ii"],["ІІІ","plavannya-iii"],["ІІ проба","plavannya-ii-proba"]]],["Пластуй онлайн: COVID19",[4],"2024/11/plastui_onlain_covid_i_covid_color.svg",[["Опис","plastuj-onlajn-covid19"]]],["Плетення",[4],"2026/07/pletinnia_i_color.svg",[["Опис","pletennya"]]],["Плетіння",[8],"2024/11/pletinnia_i_color.svg",[["І","pletinnya-i"],["ІІ","pletinnya-ii"],["ІІІ","pletinnya-iii"]]],["Погодознавство",[4,9],"2026/07/pohodoznavstvo_i_color.svg",[["Опис","pogodoznavstvo"],["І проба","pogodoznavstvo-i-proba"]]],["Полум’я Братерства",[4],"2026/03/polumʼya-braterstva-1-ch_b.svg",[["І","polumya-braterstva-i"],["ІІ","polumya-braterstva-ii"],["ІІІ","polumya-braterstva-iii"]]],["Правник",[4],"2024/11/pravnyk_ii_color.svg",[["ІІ проба","pravnyk-ii-proba"]]],["Природознавство",[4],"2026/07/pryrodoznavstvo_i_color.svg",[["І","pryrodoznavstvo-i"],["ІІ","pryrodoznavstvo-ii"],["ІІІ","pryrodoznavstvo-iii"]]],["Приятель тварин",[4],"2026/07/pryiatel_tvaryn_i_color.svg",[["Опис","pryyatel-tvaryn"]]],["Приятель/ка тварин",[4],"2024/11/pryiatel_tvaryn_i_color.svg",[["І проба","pryyatel-ka-tvaryn-i-proba"]]],["Провідництво",[4],"2026/04/providnytstvo_i_color.svg",[["І","providnycztvo-i"],["І–ІІ проба","providnycztvo-i-ii-proba"],["ІІ","providnycztvo-ii"],["ІІ–ІІІ проба","providnycztvo-ii-iii-proba"]]],["Провідництво туристів",[4],"2024/11/providnytstvo_turystiv_i_color.svg",[["І проба","providnycztvo-turystiv-i-proba"],["ІІ проба","providnycztvo-turystiv-ii-proba"],["ІІІ проба","providnycztvo-turystiv-iii-proba"]]],["Програміст/-ка … (мова програмування)",[4],"",[["ІІІ проба","programist-ka-vkazuyetsya-mova-programuvannya-iii-proba"]]],["Публічні виступи",[4],"2024/11/publichni_vystupy_ii_color.svg",[["ІІ проба","publichni-vystupy-ii-proba"]]],["Радіоаматор",[4],"2024/11/radioamator_i_color.svg",[["І проба","radioamator-i-proba"]]],["Радіотехніка",[4],"2024/11/radiotekhnika_i_color.svg",[["І","radiotehnika-i"],["ІІ","radiotehnika-ii"],["ІІІ","radiotehnika-iii"]]],["Рибальство",[4],"2024/11/rybalstvo_ii_color.svg",[["ІІ проба","rybalstvo-ii-proba"]]],["Різьбярство",[8],"2024/11/rizbiarstvo_i_color.svg",[["І","rizbyarstvo-i"],["ІІ","rizbyarstvo-ii"],["ІІІ","rizbyarstvo-iii"]]],["Робітничий рух в Україні",[4],"2024/11/robitnychyi_rukh_v_ukraini_color.svg",[["ІІІ проба","robitnychyj-ruh-v-ukrayini-iii-proba"]]],["Родинне життя",[4],"2024/11/rodynne_zhyttia_ii_color.svg",[["ІІ проба","rodynne-zhyttya-ii-proba"]]],["Розвідництво",[2],"2024/11/rozvidnytstvo_ii_color.svg",[["І–ІІ проба","rozvidnycztvo-i-ii-proba"],["ІІ–ІІІ проба","rozvidnycztvo-ii-iii-proba"]]],["Рольовик",[10],"2024/11/rolovyk_i_color.svg",[["І","rolovyk-i"],["ІІ","rolovyk-ii"],["ІІІ","rolovyk-iii"]]],["Семиборець",[2],"2024/11/semyborets_ii_color.svg",[["ІІ проба","semyborecz-ii-proba"]]],["Сигналізація",[9,4],"2024/11/syhnalizatsiia_iii_color.svg",[["І","sygnalizacziya-i"],["ІІ","sygnalizacziya-ii"],["ІІІ","sygnalizacziya-iii"],["ІІІ проба","sygnalizacziya-iii-proba"]]],["Сигналізація-комунікація",[4],"2026/07/sygnalizacziya-1-01-artboard-1.svg",[["І","sygnalizacziya-komunikacziya-i"],["ІІ","sygnalizacziya-komunikacziya-ii"],["ІІІ","sygnalizacziya-komunikacziya-iii"]]],["Скаутське побратимство",[4],"2024/11/skautske_pobratymstvo_i_color.svg",[["І проба","skautske-pobratymstvo-i-proba"]]],["Скелелазіння",[0,12],"2026/07/skelelazinnia_i_color.svg",[["Опис","skelelazinnya"],["І","skelelazinnya-i"],["ІІ","skelelazinnya-ii"],["ІІІ","skelelazinnya-iii"]]],["Скіперство",[9],"2024/11/skiperstvo_iii_color.svg",[["ІІІ проба","skiperstvo-iii-proba"]]],["Скульптура",[8],"2024/11/skulptura_i_color.svg",[["І–ІІ проба","skulptura-i-ii-proba"],["ІІ–ІІІ проба","skulptura-ii-iii-proba"]]],["Слідознавство",[2],"2024/11/slidoznavstvo_i_color.svg",[["І","slidoznavstvo-i"],["ІІ","slidoznavstvo-ii"],["ІІІ","slidoznavstvo-iii"]]],["Сноубордизм",[11],"2024/11/snoubordyzm_i_color.svg",[["І","snoubordyzm-i"],["ІІ","snoubordyzm-ii"],["ІІІ","snoubordyzm-iii"]]],["Спелеотуризм",[4],"2024/11/speleoturyzm_i_color.svg",[["І","speleoturyzm-i"],["ІІ","speleoturyzm-ii"],["ІІІ","speleoturyzm-iii"]]],["Спів",[8],"2024/11/spiv_ii_color.svg",[["ІІ","spiv-ii"],["ІІ проба","spiv-ii-proba"]]],["Спортові ігри",[12],"2024/11/sportovi_ihry_iemblem_color.svg",[["І проба","sportovi-igry-i-proba"]]],["Сталість довкілля",[4],"2024/11/stalist_dovkillia_iii_color.svg",[["ІІІ проба","stalist-dovkillya-iii-proba"]]],["Стрілець",[2],"2024/11/strilets_i_color.svg",[["І–ІІ проба","strilecz-i-ii-proba-zamist-vmilosti-strilba-z-rushnyczi"],["ІІ–ІІІ проба","strilecz-ii-iii-proba-zamist-vmilosti-strilba-z-rushnyczi"]]],["Стріляння з лука",[12],"2026/07/luchnyk_i_color.svg",[["І","strilyannya-z-luka-i"],["ІІ","strilyannya-z-luka-ii"]]],["Стріляння з рушниці",[2],"2026/07/strilets_i_color.svg",[["І","strilyannya-z-rushnyczi-i"],["ІІ","strilyannya-z-rushnyczi-ii"]]],["Суднознавство",[9],"2024/11/sudnoznavstvo_i_color.svg",[["І","sudnoznavstvo-i"],["ІІ","sudnoznavstvo-ii"],["ІІІ","sudnoznavstvo-iii"]]],["Табірництво",[4],"2026/04/tabirnytstvo_i_color.svg",[["Опис","tabirnycztvo"],["І проба","tabirnycztvo-i-proba"]]],["Тайм-менеджмент",[4],"2026/04/taim_menedzhment_ii_color.svg",[["Опис","tajm-menedzhment"],["ІІ проба","tajm-menedzhment-ii-proba"]]],["Тактична медицина",[2],"2024/11/taktychna_medytsyna_iii_color.svg",[["ІІІ проба","taktychna-medyczyna-iii-proba"]]],["Танки",[8],"2024/11/tanky_i_color.svg",[["І","tanky-i"],["ІІ","tanky-ii"],["ІІІ","tanky-iii"]]],["Теренові ігри та змаги",[2],"2024/11/terenovi_ihry_ta_zmahy_i_color.svg",[["І","terenovi-igry-ta-zmagy-i"],["ІІ","terenovi-igry-ta-zmagy-ii"],["ІІІ","terenovi-igry-ta-zmagy-iii"]]],["Техніка гребка на катамарані",[9],"2024/11/tekhnika_hrebka_na_katamarani_i_color.svg",[["І","tehnika-grebka-na-katamarani-i"],["ІІ","tehnika-grebka-na-katamarani-ii"],["ІІІ","tehnika-grebka-na-katamarani-iii"]]],["Техніка гребка стоячи на дошці",[9],"2024/11/tekhnika_hrebka_stoiachy_na_doshtsi_i_color.svg",[["І","tehnika-grebka-stoyachy-na-doshczi-i"],["ІІ","tehnika-grebka-stoyachy-na-doshczi-ii"],["ІІІ","tehnika-grebka-stoyachy-na-doshczi-iii"]]],["Три пера",[4],"2026/07/try_pera_color.svg",[["Опис","try-pera-2"],["ІІІ проба","try-pera-iii-proba"],["Опис (інша версія)","try-pera"]]],["Український амбасадор",[3,4,2],"2026/04/ukrainskyi_ambasador_i_color.svg",[["І","ukrayinskyj-ambasador-i"],["ІІ","ukrayinskyj-ambasador-ii"],["ІІІ","ukrayinskyj-ambasador-iii"]]],["Український ґердан",[8],"2024/11/ukrainskyi_gerdan_i_color.svg",[["І","ukrayinskyj-gerdan-i"],["ІІ","ukrayinskyj-gerdan-ii"]]],["Фандрейзинг",[4],"2024/11/fandreizynh_i_color.svg",[["І–ІІ проба","fandrejzyng-i-ii-proba"],["ІІ–ІІІ проба","fandrejzyng-ii-iii-proba"]]],["Філателія",[4],"2024/11/filateliia_i_color.svg",[["І проба","filateliya-i-proba"]]],["Філокартія",[4],"2026/03/filokartiya-1-ch_b.svg",[["І","filokartiya-i"],["ІІ","filokartiya-ii"],["ІІІ","filokartiya-iii"]]],["Фільмування",[8],"2024/11/filmuvannia_ii_color.svg",[["ІІ проба","filmuvannya-ii-proba"]]],["Фотографування",[8],"2024/11/fotohrafuvannia_i_color.svg",[["І","fotografuvannya-i"],["ІІ","fotografuvannya-ii"],["ІІІ","fotografuvannya-iii"]]],["Хороводи-гагілки",[8],"2024/11/khorovody_hahilky_iii_color.svg",[["ІІІ проба","horovody-gagilky-iii-proba"]]],["Читання",[4],"2024/11/chytannia_i_color.svg",[["І проба","chytannya-i-proba"]]],["Шахи",[4],"2024/11/shakhy_ii_color.svg",[["ІІ проба","shahy-ii-proba"]]],["Шиття",[8],"2024/11/shyttia_i_color.svg",[["І","shyttya-i"],["ІІ","shyttya-ii"],["ІІІ","shyttya-iii"]]],["Якірництво",[9],"2024/11/yakirnytstvo_ii_color.svg",[["ІІ проба","yakirnycztvo-ii-proba"]]]];
 const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-v-polshhi-ch_b.svg","aerodynamika-ii-proba":"2024/11/aerodynamika_ii_color.svg","aeronavigacziya-ta-povitryanyj-ruh-i":"2024/11/aeronavihatsiia_ta_povitrianyi_rukh_i_color.svg","aeronavigacziya-ta-povitryanyj-ruh-ii":"2024/11/aeronavihatsiia_ta_povitrianyi_rukh_ii_color.svg","aeronavigacziya-ta-povitryanyj-ruh-iii":"2024/11/aeronavihatsiia_ta_povitrianyi_rukh_iii_color.svg","aktorstvo-i":"2024/11/aktorstvo_i_color.svg","aktorstvo-ii":"2024/11/aktorstvo_ii_color.svg","aktorstvo-iii":"2024/11/aktorstvo_iii_color.svg","alpinistyka":"2026/04/alpinistyka_i_color.svg","alpinistyka-i":"2026/07/alpinistyka_i_color.svg","alpinistyka-i-iii-proba":"2024/11/alpinistyka_i_color.svg","arheologiya-i":"2024/11/arkheolohiia_i_color.svg","arheologiya-ii":"2024/11/arkheolohiia_ii_color.svg","arheologiya-iii":"2024/11/arkheolohiia_iii_color.svg","astronomiya-i":"2024/11/astronomiia_i_color.svg","astronomiya-ii":"2024/11/astronomiia_ii_color.svg","astronomiya-iii":"2024/11/astronomiia_iii_color.svg","aviaczijna-meteorologiya-i-ii-proba":"2024/11/aviatsiina_meteorolohiia_i_color.svg","aviaczijna-meteorologiya-ii-iii-proba":"2024/11/aviatsiina_meteorolohiia_ii_color.svg","aviamodelyuvannya-i":"2024/11/aviamodeliuvannia_i_color.svg","aviamodelyuvannya-ii":"2024/11/aviamodeliuvannia_ii_color.svg","aviamodelyuvannya-iii":"2024/11/aviamodeliuvannia_iii_color.svg","avtoznavstvo-i":"2024/11/avtoznavstvo_i_color.svg","avtoznavstvo-ii":"2024/11/avtoznavstvo_ii_color.svg","avtoznavstvo-iii":"2024/11/avtoznavstvo_iii_color.svg","bezpeka-ii-proba":"2024/11/bezpeka_ii_color.svg","bezpeka-ruhu-iii-proba":"2024/11/bezpeka_rukhu_iii_color.svg","bibliotekarstvo-ii-proba":"2024/11/bibliotekarstvo_ii_color.svg","borecz-i":"2026/04/borets_i_color.svg","borecz-i-vidnovlena-vmilist":"2024/11/borets_i_color.svg","borecz-ii":"2026/04/borets_ii_color.svg","borecz-ii-vidnovlena-vmilist":"2024/11/borets_ii_color.svg","borecz-iii":"2026/04/borets_iii_color.svg","borecz-iii-vidnovlena-vmilist":"2024/11/borets_iii_color.svg","bortova-mehanika-iii-proba":"2024/11/bortova_mekhanika_iii_color.svg","budivnycztvo-suden-iii-proba":"2024/11/budivnytstvo_suden_iii_color.svg","budova-litalnyh-aparativ-i":"2024/11/budova_litalnykh_aparativ_i_color.svg","budova-litalnyh-aparativ-ii":"2024/11/budova_litalnykh_aparativ_ii_color.svg","budova-litalnyh-aparativ-iii":"2024/11/budova_litalnykh_aparativ_iii_color.svg","deltaplaneryzm-iii-proba":"2024/11/deltaplaneryzm_iii_color.svg","doglyad-za-kinmy-i":"2024/11/dohliad_za_kinmy_i_color.svg","doglyad-za-kinmy-ii":"2024/11/dohliad_za_kinmy_ii_color.svg","doglyad-za-kinmy-iii":"2024/11/dohliad_za_kinmy_iii_color.svg","domashnya-zaradnist-i":"2024/11/domashnia_zaradnist_i_color.svg","domashnya-zaradnist-ii":"2024/11/domashnia_zaradnist_ii_color.svg","domashnya-zaradnist-iii":"2024/11/domashnia_zaradnist_iii_color.svg","dva-pera":"2026/04/dva_pera_color.svg","dva-pera-ii-proba":"2024/11/dva_pera_color.svg","ekolog-i":"2024/11/ekoloh_i_color.svg","ekolog-ii":"2024/11/ekoloh_ii_color.svg","ekolog-iii":"2024/11/ekoloh_iii_color.svg","ekologiya-iii-proba":"2024/11/ekolohiia_iii_color.svg","ekonomist-i":"2024/11/ekonomist_i_color.svg","ekonomist-ii":"2024/11/ekonomist_ii_color.svg","ekonomist-iii":"2024/11/ekonomist_iii_color.svg","etnograf-i":"2024/11/etnohraf_i_color.svg","etnograf-ii":"2024/11/etnohraf_ii_color.svg","etnograf-iii":"2024/11/etnohraf_iii_color.svg","genealogiya-ii-proba":"2024/11/henealohiia_ii_color.svg","gotovnist-do-nadzvychajnyh-sytuaczij-ii-proba":"2024/11/hotovnist_do_nadzvychainykh_sytuatsii_ii_color.svg","grafichnyj-dyzajn-i":"2024/11/hrafichnyi_dyzain_i_color.svg","grafichnyj-dyzajn-ii":"2024/11/hrafichnyi_dyzain_ii_color.svg","grafichnyj-dyzajn-iii":"2024/11/hrafichnyi_dyzain_iii_color.svg","grafika-iii-proba":"2024/11/hrafika_iii_color.svg","gromadske-zdorovya-iii-proba":"2024/11/hromadske_zdorovia_iii_color.svg","gromadyanyn-krayiny-iii-proba":"2024/11/hromadianyn_krainy_iii_color.svg","gromadyanyn-mista-iii-proba":"2024/11/hromadianyn_mista_iii_color.svg","gromadyanyn-svitu-ii-proba":"2024/11/hromadianyn_svitu_ii_color.svg","kajnokarstvo-ii-proba":"2024/11/kainokarstvo_ii_color.svg","kartografiya":"2026/04/kartohrafiia_ii_color.svg","kartografiya-ii-proba":"2024/11/kartohrafiia_ii_color.svg","kavaleriya-i":"2024/11/kavaleriia_i_color.svg","kavaleriya-ii":"2024/11/kavaleriia_ii_color.svg","kavaleriya-iii":"2024/11/kavaleriia_iii_color.svg","keramika-i":"2024/11/keramika_i_color.svg","keramika-ii":"2024/11/keramika_ii_color.svg","kerivnyk-proyektiv-i":"2026/04/kerivnyk_proiektiv_i_color-1.svg","kerivnyk-proyektiv-i-ii-proba":"2024/11/kerivnyk_proiektiv_i_color.svg","kerivnyk-proyektiv-ii":"2026/04/kerivnyk_proiektiv_ii_color.svg","kerivnyk-proyektiv-ii-iii-proba":"2024/11/kerivnyk_proiektiv_ii_color.svg","kinna-veterynariya-i":"2024/11/kinna_veterynariia_i_color.svg","kinna-veterynariya-ii":"2024/11/kinna_veterynariia_ii_color.svg","kinna-veterynariya-iii":"2024/11/kinna_veterynariia_iii_color.svg","kinne-mandrivnycztvo-i-ii-proba":"2024/11/kinne_mandrivnytstvo_i_color.svg","kinne-mandrivnycztvo-ii-iii-proba":"2024/11/kinne_mandrivnytstvo_ii_color.svg","komandnyj-gravecz":"2026/04/komandnyi_hravets_i_color.svg","komandnyj-gravecz-i-proba":"2024/11/komandnyi_hravets_i_color.svg","kompyuterna-grafika-ii-proba":"2024/11/kompiuterna_hrafika_ii_color.svg","kompyuterna-verstka-iii-proba":"2024/11/kompiuterna_verstka_iii_color.svg","komunikacziya-ii-proba":"2024/11/komunikatsiia_ii_color.svg","korystuvach-internetu-i":"2026/04/korystuvach_internetu_i_color.svg","korystuvach-internetu-i-ii-proba":"2024/11/korystuvach_internetu_i_color.svg","korystuvach-internetu-ii":"2026/04/korystuvach_internetu_ii_color.svg","korystuvach-internetu-ii-iii-proba":"2024/11/korystuvach_internetu_ii_color.svg","krayeznavstvo-i":"2024/11/kraieznavstvo_i_color.svg","krayeznavstvo-ii":"2024/11/kraieznavstvo_ii_color.svg","krayeznavstvo-iii":"2024/11/kraieznavstvo_iii_color.svg","kuhovarennya":"2026/04/kukhovarennia_i_color.svg","kuhovarennya-i-proba":"2024/11/kukhovarennia_i_color.svg","legka-atletyka-i-proba":"2024/11/lehka_atletyka_i_color.svg","leshhetarske-mandrivnycztvo-iii-proba":"2024/11/leshchetarske_mandrivnytstvo_iii_color.svg","leshhetarstvo-alpijskogo-stylyu-ii-proba":"2024/11/leshchetarstvo_nordiiskoho_styliu_iii_color.svg","leshhetarstvo-nordijskogo-stylyu-iii-proba":"2024/11/leshchetarske_mandrivnytstvo_iii_color.svg","litayuchyj-dysk-i":"2024/11/litaiuchyi_dysk_i_color.svg","litayuchyj-dysk-ii":"2024/11/litaiuchyi_dysk_ii_color.svg","litayuchyj-dysk-iii":"2024/11/litaiuchyi_dysk_iii_color.svg","luchnyk-i-ii-proba-onovlena-vmilist-strilba-z-luka":"2024/11/luchnyk_i_color.svg","luchnyk-ii-iii-proba-onovlena-vmilist-strilba-z-luka":"2024/11/luchnyk_ii_color.svg","lyubytel-ka-mystecztva-i":"2024/11/liubytel_mystetstva_i_color.svg","lyubytel-ka-mystecztva-ii":"2024/11/liubytel_mystetstva_ii_color.svg","lyubytel-ka-mystecztva-iii":"2024/11/liubytel_mystetstva_iii_color.svg","mandrivnycztvo":"2026/04/mandrivnytstvo_ii_color.svg","vebmajster":"2026/04/vebmaister_iii_color.svg","vebmajster-iii-proba":"2024/11/vebmaister_iii_color.svg","velomandrivnycztvo-i-ii-proba":"2024/11/velomandrivnytstvo_i_color.svg","vijskovyk-ii":"2024/11/viiskovyk_ii_color.svg","vijskovyk-iii":"2024/11/viiskovyk_iii_color.svg","vilnyj-hudozhnyk-vilna-hudozhnyczya-i":"2026/03/vilnyj-hudozhnyk-ch_b.svg","vitrylnycztvo-iii-proba":"2024/11/vitrylnytstvo_iii_color.svg","vodne-leshhetarstvo-ii-proba":"2024/11/vodne_leshchetarstvo_ii_color.svg","vodne-ryativnycztvo-iii-proba":"2024/11/vodne_riativnytstvo_iii_color.svg","vodolazhennya-iii-proba":"2024/11/vodolazhennia_iii_color.svg","volonterska-sluzhba-i":"2026/03/volonterska-sluzhba-1-chb-01-artboard-1.svg","volonterska-sluzhba-ii":"2026/03/volonterska-sluzhba-2-chb-01-artboard-1.svg","volonterska-sluzhba-iii":"2026/03/volonterska-sluzhba-3-chb-01-artboard-1.svg","vporyad-i":"2024/11/vporiad_i_color.svg","vporyad-ii":"2024/11/vporiad_ii_color.svg","vporyad-iii":"2024/11/vporiad_iii_color.svg","vyfleyemskyj-vogon-myru-i":"2026/03/vyflyyemskyj-vogon-myru-1-chb-01.svg","vyfleyemskyj-vogon-myru-ii":"2026/03/vyflyyemskyj-vogon-myru-2-chb-01-artboard-1.svg","vyfleyemskyj-vogon-myru-iii":"2026/03/vyflyyemskyj-vogon-myru-3-01-artboard-1-2-1.svg","vyshyvannya-i":"2024/11/vyshyvannia_i_color.svg","vyshyvannya-ii":"2024/11/vyshyvannia_ii_color.svg","vyshyvannya-iii":"2024/11/vyshyvannia_iii_color.svg","vzayemodiya-iz-lyudmy-z-invalidnistyu-ii-proba":"2024/11/vzaiemodiia_iz_liudmy_z_invalidnistiu_ii_color.svg","zapobigannya-zlochynnosti-iii-proba":"2024/11/zapobihannia_zlochynnosti_iii_color.svg","zbroyeznavstvo-i-ii-proba":"2024/11/zbroieznavstvo_i_color.svg","zbroyeznavstvo-ii-iii-proba":"2024/11/zbroieznavstvo_ii_color.svg","zhurnalistyka-i-proba":"2024/11/zhurnalistyka_i_color.svg","znavecz-kompyuteriv-i":"2024/11/znavets_kompiuteriv_i_color.svg","znavecz-kompyuteriv-ii":"2024/11/znavets_kompiuteriv_ii_color.svg","znavecz-kompyuteriv-iii":"2024/11/znavets_kompiuteriv_iii_color.svg","znavecz-narodnogo-kalendarya-i":"2024/11/znavets_narodnoho_kalendaria_i_color.svg","znavecz-narodnogo-kalendarya-ii":"2024/11/znavets_narodnoho_kalendaria_ii_color.svg","znavecz-narodnogo-kalendarya-iii":"2024/11/znavets_narodnoho_kalendaria_iii_color.svg","znavecz-nazva-kompyuternoyi-programy":"2026/04/znavets_komp_proh_ii_color.svg","znavecz-nazva-kompyuternoyi-programy-ii-proba":"2024/11/znavets_komp_proh_ii_color.svg","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-i":"2026/03/znavecz-ukrayinskoyi-spadshhyny-v-polshhi-1-ch_b.svg","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-ii":"2026/03/znavecz-ukrayinskoyi-spadshhyny-v-polshhi-2-ch_b.svg","znavecz-ukrayinskoyi-spadshhyny-v-polshhi-iii":"2026/03/znavecz-ukrayinskoyi-spadshhyny-v-polshhi-3-ch_b.svg"};
 </script>
+<script>/* Мінімальний генератор QR-коду (режим Byte, рівні L/M, версії 1–10, до ~170 байт).
+   Без зовнішніх бібліотек. Використання: qrSvg("https://…", 240) → рядок <svg>. */
+(function (root) {
+  'use strict';
+  const ECL = {
+    L: { bits: 1, ecc: [7, 10, 15, 20, 26, 18, 20, 24, 30, 18], blocks: [1, 1, 1, 1, 1, 2, 2, 2, 2, 4] },
+    M: { bits: 0, ecc: [10, 16, 26, 18, 24, 16, 18, 22, 22, 26], blocks: [1, 1, 1, 2, 2, 4, 4, 4, 5, 5] },
+    H: { bits: 2, ecc: [17, 28, 22, 16, 22, 28, 26, 26, 24, 28], blocks: [1, 1, 2, 4, 4, 4, 5, 6, 8, 8] }   /* найвища надійність: витримує знак посередині */
+  };
+  const RAW = [26, 44, 70, 100, 134, 172, 196, 242, 292, 346];
+  const ALIGN = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]];
+  const EXP = new Array(512), LOG = new Array(256);
+  (function () { let x = 1; for (let i = 0; i < 255; i++) { EXP[i] = x; LOG[x] = i; x <<= 1; if (x & 256) x ^= 0x11d; } for (let i = 255; i < 512; i++) EXP[i] = EXP[i - 255]; })();
+  const mul = (a, b) => (a && b ? EXP[LOG[a] + LOG[b]] : 0);
+  function gen(n) { let g = [1]; for (let i = 0; i < n; i++) { const ng = new Array(g.length + 1).fill(0); for (let j = 0; j < g.length; j++) { ng[j] ^= g[j]; ng[j + 1] ^= mul(g[j], EXP[i]); } g = ng; } return g; }
+  function rs(data, n) { const g = gen(n), r = new Array(n).fill(0); for (const b of data) { const f = b ^ r.shift(); r.push(0); for (let i = 0; i < n; i++) r[i] ^= mul(g[i + 1], f); } return r; }
+  const bit = (v, i) => ((v >>> i) & 1) !== 0;
+
+  function matrix(text, level) {
+    const E = ECL[level], data = Array.from(new TextEncoder().encode(text));
+    let ver = 1, dataCap = 0;
+    for (; ver <= 10; ver++) {
+      dataCap = RAW[ver - 1] - E.ecc[ver - 1] * E.blocks[ver - 1];
+      if (4 + (ver < 10 ? 8 : 16) + data.length * 8 <= dataCap * 8) break;
+    }
+    if (ver > 10) throw new Error('QR: надто довгий текст');
+    const bb = [], put = (v, n) => { for (let i = n - 1; i >= 0; i--) bb.push((v >>> i) & 1); };
+    put(4, 4); put(data.length, ver < 10 ? 8 : 16); data.forEach(b => put(b, 8));
+    const cap = dataCap * 8; put(0, Math.min(4, cap - bb.length)); while (bb.length % 8) bb.push(0);
+    for (let p = 0xec; bb.length < cap; p ^= 0xec ^ 0x11) put(p, 8);
+    const cw = []; for (let i = 0; i < bb.length; i += 8) { let v = 0; for (let j = 0; j < 8; j++) v = (v << 1) | bb[i + j]; cw.push(v); }
+    const nb = E.blocks[ver - 1], el = E.ecc[ver - 1], shortLen = Math.floor(dataCap / nb), longCount = dataCap % nb;
+    const blocks = []; let pos = 0;
+    for (let i = 0; i < nb; i++) { const len = shortLen + (i >= nb - longCount ? 1 : 0); const d = cw.slice(pos, pos + len); pos += len; blocks.push({ d, e: rs(d, el) }); }
+    const out = [];
+    for (let i = 0; i < shortLen + (longCount ? 1 : 0); i++) blocks.forEach(b => { if (i < b.d.length) out.push(b.d[i]); });
+    for (let i = 0; i < el; i++) blocks.forEach(b => out.push(b.e[i]));
+
+    const size = ver * 4 + 17;
+    const m = Array.from({ length: size }, () => new Array(size).fill(false));
+    const fn = Array.from({ length: size }, () => new Array(size).fill(false));
+    const setF = (x, y, v) => { if (x >= 0 && x < size && y >= 0 && y < size) { m[y][x] = v; fn[y][x] = true; } };
+    const finder = (cx, cy) => { for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) { const d = Math.max(Math.abs(dx), Math.abs(dy)); setF(cx + dx, cy + dy, d !== 2 && d !== 4); } };
+    for (let i = 0; i < size; i++) { setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+    finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+    const al = ALIGN[ver - 1], last = al.length - 1;
+    for (let a = 0; a < al.length; a++) for (let b = 0; b < al.length; b++) {
+      if ((a === 0 && b === 0) || (a === 0 && b === last) || (a === last && b === 0)) continue;
+      for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) setF(al[a] + dx, al[b] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+    }
+    function drawFormat(mask) {
+      const d0 = (E.bits << 3) | mask; let r = d0; for (let i = 0; i < 10; i++) r = (r << 1) ^ ((r >>> 9) * 0x537);
+      const bits = ((d0 << 10) | r) ^ 0x5412;
+      for (let i = 0; i <= 5; i++) setF(8, i, bit(bits, i));
+      setF(8, 7, bit(bits, 6)); setF(8, 8, bit(bits, 7)); setF(7, 8, bit(bits, 8));
+      for (let i = 9; i < 15; i++) setF(14 - i, 8, bit(bits, i));
+      for (let i = 0; i < 8; i++) setF(size - 1 - i, 8, bit(bits, i));
+      for (let i = 8; i < 15; i++) setF(8, size - 15 + i, bit(bits, i));
+      setF(8, size - 8, true);
+    }
+    drawFormat(0);
+    if (ver >= 7) {
+      let r = ver; for (let i = 0; i < 12; i++) r = (r << 1) ^ ((r >>> 11) * 0x1f25);
+      const bits = (ver << 12) | r;
+      for (let i = 0; i < 18; i++) { const c = bit(bits, i), a = size - 11 + (i % 3), b = Math.floor(i / 3); setF(a, b, c); setF(b, a, c); }
+    }
+    let k = 0;
+    for (let right = size - 1; right >= 1; right -= 2) {
+      if (right === 6) right = 5;
+      for (let vert = 0; vert < size; vert++) for (let j = 0; j < 2; j++) {
+        const x = right - j, y = ((right + 1) & 2) === 0 ? size - 1 - vert : vert;
+        if (!fn[y][x] && k < out.length * 8) { m[y][x] = bit(out[k >>> 3], 7 - (k & 7)); k++; }
+      }
+    }
+    const MASK = [(x, y) => (x + y) % 2 === 0, (x, y) => y % 2 === 0, (x, y) => x % 3 === 0, (x, y) => (x + y) % 3 === 0,
+      (x, y) => (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0, (x, y) => ((x * y) % 2) + ((x * y) % 3) === 0,
+      (x, y) => (((x * y) % 2) + ((x * y) % 3)) % 2 === 0, (x, y) => (((x + y) % 2) + ((x * y) % 3)) % 2 === 0];
+    function apply(mask) { for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (!fn[y][x] && MASK[mask](x, y)) m[y][x] = !m[y][x]; }
+    function penalty() {
+      let p = 0;
+      for (let pass = 0; pass < 2; pass++) for (let a = 0; a < size; a++) {
+        let run = 1, prev = null, hist = '';
+        for (let b = 0; b < size; b++) {
+          const v = pass ? m[b][a] : m[a][b];
+          hist += v ? '1' : '0';
+          if (v === prev) { run++; if (run === 5) p += 3; else if (run > 5) p++; } else { run = 1; prev = v; }
+        }
+        const re = /1011101(?=0000)|(?<=0000)1011101/g; let mt; while ((mt = re.exec(hist))) p += 40;
+      }
+      for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) { const v = m[y][x]; if (v === m[y][x + 1] && v === m[y + 1][x] && v === m[y + 1][x + 1]) p += 3; }
+      let dark = 0; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) if (m[y][x]) dark++;
+      p += Math.floor(Math.abs(dark * 20 - size * size * 10) / (size * size)) * 10;
+      return p;
+    }
+    let best = 0, bp = Infinity;
+    for (let mk = 0; mk < 8; mk++) { apply(mk); drawFormat(mk); const p = penalty(); if (p < bp) { bp = p; best = mk; } apply(mk); }
+    apply(best); drawFormat(best);
+    return m;
+  }
+
+  /* logo — картинка (data:…) посередині коду, напр. пластова лілея. Тоді рівень H (до 30 % коду може бути закрито),
+     модулі — круглі крапки, «очі» в кутах — заокруглені, а під знаком модулі прибрано (без білої плашки).
+     eye — колір «очей» (необов'язково). */
+  /* Стиль сайту (21.10.2026, власник обрав варіант 8): темне тло, світлі круглі крапки, зелені «очі», пластова лілея.
+     qrSvg(текст, px) — так скрізь (пульт, СКОБ, «Вивчай сам»); qrSvg(текст, px, {eye:…}) — інші кольори; qrSvg(текст, px, false) — простий чорно-білий. */
+  const LILY = 'data:image/webp;base64,UklGRuwQAABXRUJQVlA4WAoAAAAQAAAAYgAAdwAAQUxQSG8QAAAB/yckSPD/eGtEpO4Titu2jVQnP2f/hZtjhYj+TwBABNl+8NiqpEl/Z5AUBgI7pQpaGyR1NCwCJCDBmQa95jmj7A6o4u+C1XiA/+3/10np/39wl9vtfp/ZDlaQpRGlwVYs2m4JC7sTu7u722eYPMGn2E3YnZQtrdK9OfN43G8/PGZ3cZmImABauWg8+OorvvexkbclcErG6o5DJX+Zbm8z9v7ObgHJU0JlJ16tpOw5m1RCvi7owlzwcL19ks5LhjoWo4o4zrUizUOmtbAKFUA8R9KQEcs3snYeDjFypiilpl7zjONSu4AUTae4zm7D5RVlgE3ESzPEM9n2xOUTJ98sLFGhuSrlfy0sVckfjtNtCI7mO8bY9fi8IVK2fgKeljo+re+I5gvP+aGLKDjvm4gS+9i1+Hwh7u9H8bRcdc7fKSQ/OA62DqIIh91+u4S6YNHKiYDnXNsLly/enY4EhEvG9FRXYvTY+wKEwLscjuQFoazuFFGAhgtHV2RC0ZrCRysAY+6iERJLPnDsY90JCQ3nXmfI01e6hoQLU7Zob3nBc8tSFUuQ9XghvQEHIMyUnuQF5cO3cTlS6VgDur40owljLj3ygsCS2/HkKGgoAhrKa+IELKeafChUZi9oIlhQQMASRpbivKB0txOayMYkNRNcIil5AcpZj+WAkBALJAVPJi8IbTFyOyGnczmggNq8AEoRkgNcwpAm2rE6T6ylhCZFEgTLIXRhLpYHjDoKmzCzhFjIAd1ZlhdgA5s3QRNiOYy+9X9uQqIiuYwVtX2xJkgG0RyBnvPqpQlRlVaWdE5yNCzpSshh5LRAUqyixzcogHql9Vf3bZ8GnILj5ZpCJJcl1EJCGeA/ij0oUaCkTdsly8Raj4an4tW/vzBuM3B4LrVeuQg5XC5hD36IVCTQ+9I9+5RXPHyui1oPFFhyyT1dUc/udkhTkmgysMf634PG7HbLDXuB4WjdIWTjKDJbfToiRXX3NYEmQmSAhNRun9YpqTGjColEsj5qNYKIoBZZiOOs2b/TyvQ/iHO5hIUgIAyomi6UbS0WOzEtoMh551T+IXE+BALgLDKzEMVZe9vLudbDNEduUUDZjykWyogcOOI5a7+JG0g6JxtNHUDBZm1LV//uLWvrZpuFOGPPsKWdRyKOJaGZCAgcMu9ntxow5et7P6gprN6/wg7eYXMALxtFHFQe/u/tO3tfGPpkLGOzU9tMMMtm7HTmfE9ImCZcQyRI6LTTy/GNgLHqpjf2f3KQZOuFRatX/zFpXBE4aZmDvs+uXDHt1Vm/r+f10gwg1uX0vj9jWvPC+P49ggrELlHsYkNtPx7vMVoN/vpmxKWf33FgrwpAN9/p7FdWLb29GlwLBNo9s+GtfYrI2egF0PjeLuO//wRzT8T3H41CiFOJFBkjcMovvEEQ/LqhNWfS/JKjvl5/ayGueYFxqz/ZBVA1gxRJsWXPXDIu/QOpuhsmnOljEMuhZkjcrfq0Xr0CoVubtXNnot6pACLqHTBq0YIhuGYxLJwFzgkRQDYbgED55Pe/Htj1b+SS3h2H4vBansgE0DAmM+lRgpXs81FbHC0UpxQ9ZefjmxLar9kWpzS9bk0KEFy7EL4uK1NmP7r4EgtkNZVoCBsCctr/9ViEqz7NdgtsRAdn26X4XEJUsxRPMyWOc4WMFPCbFnfk2Nv36R2xeHUOFy8z2YFThxJkqzPuOtF0YyCe4+woHGAwr0saT3PNVAEjDqaBMre0/3v/sjPgryU+UeKWYaf/uew6s9Qji8PgeONAitusLwrwoWxDS4OQMzJcDJ0bVxdXTjzSs7SxKOHcUioOvEgGEnTK3aeXBjayeGbM9Ipo8eqn8S2JSQoiOEjx9MzKLjvY3jKucgICjQE5LP2MVWF8m16/QTYWjj52GN5xTU25akusiZQmxMvvj+EXvMY2hZMAXFxrx726qqozwh/yG7rR8Nz/PRqX1lyKp+WKIAgJHL3sUC7NtunsX0gUuZUl296JSwHB1fMPqnQMg7GzspUiLTIRwAiWA88tq9Ptw3gvLybMfjlq6TdpDCjU+J/AMWUq/PAGjhaK1Ss5hVyiqZU38vF38FKipqHmqImcpwrURxuwf8DLsaFL13CC+JZAMAMC2gSe0+LSw6wjryTixp7dnjxwVI0DCjNrAVRVZWMo3e2k3UMPtGVmhgFemhBJrbrcN0xgMgbKsXOXXVqEANnsetQTALy0THBLJg5a7pCWBQRBEOd8DjyX/82bWf5HzjH/r+qzuFgBsmtcFFE9cJuugGsRykezBnyK0lKR57p8TjJaGYuThNC2sc/BVvbvRF2q8eUjn16aTlylW9H33nlmZgtuqkZb5Ji4vvpNXIs8/93yMyBQdOmDBaAAjvdvKP2ANxFhp+zY2h1fK29TCFzh+t5k6yeeOmzk+A+s9lRcSzyPWeXkliltPuz4JSDy1OjXll7gcICXi6aQ2jMKzoWRJ0wdtPwXqtSEKwqWZM4pJmf/6XYTrkV3mb3aIqXfosWF3wEmN9P1LpsxAAdORn6q1YsNkPDgwJqpRAUYXN91Ti9wDl9cDI/YubiWPBb+er8lKp1XzujIjIQ5W0S/GdmhODxXTGW6RZooGxJ+KRABuJkqvGOH72f/PP8eeCvqK9osxysr/vwVkebx5qpK3E+ASiySgudsB7xW1ex6vGUNzFz0QY/lrqgInC0+FI9jXzOz50W6Zl/GNUv49pPPa0poljLAxqAliwAREC67gQmrK1JM/F9FbRSCIUHmru2U9V6jWDAbhXMcGGca4ycpYIJ1RZshpNfcOd12wTXHc8sKr1QsAWLDRXuZXcZvT3HAmpKpFllWRo134YfNA5Yt8imIwvJqSXGQRVn7FwVykB2Bb4Yy0EbO+fsOfHMc70zEU7oYwAj6VWiwM7eNtls3aBIGnNfe32oXjD6Mzm91ufyl2DRud4YpAQEhWGe7oVlezllRED+8SKQ5wsxbSVH+F2Bo2DoK2fgr+XDNQS/UiEGP4r9e453Dz+9L8Q9HwIj1YAdKjMfIWWkPNUv54XHoZ4fgmjXnQUnRZhkgCDtYFNnxXF5f954Lyk51s0c/9ihb3F4iPD/fF/ComHSvikgBBKBjuKU5jr2sD45pPzXL8/J3OCqXIqhCW8vGNlz2OfoRIB7Y9vv7Sf94Kg8h6YXXUeQvA1JpcAlDdS87FNecX9/BmfS24/HNOcK6I22WxHEcgHWWzdp4Um6uGqXDJvQlRdfZB1wHx9lU8bwLbFgvSAI0TGqoRJrwnGm9RIPjxrgzrgmR9OJpUJ1xacrEmBFCbL9VcLcYHDll2yPwjpeXX4t+EWxfOToKYrNrC7zmqt/BrseR29HdrsSBOD6fU4TLhTLYJpdwULn4lREy848Qx/auXuUt7Fl+zqRT8Cqv27Vsm43sLb40Q16kISIp7P/pR14ll5PSRR/gBBBp8/fnhfhcKCNWrryoci0waN1vjVdZxrL2MtdoxZHL3jnzTrzw5pILuMsyIdt1sJn/ZRJHnVGQWDHkrbfLRcjpkc/+qFAhqValhe1xLgeOtjf+unTp6mzv6j2Dlh2JAoVE87WgTeoLAFu1ROZbnLX7+NDqd4bT7XYU1vX8cDRiCfW0/eantihN1y5YdxiIVwEcsGW1u7Lb/p8qoVt3wEjz7JY7PnTZbwllXi+LLbal6X3jI3DCqOswsFCfkghEYuPAVW+XoDR3+S3Z6UMB1DmnQLe7uvb9xcUIbQ0BpGj5RP/G7ITP7DbklA8tim2/gpEopDg6gYQsuQe9/Nc5oDTXYOsP7acrtk6TbDfuo92fGTmooBEQMmAIpf6cvSf9IaCu031HcJlls+FxUMDrSQCNmb57raqzii5Dh1fd3xYVmm8OBj2yKLvy62nvffxTbe3EHfTN4r5iJC2QDDVRm6dNNC6u2J5OPRqzDdnvxEmC4xMFv/opEGWWzZgyGRwtVwX6nXT/y289d/l+m+97+ZF86sRwTpxf1ZjAW+GP6SiM3HJA+4/Hs8DMrI9LOecK3LGJsm/69KhyjSv/ApywUdXTdDsjUomBOI43+35IbQMGCJWf7rznfwcPeIUvU6OvvPjss8vIPSaRkcb5JJ3EbHRR753zadd5TRnaZh+xsOe+nbut6LfZuhqS4q+fXb/7oBeDxD3pt8P22w/bc8TwEXvtv/fdCJg5RQwz/nml0/oyE3If/nOw/59LfQLd+VVXASCbNXyG0FwFjwVaq9JxbSKAGN9tp1H0kEoGA45cWoUhaOwzmDRDLZinFSudGtM0XSmIhVcfdA0oWn8pgiln8W8QmqtptHW1/7k0EEQKtN53rAXRKaOoW4lQhYjRsFJfpl4IUWwoFkI2CunlWOsBCtQwtMA1SMNuaGDGfiqZapLKurmh/OKH08Gk2AdRJESZrEgjcatq/p+ZtLBimMSDluxuglld6L5+w/yzhkdS8PB0Nl0BE0uHGGzRgl4YY9dV/v3F5oqGLdofatt+XzCeFLwhPlLbftV8F8BaGaBhi4fH1on56P3TA3Ld57+9Uo/gwrszXrpm1jkVcWS66leLTOyEAwatkMAmqPqpdVPFMcTiOP555kelc0MsgNaddf/JC4mUz1HwvGevoWyCjouWf/9fUk7UfWENZpMo/tsiA4Lt+OebTyEmEyTl0uwZ7rfR+NYnklpzSTcbDwiD1tuSk6FyzZvL26JY9MQDAwYHJ3/+ANC/9gnm/CTS+hx7Wi8Oqnljn80Kq0dNu709TkrqLhuQDlJcPKZk9HsYek863W7oQzbZ6wXWB211nnuWidL1yZ8+fum567uBE/z8hRO/aiS6hEPGEHv5acXvy9fakgtRhoQj8a3O8eYsEQdUtAG8gPI/m3Fimyj14o1tfws+1gufuu+VYX0EHD3twk3i9Z8R1AE4AXDax35vnE+nu2q/I4TU2zsfPgjAoWwbTtoEPPdtKEBARMgpnseXn/bh5Nofjp9C7K3uku/PJaUq4OVY2wO3CYyyvcXRTFVus2VDpwy39kWYZGz/8TNxQtLzTm0Z0upEipd9gtcmxMNdljUrn92tM4Dd0jPuI0oyxc52C47W7xhnV4F3qs57aP+WrQ4hrP2gGwJMLpl7DAVOVb2j+q95JSqbAI6H7d5ycpecU1f7UGyxFQgCbKYX2qml5N79z+X9UTZFUa6xDQ8fMqDXLuOeWmcv92C8WRYTE2qCK7vF1j05akDvnc/4wD7rgbKJKttPqrXk6qd2hNILdlliAp4ddxlfCjs+tdrMLHx9LCibrIOi/iP2HryVB6/9bVb5eyIw66cTN/RXD36roSN3bQsom7A6cjtVei+xJVtenM1OadeOab1RdeRUxyYu6pxTAce+v+1Zb2Orq8da/Z6/7YsDUeeckD8d4+bT7Qf7z3/sh27MH5fIu47HflJJPWT2UEr0p8fy1Os/SsoxdCguJT++nqemr67y4sCJr1o9PS95Jtbt6BTnULdj3UR8Xjp/wZniAbycueD8vKSufzyxqYlxf6d5CCdz38UlHO/OFUc+9pxvPURBpYedj89LoqUrXsWD59UVpSp5CSdjbKx4L2NtjDjytOMx65VK9bLHcORr8fLBiqqqFR+Il7yFaNGXX3zxZZEKeVxJTZmSQmndAFZQOCBWAAAAUAYAnQEqYwB4AD4pFIlDoaEhEFQAGAKEtLdwulB9ABWdiLywDXU4oRssTEJ/OUe8SVYJjYuXvEX/ycAA/v/WuR7k/RGSxufLMIFq/b9fuqykMQAAAAA=';
+  const STYLE = { logo: LILY, bg: '#1b1d21', dark: '#e8f3ec', eye: '#62cf93', eyeIn: '#e8f3ec', rx: 0.1 };
+  function qrSvg(text, px, opt) {
+    if (opt === false) return qrPlain(text, px);
+    if (typeof opt === 'string') return qrPlain(text, px, opt);   // старий виклик: qrSvg(текст, px, лого)
+    return qrPretty(text, px, Object.assign({}, STYLE, opt || {}));
+  }
+  function qrPlain(text, px, logo, eye) {
+    let m = null;
+    if (logo) { try { m = matrix(text, 'H'); } catch (e) { m = null; } }
+    if (!m) { logo = ''; try { m = matrix(text, 'M'); } catch (e) { m = matrix(text, 'L'); } }
+    const n = m.length, s = n + 8, Q = 4, ink = '#15171a';
+    if (!logo) {
+      let d = '';
+      for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) if (m[y][x]) d += 'M' + (x + Q) + ' ' + (y + Q) + 'h1v1h-1z';
+      return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" shape-rendering="crispEdges" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" fill="#fff"/><path d="' + d + '" fill="#000"/></svg>';
+    }
+    const inEye = (x, y) => (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+    const c = n / 2, R = n * 0.15;   /* місце під лілею */
+    let d = '';
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!m[y][x] || inEye(x, y)) continue;
+      const dx = x + 0.5 - c, dy = (y + 0.5 - c) / 1.12;
+      if (Math.hypot(dx, dy) < R + 0.6) continue;
+      const cx = x + Q + 0.5, cy = y + Q + 0.5, r = 0.46;
+      d += 'M' + (cx - r) + ' ' + cy + 'a' + r + ' ' + r + ' 0 1 0 ' + (2 * r) + ' 0a' + r + ' ' + r + ' 0 1 0 ' + (-2 * r) + ' 0';
+    }
+    const ec = eye || ink;
+    const eyeAt = (x, y) => '<rect x="' + (x + 0.5) + '" y="' + (y + 0.5) + '" width="6" height="6" rx="1.9" fill="none" stroke="' + ec + '" stroke-width="1"/><rect x="' + (x + 2) + '" y="' + (y + 2) + '" width="3" height="3" rx="0.9" fill="' + ec + '"/>';
+    const lw = R * 2 * 0.78, lh = lw * 1.2;
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" role="img" aria-label="QR-код"><rect width="' + s + '" height="' + s + '" rx="3" fill="#fff"/>'
+      + '<path d="' + d + '" fill="' + ink + '"/>' + eyeAt(Q, Q) + eyeAt(Q + n - 7, Q) + eyeAt(Q, Q + n - 7)
+      + '<image href="' + logo + '" x="' + (Q + c - lw / 2) + '" y="' + (Q + c - lh / 2) + '" width="' + lw + '" height="' + lh + '" preserveAspectRatio="xMidYMid meet"/></svg>';
+  }
+  /* Гарний QR (як у банків): круглі «крапки», округлі «очі» в кутах, посередині — вільне коло з лілеєю.
+     opt: {logo, dark, eye, eyeIn} — кольори; рівень H, тож середина може бути порожньою. */
+  function qrPretty(text, px, opt) {
+    opt = opt || {}; let m; try { m = matrix(text, 'H'); } catch (e) { return qrPlain(text, px); }
+    const n = m.length, q = 3, s = n + 2 * q, c = s / 2, dark = opt.dark || '#16181c', eye = opt.eye || dark, eyeIn = opt.eyeIn || eye;
+    const R = opt.logo || opt.mark ? n * 0.17 : 0;   // радіус порожнього кола під лілею (у модулях)
+    const inEye = (x, y) => (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+    let d = '';
+    for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
+      if (!m[y][x] || inEye(x, y)) continue;
+      const cx = x + q + 0.5, cy = y + q + 0.5;
+      if (R && Math.hypot(cx - c, cy - c) < R + 0.5) continue;
+      const dr = opt.dot == null ? 0.43 : opt.dot;   // радіус крапки (0.5 — квадрат із заокругленням)
+      if (dr >= 0.5) { const k = opt.dotR == null ? 0.25 : opt.dotR; d += 'M' + (x + q + k) + ' ' + (y + q) + 'h' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1 ' + k + ' ' + k + 'v' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1-' + k + ' ' + k + 'h-' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1-' + k + '-' + k + 'v-' + (1 - 2 * k) + 'a' + k + ' ' + k + ' 0 0 1 ' + k + '-' + k + 'z'; }
+      else d += 'M' + (cx - dr).toFixed(2) + ' ' + cy + 'a' + dr + ' ' + dr + ' 0 1 0 ' + (2 * dr) + ' 0a' + dr + ' ' + dr + ' 0 1 0-' + (2 * dr) + ' 0';
+    }
+    const rr = (x, y, w, r) => 'M' + (x + r) + ' ' + y + 'h' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + ' ' + r + 'v' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + ' ' + r + 'h-' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1-' + r + '-' + r + 'v-' + (w - 2 * r) + 'a' + r + ' ' + r + ' 0 0 1 ' + r + '-' + r + 'z';
+    let eyes = '', inner = '';
+    [[0, 0], [n - 7, 0], [0, n - 7]].forEach(([ex, ey]) => {
+      const X = ex + q, Y = ey + q;
+      const er = opt.eyeR == null ? 2.2 : opt.eyeR; eyes += rr(X, Y, 7, er) + rr(X + 1, Y + 1, 5, Math.max(0.01, er * 0.64));   // кільце (evenodd)
+      inner += rr(X + 2, Y + 2, 3, Math.max(0.01, er * 0.41));
+    });
+    let lg = '';
+    if (R && opt.mark) lg = opt.mark(c, R);   /* свій знак прямо в SVG (бере шрифти сторінки) */
+    else if (R) { const h = R * (opt.logoH || 1.62), w = h * (opt.logoA || 0.82); lg = '<image href="' + opt.logo + '" x="' + (c - w / 2).toFixed(2) + '" y="' + (c - h / 2).toFixed(2) + '" width="' + w.toFixed(2) + '" height="' + h.toFixed(2) + '" preserveAspectRatio="xMidYMid meet"/>'; }
+    const gid = 'qg' + Math.random().toString(36).slice(2, 7), bg = opt.bg || '#fff';
+    const fillD = opt.grad ? 'url(#' + gid + ')' : dark;
+    const defs = opt.grad ? '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + opt.grad[0] + '"/><stop offset="1" stop-color="' + opt.grad[1] + '"/></linearGradient></defs>' : '';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + s + ' ' + s + '" width="' + (px || 220) + '" height="' + (px || 220) + '" role="img" aria-label="QR-код">' + defs + (bg === 'none' ? '' : '<rect width="' + s + '" height="' + s + '" rx="' + (s * (opt.rx == null ? 0.06 : opt.rx)) + '" fill="' + bg + '"/>') + '<path d="' + d + '" fill="' + fillD + '"/><path d="' + eyes + '" fill="' + eye + '" fill-rule="evenodd"/><path d="' + inner + '" fill="' + eyeIn + '"/>' + lg + '</svg>';
+  }
+  root.qrSvg = qrSvg; root.qrPlain = qrPlain; root.qrPretty = qrPretty; root.qrMatrix = matrix;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+<script>/* Звʼязок пульта з гутіркою — з запасними каналами (з 22.10.2026).
+   window.GutirkaNet(PeerJS) → клас, схожий на Peer з PeerJS (той самий API для pult-host-file.js і сторінки пульта),
+   але працює одразу двома шляхами:
+     1) PeerJS (безкоштовний сервер 0.peerjs.com) — як і раніше;
+     2) запасний: кілька публічних MQTT-брокерів через WebSocket (повідомлення йдуть через усі, повтори відкидаються).
+   Пульт підключається тим шляхом, що відповів першим. Якщо PeerJS-сервер «лежить» — працює запасний, і навпаки.
+   Запасні повідомлення зашифровані (AES-GCM, ключ — з коду й ключа з QR), адреса гутірки — хеш коду.
+   Брокери можна замінити: window.GUTIRKA_MQTT = ['wss://…', …] (перед завантаженням). */
+(function () {
+  'use strict';
+  if (window.GutirkaNet) return;
+  const BROKERS = () => window.GUTIRKA_MQTT || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const NS = 'gutirky-fi/v1/';
+  const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(b => (b % 36).toString(36)).join(''); };
+  class Em {
+    constructor() { this._h = {}; }
+    on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
+    off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
+    emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+
+  /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
+  const te = new TextEncoder(), td = new TextDecoder();
+  const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255, ...b]; };
+  const len = n => { const o = []; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; o.push(d); } while (n > 0); return o; };
+  const pkt = (h, body) => { const b = body instanceof Uint8Array ? body : Uint8Array.from(body); const L = len(b.length); const o = new Uint8Array(1 + L.length + b.length); o[0] = h; o.set(L, 1); o.set(b, 1 + L.length); return o; };
+  class Mqtt extends Em {
+    constructor(url) { super(); this.url = url; this.subs = new Set(); this.ok = false; this.dead = false; this.tries = 0; this.buf = new Uint8Array(0); this.open(); }
+    open() {
+      if (this.dead) return;
+      let ws; try { ws = new WebSocket(this.url, ['mqtt']); } catch (e) { return this.retry(); }
+      this.ws = ws; ws.binaryType = 'arraybuffer';
+      const to = setTimeout(() => { if (!this.ok) try { ws.close(); } catch (e) { /* ok */ } }, 8000);
+      ws.onopen = () => {
+        const id = 'gf' + rnd(12);
+        ws.send(pkt(0x10, [...str('MQTT'), 4, 2, 0, 45, ...str(id)]));   // CONNECT, clean session, keepalive 45 с
+      };
+      ws.onmessage = ev => { const d = new Uint8Array(ev.data); const b = new Uint8Array(this.buf.length + d.length); b.set(this.buf); b.set(d, this.buf.length); this.buf = b; this.parse(); };
+      ws.onclose = ws.onerror = () => { clearTimeout(to); clearInterval(this.ping); const was = this.ok; this.ok = false; if (this.ws === ws) { this.ws = null; if (was) this.emit('down'); this.retry(); } };
+    }
+    retry() { if (this.dead) return; this.tries++; clearTimeout(this.rt); this.rt = setTimeout(() => this.open(), Math.min(20000, 1000 * 2 ** Math.min(this.tries, 4))); }
+    parse() {
+      for (;;) {
+        const b = this.buf; if (b.length < 2) return;
+        let m = 1, v = 0, i = 1, d;
+        do { if (i >= b.length) return; d = b[i++]; v += (d & 127) * m; m *= 128; } while (d & 128);
+        if (b.length < i + v) return;
+        const t = b[0] >> 4, body = b.subarray(i, i + v); this.buf = b.slice(i + v);
+        if (t === 2) {   // CONNACK
+          if (body[1] !== 0) { try { this.ws.close(); } catch (e) { /* ok */ } return; }
+          this.ok = true; this.tries = 0;
+          this.ping = setInterval(() => { try { this.ws.send(Uint8Array.of(0xC0, 0)); } catch (e) { /* ok */ } }, 20000);
+          this.subs.forEach(s => this.sendSub(s));
+          this.emit('up');
+        } else if (t === 3) {   // PUBLISH (QoS 0)
+          const tl = (body[0] << 8) | body[1], topic = td.decode(body.subarray(2, 2 + tl));
+          this.emit('msg', topic, td.decode(body.subarray(2 + tl)));
+        }
+      }
+    }
+    sendSub(topic) { try { this.ws.send(pkt(0x82, [0, 1, ...str(topic), 0])); } catch (e) { /* ok */ } }
+    sub(topic) { this.subs.add(topic); if (this.ok) this.sendSub(topic); }
+    pub(topic, text) { if (!this.ok) return false; const t = str(topic), p = te.encode(text); const b = new Uint8Array(t.length + p.length); b.set(t); b.set(p, t.length); try { this.ws.send(pkt(0x30, b)); return true; } catch (e) { return false; } }
+    close() { this.dead = true; clearTimeout(this.rt); clearInterval(this.ping); const ws = this.ws; this.ws = null; this.ok = false; if (ws) { try { ws.send(Uint8Array.of(0xE0, 0)); } catch (e) { /* ok */ } try { ws.close(); } catch (e) { /* ok */ } } }
+  }
+
+  /* ---------------- шифрування й адреси ---------------- */
+  const b64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const sha = async s => new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(s)));
+  const hex = a => [...a].map(x => x.toString(16).padStart(2, '0')).join('');
+  const KEYS = {};
+  const aesKey = (code, k) => KEYS[code + '|' + k] || (KEYS[code + '|' + k] = sha('gutirky-fi|' + code + '|' + (k || '')).then(h => crypto.subtle.importKey('raw', h, 'AES-GCM', false, ['encrypt', 'decrypt'])));
+  const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
+  async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
+  async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
+
+  /* ---------------- запасний «Peer» поверх брокерів ---------------- */
+  const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
+  class RelayConn extends Em {
+    constructor(peer, cid, to, key) { super(); this.p = peer; this.cid = cid; this.to = to; this.key = key; this.open = false; this.parts = {}; this.peer = to; }
+    send(d) {
+      if (!this.open) return;
+      const s = JSON.stringify(d), mid = rnd(10);
+      if (s.length <= PART) return this.p.out(this.to, this.key, { k: 'data', cid: this.cid, from: this.p.inbox, s });
+      const n = Math.ceil(s.length / PART);
+      for (let i = 0; i < n; i++) this.p.out(this.to, this.key, { k: 'part', cid: this.cid, from: this.p.inbox, m: mid, i, n, s: s.slice(i * PART, (i + 1) * PART) });
+    }
+    got(m) {
+      let s = m.s;
+      if (m.k === 'part') { const P = this.parts[m.m] = this.parts[m.m] || []; P[m.i] = m.s; if (P.filter(x => x != null).length < m.n) return; s = P.join(''); delete this.parts[m.m]; }
+      let d; try { d = JSON.parse(s); } catch (e) { return; }
+      this.emit('data', d);
+    }
+    close() { if (!this.open) return; this.open = false; this.p.out(this.to, this.key, { k: 'close', cid: this.cid, from: this.p.inbox }); delete this.p.conns[this.cid]; setTimeout(() => this.emit('close'), 0); }
+  }
+  class RelayPeer extends Em {
+    constructor(id) {
+      super();
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.code = codeOf(this.id);
+      this.brokers = BROKERS().map(u => new Mqtt(u));
+      (async () => {
+        this.inbox = this.host ? await hostTopic(this.id) : NS + 'p/' + this.id;
+        this.brokers.forEach(b => {
+          b.on('up', () => { if (!this.isOpen && !this.destroyed) { this.isOpen = true; this.emit('open', this.id); } });
+          b.on('msg', (t, text) => { if (t === this.inbox) this.inMsg(text); });
+          b.sub(this.inbox);
+        });
+      })();
+      this.failT = setTimeout(() => { if (!this.isOpen && !this.destroyed) this.emit('error', { type: 'network' }); }, 15000);
+    }
+    up() { return this.brokers.some(b => b.ok); }
+    out(to, key, msg) {
+      msg.mid = rnd(10);
+      seal(key, msg).then(text => { this.brokers.forEach(b => b.pub(to, text)); });
+    }
+    async inMsg(text) {
+      // гутірка: пробуємо ключ з QR, тоді — лише код (пульт, де код ввели вручну); пульт: ключ свого зʼєднання
+      let m = null, key = null;
+      if (this.host) { for (const k of [window.GUTIRKA_NET_KEY || '', '']) { key = aesKey(this.code, k); m = await open(key, text); if (m) break; } }
+      else for (const c of Object.values(this.conns)) { m = await open(c.key, text); if (m) { key = c.key; break; } }
+      if (!m || this.seen.has(m.mid)) return;
+      this.seen.add(m.mid); if (this.seen.size > 800) this.seen = new Set([...this.seen].slice(-400));
+      let c = this.conns[m.cid];
+      if (m.k === 'conn' && this.host) {
+        if (!c) { c = this.conns[m.cid] = new RelayConn(this, m.cid, m.from, key); c.open = true; this.emit('connection', c); setTimeout(() => c.emit('open'), 0); }
+        this.out(m.from, key, { k: 'ack', cid: m.cid, from: this.inbox });
+      } else if (m.k === 'ack' && c && !c.open) { c.open = true; clearInterval(c.knock); c.emit('open'); }
+      else if ((m.k === 'data' || m.k === 'part') && c) c.got(m);
+      else if (m.k === 'close' && c) { c.open = false; delete this.conns[m.cid]; c.emit('close'); }
+    }
+    connect(id) {
+      const cid = rnd(12), key = aesKey(codeOf(id), window.GUTIRKA_NET_KEY || '');
+      const c = this.conns[cid] = new RelayConn(this, cid, null, key);
+      hostTopic(id).then(to => {
+        c.to = to; c.peer = id;
+        const knock = () => { if (!c.open && !this.destroyed) this.out(to, key, { k: 'conn', cid, from: this.inbox }); };
+        knock(); c.knock = setInterval(knock, 2500);   // повторюємо, поки гутірка не відповість
+        setTimeout(() => { if (!c.open) { clearInterval(c.knock); c.emit('error', { type: 'peer-unavailable' }); } }, 12000);
+      });
+      return c;
+    }
+    destroy() { this.destroyed = true; clearTimeout(this.failT); Object.values(this.conns).forEach(c => { try { c.close(); } catch (e) { /* ok */ } clearInterval(c.knock); }); this.brokers.forEach(b => b.close()); }
+    disconnect() {} reconnect() {}
+  }
+
+  /* ---------------- спільний Peer: PeerJS + запасний одночасно ---------------- */
+  window.GutirkaNet = function (PJ) {
+    class NetConn extends Em {
+      constructor(peer, id, opts) {
+        super(); this.peer = id; this.open = false; this.win = null; this.tries = []; this.failed = 0; this.n = 0;
+        const add = c => {
+          this.n++; this.tries.push(c);
+          c.on('open', () => {
+            if (this.win || this.closed) { if (this.win !== c) try { c.close(); } catch (e) { /* ok */ } return; }
+            this.win = c; this.open = true;
+            this.tries.forEach(x => { if (x !== c) try { x.close(); } catch (e) { /* ok */ } });
+            c.on('data', d => this.emit('data', d));
+            c.on('close', () => { if (this.win === c) { this.open = false; this.emit('close'); } });
+            this.emit('open');
+          });
+          c.on('error', e => { if (this.win === c) { this.emit('error', e); return; } if (++this.failed >= this.need()) { peer.emit('error', e && e.type ? e : { type: 'peer-unavailable' }); this.emit('error', e); } });
+        };
+        this.need = () => peer.inner.length;
+        peer.inner.forEach(p => { if (p.isUp) { try { add(p.connect(id, opts)); } catch (e) { this.failed++; } } else p._gq.push(() => { if (!this.win && !this.closed) try { add(p.connect(id, opts)); } catch (e) { this.failed++; } }); });
+      }
+      send(d) { if (this.win) this.win.send(d); }
+      close() { this.closed = true; this.open = false; this.tries.forEach(c => { try { c.close(); } catch (e) { /* ok */ } }); }
+    }
+    class NetPeer extends Em {
+      constructor(id, opts) {
+        super(); this.id = id; this.inner = []; this.destroyed = false; this.opened = false; this.errs = 0;
+        const add = (p, kind) => {
+          p.kind = kind; p.isUp = false; p._gq = []; this.inner.push(p);
+          p.on('open', pid => { p.isUp = true; if (!this.id) this.id = pid; p._gq.splice(0).forEach(f => f()); if (!this.opened) { this.opened = true; this.emit('open', this.id); } });
+          p.on('connection', c => this.emit('connection', c));
+          p.on('error', e => {
+            const ty = e && e.type;
+            if (ty === 'unavailable-id' || ty === 'browser-incompatible') { this.emit('error', e); return; }   // код зайнятий — гутірка сама візьме інший
+            if (ty === 'peer-unavailable') return;   // це вирішує NetConn
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) this.emit('error', e);   // помилка лише тоді, коли не працює жоден шлях
+          });
+          p.on('disconnected', () => {
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) { this.emit('disconnected'); return; }
+            // інший шлях працює — цей відновлюємо самі, тихо
+            const again = () => { if (this.destroyed || p.destroyed || !p.disconnected) return; try { p.reconnect(); } catch (e) { /* ok */ } setTimeout(again, 10000); };
+            setTimeout(again, 3000);
+          });
+          p.on('close', () => { p.isUp = false; if (!this.destroyed && !this.inner.some(x => x.isUp)) this.emit('close'); });
+        };
+        if (PJ) { try { add(new PJ(id, opts), 'peerjs'); } catch (e) { /* без PeerJS */ } }
+        try { add(new RelayPeer(id), 'relay'); } catch (e) { /* без запасного */ }
+      }
+      get disconnected() { return !this.inner.some(x => x.isUp); }
+      connect(id, opts) { return new NetConn(this, id, opts); }
+      reconnect() { this.inner.forEach(p => { if (p.disconnected && !p.destroyed) try { p.reconnect(); } catch (e) { /* ok */ } }); }
+      destroy() { this.destroyed = true; this.inner.forEach(p => { try { p.destroy(); } catch (e) { /* ok */ } }); }
+    }
+    return NetPeer;
+  };
+  window.GutirkaNet.RelayPeer = RelayPeer;
+})();
+</script>
 <script>
 (function () {
   'use strict';
   const $ = s => document.querySelector(s), D = window.DANI, CODE = D.code;
   const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const plural = (n, f) => { const a = n % 10, b = n % 100; return f[a === 1 && b !== 11 ? 0 : a >= 2 && a <= 4 && (b < 10 || b >= 20) ? 1 : 2]; };
   const ss = { get(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { sessionStorage.setItem(k, v); } catch (e) { /* ok */ } }, del(k) { try { sessionStorage.removeItem(k); } catch (e) { /* ok */ } } };
   const ls = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ok */ } }, del(k) { try { localStorage.removeItem(k); } catch (e) { /* ok */ } } };
-  ss.set('plast-tv', '1');   // ігри, відкриті звідси, вмикають рамку й стрілки пульта
+  /* телефон: адреса з QR — #c=код&k=ключ */
+  const HP = new URLSearchParams(location.hash.slice(1)), TEL = !!HP.get('c');
+  if (TEL) { document.documentElement.classList.add('tel'); document.body.classList.add('tel'); }
+  else ss.set('plast-tv', '1');   // ігри, відкриті звідси, вмикають рамку й стрілки пульта
 
-  /* ---------------- вхід виховника ---------------- */
-  const K_V = 'plast-proektor:vyh';
+  /* ---------------- вхід виховника (проєктор) ---------------- */
+  const K_V = 'plast-proektor:vyh', K_TK = 'plast-proektor:tkod';
   const dnes = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
-  function vKod() {   // код, якщо розділ відкритий; інакше null
+  let ST = { vin: false };   // телефон: останній стан проєктора
+  function vKod() {
+    if (TEL) return ST.vin ? 'tel' : null;
     const s = ss.get(K_V); if (s === CODE) return s;
     const l = ls.get(K_V); if (l && l.d === dnes() && l.k === CODE) return l.k;
     if (l) ls.del(K_V);
@@ -206,18 +673,17 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function uviyty(pam) { ss.set(K_V, CODE); if (pam) ls.set(K_V, { d: dnes(), k: CODE }); else ls.del(K_V); }
   function zakrytyV() { ss.del(K_V); ls.del(K_V); IG = null; }
 
-  /* ---------------- значки ---------------- */
-  const ICS = {
-    tel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/></svg>',
-    lock: '🔒'
-  };
-  const LOGO = D.logo, WM = D.wm;
+  const LOCK = '🔒';
   const PIDK = '<div class="pidk"><span><kbd>◀ ▶ ▲ ▼</kbd>вибрати</span><span><kbd>OK</kbd>відкрити</span><span><kbd>Назад</kbd>повернутись</span></div>';
-  const TEL = '<div class="tel f" data-id="tel" data-go="tel"><div class="ic">' + ICS.tel + '</div><div><b>Телефон — пульт</b><span>OK — QR для телефона: вибирати й гортати з нього</span></div></div>';
+  function telKartka(big) {
+    if (TEL) return '';
+    const n = NET.ok.size;
+    return `<div class="qrk${big ? ' big' : ''}"><div class="q">${QRSVG}</div><div><b>${n ? 'Телефон керує' : 'Телефон — пульт'}</b><span>${n ? 'Ще один телефон — скануйте ще раз' : 'Наведіть камеру телефона — і натискайте на ньому'}</span>
+      <div class="st${n ? ' ok' : ''}"><i></i>${n ? 'підключено: ' + n : NET.up ? 'чекаємо телефон' : 'підключаємось…'}</div></div></div>`;
+  }
 
-  /* ---------------- що є в розділах ---------------- */
-  const IHRY_VSI = D.ihryVsi;      // Для всіх → Ігри
-  const SONGS = D.songs.filter(x => x.v), TIPS = D.tips, FACTS = D.facts;
+  /* ---------------- зміст ---------------- */
+  const IHRY_VSI = D.ihryVsi, SONGS = D.songs.filter(x => x.v), TIPS = D.tips, FACTS = D.facts;
   const SKILLS = SKILL_LIST.map(([n, sp, img, lv]) => {
     const slugs = lv.map(l => l[1]); const ms = slugs.find(s => D.mat[s]);
     return { id: slugs[0], n, specs: sp.map(i => SKILL_SPECS[i]), img: img ? 'https://plast.global/wp-content/uploads/' + img : '', lv: lv.map(l => l[0]), mat: ms ? Object.assign({ slug: ms }, D.mat[ms]) : null };
@@ -225,38 +691,35 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const rank = s => s.mat ? 0 : s.img ? 1 : 2;
   SKILLS.sort((a, b) => rank(a) - rank(b) || a.n.localeCompare(b.n, 'uk'));
   const byId = {}; SKILLS.forEach(s => { byId[s.id] = s; });
-
-  /* ---------------- екрани ---------------- */
   const EKR = {
     vsi: { nad: 'Пластова бібліотека', h: 'Для всіх', c: 'var(--s-all4)', tabs: [['ihry', 'Ігри'], ['tips', 'Підказки'], ['songs', 'Співаник'], ['fakty', 'Цікаве']] },
     yun: { nad: 'Пластова бібліотека', h: 'Юнацтво', c: 'var(--s-upyu)', tabs: [['mat', 'Є матеріали'], ['vm', 'Вмілості']] },
     vyh: { nad: 'Пластова бібліотека', h: 'Виховники', c: 'var(--s-vyh)', tabs: [['gut', 'Гутірки'], ['vih', 'Ігри'], ['tools', 'Інструменти'], ['songs', 'Співаник']] }
   };
-  let SCR = 'home', TAB = {}, FOK = {};   // відкритий екран, вкладка кожного екрана, де стояла рамка
-  const stack = [];   // куди повертає «Назад»
+  let SCR = 'home', TAB = {}, FOK = {};
+  const stack = [];
+  let IG = null;   // підготовлені ігри (розшифровані)
 
-  function plytka(o) {   // велика плитка: o = {id, go, c, ct, img, ik, nad, h, p, d, cls}
+  function plytka(o) {
     const st = `--c:${o.c || 'var(--s-ln)'};--ct:${o.ct || 'var(--s-ink)'}`;
     const im = o.img ? `<div class="im" style="background-image:url('${o.img}')"></div>` : o.ik ? `<div class="im ik">${o.ik}</div>` : '';
-    return `<div class="pl f${o.cls ? ' ' + o.cls : ''}" style="${st}" data-id="${esc(o.id)}" data-go="${esc(o.go)}">${im}<div class="tx">${o.nad ? `<div class="nad">${esc(o.nad)}</div>` : ''}<h4>${esc(o.h)}</h4>${o.p ? `<p>${esc(o.p)}</p>` : ''}<div class="d">${esc(o.d || 'Відкрити →')}</div></div></div>`;
+    return `<div class="pl f" style="${st}" data-id="${esc(o.id)}" data-go="${esc(o.go)}">${im}<div class="tx">${o.nad ? `<div class="nad">${esc(o.nad)}</div>` : ''}<h4>${esc(o.h)}</h4>${o.p ? `<p>${esc(o.p)}</p>` : ''}<div class="d">${esc(o.d || 'Відкрити →')}</div></div></div>`;
   }
   const C = { yu: ['var(--s-upyu)', 'var(--s-upyu-t)'], vy: ['var(--s-vyh)', 'var(--s-vyh-t)'], ig: ['var(--s-ihry)', 'var(--s-ihry)'], vs: ['var(--s-all4)', 'var(--s-ink)'] };
-
+  const TICK = '<svg viewBox="0 0 40 40" fill="none" stroke="var(--s-upyu-t)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21l7 7 15-16"/></svg>';
   function zmist(scr, t) {
     if (t === 'ihry') return '<div class="sitka">' + IHRY_VSI.map(g => plytka({ id: 'i-' + g.id, go: 'ihra:' + g.id, c: C.ig[0], ct: C.ig[1], ik: g.ic, nad: 'Гра', h: g.n, p: g.s, d: 'Грати ▶' })).join('') + '</div>';
     if (t === 'tips') return '<div class="sitka">' + TIPS.map((x, i) => plytka({ id: 'tip' + i, go: 'tip:' + i, c: C.vs[0], nad: 'Швидка підказка', h: x.t, p: x.s, d: 'Як робити →' })).join('') + '</div>';
     if (t === 'songs') { const c = scr === 'vyh' ? C.vy : C.vs; return '<div class="sitka">' + SONGS.map((x, i) => plytka({ id: 'song' + i, go: 'song:' + i, c: c[0], nad: 'Співаник', h: x.t, p: x.a, d: 'Текст →' })).join('') + '</div>'; }
     if (t === 'fakty') return '<div class="sitka" style="grid-template-columns:repeat(2,1fr)">' + FACTS.map(([b, p]) => `<div class="fakt"><b>${esc(b)}</b><p>${esc(p)}</p></div>`).join('') + '</div>';
-    if (t === 'mat') {
-      const m = SKILLS.filter(s => s.mat);
-      return '<div class="sitka">' + m.map(s => plytka({ id: 'mv-' + s.id, go: 'yunv:' + s.id + ':vyv', c: C.yu[0], ct: C.yu[1], img: D.art[s.mat.slug] || '', nad: 'Вивчай сам · ' + s.n + ' ' + s.mat.lvl, h: s.n + ' ' + s.mat.lvl, p: s.mat.d, d: 'Вивчати →' })
-        + plytka({ id: 'mt-' + s.id, go: 'yunv:' + s.id + ':test', c: C.yu[0], ct: C.yu[1], ik: '<svg viewBox="0 0 40 40" fill="none" stroke="var(--s-upyu-t)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21l7 7 15-16"/></svg>', nad: 'Перевір себе', h: s.n + ' ' + s.mat.lvl, p: 'Короткі питання — перевір, що вже знаєш.', d: 'Перевірити →' })).join('') + '</div>';
-    }
-    if (t === 'vm') return '<div class="sitka s6">' + SKILLS.map(s => `<div class="vm f" data-id="vm-${esc(s.id)}" data-go="vm:${esc(s.id)}"><div class="ph">${s.img ? `<img src="${esc(s.img)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'${esc(s.n.charAt(0))}'}))">` : `<i>${esc(s.n.charAt(0))}</i>`}</div><b>${esc(s.n)}</b>${s.mat ? '<span class="m">є матеріали</span>' : ''}</div>`).join('') + '</div>';
+    if (t === 'mat') return '<div class="sitka">' + SKILLS.filter(s => s.mat).map(s =>
+      plytka({ id: 'mv-' + s.id, go: 'yunv:' + s.id + ':vyv', c: C.yu[0], ct: C.yu[1], img: D.art[s.mat.slug] || '', nad: 'Вивчай сам', h: s.n + ' ' + s.mat.lvl, p: s.mat.d, d: 'Вивчати →' })
+      + plytka({ id: 'mt-' + s.id, go: 'yunv:' + s.id + ':test', c: C.yu[0], ct: C.yu[1], ik: TICK, nad: 'Перевір себе', h: s.n + ' ' + s.mat.lvl, p: 'Короткі питання — перевір, що вже знаєш.', d: 'Перевірити →' })).join('') + '</div>';
+    if (t === 'vm') return '<div class="sitka s5">' + SKILLS.map(s => `<div class="vm f" data-id="vm-${esc(s.id)}" data-go="vm:${esc(s.id)}"><div class="ph">${s.img ? `<img src="${esc(s.img)}" alt="" loading="lazy" onerror="this.replaceWith(Object.assign(document.createElement('i'),{textContent:'${esc(s.n.charAt(0))}'}))">` : `<i>${esc(s.n.charAt(0))}</i>`}</div><b>${esc(s.n)}</b>${s.mat ? '<span class="m">є матеріали</span>' : ''}</div>`).join('') + '</div>';
     if (t === 'gut') return '<div class="sitka">' + D.gut.map(g => plytka({ id: 'g-' + g.id, go: 'gut:' + g.id, c: C.yu[0], ct: C.yu[1], img: g.art, nad: g.sp, h: g.t, p: g.p, d: 'Показати ▶' })).join('') + '</div>';
     if (t === 'vih') {
       const got = D.got.map(g => plytka({ id: 'got-' + g.id, go: 'got:' + g.id, c: C.ig[0], ct: C.ig[1], ik: D.ic[g.gra] || '', nad: (D.igName[g.gra] || 'Гра') + ' · ' + g.dzh, h: g.nazva, p: g.opys, d: 'Грати ▶' }));
-      const enc = IG ? IG.map((g, i) => plytka({ id: 'ig-' + g.id, go: 'ig:' + i, c: C.vy[0], ct: C.vy[1], ik: D.ic[g.gra] || '', nad: (D.igName[g.gra] || 'Гра') + ' · для гуртка', h: g.nazva, p: [g.opys, g.vik].filter(Boolean).join(' · '), d: 'Грати ▶' })) : [];
+      const enc = (IG || []).map((g, i) => plytka({ id: 'ig-' + g.id, go: 'ig:' + i, c: C.vy[0], ct: C.vy[1], ik: D.ic[g.gra] || '', nad: (D.igName[g.gra] || 'Гра') + ' · для гуртка', h: g.nazva, p: [g.opys, g.vik].filter(Boolean).join(' · '), d: 'Грати ▶' }));
       return '<div class="sitka">' + enc.concat(got).join('') + '</div>';
     }
     if (t === 'tools') return '<div class="sitka">' + D.tools.map(x => plytka({ id: 't-' + x.id, go: 'tool:' + x.id, c: C.vy[0], ct: C.vy[1], ik: x.ic, nad: 'Інструмент', h: x.n, p: x.s, d: 'Відкрити →' })).join('') + '</div>';
@@ -264,28 +727,28 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   }
 
   function malHome() {
-    return `<img class="wm" src="${WM}" alt=""><div class="verh"><img class="logo" src="${LOGO}" alt="Пласт">${TEL}</div>
-    <div style="margin-top:1.6rem"><div class="nad">Пласт у Фінляндії</div><h1>Пластова<br>бібліотека</h1><div class="lin"></div><div class="ruka">гутірки, ігри, пісні й підказки</div></div>
+    return `<div class="hverh"><div class="logo-wrap"><img class="logo" src="${D.logo}" alt="Пласт">
+      <div style="margin-top:2.2rem"><div class="nad">Пласт у Фінляндії</div><h1>Пластова<br>бібліотека</h1><div class="lin"></div><div class="ruka">гутірки, ігри, пісні й підказки</div></div></div>${telKartka(true)}</div>
     <div class="dveri">
       <div class="dv vs f" data-id="d-vsi" data-go="scr:vsi"><h3>Для всіх</h3><p>Ігри, співаник, швидкі підказки</p><div class="d">Відкрити →</div></div>
       <div class="dv yu f" data-id="d-yun" data-go="scr:yun"><h3>Юнацтво</h3><p>УПЮ · 12–17 років · вмілості</p><div class="d">Відкрити →</div></div>
-      <div class="dv vy f" data-id="d-vyh" data-go="scr:vyh"><h3>Виховники</h3><p>Гутірки на весь екран, ігри гуртка</p><div class="d">${vKod() ? 'Відкрити →' : 'Вхід за кодом ' + ICS.lock}</div></div>
+      <div class="dv vy f" data-id="d-vyh" data-go="scr:vyh"><h3>Виховники</h3><p>Гутірки на весь екран, ігри гуртка</p><div class="d">${vKod() ? 'Відкрити →' : 'Вхід за кодом ' + LOCK}</div></div>
       <div class="dv nv zg"><h3>Новацтво</h3><p>УПН · 6–11 років</p><div class="d">Згодом</div></div>
     </div>${PIDK}`;
   }
   function malRozdil(scr) {
     const e = EKR[scr], t = TAB[scr] || e.tabs[0][0];
     const n = { gut: D.gut.length, vih: D.got.length + (IG ? IG.length : 0), vm: SKILLS.length };
-    return `<div class="verh"><div><div class="nad">${esc(e.nad)}</div><h1 class="m">${esc(e.h)}</h1><div class="lin" style="--c:${e.c}"></div></div>${TEL}</div>
-    <div class="vkl">${e.tabs.map(([k, l]) => `<div class="t f${k === t ? ' on' : ''}" data-id="tab-${k}" data-tab="${k}">${esc(l)}${n[k] ? `<span class="n">${n[k]}</span>` : ''}</div>`).join('')}${scr === 'vyh' ? '<div class="t f zakr" data-id="zakr" data-go="zakr">' + ICS.lock + ' Закрити розділ</div>' : ''}</div>
-    <div class="zona" id="zona">${zmist(scr, t) || '<p class="porozh">Тут поки порожньо.</p>'}</div>${PIDK}`;
+    return `<div class="verh"><div><div class="nad">${esc(e.nad)}</div><h1 class="m">${esc(e.h)}</h1><div class="lin" style="--c:${e.c}"></div></div>${telKartka(false)}</div>
+    <div class="vkl">${e.tabs.map(([k, l]) => `<div class="t f${k === t ? ' on' : ''}" data-id="tab-${k}" data-tab="${k}">${esc(l)}${n[k] ? `<span class="n">${n[k]}</span>` : ''}</div>`).join('')}${scr === 'vyh' ? '<div class="t f zakr" data-id="zakr" data-go="zakr">' + LOCK + ' Закрити розділ</div>' : ''}</div>
+    <div class="zona" id="zona" data-t="${t}">${zmist(scr, t) || '<p class="porozh">Тут поки порожньо.</p>'}</div>${PIDK}`;
   }
   let KP = '', PAM = true;
   function malKod() {
-    return `<div class="verh"><div><div class="nad">Пластова бібліотека · Виховники</div><h1 class="m">Вхід за кодом</h1><div class="lin" style="--c:var(--s-vyh)"></div></div>${TEL}</div>
+    return `<div class="verh"><div><div class="nad">Пластова бібліотека · Виховники</div><h1 class="m">Вхід за кодом</h1><div class="lin" style="--c:var(--s-vyh)"></div></div>${telKartka(false)}</div>
     <div class="kod"><div class="pr">
       <p>Введіть код виховників пультом. На екрані — лише крапки.</p>
-      <p class="mal">Найкраще — <b>поки юнаків немає</b> (з «Пам'ятати до кінця дня» на сходинах розділ відкриється без коду). Або скануйте QR телефоном: тоді код вводиться на телефоні.</p>
+      <p class="mal">Найкраще — <b>поки юнаків немає</b>: з «Пам'ятати до кінця дня» на сходинах розділ відкриється без коду. Або скануйте QR телефоном — тоді код вводиться на телефоні.</p>
       <div class="krapky" id="kr">${'<i></i>'.repeat(Math.max(4, CODE.length))}</div><div id="kp-msg"></div>
       <div class="pam f${PAM ? ' on' : ''}" data-id="pam" data-go="pam"><span class="b">${PAM ? '✓' : ''}</span><span>Пам'ятати до кінця дня<small>опівночі розділ знову закриється</small></span></div>
     </div>
@@ -303,15 +766,17 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     const a = $('#app');
     a.innerHTML = SCR === 'home' ? malHome() : SCR === 'kod' ? malKod() : malRozdil(SCR);
     if (SCR === 'kod') krapky();
+    if (TEL) { CUR = null; window.scrollTo(0, 0); return; }
     const want = fokId || FOK[SCR];
     const el = (want && a.querySelector(`.f[data-id="${CSS.escape(want)}"]`)) || a.querySelector(SCR === 'home' ? '.dv.f' : SCR === 'kod' ? '[data-id="k1"]' : '.vkl .t.on') || a.querySelector('.f');
     fokus(el);
+    tell(stan());
   }
 
   /* ---------------- рамка пульта ---------------- */
   let CUR = null;
   function fokus(el) {
-    if (!el) return;
+    if (!el || TEL) return;
     document.querySelectorAll('.fok').forEach(e => e.classList.remove('fok'));
     CUR = el; el.classList.add('fok');
     if (!$('#det').hidden) return;
@@ -319,7 +784,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     const z = el.closest('.zona');
     if (z) { const r = el.getBoundingClientRect(), zr = z.getBoundingClientRect(), pad = zr.height * 0.04;
       if (r.bottom > zr.bottom - pad) z.scrollTop += r.bottom - zr.bottom + pad * 2; else if (r.top < zr.top + pad) z.scrollTop -= zr.top - r.top + pad * 2;
-      if (el.closest('.sitka') && z.querySelector('.sitka .f') === el) z.scrollTop = 0; }
+      if (z.querySelector('.sitka .f') === el) z.scrollTop = 0; }
   }
   function ruh(dir) {
     const root = $('#det').hidden ? $('#app') : $('#dvk');
@@ -330,7 +795,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     for (const e of els) {
       if (e === CUR) continue;
       const r = e.getBoundingClientRect(), ex = r.left + r.width / 2, ey = r.top + r.height / 2;
-      let p, o;   // p — відстань у напрямку, o — збоку
+      let p, o;
       if (dir === 'r') { p = r.left - c.right; o = Math.abs(ey - cy); if (ex <= cx + 2) continue; }
       else if (dir === 'l') { p = c.left - r.right; o = Math.abs(ey - cy); if (ex >= cx - 2) continue; }
       else if (dir === 'd') { p = r.top - c.bottom; o = Math.abs(ex - cx); if (ey <= cy + 2) continue; }
@@ -341,22 +806,22 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     if (best) { fokus(best); if (best.dataset.tab && $('#det').hidden) vkladka(best.dataset.tab); }
   }
   function vkladka(t) {
-    if (TAB[SCR] === t && $('#zona').dataset.t === t) return;
+    const z = $('#zona'); if (!z) return;
+    if (TAB[SCR] === t && z.dataset.t === t) return;
     TAB[SCR] = t;
     document.querySelectorAll('.vkl .t[data-tab]').forEach(e => e.classList.toggle('on', e.dataset.tab === t));
-    const z = $('#zona'); z.dataset.t = t; z.scrollTop = 0;
+    z.dataset.t = t; z.scrollTop = 0;
     z.innerHTML = zmist(SCR, t) || '<p class="porozh">Тут поки порожньо.</p>';
-    if (t === 'vih' && !IG && vKod()) igOpen(vKod()).then(g => { IG = g; if (SCR === 'vyh' && TAB.vyh === 'vih') { $('#zona').dataset.t = ''; vkladka('vih'); } }).catch(() => { IG = []; });
+    tell(stan());
   }
 
   /* ---------------- дії ---------------- */
   function idy(scr) { stack.push({ scr: SCR }); SCR = scr; malyuvaty(); if (scr === 'vyh') pidgotIhry(); }
-  function pidgotIhry() { if (IG || !vKod()) return; igOpen(vKod()).then(g => { IG = g; if (SCR === 'vyh' && !OPEN && $('#det').hidden) malyuvaty(); }).catch(() => { IG = []; }); }
+  function pidgotIhry() { if (TEL || IG || !vKod()) return; igOpen(vKod()).then(g => { IG = g; if (SCR === 'vyh' && !OPEN && $('#det').hidden) malyuvaty(); else tell(stan()); }).catch(() => { IG = []; }); }
   function dija(go) {
     const [k, a, b] = go.split(':');
     if (k === 'scr') { if (a === 'vyh' && !vKod()) { KP = ''; idy('kod'); } else idy(a); return; }
-    if (k === 'tel') { vidkryty({ u: '/proba/proektor/', k: 'tel', n: 'Телефон — пульт' }); return; }
-    if (k === 'zakr') { zakrytyV(); stack.length = 0; SCR = 'home'; malyuvaty('d-vyh'); toast(ICS.lock + ' Розділ «Виховники» закрито'); return; }
+    if (k === 'zakr') { zakrytyV(); stack.length = 0; SCR = 'home'; malyuvaty('d-vyh'); toast(LOCK + ' Розділ «Виховники» закрито'); return; }
     if (k === 'pam') { PAM = !PAM; malyuvaty('pam'); return; }
     if (k === 'kd') { if (KP.length < 12) KP += a; krapky(); return; }
     if (k === 'kx') { KP = KP.slice(0, -1); krapky(); return; }
@@ -365,24 +830,24 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       else { KP = ''; krapky(true); }
       return;
     }
-    if (k === 'ihra') { const g = IHRY_VSI.find(x => x.id === a); vidkryty({ u: g.u, k: 'ihry', n: g.n }); return; }
-    if (k === 'tool') { const x = D.tools.find(t => t.id === a); vidkryty({ u: x.u, k: 'ihry', n: x.n }); return; }
-    if (k === 'got') { const g = D.got.find(x => x.id === a); vidkryty({ u: g.u, k: 'ihry', n: g.nazva }); return; }
-    if (k === 'ig') { const g = IG[+a]; try { localStorage.setItem('ihry.vidkryty', JSON.stringify({ nazva: g.nazva, c: g.c, druk: false, t: Date.now() })); } catch (e) { toast('Не вдалося передати питання грі'); return; }
+    if (k === 'ihra') { const g = IHRY_VSI.find(x => x.id === a); if (g) vidkryty({ u: g.u, k: 'ihry', n: g.n }); return; }
+    if (k === 'tool') { const x = D.tools.find(t => t.id === a); if (x) vidkryty({ u: x.u, k: 'ihry', n: x.n }); return; }
+    if (k === 'got') { const g = D.got.find(x => x.id === a); if (g) vidkryty({ u: g.u, k: 'ihry', n: g.nazva }); return; }
+    if (k === 'ig') { const g = IG && IG[+a]; if (!g) return; try { localStorage.setItem('ihry.vidkryty', JSON.stringify({ nazva: g.nazva, c: g.c, druk: false, t: Date.now() })); } catch (e) { toast('Не вдалося передати питання грі'); return; }
       vidkryty({ u: D.igUrl[g.gra] || '/proba/svoya-hra/?dyz=3', k: 'ihry', n: g.nazva }); return; }
-    if (k === 'gut') { const g = D.gut.find(x => x.id === a); if (g.v.length > 1) vikno('vibir', g); else vidkryty({ u: g.v[0][1], k: 'gut', n: g.t }); return; }
-    if (k === 'var') { vidkryty({ u: decodeURIComponent(a), k: 'gut', n: decodeURIComponent(b || '') }); return; }
-    if (k === 'yunv') { const s = byId[a]; vidkryty({ u: s.mat[b], k: 'yun', n: s.n }); return; }
-    if (k === 'tip') { vikno('tip', TIPS[+a]); return; }
-    if (k === 'song') { vikno('song', SONGS[+a]); return; }
-    if (k === 'vm') { vikno('vm', byId[a]); return; }
+    if (k === 'gut') { const g = D.gut.find(x => x.id === a); if (!g) return; if (g.v.length > 1) vikno('vibir', a); else vidkryty({ u: g.v[0][1], k: 'gut', n: g.t }); return; }
+    if (k === 'var') { const g = D.gut.find(x => x.id === a), v = g && g.v[+b]; if (v) vidkryty({ u: v[1], k: 'gut', n: g.t + ' · ' + v[0] }); return; }
+    if (k === 'yunv') { const s = byId[a]; if (s && s.mat) vidkryty({ u: s.mat[b], k: 'yun', n: s.n + ' · ' + (b === 'test' ? 'Перевір себе' : 'Вивчай сам') }); return; }
+    if (k === 'tip' || k === 'song' || k === 'vm') { vikno(k, a); return; }
     if (k === 'zakrDet') { zakrytyVikno(); return; }
   }
 
   /* ---------------- вікно поверх ---------------- */
   let DET = null;
-  function vikno(typ, x) {
+  function vikno(typ, key) {
     const v = $('#dvk'); let h = '', c = 'var(--s-all4)';
+    const x = typ === 'tip' ? TIPS[+key] : typ === 'song' ? SONGS[+key] : typ === 'vm' ? byId[key] : D.gut.find(g => g.id === key);
+    if (!x) return;
     const zakr = '<div class="bt f" data-id="dz" data-go="zakrDet">← Назад</div>';
     if (typ === 'song') {
       h = `<div class="nad">Співаник</div><h2>${esc(x.t)}</h2><p class="sub">${esc(x.a)}</p>
@@ -401,30 +866,41 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     } else if (typ === 'vibir') {
       c = 'var(--s-upyu)';
       h = `<div class="nad">${esc(x.sp)}</div><h2>${esc(x.t)}</h2><p class="sub">Яку версію показати?</p>
-        <div class="vars">${x.v.map(([l, u, d, w], i) => plytka({ id: 'var' + i, go: 'var:' + encodeURIComponent(u) + ':' + encodeURIComponent(x.t + ' · ' + l), c: C.yu[0], ct: C.yu[1], nad: w, h: l, p: d, d: 'Показати ▶' })).join('')}</div>
+        <div class="vars">${x.v.map(([l, u, d, w], i) => plytka({ id: 'var' + i, go: 'var:' + x.id + ':' + i, c: C.yu[0], ct: C.yu[1], nad: w, h: l, p: d, d: 'Показати ▶' })).join('')}</div>
         <div class="dn">${zakr}</div>`;
     }
     v.style.setProperty('--c', c); v.innerHTML = h;
-    DET = { typ, from: CUR && CUR.dataset.id };
+    DET = { typ, key, from: CUR && CUR.dataset.id };
     $('#det').hidden = false;
+    if (TEL) { $('#det').scrollTop = 0; return; }
     fokus(v.querySelector(typ === 'vm' && x.mat ? '[data-id="dv1"]' : typ === 'vibir' ? '[data-id="var0"]' : '[data-id="dz"]'));
+    tell(stan());
   }
   function zakrytyVikno() {
     $('#det').hidden = true; const f = DET && DET.from; DET = null;
+    if (TEL) return;
     const el = f && $('#app').querySelector(`.f[data-id="${CSS.escape(f)}"]`); fokus(el || $('#app').querySelector('.f'));
+    tell(stan());
   }
   function gortVikno(n) { const t = $('#dtilo'); if (!t) return false; if (t.scrollHeight <= t.clientHeight + 2) return false; t.scrollBy({ top: n * t.clientHeight * 0.5, behavior: 'smooth' }); return true; }
 
-  /* ---------------- відкрите на весь екран ---------------- */
-  let OPEN = null, FR = null;
+  /* ---------------- відкрите на весь екран (проєктор) ---------------- */
+  let OPEN = null, FR = null, PU = '';
+  const rnd6 = () => String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
+  const rkey = () => Array.from(crypto.getRandomValues(new Uint8Array(10)), b => (b % 36).toString(36)).join('');
+  const Z_PULTOM = /\/(skob-hra|bingo|opytuvannia)\//;   // ігри з пультом гутірок
   function vidkryty(it) {
     if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
-    OPEN = it; $('#load').hidden = false;
+    OPEN = it; PU = ''; $('#load').hidden = false;
+    /* гутірка або гра з пультом: проєктор сам задає код пульта — телефон відкриє той самий пульт без окремого QR */
+    if (it.k === 'gut' || Z_PULTOM.test(it.u)) { const c = rnd6(), k = rkey(); PU = '/pult/?c=' + c + '&k=' + k; ss.set('gutirka.host', JSON.stringify({ on: true, code: c, key: k, tokens: [] })); }
+    else ss.del('gutirka.host');
     if (FR) FR.remove();
     FR = document.createElement('iframe'); FR.id = 'fr'; FR.title = it.n || 'Відкрите на проєкторі'; FR.allow = 'autoplay; fullscreen; wake-lock';
     document.body.appendChild(FR);
     FR.addEventListener('load', naZavantazh);
     FR.contentWindow.location.replace(it.u);
+    tell(stan());
   }
   function naZavantazh() {
     if (!OPEN || !FR) return;
@@ -432,17 +908,27 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     $('#load').hidden = true;
     try {
       w.focus();
-      /* сторінки без власного шару пульта (матеріали юнаків, інструменти) — рамка й стрілки; у гутірках свої клавіші */
-      if (OPEN.k !== 'gut' && OPEN.k !== 'tel') setTimeout(() => { try { if (!w.__plastTV) { const d = w.document; w.TV_GRA = 1;
+      if (OPEN.k !== 'gut') setTimeout(() => { try { if (!w.__plastTV) { const d = w.document; w.TV_GRA = 1;
         const l = d.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; d.head.appendChild(l);
         const s = d.createElement('script'); s.src = '/proba/tv/tv-all.js'; d.head.appendChild(s); } } catch (e) { /* ok */ } }, 600);
+      /* Змаг: пульт ведучого з кодом гри — телефон підключиться сам */
+      if (/\/svoya-hra\//.test(OPEN.u)) { const my = OPEN; let n = 0; const t = setInterval(() => { if (OPEN !== my || ++n > 60) { clearInterval(t); return; }
+        try { const S = w.SVOYA, st = S && S.state(); if (st && /^\d{6}$/.test(String(st.code || ''))) { clearInterval(t); PU = '/proba/svoya-hra/vedyuchyi/?k=' + st.code + '&v=' + S.vkey() + '&dyz=3'; tell(stan()); } } catch (e) { /* ще вантажиться */ } }, 500); }
       w.addEventListener('keydown', e => { if (e.key === 'GoBack' || e.key === 'BrowserBack') { e.preventDefault(); e.stopImmediatePropagation(); zakryty(); } }, true);
     } catch (e) { /* ok */ }
   }
   function zakryty() {
-    OPEN = null; if (FR) { FR.remove(); FR = null; } $('#load').hidden = true;
+    OPEN = null; PU = ''; ss.del('gutirka.host'); if (FR) { FR.remove(); FR = null; } $('#load').hidden = true;
     window.focus(); malyuvaty();
   }
+  function knopka(key) {   // клавіша з телефона — у відкриту сторінку
+    if (!OPEN || !FR) return;
+    let w, d; try { w = FR.contentWindow; d = w.document; } catch (e) { return; }
+    const t = d.activeElement && d.activeElement !== d.body ? d.activeElement : d;
+    if (key === 'Enter' && t.click && t.matches && t.matches('a,button,summary,[role=tab],[tabindex],label')) { t.click(); return; }
+    t.dispatchEvent(new w.KeyboardEvent('keydown', { key, code: key === ' ' ? 'Space' : key, bubbles: true, cancelable: true }));
+  }
+  function gortaty(n) { try { FR.contentWindow.scrollBy({ top: n * FR.clientHeight * 0.6, behavior: 'smooth' }); } catch (e) { /* ok */ } }
 
   /* ---------------- «Назад» ---------------- */
   function nazad() {
@@ -452,29 +938,30 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     const p = stack.pop(); SCR = p ? p.scr : 'home'; if (SCR === 'kod') SCR = 'home';
     malyuvaty();
   }
-  /* апаратна «Назад» на Android може гортати історію — тримаємо один запасний запис */
   try { history.pushState({ pt: 1 }, ''); } catch (e) { /* ok */ }
-  window.addEventListener('popstate', () => { nazad(); try { history.pushState({ pt: 1 }, ''); } catch (e) { /* ok */ } });
+  window.addEventListener('popstate', () => { if (TEL) tNazad(); else nazad(); try { history.pushState({ pt: 1 }, ''); } catch (e) { /* ok */ } });
 
-  /* ---------------- клавіші пульта ---------------- */
+  /* ---------------- клавіші пульта (проєктор) ---------------- */
   document.addEventListener('keydown', e => {
-    if (OPEN) return;
+    if (OPEN || TEL) return;
     const k = e.key; let ok = true;
     document.body.classList.add('pult');
     if (k === 'ArrowRight') ruh('r');
     else if (k === 'ArrowLeft') ruh('l');
-    else if (k === 'ArrowDown') { if (!$('#det').hidden && gortVikno(1)) { /* гортаємо текст */ } else ruh('d'); }
-    else if (k === 'ArrowUp') { if (!$('#det').hidden && gortVikno(-1)) { /* гортаємо текст */ } else ruh('u'); }
+    else if (k === 'ArrowDown') { if (!(!$('#det').hidden && gortVikno(1))) ruh('d'); }
+    else if (k === 'ArrowUp') { if (!(!$('#det').hidden && gortVikno(-1))) ruh('u'); }
     else if (k === 'Enter' || k === ' ' || k === 'OK' || k === 'Select') { if (CUR && CUR.isConnected) { if (CUR.dataset.tab) vkladka(CUR.dataset.tab); else if (CUR.dataset.go) dija(CUR.dataset.go); } }
     else if (k === 'GoBack' || k === 'BrowserBack' || k === 'Escape' || k === 'Backspace') { if (SCR === 'kod' && k === 'Backspace' && KP) dija('kx'); else nazad(); }
     else if (SCR === 'kod' && /^[0-9]$/.test(k)) dija('kd:' + k);
     else ok = false;
     if (ok) e.preventDefault();
   });
-  /* мишка (ноутбук) — теж працює */
   document.addEventListener('mousemove', () => document.body.classList.remove('pult'));
   document.addEventListener('click', e => {
-    const f = e.target.closest('.f'); if (f) { fokus(f); if (f.dataset.tab) vkladka(f.dataset.tab); else if (f.dataset.go) dija(f.dataset.go); return; }
+    if (e.target.closest('#tbar,#ctl,#tkod')) return;
+    const f = e.target.closest('.f');
+    if (TEL) { if (f) tKlik(f); else if (e.target === $('#det')) send({ t: 'back' }); return; }
+    if (f) { fokus(f); if (f.dataset.tab) vkladka(f.dataset.tab); else if (f.dataset.go) dija(f.dataset.go); return; }
     if (e.target === $('#det')) zakrytyVikno();
   });
 
@@ -482,7 +969,6 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function toast(t) { const e = $('#tst'); e.textContent = t; e.classList.remove('off'); clearTimeout(tT); tT = setTimeout(() => e.classList.add('off'), 3000); }
 
   /* ---------------- підготовлені ігри виховників (зашифровані кодом) ---------------- */
-  let IG = null;
   const ub = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
   async function igOpen(kod) {
     const H = D.ihryEnc; if (!H.ihry.length) return [];
@@ -491,8 +977,157 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     return Promise.all(H.ihry.map(async e => JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: ub(e.iv) }, k, ub(e.ct))))));
   }
 
-  malyuvaty();
-  window.focus();
+  /* ================= ЗВʼЯЗОК ПРОЄКТОР ↔ ТЕЛЕФОН ================= */
+  const LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+  const load = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => { s.remove(); rej(); }; document.head.appendChild(s); });
+  async function getPeer() {
+    if (window.TV_TEST_PEER) return window.TV_TEST_PEER;
+    if (!window.Peer) for (const u of LIBS) { try { await load(u); if (window.Peer) break; } catch (e) { /* наступне */ } }
+    if (window.GutirkaNet) return window.GutirkaNet(window.Peer || null);
+    if (window.Peer) return window.Peer;
+    throw new Error('lib');
+  }
+  const NET = { code: rnd6(), key: rkey(), ok: new Set(), up: false, tries: 0 };
+  let QRSVG = '';
+  const telUrl = () => location.origin + location.pathname + '#c=' + NET.code + '&k=' + NET.key;
+  if (window.TV_TEST_PEER) window.__telUrl = telUrl;
+  function malQR() { QRSVG = window.qrSvg ? qrSvg(telUrl(), 320) : ''; document.querySelectorAll('.qrk .q').forEach(q => { q.innerHTML = QRSVG; }); }
+  function stan() {
+    return { t: 'st', scr: SCR, tab: TAB[SCR] || '', det: DET ? { typ: DET.typ, key: DET.key } : null, open: OPEN ? { n: OPEN.n, k: OPEN.k } : null, pu: PU,
+      vin: !!vKod(), ig: vKod() && IG ? IG.map(g => ({ id: g.id, gra: g.gra, nazva: g.nazva, opys: g.opys, vik: g.vik })) : null };
+  }
+  function tell(m) { if (TEL) return; NET.ok.forEach(c => { try { if (c.open) c.send(m); } catch (e) { /* ok */ } }); }
+  function onovKartky() { if (TEL) return; document.querySelectorAll('.qrk').forEach(t => { const big = t.classList.contains('big'); t.outerHTML = telKartka(big); }); }
+  const LYSHE_V = /^(gut|var|got|ig|tool|zakr)$/;
+  function onConn(c) {
+    c.on('open', () => { NET.ok.add(c); c.send(stan()); onovKartky(); toast('📱 Телефон підключено'); });
+    c.on('data', d => {
+      if (!d || typeof d !== 'object') return;
+      if (d.t === 'sync') { c.send(stan()); return; }
+      if (d.t === 'vhid') {
+        if (String(d.kod || '') === CODE) {
+          uviyty(true); c.send({ t: 'vhid-ok' });
+          if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } }
+          if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
+          if (SCR !== 'vyh') { stack.push({ scr: SCR === 'kod' ? 'home' : SCR }); SCR = 'vyh'; } TAB.vyh = TAB.vyh || 'gut';
+          malyuvaty(); pidgotIhry(); toast('Розділ «Виховники» відкрито з телефона');
+        } else c.send({ t: 'vhid-err' });
+        return;
+      }
+      if (d.t === 'a' && typeof d.go === 'string') {
+        const k = d.go.split(':')[0];
+        if (LYSHE_V.test(k) && !vKod()) return;
+        if (/^(kd|kx|kok|pam)$/.test(k)) return;   // код — лише на телефоні або пультом
+        if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } }
+        const el = d.id && document.querySelector(`.f[data-id="${CSS.escape(d.id)}"]`); if (el) fokus(el);
+        dija(d.go); return;
+      }
+      if (d.t === 'tab' && typeof d.v === 'string') { if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } const el = document.querySelector(`.vkl .t[data-tab="${CSS.escape(d.v)}"]`); if (el) { fokus(el); vkladka(d.v); } return; }
+      if (d.t === 'back') { nazad(); return; }
+      if (d.t === 'home') { if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } stack.length = 0; SCR = 'home'; malyuvaty(); return; }
+      if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(d.key)) { knopka(d.key); return; }
+      if (d.t === 'scroll') { gortaty(d.n > 0 ? 1 : -1); return; }
+    });
+    c.on('close', () => { NET.ok.delete(c); onovKartky(); });
+  }
+  async function host() {
+    let P; try { P = await getPeer(); } catch (e) { setTimeout(host, 8000); return; }
+    window.GUTIRKA_NET_KEY = NET.key;
+    let p; try { p = new P('plast-tv-' + NET.code, {}); } catch (e) { setTimeout(host, 8000); return; }
+    p.on('open', () => { NET.up = true; NET.tries = 0; onovKartky(); });
+    p.on('connection', onConn);
+    p.on('error', e => {
+      if (e && e.type === 'unavailable-id') { try { p.destroy(); } catch (x) { /* ok */ } NET.code = rnd6(); malQR(); host(); return; }
+      if (e && e.type === 'peer-unavailable') return;
+      NET.up = false; onovKartky();
+    });
+    p.on('disconnected', () => { NET.up = false; onovKartky(); setTimeout(() => { try { p.reconnect(); } catch (x) { /* ok */ } }, Math.min(15000, 1000 * 2 ** NET.tries++)); });
+  }
+
+  /* ---------------- телефон ---------------- */
+  let conn = null, peer = null, att = 0, svyaz = false, chekV = false, pultFor = '', vyd = '';
+  function send(m) { try { if (conn && conn.open) { conn.send(m); return true; } } catch (e) { /* ok */ } toast('Немає звʼязку з проєктором'); return false; }
+  function tStan(ok, t) { const s = $('#tb-st'); s.className = 'st' + (ok ? ' ok' : ''); s.querySelector('span').textContent = t; }
+  function tKlik(f) {
+    try { navigator.vibrate && navigator.vibrate(10); } catch (e) { /* ok */ }
+    if (f.dataset.tab) { send({ t: 'tab', v: f.dataset.tab }); return; }
+    const go = f.dataset.go; if (!go) return;
+    if (go === 'zakrDet') { send({ t: 'back' }); return; }
+    if (go === 'scr:vyh' && !ST.vin) { kodTel(); return; }
+    send({ t: 'a', go, id: f.dataset.id });
+  }
+  function kodTel() {
+    const k = ls.get(K_TK);
+    if (k) { chekV = true; send({ t: 'vhid', kod: k }); return; }
+    $('#tkod').hidden = false; $('#tk-err').textContent = ''; $('#tk-in').value = ''; setTimeout(() => $('#tk-in').focus(), 50);
+  }
+  function tNazad() { if (!$('#tkod').hidden) { $('#tkod').hidden = true; return; } send({ t: 'back' }); }
+  let malK = '';
+  function naStan(s) {
+    const was = ST; ST = s;
+    IG = s.vin && s.ig ? s.ig : null;
+    /* щось відкрите на проєкторі — пульт */
+    if (s.open) {
+      $('#c-n').textContent = s.open.n || '';
+      $('#seg').hidden = !s.pu;
+      if (!s.pu) vyd = 'str'; else if (!was.open || was.open.n !== s.open.n || !was.pu) vyd = 'pult';
+      tVyd(vyd);
+      $('#ctl').hidden = false; return;
+    }
+    $('#ctl').hidden = true; pultFor = ''; $('#pf').src = 'about:blank';
+    /* екран і вкладка — як на проєкторі (вхід пультом на проєкторі телефон не показує) */
+    SCR = s.scr === 'kod' ? 'home' : s.scr;
+    if (s.tab) TAB[SCR] = s.tab;
+    const key = SCR + '|' + (TAB[SCR] || '') + '|' + s.vin + '|' + (IG ? IG.length : 0);
+    if (key !== malK) { malK = key; malyuvaty(); }
+    if (s.det) { if (!DET || DET.typ !== s.det.typ || DET.key !== s.det.key) vikno(s.det.typ, s.det.key); }
+    else if (!$('#det').hidden) zakrytyVikno();
+  }
+  function tVyd(v) {
+    vyd = v; $('#seg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    const p = v === 'pult' && ST.pu; $('#pf').hidden = !p; $('#str').hidden = !!p;
+    if (p && pultFor !== ST.pu) { pultFor = ST.pu; $('#pf').src = ST.pu; }
+  }
+  function connect() {
+    const CODE_T = (HP.get('c') || '').replace(/\D/g, ''), KEY = HP.get('k') || '';
+    const my = ++att; tStan(false, 'Підключаємось…');
+    try { if (conn) conn.close(); if (peer) peer.destroy(); } catch (e) { /* ok */ }
+    (async () => {
+      let P; try { P = await getPeer(); } catch (e) { tStan(false, 'Немає інтернету'); return; }
+      if (my !== att) return;
+      window.GUTIRKA_NET_KEY = KEY;
+      const p = peer = new P(undefined, {});
+      const fail = () => { if (my !== att || (conn && conn.open)) return; tStan(false, svyaz ? 'Немає звʼязку' : 'Проєктор не знайдено'); setTimeout(() => my === att && connect(), 4000); };
+      const tmo = setTimeout(fail, 15000);
+      p.on('error', () => { clearTimeout(tmo); fail(); });
+      p.on('open', () => {
+        if (my !== att) return;
+        const c = conn = p.connect('plast-tv-' + CODE_T, { reliable: true });
+        c.on('open', () => { clearTimeout(tmo); svyaz = true; tStan(true, 'Проєктор'); c.send({ t: 'sync' }); });
+        c.on('data', d => {
+          if (!d || my !== att) return;
+          if (d.t === 'st') naStan(d);
+          else if (d.t === 'vhid-ok') { const v = $('#tk-in').value.replace(/\s/g, ''); if (v) ls.set(K_TK, v); $('#tkod').hidden = true; chekV = false; try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } }
+          else if (d.t === 'vhid-err') { ls.del(K_TK); $('#tkod').hidden = false; $('#tk-err').textContent = chekV ? '' : 'Код не підходить.'; chekV = false; $('#tk-in').value = ''; }
+        });
+        c.on('close', () => { if (my !== att) return; tStan(false, 'Немає звʼязку'); setTimeout(() => my === att && connect(), 2500); });
+      });
+    })();
+  }
+  if (TEL) {
+    $('#tb-nazad').onclick = tNazad;
+    $('#tb-dom').onclick = () => { $('#tkod').hidden = true; send({ t: 'home' }); };
+    $('#tkod').onsubmit = e => { e.preventDefault(); const v = $('#tk-in').value.replace(/\s/g, ''); if (!v) return; $('#tk-err').textContent = ''; send({ t: 'vhid', kod: v }); };
+    $('#tk-x').onclick = () => { $('#tkod').hidden = true; };
+    $('#seg').querySelectorAll('button').forEach(b => b.onclick = () => tVyd(b.dataset.v));
+    $('#str').querySelectorAll('[data-k]').forEach(b => b.onclick = () => { send({ t: 'k', key: b.dataset.k }); try { navigator.vibrate && navigator.vibrate(10); } catch (e) { /* ok */ } });
+    $('#str').querySelectorAll('[data-g]').forEach(b => b.onclick = () => send({ t: 'scroll', n: +b.dataset.g }));
+    $('#pf').addEventListener('load', () => { try { const d = $('#pf').contentDocument; const st = d.createElement('style'); st.textContent = '.hd .logo{display:none}'; d.head.appendChild(st); } catch (e) { /* ok */ } });
+    addEventListener('visibilitychange', () => { if (!document.hidden && !(conn && conn.open)) connect(); });
+    malyuvaty(); connect();
+  } else {
+    malQR(); malyuvaty(); window.focus(); host();
+  }
 })();
 </script>
 </body>
