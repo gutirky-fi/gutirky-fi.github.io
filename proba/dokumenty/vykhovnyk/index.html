@@ -1055,6 +1055,8 @@ window.Tochky = (function () {
 
   const DEMO_IM = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'];
   const DNV = [   // проба «Що нового»
+    {koly: '09.11.2026 20:30', dija: 'запис', arkush: 'Фінанси', ryadok: 36, khto: 'Ярко', shcho: '09.11.2026 · видаток · папір для плакату · 8,40 €', zatverdzheno: false, foto: 'https://drive.google.com/file/d/demo/view',
+     pola: [['Дата', '09.11.2026'], ['Рух', 'видаток'], ['Категорія', 'інше'], ['Опис', 'папір для плакату'], ['Сума, €', '8,40'], ['Як платили', 'готівка'], ['Фото чека', 'є']]},
     {koly: '09.11.2026 20:12', dija: 'запис', arkush: 'Фінанси', ryadok: 35, khto: 'Дана', shcho: '09.11.2026 · надходження · внески · Олесь · 20 € · MobilePay', zatverdzheno: false,
      pola: [['Дата', '09.11.2026'], ['Рух', 'надходження'], ['Категорія', 'внески'], ["Хто (ім'я)", 'Олесь'], ['Сума, €', '20'], ['Як платили', 'MobilePay']]},
     {koly: '08.11.2026 19:42', dija: 'скасування', arkush: 'Фінанси', ryadok: 17, khto: 'Дана', shcho: 'було: 08.11.2026 · надходження · внески · внесок за листопад', porozhnio: true},
@@ -1213,6 +1215,7 @@ window.Tochky = (function () {
   function fin(x) {
     const f = {}; (x.pola || []).forEach(p => { f[p[0]] = p[1]; });
     const bank = ['MobilePay', 'переказ', 'картка'].includes(f['Як платили']);
+    if (f['Рух'] === 'видаток') return {vydatok: true, tak: '✓ Є чек', ni2: '✗ Немає чека', ni: 'чека немає або він не збігається', pidkazka: 'Подивіться фото: сума й дата збігаються? Ні — натисніть «Немає чека»: видаток не рахується, а діловод бачить позначку й може виправити.'};
     return bank
       ? {vydatok: f['Рух'] === 'видаток', tak: '✓ Є в банку', ni2: '✗ Немає в банку', ni: 'платежу в банку немає', pidkazka: 'Відкрийте банк: є такий платіж — сума й дата? Немає — натисніть «Немає в банку»: платіж не рахується сплаченим, а діловод бачить позначку й може виправити.'}
       : {vydatok: f['Рух'] === 'видаток', tak: '✓ Гроші є', ni2: '✗ Немає', ni: 'цих грошей немає', pidkazka: 'Гроші в коробці скарбника? Немає — натисніть «Немає»: діловод бачить позначку й може виправити.'};
@@ -1227,10 +1230,11 @@ window.Tochky = (function () {
         + (Object.keys(gr).length ? `<div class="pr">${['+', '−', 'в'].filter(m => gr[m]).map(m => `<div><b>${ZN[m]}:</b> ${gr[m].map(esc).join(', ')}</div>`).join('')}</div>` : '')
         + `<div class="act">${x.zatverdzheno
             ? `<button class="btn" type="button" data-z="0" data-i="${i}">Зняти затвердження</button><small>Тоді діловод знову зможе виправити.</small>`
-            : x.arkush === 'Фінанси' && fin(x).vydatok
+            : x.arkush === 'Фінанси' && fin(x).vydatok && !x.foto
               ? `<button class="btn" type="button" data-kp="1">Перевірити чек у касі</button><small>Видаток затверджують за чеком: подивіться фото, чи збігаються сума й дата.</small>`
             : x.arkush === 'Фінанси'
-              ? (x.ne ? `<span class="neb">✗ Ви позначили: ${fin(x).ni}. Діловод бачить це й може виправити.</span><button class="btn" type="button" data-fk="" data-i="${i}">Зняти «немає»</button>`
+              ? (x.foto && /^https:\/\/(drive|docs)\.google\.com\//.test(x.foto) ? `<a class="btn" href="${esc(x.foto)}" target="_blank" rel="noopener noreferrer" style="margin-bottom:10px">Подивитись чек</a>` : '')
+                + (x.ne ? `<span class="neb">✗ Ви позначили: ${fin(x).ni}. Діловод бачить це й може виправити.</span><button class="btn" type="button" data-fk="" data-i="${i}">Зняти «немає»</button>`
                   : `<button class="btn ok" type="button" data-fk="так" data-i="${i}">${fin(x).tak}</button><button class="btn neb" type="button" data-fk="ні" data-i="${i}">${fin(x).ni2}</button>`)
                 + `<small>${fin(x).pidkazka}</small>`
               : `<button class="btn ok" type="button" data-z="1" data-i="${i}">✓ Затвердити</button><small>Після цього сайт запис уже не змінить.</small>`}</div></div>`;
