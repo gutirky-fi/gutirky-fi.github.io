@@ -2059,7 +2059,7 @@ window.Nazvy = (function () {
   const setV = (el, x) => { x = x == null ? '' : String(x); if (el.tagName === 'SELECT' && x && ![...el.options].some(o => o.value === x)) el.add(new Option(x, x)); el.value = x; };
   function dodatyRyad(x, kop) {
     const n = ++rN;
-    $('z-rl').insertAdjacentHTML('beforeend', `<div class="ryad" data-r="${n}"><div class="rh"><span class="rn"></span><span class="rok">✓ у книзі</span><button type="button" class="rx" aria-label="Прибрати рядок">×</button></div><div class="rp">${K.polia.map((p, i) => jeRyad(p) ? pole(p, i, 'z-r' + n + '-' + i) : '').join('')}${VNP >= 0 ? '<p class="vh" hidden></p>' : ''}${K.foto ? '<div class="foto" hidden><label><input type="file" accept="image/*" hidden><i class="ik ik-foto"></i><span class="fl">Фото чека</span></label><span class="fs">сфотографуйте чек — або виберіть фото</span></div>' : ''}</div></div>`);
+    $('z-rl').insertAdjacentHTML('beforeend', `<div class="ryad" data-r="${n}"><div class="rh"><span class="rn"></span><span class="rok">✓ у книзі</span><button type="button" class="rx" aria-label="Прибрати рядок">×</button></div><div class="rp">${K.polia.map((p, i) => jeRyad(p) ? pole(p, i, 'z-r' + n + '-' + i) : '').join('')}${VNP >= 0 ? '<p class="vh" hidden></p>' : ''}${K.foto ? '<div class="foto" hidden><label><input type="file" accept="image/*" capture="environment" hidden><i class="ik ik-foto"></i><span class="fl">Сфотографувати чек</span></label><label><input type="file" accept="image/*" hidden><span class="fg">З галереї</span></label><span class="fs">сфотографуйте чек — або виберіть готове фото</span></div>' : ''}</div></div>`);
     const el = $('z-rl').lastElementChild;
     if (x) { el.dataset.kv = x.kv || ''; el.dataset.ryadok = x.ryadok || ''; el._dani = x.dani; if (x.kv) el.classList.add('sent'); }
     const z = x ? x.dani : kop || {};
@@ -2091,7 +2091,7 @@ window.Nazvy = (function () {
       }
       if (t.closest('[data-zal="vnesok"]')) return zalVRyadku(t.closest('.ryad'), t.closest('[data-zal]'));
       if (t.closest('[data-zal="suma"]')) { const el = t.closest('.ryad'); rEl(el.dataset.r, idx(MN.suma)).value = String(t.closest('[data-zal]').dataset.s).replace('.', ','); razom(); vnVsi(); return; }
-      if (t.closest('[data-foto]')) { fotoDlia = +t.closest('[data-foto]').dataset.foto; return fotoInp.click(); }
+      if (t.closest('[data-foto]')) { const fb = t.closest('[data-foto]'); fotoDlia = +fb.dataset.foto; return (fb.dataset.kam ? fotoKam : fotoInp).click(); }
       if (t.closest('.rx')) {
         const el = t.closest('.ryad'); if (el.dataset.kv) prybrani.push({kv: el.dataset.kv});
         el.remove(); if (!$('z-rl').children.length) dodatyRyad(); nomery();
@@ -2391,7 +2391,7 @@ window.Nazvy = (function () {
     try {
       const d = await stysnuty(f); inp.value = '';
       if (el) { el._foto = d; el._fotoOk = false; }
-      box.classList.add('ye'); box.querySelector('.fl').textContent = 'Інше фото';
+      box.classList.add('ye'); box.querySelector('.fl').textContent = 'Сфотографувати ще';
       let im = box.querySelector('img'); if (!im) { im = document.createElement('img'); im.alt = 'чек'; box.prepend(im); } im.src = d;
       st.textContent = 'фото піде в книгу разом із рядком (≈ ' + Math.round(d.length * 0.75 / 1024) + ' КБ)';
     } catch (x) { st.className = 'fs bad'; st.textContent = x.message; }
@@ -2402,15 +2402,17 @@ window.Nazvy = (function () {
     return v;
   }
   // «Уже в касі» → «Додати фото» до рядка, що вже в книзі
-  const fotoInp = document.createElement('input'); fotoInp.type = 'file'; fotoInp.accept = 'image/*'; fotoInp.hidden = true; document.body.append(fotoInp);
+  const fotoMk = cap => { const i = document.createElement('input'); i.type = 'file'; i.accept = 'image/*'; if (cap) i.setAttribute('capture', cap); i.hidden = true; document.body.append(i); return i; };
+  const fotoInp = fotoMk(''), fotoKam = fotoMk('environment');   // з галереї / одразу камера (на телефоні «accept» без «capture» відкриває лише галерею)
   let fotoDlia = 0;
-  fotoInp.addEventListener('change', async () => {
-    const f = fotoInp.files && fotoInp.files[0]; fotoInp.value = ''; if (!f || !fotoDlia) return;
-    const b = document.querySelector(`[data-foto="${fotoDlia}"]`), khto = $('z-khto').value;
-    if (b) { b.disabled = true; b.textContent = 'Надсилаю фото…'; }
+  async function fotoVKnyhu(inp) {
+    const f = inp.files && inp.files[0]; inp.value = ''; if (!f || !fotoDlia) return;
+    const bb = [...document.querySelectorAll(`[data-foto="${fotoDlia}"]`)], b = bb[0], khto = $('z-khto').value;
+    bb.forEach(x => { x.disabled = true; }); if (b) b.textContent = 'Надсилаю фото…';
     try { await nadislatyFoto(fotoDlia, await stysnuty(f), khto || ''); await denZavantazhyty(); }
-    catch (x) { if (b) { b.disabled = false; b.textContent = merezha(x, 'Немає зв\'язку — спробуйте ще.'); } }
-  });
+    catch (x) { bb.forEach(y => { y.disabled = false; }); if (b) b.textContent = merezha(x, 'Немає зв\'язку — спробуйте ще.'); }
+  }
+  [fotoInp, fotoKam].forEach(i => i.addEventListener('change', () => fotoVKnyhu(i)));
 
   /* ---------- 3.5: копія посвідки (K.kopiia) — після «здобуто», фото або готовий скан ---------- */
   const kpInp = [['image/*', 'environment'], ['image/*,application/pdf', '']].map(([a, c]) => { const i = document.createElement('input'); i.type = 'file'; i.accept = a; if (c) i.setAttribute('capture', c); i.hidden = true; document.body.append(i); return i; });
@@ -2890,7 +2892,7 @@ window.Nazvy = (function () {
       const neT = r.ne ? `<span class="neb">✗ Виховник не знайшов ${x['Рух'] === 'видаток' ? 'чека' : ['MobilePay', 'переказ', 'картка'].includes(x['Як платили']) ? 'цей платіж у банку' : 'цих грошей'}. Виправте, якщо є помилка, — або поговоріть із виховником.</span>` : '';
       const vyd = K.foto && x['Рух'] === 'видаток', maF = !!x['Фото чека'];
       const fz = vyd ? (maF ? '<span class="fz"><i class="ik ik-foto"></i>фото чека є</span>' : '<span class="fz no"><i class="ik ik-foto"></i>фото чека ще немає</span>') : '';
-      const fb = vyd && !(r.zatverdzheno && maF) ? `<button type="button" data-foto="${r.ryadok}"><i class="ik ik-foto"></i>${maF ? 'Замінити фото' : 'Додати фото'}</button>` : '';
+      const fb = vyd && !(r.zatverdzheno && maF) ? `<button type="button" data-foto="${r.ryadok}" data-kam="1"><i class="ik ik-foto"></i>${maF ? 'Нове фото' : 'Сфотографувати чек'}</button><button type="button" data-foto="${r.ryadok}">З галереї</button>` : '';
       return `<li class="${r.zatverdzheno ? 'zt' : ''}${r.ne ? ' ne' : ''}${red && red.ryadok === r.ryadok ? ' red' : ''}"><div class="dt"><span>${esc(nm)}</span><span class="${minus ? 'minus' : 'plus'}">${minus ? '−' : '+'}${groshi(chyslo(x[S]))}</span></div>`
         + `<div class="dd">${dd}${dd && kt ? '<br>' : ''}${kt} · рядок ${r.ryadok}</div>` + neT + fz
         + (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' + (fb ? `<div class="db">${fb}</div>` : '') : red && red.ryadok === r.ryadok ? '<span class="ztb" style="color:#f0c060">виправляєте нижче</span>' : `<div class="db"><button type="button" data-vyp="${r.ryadok}">Виправити</button>${fb}<button type="button" class="warn" data-skas="${r.ryadok}">Скасувати</button></div>`) + `</li>`;
