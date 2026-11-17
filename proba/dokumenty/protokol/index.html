@@ -1832,7 +1832,7 @@ window.Nazvy = (function () {
     try {
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
-      kod = k; imena = v.imena || [];
+      kod = k; imena = (v.imena || []).slice().sort((a, b) => String(a).localeCompare(String(b), 'uk'));
       $('z-kod').value = ''; $('z-lock').hidden = true; formaChysta(); $('z-form').hidden = false;
       dlZavantazhyty(); dlNazvyZavantazhyty(); ohZavantazhyty();
     } catch (x) {

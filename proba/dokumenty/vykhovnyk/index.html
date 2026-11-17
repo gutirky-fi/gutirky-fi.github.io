@@ -1173,7 +1173,7 @@ window.Tochky = (function () {
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
       if (v.rol !== 'v') throw new Error('Це вхід виховника — потрібен код виховника, а не код юнаків.');
-      kod = k; imena = v.imena || []; $('z-kod').value = ''; hurtokPidkazka(); ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
+      kod = k; imena = (v.imena || []).slice().sort((a, b) => String(a).localeCompare(String(b), 'uk')); $('z-kod').value = ''; hurtokPidkazka(); ekran('v-hub'); try { sessionStorage.setItem(VKOD, k); } catch (x) {}
       if (DOKP) { history.replaceState(null, '', location.pathname + location.search); $('go-kp').click(); }
     } catch (x) { $('z-err').textContent = ludsky(x); $('z-err').hidden = false; }
     finally { b.disabled = false; b.textContent = 'Увійти'; }
@@ -1775,7 +1775,7 @@ window.Tochky = (function () {
   const DEZ_N = {'у нас': 'Здобуто в нашому гуртку; є посвідка чи бланк зі справжньою датою.', 'до нас': 'Здобуто в іншому гуртку чи краю, ще до того як людина прийшла до нас.', 'поза гуртком': 'Табір, вишкіл чи інше поза гуртком.', 'за попереднього виховника': 'Теж у нашому гуртку, але до вас і без жодних документів. Перевірте точки й видайте посвідку — тоді змініть на «у нас».'};   // підказка під полем «Де здобуто»
   const dzS = (v, n) => `<select class="in" data-k="dez"${n ? ` name="${n}"` : ''}>${[['у нас', 'у нас'], ['до нас', 'до нас (до переходу)'], ['поза гуртком', 'поза гуртком (табір)'], ['за попереднього виховника', 'за попереднього виховника (без документів)']].map(([a, b]) => `<option value="${a}"${a === v ? ' selected' : ''}>${b}</option>`).join('')}</select>`;
   async function uchZavantazhyty() {
-    try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = v.uchasnyky || []; } catch (x) {}
+    try { const v = await zapyt({kod, dija: 'uchasnyky'}); if (v.ok) UCH = (v.uchasnyky || []).slice().sort((a, b) => String(a.im).localeCompare(String(b.im), 'uk')); } catch (x) {}   // за абеткою
   }
   let UCH_OK = null;
   $('go-pp').addEventListener('click', () => { ekran('v-pp'); ppVybir(); UCH_OK = uchZavantazhyty(); vkLichylnyk(); });
@@ -1969,7 +1969,7 @@ window.Tochky = (function () {
     $('pp-sum').innerHTML = sum;
     $('pp-what').innerHTML = zadachi.map(z => `<li>${esc(z.t)}</li>`).join('');
     $('pp-dali').innerHTML = dali && dali.length ? `<h3>Що далі</h3><ul>${dali.map(x => `<li>${x}</li>`).join('')}</ul>` : '';
-    uchZavantazhyty();
+    UCH_OK = uchZavantazhyty();   // нові імена — одразу в списках «Хто», без перезапуску сторінки
   }
 
   async function ppNadislaty() {
@@ -2046,7 +2046,9 @@ window.Tochky = (function () {
       const ye = im.filter(x => UCH.some(u => u.im.toLowerCase() === x.toLowerCase()) && !PP.sent['h:' + x]);
       const zad = im.filter(x => !ye.includes(x)).map(x => ({id: 'h:' + x, t: x, z: {dija: 'uchasnyk', imya: x, novyi: true, polia: Object.assign({'Статус': $('hg-st').value}, rik(x) ? {'У гуртку від (рік)': +rik(x)} : {}), prymitka: $('hg-pm').value.trim()}}));
       if (!zad.length) { msg.textContent = 'Усі ці імена вже є в книзі.'; msg.classList.add('bad'); return; }
-      vykonaty(zad, z => hotovo(`Записано: <b>${z.length}</b>${ye.length ? ` · уже були в книзі: ${esc(ye.join(', '))}` : ''}`, z, ['Прізвища — у Таблиці, аркуш «Учасники».', 'Для кожного, у кого вже щось є: «Цілий гурток» → «Дописати, що вже має».']));
+      vykonaty(zad, z => { hotovo(`Записано: <b>${z.length}</b>${ye.length ? ` · уже були в книзі: ${esc(ye.join(', '))}` : ''}`, z, ['Прізвища — у Таблиці, аркуш «Учасники».', 'Для кожного, у кого вже щось є, — кнопка нижче.']);
+      $('pp-dali').insertAdjacentHTML('beforeend', `<button class="btn main" type="button" id="hg-dali-maie" style="margin-top:6px">${SV(IKO.maie)}Дописати, що вже має</button>`);
+      $('hg-dali-maie').addEventListener('click', () => ppVidkryty('maie')); });
     });
   }
 
