@@ -88,18 +88,24 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
 #ctl .bar{display:flex;align-items:center;gap:6px;padding:10px 12px;padding-top:max(10px,env(safe-area-inset-top));background:var(--s-card);border-bottom:1px solid var(--s-ln);flex:none}
 #ctl .bar b{flex:1;min-width:0;font:600 17px var(--s-disp);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 4px}
 #pf{flex:1;width:100%;border:0;background:var(--s-bg)}
-.pad{padding:18px 16px;flex:1;display:flex;flex-direction:column;gap:12px}
-.pad p{text-align:center;color:var(--s-body);margin:0 0 4px}
-.ar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.ar button{height:80px;border-radius:var(--s-r-plytka);background:var(--s-card2);border:1px solid var(--s-ln);font-size:28px}
-.ar .ok{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on);font:600 22px var(--s-disp)}
-.ar .e{visibility:hidden}
-.ar button:active,.row button:active{transform:translateY(2px);filter:brightness(.88)}
-.mini{flex:none;display:flex;align-items:center;gap:6px;padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:var(--s-card);border-top:1px solid var(--s-ln)}
-.mini span{font-size:13px;font-weight:700;color:var(--s-mut);margin-right:2px}
-.mini button{flex:1;height:46px;border-radius:var(--s-r);background:var(--s-card2);border:1px solid var(--s-ln);font-size:18px}
-.mini .ok{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on);font-weight:700;font-size:16px}
-.row{display:flex;gap:10px}.row button{flex:1;height:var(--s-h);border-radius:var(--s-r);background:var(--s-card);border:1px solid var(--s-ln);font-weight:700;font-size:16px}
+.seg{flex:none;display:flex;gap:4px;margin:10px 12px 0;padding:4px;border-radius:var(--s-r-pil);background:var(--s-pole);border:1px solid var(--s-ln)}
+.seg button{flex:1;height:40px;border:0;border-radius:var(--s-r-pil);background:transparent;font-weight:700;font-size:15px;color:var(--s-mut)}
+.seg button[aria-pressed=true]{background:var(--s-vyh);color:var(--s-vyh-on)}
+.ekr{flex:1;overflow:auto;padding:14px 12px 20px}
+.eh{font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--s-mut);margin:0 4px 10px}
+.eh.ov{color:var(--s-uvaga)}
+.eg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.eg .pr{grid-column:1/-1;color:var(--s-mut);text-align:center}
+.eb{min-height:var(--s-h);border-radius:var(--s-r);background:var(--s-card);border:1px solid var(--s-ln);padding:10px 12px;text-align:left;font-weight:700;font-size:16px;line-height:1.2}
+.eb.w{grid-column:1/-1}
+.eb small{display:block;font-weight:400;font-size:13px;color:var(--s-mut);margin-top:2px}
+.eb.on{border-color:var(--s-vyh);box-shadow:0 0 0 1px var(--s-vyh);background:rgba(61,175,110,.12)}
+.eb.on::before{content:'✓ ';color:var(--s-ok)}
+.eb.gol{background:var(--s-vyh);border-color:var(--s-vyh);color:var(--s-vyh-on)}.eb.gol small{color:var(--s-vyh-on);opacity:.8}
+.eb.txt{border-style:dashed}
+.eb:active{transform:translateY(2px);filter:brightness(.88)}
+.sc{flex:none;display:flex;gap:8px;padding:8px 12px;padding-bottom:max(8px,env(safe-area-inset-bottom));background:var(--s-card);border-top:1px solid var(--s-ln)}
+.sc button{flex:1;height:46px;border-radius:var(--s-r);background:var(--s-card2);border:1px solid var(--s-ln);font-weight:700;font-size:15px}
 </style>
 </head>
 <body>
@@ -130,18 +136,13 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
 
 <div id="ctl" hidden>
   <div class="bar"><button class="pil" id="b-menu">← Меню</button><b id="c-n"></b><button class="pil" id="b-blk2" aria-label="Чорний екран на проєкторі">⏸</button><button class="pil" id="b-zak">✕ Закрити</button></div>
+  <div class="seg" id="seg" hidden><button data-v="ekr" aria-pressed="true">Екран</button><button data-v="pult" aria-pressed="false" id="seg-p">Пульт</button></div>
   <iframe id="pf" title="Пульт" allow="wake-lock" hidden></iframe>
-  <div class="mini" id="mini" hidden><span>Табло:</span><button data-k="ArrowLeft" aria-label="Вліво">◀</button><button data-k="ArrowUp" aria-label="Вгору">▲</button><button data-k="ArrowDown" aria-label="Вниз">▼</button><button data-k="ArrowRight" aria-label="Вправо">▶</button><button class="ok" data-k="Enter">OK</button></div>
-  <div class="pad" id="pad" hidden>
-    <p id="pad-h"></p>
-    <div class="ar">
-      <button class="e" tabindex="-1"></button><button data-k="ArrowUp" aria-label="Вгору">▲</button><button class="e" tabindex="-1"></button>
-      <button data-k="ArrowLeft" aria-label="Вліво">◀</button><button class="ok" data-k="Enter">OK</button><button data-k="ArrowRight" aria-label="Вправо">▶</button>
-      <button class="e" tabindex="-1"></button><button data-k="ArrowDown" aria-label="Вниз">▼</button><button class="e" tabindex="-1"></button>
-    </div>
-    <div class="row" id="pad-sc"><button data-sc="-1">Вище</button><button data-sc="1">Нижче</button></div>
-    <div class="row" id="pad-gra"><button data-k=" ">Далі</button><button data-k="Escape">Esc</button></div>
+  <div class="ekr" id="ekr" hidden>
+    <div class="eh" id="eh">Кнопки на проєкторі зараз</div>
+    <div class="eg" id="eg"><p class="pr">Завантажуємо…</p></div>
   </div>
+  <div class="sc" id="sc" hidden><button data-sc="-1">▲ Вище</button><button data-sc="1">▼ Нижче</button></div>
 </div>
 
 <script>window.KATALOG = {"gut": [{"id": "g-budova-la-1", "k": "gut", "n": "Будова літальних апаратів І", "s": "презентація з пультом", "u": "/gutirky/budova-la-1/#hutirka", "p": 1, "i": "📖", "c": "#b0673d", "img": "/proba/tv/img/budova-la-1.webp"}, {"id": "g-keramika-1", "k": "gut", "n": "Кераміка І", "s": "презентація з пультом", "u": "/gutirky/keramika-1/#hutirka", "p": 1, "i": "📖", "c": "#3d6fb0", "img": "/proba/tv/img/keramika-1.webp"}], "ihry": [{"id": "skob-hra", "n": "Потужний СКОБ!", "s": "вікторина з телефонів юнаків", "p": 1, "i": "⚡", "c": "#d6463c", "k": "ihry", "u": "/proba/skob-hra/?dyz=3"}, {"id": "svoya-hra", "n": "Змаг", "s": "команди, теми, бали", "p": 0, "i": "🏆", "c": "#c4a032", "k": "ihry", "u": "/proba/svoya-hra/?dyz=3"}, {"id": "bingo", "n": "Бінго", "s": "картки на телефонах", "p": 1, "i": "🎱", "c": "#3d6fb0", "k": "ihry", "u": "/proba/bingo/?dyz=3"}, {"id": "opytuvannia", "n": "Швидке опитування", "s": "голосування з телефонів", "p": 1, "i": "📊", "c": "#3daf6e", "k": "ihry", "u": "/proba/opytuvannia/?dyz=3"}, {"id": "novyi-vykhovnyk", "n": "Вгадай, хто?", "s": "знайомство: факти про себе", "p": 0, "i": "🕵️", "c": "#8a4fb0", "k": "ihry", "u": "/proba/novyi-vykhovnyk/?dyz=3"}, {"id": "hto", "n": "Жеребкування", "s": "хто наступний, групи й пари", "p": 0, "i": "🎲", "c": "#5a6470", "k": "ihry", "u": "/proba/hto/?dyz=3"}], "inshe": [{"id": "vsi", "k": "inshe", "n": "Співаник і підказки", "s": "пісні, вузли, Морзе, орієнтування", "u": "/?tv=0#vsi", "p": 0, "tv": 1, "i": "🔥", "c": "#d98a2b"}, {"id": "yun", "k": "inshe", "n": "Юнацтво", "s": "вмілості, «Вивчай сам», «Перевір себе»", "u": "/?tv=0#yun", "p": 0, "tv": 1, "i": "🎯", "c": "#d6467e"}]};</script>
@@ -380,25 +381,37 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
     $('#list').querySelectorAll('.it').forEach(b => b.onclick = () => { const id = b.dataset.id; if (ST.open === id) { ctl(); return; } chekaiu = id; send({ t: 'open', id }); malList(); });
   }
 
-  /* ---------- відкрите: телефон сам стає потрібним пультом ---------- */
-  let pultFor = '';
+  /* ---------- відкрите: «Екран» — кнопки зі сторінки на проєкторі; «Пульт» — пульт гутірки чи ведучого, підключається сам ---------- */
+  let pultFor = '', vyd = '', vydFor = '', EKR = null;
+  function vyglyad(v) {
+    vyd = v; $('#seg').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v));
+    const p = v === 'pult' && ST.pu;
+    $('#pf').hidden = !p; $('#ekr').hidden = !!p; $('#sc').hidden = !!p;
+    if (p && pultFor !== ST.pu) { pultFor = ST.pu; $('#pf').src = ST.pu; }
+  }
   function ctl() {
     const it = najty(ST.open); if (!it) { show('menu'); malList(); return; }
     $('#c-n').textContent = it.n;
-    const pf = $('#pf');
-    if (ST.pu) {
-      $('#pad').hidden = true; pf.hidden = false; $('#mini').hidden = it.k !== 'ihry';
-      if (pultFor !== ST.pu) { pultFor = ST.pu; pf.src = ST.pu; }
-    } else if (it.id === 'svoya-hra') {   // Змаг ще вантажиться — пульт ведучого підʼєднається за мить
-      pf.hidden = true; $('#pad').hidden = false; $('#pad-h').textContent = 'Відкриваємо пульт ведучого…';
-      $('#pad-sc').hidden = true; $('#pad-gra').hidden = false;
-    } else {
-      pf.hidden = true; pultFor = ''; pf.src = 'about:blank'; $('#pad').hidden = false;
-      $('#pad-h').textContent = it.k === 'ihry' ? 'Гра на проєкторі — юнаки сканують її QR-код. Тут кнопки керування екраном гри.' : 'Гортайте й вибирайте — на проєкторі видно рамку.';
-      $('#pad-sc').hidden = it.k === 'ihry'; $('#pad-gra').hidden = it.k !== 'ihry';
-    }
-    if (!ST.pu) $('#mini').hidden = true;
+    $('#seg').hidden = !ST.pu;
+    $('#seg-p').textContent = it.id === 'svoya-hra' ? 'Пульт ведучого' : 'Пульт';
+    if (vydFor !== it.id + !!ST.pu) { vydFor = it.id + !!ST.pu; vyd = it.k === 'gut' && ST.pu ? 'pult' : 'ekr'; }   // гутірка — одразу пульт; гра й інше — кнопки екрана
+    if (!ST.pu && vyd === 'pult') vyd = 'ekr';
+    if (!ST.pu) { pultFor = ''; $('#pf').src = 'about:blank'; }
+    vyglyad(vyd); malEkr();
     show('ctl');
+  }
+  $('#seg').querySelectorAll('button').forEach(b => b.onclick = () => vyglyad(b.dataset.v));
+  function malEkr() {
+    const e = EKR, g = $('#eg');
+    if (!e || e.id !== ST.open) { g.innerHTML = '<p class="pr">Завантажуємо…</p>'; return; }
+    $('#eh').textContent = e.ov ? 'Вікно на проєкторі' : 'Кнопки на проєкторі зараз'; $('#eh').className = 'eh' + (e.ov ? ' ov' : '');
+    if (!e.items.length) { g.innerHTML = '<p class="pr">Тут немає кнопок — гортайте нижче.</p>'; return; }
+    g.innerHTML = e.items.map(x => `<button class="eb${x.on ? ' on' : ''}${x.gol ? ' gol' : ''}${x.typ === 'txt' ? ' txt' : ''}${(x.n.length > 16 || x.s || x.gol) ? ' w' : ''}" data-i="${x.i}">${esc(x.n)}${x.s ? `<small>${esc(x.s)}</small>` : ''}</button>`).join('');
+    g.querySelectorAll('.eb').forEach(b => b.onclick = () => {
+      const x = e.items[+b.dataset.i];
+      if (x.typ === 'txt') { const v = prompt(x.n, x.v || ''); if (v !== null) send({ t: 'txt', i: x.i, v }); return; }
+      send({ t: 'tap', i: x.i }); try { navigator.vibrate && navigator.vibrate(12); } catch (er) { /* ok */ } b.style.opacity = '.6';
+    });
   }
   /* пульт у рамці — без власного логотипа (він уже є вгорі) */
   $('#pf').addEventListener('load', () => { try { const d = $('#pf').contentDocument; const st = d.createElement('style'); st.textContent = '.hd .logo{display:none}'; d.head.appendChild(st); } catch (e) { /* ok */ } });
@@ -447,6 +460,7 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
             try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } if ($('#ctl').hidden) { show('menu'); malTabs(); malList(); } }
           else if (d.t === 'vhid-err') { PREF.forEach(p => { try { localStorage.removeItem(p + 'kod'); } catch (e) { /* ok */ } }); show('kod'); $('#k-err').hidden = !sent; $('#kod').value = ''; }
           else if (d.t === 'stan') onStan(d);
+          else if (d.t === 'ekr') { EKR = d; if (!$('#ctl').hidden) malEkr(); }
           else if (d.t === 'vyishly') { okd = false; msg('Відʼєднано', 'Телефон більше не керує проєктором. Щоб знову — відскануйте QR.'); }
         });
         c.on('close', () => { if (my !== att) return; dot(false, 'Немає звʼязку'); setTimeout(() => my === att && connect(), 2500); });
@@ -459,7 +473,6 @@ h2{font:600 30px/1 var(--s-disp);text-transform:uppercase;margin:6px 0 4px}
   $('#b-blk').onclick = $('#b-blk2').onclick = () => send({ t: 'blk' });
   $('#b-out').onclick = () => send({ t: 'vyity' });
   $('#m-again').onclick = connect;
-  document.querySelectorAll('[data-k]').forEach(b => b.addEventListener('click', () => { send({ t: 'k', key: b.dataset.k }); try { navigator.vibrate && navigator.vibrate(12); } catch (e) { /* ok */ } }));
   document.querySelectorAll('[data-sc]').forEach(b => b.addEventListener('click', () => send({ t: 'scroll', n: +b.dataset.sc })));
   addEventListener('visibilitychange', () => { if (!document.hidden && okd && !(conn && conn.open)) connect(); });
   connect();
