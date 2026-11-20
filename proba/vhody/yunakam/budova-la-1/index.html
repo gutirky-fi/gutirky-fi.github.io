@@ -2665,6 +2665,17 @@ addEventListener('hashchange', route); route();
     off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
     emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
   }
+  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
+  if (window.name === 'plast-dzerkalo') {
+    class S extends Em {
+      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
+      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
+      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
+    }
+    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
+    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
+    return;
+  }
 
   /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
   const te = new TextEncoder(), td = new TextDecoder();
@@ -3183,7 +3194,52 @@ addEventListener('hashchange', route); route();
     let s; try { s = a.state(); } catch (e) { return; }
     const SK = window.SKOB;   // «Потужний СКОБ!» відкрито — пульт керує грою
     try { if (SK && SK.view && SK.active()) s = Object.assign({}, s, { ix: { v: 'skob', s: SK.view() } }); } catch (e) { /* ok */ }
+    try { const m = menuStan(); if (m) s = Object.assign({}, s, m); } catch (e) { /* ok */ }
     send(rec, Object.assign({ t: 'state', n: ++seq, gtitle: a.title }, s));
+  }
+  /* «Меню гутірки» на телефоні: ті самі пункти, що в куті презентації (СКОБ, інструменти виховника),
+     і кнопки відкритого інструмента — щоб керувати ним з телефона (на проєкторі мишки немає) */
+  const MENU = [['skob', '#b-skob', 'Потужний СКОБ!'], ['hto', '#cm-hto', 'Жеребкування'], ['opyt', '#cm-opyt', 'Швидке опитування']];
+  let toolEls = [], toolSig = '', toolObs = null, toolDoc = null, toolT = 0;
+  const vydno = el => { try { const r = el.getBoundingClientRect(); if (r.width < 2 || r.height < 2) return false; const cs = el.ownerDocument.defaultView.getComputedStyle(el); return cs.visibility !== 'hidden' && cs.display !== 'none' && +cs.opacity > 0.05 && !el.closest('[hidden],[aria-hidden="true"]'); } catch (e) { return false; } };
+  function toolFrame() { const o = document.getElementById('tov'); if (!o || o.hidden) return null; return [...o.querySelectorAll('iframe')].find(f => !f.hidden) || null; }
+  function menuStan() {
+    const menu = MENU.filter(x => document.querySelector(x[1])).map(x => [x[0], x[2]]);
+    if (!menu.length) return null;
+    const f = toolFrame(); let tool = null; toolEls = [];
+    if (f) {
+      const t = (document.getElementById('tov-t') || {}).textContent || '';
+      let d = null; try { d = f.contentDocument; } catch (e) { /* ok */ }
+      if (d && d !== toolDoc) { toolDoc = d; try { if (toolObs) toolObs.disconnect(); toolObs = new MutationObserver(toolZmina); toolObs.observe(d.documentElement, { subtree: true, childList: true, attributes: true, characterData: true }); } catch (e) { /* ok */ } }
+      const b = [];
+      if (d) d.querySelectorAll('button, a[href], input:not([type=hidden]), textarea, select').forEach(el => {
+        if (b.length >= 40 || el.disabled || !vydno(el) || el.closest('#home, .pn-b')) return;
+        const tg = el.tagName, tp = (el.type || '').toLowerCase();
+        if (tg === 'SELECT' || tp === 'file' || tp === 'range' || tp === 'color') return;
+        const pole = tg === 'TEXTAREA' || (tg === 'INPUT' && !['checkbox', 'radio', 'button', 'submit', 'reset'].includes(tp));
+        const prv = el.previousElementSibling, prt = prv && !/^(INPUT|TEXTAREA|BUTTON|SELECT)$/.test(prv.tagName) ? (prv.firstElementChild || prv).textContent : '';
+        let n = pole ? (el.getAttribute('aria-label') || (el.labels && el.labels[0] && el.labels[0].textContent) || prt || el.placeholder || 'Поле') : (el.getAttribute('aria-label') || String(el.innerText || el.textContent || '').split(/\n+/).map(x => x.trim()).filter(Boolean).join(' · ') || el.value || el.title || '');
+        n = String(n).replace(/\s+/g, ' ').trim().slice(0, 60); if (!n) return;
+        if (tp === 'checkbox' || tp === 'radio') { const l = el.labels && el.labels[0]; n = (l ? l.textContent : n).replace(/\s+/g, ' ').trim().slice(0, 60); }
+        toolEls.push(el);
+        b.push(pole ? { n, p: 1, m: tg === 'TEXTAREA' ? 1 : 0, v: String(el.value || '').slice(0, 2000) } : { n, on: !!(el.checked || el.getAttribute('aria-pressed') === 'true'), g: el.classList.contains('main') ? 1 : 0 });
+      });
+      tool = { t, b };
+    } else if (toolObs) { try { toolObs.disconnect(); } catch (e) { /* ok */ } toolObs = null; toolDoc = null; }
+    toolSig = JSON.stringify(tool);
+    return { menu, tool };
+  }
+  function toolZmina() { clearTimeout(toolT); toolT = setTimeout(() => { if (!ctrl) return; const old = toolSig; try { menuStan(); } catch (e) { return; } if (toolSig !== old) pushState(); }, 250); }
+  setInterval(() => { if (ctrl && (toolFrame() || toolSig !== 'null')) toolZmina(); }, 2000);
+  function menuCmd(d) {
+    if (d.a === 'menu') { const x = MENU.find(m => m[0] === d.id), el = x && document.querySelector(x[1]); if (el) el.click(); }
+    else if (d.a === 'tool-x') { const el = document.getElementById('tov-x'); if (el) el.click(); }
+    else if (d.a === 'tool-tap' || d.a === 'tool-txt') {
+      const el = toolEls[d.i]; if (!el || !el.isConnected) return;
+      if (d.a === 'tool-tap') el.click();
+      else { el.value = String(d.v || ''); el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }
+    }
+    clearTimeout(slideT); slideT = setTimeout(() => pushState(), 120);
   }
   function command(rec, d) {
     if (rec !== ctrl) return;
@@ -3192,6 +3248,7 @@ addEventListener('hashchange', route); route();
     if (d.a === 'asset' && typeof d.id === 'string' && a.asset) {   // картинки для пульта (міні-карта, мініатюри фото): надсилаємо на запит телефона
       Promise.resolve(a.asset(d.id)).then(v => { if (v != null) send(rec, { t: 'asset', id: d.id, v }); }).catch(() => {}); return;
     }
+    if (d.a === 'menu' || d.a === 'tool-x' || d.a === 'tool-tap' || d.a === 'tool-txt') { menuCmd(d); return; }
     const SK = window.SKOB;
     if (SK && SK.cmd && ((d.a === 'act' && typeof d.id === 'string' && d.id.startsWith('skob:')) || ((d.a === 'next' || d.a === 'prev') && SK.active()))) {
       if (d.a === 'act') SK.cmd(d.id.slice(5)); else if (d.a === 'next') SK.cmd('next');   // «Назад» під час гри нічого не робить

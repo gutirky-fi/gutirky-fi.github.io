@@ -323,6 +323,31 @@ body.gra .nav button{min-height:68px}
 #secs button{padding:10px 8px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font-weight:600;font-size:15px;line-height:1.2;text-align:center;min-height:48px}
 #secs button.cur{border-color:var(--vyh);color:var(--vyh-t)}
 #sheet .row{display:flex;gap:8px}
+.mbtn.lb{width:auto;padding:0 12px;gap:6px;grid-auto-flow:column;font-weight:700;font-size:14px;color:var(--ink)}
+#nab{display:flex;flex-direction:column;gap:8px}
+#nab button,#toolp .tb2 button{display:flex;align-items:center;gap:12px;width:100%;min-height:50px;padding:0 14px;border-radius:12px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:16px;text-align:left}
+#nab svg{flex:none;width:20px;height:20px;color:var(--mut)}
+#nab button.on{border-color:var(--vyh);box-shadow:inset 3px 0 0 var(--vyh)}
+#toolp{position:fixed;inset:0;z-index:8;background:var(--bg);display:flex;flex-direction:column}
+#toolp[hidden]{display:none}
+#toolp .th{display:flex;align-items:center;gap:10px;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));border-bottom:1px solid var(--ln);background:var(--card)}
+#toolp .th div{flex:1;min-width:0}
+#toolp .th small{display:block;font:600 12px var(--body);letter-spacing:.2em;text-transform:uppercase;color:var(--vyh-t)}
+#toolp .th b{display:block;font:600 19px var(--disp);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#toolp .th button{flex:none;height:42px;padding:0 14px;border-radius:99px;border:1px solid var(--ln);background:var(--card2);font-weight:700;font-size:15px;display:inline-flex;align-items:center;gap:6px}
+#toolp .th svg{width:16px;height:16px}
+#toolp .tb2{flex:1;overflow:auto;padding:14px 16px calc(18px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:8px;align-content:start}
+#toolp .tb2 button{justify-content:center;text-align:center;font-size:15px;line-height:1.2;padding:8px 10px}
+#toolp .tb2 button.w{grid-column:1/-1}
+#toolp .tb2 button.gol{min-height:60px;font-size:17px;border-color:var(--vyh);color:var(--vyh-t)}
+#toolp .tb2 button.on{background:var(--vyh);color:#0e1f15;border-color:var(--vyh)}
+#toolp .tb2 button.pole{grid-column:1/-1;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;font-weight:600;padding:10px 14px}
+#toolp .tb2 button.pole span{font-weight:400;font-size:14px;color:var(--mut);white-space:pre-line;max-height:4.2em;overflow:hidden}
+#tp-ed{position:absolute;inset:auto 0 0 0;background:var(--card);border-top:1px solid var(--ln);border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px;box-shadow:0 -20px 60px rgba(0,0,0,.5)}
+#tp-ed[hidden]{display:none}#tp-ed b{font:600 17px var(--disp);text-transform:uppercase}#tp-ed small{color:var(--mut);font-size:14px}
+#tp-ed textarea{width:100%;box-sizing:border-box;border-radius:12px;border:1px solid var(--ln);background:#14171a;color:var(--ink);font:400 17px/1.35 inherit;padding:10px 12px;resize:vertical}
+#tp-ed .row{display:flex;gap:8px}#tp-ed .btn{margin-top:0}
+#toolp .tb2 p{grid-column:1/-1;color:var(--mut);margin:4px 2px}
 #sheet .row .btn{margin-top:0}
 #leave{color:var(--bad)}
 noscript{display:block;padding:20px}
@@ -337,7 +362,7 @@ noscript{display:block;padding:20px}
     <span id="glogo"></span>
     <button type="button" id="gend" hidden></button>
     <span class="chip" id="chip" data-s="" role="status" aria-live="polite"><i></i><span id="chiptxt">…</span></span>
-    <button class="mbtn" id="menu" type="button" aria-label="Меню: розділи, таймер, відʼєднатись"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <button class="mbtn lb" id="menu" type="button" aria-label="Меню гутірки: розділи, СКОБ, інструменти, таймер"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span>Меню</span></button>
   </header>
 
   <section id="entry" hidden>
@@ -389,9 +414,12 @@ noscript{display:block;padding:20px}
   <button id="next" class="next" type="button" aria-label="Далі">Далі ›</button>
 </div></nav>
 
+<div id="toolp" hidden><div class="th"><div><small>Відкрито на екрані</small><b id="tp-t"></b></div><button type="button" id="tp-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>Згорнути</button></div><div class="tb2" id="tp-b"></div><div id="tp-ed" hidden><b id="tp-en"></b><small id="tp-eh"></small><textarea id="tp-ev" rows="8" spellcheck="false"></textarea><div class="row"><button class="btn" type="button" id="tp-ec">Скасувати</button><button class="btn go" type="button" id="tp-eo">Готово</button></div></div></div>
+
 <div id="sheet" hidden><div class="in" role="dialog" aria-modal="true" aria-labelledby="sh-t">
-  <div class="sh"><h2 id="sh-t">Меню</h2><button class="x" id="shx" type="button" aria-label="Закрити">✕</button></div>
-  <div id="secbox"><h3>Перейти до розділу</h3><div id="secs"></div></div>
+  <div class="sh"><h2 id="sh-t">Меню гутірки</h2><button class="x" id="shx" type="button" aria-label="Закрити">✕</button></div>
+  <div id="secbox"><h3>Розділи гутірки</h3><div id="secs"></div></div>
+  <div id="nabox" hidden><h3>На екрані</h3><div id="nab"></div></div>
   <h3 class="tmrow">Таймер</h3>
   <div class="row tmrow"><button class="btn" id="treset" type="button">↺ Почати відлік заново</button></div>
   <h3>Телефон</h3>
@@ -853,6 +881,7 @@ noscript{display:block;padding:20px}
     let cur = -1; list.forEach(([, i], k) => { if (i <= st.index) cur = k; });
     [...wrap.children].forEach((b, k) => b.classList.toggle('cur', k === cur));
     $('#secbox').hidden = !list.length;
+    renderMenu();
     renderIx();
     const sk = st.ix && st.ix.v === 'skob' && st.ix.s, inG = !!(sk && (sk.g || sk.lobby));
     $('#pad').classList.toggle('sk', !!sk);
@@ -887,6 +916,41 @@ noscript{display:block;padding:20px}
   $('#secs').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     cmd('jump', { i: +b.dataset.i }); $('#sheet').hidden = true;
+  });
+  /* ---------- «Меню гутірки»: СКОБ та інструменти виховника на екрані + керування відкритим інструментом ---------- */
+  const MIC = {
+    skob: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg>',
+    hto: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12l-5 5"/><circle cx="12" cy="12" r="1.5"/></svg>',
+    opyt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>'
+  };
+  let tpSig = '';
+  function renderMenu() {
+    const m = (st && st.menu) || [], box = $('#nab'), sig = JSON.stringify(m) + '|' + ((st && st.tool && st.tool.t) || '');
+    $('#nabox').hidden = !m.length;
+    if (box.dataset.sig !== sig) {
+      box.dataset.sig = sig;
+      box.innerHTML = m.map(([k, n]) => '<button type="button" data-m="' + esc(k) + '"' + (st.tool && st.tool.t === n ? ' class="on"' : '') + '>' + (MIC[k] || '') + '<span>' + esc(n) + '</span></button>').join('');
+    }
+    const t = st && st.tool, p = $('#toolp');
+    p.hidden = !t;
+    if (!t) { tpSig = ''; $('#tp-ed').hidden = true; return; }
+    const s2 = JSON.stringify(t); if (s2 === tpSig) return; tpSig = s2;
+    $('#tp-t').textContent = t.t || '';
+    $('#tp-b').innerHTML = t.b.length ? t.b.map((x, i) => x.p
+      ? '<button type="button" class="pole" data-i="' + i + '">' + esc(x.n) + '<span>' + (x.v ? esc(x.v) : 'торкніться, щоб вписати') + '</span></button>'
+      : '<button type="button" data-i="' + i + '" class="' + (x.on ? 'on' : '') + (x.g ? ' gol w' : x.n.length > 16 ? ' w' : '') + '">' + esc(x.n) + '</button>').join('')
+      : '<p>На екрані зараз немає кнопок.</p>';
+  }
+  $('#nab').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; cmd('menu', { id: b.dataset.m }); $('#sheet').hidden = true; });
+  let edI = -1;
+  $('#tp-x').addEventListener('click', () => cmd('tool-x'));
+  $('#tp-ec').addEventListener('click', () => { $('#tp-ed').hidden = true; edI = -1; });
+  $('#tp-eo').addEventListener('click', () => { if (edI >= 0) cmd('tool-txt', { i: edI, v: $('#tp-ev').value }); $('#tp-ed').hidden = true; edI = -1; });
+  $('#tp-b').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b || !st || !st.tool) return;
+    const i = +b.dataset.i, x = st.tool.b[i]; if (!x) return;
+    if (x.p) { edI = i; $('#tp-en').textContent = x.n; $('#tp-eh').textContent = x.m ? 'Кожне — з нового рядка.' : ''; const ta = $('#tp-ev'); ta.rows = x.m ? 8 : 2; ta.value = x.v || ''; $('#tp-ed').hidden = false; setTimeout(() => { try { ta.focus(); } catch (er) { /* ok */ } }, 50); return; }
+    b.style.opacity = '.6'; cmd('tool-tap', { i });
   });
   /* ---------- інтерактив гутірки: що на екрані — те й тикаєш ---------- */
   const AS = {}, ASQ = {};
