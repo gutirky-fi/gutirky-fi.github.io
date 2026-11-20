@@ -1105,7 +1105,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   /* вхід у «Виховників» звичайного сайту на проєкторі — лише поки підключений телефон */
   const V_KL = [['gutirky:vyh', true], ['gutirky:kod', null], ['proba-vhody:vyh', true], ['proba-vhody:kod', null]];
   function V_SAIT(kod) { V_KL.forEach(([k, v]) => ls.set(k, v === null ? kod : v)); }
-  function V_ZABUTY() { V_KL.forEach(([k]) => ls.del(k)); }
+  const K_KNYHA = 'dokumenty:pryimach', ADR_OK = /^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
+  function V_ZABUTY() { V_KL.forEach(([k]) => ls.del(k)); try { localStorage.removeItem(K_KNYHA); } catch (e) { /* ok */ } }
+  function knyhaAdr(a) { if (typeof a !== 'string' || !ADR_OK.test(a)) return false; let b = ''; try { b = localStorage.getItem(K_KNYHA) || ''; localStorage.setItem(K_KNYHA, a); } catch (e) { /* ok */ } return b !== a; }
   if (!TEL) V_ZABUTY();
   function onConn(c) {
     c.on('data', d => {
@@ -1174,10 +1176,18 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       /* сторінка, відкрита на телефоні, — та сама на проєкторі */
       if (d.t === 'pg' && typeof d.u === 'string') {
         let x; try { x = new URL(d.u, location.origin); } catch (e) { return; } if (x.origin !== location.origin) return;
+        if (d.adr) knyhaAdr(d.adr);   // книга гуртка, підключена на телефоні, — і на проєкторі (поки телефон підключений)
         if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
         if (OPEN && OPEN.k === 'sait' && FR) { try { const cw = FR.contentWindow; if (cw.location.pathname === x.pathname && cw.location.search === x.search) { if (cw.location.hash !== x.hash) cw.location.hash = x.hash; return; } } catch (e) { /* ok */ } }
         if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } }
         vidkryty({ u: x.pathname + x.search + x.hash, k: 'sait', n: 'Сайт' }); return;
+      }
+      if (d.t === 'dkod' && typeof d.kod === 'string' && OPEN && OPEN.k === 'sait' && FR) {
+        const kod = d.kod, my = FR;
+        const uviy = () => { try { const doc = my.contentDocument, i = doc.getElementById('z-kod'); if (!i) return false; i.disabled = false; const b = doc.getElementById('z-in'); if (b) b.disabled = false; i.value = kod; const f = i.form || doc.getElementById('z-lock'); if (f && f.requestSubmit) f.requestSubmit(); return true; } catch (e) { return false; } };
+        if (knyhaAdr(d.adr)) { my.addEventListener('load', () => setTimeout(uviy, 700), { once: true }); try { my.contentWindow.location.reload(); } catch (e) { /* ok */ } }
+        else uviy();
+        return;
       }
       if (d.t === 'sk' && typeof d.r === 'number') {
         const r = Math.max(0, Math.min(1, d.r));
@@ -1377,7 +1387,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     }
     rsSh = false;
     const u = w.location.pathname + w.location.search + w.location.hash;
-    if (u !== rsLast) { rsLast = u; send({ t: 'pg', u }); return; }
+    if (u !== rsLast) { rsLast = u; const m = { t: 'pg', u }; if (/^\/(proba\/)?dokumenty\//.test(w.location.pathname)) { try { const a = w.localStorage.getItem('dokumenty:pryimach'); if (a) m.adr = a; } catch (e) { /* ok */ } } send(m); return; }
     if (gort) { const e = w.document.scrollingElement, m = e.scrollHeight - w.innerHeight; send({ t: 'sk', r: m > 4 ? e.scrollTop / m : 0 }); }
   }
   function rsVhid(w) {   // увійшли у «Виховників» на телефоні — відкрити їх і на проєкторі (код не показується)
@@ -1419,7 +1429,11 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     }, true);
     const pole = e => { const el = e.target; if (!el || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || /^(checkbox|radio)$/.test(el.type) || RS_KOD(el) || (el.inputMode === 'numeric' && el.maxLength > 0 && el.maxLength <= 12)) return; send({ t: 'gv', s: shliakh(el), v: el.value }); };
     d.addEventListener('input', pole, true); d.addEventListener('change', pole, true);
-    d.addEventListener('submit', () => setTimeout(rsPg, 400), true);
+    d.addEventListener('submit', e => {
+      const f = e.target, i = f && f.querySelector && f.querySelector('#z-kod');   // «Документи»: код гуртка чи виховника — тихо на проєктор, щоб і там відкрилось
+      if (i && i.value.trim() && conn && conn.open) { let a = ''; try { a = w.localStorage.getItem('dokumenty:pryimach') || ''; } catch (x) { /* ok */ } send({ t: 'dkod', kod: i.value.trim(), adr: a }); }
+      setTimeout(rsPg, 400);
+    }, true);
     w.addEventListener('hashchange', () => setTimeout(rsPg, 80));
     let gT = 0;
     const gort = (el, sh) => {
