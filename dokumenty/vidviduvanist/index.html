@@ -1221,7 +1221,7 @@ window.Stan = (function () {
     try {
       const v = await zapyt({kod: k, dija: 'imena'});
       if (!v.ok) throw new Error(v.pomylka || 'Не вдалося увійти.');
-      kod = k; imena = v.imena || [];
+      kod = k; imena = (v.imena || []).slice().sort((a, b) => String(a).localeCompare(String(b), 'uk'));
       $('z-kod').value = ''; $('z-lock').hidden = true; formaChysta(); $('z-form').hidden = false;
     } catch (x) {
       pomylka($('z-err'), x.message && !/fetch|network|JSON/i.test(x.message) ? x.message : 'Немає зв\'язку з книгою гуртка. Перевірте інтернет або попросіть у виховника нове посилання.');
