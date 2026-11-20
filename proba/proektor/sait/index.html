@@ -739,7 +739,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   const EKR = {
     vsi: { nad: 'Пластова бібліотека', h: 'Для всіх', c: 'var(--s-all4)', tabs: [['ihry', 'Ігри'], ['tips', 'Підказки'], ['songs', 'Співаник'], ['fakty', 'Цікаве']] },
     yun: { nad: 'Пластова бібліотека', h: 'Юнацтво', c: 'var(--s-upyu)', tabs: [['mat', 'Є матеріали'], ['vm', 'Вмілості']] },
-    vyh: { nad: 'Пластова бібліотека', h: 'Виховники', c: 'var(--s-vyh)', tabs: [['gut', 'Гутірки'], ['vih', 'Ігри'], ['tools', 'Інструменти'], ['songs', 'Співаник']] }
+    vyh: { nad: 'Пластова бібліотека', h: 'Виховники', c: 'var(--s-vyh)', tabs: [['gut', 'Гутірки'], ['vm', 'Каталог'], ['vih', 'Ігри'], ['tools', 'Інструменти'], ['songs', 'Співаник']] }
   };
   let SCR = 'home', TAB = {}, FOK = {};
   const stack = [];
@@ -866,7 +866,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function dija(go) {
     const [k, a, b] = go.split(':');
     if (k === 'scr') { if (a === 'vyh' && !vKod()) { KP = ''; idy('kod'); } else idy(a); return; }
-    if (k === 'zakr') { zakrytyV(); stack.length = 0; SCR = 'home'; malyuvaty('d-vyh'); toast('Розділ «Виховники» закрито'); return; }
+    if (k === 'zakr') { zakrytyV(); if (!TEL) V_ZABUTY(); stack.length = 0; SCR = 'home'; malyuvaty('d-vyh'); toast('Розділ «Виховники» закрито'); return; }
     if (k === 'pam') { PAM = !PAM; malyuvaty('pam'); return; }
     if (k === 'kd') { if (KP.length < 12) KP += a; krapky(); return; }
     if (k === 'kx') { KP = KP.slice(0, -1); krapky(); return; }
@@ -927,6 +927,22 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     if (TEL) return;
     const el = f && $('#app').querySelector(`.f[data-id="${CSS.escape(f)}"]`); fokus(el || $('#app').querySelector('.f'));
     tell(stan());
+  }
+  /* плавне гортання за телефоном: ціль — частка 0…1, проєктор доїжджає до неї кожен кадр */
+  const PL = new Map(); let plRaf = 0;
+  function plavno(el, r) { if (!el) return; PL.set(el, Math.max(0, Math.min(1, r))); if (!plRaf) plRaf = requestAnimationFrame(plKrok); }
+  function plKrok() {
+    plRaf = 0; let shche = false;
+    PL.forEach((r, el) => {
+      if (!el.isConnected) { PL.delete(el); return; }
+      const m = el.scrollHeight - el.clientHeight; if (m <= 0) { PL.delete(el); return; }
+      const t = r * m, d = t - el.scrollTop;
+      if (Math.abs(d) < 1.5) { el.scrollTop = t; PL.delete(el); return; }
+      const bulo = el.scrollTop; el.scrollTop = bulo + Math.sign(d) * Math.max(1, Math.abs(d) * 0.28);
+      if (el.scrollTop === bulo) { PL.delete(el); return; }
+      shche = true;
+    });
+    if (shche) plRaf = requestAnimationFrame(plKrok);
   }
   function gortVikno(n) { const t = $('#dtilo'); if (!t) return false; if (t.scrollHeight <= t.clientHeight + 2) return false; t.scrollBy({ top: n * t.clientHeight * 0.5, behavior: 'smooth' }); return true; }
 
@@ -1127,11 +1143,23 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       /* «Сайт» на телефоні: розділ і вкладка, де зараз телефон */
       if (d.t === 'nav' && typeof d.scr === 'string') {
         const s = d.scr; if (s !== 'home' && !EKR[s]) return; if (s === 'vyh' && !vKod()) return;
-        if (OPEN) { if (s === SCR) return; zakryty(); }
-        if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
+        if (OPEN && OPEN.k !== 'sait') return;   // гутірка чи гра — не чіпаємо
+        let mal = false;
+        if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } $('#load').hidden = true; window.focus(); mal = true; }
         const tb = d.tab && EKR[s] && EKR[s].tabs.some(x => x[0] === d.tab) ? d.tab : '';
-        if (SCR !== s) { if (s === 'home') stack.length = 0; else stack.push({ scr: SCR === 'kod' ? 'home' : SCR }); SCR = s; if (tb) TAB[s] = tb; malyuvaty(); if (s === 'vyh') pidgotIhry(); }
-        else if (tb) { const el = document.querySelector(`.vkl .t[data-tab="${CSS.escape(tb)}"]`); if (el) fokus(el); vkladka(tb); }
+        if (SCR !== s) { if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } if (s === 'home') stack.length = 0; else stack.push({ scr: SCR === 'kod' ? 'home' : SCR }); SCR = s; mal = true; if (s === 'vyh') pidgotIhry(); }
+        if (tb && TAB[s] !== tb) { if (mal) TAB[s] = tb; else { const el = document.querySelector(`.vkl .t[data-tab="${CSS.escape(tb)}"]`); if (el) fokus(el); vkladka(tb); } }
+        if (mal) malyuvaty();
+        if (typeof d.r === 'number' && s !== 'home') { const z = $('#zona'); if (z) { if (mal) z.scrollTop = Math.max(0, Math.min(1, d.r)) * (z.scrollHeight - z.clientHeight); else plavno(z, d.r); } }
+        return;
+      }
+      /* пісня, підказка чи вмілість, відкрита на телефоні, — велике вікно на проєкторі */
+      if (d.t === 'vk') {
+        if (OPEN) return;
+        if (!d.typ) { if (!$('#det').hidden) zakrytyVikno(); return; }
+        if (d.typ === 'song') { const j = SONGS.indexOf(D.songs[+d.key]); if (j >= 0) vikno('song', j); }
+        else if (d.typ === 'tip') { if (TIPS[+d.key]) vikno('tip', +d.key); }
+        else if (d.typ === 'vm') { if (byId[d.key]) vikno('vm', d.key); }
         return;
       }
       if (d.t === 'url' && typeof d.u === 'string') { const it = zAdresy(d.u, String(d.n || '')); if (!it) return; if (it.k === 'gut' && !vKod() && !it.vsi) return; if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } vidkryty(it); return; }
@@ -1153,9 +1181,9 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       }
       if (d.t === 'sk' && typeof d.r === 'number') {
         const r = Math.max(0, Math.min(1, d.r));
-        if (d.sh && OPEN && FR) { try { const sc = [...FR.contentDocument.querySelectorAll('#sheet *, [role=dialog] *')].find(e => e.scrollHeight > e.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(e).overflowY)); if (sc) sc.scrollTop = r * (sc.scrollHeight - sc.clientHeight); } catch (e) { /* ok */ } return; }
-        if (!$('#det').hidden) { const t = $('#dtilo'); if (t && t.scrollHeight > t.clientHeight + 2) t.scrollTop = r * (t.scrollHeight - t.clientHeight); else { const v = $('#det'); v.scrollTop = r * (v.scrollHeight - v.clientHeight); } }
-        else if (OPEN && FR) { try { const w = FR.contentWindow, e = w.document.scrollingElement; w.scrollTo(0, r * (e.scrollHeight - w.innerHeight)); } catch (x) { /* ok */ } }
+        if (d.sh && OPEN && FR) { try { const sc = [...FR.contentDocument.querySelectorAll('#sheet *, [role=dialog] *')].find(e => e.scrollHeight > e.clientHeight + 4 && /(auto|scroll)/.test(getComputedStyle(e).overflowY)); plavno(sc, r); } catch (e) { /* ok */ } return; }
+        if (!$('#det').hidden) { const t = $('#dtilo'); if (t && t.scrollHeight > t.clientHeight + 2) plavno(t, r); else plavno($('#det'), r); }
+        else if (OPEN && FR) { try { plavno(FR.contentDocument.scrollingElement, r); } catch (x) { /* ok */ } }
         return;
       }
       if (d.t === 'back') { nazad(); return; }
@@ -1255,7 +1283,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     }, true);
     const pole = e => { const el = e.target; if (!el || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || /^(checkbox|radio)$/.test(el.type)) return; send({ t: 'gv', s: shliakh(el), v: el.value }); };
     d.addEventListener('input', pole, true); d.addEventListener('change', pole, true);
-    w.addEventListener('scroll', () => { clearTimeout(dzT); dzT = setTimeout(() => { const e = d.scrollingElement; const m = e.scrollHeight - w.innerHeight; if (m > 4) send({ t: 'sk', r: e.scrollTop / m }); }, 120); }, { passive: true });
+    let gT = 0;
+    w.addEventListener('scroll', () => { const f = () => { gT = Date.now(); const e = d.scrollingElement; const m = e.scrollHeight - w.innerHeight; if (m > 4) send({ t: 'sk', r: e.scrollTop / m }); }; clearTimeout(dzT); const z = Date.now() - gT; if (z >= 70) f(); else dzT = setTimeout(f, 70 - z); }, { passive: true });
     setTimeout(() => dzQr(ST.qr), 400);
   }
   if (TEL) setInterval(() => { if (!$('#dz').hidden) dzQr(ST.qr); }, 700);   // гра на телефоні сама переписує свій код — повертаємо код проєктора
@@ -1308,11 +1337,48 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function rsWin() { try { const w = $('#rf').contentWindow; return w && w.document ? w : null; } catch (e) { return null; } }
   function rsLs(w, keys) { for (const k of keys) { try { const v = JSON.parse(w.localStorage.getItem(k)); if (v) return v; } catch (e) { /* ok */ } } return null; }
   /* «що на телефоні — те й на проєкторі»: та сама сторінка, ті самі натискання, те саме гортання */
-  function rsPg() {
+  /* головна й три розділи — на проєкторі їхній власний великий вигляд: розділ, вкладка (куди догорнули) і частка гортання */
+  const RS_SEK = { vsi: { 'h-games': 'ihry', 'h-tips': 'tips', 'h-songs': 'songs', 'h-facts': 'fakty' }, yun: { 'h-dk': 'mat', 'h-mat': 'mat', 'h-kat': 'vm' } };
+  const RS_VT = { g: 'gut', k: 'vm', i: 'vih', t: 'tools' };
+  function rsVlasne(w) {
+    let d; try { d = w.document; } catch (e) { return null; }
+    if (!/^\/(index\.html)?$/.test(w.location.pathname)) return null;
+    const h = w.location.hash.slice(1), scr = ['vsi', 'yun', 'vyh'].includes(h) ? h : (h ? null : 'home');
+    if (!scr) return null;
+    if (scr === 'home') return { scr, tab: '', r: 0 };
+    const main = d.getElementById('v-' + scr); if (!main || main.hidden) return null;
+    const lin = w.scrollY + w.innerHeight * 0.35, top = e => e.getBoundingClientRect().top + w.scrollY;
+    let tab = '', sek = null;
+    if (scr === 'vyh') {
+      if (!ST.vin) return null;   // ще не ввійшли — показуємо сайт (поле коду)
+      const vin = d.getElementById('vyh-in'); if (!vin || vin.hidden) return null;
+      const b = d.querySelector('.vtabs [role=tab][aria-selected=true]'); if (!b) return null;
+      tab = RS_VT[b.id.slice(2)] || ''; if (!tab) return null;
+      sek = d.getElementById(b.getAttribute('aria-controls'));
+    } else {
+      const ss = [...main.querySelectorAll(':scope > section.sec')].filter(x => RS_SEK[scr][x.getAttribute('aria-labelledby')]);
+      sek = ss[0]; for (const x of ss) if (top(x) <= lin) sek = x;
+      if (!sek) return null; tab = RS_SEK[scr][sek.getAttribute('aria-labelledby')];
+    }
+    let r = 0; if (sek && sek.offsetHeight > 0) r = Math.max(0, Math.min(1, (lin - top(sek)) / sek.offsetHeight));
+    if (w.scrollY < 8) r = 0;
+    return { scr, tab, r: Math.round(r * 400) / 400 };
+  }
+  let rsSh = false;
+  function rsPg(gort) {
     const w = rsWin(); if (!w || !$('#ctl').hidden || !(conn && conn.open)) return;
     rsVhid(w);
-    const u = w.location.pathname + w.location.search + w.location.hash; if (u === rsLast) return;
-    rsLast = u; send({ t: 'pg', u });
+    const v = rsVlasne(w);
+    if (v) {
+      const sh = (() => { try { const e = w.document.getElementById('sheet'); return !!e && !e.hidden; } catch (x) { return false; } })();
+      if (rsSh && !sh) send({ t: 'vk' }); rsSh = sh;
+      const k = 'nav|' + v.scr + '|' + v.tab + '|' + v.r; if (k === rsLast) return;
+      rsLast = k; send({ t: 'nav', scr: v.scr, tab: v.tab, r: v.r }); return;
+    }
+    rsSh = false;
+    const u = w.location.pathname + w.location.search + w.location.hash;
+    if (u !== rsLast) { rsLast = u; send({ t: 'pg', u }); return; }
+    if (gort) { const e = w.document.scrollingElement, m = e.scrollHeight - w.innerHeight; send({ t: 'sk', r: m > 4 ? e.scrollTop / m : 0 }); }
   }
   function rsVhid(w) {   // увійшли у «Виховників» на телефоні — відкрити їх і на проєкторі (код не показується)
     if (ST.vin) return;
@@ -1341,6 +1407,13 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
         if (/biblioteka\//.test(u.pathname) && !/^#(povna|vyshkil)/.test(u.hash)) return;
         stop(e); send({ t: 'url', u: u.pathname + u.search + u.hash, n: (a.innerText || a.getAttribute('aria-label') || '').split('\n')[0].trim() }); vidkryvaiu(); return;
       }
+      if (rsVlasne(w)) {   // власний вигляд на проєкторі: вікно — своє, решту натискань не повторюємо
+        if (t.closest('#leave')) { rsVh = null; send({ t: 'a', go: 'zakr' }); setTimeout(rsPg, 300); return; }
+        if ((b = t.closest('[data-song]'))) { rsSh = true; send({ t: 'vk', typ: 'song', key: b.dataset.song }); }
+        else if ((b = t.closest('[data-tip]'))) { rsSh = true; send({ t: 'vk', typ: 'tip', key: b.dataset.tip }); }
+        else if ((b = t.closest('[data-vk],[data-fvm],.badge[data-k]'))) { const id = b.dataset.vk || b.dataset.fvm || b.dataset.k; if (id) { rsSh = true; send({ t: 'vk', typ: 'vm', key: id }); } }
+        setTimeout(rsPg, 150); return;
+      }
       const el = t.closest(KL); if (!el || RS_KOD(el) || el.closest('form') && el.closest('form').querySelector('#code')) return;
       if (conn && conn.open) send({ t: 'gk', s: shliakh(el) });
     }, true);
@@ -1348,13 +1421,18 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     d.addEventListener('input', pole, true); d.addEventListener('change', pole, true);
     d.addEventListener('submit', () => setTimeout(rsPg, 400), true);
     w.addEventListener('hashchange', () => setTimeout(rsPg, 80));
-    const gort = (el, sh) => { clearTimeout(rsT); rsT = setTimeout(() => { const m = el.scrollHeight - el.clientHeight; if (m > 4) send({ t: 'sk', r: el.scrollTop / m, sh }); else if (!sh) send({ t: 'sk', r: 0 }); }, 120); };
+    let gT = 0;
+    const gort = (el, sh) => {
+      const f = () => { gT = Date.now(); if (!sh) { rsPg(1); return; } const m = el.scrollHeight - el.clientHeight; if (m > 4) send({ t: 'sk', r: el.scrollTop / m, sh }); };
+      clearTimeout(rsT); const z = Date.now() - gT; if (z >= 70) f(); else rsT = setTimeout(f, 70 - z);
+    };
     w.addEventListener('scroll', () => gort(d.scrollingElement, 0), { passive: true });
     d.addEventListener('scroll', e => { const el = e.target; if (el && el.nodeType === 1 && el.closest && el.closest('#sheet,[role=dialog]')) gort(el, 1); }, { passive: true, capture: true });
     rsPg();
   }
   if (TEL) {
     $('#dz').addEventListener('load', dzHook);
+    setInterval(() => { if (RM === 'sait') rsPg(); }, 400);
     $('#rf').addEventListener('load', () => { const w = rsWin(); try { if (w && w.location.origin === location.origin) rsHook(); } catch (e) { /* чужий сайт */ } });
     $('#vyb').querySelectorAll('button').forEach(b => b.onclick = () => rezhym(b.dataset.m));
     rezhym(RM);
