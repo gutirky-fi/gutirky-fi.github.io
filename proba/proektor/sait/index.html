@@ -70,7 +70,7 @@ svg.ic{width:1em;height:1em;vertical-align:-.14em;flex:none}
 .f.fok{outline:.22rem solid var(--s-ink);outline-offset:.28rem;transform:translateY(-.25rem);box-shadow:0 .8rem 2rem rgba(0,0,0,.45)}
 /* картка QR «Телефон — пульт» */
 .qrk{display:flex;gap:1.1rem;align-items:center;background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-karta);padding:.7rem 1.2rem .7rem .7rem;flex:none}
-.qrk .q{background:#000;border-radius:var(--s-r);padding:.4rem;line-height:0}
+.qrk .q{line-height:0}
 .qrk .q svg{width:5.6rem;height:5.6rem;display:block}
 .qrk b{display:block;font:600 1.15rem var(--s-disp);text-transform:uppercase;letter-spacing:.04em}
 .qrk span{font-size:.95rem;color:var(--s-mut);display:block;max-width:14rem;line-height:1.3;margin-top:.25rem}
@@ -82,7 +82,7 @@ svg.ic{width:1em;height:1em;vertical-align:-.14em;flex:none}
 .qrk.big{flex-direction:column;text-align:center;padding:.9rem;gap:.4rem;margin-top:-1rem}
 .qrk.big .st{margin:0;min-height:1.2rem}
 .qrk.big .st:not(.ok):has(i:only-child){display:none}
-.qrk.big .q{padding:.6rem}
+.qrk.big .q{padding:0}
 .qrk.big.on{padding:2rem 2.4rem;gap:1rem;margin-top:0}
 .qrk.big.on .tbig svg.ic{width:6rem;height:6rem;color:var(--s-ok)}
 .qrk.big.on .st{font-size:1.3rem}
@@ -91,6 +91,25 @@ svg.ic{width:1em;height:1em;vertical-align:-.14em;flex:none}
 .qrk.big span{font-size:1.05rem;max-width:17rem}
 /* головна */
 .hverh{display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;flex:none}
+/* ТИМЧАСОВО: QR опитування «Знайомство» на головній (прибрати — OPYT = '') */
+.opyt{display:flex;flex-direction:column;align-items:center;gap:.4rem;margin:.6rem 1.2rem 0 auto;text-align:center}
+.opyt .q{line-height:0}
+.opyt .q svg{width:20rem;height:20rem;display:block}
+.hverh:has(.opyt) .qrk.big .q svg{width:20rem;height:20rem}
+.qrk.big b.pidp{font:600 1.35rem var(--s-disp);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;color:var(--s-ok);margin:0}
+.qrk.big span.pidp{font-size:1.05rem;color:var(--s-mut);margin-top:-.2rem;max-width:none}
+.hverh:has(.opyt) .qrk.big{background:none;border:0;padding:0;margin-top:.6rem;gap:.4rem}
+.hverh:has(.opyt) .qrk.big .st:not(.ok):has(i:only-child){display:inline-flex;visibility:hidden}
+/* на час опитування: два QR стоять точно над двома правими плитками (та сама сітка, що й «двері») */
+.hverh:has(.opyt){display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;align-items:start}
+.hverh:has(.opyt) .opyt,.hverh:has(.opyt) .qrk.big{align-self:start;margin-top:2.6rem !important}
+.hverh:has(.opyt) .logo-wrap{grid-column:1/3}
+.hverh:has(.opyt) .opyt,.hverh:has(.opyt) .qrk.big{margin:0;width:100%}
+.hverh:has(.opyt) .opyt .q,.hverh:has(.opyt) .qrk.big .q{width:100%}
+.hverh:has(.opyt) .opyt .q svg,.hverh:has(.opyt) .qrk.big .q svg{width:100%;height:auto;aspect-ratio:1}
+.hverh:has(.opyt) .qrk.big .st{display:none}
+.opyt b{font:600 1.35rem var(--s-disp);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;color:var(--s-upyu-t)}
+.opyt span{font-size:1.05rem;color:var(--s-mut);margin-top:-.2rem}
 .dveri{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;margin-top:auto;margin-bottom:.6rem}
 .dv{background:var(--s-card);border:1px solid var(--s-ln);border-radius:var(--s-r-plytka);padding:1.5rem 1.5rem 1.3rem;position:relative;overflow:hidden;min-height:13.5rem;display:flex;flex-direction:column}
 .dv:before{content:"";position:absolute;left:0;right:0;top:0;height:.34rem;background:var(--c)}
@@ -193,7 +212,7 @@ svg.ic{width:1em;height:1em;vertical-align:-.14em;flex:none}
 html.tel{font-size:16px;height:auto;overflow:auto}
 body.tel{overflow:auto;height:auto;min-height:100%}
 body.tel #app{position:static;width:auto;height:auto;margin:0;padding:4.4rem 1rem 2rem;overflow:visible}
-body.tel .qrk,body.tel .pidk,body.tel .logo-wrap .logo{display:none}
+body.tel .qrk,body.tel .opyt,body.tel .pidk,body.tel .logo-wrap .logo{display:none}
 body.tel .hverh{display:block}
 body.tel h1{font-size:2.6rem} body.tel h1.m{font-size:2.2rem}
 body.tel .ruka{font-size:1.5rem}
@@ -771,9 +790,12 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     return '';
   }
 
+  // ТИМЧАСОВО: опитування «Знайомство» — після зустрічі з гуртком поставити OPYT = ''
+  const OPYT = 'https://gutirky-fi.github.io/znayomstvo/';
+  function opytKartka() { return OPYT && window.qrSvg ? `<div class="opyt"><div class="q">${qrSvg(OPYT, 320, { eye: '#ff7d99', bg: 'none' })}</div></div>` : ''; }
   function malHome() {
     return `<div class="hverh"><div class="logo-wrap"><img class="logo" src="${D.logo}" alt="Пласт">
-      <div style="margin-top:2.2rem"><div class="nad">Пласт у Фінляндії</div><h1>Пластова<br>бібліотека</h1><div class="lin"></div><div class="ruka">гутірки, ігри, пісні й підказки</div></div></div>${telKartka(true)}</div>
+      <div style="margin-top:2.2rem"><div class="nad">Пласт у Фінляндії</div><h1>Пластова<br>бібліотека</h1><div class="lin"></div><div class="ruka">гутірки, ігри, пісні й підказки</div></div></div>${opytKartka()}${telKartka(true)}</div>
     <div class="dveri">
       <div class="dv vs f" data-id="d-vsi" data-go="scr:vsi"><h3>Для всіх</h3><p>Ігри, співаник, швидкі підказки</p><div class="d">Відкрити →</div></div>
       <div class="dv yu f" data-id="d-yun" data-go="scr:yun"><h3>Юнацтво</h3><p>УПЮ · 12–17 років · вмілості</p><div class="d">Відкрити →</div></div>
@@ -1094,7 +1116,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   let QRSVG = '';
   const telUrl = () => location.origin + location.pathname + '#c=' + NET.code + '&k=' + NET.key;
   if (window.TV_TEST_PEER) window.__telUrl = telUrl;
-  function malQR() { QRSVG = window.qrSvg ? qrSvg(telUrl(), 320) : ''; document.querySelectorAll('.qrk .q').forEach(q => { q.innerHTML = QRSVG; }); }
+  function malQR() { QRSVG = window.qrSvg ? qrSvg(telUrl(), 320, { bg: 'none' }) : ''; document.querySelectorAll('.qrk .q').forEach(q => { q.innerHTML = QRSVG; }); }
   function stan() {
     return { t: 'st', scr: SCR, tab: TAB[SCR] || '', det: DET ? { typ: DET.typ, key: DET.key } : null, open: OPEN ? { n: OPEN.n, k: OPEN.k, u: OPEN.u } : null, pu: PU, lobi: GR.lobi, qr: GR.qr, igls: OPEN && OPEN.igls || null,
       vin: !!vKod(), ig: vKod() && IG ? IG.map(g => ({ id: g.id, gra: g.gra, nazva: g.nazva, opys: g.opys, vik: g.vik })) : null };
