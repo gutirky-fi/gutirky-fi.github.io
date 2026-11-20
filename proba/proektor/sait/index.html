@@ -258,7 +258,7 @@ body.tel #ctl:not([hidden]){display:flex;flex-direction:column;position:fixed;in
 /* телефон: вибір вигляду — звичний сайт або простий */
 #vyb{display:none}
 body.tel #vyb[hidden]{display:none!important}
-body.tel #vyb{display:flex;border:1px solid var(--s-ln);border-radius:var(--s-r-pil);background:var(--s-card2);padding:2px}
+body.tel #vyb{display:none;border:1px solid var(--s-ln);border-radius:var(--s-r-pil);background:var(--s-card2);padding:2px}
 body.tel #tbar #vyb button{border:0;background:none;padding:.4rem .75rem;color:var(--s-mut)}
 body.tel #tbar #vyb button.on{background:var(--s-ink);color:var(--s-bg)}
 body.tel #tbar{gap:.45rem}
@@ -1062,6 +1062,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
           uviyty(true); c.send({ t: 'vhid-ok' });
           if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } }
           if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
+          if (d.tykho) { pidgotIhry(); malyuvaty(); return; }
           if (SCR !== 'vyh') { stack.push({ scr: SCR === 'kod' ? 'home' : SCR }); SCR = 'vyh'; } TAB.vyh = TAB.vyh || 'gut';
           malyuvaty(); pidgotIhry(); toast('Розділ «Виховники» відкрито з телефона');
         } else c.send({ t: 'vhid-err' });
@@ -1192,7 +1193,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   }
   /* ---------------- телефон: вигляд «Сайт» — звичний сайт, проєктор повторює ---------------- */
   const K_RM = 'plast-proektor:vyglyad';
-  let RM = ls.get(K_RM) === 'prost' ? 'prost' : 'sait', rsLast = '', rsDet = false, rsT = 0, rsVh = null;
+  let RM = 'sait', rsLast = '', rsDet = false, rsT = 0, rsVh = null;
   const RS_URL = '/';
   const RS_KAST = /^\/(proba\/)?(gutirky\/[a-z0-9-]+\/$|biblioteka\/$|skob-hra\/$|bingo\/$|svoya-hra\/$|opytuvannia\/$|novyi-vykhovnyk\/$|hto\/$)/;
   const RS_SEK = { 'h-games': 'ihry', 'h-tips': 'tips', 'h-songs': 'songs', 'h-facts': 'fakty', 'h-mat': 'mat', 'h-kat': 'vm' };
@@ -1210,12 +1211,11 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   function rsRoute() {
     const w = rsWin(); if (!w || RM !== 'sait' || !$('#ctl').hidden) return;
     const h = w.location.hash.slice(1), v = ['vsi', 'yun', 'vyh'].includes(h) ? h : 'home';
-    if (v !== 'vyh') { rsNav(v, v === 'home' ? '' : rsSekciya(w)); return; }
+    if (v !== 'vyh') return;   // розділи й гортання проєктор не повторює — лише те, що показуємо
     const d = w.document, zakr = d.querySelector('#v-vyh .vtabs') && !d.querySelector('#v-vyh .vtabs').closest('[hidden]');
     if (!zakr) return;   // розділ ще закритий — код вводять на сайті
-    if (!ST.vin) { const k = rsLs(w, ['gutirky:kod', 'proba-vhody:kod']); if (k && conn && conn.open && rsVh !== k) { rsVh = k; chekV = true; send({ t: 'vhid', kod: String(k) }); rsLast = ''; setTimeout(rsRoute, 1200); } return; }
-    const b = d.querySelector('.vtabs [role=tab][aria-selected="true"]');
-    rsNav('vyh', b ? RS_VT[b.id.slice(2)] || '' : '');
+    if (!ST.vin) { const k = rsLs(w, ['gutirky:kod', 'proba-vhody:kod']); if (k && conn && conn.open && rsVh !== k) { rsVh = k; chekV = true; send({ t: 'vhid', kod: String(k), tykho: 1 }); } return; }
+    void rsNav;
   }
   function rsSekciya(w) {   // розділ сторінки, до якого догорнули
     let t = '';
