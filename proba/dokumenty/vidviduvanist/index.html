@@ -214,6 +214,16 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   .tri button{min-width:46px;padding:8px 7px}
   .names li{padding-left:12px}
 }
+.yak{margin:0 0 14px;border:1px solid var(--ln);border-radius:var(--s-r,12px);background:#14171a}
+.yak summary{cursor:pointer;padding:11px 14px;font-weight:700;color:var(--ink);list-style:none}.yak summary::-webkit-details-marker{display:none}
+.yak summary::before{content:'?';display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:50%;background:var(--ln);color:var(--ink);font-size:14px}
+.yak summary small{font-weight:500;color:var(--mut);margin-left:6px}
+.yak dl{margin:0;padding:0 14px 10px}.yak dt{margin-top:10px;font-weight:700;color:var(--ink);font-size:14.5px}.yak dd{margin:2px 0 0;color:var(--body);font-size:14px;line-height:1.4}
+/* «Зразок» (20.11): той самий аркуш з вигаданим прикладом */
+.sheet.zr{position:relative;overflow:hidden}
+.sheet.zr .zr-wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-22deg);font:700 170px/1 var(--disp);letter-spacing:.12em;color:rgba(200,40,74,.09);white-space:nowrap;pointer-events:none;z-index:1}
+.zr-p{margin:8px 0 0;padding:7px 10px;border-left:3px solid var(--acc);background:#fbf3f5;font-size:11.5px;line-height:1.4;color:var(--pi)}
+.zr-p b{color:var(--acc)}.zr-p div+div{margin-top:2px}
 /* друк: лише аркуш */
 @page{size:A4 landscape;margin:9mm}
 @media print{
@@ -223,6 +233,8 @@ td.m.p{color:#16633a}td.m.v{color:#8a5a00}td.m.x{color:#a01d3a}
   .desk{padding:0;border:0;border-radius:0;background:none;overflow:visible}
   .sheet{min-width:0;max-width:none;width:100%;aspect-ratio:auto;height:186mm;padding:0;box-shadow:none;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sheet.edit [contenteditable],.sheet.edit td.m:hover{background:none}
+  body.zr-pr .desk{display:none!important}
+  body.zr-pr #zr-host{display:block!important}
 }
 /* ===== Папір на телефоні й перегляд на весь екран (papir.js, 09.11.2026) ===== */
 .pv{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;background:#0f1114;color:var(--ink);height:100vh;height:100dvh}
@@ -332,6 +344,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
         <button class="btn" type="button" id="b-view" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Переглянути</button>
         <button class="btn main" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>Друк або PDF</button>
         <button class="btn" type="button" id="b-word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13l1.5 5 2.5-4 2.5 4 1.5-5"/></svg>Word</button>
+        <button class="btn" type="button" id="b-zr" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Зразок — як заповнити</button>
         <button class="btn" type="button" id="b-share" hidden style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Поділитися</button>
       </div>
     </div>
@@ -341,6 +354,7 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
     </div>
     <div>
       <div class="desk"><div class="sheet" id="sheet"></div></div>
+      <div id="zr-host" hidden><div class="sheet zr" id="sheet-z"></div></div>
       <p class="hint" id="b-hint" hidden>Жовте — можна вписати. Клітинку сходин клацніть: + → − → в → порожньо.</p>
     </div>
   </section>
@@ -362,11 +376,18 @@ html.pv-touch #b-print,html.pv-touch #z-druk,html.pv-touch [data-vtd],html.pv-to
       <!-- форма -->
       <div class="card" id="z-form" hidden>
         <div class="fhead"><h2>Сходини</h2><button class="leave" type="button" id="z-out"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Вийти</button></div>
+        <details class="yak"><summary>Як заповнювати<small>коротко, за випадками</small></summary><dl>
+          <dt>Звичайні сходини</dt><dd>На сходинах або одразу після: дата, тема, біля кожного імені одна позначка. «Усі були» ставить «був» усім — потім змініть тих, кого не було.</dd>
+          <dt>Не був</dt><dd>«не був» — просто не прийшов. «поважна» — хворий чи попередив заздалегідь. Саму причину не пишемо.</dd>
+          <dt>Ця дата вже записана</dt><dd>Сайт покаже це під датою: запис оновиться, нового не буде.</dd>
+          <dt>Номер сходин</dt><dd>Не пишемо — рахується сам за датами.</dd>
+          <dt>Виховник веде сам</dt><dd>«Вхід виховника → Після сходин» записує сходини, присутність і внески одним «Надіслати».</dd>
+        </dl></details>
         <div class="row2">
           <label class="f"><span>Дата</span><input class="in" id="z-data" type="date" required></label>
           <div class="f"><span>Номер сходин</span><div class="nrt"><b id="z-nrt">—</b></div></div>
         </div>
-        <label class="f"><span>Тема</span><input class="in" id="z-tema" maxlength="80" placeholder="про що були сходини"></label>
+        <label class="f"><span>Тема</span><input class="in" id="z-tema" maxlength="80" placeholder="напр. Кераміка України"></label>
         <p class="stan" id="z-stan" hidden></p>
         <div class="cnt">
           <span class="pill p">був <b id="c-p">0</b></span><span class="pill x">не був <b id="c-x">0</b></span><span class="pill v">поважна <b id="c-v">0</b></span>
@@ -1097,10 +1118,8 @@ window.Stan = (function () {
     sh.querySelectorAll('td.nm').forEach((td, r) => { st.imena[r] = td.textContent.trim(); });
     sh.querySelectorAll('tr.d th[data-c]').forEach(th => { st.daty[+th.dataset.c] = th.textContent.trim(); });
   }
-  function malyuvaty() {
-    const n = +$('b-skh').value, R = +$('b-ryad').value, ed = $('b-edit').checked;
-    const ce = ed ? ' contenteditable="true" spellcheck="false"' : '';
-    const hur = esc($('b-hur').value.trim()), rik = esc($('b-rik').value.trim());
+  function arkush(o) {   // o: {st, n, R, ce, hur, rik, zap, dod} — той самий аркуш і для бланка, і для «Зразка»
+    const {n, R, ce} = o, st = o.st, hur = esc(o.hur), rik = esc(o.rik);
     let h = `<header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде заступник</span></div><h3>Відвідуваність сходин</h3><div class="sub">Юнацький гурток · «+» був · «−» не був · «в» — відсутній з поважної причини</div></div><img src="${EMB}" alt="Пластова лілея"></header>
       <div class="sh-f"><span><i>Гурток</i><u>${hur}</u></span><span><i>Курінь</i><u></u></span><span><i>Рік / місяці</i><u>${rik}</u></span></div>
       <table class="grid"><colgroup><col style="width:4%"><col style="width:17%">${'<col>'.repeat(n)}<col style="width:6%"></colgroup>
@@ -1112,14 +1131,21 @@ window.Stan = (function () {
     for (let r = 0; r < R; r++) {
       h += `<tr><td class="n">${r + 1}</td><td class="nm"${ce}>${esc(st.imena[r] || '')}</td>`;
       for (let c = 0; c < n; c++) { const v = st.m[r + ':' + c] || ''; h += `<td class="m ${CLS[v] || ''}" data-k="${r}:${c}">${v}</td>`; }
-      h += `<td class="tot" data-r="${r}"></td></tr>`;
+      let k = 0; for (let c = 0; c < n; c++) if (st.m[r + ':' + c] === '+') k++;
+      h += `<td class="tot" data-r="${r}">${k || ''}</td></tr>`;
     }
     h += `</tbody><tfoot><tr><td colspan="2" class="l">Присутні</td>`;
-    for (let c = 0; c < n; c++) h += `<td data-s="${c}"></td>`;
-    h += `<td></td></tr></tfoot></table>
+    for (let c = 0; c < n; c++) { let k = 0; for (let r = 0; r < R; r++) if (st.m[r + ':' + c] === '+') k++; h += `<td data-s="${c}">${k || ''}</td>`; }
+    h += `<td></td></tr></tfoot></table>${o.dod || ''}
       <div class="sh-sig"><div class="leg">Позначки: <b>+</b> був · <b>−</b> не був · <b>в</b> — поважна причина</div>
-      <div class="sig"><div>Записав <span></span></div><div>Перевірив виховник <span></span></div></div></div>
+      <div class="sig"><div>Записав <span>${esc(o.zap || '')}</span></div><div>Перевірив виховник <span></span></div></div></div>
       <footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Робочий бланк · ті самі стовпці, що в аркуші «Відвідуваність» книги гуртка</span></footer>`;
+    return h;
+  }
+  function malyuvaty() {
+    const n = +$('b-skh').value, R = +$('b-ryad').value, ed = $('b-edit').checked;
+    const ce = ed ? ' contenteditable="true" spellcheck="false"' : '';
+    const h = arkush({st, n, R, ce, hur: $('b-hur').value.trim(), rik: $('b-rik').value.trim()});
     const sh = $('sheet'); sh.innerHTML = h; sh.classList.toggle('edit', ed);
     $('b-hint').hidden = !ed; pidrakhunok();
   }
@@ -1145,6 +1171,20 @@ window.Stan = (function () {
   }
   Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
   $('b-view').addEventListener('click', () => otkryty(false));
+
+  /* ---------- «Зразок» (20.11): той самий аркуш з вигаданим гуртком, «ЗРАЗОК» навскіс, пояснення під таблицею ---------- */
+  (function () {
+    const im = ['Олесь', 'Мирося', 'Дана', 'Ярко', 'Соломія', 'Остап', 'Зоряна'], dt = ['07.11', '14.11', '21.11', '28.11'];
+    const zm = ['++++', '+−++', '+в++', '++−+', '+++в', '++++', '−+++'], zst = {imena: im, daty: dt, m: {}};
+    zm.forEach((rr, r) => [...rr].forEach((v, c) => { zst.m[r + ':' + c] = v; }));
+    const dod = '<div class="zr-p"><div><b>Дата</b> — над номером сходин; одні сходини — один стовпець.</div><div><b>Біля кожного імені</b> — одна позначка: + був, − не був, в — поважна причина (хворий, попередив). Причину не пишемо.</div><div><b>Разом і Присутні</b> — на папері порахуйте самі; у книзі гуртка рахується сама.</div></div>';
+    const zs = $('sheet-z');
+    zs.innerHTML = '<div class="zr-wm" aria-hidden="true">ЗРАЗОК</div>' + arkush({st: zst, n: 6, R: 9, ce: '', hur: 'Лелеки', rik: 'листопад–грудень 2026', zap: 'Ярко', dod});
+    window.addEventListener('afterprint', () => document.body.classList.remove('zr-pr'));
+    $('b-zr').addEventListener('click', () => Papir.view({title: 'Відвідуваність — зразок', file: 'Відвідуваність-zrazok', pages: [zs],
+      print: () => { document.body.classList.add('zr-pr'); window.print(); },
+      lead: 'Зразок з вигаданим гуртком — щоб бачити, що й як писати. Порожній бланк — під цим вікном.'}));
+  })();
 
   function wordHtml() {
     zberegty();

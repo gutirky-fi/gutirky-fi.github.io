@@ -261,6 +261,13 @@ html.pv-touch .bar2 .chk{display:none}   /* на телефоні — «Запо
 .sheet.edit [contenteditable]{outline:none;cursor:text;background:#fff7d6}
 .sheet.edit [contenteditable]:focus{background:#ffefa8}
 .bar.bez-r{grid-template-columns:1.3fr 1.3fr auto}
+/* «Зразок» (20.11): той самий аркуш, заповнений вигаданим прикладом, блідий напис навскіс і пояснення під таблицею */
+.sheet.zr{position:relative;overflow:hidden}
+.sheet.zr .zr-wm{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-22deg);font:700 170px/1 var(--disp);letter-spacing:.12em;color:rgba(200,40,74,.09);white-space:nowrap;pointer-events:none;z-index:1}
+.zr-p{margin:8px 0 0;padding:7px 10px;border-left:3px solid var(--acc);background:#fbf3f5;font-size:11.5px;line-height:1.4;color:var(--pi)}
+.zr-p b{color:var(--acc)}
+.sheet.zr.port .pb .ln{--lh:19px}   /* щоб пояснення й підписи вмістилися на один аркуш */
+.zr-p div+div{margin-top:2px}
 /* бланк-сторінка (один запис на A4 стоячи — напр. протокол) */
 .sheet.port{min-width:640px;max-width:800px;aspect-ratio:210/297;padding:6% 7% 4.4%}
 .pf{display:grid;grid-template-columns:1fr 1.6fr .7fr .9fr;gap:10px 18px;margin:6px 0 6px}
@@ -473,6 +480,8 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
   .sheet{min-width:0;max-width:none;width:100%;aspect-ratio:auto;height:186mm;padding:0;box-shadow:none;border-radius:0;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .sheet.edit [contenteditable]{background:none}
   .sheet.port{height:271mm}
+  body.zr-pr #b-desk-w .desk{display:none!important}
+  body.zr-pr #zr-host{display:block!important}
   html:has(body.vt-pr),body.vt-pr{background:#fff!important;color-scheme:light}
   body.vt-pr>*{display:none!important}
   body.vt-pr>#vt-print{display:block!important}
@@ -594,6 +603,7 @@ html.vykh .btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}html
         <button class="btn" type="button" id="b-view" style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>Переглянути</button>
         <button class="btn" type="button" id="b-print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/></svg>Друк або PDF</button>
         <button class="btn" type="button" id="b-word"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13l1.5 5 2.5-4 2.5 4 1.5-5"/></svg>Word</button>
+        <button class="btn" type="button" id="b-zr" hidden style="grid-column:1/-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>Зразок — як заповнити</button>
         <button class="btn" type="button" id="b-share" hidden style="grid-column:1/-1">Поділитися</button>
       </div>
     </div>
@@ -612,6 +622,7 @@ html.vykh .btn.main{background:var(--d);border-color:var(--d);color:#0e1f15}html
     </form>
     <div id="b-desk-w">
       <div class="desk"><div class="sheet" id="sheet"></div></div>
+      <div id="zr-host" hidden><div class="sheet zr" id="sheet-z"></div></div>
       <p class="hint" id="b-hint" hidden>Жовте — можна вписати. Сірі стовпці «авто» рахує книга гуртка — на папері їх можна заповнити вручну.</p>
     </div>
   </section>
@@ -1457,7 +1468,7 @@ window.Nazvy = (function () {
 <script>
 (function () {
   'use strict';
-  const K = {"t": "Протокол", "hand": "що обговорили й що вирішили", "who": "Веде <b>писар<\/b> (Правильник УПЮ ч. I, п. 3.4.3) — на сходинах і на гуртковій раді. Рішення гурткової ради — відкритим голосуванням, більшістю; набирають сили після згоди впорядника (п. 3.2.1, переказ).", "posada": "писар", "arkush": "Протоколи", "fail": "Protokol", "forma": "Протокол", "blank": {"t": "Протокол", "sub": "Сходини · гурткова рада · провід гуртка", "vyd": "storinka", "pola": [["Дата", ""], ["Вид", "сходини / гурткова рада / провід"], ["№", ""], ["Присутніх", ""]], "bloky": [["Питання", 8, "порядок денний — по пунктах"], ["Рішення", 15, "що вирішили; хто відповідає й до коли"], ["Голосування (за/проти/утрим.)", 2, "для рішень гурткової ради"]], "pidpysy": ["Писар", "Гуртковий", "Згода впорядника (так / ні)"]}, "polia": [{"h": "Дата", "typ": "date", "req": true, "para": true}, {"h": "Вид", "typ": "spysok", "opt": ["сходини", "гурткова рада", "провід гуртка"], "req": true}, {"h": "№", "l": "№ протоколу", "typ": "num", "ph": "напр. 3", "para": true}, {"h": "Присутніх", "typ": "num", "ph": "скільки було"}, {"h": "Питання", "typ": "area", "req": true, "ph": "1. …\n2. …", "pidk": "Порядок денний — кожне питання з нового рядка."}, {"h": "Рішення", "typ": "area", "ph": "що вирішили; хто відповідає й до коли"}, {"h": "Голосування (за/проти/утрим.)", "l": "Голосування", "ph": "за / проти / утрималися — напр. 6/0/0", "pidk": "Для рішень гурткової ради. На сходинах можна лишити порожнім."}, {"h": "Згода впорядника", "typ": "spysok", "opt": ["так", "ні", "чекає"], "para": true, "pidk": "Рішення ради набирають сили після згоди."}, {"h": "Писар", "typ": "imya"}], "pidsumok": "Вид", "povtor": "Одні сходини чи рада — один протокол: якщо за цю дату такий уже є, ви побачите це вище й зможете виправити.", "kudy": ["Аркуш <b>«Протоколи»<\/b> книги гуртка — один рядок на протокол.", "Ключ — дата й вид: сходини й рада того самого дня — два різні протоколи.", "Сайт нічого не зберігає — лише передає."], "kliuch": ["Дата", "Вид"], "demo": {"2026-11-05|сходини": {"khto": "Мирося", "dani": {"№": "11", "Присутніх": "6", "Питання": "1. Весняний табір\n2. Внески за листопад", "Рішення": "Їдемо на табір у травні — список виряду готує Соломія до 20.11.", "Писар": "Мирося"}}, "2026-09-12|гурткова рада": {"khto": "Мирося", "zatv": true, "dani": {"№": "1", "Присутніх": "6", "Питання": "вибір проводу; річний план", "Рішення": "гуртковий — Олесь; план прийнято", "Голосування (за/проти/утрим.)": "6/0/0", "Згода впорядника": "так", "Писар": "Мирося"}}}, "yak": [["Протокол сходин", "«Вид» — сходини, дата, № протоколу, скільки було. «Питання» — кожне з нового рядка; «Рішення» — що вирішили, хто відповідає й до коли."], ["Гурткова рада", "«Вид» — гурткова рада, у «Голосуванні» — за / проти / утрималися (напр. 6/0/0). «Згода впорядника» — «чекає», доки не погодив: рішення ради набирають сили після згоди."], ["Сходини й рада в один день", "Це два окремі протоколи: ключ — дата й вид."], ["За цю дату протокол уже є", "Форма покаже, що записано: виправляєте той самий. Затверджений виховником — закритий."]]};
+  const K = {"t": "Протокол", "hand": "що обговорили й що вирішили", "who": "Веде <b>писар<\/b> (Правильник УПЮ ч. I, п. 3.4.3) — на сходинах і на гуртковій раді. Рішення гурткової ради — відкритим голосуванням, більшістю; набирають сили після згоди впорядника (п. 3.2.1, переказ).", "posada": "писар", "arkush": "Протоколи", "fail": "Protokol", "forma": "Протокол", "blank": {"t": "Протокол", "sub": "Сходини · гурткова рада", "vyd": "storinka", "pola": [["Дата", ""], ["Вид", "сходини / гурткова рада"], ["№", ""], ["Присутніх", ""]], "bloky": [["Питання", 8, "порядок денний — по пунктах"], ["Рішення", 15, "що вирішили; хто відповідає й до коли"], ["Голосування (за/проти/утрим.)", 2, "для рішень гурткової ради"]], "pidpysy": ["Писар", "Гуртковий", "Згода впорядника (так / ні)"]}, "polia": [{"h": "Дата", "typ": "date", "req": true, "para": true}, {"h": "Вид", "typ": "spysok", "opt": ["сходини", "гурткова рада"], "req": true}, {"h": "№", "l": "№ протоколу", "typ": "num", "ph": "напр. 3", "para": true}, {"h": "Присутніх", "typ": "num", "ph": "скільки було, напр. 7"}, {"h": "Питання", "typ": "area", "req": true, "ph": "1. Зимова мандрівка\n2. Внески", "pidk": "Порядок денний — кожне питання з нового рядка."}, {"h": "Рішення", "typ": "area", "ph": "1. Йдемо 17.01 — веде Олесь\n2. Внесок до 01.12"}, {"h": "Голосування (за/проти/утрим.)", "l": "Голосування", "ph": "за / проти / утрималися — напр. 6/0/0", "pidk": "Для рішень гурткової ради. На сходинах можна лишити порожнім."}, {"h": "Згода впорядника", "typ": "spysok", "opt": ["так", "ні", "чекає"], "para": true, "pidk": "Рішення ради набирають сили після згоди."}, {"h": "Писар", "typ": "imya"}], "pidsumok": "Вид", "povtor": "Одні сходини чи рада — один протокол: якщо за цю дату такий уже є, ви побачите це вище й зможете виправити.", "kudy": ["Аркуш <b>«Протоколи»<\/b> книги гуртка — один рядок на протокол.", "Ключ — дата й вид: сходини й рада того самого дня — два різні протоколи.", "Сайт нічого не зберігає — лише передає."], "kliuch": ["Дата", "Вид"], "demo": {"2026-11-05|сходини": {"khto": "Мирося", "dani": {"№": "11", "Присутніх": "6", "Питання": "1. Весняний табір\n2. Внески за листопад", "Рішення": "Їдемо на табір у травні — список виряду готує Соломія до 20.11.", "Писар": "Мирося"}}, "2026-09-12|гурткова рада": {"khto": "Мирося", "zatv": true, "dani": {"№": "1", "Присутніх": "6", "Питання": "вибір проводу; річний план", "Рішення": "гуртковий — Олесь; план прийнято", "Голосування (за/проти/утрим.)": "6/0/0", "Згода впорядника": "так", "Писар": "Мирося"}}}, "yak": [["Коли писати протокол", "Лише коли гурток щось вирішив. Що робили на сходинах — це документ «Сходини» (веде гуртковий), не протокол."], ["Вирішили щось на сходинах", "«Вид» — сходини. «Питання» — про що говорили, кожне з нового рядка; «Рішення» — що вирішили, хто відповідає й до коли."], ["Гурткова рада", "Щонайменше раз на рік: обирає провід і затверджує план праці. Протокол — завжди. «Голосування» — за / проти / утрималися (напр. 6/0/1)."], ["Згода впорядника", "Рішення ради діють лише після згоди впорядника: поки він не погодив — «чекає»."], ["Сходини й рада в один день", "Це два окремі протоколи."], ["За цю дату протокол уже є", "Форма покаже, що записано: виправляєте той самий. Затверджений виховником — закритий."]], "zrazok": {"hur": "Лелеки", "rik": "2026–2027", "pola": {"Дата": "14.11.2026", "Вид": "гурткова рада", "№": "3", "Присутніх": "7"}, "bloky": {"Питання": "1. Зимова мандрівка\n2. Внески на друге півріччя", "Рішення": "1. Йдемо в мандрівку 17.01.2027 — веде Олесь, план безпеки до 10.01.\n2. Внесок 20 € за півріччя — сплатити до 01.12, нагадує Дана.", "Голосування (за/проти/утрим.)": "1. — 6/0/1   2. — 7/0/0"}, "poyasn": [["Питання", "кожне з нового рядка, з номером."], ["Рішення", "під тим самим номером: що, хто, до коли."], ["Згода впорядника", "підпис унизу; до нього рішення ради — «чекає»."]]}};
   const $ = id => document.getElementById(id);
   const DEMO = true || /[?&]demo\b/.test(location.search);
   /* Відкрито з «Вхід виховника → Гроші й майно» (?v, 14.11): зелений колір виховника, «← До вибору», вхід без повторного коду
@@ -1495,24 +1506,25 @@ window.Nazvy = (function () {
     const ps = document.createElement('style'); ps.textContent = '@page{size:A4 portrait;margin:12mm}'; document.head.appendChild(ps);
   } else if (B.r) $('b-ryad').value = String(B.r);
   function zberegty() { $('sheet').querySelectorAll('[data-k]').forEach(td => { const v = (td.classList.contains('ln') ? td.innerText : td.textContent).trim(); if (v) st[td.dataset.k] = v; else delete st[td.dataset.k]; }); }
-  function shapka() {
+  function shapka(v) {
+    v = v || {hur: $('b-hur').value.trim(), rik: $('b-rik').value.trim(), st};
     return `<header class="hd"><div class="hl"><div class="kind">Документи гуртка<span class="for">веде ${esc(K.posada)}</span></div><h3>${esc(B.t)}</h3><div class="sub">${esc(B.sub)}</div></div><img src="${EMB}" alt="Пластова лілея"></header>
-      <div class="sh-f"><span><i>Гурток</i><u>${esc($('b-hur').value.trim())}</u></span><span><i>Курінь</i><u>${esc(st.kur || '')}</u></span><span><i>Рік / місяці</i><u>${esc($('b-rik').value.trim())}</u></span></div>`;
+      <div class="sh-f"><span><i>Гурток</i><u>${esc(v.hur)}</u></span><span><i>Курінь</i><u>${esc(v.st.kur || '')}</u></span><span><i>Рік / місяці</i><u>${esc(v.rik)}</u></span></div>`;
   }
-  const pidpys = () => `<div class="sh-sig"><div class="leg">${esc(B.leg || '')}</div><div class="sig"><div>Записав <span>${esc(st.zap || '')}</span></div><div>Перевірив виховник <span></span></div></div></div>`;
+  const pidpys = (s = st) => `<div class="sh-sig"><div class="leg">${esc(B.leg || '')}</div><div class="sig"><div>Записав <span>${esc(s.zap || '')}</span></div><div>Перевірив виховник <span></span></div></div></div>`;
   const pidval = () => `<footer class="ft"><span><b>Пласт у Фінляндії</b> · бібліотека гутірок</span><span>Робочий бланк · ті самі ${PORT ? 'поля' : 'стовпці'}, що в аркуші «${esc(K.arkush)}» книги гуртка</span></footer>`;
-  function tablytsia(ce) {
-    const R = +$('b-ryad').value;
+  function tablytsia(ce, s0, R0) {
+    const R = R0 || +$('b-ryad').value, st0 = s0 || st;
     let h = `<table class="grid${B.tisno ? ' tisno' : ''}"><colgroup><col style="width:3.5%">${S.map(s => `<col style="width:${s[1]}%">`).join('')}</colgroup><thead><tr><th style="text-align:center">№</th>`
       + S.map(s => `<th${s[2] ? ' class="au"' : ''}>${esc(s[0])}</th>`).join('') + `</tr></thead><tbody>`;
     for (let r = 0; r < R; r++) {
-      h += `<tr><td class="n">${r + 1}</td>` + S.map((s, c) => `<td data-k="${r}:${c}"${s[2] ? ' class="au"' : ''}${ce}>${esc(st[r + ':' + c] || '')}</td>`).join('') + `</tr>`;
+      h += `<tr><td class="n">${r + 1}</td>` + S.map((s, c) => `<td data-k="${r}:${c}"${s[2] ? ' class="au"' : ''}${ce}>${esc(st0[r + ':' + c] || '')}</td>`).join('') + `</tr>`;
     }
     return h + `</tbody></table>`;
   }
   // B.pola: [[поле, підказка]] — рядок угорі; B.bloky: [[поле, ліній, підказка]]; B.pidpysy: [підпис, …]
-  function storinka(ce, ceL) {
-    const v = k => esc(st[k] || '');
+  function storinka(ce, ceL, s0) {
+    const v = k => esc((s0 || st)[k] || '');
     return `<div class="pf">${B.pola.map(([h, ph]) => `<div><i>${esc(h)}${ph ? ' · ' + esc(ph) : ''}</i><u data-k="f:${esc(h)}"${ce}>${v('f:' + h)}</u></div>`).join('')}</div>`
       + B.bloky.map(([h, n, ph]) => `<div class="pb"><h4>${esc(h)}${ph ? `<small>${esc(ph)}</small>` : ''}</h4><div class="ln" style="--n:${n}" data-k="b:${esc(h)}"${ceL}>${v('b:' + h)}</div></div>`).join('')
       + `<div class="psig">${B.pidpysy.map(x => `<div><span></span>${esc(x)}</div>`).join('')}</div>`;
@@ -1535,6 +1547,26 @@ window.Nazvy = (function () {
   let fmBulo = false;   // аркуш уже заповнювали через форму
   Papir.fit($('sheet').parentElement, {tipAt: $('sheet'), tip: 'Торкніться аркуша — він відкриється на весь екран: там можна вписати, надіслати PDF і надрукувати.', open: () => otkryty(true)});
   $('b-view').addEventListener('click', () => otkryty(false));
+
+  /* ---------- «Зразок» (20.11): той самий аркуш, заповнений вигаданим прикладом (K.zrazok), «ЗРАЗОК» навскіс,
+     під таблицею 2–3 пояснення. Нічого з вписаного людиною не чіпає; друк / PDF — як у бланка. ---------- */
+  const Z = K.zrazok;
+  if (Z) {
+    $('b-zr').hidden = false;
+    const zst = {zap: Z.zap || ''};
+    (Z.ryadky || []).forEach((r, i) => S.forEach((s, c) => { if (r[s[0]] != null) zst[i + ':' + c] = r[s[0]]; }));
+    Object.entries(Z.pola || {}).forEach(([h, x]) => { zst['f:' + h] = x; });
+    Object.entries(Z.bloky || {}).forEach(([h, x]) => { zst['b:' + h] = x; });
+    const zp = (Z.poyasn || []).length ? `<div class="zr-p">${Z.poyasn.map(([a, b]) => `<div><b>${esc(a)}</b> — ${esc(b)}</div>`).join('')}</div>` : '';
+    const zs = $('sheet-z'); if (PORT) zs.classList.add('port');
+    zs.innerHTML = '<div class="zr-wm" aria-hidden="true">ЗРАЗОК</div>' + shapka({hur: Z.hur || '', rik: Z.rik || '', st: zst})
+      + (PORT ? storinka('', '', zst) : tablytsia('', zst, Math.max((Z.ryadky || []).length + 3, 6)) + zp + pidpys(zst)) + pidval();
+    if (PORT && zp) zs.querySelector('.psig').insertAdjacentHTML('beforebegin', zp);
+    const zDruk = () => { document.body.classList.add('zr-pr'); window.print(); };
+    window.addEventListener('afterprint', () => document.body.classList.remove('zr-pr'));
+    $('b-zr').addEventListener('click', () => Papir.view({title: K.t + ' — зразок', file: (K.fail || K.t) + '-zrazok', pages: [zs], print: zDruk,
+      lead: 'Зразок з вигаданим гуртком — щоб бачити, що й як писати. Порожній бланк — під цим вікном.'}));
+  }
 
   /* ---------- форма → аркуш (10.11.2026) ----------
      «Заповнити» → великі поля (скільки треба рядків) → з них складається той самий аркуш → «Виправити у формі»
