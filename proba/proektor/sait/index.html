@@ -255,11 +255,24 @@ body.tel #ctl:not([hidden]){display:flex;flex-direction:column;position:fixed;in
 #str button.ok{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;font-size:1.2rem}
 #str .gr{grid-column:1/4;display:flex;gap:.7rem}
 #str .gr button{flex:1;font-size:1rem;padding:.8rem}
+/* телефон: вибір вигляду — звичний сайт або простий */
+#vyb{display:none}
+body.tel #vyb[hidden]{display:none!important}
+body.tel #vyb{display:flex;border:1px solid var(--s-ln);border-radius:var(--s-r-pil);background:var(--s-card2);padding:2px}
+body.tel #tbar #vyb button{border:0;background:none;padding:.4rem .75rem;color:var(--s-mut)}
+body.tel #tbar #vyb button.on{background:var(--s-ink);color:var(--s-bg)}
+body.tel #tbar{gap:.45rem}
+#rs{display:none}
+body.tel.rsm #rs{display:block;position:fixed;inset:3.4rem 0 0;z-index:24;background:var(--s-bg)}
+#rf{width:100%;height:100%;border:0;display:block;background:var(--s-bg)}
+body.tel.rsm #app,body.tel.rsm #det{display:none!important}
+@media (max-width:430px){body.tel #tbar .st>span{display:none}body.tel #tbar button{padding:.45rem .7rem}}
 </style>
 </head>
 <body>
-<div id="tbar"><button type="button" id="tb-nazad">← Назад</button><button type="button" id="tb-dom">Головна</button><span class="st" id="tb-st"><i></i><span>Підключаємось…</span></span></div>
+<div id="tbar"><button type="button" id="tb-nazad">← Назад</button><button type="button" id="tb-dom">Головна</button><div id="vyb" role="group" aria-label="Вигляд на телефоні"><button type="button" data-m="sait">Сайт</button><button type="button" data-m="prost">Простий</button></div><span class="st" id="tb-st"><i></i><span>Підключаємось…</span></span></div>
 <div id="app"></div>
+<div id="rs"><iframe id="rf" title="Сайт"></iframe></div>
 <div id="det" hidden><div class="vk" id="dvk"></div></div>
 <div id="load" hidden>Відкриваємо…</div>
 <form id="tkod" hidden><div class="nad">Виховники</div><h2>Код виховників</h2><p>Код вводиться лише тут, на телефоні — на проєкторі його не видно.</p>
@@ -922,6 +935,18 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     FR.contentWindow.location.replace(it.u);
     tell(stan());
   }
+  /* адреса з «Сайту» на телефоні → що відкрити на проєкторі */
+  function zAdresy(u, n) {
+    let x; try { x = new URL(u, location.origin); } catch (e) { return null; }
+    if (x.origin !== location.origin) return null;
+    const p = x.pathname.replace(/^\/proba\/(?=(skob-hra|bingo|svoya-hra|opytuvannia|novyi-vykhovnyk|hto)\/)/, '/');
+    const g = D.gut.find(gg => gg.v.some(v => { try { const y = new URL(v[1], location.origin); return y.pathname === p && (y.hash === x.hash || (!x.hash && /#hutirka$/.test(v[1]))); } catch (e) { return false; } }));
+    if (g) { const v = g.v.find(vv => new URL(vv[1], location.origin).hash === x.hash) || g.v[0]; return { u: v[1], k: 'gut', n: g.t + (g.v.length > 1 ? ' · ' + v[0] : '') }; }
+    if (/^\/gutirky\/[a-z0-9-]+\/$/.test(p) && (!x.hash || x.hash === '#hutirka')) return { u: p + '#hutirka', k: 'gut', n: n || 'Гутірка' };
+    const m = p.match(/^\/(skob-hra|bingo|svoya-hra|opytuvannia|novyi-vykhovnyk|hto)\/$/);
+    if (m) { const k = IHRY_VSI.find(i => i.id === m[1]) || D.tools.find(t => t.id === m[1]); return { u: '/proba/' + m[1] + '/' + (x.search || '?dyz=3') + x.hash, k: 'ihry', n: (k && (k.n || k.nazva)) || n || 'Гра', vsi: 1 }; }
+    return null;
+  }
   function naZavantazh() {
     if (!OPEN || !FR) return;
     let w; try { w = FR.contentWindow; if (w.location.href === 'about:blank') return; } catch (e) { $('#load').hidden = true; return; }
@@ -1051,6 +1076,17 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
         dija(d.go); return;
       }
       if (d.t === 'tab' && typeof d.v === 'string') { if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } const el = document.querySelector(`.vkl .t[data-tab="${CSS.escape(d.v)}"]`); if (el) { fokus(el); vkladka(d.v); } return; }
+      /* «Сайт» на телефоні: розділ і вкладка, де зараз телефон */
+      if (d.t === 'nav' && typeof d.scr === 'string') {
+        const s = d.scr; if (s !== 'home' && !EKR[s]) return; if (s === 'vyh' && !vKod()) return;
+        if (OPEN) { if (s === SCR) return; zakryty(); }
+        if (!$('#det').hidden) { $('#det').hidden = true; DET = null; }
+        const tb = d.tab && EKR[s] && EKR[s].tabs.some(x => x[0] === d.tab) ? d.tab : '';
+        if (SCR !== s) { if (s === 'home') stack.length = 0; else stack.push({ scr: SCR === 'kod' ? 'home' : SCR }); SCR = s; if (tb) TAB[s] = tb; malyuvaty(); if (s === 'vyh') pidgotIhry(); }
+        else if (tb) { const el = document.querySelector(`.vkl .t[data-tab="${CSS.escape(tb)}"]`); if (el) fokus(el); vkladka(tb); }
+        return;
+      }
+      if (d.t === 'url' && typeof d.u === 'string') { const it = zAdresy(d.u, String(d.n || '')); if (!it) return; if (it.k === 'gut' && !vKod() && !it.vsi) return; if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } vidkryty(it); return; }
       if (d.t === 'back') { nazad(); return; }
       if (d.t === 'home') { if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } stack.length = 0; SCR = 'home'; malyuvaty(); return; }
       if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(d.key)) { knopka(d.key); return; }
@@ -1140,12 +1176,12 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       p.on('open', () => {
         if (my !== att) return;
         const c = conn = p.connect('plast-tv-' + CODE_T, { reliable: true });
-        c.on('open', () => { clearTimeout(tmo); svyaz = true; tStan(true, 'Проєктор'); c.send({ t: 'sync', id: TID }); });
+        c.on('open', () => { clearTimeout(tmo); svyaz = true; tStan(true, 'Проєктор'); c.send({ t: 'sync', id: TID }); if (RM === 'sait') { rsLast = ''; setTimeout(rsRoute, 400); } });
         c.on('data', d => {
           if (!d || my !== att) return;
           if (d.t === 'st') naStan(d);
           else if (d.t === 'zaynyato' || d.t === 'vidkl') { att++; try { c.close(); } catch (e) { /* ok */ }
-            tStan(false, d.t === 'zaynyato' ? 'Зайнято' : 'Відключено'); $('#ctl').hidden = true; $('#det').hidden = true;
+            tStan(false, d.t === 'zaynyato' ? 'Зайнято' : 'Відключено'); $('#ctl').hidden = true; $('#det').hidden = true; document.body.classList.remove('rsm'); $('#vyb').hidden = true;
             $('#app').innerHTML = `<div class="nad">Проєктор</div><h1 class="m">${d.t === 'zaynyato' ? 'Проєктором уже керує інший телефон' : 'Проєктор відключив цей телефон'}</h1><div class="lin" style="--c:var(--s-vyh)"></div><p class="porozh">${d.t === 'zaynyato' ? 'Керувати може лише один телефон.' : 'Щоб керувати знову, скануйте новий QR на головній проєктора.'}</p>`; }
           else if (d.t === 'vhid-ok') { const v = $('#tk-in').value.replace(/\s/g, ''); if (v) ls.set(K_TK, v); $('#tkod').hidden = true; chekV = false; try { navigator.vibrate && navigator.vibrate(30); } catch (e) { /* ok */ } }
           else if (d.t === 'vhid-err') { ls.del(K_TK); $('#tkod').hidden = false; $('#tk-err').textContent = chekV ? '' : 'Код не підходить.'; chekV = false; $('#tk-in').value = ''; }
@@ -1154,9 +1190,78 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       });
     })();
   }
+  /* ---------------- телефон: вигляд «Сайт» — звичний сайт, проєктор повторює ---------------- */
+  const K_RM = 'plast-proektor:vyglyad';
+  let RM = ls.get(K_RM) === 'prost' ? 'prost' : 'sait', rsLast = '', rsDet = false, rsT = 0, rsVh = null;
+  const RS_URL = '/';
+  const RS_KAST = /^\/(proba\/)?(gutirky\/[a-z0-9-]+\/$|biblioteka\/$|skob-hra\/$|bingo\/$|svoya-hra\/$|opytuvannia\/$|novyi-vykhovnyk\/$|hto\/$)/;
+  const RS_SEK = { 'h-games': 'ihry', 'h-tips': 'tips', 'h-songs': 'songs', 'h-facts': 'fakty', 'h-mat': 'mat', 'h-kat': 'vm' };
+  const RS_VT = { g: 'gut', i: 'vih', t: 'tools' };
+  function rezhym(m) {
+    RM = m; ls.set(K_RM, m);
+    $('#vyb').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+    document.body.classList.toggle('rsm', m === 'sait');
+    if (m === 'sait') { const f = $('#rf'); if (!f.dataset.on) { f.dataset.on = 1; f.src = RS_URL; } else { rsLast = ''; rsRoute(); } }
+    else { $('#tkod').hidden = true; }
+  }
+  function rsWin() { try { const w = $('#rf').contentWindow; return w && w.document ? w : null; } catch (e) { return null; } }
+  function rsNav(scr, tab) { const k = scr + '|' + (tab || ''); if (k === rsLast) return; if (!(conn && conn.open)) { rsLast = ''; return; } rsLast = k; send({ t: 'nav', scr, tab: tab || '' }); }
+  function rsLs(w, keys) { for (const k of keys) { try { const v = JSON.parse(w.localStorage.getItem(k)); if (v) return v; } catch (e) { /* ok */ } } return null; }
+  function rsRoute() {
+    const w = rsWin(); if (!w || RM !== 'sait' || !$('#ctl').hidden) return;
+    const h = w.location.hash.slice(1), v = ['vsi', 'yun', 'vyh'].includes(h) ? h : 'home';
+    if (v !== 'vyh') { rsNav(v, v === 'home' ? '' : rsSekciya(w)); return; }
+    const d = w.document, zakr = d.querySelector('#v-vyh .vtabs') && !d.querySelector('#v-vyh .vtabs').closest('[hidden]');
+    if (!zakr) return;   // розділ ще закритий — код вводять на сайті
+    if (!ST.vin) { const k = rsLs(w, ['gutirky:kod', 'proba-vhody:kod']); if (k && conn && conn.open && rsVh !== k) { rsVh = k; chekV = true; send({ t: 'vhid', kod: String(k) }); rsLast = ''; setTimeout(rsRoute, 1200); } return; }
+    const b = d.querySelector('.vtabs [role=tab][aria-selected="true"]');
+    rsNav('vyh', b ? RS_VT[b.id.slice(2)] || '' : '');
+  }
+  function rsSekciya(w) {   // розділ сторінки, до якого догорнули
+    let t = '';
+    for (const id in RS_SEK) { const e = w.document.getElementById(id); if (e && !e.closest('[hidden]') && e.getBoundingClientRect().top < w.innerHeight * 0.45) t = RS_SEK[id]; }
+    return t;
+  }
+  function rsHook() {
+    const w = rsWin(); if (!w) return; const d = w.document;
+    if (d.__pt) return; d.__pt = 1; rsLast = ''; rsDet = false;
+    const stop = e => { e.preventDefault(); e.stopPropagation(); clearTimeout(rsT); };
+    const vidkryvaiu = () => { $('#c-n').textContent = 'Відкриваємо на проєкторі…'; $('#seg').hidden = true; $('#pf').hidden = true; $('#str').hidden = false; $('#ctl').hidden = false;
+      setTimeout(() => { if (!ST.open && $('#c-n').textContent === 'Відкриваємо на проєкторі…') { $('#ctl').hidden = true; toast('Проєктор не відкрив — спробуйте ще раз'); } }, 5000); };
+    d.addEventListener('click', e => {
+      const t = e.target && e.target.closest ? e.target : null; if (!t) return;
+      let b;
+      if ((b = t.closest('[data-got]'))) { stop(e); send({ t: 'a', go: 'got:' + b.dataset.got }); vidkryvaiu(); return; }
+      if ((b = t.closest('[data-ig]'))) { if (b.dataset.druk) return; stop(e); send({ t: 'a', go: 'ig:' + b.dataset.ig }); vidkryvaiu(); return; }
+      if ((b = t.closest('#tips [data-tip]'))) { rsDet = true; send({ t: 'a', go: 'tip:' + b.dataset.tip }); return; }
+      if ((b = t.closest('#songs [data-song]'))) { rsDet = true; send({ t: 'a', go: 'song:' + b.dataset.song }); return; }
+      if ((b = t.closest('#kgrid [data-k]'))) { rsDet = true; send({ t: 'a', go: 'vm:' + b.dataset.k }); return; }
+      if ((b = t.closest('#vkgrid [data-vk]'))) { rsDet = true; send({ t: 'a', go: 'vm:' + b.dataset.vk }); return; }
+      if ((b = t.closest('[data-fvm]'))) { rsDet = true; send({ t: 'a', go: 'vm:' + b.dataset.fvm }); return; }
+      if (t.closest('.vtabs [role=tab]')) { setTimeout(rsRoute, 50); return; }
+      const a = t.closest('a[href]'); if (!a || a.target === '_blank') return;
+      let u; try { u = new URL(a.href); } catch (x) { return; }
+      if (u.origin !== location.origin || !RS_KAST.test(u.pathname)) return;
+      if (/gutirky\//.test(u.pathname) && u.hash && u.hash !== '#hutirka') return;   // план, «для юнаків» — читаємо на телефоні
+      if (/biblioteka\//.test(u.pathname) && !/^#(povna|vyshkil)/.test(u.hash)) return;
+      stop(e); send({ t: 'url', u: u.pathname + u.search + u.hash, n: (a.innerText || a.getAttribute('aria-label') || '').split('\n')[0].trim() }); vidkryvaiu();
+    }, true);
+    d.addEventListener('submit', () => setTimeout(() => { rsLast = ''; rsRoute(); }, 400), true);
+    w.addEventListener('hashchange', () => setTimeout(rsRoute, 60));
+    w.addEventListener('scroll', () => { clearTimeout(rsT); rsT = setTimeout(rsRoute, 300); }, { passive: true });
+    const sh = d.getElementById('sheet');
+    if (sh) new w.MutationObserver(() => { if (sh.hidden && rsDet) { rsDet = false; send({ t: 'a', go: 'zakrDet' }); } }).observe(sh, { attributes: true, attributeFilter: ['hidden'] });
+    rsRoute();
+  }
   if (TEL) {
-    $('#tb-nazad').onclick = tNazad;
-    $('#tb-dom').onclick = () => { $('#tkod').hidden = true; send({ t: 'home' }); };
+    $('#rf').addEventListener('load', () => { const w = rsWin(); if (w && w.document.getElementById('v-vsi')) rsHook(); });
+    $('#vyb').querySelectorAll('button').forEach(b => b.onclick = () => rezhym(b.dataset.m));
+    rezhym(RM);
+    $('#tb-nazad').onclick = () => {
+      if (RM === 'sait' && $('#ctl').hidden && $('#tkod').hidden) { const w = rsWin(); if (w && w.location.hash) { try { w.history.back(); } catch (e) { /* ok */ } } return; }
+      tNazad();
+    };
+    $('#tb-dom').onclick = () => { $('#tkod').hidden = true; send({ t: 'home' }); rsLast = 'home|'; if (RM === 'sait' && $('#ctl').hidden) { const w = rsWin(); if (w) { try { w.location.hash = ''; } catch (e) { /* ok */ } } } };
     $('#tkod').onsubmit = e => { e.preventDefault(); const v = $('#tk-in').value.replace(/\s/g, ''); if (!v) return; $('#tk-err').textContent = ''; send({ t: 'vhid', kod: v }); };
     $('#tk-x').onclick = () => { $('#tkod').hidden = true; };
     $('#seg').querySelectorAll('button').forEach(b => b.onclick = () => tVyd(b.dataset.v));
