@@ -249,7 +249,8 @@ body.tel #ctl:not([hidden]){display:flex;flex-direction:column;position:fixed;in
 #ctl .seg button{flex:1;font:700 .9rem var(--s-txt);padding:.45rem;border-radius:var(--s-r-pil);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-body)}
 #ctl .seg button.on{background:var(--s-ink);color:var(--s-bg)}
 #pf{flex:1;border:0;width:100%;background:var(--s-bg)}
-#pf[hidden],#str[hidden]{display:none}
+#pf[hidden],#str[hidden],#dz[hidden]{display:none}
+#dz{flex:1;border:0;width:100%;background:#1b1d21}
 #str{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,5.2rem) auto;gap:.7rem;padding:1.4rem;align-content:center}
 #str button{font:700 1.6rem var(--s-txt);border-radius:var(--s-r-plytka);border:1px solid var(--s-ln);background:var(--s-card2);color:var(--s-ink)}
 #str button.ok{background:var(--s-vyh);border-color:var(--s-vyh);color:#fff;font-size:1.2rem}
@@ -280,6 +281,7 @@ body.tel.rsm #app,body.tel.rsm #det{display:none!important}
   <div class="err" id="tk-err"></div><div class="row"><button type="button" id="tk-x">Скасувати</button><button class="main" type="submit">Увійти</button></div></form>
 <div id="ctl" hidden><div class="hd"><small>На проєкторі</small><b id="c-n"></b><div class="seg" id="seg"><button type="button" data-v="pult">Пульт</button><button type="button" data-v="str">Стрілки</button></div></div>
   <iframe id="pf" title="Пульт"></iframe>
+  <iframe id="dz" name="plast-dzerkalo" title="Гра" hidden></iframe>
   <div id="str"><span></span><button type="button" data-k="ArrowUp"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button><span></span><button type="button" data-k="ArrowLeft"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><button type="button" class="ok" data-k="Enter">OK</button><button type="button" data-k="ArrowRight"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button><span></span><button type="button" data-k="ArrowDown"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button><span></span>
     <div class="gr"><button type="button" data-g="-1">Гортати вгору</button><button type="button" data-g="1">Гортати вниз</button></div></div></div>
 <div id="tst" class="off"></div>
@@ -483,6 +485,17 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
     off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
     emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
+  if (window.name === 'plast-dzerkalo') {
+    class S extends Em {
+      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
+      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
+      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
+    }
+    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
+    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
+    return;
   }
 
   /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
@@ -865,8 +878,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     if (k === 'ihra') { const g = IHRY_VSI.find(x => x.id === a); if (g) vidkryty({ u: g.u, k: 'ihry', n: g.n }); return; }
     if (k === 'tool') { const x = D.tools.find(t => t.id === a); if (x) vidkryty({ u: x.u, k: 'ihry', n: x.n }); return; }
     if (k === 'got') { const g = D.got.find(x => x.id === a); if (g) vidkryty({ u: g.u, k: 'ihry', n: g.nazva }); return; }
-    if (k === 'ig') { const g = IG && IG[+a]; if (!g) return; try { localStorage.setItem('ihry.vidkryty', JSON.stringify({ nazva: g.nazva, c: g.c, druk: false, t: Date.now() })); } catch (e) { toast('Не вдалося передати питання грі'); return; }
-      vidkryty({ u: D.igUrl[g.gra] || '/proba/svoya-hra/?dyz=3', k: 'ihry', n: g.nazva }); return; }
+    if (k === 'ig') { const g = IG && IG[+a]; if (!g) return; const igls = JSON.stringify({ nazva: g.nazva, c: g.c, druk: false, t: Date.now() }); try { localStorage.setItem('ihry.vidkryty', igls); } catch (e) { toast('Не вдалося передати питання грі'); return; }
+      vidkryty({ u: D.igUrl[g.gra] || '/proba/svoya-hra/?dyz=3', k: 'ihry', n: g.nazva, igls }); return; }
     if (k === 'gut') { const g = D.gut.find(x => x.id === a); if (!g) return; if (g.v.length > 1) vikno('vibir', a); else vidkryty({ u: g.v[0][1], k: 'gut', n: g.t }); return; }
     if (k === 'var') { const g = D.gut.find(x => x.id === a), v = g && g.v[+b]; if (v) vidkryty({ u: v[1], k: 'gut', n: g.t + ' · ' + v[0] }); return; }
     if (k === 'yunv') { const s = byId[a]; if (s && s.mat) vidkryty({ u: s.mat[b], k: 'yun', n: s.n + ' · ' + (b === 'test' ? 'Перевір себе' : 'Вивчай сам') }); return; }
@@ -935,6 +948,17 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     FR.contentWindow.location.replace(it.u);
     tell(stan());
   }
+  /* однакове місце елемента в грі на проєкторі й на телефоні: найближчий id + номери серед однакових тегів */
+  const DZ_SEL = '.qr,.pd-qr,.code,.pd-code,.fm-code,.url,.pd-url,.fm-url,.lpl';   // QR, код і «На звʼязку» — з проєктора
+  function shliakh(el) {
+    const p = []; while (el && el.nodeType === 1 && !el.id && el.tagName !== 'BODY' && el.parentElement) { const par = el.parentElement; p.unshift([...par.children].filter(c => c.tagName === el.tagName).indexOf(el) + ':' + el.tagName); el = par; }
+    return { id: el && el.id || '', p };
+  }
+  function znaity(doc, s) {
+    let el = s.id ? doc.getElementById(s.id) : doc.body;
+    for (const x of s.p || []) { if (!el) return null; const i = x.indexOf(':'); el = [...el.children].filter(c => c.tagName === x.slice(i + 1))[+x.slice(0, i)]; }
+    return el || null;
+  }
   /* адреса з «Сайту» на телефоні → що відкрити на проєкторі */
   function zAdresy(u, n) {
     let x; try { x = new URL(u, location.origin); } catch (e) { return null; }
@@ -962,6 +986,23 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       w.addEventListener('keydown', e => { if (e.key === 'GoBack' || e.key === 'BrowserBack') { e.preventDefault(); e.stopImmediatePropagation(); zakryty(); } }, true);
     } catch (e) { /* ok */ }
   }
+  /* гра на проєкторі: чи ще перший екран (налаштування) і QR — для копії на телефоні */
+  const GR = { lobi: false, qr: null, t: 0 };
+  function vydno(e) { if (!e) return false; const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && !e.closest('[hidden]'); }
+  function grStan() {
+    if (TEL) return;
+    let lobi = false, qr = null;
+    if (OPEN && FR && OPEN.k === 'ihry') {
+      try {
+        const d = FR.contentDocument;
+        lobi = vydno(d.getElementById('lobby')) || [...d.querySelectorAll('button')].some(b => /почати\s+гру/i.test(b.textContent || '') && vydno(b));
+        qr = [...d.querySelectorAll(DZ_SEL)].map(e => e.innerHTML);
+      } catch (e) { /* ok */ }
+    }
+    const k = lobi + '|' + (qr ? qr.join('\u0001') : '');
+    if (k !== GR.k) { GR.k = k; GR.lobi = lobi; GR.qr = qr; tell(stan()); }
+  }
+  setInterval(grStan, 1000);
   function zakryty() {
     OPEN = null; PU = ''; ss.del('gutirka.host'); if (FR) { FR.remove(); FR = null; } $('#load').hidden = true;
     window.focus(); malyuvaty();
@@ -1038,7 +1079,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
   if (window.TV_TEST_PEER) window.__telUrl = telUrl;
   function malQR() { QRSVG = window.qrSvg ? qrSvg(telUrl(), 320) : ''; document.querySelectorAll('.qrk .q').forEach(q => { q.innerHTML = QRSVG; }); }
   function stan() {
-    return { t: 'st', scr: SCR, tab: TAB[SCR] || '', det: DET ? { typ: DET.typ, key: DET.key } : null, open: OPEN ? { n: OPEN.n, k: OPEN.k } : null, pu: PU,
+    return { t: 'st', scr: SCR, tab: TAB[SCR] || '', det: DET ? { typ: DET.typ, key: DET.key } : null, open: OPEN ? { n: OPEN.n, k: OPEN.k, u: OPEN.u } : null, pu: PU, lobi: GR.lobi, qr: GR.qr, igls: OPEN && OPEN.igls || null,
       vin: !!vKod(), ig: vKod() && IG ? IG.map(g => ({ id: g.id, gra: g.gra, nazva: g.nazva, opys: g.opys, vik: g.vik })) : null };
   }
   function tell(m) { if (TEL) return; NET.ok.forEach(c => { try { if (c.open) c.send(m); } catch (e) { /* ok */ } }); }
@@ -1088,6 +1129,20 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
         return;
       }
       if (d.t === 'url' && typeof d.u === 'string') { const it = zAdresy(d.u, String(d.n || '')); if (!it) return; if (it.k === 'gut' && !vKod() && !it.vsi) return; if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } vidkryty(it); return; }
+      /* копія гри на телефоні: натискання й поля — у ту саму гру на проєкторі */
+      if ((d.t === 'gk' || d.t === 'gv') && OPEN && FR && d.s) {
+        let doc; try { doc = FR.contentDocument; } catch (e) { return; }
+        const el = znaity(doc, d.s); if (!el) return;
+        if (d.t === 'gk') { try { el.click(); } catch (e) { /* ok */ } }
+        else { if ('checked' in el && (el.type === 'checkbox' || el.type === 'radio')) el.checked = !!d.ch; else el.value = d.v; el.dispatchEvent(new Event('input', { bubbles: true })); el.dispatchEvent(new Event('change', { bubbles: true })); }
+        setTimeout(grStan, 300); return;
+      }
+      if (d.t === 'sk' && typeof d.r === 'number') {
+        const r = Math.max(0, Math.min(1, d.r));
+        if (!$('#det').hidden) { const t = $('#dtilo'); if (t && t.scrollHeight > t.clientHeight + 2) t.scrollTop = r * (t.scrollHeight - t.clientHeight); else { const v = $('#det'); v.scrollTop = r * (v.scrollHeight - v.clientHeight); } }
+        else if (OPEN && FR) { try { const w = FR.contentWindow, e = w.document.scrollingElement; w.scrollTo(0, r * (e.scrollHeight - w.innerHeight)); } catch (x) { /* ok */ } }
+        return;
+      }
       if (d.t === 'back') { nazad(); return; }
       if (d.t === 'home') { if (OPEN) { OPEN = null; PU = ''; if (FR) { FR.remove(); FR = null; } } if (!$('#det').hidden) { $('#det').hidden = true; DET = null; } stack.length = 0; SCR = 'home'; malyuvaty(); return; }
       if (d.t === 'k' && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(d.key)) { knopka(d.key); return; }
@@ -1143,12 +1198,13 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     /* щось відкрите на проєкторі — пульт */
     if (s.open) {
       $('#c-n').textContent = s.open.n || '';
-      $('#seg').hidden = !s.pu;
-      if (!s.pu) vyd = 'str'; else if (!was.open || was.open.n !== s.open.n || !was.pu) vyd = 'pult';
-      tVyd(vyd);
+      $('#seg').hidden = true;
+      /* гра: поки налаштування (або в гри немає пульта) — на телефоні та сама гра; почалась — її пульт */
+      if (s.open.k === 'ihry' && (s.lobi || !s.pu)) dzPokaz(s);
+      else { dzSkhov(false); tVyd(s.pu ? 'pult' : 'str'); }
       $('#ctl').hidden = false; return;
     }
-    $('#ctl').hidden = true; pultFor = ''; $('#pf').src = 'about:blank';
+    $('#ctl').hidden = true; pultFor = ''; $('#pf').src = 'about:blank'; dzSkhov(true);
     /* екран і вкладка — як на проєкторі (вхід пультом на проєкторі телефон не показує) */
     SCR = s.scr === 'kod' ? 'home' : s.scr;
     if (s.tab) TAB[SCR] = s.tab;
@@ -1157,6 +1213,34 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     if (s.det) { if (!DET || DET.typ !== s.det.typ || DET.key !== s.det.key) vikno(s.det.typ, s.det.key); }
     else if (!$('#det').hidden) zakrytyVikno();
   }
+  /* копія гри на телефоні (рамка name="plast-dzerkalo": гра не має свого звʼязку, лише вигляд) */
+  let dzU = '', dzT = 0;
+  function dzPokaz(s) {
+    $('#pf').hidden = true; $('#str').hidden = true; $('#dz').hidden = false;
+    if (dzU !== s.open.u) { dzU = s.open.u; if (s.igls) { try { localStorage.setItem('ihry.vidkryty', s.igls); } catch (e) { /* ok */ } } $('#dz').src = s.open.u; }
+    dzQr(s.qr);
+  }
+  function dzSkhov(vse) { $('#dz').hidden = true; if (vse && dzU) { dzU = ''; $('#dz').src = 'about:blank'; } }
+  function dzQr(qr) {
+    if (!qr) return; let d; try { d = $('#dz').contentDocument; } catch (e) { return; } if (!d) return;
+    d.querySelectorAll(DZ_SEL).forEach((e, i) => { if (qr[i] != null && e.innerHTML !== qr[i]) e.innerHTML = qr[i]; });
+  }
+  function dzHook() {
+    let w, d; try { w = $('#dz').contentWindow; d = w.document; } catch (e) { return; }
+    if (!d || !d.body || d.__pt || w.location.href === 'about:blank') return; d.__pt = 1;
+    const KL = 'button,a[href],[role=button],[role=tab],[role=radio],[role=switch],label,summary,select,input[type=checkbox],input[type=radio],[onclick],[tabindex]';
+    d.addEventListener('click', e => {
+      const t = e.target && e.target.closest ? e.target : null; if (!t) return;
+      const el = t.closest(KL) || t;
+      if (el.tagName === 'A' && el.target === '_blank') return;
+      send({ t: 'gk', s: shliakh(el) });
+    }, true);
+    const pole = e => { const el = e.target; if (!el || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || /^(checkbox|radio)$/.test(el.type)) return; send({ t: 'gv', s: shliakh(el), v: el.value }); };
+    d.addEventListener('input', pole, true); d.addEventListener('change', pole, true);
+    w.addEventListener('scroll', () => { clearTimeout(dzT); dzT = setTimeout(() => { const e = d.scrollingElement; const m = e.scrollHeight - w.innerHeight; if (m > 4) send({ t: 'sk', r: e.scrollTop / m }); }, 120); }, { passive: true });
+    setTimeout(() => dzQr(ST.qr), 400);
+  }
+  if (TEL) setInterval(() => { if (!$('#dz').hidden) dzQr(ST.qr); }, 700);   // гра на телефоні сама переписує свій код — повертаємо код проєктора
   function tVyd(v) {
     vyd = v; $('#seg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
     const p = v === 'pult' && ST.pu; $('#pf').hidden = !p; $('#str').hidden = !!p;
@@ -1226,7 +1310,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     const w = rsWin(); if (!w) return; const d = w.document;
     if (d.__pt) return; d.__pt = 1; rsLast = ''; rsDet = false;
     const stop = e => { e.preventDefault(); e.stopPropagation(); clearTimeout(rsT); };
-    const vidkryvaiu = () => { $('#c-n').textContent = 'Відкриваємо на проєкторі…'; $('#seg').hidden = true; $('#pf').hidden = true; $('#str').hidden = false; $('#ctl').hidden = false;
+    const vidkryvaiu = () => { $('#c-n').textContent = 'Відкриваємо на проєкторі…'; $('#seg').hidden = true; $('#pf').hidden = true; $('#str').hidden = true; $('#dz').hidden = true; $('#ctl').hidden = false;
       setTimeout(() => { if (!ST.open && $('#c-n').textContent === 'Відкриваємо на проєкторі…') { $('#ctl').hidden = true; toast('Проєктор не відкрив — спробуйте ще раз'); } }, 5000); };
     d.addEventListener('click', e => {
       const t = e.target && e.target.closest ? e.target : null; if (!t) return;
@@ -1250,10 +1334,13 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     w.addEventListener('hashchange', () => setTimeout(rsRoute, 60));
     w.addEventListener('scroll', () => { clearTimeout(rsT); rsT = setTimeout(rsRoute, 300); }, { passive: true });
     const sh = d.getElementById('sheet');
+    const pn = d.querySelector('#sheet .pn');
+    if (pn) pn.addEventListener('scroll', () => { if (!rsDet) return; clearTimeout(rsT); rsT = setTimeout(() => { const m = pn.scrollHeight - pn.clientHeight; if (m > 4) send({ t: 'sk', r: pn.scrollTop / m }); }, 120); }, { passive: true });
     if (sh) new w.MutationObserver(() => { if (sh.hidden && rsDet) { rsDet = false; send({ t: 'a', go: 'zakrDet' }); } }).observe(sh, { attributes: true, attributeFilter: ['hidden'] });
     rsRoute();
   }
   if (TEL) {
+    $('#dz').addEventListener('load', dzHook);
     $('#rf').addEventListener('load', () => { const w = rsWin(); if (w && w.document.getElementById('v-vsi')) rsHook(); });
     $('#vyb').querySelectorAll('button').forEach(b => b.onclick = () => rezhym(b.dataset.m));
     rezhym(RM);
