@@ -376,6 +376,15 @@ a.tile{text-decoration:none}
 .tiles.vyp .tile b{font-size:18px}
 .tiles.vyp .tile span{font-size:14px}
 .tile i{border-color:rgba(217,166,64,.55);color:#f0c060}
+/* «Змінити посади» (21.11): рішення Гурткової ради — одним записом у Посади, Учасники, Протоколи */
+.zp-ch{display:flex;flex-wrap:wrap;gap:8px}.zp-ch .btn{flex:0 1 auto;min-width:0;display:grid;gap:1px;text-align:left;padding:10px 14px}
+.zp-ch .btn small{font-size:13px;font-weight:500;color:var(--mut)}
+.zp-ch .btn[aria-pressed=true]{background:var(--d);border-color:var(--d);color:#0e1f15}.zp-ch .btn[aria-pressed=true] small{color:#0e1f15}
+.zp-ch .btn:disabled{opacity:.45;cursor:default}
+.zp-hl{display:flex;flex-wrap:wrap;gap:10px 14px}.zp-hl .f{flex:1 1 90px;min-width:0}.zp-hl .in{text-align:center}
+.zp-pk{margin:10px 0 0;padding:10px 14px;border-radius:var(--s-r,12px);font-size:15px;line-height:1.45;background:rgba(255,255,255,.04);border-left:4px solid var(--d)}.zp-pk.uv{border-left-color:#d9a640;background:rgba(217,166,64,.1)}.zp-pk[hidden]{display:none}
+.zp-sum{margin:0 0 14px;font-size:17px;line-height:1.45}.zp-sum b{color:var(--ink)}
+.vhto-b .zp-go{justify-self:start;margin-top:4px}
 /* картка «Хто що веде зараз» (21.11): посада · хто · чим займається */
 .vhto{margin:0 0 14px;border-radius:var(--s-r-plytka,18px);background:var(--card);border:1px solid var(--ln)}.vhto[hidden]{display:none}
 .vhto summary{cursor:pointer;list-style:none;padding:14px 18px;font:600 17px/1.3 var(--disp);letter-spacing:.04em;text-transform:uppercase;display:flex;justify-content:space-between;gap:12px;align-items:center}
@@ -512,7 +521,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       <button class="tile" type="button" id="go-nv" data-ved="vlasne" data-ved-t="Перевіряєте ви: що записали юнаки"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
       <button class="tile" type="button" id="go-kp" data-ved="скарбник" data-ved-yak="kontrol"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Ви — «другі очі»: звіряєте записані платежі з банком і коробкою. Без вашого ✓ внесок не вважається сплаченим.</span></button>
     </div>
-    <div class="rare" id="hub-rare"><div class="rt"><b>Раз на гурток</b><span>Усе про гурток цілком — не щодня: ви вперше берете гурток або віддаєте свій.</span></div><div class="rb"><button class="btn" type="button" id="go-hg-beru">Беру гурток</button><button class="btn" type="button" id="go-hg-peredaiu">Передаю гурток</button></div></div>
+    <div class="rare" id="hub-rare"><div class="rt"><b>Раз на гурток</b><span>Не щодня: ви вперше берете гурток чи віддаєте свій, або Гурткова рада обрала нові посади.</span></div><div class="rb"><button class="btn" type="button" id="go-hg-beru">Беру гурток</button><button class="btn" type="button" id="go-hg-peredaiu">Передаю гурток</button><button class="btn" type="button" id="go-zp">Змінити посади</button></div></div>
   </section>
 
   <!-- гроші й майно -->
@@ -567,6 +576,40 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
       <aside class="side">
         <div class="card"><h3>Усе гаразд?</h3><ul><li>Натисніть <b>«Затвердити»</b> біля запису (або поставте «так» у стовпці «Перевірено виховником» у книзі). Після цього сайт запис уже не змінить, а юнак, вибравши ту дату, побачить «затверджено».</li><li>У книзі затверджені рядки — зелені.</li><li><b>Гроші</b> (внески) тут перевіряють не «Затвердити», а «✓ є в банку» / «✗ немає в банку» (готівка — «✓ гроші є» / «✗ немає»). Видатки — «Перевірити чек у касі».</li></ul></div>
         <div class="card"><h3>Щось не так?</h3><ul><li>Виправте рядок просто в книзі.</li><li>Зіпсували багато — «Файл → Історія версій» у Google Таблиці поверне будь-який попередній стан.</li><li>Повна історія — аркуш «Зміни».</li></ul></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- змінити посади (21.11) -->
+  <section id="v-zp" hidden>
+    <div class="ps">
+      <div class="card">
+        <div class="fhead"><h2>Змінити посади</h2><button class="leave" type="button" id="zp-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>До вибору</button></div>
+        <div class="vkh"><b>Коли це.</b> Гурткова рада обрала когось на посаду — запишіть рішення тут, просто на Раді. Одне «Записати» — і книга сама: старій посаді ставить «До», новій «Від», міняє посаду в «Учасниках» і записує рішення в «Протоколи».</div>
+        <div id="zp-forma">
+          <p class="err" id="zp-err" hidden></p>
+          <div class="step"><h3><em>1</em>Яка посада</h3><div class="zp-ch" id="zp-pos" role="group" aria-label="Посада"></div></div>
+          <div class="step hg-zakr" id="zp-s2"><h3><em>2</em>Кого обрала Рада</h3><p class="hg-sp">Спершу виберіть посаду.</p><div class="zp-ch" id="zp-im" role="group" aria-label="Хто"></div><p class="zp-pk" id="zp-pk" hidden></p></div>
+          <div class="step hg-zakr" id="zp-s3"><h3><em>3</em>Коли й як голосували <small>голоси — за бажанням</small></h3>
+            <div class="zp-hl">
+              <label class="f" style="flex:2 1 170px"><span>Від якої дати</span><input class="in" type="date" id="zp-vid" style="text-align:left"></label>
+              <label class="f"><span>За</span><input class="in" type="number" inputmode="numeric" min="0" max="99" id="zp-za"></label>
+              <label class="f"><span>Проти</span><input class="in" type="number" inputmode="numeric" min="0" max="99" id="zp-pr"></label>
+              <label class="f"><span>Утрималися</span><input class="in" type="number" inputmode="numeric" min="0" max="99" id="zp-ut"></label>
+            </div>
+            <p class="ph" style="margin-top:8px">Рішення Ради — явним голосуванням, більшістю; чинне після вашої згоди як впорядника (Правильник УПЮ, ч. I, п. 3.2.1). Записуючи тут, ви цю згоду й даєте.</p>
+          </div>
+          <p class="zp-sum" id="zp-sum" hidden></p>
+          <button class="btn main" type="button" id="zp-zap" style="width:100%" disabled>Записати</button>
+        </div>
+        <div id="zp-gotovo" hidden>
+          <div class="hg-ok" id="zp-ok"></div>
+          <div class="hg-tn" style="margin-top:14px"><button class="btn main" type="button" id="zp-shche">Змінити ще одну посаду</button><button class="btn" type="button" id="zp-back2">До вибору</button></div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="card"><h3>Що можна поєднувати</h3><ul><li><b>Скарбник і господар</b> — можна однією людиною (Правильник УПЮ, ч. I, п. 3.4.5).</li><li><b>Писар і хронікар</b> — теж (п. 3.4.6).</li><li>Інші дві посади в одних руках — лише якщо так доручила Гурткова рада.</li></ul></div>
+        <div class="card"><h3>Кілька посад на одній Раді</h3><ul><li>Записуйте по одній: «Змінити ще одну посаду». Усі рішення того самого дня лягають в один рядок «Протоколів».</li><li>Хтось пішов, а нового ще не обрали — «нікого»: посада стане порожньою, і її знову ведете ви.</li></ul></div>
       </aside>
     </div>
   </section>
@@ -1117,17 +1160,26 @@ window.Tochky = (function () {
   const DH = {gotivka: 45, rakhunok: 150.5, nevkazano: 0, borhy: {'Остап': 14.5, 'Зоряна': 3.2, 'Мирося': -0.5}, bezCheka: {'Зоряна': [{data: '2026-11-05', opys: 'свічки', suma: 3.2}]}};
   const DZV = [{'Дата': '31.10.2026', 'Що звіряли': 'готівка', 'Мало бути, €': 25, 'Є насправді, €': 25, 'Різниця, €': 0}];
   const dHroshi = () => { const n = DK.length, vy = Object.values(DH.borhy).filter(x => x > 0).reduce((a, x) => a + x, 0); return Object.assign({ok: true}, JSON.parse(JSON.stringify(DH)), {vynen: vy, vilni: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano - vy) * 100) / 100, razom: Math.round((DH.gotivka + DH.rakhunok + DH.nevkazano) * 100) / 100, chekaiut: n, chekaiutSuma: DK.reduce((a, x) => a + x.dani['Сума, €'], 0), ne: DK.filter(x => x.ne).length}); };
+  const DPOS = [{posada: 'впорядник', imya: 'Тарас'}, {posada: 'гуртковий', imya: 'Олесь'}, {posada: 'заступник', imya: 'Ярко'}, {posada: 'скарбник', imya: 'Дана'}, {posada: 'господар', imya: 'Дана'}, {posada: 'писар', imya: 'Мирося'}];   // проба: Дана веде дві посади, хронікаря немає
   async function zapyt(t) {
     if (DEMO) {
       await new Promise(r => setTimeout(r, 450));
       const rol = t.kod === '123456' ? 'v' : t.kod === '1234' ? 'd' : null;
       if (!rol) return {ok: false, pomylka: 'Невірний код.'};
       if (t.dija === 'imena') return {ok: true, rol, imena: DEMO_IM};
-      if (t.dija === 'posady') return {ok: true, rol, posady: [{posada: 'впорядник', imya: 'Тарас'}, {posada: 'гуртковий', imya: 'Олесь'}, {posada: 'заступник', imya: 'Ярко'}, {posada: 'скарбник', imya: 'Дана'}, {posada: 'господар', imya: 'Дана'}, {posada: 'писар', imya: 'Мирося'}]};   // проба: Дана веде дві посади (дозволено п. 3.4.5), хронікаря немає — «Поки ведете ви»
+      if (t.dija === 'posady') return {ok: true, rol, posady: JSON.parse(JSON.stringify(DPOS))};   // проба: Дана веде дві посади (дозволено п. 3.4.5), хронікаря немає — «Поки ведете ви»
       if (t.dija === 'nazvy') return {ok: true, nazvy: ['Шиття', 'Якірництво', 'нашивка табору «Літо 2026»', 'нашивка 1-ї проби']};
       if (t.dija === 'vnesky') return {ok: true, vnesky: JSON.parse(JSON.stringify(DVN)), splacheno: JSON.parse(JSON.stringify(DSP))};
       if (t.dija === 'nomery') { const out = []; [['Сходини', '№'], ['Відвідуваність', '№ сходин']].forEach(a => Object.keys(DST[a[0]]).forEach(d => { const n = DST[a[0]][d].dani[a[1]]; if (n) out.push({d, n}); })); return {ok: true, nomery: out}; }   // проба: усі № з пробної книги
       if (rol !== 'v') return {ok: false, pomylka: 'Це може лише виховник — потрібен код виховника.'};
+      if (t.dija === 'posadaZminyty') {   // проба: як приймач — без записів у книгу
+        const bulo = DPOS.filter(x => x.posada === t.posada).map(x => x.imya);
+        if (t.imya && bulo.length === 1 && bulo[0] === t.imya) return {ok: false, pomylka: t.imya + ' уже ' + t.posada + ' — змінювати нічого.'};
+        const za = Number(t.holos.za), pr = Number(t.holos.proty); if (t.holos.za !== '' && t.holos.proty !== '' && za <= pr) return {ok: false, pomylka: 'Рішення Ради — більшістю голосів: «за» має бути більше, ніж «проти».'};
+        for (let i = DPOS.length - 1; i >= 0; i--) if (DPOS[i].posada === t.posada) DPOS.splice(i, 1);
+        if (t.imya) DPOS.push({posada: t.posada, imya: t.imya});
+        return {ok: true, ryadok: ++demoRow, protokol: 20, bulo, posady: JSON.parse(JSON.stringify(DPOS))};
+      }
       if (t.dija === 'uchasnyky') return {ok: true, uchasnyky: DUCH.map(u => Object.assign({}, u))};
       if (t.dija === 'uchasnyk') {
         const u = DUCH.find(x => x.im.toLowerCase() === String(t.imya).toLowerCase());
@@ -1188,7 +1240,7 @@ window.Tochky = (function () {
   function hurtokPidkazka() {   // нова книга без учасників — «Беру гурток» стає головною підказкою (14.11)
     $('go-hg-wrap').hidden = !!imena.length;   // верхня картка — лише коли книга порожня; завжди є секція «Раз на гурток» унизу
   }
-  function ekran(id) { if (id === 'v-hub' && kod) { chekajutZavantazhyty(); kasaZavantazhyty(); } ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm'].forEach(k => { $(k).hidden = k !== id; }); const bk = document.querySelector('header.top .back'); if (bk) bk.hidden = !(id === 'v-lock-wrap' || id === 'v-hub');   /* усередині — лише свої «Назад» (14.11) */ scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
+  function ekran(id) { if (id === 'v-hub' && kod) { chekajutZavantazhyty(); kasaZavantazhyty(); } ['v-lock-wrap', 'v-hub', 'v-ps', 'v-nv', 'v-kp', 'v-pp', 'v-gm', 'v-zp'].forEach(k => { $(k).hidden = k !== id; }); const bk = document.querySelector('header.top .back'); if (bk) bk.hidden = !(id === 'v-lock-wrap' || id === 'v-hub');   /* усередині — лише свої «Назад» (14.11) */ scrollTo({top: document.querySelector('.hero').offsetTop + document.querySelector('.hero').offsetHeight - 20, behavior: 'smooth'}); }
   $('z-lock').addEventListener('submit', async e => {
     e.preventDefault();
     const k = $('z-kod').value.trim(); if (!k) return $('z-kod').focus();
@@ -1204,7 +1256,9 @@ window.Tochky = (function () {
     finally { b.disabled = false; b.textContent = 'Увійти'; }
   });
   /* хто що веде (21.11): чинні посади з аркуша «Посади» → «Веде: Дана · скарбник» на плитках; старий приймач цієї дії не знає — тоді підписів просто немає */
+  let POSADY = null;   // останні чинні посади з книги (для «Змінити посади»)
   function posadyPokazaty(posady) {
+    POSADY = Array.isArray(posady) ? posady : null;
     const lg = $('v-legenda'); $('v-hto').hidden = true; document.querySelectorAll('.tile .ved').forEach(e => e.remove());
     document.querySelectorAll('.tile.yu,.tile.vy').forEach(e => e.classList.remove('yu', 'vy'));
     if (!Array.isArray(posady)) { lg.hidden = true; return; }
@@ -1235,7 +1289,8 @@ window.Tochky = (function () {
       const khto = imena.length ? [...new Set(imena)].map(i => esc(i) + (inshi(i).length ? ' <small>(також ' + esc(inshi(i).join(', ')) + ')</small>' : '')).join(', ') : 'Поки ведете ви';
       return `<div class="vh-r ${imena.length ? 'yu' : 'vy'}"><span class="vp">${esc(p)}</span><span class="vk">${khto}</span><span class="vc">${esc(chym)}</span></div>`;
     }).join('') + `<div class="vh-r vy"><span class="vp">впорядник (ви)</span><span class="vk">Ви</span><span class="vc">Учасники · Посади · Підтвердження проб · «Беру гурток»</span></div>`;
-    b.innerHTML = rjad;
+    b.innerHTML = rjad + '<button class="btn zp-go" type="button" data-zp>Змінити посади</button>';
+    b.querySelector('[data-zp]').addEventListener('click', () => zpVidkryty());
     $('v-hto-t').innerHTML = 'Хто що веде зараз<small>' + (peredano ? 'юнаки ведуть ' + peredano + ' з ' + POSADY_CHYM.length + ' посад' : 'поки все ведете ви') + '</small>';
     d.hidden = false;
   }
@@ -1258,6 +1313,54 @@ window.Tochky = (function () {
     } catch (x) {}
   }
   async function posadyZavantazhyty() { try { const v = await zapyt({kod, dija: 'posady'}); posadyPokazaty(v && v.ok ? v.posady : null); } catch (x) { posadyPokazaty(null); } }
+
+  /* «Змінити посади» (21.11): посада → хто → дата + голосування → одним «Записати» (дія posadaZminyty) */
+  const ZP_POS = ['гуртковий', 'заступник', 'писар', 'скарбник', 'господар', 'хронікар'];
+  const ZP_RAZOM = [['скарбник', 'господар'], ['писар', 'хронікар']];   // Правильник УПЮ ч. I, 3.4.5 і 3.4.6
+  const zp = {pos: '', im: null};
+  const zpKym = p => (POSADY || []).filter(x => x.posada === p).map(x => x.imya);
+  const zpInshi = (im, p) => [...new Set((POSADY || []).filter(x => x.imya === im && x.posada !== p).map(x => x.posada))];
+  const zpData = s => s ? s.split('-').reverse().join('.') : '';
+  function zpVidkryty() {
+    zp.pos = ''; zp.im = null; $('zp-vid').value = den(); ['zp-za', 'zp-pr', 'zp-ut'].forEach(k => { $(k).value = ''; });
+    $('zp-err').hidden = true; $('zp-forma').hidden = false; $('zp-gotovo').hidden = true;
+    zpMalyuvaty(); ekran('v-zp');
+  }
+  function zpMalyuvaty() {
+    $('zp-pos').innerHTML = ZP_POS.map(p => { const k = zpKym(p); return `<button class="btn" type="button" data-p="${esc(p)}" aria-pressed="${zp.pos === p}"><b>${esc(p)}</b><small>${k.length ? esc(k.join(', ')) : 'порожня — ведете ви'}</small></button>`; }).join('');
+    const s2 = $('zp-s2'), s3 = $('zp-s3'); s2.classList.toggle('hg-zakr', !zp.pos); s3.classList.toggle('hg-zakr', zp.im === null);
+    const zaraz = zp.pos ? zpKym(zp.pos) : [];
+    $('zp-im').innerHTML = !zp.pos ? '' : imena.map(i => { const tut = zaraz.includes(i), ins = zpInshi(i, zp.pos);
+      return `<button class="btn" type="button" data-i="${esc(i)}" aria-pressed="${zp.im === i}"${tut ? ' disabled' : ''}><b>${esc(i)}</b><small>${tut ? 'уже ' + esc(zp.pos) : ins.length ? esc(ins.join(', ')) : '&nbsp;'}</small></button>`; }).join('')
+      + (zaraz.length ? `<button class="btn" type="button" data-i="" aria-pressed="${zp.im === ''}"><b>нікого</b><small>посада стане порожньою</small></button>` : '');
+    const pk = $('zp-pk'); pk.hidden = true; pk.classList.remove('uv');
+    if (zp.im) { const ins = zpInshi(zp.im, zp.pos);
+      if (ins.length) { const mozhna = ins.every(x => ZP_RAZOM.some(r => r.includes(x) && r.includes(zp.pos)));
+        pk.innerHTML = mozhna ? `${esc(zp.im)} також ${esc(ins.join(', '))} — так можна, Правильник це дозволяє.` : `${esc(zp.im)} уже ${esc(ins.join(', '))}. Дві посади в одних руках — лише якщо так доручила Гурткова рада. Якщо ні — спершу оберіть на ту посаду когось іншого.`;
+        pk.classList.toggle('uv', !mozhna); pk.hidden = false; } }
+    const gotovo = zp.pos && zp.im !== null && $('zp-vid').value;
+    $('zp-zap').disabled = !gotovo; const sm = $('zp-sum'); sm.hidden = !gotovo;
+    if (gotovo) sm.innerHTML = `<b>${esc(zp.pos[0].toUpperCase() + zp.pos.slice(1))}:</b> ${zaraz.length ? esc(zaraz.join(', ')) : 'порожньо'} → <b>${zp.im ? esc(zp.im) : 'нікого'}</b>, від ${esc(zpData($('zp-vid').value))}.`;
+  }
+  $('zp-pos').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (!b) return; zp.pos = b.dataset.p; zp.im = null; zpMalyuvaty(); });
+  $('zp-im').addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (!b || b.disabled) return; zp.im = b.dataset.i; zpMalyuvaty(); });
+  $('zp-vid').addEventListener('input', zpMalyuvaty);
+  $('zp-zap').addEventListener('click', async () => {
+    const b = $('zp-zap'), err = $('zp-err'); err.hidden = true; b.disabled = true; b.textContent = 'Записую…';
+    const ch = k => $(k).value.trim();
+    try {
+      const v = await zapyt({kod, dija: 'posadaZminyty', posada: zp.pos, imya: zp.im, vid: $('zp-vid').value, holos: {za: ch('zp-za'), proty: ch('zp-pr'), utr: ch('zp-ut')}, khto: 'виховник'});
+      if (!v || !v.ok) throw new Error((v && v.pomylka) || (v ? 'Не вдалося записати.' : 'Ваш приймач ще не вміє міняти посади — оновіть код приймача в Google.'));
+      const bulo = (v.bulo || []).join(', ');
+      $('zp-ok').innerHTML = `<b>Записано.</b> ${esc(zp.pos)}: ${bulo ? esc(bulo) + ' → ' : ''}${zp.im ? esc(zp.im) : 'посада порожня'}, від ${esc(zpData($('zp-vid').value))}.<br><small>У книзі: «Посади» (${bulo ? 'старій — «До», ' : ''}${zp.im ? 'новій — «Від»' : 'посаду закрито'}), «Учасники» → посада, «Протоколи» → рішення Гурткової ради.</small>`;
+      if (Array.isArray(v.posady)) posadyPokazaty(v.posady); else posadyZavantazhyty();
+      $('zp-forma').hidden = true; $('zp-gotovo').hidden = false;
+    } catch (x) { err.textContent = ludsky(x); err.hidden = false; }
+    finally { b.textContent = 'Записати'; zpMalyuvaty(); }
+  });
+  $('zp-shche').addEventListener('click', () => { const d = $('zp-vid').value; zpVidkryty(); $('zp-vid').value = d; zpMalyuvaty(); });   // та сама Рада — та сама дата
+  $('zp-back').addEventListener('click', () => ekran('v-hub')); $('zp-back2').addEventListener('click', () => ekran('v-hub'));
+  $('go-zp').addEventListener('click', () => zpVidkryty());
   const VKOD = 'dokumenty:vkod';   // код — лише в цій вкладці (sessionStorage), щоб «Каса» й «Майно» не питали його вдруге (14.11)
   function vyity() { kod = ''; imena = []; try { sessionStorage.removeItem(VKOD); } catch (x) {} chysto(); ekran('v-lock-wrap'); }
   document.querySelectorAll('[data-out]').forEach(b => b.addEventListener('click', vyity));
