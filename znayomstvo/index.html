@@ -268,6 +268,9 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     ]}
   ];
 
+  // Назва вкладки в Таблиці виховника. Нове опитування — нова назва (нова вкладка в тій самій Таблиці).
+  const ARKUSH = 'Опитування 11.2026';
+
   // Адреса приймача й назва гуртка — з посилання виховника (#p=…&h=…), не з репозиторію.
   let addr = '', hurtok = '';
   const KEY = 'znayomstvo:', ls = {
@@ -349,7 +352,7 @@ textarea.in{min-height:92px;resize:vertical;line-height:1.4}
     const msg = $('msg'); msg.hidden = true;
     b.disabled = true; b.textContent = 'Надсилаю…';
     try {
-      const t = {dija: 'znayomstvo', hurtok, vidpovidi: vse()};
+      const t = {dija: 'znayomstvo', arkush: ARKUSH, poryadok: KROKY.flatMap(k => k.q.map(q => q.t)), hurtok, vidpovidi: vse()};
       if (DEMO) await new Promise(r => setTimeout(r, 700));
       else if (GAS) {
         const v = await new Promise((ok, no) => google.script.run.withSuccessHandler(ok).withFailureHandler(no).zapysaty(JSON.stringify(t)));
