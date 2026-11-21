@@ -615,7 +615,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
     <form class="lockbox" id="lockbox" autocomplete="off">
       <h2>Вхід для виховників</h2>
       <p>Тут гутірки, плани й відповіді до ігор — щоб юнаки не бачили їх наперед.</p>
-      <input id="code" inputmode="numeric" maxlength="8" placeholder="• • • •" aria-label="Код для виховників">
+      <input id="code" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="8" placeholder="• • • •" aria-label="Код для виховників">
       <button class="btn" type="submit">Увійти</button>
       <p class="err" id="cerr" hidden>Код не той. Спробуйте ще раз.</p>
       <small>Код запам’ятовується на цьому пристрої — вводити лише раз.</small>
@@ -1122,7 +1122,7 @@ async function renderIhry() {
     const kod = store.get(K_KOD);
     if (kod) { box.innerHTML = '<p class="ig-empty">Відкриваємо ігри…</p>'; try { IG = await igOpen(String(kod)); } catch (e) { IG = null; } }
     if (!IG) {   /* увійшли раніше (код тоді не запамʼятовувався) або код змінився */
-      box.innerHTML = '<form class="ig-kod" id="ig-kod"><p>Щоб відкрити ігри на цьому пристрої, введіть код виховників ще раз.</p><input inputmode="numeric" maxlength="12" aria-label="Код виховників" autocomplete="off"><button class="btn" type="submit">Відкрити</button></form>';
+      box.innerHTML = '<form class="ig-kod" id="ig-kod"><p>Щоб відкрити ігри на цьому пристрої, введіть код виховників ще раз.</p><input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="12" aria-label="Код виховників" autocomplete="off"><button class="btn" type="submit">Відкрити</button></form>';
       $('#ig-kod').addEventListener('submit', e => { e.preventDefault(); store.set(K_KOD, e.target.querySelector('input').value.replace(/\s/g, '')); renderIhry(); });
       if (kod) box.querySelector('p').textContent = 'Код не підходить до ігор. Введіть код виховників ще раз.';
       return;
