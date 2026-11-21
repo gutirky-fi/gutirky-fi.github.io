@@ -298,6 +298,10 @@ button{font:inherit;color:inherit;cursor:pointer}
 .leave:hover,.leave:focus-visible{color:var(--vyh-t);border-color:var(--vyh);background:rgba(61,175,110,.14)}
 .leave:active{background:rgba(61,175,110,.26)}
 .vtabs .wd{margin-left:-4px}
+/* «Мій гурток» на сторінці «Юнацтво» — смужка до «Документів гуртка» одразу під заголовком (21.11) */
+.ybar{display:flex;align-items:center;gap:14px;margin:0 0 28px;padding:14px 20px;border-radius:var(--s-r-plytka,18px);border:1px solid var(--ln);border-left:5px solid #c8284a;background:var(--card);color:var(--ink);text-decoration:none;transition:border-color .15s,background .15s}
+.ybar svg{width:26px;height:26px;color:#ff7d99;flex:none}.ybar b{display:block;font:600 19px/1.1 var(--disp);letter-spacing:.04em;text-transform:uppercase}.ybar span{display:block;color:var(--mut);font-size:14.5px;margin-top:3px}.ybar i{margin-left:auto;font-style:normal;font-size:22px;color:#ff7d99}
+.ybar:hover,.ybar:focus-visible{border-color:#c8284a;background:rgba(200,40,74,.1)}
 /* «Вхід виховника» — пряма кнопка до записів гуртка (Документи гуртка), поруч із вкладками; зелена, як усе виховницьке */
 .vright{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .vdoor{display:inline-flex;align-items:center;gap:9px;min-height:var(--s-h,50px);padding:0 18px;border-radius:var(--s-r-pil,99px);border:1px solid var(--vyh);background:rgba(61,175,110,.12);color:var(--vyh-t);font:700 16px var(--txt);text-decoration:none;transition:background .15s}
@@ -541,11 +545,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
       <h1>Юнацтво</h1>
       <p class="hand">вивчай, перевіряй себе, збирай нашивки</p>
     </section>
-    <div class="mine" id="mine"></div>
-    <section class="sec" aria-labelledby="h-dk">
-      <h2 id="h-dk">Для гуртка<small>записи: сходини, проби, вмілості</small></h2>
-      <div class="tiles"><a class="tile" href="/dokumenty/" style="--a:#ff7d99;--ab:#c8284a"><b>Документи гуртка</b><span>Бланки й форми для діловодів та юнаків. Розділ у розробці.</span><span class="go">Відкрити</span></a></div>
-    </section>
+    <a class="ybar" href="/dokumenty/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg><div><b>Мій гурток</b><span>Діловодам: записати сходини, касу, проби й вмілості</span></div><i aria-hidden="true">→</i></a>
     <section class="sec" aria-labelledby="h-mat">
       <h2 id="h-mat">Є матеріали<small>вивчити самому й перевірити себе</small></h2>
       <div id="mat"></div>
@@ -553,6 +553,7 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
     <section class="sec" aria-labelledby="h-kat">
       <h2 id="h-kat">Вмілості</h2>
       <p class="lead">Натисни на вмілість — побачиш рівні й зможеш позначити, що вже маєш або до чого готуєшся.</p>
+      <div class="mine" id="mine"></div>
       <div class="tools">
         <label class="search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Знайти вмілість" aria-label="Знайти вмілість"></label>
         <div class="chips" id="chips" role="group" aria-label="Показати"></div>
