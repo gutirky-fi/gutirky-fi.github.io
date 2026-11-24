@@ -221,6 +221,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .lockbox input{width:100%;padding:14px 16px;border-radius:var(--s-r,12px);border:2px solid var(--a);background:var(--bg);color:var(--ink);font:600 28px var(--disp);letter-spacing:.3em;text-align:center}
 .lockbox input::placeholder{color:#555c66;letter-spacing:.3em}
 .lockbox .btn{width:100%;justify-content:center;margin-top:12px}
+.lockbox p.kodnota{margin:-6px 0 16px;padding:10px 14px;border-radius:12px;background:rgba(61,175,110,.10);border:1px solid rgba(61,175,110,.35);font-size:15px;line-height:1.45}.lockbox p.kodnota b{color:var(--ink)}
 .lockbox small{display:block;margin-top:12px;color:var(--mut);font-size:14px}
 .lockbox .err{margin:10px 0 0;color:#ff8a7a;font-weight:700;font-size:15px}
 .vbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:4px 0 6px}
@@ -584,9 +585,10 @@ html.r-old .tabs a[data-r=vsi][aria-current=page]{background:linear-gradient(var
     <form class="lockbox" id="lockbox" autocomplete="off">
       <h2>Вхід для виховників</h2>
       <p>Тут гутірки, плани й відповіді до ігор — щоб юнаки не бачили їх наперед.</p>
+      <p class="kodnota"><b>Загальний код виховників — 4 цифри.</b> Код книги гуртка (6 цифр) тут не підходить: його вводять у «Вході виховника», відкритому з QR книги.</p>
       <input id="code" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="off" maxlength="8" placeholder="• • • •" aria-label="Код для виховників">
       <button class="btn" type="submit">Увійти</button>
-      <p class="err" id="cerr" hidden>Код не той. Спробуйте ще раз.</p>
+      <p class="err" id="cerr" hidden>Код не той. Тут потрібен загальний код виховників (4 цифри), не код книги гуртка.</p>
       <small>Код запам’ятовується на цьому пристрої — вводити лише раз.</small>
     </form>
     <div id="vyh-in" hidden>
