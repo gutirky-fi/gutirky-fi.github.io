@@ -897,7 +897,8 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
     ['gutirky-svoya-', '/svoya-hra/hravets/'],
     ['gutirky-bingo-', '/bingo/gravets/'],
     ['gutirky-opyt-', '/opytuvannia/golos/'],
-    ['gutirky-znay-', '/novyi-vykhovnyk/hra/']
+    ['gutirky-znay-', '/novyi-vykhovnyk/hra/'],
+    ['gutirka-', '/pult/', 'c']   // пульт гутірки (без ключа з QR — гутірка спитає на екрані «Підключити телефон?»)
   ];
   const PJ = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
   const JSQR = ['https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js', 'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js'];
@@ -1001,11 +1002,11 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       let left = HRY.length;
       const miss = () => { if (--left <= 0 && alive) fail(); };
       const fail = () => { say('Гри з кодом ' + k.slice(0, 3) + ' ' + k.slice(3) + ' зараз немає. Перевірте цифри на екрані.', true); stopFind(); cells.forEach(c => { c.value = ''; }); cells[0].focus(); };
-      HRY.forEach(([pre, path]) => {
+      HRY.forEach(([pre, path, par]) => {
         let c; try { c = me.connect(pre + k, { reliable: true }); } catch (e) { miss(); return; }
         conns.push(c);
         let done = false;
-        c.on('open', () => { if (!alive || done) return; done = true; say('Знайшли! Відкриваю гру…'); const u = location.origin + base + path + '?k=' + k; finding.stop(); finding = null; location.href = u; });
+        c.on('open', () => { if (!alive || done) return; done = true; say('Знайшли! Відкриваю гру…'); const u = location.origin + base + path + '?' + (par || 'k') + '=' + k; finding.stop(); finding = null; location.href = u; });
         c.on('error', () => { if (done) return; done = true; miss(); });
       });
       t = setTimeout(() => { if (alive) fail(); }, 16000);
