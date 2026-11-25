@@ -663,6 +663,395 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
 
 </script>
 <script>
+/* Звʼязок пульта з гутіркою — з запасними каналами (з 22.10.2026).
+   window.GutirkaNet(PeerJS) → клас, схожий на Peer з PeerJS (той самий API для pult-host-file.js і сторінки пульта),
+   але працює одразу двома шляхами:
+     1) PeerJS (безкоштовний сервер 0.peerjs.com) — як і раніше;
+     2) запасний: кілька публічних MQTT-брокерів через WebSocket (повідомлення йдуть через усі, повтори відкидаються).
+   Пульт підключається тим шляхом, що відповів першим. Якщо PeerJS-сервер «лежить» — працює запасний, і навпаки.
+   Запасні повідомлення зашифровані (AES-GCM, ключ — з коду й ключа з QR), адреса гутірки — хеш коду.
+   Брокери можна замінити: window.GUTIRKA_MQTT = ['wss://…', …] (перед завантаженням). */
+(function () {
+  'use strict';
+  if (window.GutirkaNet) return;
+  const BROKERS = () => window.GUTIRKA_MQTT || ['wss://broker.emqx.io:8084/mqtt', 'wss://broker.hivemq.com:8884/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
+  const NS = 'gutirky-fi/v1/';
+  const rnd = n => { const a = new Uint8Array(n); crypto.getRandomValues(a); return [...a].map(b => (b % 36).toString(36)).join(''); };
+  class Em {
+    constructor() { this._h = {}; }
+    on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
+    off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
+    emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
+  if (window.name === 'plast-dzerkalo') {
+    class S extends Em {
+      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
+      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
+      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
+    }
+    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
+    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
+    return;
+  }
+
+  /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
+  const te = new TextEncoder(), td = new TextDecoder();
+  const str = s => { const b = te.encode(s); return [b.length >> 8, b.length & 255, ...b]; };
+  const len = n => { const o = []; do { let d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; o.push(d); } while (n > 0); return o; };
+  const pkt = (h, body) => { const b = body instanceof Uint8Array ? body : Uint8Array.from(body); const L = len(b.length); const o = new Uint8Array(1 + L.length + b.length); o[0] = h; o.set(L, 1); o.set(b, 1 + L.length); return o; };
+  class Mqtt extends Em {
+    constructor(url) { super(); this.url = url; this.subs = new Set(); this.ok = false; this.dead = false; this.tries = 0; this.buf = new Uint8Array(0); this.open(); }
+    open() {
+      if (this.dead) return;
+      let ws; try { ws = new WebSocket(this.url, ['mqtt']); } catch (e) { return this.retry(); }
+      this.ws = ws; ws.binaryType = 'arraybuffer';
+      const to = setTimeout(() => { if (!this.ok) try { ws.close(); } catch (e) { /* ok */ } }, 8000);
+      ws.onopen = () => {
+        const id = 'gf' + rnd(12);
+        ws.send(pkt(0x10, [...str('MQTT'), 4, 2, 0, 45, ...str(id)]));   // CONNECT, clean session, keepalive 45 с
+      };
+      ws.onmessage = ev => { const d = new Uint8Array(ev.data); const b = new Uint8Array(this.buf.length + d.length); b.set(this.buf); b.set(d, this.buf.length); this.buf = b; this.parse(); };
+      ws.onclose = ws.onerror = () => { clearTimeout(to); clearInterval(this.ping); const was = this.ok; this.ok = false; if (this.ws === ws) { this.ws = null; if (was) this.emit('down'); this.retry(); } };
+    }
+    retry() { if (this.dead) return; this.tries++; clearTimeout(this.rt); this.rt = setTimeout(() => this.open(), Math.min(20000, 1000 * 2 ** Math.min(this.tries, 4))); }
+    parse() {
+      for (;;) {
+        const b = this.buf; if (b.length < 2) return;
+        let m = 1, v = 0, i = 1, d;
+        do { if (i >= b.length) return; d = b[i++]; v += (d & 127) * m; m *= 128; } while (d & 128);
+        if (b.length < i + v) return;
+        const t = b[0] >> 4, body = b.subarray(i, i + v); this.buf = b.slice(i + v);
+        if (t === 2) {   // CONNACK
+          if (body[1] !== 0) { try { this.ws.close(); } catch (e) { /* ok */ } return; }
+          this.ok = true; this.tries = 0;
+          this.ping = setInterval(() => { try { this.ws.send(Uint8Array.of(0xC0, 0)); } catch (e) { /* ok */ } }, 20000);
+          this.subs.forEach(s => this.sendSub(s));
+          this.emit('up');
+        } else if (t === 3) {   // PUBLISH (QoS 0)
+          const tl = (body[0] << 8) | body[1], topic = td.decode(body.subarray(2, 2 + tl));
+          this.emit('msg', topic, td.decode(body.subarray(2 + tl)));
+        }
+      }
+    }
+    sendSub(topic) { try { this.ws.send(pkt(0x82, [0, 1, ...str(topic), 0])); } catch (e) { /* ok */ } }
+    sub(topic) { this.subs.add(topic); if (this.ok) this.sendSub(topic); }
+    pub(topic, text) { if (!this.ok) return false; const t = str(topic), p = te.encode(text); const b = new Uint8Array(t.length + p.length); b.set(t); b.set(p, t.length); try { this.ws.send(pkt(0x30, b)); return true; } catch (e) { return false; } }
+    close() { this.dead = true; clearTimeout(this.rt); clearInterval(this.ping); const ws = this.ws; this.ws = null; this.ok = false; if (ws) { try { ws.send(Uint8Array.of(0xE0, 0)); } catch (e) { /* ok */ } try { ws.close(); } catch (e) { /* ok */ } } }
+  }
+
+  /* ---------------- шифрування й адреси ---------------- */
+  const b64 = a => btoa(String.fromCharCode(...new Uint8Array(a)));
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const sha = async s => new Uint8Array(await crypto.subtle.digest('SHA-256', te.encode(s)));
+  const hex = a => [...a].map(x => x.toString(16).padStart(2, '0')).join('');
+  const KEYS = {};
+  const aesKey = (code, k) => KEYS[code + '|' + k] || (KEYS[code + '|' + k] = sha('gutirky-fi|' + code + '|' + (k || '')).then(h => crypto.subtle.importKey('raw', h, 'AES-GCM', false, ['encrypt', 'decrypt'])));
+  const hostTopic = async id => NS + 'h/' + hex(await sha('gutirky-fi:' + id)).slice(0, 32);
+  async function seal(key, obj) { const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key, te.encode(JSON.stringify(obj))); return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) }); }
+  async function open(key, text) { try { const e = JSON.parse(text); const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, await key, unb64(e.ct)); return JSON.parse(td.decode(pt)); } catch (e) { return null; } }
+  const codeOf = id => String(id || '').replace(/^.*-/, '');   // gutirka-123456 / gutirky-skob-123456 → 123456
+
+  /* ---------------- запасний «Peer» поверх брокерів ---------------- */
+  const PART = 30000;   // великі повідомлення (картинки для пульта) — частинами
+  class RelayConn extends Em {
+    constructor(peer, cid, to, key) { super(); this.p = peer; this.cid = cid; this.to = to; this.key = key; this.open = false; this.parts = {}; this.peer = to; }
+    send(d) {
+      if (!this.open) return;
+      const s = JSON.stringify(d), mid = rnd(10);
+      if (s.length <= PART) return this.p.out(this.to, this.key, { k: 'data', cid: this.cid, from: this.p.inbox, s });
+      const n = Math.ceil(s.length / PART);
+      for (let i = 0; i < n; i++) this.p.out(this.to, this.key, { k: 'part', cid: this.cid, from: this.p.inbox, m: mid, i, n, s: s.slice(i * PART, (i + 1) * PART) });
+    }
+    got(m) {
+      let s = m.s;
+      if (m.k === 'part') { const P = this.parts[m.m] = this.parts[m.m] || []; P[m.i] = m.s; if (P.filter(x => x != null).length < m.n) return; s = P.join(''); delete this.parts[m.m]; }
+      let d; try { d = JSON.parse(s); } catch (e) { return; }
+      this.emit('data', d);
+    }
+    close() { if (!this.open) return; this.open = false; this.p.out(this.to, this.key, { k: 'close', cid: this.cid, from: this.p.inbox }); delete this.p.conns[this.cid]; setTimeout(() => this.emit('close'), 0); }
+  }
+  class RelayPeer extends Em {
+    constructor(id) {
+      super();
+      this.id = id || 'r' + rnd(14); this.host = typeof id === 'string' && !!id; /* гутірка чи гра — під своїм кодом; телефон — без імені */ this.conns = {}; this.seen = new Set(); this.disconnected = false; this.destroyed = false; this.isOpen = false;
+      this.code = codeOf(this.id);
+      this.brokers = BROKERS().map(u => new Mqtt(u));
+      (async () => {
+        this.inbox = this.host ? await hostTopic(this.id) : NS + 'p/' + this.id;
+        this.brokers.forEach(b => {
+          b.on('up', () => { if (!this.isOpen && !this.destroyed) { this.isOpen = true; this.emit('open', this.id); } });
+          b.on('msg', (t, text) => { if (t === this.inbox) this.inMsg(text); });
+          b.sub(this.inbox);
+        });
+      })();
+      this.failT = setTimeout(() => { if (!this.isOpen && !this.destroyed) this.emit('error', { type: 'network' }); }, 15000);
+    }
+    up() { return this.brokers.some(b => b.ok); }
+    out(to, key, msg) {
+      msg.mid = rnd(10);
+      seal(key, msg).then(text => { this.brokers.forEach(b => b.pub(to, text)); });
+    }
+    async inMsg(text) {
+      // гутірка: пробуємо ключ з QR, тоді — лише код (пульт, де код ввели вручну); пульт: ключ свого зʼєднання
+      let m = null, key = null;
+      if (this.host) { for (const k of [window.GUTIRKA_NET_KEY || '', '']) { key = aesKey(this.code, k); m = await open(key, text); if (m) break; } }
+      else for (const c of Object.values(this.conns)) { m = await open(c.key, text); if (m) { key = c.key; break; } }
+      if (!m || this.seen.has(m.mid)) return;
+      this.seen.add(m.mid); if (this.seen.size > 800) this.seen = new Set([...this.seen].slice(-400));
+      let c = this.conns[m.cid];
+      if (m.k === 'conn' && this.host) {
+        if (!c) { c = this.conns[m.cid] = new RelayConn(this, m.cid, m.from, key); c.open = true; this.emit('connection', c); setTimeout(() => c.emit('open'), 0); }
+        this.out(m.from, key, { k: 'ack', cid: m.cid, from: this.inbox });
+      } else if (m.k === 'ack' && c && !c.open) { c.open = true; clearInterval(c.knock); c.emit('open'); }
+      else if ((m.k === 'data' || m.k === 'part') && c) c.got(m);
+      else if (m.k === 'close' && c) { c.open = false; delete this.conns[m.cid]; c.emit('close'); }
+    }
+    connect(id) {
+      const cid = rnd(12), key = aesKey(codeOf(id), window.GUTIRKA_NET_KEY || '');
+      const c = this.conns[cid] = new RelayConn(this, cid, null, key);
+      hostTopic(id).then(to => {
+        c.to = to; c.peer = id;
+        const knock = () => { if (!c.open && !this.destroyed) this.out(to, key, { k: 'conn', cid, from: this.inbox }); };
+        knock(); c.knock = setInterval(knock, 2500);   // повторюємо, поки гутірка не відповість
+        setTimeout(() => { if (!c.open) { clearInterval(c.knock); c.emit('error', { type: 'peer-unavailable' }); } }, 12000);
+      });
+      return c;
+    }
+    destroy() { this.destroyed = true; clearTimeout(this.failT); Object.values(this.conns).forEach(c => { try { c.close(); } catch (e) { /* ok */ } clearInterval(c.knock); }); this.brokers.forEach(b => b.close()); }
+    disconnect() {} reconnect() {}
+  }
+
+  /* ---------------- спільний Peer: PeerJS + запасний одночасно ---------------- */
+  window.GutirkaNet = function (PJ) {
+    class NetConn extends Em {
+      constructor(peer, id, opts) {
+        super(); this.peer = id; this.open = false; this.win = null; this.tries = []; this.failed = 0; this.n = 0;
+        const add = c => {
+          this.n++; this.tries.push(c);
+          c.on('open', () => {
+            if (this.win || this.closed) { if (this.win !== c) try { c.close(); } catch (e) { /* ok */ } return; }
+            this.win = c; this.open = true;
+            this.tries.forEach(x => { if (x !== c) try { x.close(); } catch (e) { /* ok */ } });
+            c.on('data', d => this.emit('data', d));
+            c.on('close', () => { if (this.win === c) { this.open = false; this.emit('close'); } });
+            this.emit('open');
+          });
+          c.on('error', e => { if (this.win === c) { this.emit('error', e); return; } if (++this.failed >= this.need()) { peer.emit('error', e && e.type ? e : { type: 'peer-unavailable' }); this.emit('error', e); } });
+        };
+        this.need = () => peer.inner.length;
+        peer.inner.forEach(p => { if (p.isUp) { try { add(p.connect(id, opts)); } catch (e) { this.failed++; } } else p._gq.push(() => { if (!this.win && !this.closed) try { add(p.connect(id, opts)); } catch (e) { this.failed++; } }); });
+      }
+      send(d) { if (this.win) this.win.send(d); }
+      close() { this.closed = true; this.open = false; this.tries.forEach(c => { try { c.close(); } catch (e) { /* ok */ } }); }
+    }
+    class NetPeer extends Em {
+      constructor(id, opts) {
+        super(); this.id = id; this.inner = []; this.destroyed = false; this.opened = false; this.errs = 0;
+        const add = (p, kind) => {
+          p.kind = kind; p.isUp = false; p._gq = []; this.inner.push(p);
+          p.on('open', pid => { p.isUp = true; if (!this.id) this.id = pid; p._gq.splice(0).forEach(f => f()); if (!this.opened) { this.opened = true; this.emit('open', this.id); } });
+          p.on('connection', c => this.emit('connection', c));
+          p.on('error', e => {
+            const ty = e && e.type;
+            if (ty === 'unavailable-id' || ty === 'browser-incompatible') { this.emit('error', e); return; }   // код зайнятий — гутірка сама візьме інший
+            if (ty === 'peer-unavailable') return;   // це вирішує NetConn
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) this.emit('error', e);   // помилка лише тоді, коли не працює жоден шлях
+          });
+          p.on('disconnected', () => {
+            p.isUp = false;
+            if (!this.inner.some(x => x.isUp)) { this.emit('disconnected'); return; }
+            // інший шлях працює — цей відновлюємо самі, тихо
+            const again = () => { if (this.destroyed || p.destroyed || !p.disconnected) return; try { p.reconnect(); } catch (e) { /* ok */ } setTimeout(again, 10000); };
+            setTimeout(again, 3000);
+          });
+          p.on('close', () => { p.isUp = false; if (!this.destroyed && !this.inner.some(x => x.isUp)) this.emit('close'); });
+        };
+        if (PJ) { try { add(new PJ(id, opts), 'peerjs'); } catch (e) { /* без PeerJS */ } }
+        try { add(new RelayPeer(id), 'relay'); } catch (e) { /* без запасного */ }
+      }
+      get disconnected() { return !this.inner.some(x => x.isUp); }
+      connect(id, opts) { return new NetConn(this, id, opts); }
+      reconnect() { this.inner.forEach(p => { if (p.disconnected && !p.destroyed) try { p.reconnect(); } catch (e) { /* ok */ } }); }
+      destroy() { this.destroyed = true; this.inner.forEach(p => { try { p.destroy(); } catch (e) { /* ok */ } }); }
+    }
+    return NetPeer;
+  };
+  window.GutirkaNet.RelayPeer = RelayPeer;
+})();
+
+</script>
+<script>
+/* «Увійти в гру» (25.11.2026): одна кругла кнопка сканера в шапці (на кожній сторінці): вхід у гру без камери телефона.
+   Кнопка → вікно: 6 цифр коду з екрана гри → сайт сам шукає, яка гра має цей код
+   (пробує підключитися до всіх ігор родини одночасно; хто відповів — та й гра) → відкриває сторінку гравця з ?k=код.
+   «Сканувати QR» — камера в самій сторінці (BarcodeDetector, де нема — jsQR з CDN).
+   Потрібні: zvyazok.js (window.GutirkaNet) — вбудовується поруч; PeerJS вантажиться лише при вході. */
+(function () {
+  'use strict';
+  if (window.VHID_HRA) return; window.VHID_HRA = true;
+  const base = location.pathname.startsWith('/proba/') ? '/proba' : '';
+  const HRY = [   // префікс коду кімнати → сторінка гравця
+    ['gutirky-skob-', '/skob/'],
+    ['gutirky-svoya-', '/svoya-hra/hravets/'],
+    ['gutirky-bingo-', '/bingo/gravets/'],
+    ['gutirky-opyt-', '/opytuvannia/golos/'],
+    ['gutirky-znay-', '/novyi-vykhovnyk/hra/']
+  ];
+  const PJ = ['https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js', 'https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js', 'https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js'];
+  const JSQR = ['https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js', 'https://unpkg.com/jsqr@1.4.0/dist/jsQR.js'];
+  const load = u => new Promise((ok, no) => { const s = document.createElement('script'); s.src = u; s.onload = ok; s.onerror = no; document.head.append(s); });
+  async function loadAny(list, test) { for (const u of list) { if (test()) return true; try { await load(u); } catch (e) { /* далі */ } } return test(); }
+
+  const IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6.5" width="19" height="11" rx="5.5"/><path d="M7.5 10v4M5.5 12h4"/><circle cx="15.5" cy="11" r=".6" fill="currentColor"/><circle cx="17.5" cy="13" r=".6" fill="currentColor"/></svg>';
+  const IQR = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></svg>';
+
+  const CSS = `
+/* шапка: маленька кругла кнопка сканера (на кожній сторінці) */
+.vh-ico{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;border-radius:50%;border:1px solid var(--s-ln,#383d44);background:var(--s-card2,#2a2f35);color:var(--s-ink,#f2f4f6);cursor:pointer}
+.vh-ico svg{width:21px;height:21px}
+.vh-ico:hover{border-color:#5a6573}
+@media (max-width:700px){.vh-ico{order:2}}
+#vh{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px}
+#vh[hidden]{display:none}
+#vh .bd{position:absolute;inset:0;background:rgba(10,11,13,.72)}
+#vh .pn{position:relative;width:min(460px,100%);max-height:92vh;overflow:auto;padding:26px 22px 22px;border-radius:var(--s-r-karta,20px);background:var(--s-card,#22262b);border:1px solid var(--s-ln,#383d44);border-top:5px solid var(--s-ihry,#ffc247);box-shadow:0 24px 70px rgba(0,0,0,.6)}
+#vh .x{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;border:1px solid var(--s-ln,#383d44);background:var(--s-card2,#2a2f35);color:var(--s-ink,#f2f4f6);font-size:18px;line-height:1;cursor:pointer}
+#vh h3{margin:0 44px 14px 0;font:600 28px/1.05 var(--s-disp,Oswald,sans-serif);letter-spacing:.03em;text-transform:uppercase;color:var(--s-ihry,#ffc247)}
+#vh label.l{display:block;margin:0 0 8px;font:700 15px var(--s-txt,system-ui);color:var(--s-body,#cfd5dc)}
+#vh .cells{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+#vh .cells input{width:100%;min-width:0;height:62px;padding:0;border-radius:var(--s-r,12px);border:2px solid var(--s-ln,#383d44);background:var(--s-pole,#14171a);color:var(--s-ink,#f2f4f6);font:600 32px var(--s-disp,Oswald,sans-serif);text-align:center;caret-color:var(--s-ihry,#ffc247)}
+#vh .cells input:focus{outline:none;border-color:var(--s-ihry,#ffc247)}
+#vh .cells input:nth-child(4){margin-left:6px}
+#vh .btn.main{width:100%;justify-content:center;margin-top:14px;min-height:var(--s-h-hra,54px);background:var(--s-ihry,#ffc247);border-color:var(--s-ihry,#ffc247);color:var(--s-ihry-on,#1d1606);font-size:18px}
+#vh .st{min-height:22px;margin:12px 0 0;font:600 15px var(--s-txt,system-ui);color:var(--s-mut,#a0a8b2)}
+#vh .st.err{color:var(--s-pomylka,#ff6a6a)}
+#vh .or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:var(--s-mut,#a0a8b2);font:600 14px var(--s-txt,system-ui)}
+#vh .or:before,#vh .or:after{content:"";flex:1;height:1px;background:var(--s-ln,#383d44)}
+#vh .btn.scan{width:100%;justify-content:center;gap:10px}
+#vh .btn.scan svg{width:22px;height:22px}
+#vh .cam{position:relative;margin-top:12px;border-radius:var(--s-r,12px);overflow:hidden;background:#000;aspect-ratio:1}
+#vh .cam video{width:100%;height:100%;object-fit:cover;display:block}
+#vh .cam:after{content:"";position:absolute;inset:18%;border:3px solid var(--s-ihry,#ffc247);border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+#vh .tip{margin:16px 0 0;padding:10px 12px;border-radius:var(--s-r,12px);background:var(--s-card2,#2a2f35);color:var(--s-mut,#a0a8b2);font:500 14px/1.4 var(--s-txt,system-ui)}
+#vh .tip b{color:var(--s-body,#cfd5dc)}
+@media (max-width:560px){#vh{align-items:flex-end;padding:0}#vh .pn{width:100%;border-radius:var(--s-r-karta,20px) var(--s-r-karta,20px) 0 0;padding-bottom:max(22px,env(safe-area-inset-bottom))}}
+`;
+  const st = document.createElement('style'); st.textContent = CSS; document.head.append(st);
+
+  function build() {
+    const top = document.querySelector('header.top');
+    const mk = (cls, html, lbl) => { const b = document.createElement('button'); b.type = 'button'; b.className = cls; b.innerHTML = html; if (lbl) b.setAttribute('aria-label', lbl); b.title = 'Увійти в гру: код або QR'; return b; };
+    const btns = [];
+    if (top) { const b = mk('vh-ico', IQR, 'Увійти в гру: код або QR'); top.append(b); btns.push(b); }
+    if (!btns.length) return;
+    const d = document.createElement('div'); d.id = 'vh'; d.hidden = true; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true'); d.setAttribute('aria-labelledby', 'vh-t');
+    d.innerHTML = '<div class="bd" data-x></div><div class="pn"><button type="button" class="x" data-x aria-label="Закрити">✕</button>' +
+      '<h3 id="vh-t">Увійти в гру</h3>' +
+      '<form id="vh-f" autocomplete="off"><label class="l" for="vh-c0">Код гри з екрана</label><div class="cells">' +
+      [0, 1, 2, 3, 4, 5].map(i => '<input id="vh-c' + i + '" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1"' + (i ? '' : ' autocomplete="one-time-code"') + ' aria-label="Цифра ' + (i + 1) + '">').join('') +
+      '</div><button type="submit" class="btn main" id="vh-ok">Увійти</button><p class="st" id="vh-st" role="status"></p></form>' +
+      '<div class="or">або</div><button type="button" class="btn scan" id="vh-scan">' + IQR + 'Сканувати QR</button><div class="cam" id="vh-cam" hidden><video playsinline muted></video></div>' +
+      '<p class="tip"><b>Порада:</b> додайте цю сторінку на головний екран телефона (меню браузера → «На головний екран») — і вхід у гру буде в один дотик.</p></div>';
+    document.body.append(d);
+    const cells = [...d.querySelectorAll('.cells input')], stEl = d.querySelector('#vh-st');
+    const code = () => cells.map(c => c.value).join('');
+    const say = (t, err) => { stEl.textContent = t; stEl.classList.toggle('err', !!err); };
+    const fill = s => { const v = String(s).replace(/\D/g, '').slice(0, 6); cells.forEach((c, i) => { c.value = v[i] || ''; }); (cells[v.length] || cells[5]).focus(); return v; };
+    cells.forEach((c, i) => {
+      c.addEventListener('input', () => {
+        const v = c.value.replace(/\D/g, '');
+        if (v.length > 1) { const all = fill(code().slice(0, i) + v); if (all.length === 6) go(); return; }   // вставили кілька цифр
+        c.value = v; say('');
+        if (v && i < 5) cells[i + 1].focus();
+        if (code().length === 6) go();
+      });
+      c.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !c.value && i) { cells[i - 1].value = ''; cells[i - 1].focus(); e.preventDefault(); }
+        else if (e.key === 'ArrowLeft' && i) cells[i - 1].focus(); else if (e.key === 'ArrowRight' && i < 5) cells[i + 1].focus();
+      });
+      c.addEventListener('paste', e => { const t = (e.clipboardData || window.clipboardData).getData('text'); if (/\d/.test(t)) { e.preventDefault(); if (fill(t).length === 6) go(); } });
+      c.addEventListener('focus', () => c.select());
+    });
+    d.querySelector('#vh-f').addEventListener('submit', e => { e.preventDefault(); go(); });
+    const open = () => { d.hidden = false; document.documentElement.style.overflow = 'hidden'; say(''); setTimeout(() => (cells.find(c => !c.value) || cells[0]).focus(), 30); };
+    let from = null;
+    const close = () => { stopCam(); stopFind(); d.hidden = true; document.documentElement.style.overflow = ''; if (from) from.focus(); };
+    btns.forEach(b => b.addEventListener('click', () => { from = b; open(); }));
+    d.addEventListener('click', e => { if (e.target.closest('[data-x]')) close(); });
+    addEventListener('keydown', e => { if (e.key === 'Escape' && !d.hidden) close(); });
+    if (/^#hra$/.test(location.hash) || /[?&]hra/.test(location.search)) { history.replaceState(null, '', location.pathname); open(); }
+
+    /* ---- пошук гри за кодом ---- */
+    let finding = null;
+    function stopFind() { if (!finding) return; finding.stop(); finding = null; d.querySelector('#vh-ok').disabled = false; }
+    async function go() {
+      const k = code();
+      if (k.length !== 6) { say('Введіть усі 6 цифр.', true); return; }
+      if (finding) return;
+      const btn = d.querySelector('#vh-ok'); btn.disabled = true; say('Шукаю гру з кодом ' + k.slice(0, 3) + ' ' + k.slice(3) + '…');
+      let alive = true, me = null, conns = [], t = null;
+      finding = { stop() { alive = false; clearTimeout(t); conns.forEach(c => { try { c.close(); } catch (e) { /* ok */ } }); try { me && me.destroy(); } catch (e) { /* ok */ } } };
+      await loadAny(PJ, () => !!window.Peer);
+      if (!alive) return;
+      if (!window.GutirkaNet) { say('Не вдалося підключитися. Перевірте інтернет.', true); stopFind(); return; }
+      try { const P = window.GutirkaNet(window.Peer || null); me = new P(); } catch (e) { say('Не вдалося підключитися. Перевірте інтернет.', true); stopFind(); return; }
+      me.on('error', () => {});
+      let left = HRY.length;
+      const miss = () => { if (--left <= 0 && alive) fail(); };
+      const fail = () => { say('Гри з кодом ' + k.slice(0, 3) + ' ' + k.slice(3) + ' зараз немає. Перевірте цифри на екрані.', true); stopFind(); cells.forEach(c => { c.value = ''; }); cells[0].focus(); };
+      HRY.forEach(([pre, path]) => {
+        let c; try { c = me.connect(pre + k, { reliable: true }); } catch (e) { miss(); return; }
+        conns.push(c);
+        let done = false;
+        c.on('open', () => { if (!alive || done) return; done = true; say('Знайшли! Відкриваю гру…'); const u = location.origin + base + path + '?k=' + k; finding.stop(); finding = null; location.href = u; });
+        c.on('error', () => { if (done) return; done = true; miss(); });
+      });
+      t = setTimeout(() => { if (alive) fail(); }, 16000);
+    }
+
+    /* ---- сканер QR у сторінці ---- */
+    let stream = null, raf = 0;
+    function stopCam() { cancelAnimationFrame(raf); if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; d.querySelector('#vh-cam').hidden = true; d.querySelector('#vh-scan').hidden = false; }
+    function found(text) {
+      const s = String(text || '').trim();
+      if (/^\d{6}$/.test(s)) { stopCam(); fill(s); go(); return true; }
+      let u; try { u = new URL(s, location.href); } catch (e) { return false; }
+      const ok = /(^|\.)gutirky-fi\.github\.io$/.test(u.hostname) || u.host === location.host;
+      if (!ok) { say('Це не QR-код гри.', true); return false; }
+      stopCam(); say('Відкриваю гру…'); location.href = u.href; return true;
+    }
+    d.querySelector('#vh-scan').addEventListener('click', async () => {
+      say('');
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { say('Цей браузер не дає камеру. Введіть код з екрана.', true); return; }
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false }); }
+      catch (e) { say('Немає доступу до камери. Дозвольте камеру або введіть код.', true); return; }
+      const cam = d.querySelector('#vh-cam'), v = cam.querySelector('video'); cam.hidden = false; d.querySelector('#vh-scan').hidden = true;
+      v.srcObject = stream; try { await v.play(); } catch (e) { /* ok */ }
+      let det = null;
+      if ('BarcodeDetector' in window) { try { if ((await BarcodeDetector.getSupportedFormats()).includes('qr_code')) det = new BarcodeDetector({ formats: ['qr_code'] }); } catch (e) { det = null; } }
+      if (!det && !(await loadAny(JSQR, () => !!window.jsQR))) { say('Сканер не завантажився. Введіть код з екрана.', true); stopCam(); return; }
+      say('Наведіть камеру на QR-код на екрані.');
+      const cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true });
+      let busy = false, last = 0;
+      const tick = async ts => {
+        if (!stream) return; raf = requestAnimationFrame(tick);
+        if (busy || ts - last < 180 || v.readyState < 2) return; busy = true; last = ts;
+        try {
+          if (det) { const r = await det.detect(v); if (r[0] && found(r[0].rawValue)) return; }
+          else { const w = Math.min(640, v.videoWidth), h = Math.round(w * v.videoHeight / v.videoWidth); cv.width = w; cv.height = h; cx.drawImage(v, 0, 0, w, h); const r = window.jsQR(cx.getImageData(0, 0, w, h).data, w, h); if (r && found(r.data)) return; }
+        } catch (e) { /* наступний кадр */ }
+        busy = false;
+      };
+      raf = requestAnimationFrame(tick);
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
+})();
+
+</script>
+<script>
 (() => {
 'use strict';
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
