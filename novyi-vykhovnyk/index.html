@@ -252,6 +252,7 @@ body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
 .kg{display:grid;grid-template-columns:1fr 1fr;gap:24px;text-align:center;margin-top:12px}.kg h3{margin:0 0 8px;font:600 22px var(--disp);text-transform:uppercase}.kg .qr{margin:0 auto 8px;width:min(260px,34vh)}
 #qrv{margin:6px auto 10px;box-shadow:0 0 0 1px rgba(47,210,192,.6),0 0 28px -6px rgba(47,210,192,.6)}
 .vst{color:var(--mut);font-size:14px;margin:0}
+.vcd{margin:0 0 6px;color:var(--mut);font-size:14px}.vcd b{margin-left:4px;font:600 26px/1 var(--disp,Oswald,sans-serif);letter-spacing:.08em;color:var(--gd,#ffc247)}
 .vlink{margin-top:10px;background:none;border:0;color:var(--mut);text-decoration:underline;font-size:14px;padding:4px}
 .vok{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:5px 10px;border-radius:var(--s-r-pil,99px);background:rgba(47,210,192,.12);color:var(--ac);font-weight:700;font-size:14px}
 .vok button{background:none;border:1px solid rgba(47,210,192,.5);color:var(--ac);border-radius:var(--s-r-pil,99px);padding:3px 12px;font-size:14px;font-weight:700}
@@ -307,6 +308,17 @@ body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
@@ -450,6 +462,17 @@ body.fam .fm-ov .sub{margin:12px 0 0}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
@@ -524,6 +547,17 @@ body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:var(
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Стиль 3» ігор (проба ?dyz=3) — за дизайн-системою «Ігри Пласту»: картка QR ліворуч, логотип «значок + назва»,
@@ -705,6 +739,10 @@ window.IHRY_S3 = function (o) {
    Спільне для всіх ігор: вставляється в екран ведучого (ihry-styl3.js, СКОБ, «Хто?»). */
 (function () {
   if (window.IHRY_FIT) return; window.IHRY_FIT = true;
+  /* ТБ-режим (проєктор, пульт): якщо гру відкрили з ТБ-сайту — підвантажити спільний ТБ-шар (рамка, стрілки, «Назад»). */
+  try { if (/[?&]tv=1/.test(location.search) || /PlastTV/.test(navigator.userAgent) || sessionStorage.getItem('plast-tv') === '1' || localStorage.getItem('plast-tv') === '1') {
+    if (!/[?&]tv=0/.test(location.search)) { window.TV_GRA = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; document.head.appendChild(l);
+      const sc = document.createElement('script'); sc.src = '/proba/tv/tv-all.js'; document.head.appendChild(sc); } } } catch (e) { /* без ТБ */ }
   if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
   const MIN = 0.72, STEP = 0.04;
   const boxes = () => [...document.querySelectorAll('main, .sk-stage')].filter(e => e.offsetParent !== null && e.clientHeight > 0 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
@@ -1269,6 +1307,17 @@ body.s3 #lobby .igr #inl{display:none}
     off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
     emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
   }
+  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
+  if (window.name === 'plast-dzerkalo') {
+    class S extends Em {
+      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
+      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
+      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
+    }
+    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
+    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
+    return;
+  }
 
   /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
   const te = new TextEncoder(), td = new TextDecoder();
@@ -1826,7 +1875,7 @@ document.addEventListener('keydown', e => {
   if (!$('#edov').hidden) { if (e.key === 'Escape') closeEd(); else if (e.key === 'Enter' && e.target.closest('#nq,#nt')) { e.preventDefault(); addOwn(); } return; }
   if (e.target.closest('input,textarea,select')) return;
   const nx = { zbir: '#zgo', fakt: '#fnext', my: '#mnext' }[phase], pv = { fakt: '#fprev', my: '#mprev' }[phase];
-  if ((e.key === 'ArrowRight' || e.key === ' ') && nx) { e.preventDefault(); $(nx).click(); } else if (e.key === 'ArrowLeft' && pv) $(pv).click();
+  if ((e.key === 'ArrowRight' || e.key === ' ') && nx) { e.preventDefault(); $(nx).click(); } else if (e.key === 'ArrowLeft' && pv) { e.preventDefault(); $(pv).click(); }
 });
 /* СТИЛЬ 2/3: заголовок ліворуч, картка з QR праворуч — як в Опитуванні */
 if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
@@ -1836,7 +1885,7 @@ if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
   const lb = $('#lobby .lb'), m = el('div', 's2m', '<p class="eyb">Для сходин</p><h1>Вгадай, хто?</h1><p class="hand">факти з телефонів — вгадуємо, чий</p><div class="s2l">Що граємо</div>');
   m.append(q('polls'), q('qlist'));
   const act = el('div', 's2a'); q('start').innerHTML = '▶ Почати'; act.append(q('start'), q('edit')); m.append(act, q('test'));
-  const j = el('aside', 's2j', '<div id="krok1"><h2>Хто вгадує?</h2><p>Скануй цей код — і ти вгадуєш.<br>Підключається лише один телефон.</p><div class="qr" id="qrv"></div><p class="vst" id="vst">Готуємо код…</p><button type="button" class="vlink" id="vskip">Вгадувати з цього екрана</button></div>'
+  const j = el('aside', 's2j', '<div id="krok1"><h2>Хто вгадує?</h2><p>Скануй цей код — і ти вгадуєш.<br>Підключається лише один телефон.</p><div class="qr" id="qrv"></div><p class="vcd" id="vcd" hidden>або код <b></b></p><p class="vst" id="vst">Готуємо код…</p><button type="button" class="vlink" id="vskip">Вгадувати з цього екрана</button></div>'
     + '<div id="krok2"><div class="vok" id="vok"></div><h2>Грають усі інші</h2><p>Скануйте QR-код і впишіть своє імʼя.</p></div>');
   const inl = q('inl'), inn = q('inn'); inl.className = 's2l';
   j.querySelector('#krok2').append(q('qr'), el('div', 's2l', 'або відкрийте адресу й введіть код'), q('url'), q('code'));
@@ -1853,6 +1902,7 @@ function paintKrok() {
   const k1 = $('#krok1'), k2 = $('#krok2'); if (!k1) return;
   const one = (vOn() || vSkip) && !vShow;
   k1.hidden = one; k2.hidden = !one;
+  $('#vcd').hidden = one || net !== 'on'; $('#vcd b').textContent = code.slice(0, 3) + ' ' + code.slice(3);
   if (!one) { qrInto($('#qrv'), net === 'on' ? vUrl() : '', 240); $('#vst').textContent = net === 'on' ? (vShow && vOn() ? 'Скануй — і вгадуєш ти (попередній телефон відключиться)' : 'Чекаємо на телефон…') : 'Готуємо код…'; }
   $('#vok').innerHTML = vOn() ? '✓ Вгадує: ' + esc(nameOf(vTok)) + ' <button type="button" id="vnew">Інший вгадує</button>' : 'Вгадують з цього екрана <button type="button" id="vnew">Вгадувати з телефона</button>';
 }

@@ -926,6 +926,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
 #vh .cells input:focus{outline:none;border-color:var(--s-ihry,#ffc247)}
 #vh .cells input:nth-child(4){margin-left:6px}
 #vh .btn.main{width:100%;justify-content:center;margin-top:14px;min-height:var(--s-h-hra,54px);background:var(--s-ihry,#ffc247);border-color:var(--s-ihry,#ffc247);color:var(--s-ihry-on,#1d1606);font-size:18px}
+#vh .vh-role{display:grid;gap:10px;margin-top:12px}#vh .vh-role .btn{width:100%;justify-content:center;min-height:var(--s-h,50px)}#vh .vh-role .btn:not(.main){background:var(--s-card2,#2a2f35);border:1px solid var(--s-ln,#383d44);color:var(--s-ink,#f2f4f6)}
 #vh .st{min-height:22px;margin:12px 0 0;font:600 15px var(--s-txt,system-ui);color:var(--s-mut,#a0a8b2)}
 #vh .st.err{color:var(--s-pomylka,#ff6a6a)}
 #vh .or{display:flex;align-items:center;gap:12px;margin:16px 0 12px;color:var(--s-mut,#a0a8b2);font:600 14px var(--s-txt,system-ui)}
@@ -976,7 +977,7 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
       c.addEventListener('focus', () => c.select());
     });
     d.querySelector('#vh-f').addEventListener('submit', e => { e.preventDefault(); go(); });
-    const open = () => { d.hidden = false; document.documentElement.style.overflow = 'hidden'; say(''); setTimeout(() => (cells.find(c => !c.value) || cells[0]).focus(), 30); };
+    const open = () => { const r = d.querySelector('.vh-role'); if (r) { r.remove(); d.querySelector('#vh-ok').hidden = false; cells.forEach(c => { c.value = ''; }); } d.hidden = false; document.documentElement.style.overflow = 'hidden'; say(''); setTimeout(() => (cells.find(c => !c.value) || cells[0]).focus(), 30); };
     let from = null;
     const close = () => { stopCam(); stopFind(); d.hidden = true; document.documentElement.style.overflow = ''; if (from) from.focus(); };
     btns.forEach(b => b.addEventListener('click', () => { from = b; open(); }));
@@ -1006,10 +1007,25 @@ const SKILL_LEVEL_IMG = {"30-littya-plastu-v-polshhi":"2026/03/30-littya-plastu-
         let c; try { c = me.connect(pre + k, { reliable: true }); } catch (e) { miss(); return; }
         conns.push(c);
         let done = false;
-        c.on('open', () => { if (!alive || done) return; done = true; say('Знайшли! Відкриваю гру…'); const u = location.origin + base + path + '?' + (par || 'k') + '=' + k; finding.stop(); finding = null; location.href = u; });
+        c.on('open', () => {
+          if (!alive || done) return; done = true;
+          const u = location.origin + base + path + '?' + (par || 'k') + '=' + k; finding.stop(); finding = null;
+          if (pre === 'gutirky-znay-') { role(u); return; }   // «Вгадай, хто?»: граю чи вгадую
+          say('Знайшли! Відкриваю гру…'); location.href = u;
+        });
         c.on('error', () => { if (done) return; done = true; miss(); });
       });
       t = setTimeout(() => { if (alive) fail(); }, 16000);
+    }
+
+    /* «Вгадай, хто?»: той самий код для гравців і для того, хто вгадує */
+    function role(u) {
+      say('Це «Вгадай, хто?». Ви граєте чи вгадуєте?');
+      const f = d.querySelector('#vh-f'), box = document.createElement('div'); box.className = 'vh-role';
+      box.innerHTML = '<button type="button" class="btn main" data-r="g">Я граю</button><button type="button" class="btn" data-r="v">Я вгадую (один на гру)</button>';
+      f.append(box);
+      box.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; say('Відкриваю гру…'); location.href = b.dataset.r === 'v' ? u + '&v=1' : u; });
+      d.querySelector('#vh-ok').hidden = true;
     }
 
     /* ---- сканер QR у сторінці ---- */

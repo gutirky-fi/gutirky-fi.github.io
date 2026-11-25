@@ -145,6 +145,17 @@ body.s3t .opts button[aria-pressed=true]::after{color:#ffc247}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
@@ -288,6 +299,17 @@ body.fam .fm-ov .sub{margin:12px 0 0}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
+/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
+   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
+   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
+:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
+:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
+:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
+:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
+:root .btn[disabled]{opacity:.45;cursor:not-allowed}
+:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
+:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
+:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
@@ -474,6 +496,17 @@ window.IHRY_TEL3 = function (gra) {
     on(e, f) { (this._h[e] = this._h[e] || []).push(f); return this; }
     off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
     emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
+  }
+  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
+  if (window.name === 'plast-dzerkalo') {
+    class S extends Em {
+      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
+      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
+      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
+    }
+    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
+    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
+    return;
   }
 
   /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
