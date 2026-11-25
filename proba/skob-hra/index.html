@@ -315,7 +315,7 @@ details[open]>summary::before{transform:rotate(90deg)}
 (function () {
   if (window.IHRY_FIT) return; window.IHRY_FIT = true;
   /* ТБ-режим (проєктор, пульт): якщо гру відкрили з ТБ-сайту — підвантажити спільний ТБ-шар (рамка, стрілки, «Назад»). */
-  try { if (/[?&]tv=1/.test(location.search) || /PlastTV/.test(navigator.userAgent) || sessionStorage.getItem('plast-tv') === '1' || localStorage.getItem('plast-tv') === '1') {
+  try { if ((function () { /* лише справжній проєктор: ?tv=1, застосунок PlastTV або вбудований браузер без дотику; на ноутбуці з мишкою старий прапорець «проєктор» не діє і стирається (25.11) */ const u = navigator.userAgent, dev = /PlastTV/.test(u) || (/; wv\)/.test(u) && !navigator.maxTouchPoints), flag = sessionStorage.getItem('plast-tv') === '1' || localStorage.getItem('plast-tv') === '1', mysh = matchMedia('(any-pointer: fine)').matches; if (flag && mysh && !dev && !/[?&]tv=1/.test(location.search)) { localStorage.removeItem('plast-tv'); sessionStorage.removeItem('plast-tv'); return false; } return /[?&]tv=1/.test(location.search) || dev || flag; })()) {
     if (!/[?&]tv=0/.test(location.search)) { window.TV_GRA = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; document.head.appendChild(l);
       const sc = document.createElement('script'); sc.src = '/proba/tv/tv-all.js'; document.head.appendChild(sc); } } } catch (e) { /* без ТБ */ }
   if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
