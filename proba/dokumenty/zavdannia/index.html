@@ -340,6 +340,7 @@ html.pv-touch .bar2 .chk{display:none}   /* на телефоні — «Запо
 .foto img{width:44px;height:44px;object-fit:cover;border-radius:var(--s-r-mitka,6px);border:1px solid var(--ln)}
 .foto .fs{font-size:14px;color:var(--mut)}.foto .fs.ok{color:var(--ok-t);font-weight:700}.foto .fs.bad{color:#ffb3c3;font-weight:700}
 .den .fz{display:inline-block;margin-top:5px;font-size:14px;font-weight:700;color:var(--ok-t)}.den .fz.no{color:#f0c060}
+.den .zdv{display:inline-block;padding:6px 0;font-size:14px;font-weight:700;color:var(--body)}.den li.vidkr{background:var(--card2)}
 .den .neb{display:block;margin-top:5px;font-size:14px;font-weight:700;color:#ffb3c3}
 /* «Де зараз гроші» (каса) */
 /* 3.5: огляд вмілостей і копія посвідки */
@@ -1949,7 +1950,8 @@ window.Nazvy = (function () {
   const zdNazva = () => { const i = idx('Назва'); return i >= 0 ? norm($('z-p' + i).value) : ''; };
   function zdPomitka() {   // який із записаних заходів зараз відкрито у формі
     const box = $('z-zd'); if (!box) return; const n = zdNazva();
-    box.querySelectorAll('li').forEach(li => li.classList.toggle('red', !!n && li.dataset.n === n));
+    box.querySelectorAll('li').forEach(li => { const tak = !!n && li.dataset.n === n, b = li.querySelector('button[data-j]'), m = li.querySelector('.zdv');
+      li.classList.toggle('vidkr', tak); if (m) m.hidden = !tak; if (b) { b.hidden = tak; } });
   }
   async function zdZavantazhyty() {
     const box = $('z-zd'), di = idx('Дата'); if (!box || !kod || di < 0) return;
@@ -1965,7 +1967,7 @@ window.Nazvy = (function () {
       zdRyadky.map((r, j) => { const x = r.dani || {}, dod = [x['Вид'], x['Місце']].filter(Boolean).join(' · ');
         return `<li class="${r.zatverdzheno ? 'zt' : ''}" data-n="${esc(norm(x['Назва']))}"><div class="dt"><span>${esc(x['Назва'] || '—')}</span></div>${dod ? `<div class="dd">${esc(dod)}</div>` : ''}` +
           (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' : r.khto ? `<div class="dd">записав(ла) ${esc(r.khto)}${r.koly ? ', ' + esc(r.koly) : ''}</div>` : '') +
-          `<div class="db"><button type="button" data-j="${j}">${r.zatverdzheno ? 'Переглянути' : 'Відкрити й виправити'}</button></div></li>`; }).join('') + '</ul>';
+          `<div class="db"><button type="button" class="btn" data-j="${j}">${r.zatverdzheno ? 'Переглянути' : 'Відкрити й виправити'}</button><span class="zdv" hidden>✎ Відкрито — дані нижче у формі ↓</span></div></li>`; }).join('') + '</ul>';
     zdPomitka();
   }
   document.addEventListener('click', e => {
