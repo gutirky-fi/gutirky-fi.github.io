@@ -58,7 +58,6 @@ body{background:radial-gradient(80% 70% at 70% 20%,#1f2c30,var(--bg) 70%);color:
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
-#polls button:focus-visible{outline:2px solid var(--s-ink,#f2f4f6);outline-offset:-6px}   /* вибір гри: обвідка фокуса всередині картки, не налазить на сусідню */
 [hidden]{display:none!important}
 .top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
 .top .sp{flex:1}
@@ -499,10 +498,6 @@ body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
 body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:var(--s-r,12px);padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
 body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 14px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
-/* вибір «що граємо» (25.11, власник): навели — жовта рамка; натиснули — лишається жовта рамка; клавіатура — біла обвідка всередині */
-body.s2 .s2m .modes button,body.s2 .s2m .polls button{cursor:pointer}
-body.s2 .s2m .modes button:hover,body.s2 .s2m .polls button:hover{border-color:var(--gd)}
-body.s2 .s2m .modes button:focus-visible,body.s2 .s2m .polls button:focus-visible{outline:2px solid var(--s-ink,#f2f4f6);outline-offset:-6px}
 body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
 body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
 body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -1652,9 +1647,7 @@ function paintLobby() {
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, Object.assign({ eye: '#ffc247' }, window.IHRY_QRMARK)); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
-  { const pb = $('#polls').querySelectorAll('button[data-r]');   /* картки вже є — лише міняємо вибрану (не перемальовуємо: інакше губиться фокус і рамки накладаються) */
-    if (pb.length === Object.keys(ROUNDS).length) pb.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.r === gra)));
-    else $('#polls').innerHTML = Object.entries(ROUNDS).map(([k, [t, s]]) => `<button type="button" data-r="${k}" aria-pressed="${k === gra}">${esc(t)}<small>${esc(s)}</small></button>`).join(''); }
+  $('#polls').innerHTML = Object.entries(ROUNDS).map(([k, [t, s]]) => `<button type="button" data-r="${k}" aria-pressed="${k === gra}">${esc(t)}<small>${esc(s)}</small></button>`).join('');
   $('#qlist').innerHTML = gra === 'my' ? (() => { const pl = qpool(), len = pl.length, eff = (!nQ || nQ >= len) ? len : nQ, own = QD.own.filter(o => o.on).length;
     return pl.slice(0, 3).map(x => `<li>${esc(x.q)}</li>`).join('') + `<li style="list-style:none"><small>…питання випадкові з ${len}${own ? ' (з них ваших — ' + own + ')' : ''}. Кожне питання дає переможцю титул.</small></li><li style="list-style:none">Скільки питань: <span class="nqs"><button type="button" data-nqd="-1" aria-label="Менше">−</button><b id="nqv">${eff}</b><button type="button" data-nqd="1" aria-label="Більше">+</button>${[6, 10, 15, 0].map(k => `<button type="button" data-nq="${k}" aria-pressed="${k === nQ || (k === 0 && nQ >= len)}">${k || 'Усі'}</button>`).join('')}</span></li>`; })() : '<li>Кожен пише на телефоні два факти про себе, до кожного — дві підказки</li><li>Факт на екрані: той, хто вгадує, називає імʼя (3 спроби, після помилки — підказка), решта — потай на телефонах</li><li>Бали 3 / 2 / 1 — за вгадане з першої, другої, третьої спроби</li>';
   $('#edit').hidden = gra !== 'my'; $('#edit').textContent = '✎ Питання гуртка · ' + qpool().length;

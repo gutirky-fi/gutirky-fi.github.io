@@ -59,7 +59,6 @@ body{background:radial-gradient(80% 70% at 70% 20%,#1f2c30,var(--bg) 70%);color:
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--gd);outline-offset:2px}
-#polls button:focus-visible{outline:2px solid var(--s-ink,#f2f4f6);outline-offset:-6px}   /* вибір гри: обвідка фокуса всередині картки, не налазить на сусідню */
 [hidden]{display:none!important}
 .top{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:12px 18px;z-index:5}
 .top .sp{flex:1}
@@ -309,17 +308,6 @@ body.run #kody{display:inline-flex}#kody{display:none;cursor:pointer}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
-/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
-   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
-   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
-:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
-:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
-:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
-:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
-:root .btn[disabled]{opacity:.45;cursor:not-allowed}
-:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
-:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
-:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Родина ігор» — спільний вигляд ігор сайту (за зразком «Потужного СКОБ!»).
@@ -463,17 +451,6 @@ body.fam .fm-ov .sub{margin:12px 0 0}
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
-/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
-   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
-   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
-:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
-:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
-:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
-:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
-:root .btn[disabled]{opacity:.45;cursor:not-allowed}
-:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
-:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
-:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Стиль 2» ігор (як «Інтелектуальний змаг» ?dyz=2 — власнику найбільше підходить).
@@ -500,10 +477,6 @@ body.s2 .s2l{margin:18px 0 8px;font:700 14px var(--txt);color:var(--mut)}
 body.s2 .s2m .modes,body.s2 .s2m .polls{display:flex;flex-wrap:wrap;gap:8px;margin:0}
 body.s2 .s2m .modes button,body.s2 .s2m .polls button{min-height:0;border-radius:var(--s-r,12px);padding:10px 14px;background:var(--card);border:1px solid var(--ln);font:700 16px var(--txt);color:var(--ink);text-align:left}
 body.s2 .s2m .modes button small,body.s2 .s2m .polls button small{display:block;font:500 14px var(--txt);margin-top:2px;color:var(--mut);opacity:1}
-/* вибір «що граємо» (25.11, власник): навели — жовта рамка; натиснули — лишається жовта рамка; клавіатура — біла обвідка всередині */
-body.s2 .s2m .modes button,body.s2 .s2m .polls button{cursor:pointer}
-body.s2 .s2m .modes button:hover,body.s2 .s2m .polls button:hover{border-color:var(--gd)}
-body.s2 .s2m .modes button:focus-visible,body.s2 .s2m .polls button:focus-visible{outline:2px solid var(--s-ink,#f2f4f6);outline-offset:-6px}
 body.s2 .s2m .modes button[aria-pressed=true],body.s2 .s2m .polls button[aria-pressed=true]{background:var(--card2);border-color:var(--gd);color:var(--ink);box-shadow:inset 0 0 0 1px var(--gd)}
 body.s2 .s2m .modes button[aria-pressed=true] small,body.s2 .s2m .polls button[aria-pressed=true] small{color:var(--mut)}
 body.s2 .s2a{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
@@ -552,17 +525,6 @@ body.s2 .toast{background:var(--card2);border-color:var(--ln);border-radius:var(
   /* висота: звичайна кнопка й поле 50, головна кнопка гри 54 */
   --s-h:50px; --s-h-hra:54px;
 }
-/* ═══ КНОПКИ — одна реакція на всіх сторінках ═══
-   навели: рамка кольором розділу (головна кнопка — біла рамка) · натиснули: темнішає й опускається ·
-   клавіатура або пульт: біла обвідка · недоступна: бліда · «видалити»: не залита, червоний напис */
-:root :is(button,a,summary,[role=button],[tabindex]):focus-visible{outline:3px solid var(--s-ink);outline-offset:2px}
-:root .btn:where(:not(.main,.ok,[disabled])):hover{border-color:var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))));box-shadow:0 0 0 1px var(--ak,var(--d-t,var(--gd,var(--ab,var(--a,var(--s-ink))))))}
-:root .btn:is(.main,.ok):where(:not([disabled])):hover{border-color:var(--s-ink);box-shadow:0 0 0 1px var(--s-ink)}
-:root .btn:where(:not([disabled])):active{transform:translateY(2px);filter:brightness(.88)}
-:root .btn[disabled]{opacity:.45;cursor:not-allowed}
-:root .btn.neb,:root .btn.warn{background:var(--s-card2);border-color:var(--s-ln);color:var(--s-pomylka)}
-:root .btn:is(.neb,.warn):where(:not([disabled])):hover,:root .btn.warn.sure{border-color:var(--s-pomylka);box-shadow:0 0 0 1px var(--s-pomylka)}
-:root .btn.warn.sure{background:rgba(255,106,106,.14)}
 /* ═══ кінець стандарту ═══ */
 /*/standart*/
 /* «Стиль 3» ігор (проба ?dyz=3) — за дизайн-системою «Ігри Пласту»: картка QR ліворуч, логотип «значок + назва»,
@@ -744,10 +706,6 @@ window.IHRY_S3 = function (o) {
    Спільне для всіх ігор: вставляється в екран ведучого (ihry-styl3.js, СКОБ, «Хто?»). */
 (function () {
   if (window.IHRY_FIT) return; window.IHRY_FIT = true;
-  /* ТБ-режим (проєктор, пульт): якщо гру відкрили з ТБ-сайту — підвантажити спільний ТБ-шар (рамка, стрілки, «Назад»). */
-  try { if (/[?&]tv=1/.test(location.search) || /PlastTV/.test(navigator.userAgent) || sessionStorage.getItem('plast-tv') === '1' || localStorage.getItem('plast-tv') === '1') {
-    if (!/[?&]tv=0/.test(location.search)) { window.TV_GRA = 1; const l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/proba/tv/tv.css'; document.head.appendChild(l);
-      const sc = document.createElement('script'); sc.src = '/proba/tv/tv-all.js'; document.head.appendChild(sc); } } } catch (e) { /* без ТБ */ }
   if (/[?&]bot=/.test(location.search)) return;   // тестові гравці «Репетиції» — не чіпати
   const MIN = 0.72, STEP = 0.04;
   const boxes = () => [...document.querySelectorAll('main, .sk-stage')].filter(e => e.offsetParent !== null && e.clientHeight > 0 && /(auto|scroll)/.test(getComputedStyle(e).overflowY));
@@ -1312,17 +1270,6 @@ body.s3 #lobby .igr #inl{display:none}
     off(e, f) { this._h[e] = (this._h[e] || []).filter(x => x !== f); return this; }
     emit(e, ...a) { (this._h[e] || []).slice().forEach(f => { try { f(...a); } catch (x) { console.error(x); } }); }
   }
-  /* копія гри на телефоні виховника (рамка з name="plast-dzerkalo"): лише вигляд, без власного звʼязку — керує проєктор */
-  if (window.name === 'plast-dzerkalo') {
-    class S extends Em {
-      constructor(id) { super(); this.id = id || rnd(8); this.open = false; this.disconnected = false; this.destroyed = false; setTimeout(() => { this.open = true; this.emit('open', this.id); }, 50); }
-      connect() { const c = new Em(); c.open = false; c.send = () => {}; c.close = () => {}; return c; }
-      destroy() { this.destroyed = true; } reconnect() {} disconnect() {}
-    }
-    window.GutirkaNet = function () { return S; }; window.GutirkaNet.RelayPeer = S;
-    try { Object.defineProperty(window, 'Peer', { get() { return S; }, set() {}, configurable: false }); } catch (e) { /* ok */ }
-    return;
-  }
 
   /* ---------------- найпростіший клієнт MQTT 3.1.1 через WebSocket (QoS 0) ---------------- */
   const te = new TextEncoder(), td = new TextDecoder();
@@ -1653,9 +1600,7 @@ function paintLobby() {
   if (window.qrSvg && $('#qr').dataset.u !== url) { $('#qr').innerHTML = window.qrSvg(url, 280, Object.assign({ eye: '#ffc247' }, window.IHRY_QRMARK)); $('#qr').dataset.u = url; }
   $('#url').textContent = PURL.replace(/^https?:\/\//, '').replace(/\/$/, '');
   $('#code').textContent = code.slice(0, 3) + ' ' + code.slice(3);
-  { const pb = $('#polls').querySelectorAll('button[data-r]');   /* картки вже є — лише міняємо вибрану (не перемальовуємо: інакше губиться фокус і рамки накладаються) */
-    if (pb.length === Object.keys(ROUNDS).length) pb.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.r === gra)));
-    else $('#polls').innerHTML = Object.entries(ROUNDS).map(([k, [t, s]]) => `<button type="button" data-r="${k}" aria-pressed="${k === gra}">${esc(t)}<small>${esc(s)}</small></button>`).join(''); }
+  $('#polls').innerHTML = Object.entries(ROUNDS).map(([k, [t, s]]) => `<button type="button" data-r="${k}" aria-pressed="${k === gra}">${esc(t)}<small>${esc(s)}</small></button>`).join('');
   $('#qlist').innerHTML = gra === 'my' ? (() => { const pl = qpool(), len = pl.length, eff = (!nQ || nQ >= len) ? len : nQ, own = QD.own.filter(o => o.on).length;
     return pl.slice(0, 3).map(x => `<li>${esc(x.q)}</li>`).join('') + `<li style="list-style:none"><small>…питання випадкові з ${len}${own ? ' (з них ваших — ' + own + ')' : ''}. Кожне питання дає переможцю титул.</small></li><li style="list-style:none">Скільки питань: <span class="nqs"><button type="button" data-nqd="-1" aria-label="Менше">−</button><b id="nqv">${eff}</b><button type="button" data-nqd="1" aria-label="Більше">+</button>${[6, 10, 15, 0].map(k => `<button type="button" data-nq="${k}" aria-pressed="${k === nQ || (k === 0 && nQ >= len)}">${k || 'Усі'}</button>`).join('')}</span></li>`; })() : '<li>Кожен пише на телефоні два факти про себе, до кожного — дві підказки</li><li>Факт на екрані: той, хто вгадує, називає імʼя (3 спроби, після помилки — підказка), решта — потай на телефонах</li><li>Бали 3 / 2 / 1 — за вгадане з першої, другої, третьої спроби</li>';
   $('#edit').hidden = gra !== 'my'; $('#edit').textContent = '✎ Питання гуртка · ' + qpool().length;
@@ -1882,7 +1827,7 @@ document.addEventListener('keydown', e => {
   if (!$('#edov').hidden) { if (e.key === 'Escape') closeEd(); else if (e.key === 'Enter' && e.target.closest('#nq,#nt')) { e.preventDefault(); addOwn(); } return; }
   if (e.target.closest('input,textarea,select')) return;
   const nx = { zbir: '#zgo', fakt: '#fnext', my: '#mnext' }[phase], pv = { fakt: '#fprev', my: '#mprev' }[phase];
-  if ((e.key === 'ArrowRight' || e.key === ' ') && nx) { e.preventDefault(); $(nx).click(); } else if (e.key === 'ArrowLeft' && pv) { e.preventDefault(); $(pv).click(); }
+  if ((e.key === 'ArrowRight' || e.key === ' ') && nx) { e.preventDefault(); $(nx).click(); } else if (e.key === 'ArrowLeft' && pv) $(pv).click();
 });
 /* СТИЛЬ 2/3: заголовок ліворуч, картка з QR праворуч — як в Опитуванні */
 if (['2', '3'].includes(new URLSearchParams(location.search).get('dyz'))) {
