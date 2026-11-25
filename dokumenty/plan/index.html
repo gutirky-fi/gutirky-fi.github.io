@@ -340,6 +340,7 @@ html.pv-touch .bar2 .chk{display:none}   /* на телефоні — «Запо
 .foto img{width:44px;height:44px;object-fit:cover;border-radius:var(--s-r-mitka,6px);border:1px solid var(--ln)}
 .foto .fs{font-size:14px;color:var(--mut)}.foto .fs.ok{color:var(--ok-t);font-weight:700}.foto .fs.bad{color:#ffb3c3;font-weight:700}
 .den .fz{display:inline-block;margin-top:5px;font-size:14px;font-weight:700;color:var(--ok-t)}.den .fz.no{color:#f0c060}
+.den .zdv{display:inline-block;padding:6px 0;font-size:14px;font-weight:700;color:var(--body)}.den li.vidkr{background:var(--card2)}
 .den .neb{display:block;margin-top:5px;font-size:14px;font-weight:700;color:#ffb3c3}
 /* «Де зараз гроші» (каса) */
 /* 3.5: огляд вмілостей і копія посвідки */
@@ -1751,6 +1752,7 @@ window.Nazvy = (function () {
         const ne = {}; DR.forEach(r => { const im = r.dani["Хто (ім'я)"], v = r.dani['Внесок']; if (!im || !v) return; const x = chyslo(r.dani['Сума, €']) * (r.dani['Рух'] === 'видаток' ? -1 : 1); if (r.ne) { dod(ne, im, v, x); return; } dod(sp, im, v, x); if (r.zatv) dod(pv, im, v, x); });
         return {ok: true, vnesky: K.demoVnesky || [], splacheno: sp, perevireno: pv, ne};
       }
+      if (t.dija === 'den' && K.zaDatoiu) return {ok: true, ryadky: Object.values(DDB).filter(x => x.dani['Дата'] === t.dani['Дата']).map(x => ({ryadok: x.ryadok, dani: x.dani, khto: x.khto, koly: x.koly, zatverdzheno: !!x.zatv}))};
       if (t.dija === 'den') return {ok: true, ryadky: DR.filter(r => r.dani['Дата'] === t.dani['Дата']).map(r => ({ryadok: r.ryadok, dani: r.dani, khto: r.khto, koly: r.koly, zatverdzheno: !!r.zatv, ne: !!r.ne, versiya: r.ver}))};
       if (t.dija === 'vytiah') {   // проба: те саме, що рахує приймач, — з рядків у пам'яті
         const im = String(t.imya || '').trim(); if (!im) return {ok: false, pomylka: 'Виберіть ім\'я.'};
@@ -1942,7 +1944,38 @@ window.Nazvy = (function () {
     if (v.khto && !v.zatverdzheno) { const kh = $('z-khto'); if (![...kh.options].some(o => o.value === v.khto)) kh.add(new Option(v.khto, v.khto)); }
     zapovneno = true; zamok(!!v.zatverdzheno);
   }
-  $('z-polia').addEventListener('change', e => { const f = e.target.closest('.f'); if (f && KL.includes(K.polia[+f.dataset.i].h)) perevirStan(); });
+  $('z-polia').addEventListener('change', e => { const f = e.target.closest('.f'); if (f && KL.includes(K.polia[+f.dataset.i].h)) { perevirStan(); if (K.zaDatoiu && K.polia[+f.dataset.i].h === 'Дата') zdZavantazhyty(); else zdPomitka(); } });
+  // ---- K.zaDatoiu: «На цю дату вже записано: …» — натиснути → форма підтягує той запис для виправлення (25.11) ----
+  let zdN = 0, zdRyadky = [];
+  const zdNazva = () => { const i = idx('Назва'); return i >= 0 ? norm($('z-p' + i).value) : ''; };
+  function zdPomitka() {   // який із записаних заходів зараз відкрито у формі
+    const box = $('z-zd'); if (!box) return; const n = zdNazva();
+    box.querySelectorAll('li').forEach(li => { const tak = !!n && li.dataset.n === n, b = li.querySelector('button[data-j]'), m = li.querySelector('.zdv');
+      li.classList.toggle('vidkr', tak); if (m) m.hidden = !tak; if (b) { b.hidden = tak; } });
+  }
+  async function zdZavantazhyty() {
+    const box = $('z-zd'), di = idx('Дата'); if (!box || !kod || di < 0) return;
+    const d = $('z-p' + di).value; if (!d) { box.hidden = true; return; }
+    const moye = ++zdN;
+    let v; try { v = await zapyt({kod, dija: 'den', arkush: K.arkush, dani: {'Дата': d}}); } catch (x) { v = null; }
+    if (moye !== zdN) return;
+    if (!v || !v.ok) { box.hidden = true; return; }   // старий приймач (без «den» для цього аркуша) — просто нічого не показуємо
+    zdRyadky = v.ryadky || [];
+    if (!zdRyadky.length) { box.hidden = false; box.innerHTML = `<p class="ds">На ${esc(isoDd(d))} ще нічого не записано — це буде новий запис.</p>`; return; }
+    box.hidden = false;
+    box.innerHTML = `<div class="dh"><b>На ${esc(isoDd(d))} уже записано</b></div><p class="ds">Натисніть, щоб відкрити й доповнити (підсумок, посилання). Інша подія цього дня — просто впишіть нову назву нижче.</p><ul>` +
+      zdRyadky.map((r, j) => { const x = r.dani || {}, dod = [x['Вид'], x['Місце']].filter(Boolean).join(' · ');
+        return `<li class="${r.zatverdzheno ? 'zt' : ''}" data-n="${esc(norm(x['Назва']))}"><div class="dt"><span>${esc(x['Назва'] || '—')}</span></div>${dod ? `<div class="dd">${esc(dod)}</div>` : ''}` +
+          (r.zatverdzheno ? '<span class="ztb">✓ затвердив виховник</span>' : r.khto ? `<div class="dd">записав(ла) ${esc(r.khto)}${r.koly ? ', ' + esc(r.koly) : ''}</div>` : '') +
+          `<div class="db"><button type="button" class="btn" data-j="${j}">${r.zatverdzheno ? 'Переглянути' : 'Відкрити й виправити'}</button><span class="zdv" hidden>✎ Відкрито — дані нижче у формі ↓</span></div></li>`; }).join('') + '</ul>';
+    zdPomitka();
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('#z-zd button[data-j]'); if (!b) return;
+    const r = zdRyadky[+b.dataset.j], i = idx('Назва'); if (!r || i < 0) return;
+    $('z-p' + i).value = (r.dani || {})['Назва'] || ''; perevirStan(); zdPomitka();
+    const st = $('z-stan'); setTimeout(() => (st && !st.hidden ? st : $('z-p' + i)).scrollIntoView({behavior: 'smooth', block: 'center'}), 350);
+  });
 
   function formaChysta() {
     let h = '';
@@ -1960,6 +1993,10 @@ window.Nazvy = (function () {
       if (blok) blok.insertAdjacentHTML('afterend', '<div class="den" id="z-den" hidden></div>' + (VNP >= 0 ? '<details class="vn" id="z-vn" hidden></details>' : ''));
       red = null; dupOk = '';
     }
+    if (K.zaDatoiu) {   // «На цю дату вже записано: …» — одразу під датою (25.11)
+      const df = $('z-p' + idx('Дата')), blok = df && (df.closest('.row2') || df.closest('.f'));
+      if (blok) blok.insertAdjacentHTML('afterend', '<div class="den zd" id="z-zd" hidden></div>');
+    }
     { const kf = KL.length && $('z-p' + idx(KL[KL.length - 1])); const blok = kf && (kf.closest('.row2') || kf.closest('.f')); if (blok) blok.after($('z-stan')); }
     K.polia.forEach((p, i) => { const el = $('z-p' + i); if (el && p.typ === 'date' && !p.pust) el.value = K.den && ostData ? ostData : den(); });
     $('z-khto').innerHTML = opts(imena.concat(['виховник']), '— виберіть —'); if (VYKH) $('z-khto').value = 'виховник';
@@ -1967,6 +2004,7 @@ window.Nazvy = (function () {
     zSt = null; zapovneno = false; $('z-stan').hidden = true; zamok(false); $('z-send').lastChild.textContent = 'Надіслати в книгу';
     if (kod) setTimeout(perevirStan, 0);
     if (kod && K.den) setTimeout(denZavantazhyty, 0);
+    if (kod && K.zaDatoiu) setTimeout(zdZavantazhyty, 0);
     if (kod && VNP >= 0) setTimeout(vnZavantazhyty, 0);
   }
   let nazadOk = false;
