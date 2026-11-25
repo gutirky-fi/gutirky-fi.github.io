@@ -247,13 +247,14 @@ button{cursor:pointer}
 .kpi small{display:block;margin-top:2px;font-size:11px;line-height:1.25;color:var(--pm)}
 .kpi div.ok{background:var(--okb)}.kpi div.ok b{color:var(--ok)}
 .tb{width:100%;border-collapse:collapse}
-.tb th,.tb td{border:1px solid var(--pl);padding:4px 6px;text-align:left;vertical-align:top;font-size:11.5px;overflow-wrap:anywhere}
+.tb th,.tb td{border:1px solid var(--pl);padding:4px 6px;text-align:left;vertical-align:top;font-size:11.5px;overflow-wrap:break-word}
 .tb thead th{background:var(--tint);font-size:10.5px;line-height:1.15;vertical-align:bottom}
 .tb thead{display:table-header-group}
 .tb tr{break-inside:avoid}
 .tb td.s,.tb th.s{text-align:right;white-space:nowrap}
 .tb td.c,.tb th.c{text-align:center}
 .tb td.m{color:var(--pm)}
+.tb td.m,.tb .nw{white-space:nowrap}.tb .w{min-width:120px}
 .tb tfoot td{font-weight:700;background:#f6f7f8}
 .tb .ok{color:var(--ok);font-weight:700}.tb .zh{color:var(--zh);font-weight:700}.tb .no{color:var(--acc);font-weight:700}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -1347,7 +1348,7 @@ window.Stan = (function () {
         skh.map(r => { const a = atD[r._d]; return [esc(dd(r._d)), esc(r['№']), `<b>${esc(r['Тема'])}</b>`, esc(r['Гутірка / гра з бібліотеки']), esc(r['Проба / вмілість (якщо стосується)']),
           a ? esc(a['Присутні']) + ' з ' + (num(a['Присутні']) + num(a['Відсутні'])) : esc(r['Присутніх'])]; }), ['m', 'c', 0, 0, 0, 'c']) || porozh('Сходин за цей період у книзі немає.')}
       <h4>Мандрівки й заходи</h4>
-      ${tabl(['Дата', 'Назва', 'Вид', 'Місце', 'Учасників', 'Підсумок'], md.map(r => [esc(dd(r._d)), `<b>${esc(r['Назва'])}</b>`, esc(r['Вид']), esc(r['Місце']), esc(r['Учасників']), esc(r['Підсумок'])]), ['m', 0, 0, 0, 'c', 0]) || porozh('Мандрівок і заходів за цей період не записано.')}
+      ${tabl(['Дата', 'Назва', 'Вид', 'Місце', 'Учасників', 'Підсумок'], md.map(r => [esc(dd(r._d)), `<b>${esc(r['Назва'])}</b>`, esc(r['Вид']), esc(r['Місце']), esc(r['Учасників']), esc(r['Підсумок'])]), ['m', 'w', 'nw', 'nw', 'c nw', 0]) || porozh('Мандрівок і заходів за цей період не записано.')}
       <h4>Здобуто й вручено</h4>
       ${zdobuto.length ? `<ol class="khr">${zdobuto.map(x => `<li><span>${dd(x.d)}</span><div>${x.s}</div></li>`).join('')}</ol>` : porozh('За цей період нічого не здобуто й не вручено.')}
       <h4>Гурткова рада й рішення</h4>
