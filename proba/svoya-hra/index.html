@@ -2136,5 +2136,6 @@ paintLobby(); paintTop(); startNet();
 window.SVOYA = { vkey: () => vkey, state: () => ({ phase, mode, chooser, veds: veds.size, code, teams: teams.map(t => ({ n: t.n, s: t.s })), cur: cur && { c: cur.c, r: cur.r, buzz: cur.buzz.slice(), done: cur.done }, players: [...players.values()].map(P => ({ name: P.name, team: P.team, on: P.on })) }) };
 })();
 </script>
+<script>/* обвідка фокуса — лише коли справді ходять клавішею Tab; після мишки/пальця не світиться (25.11) */(function(){var d=document.documentElement,s=document.createElement("style");s.textContent="html:not(.kbd) :focus-visible{outline:none!important}";document.head.appendChild(s);addEventListener("keydown",function(e){if(e.key==="Tab")d.classList.add("kbd")},true);addEventListener("pointerdown",function(){d.classList.remove("kbd")},true)})();</script>
 </body>
 </html>
