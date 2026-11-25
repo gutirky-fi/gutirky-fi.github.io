@@ -223,7 +223,7 @@ a.tile{text-decoration:none}
 .tile .ti svg{width:22px;height:22px}
 .tile b{font:600 21px/1.1 var(--disp);letter-spacing:.05em;text-transform:uppercase}
 .tile span{font-size:15px;color:var(--mut)}
-.tile.main{grid-column:span 2;border-top:5px solid var(--d)}
+.tile.main{grid-column:span 2;border-top:5px solid var(--s-vyh,#3daf6e)}.tile.main.yu{border-top-color:var(--s-upyu,#c8284a)}
 .tile.main b{font-size:26px;color:var(--ok-t)}
 .tile[disabled]{cursor:default;opacity:.62}
 .tile i{margin-top:auto;align-self:flex-start;font-style:normal;font-size:14px;font-weight:600;padding:1px 9px;border-radius:var(--s-r-pil,99px);border:1px solid var(--ln);color:var(--mut)}
@@ -404,6 +404,7 @@ a.tile{text-decoration:none}
 .tile em.ved{margin-top:auto;font-style:normal;font-size:14px;font-weight:600;line-height:1.3}
 .tile.yu em.ved{color:var(--s-upyu-t,#ff7d99)}.tile.vy em.ved{color:var(--s-vyh-t,#62cf93)}
 .tile.chekaie{border-top-color:rgba(217,166,64,.75);border-right-color:rgba(217,166,64,.75);border-bottom-color:rgba(217,166,64,.75)}.tile .ved{order:1}.tile i.chek{order:2;margin-top:6px}.tile i.chek{border-color:rgba(217,166,64,.75);background:rgba(217,166,64,.14);color:#f0c060;font-size:15px}
+.hub-sub{margin:30px 0 12px;font:600 21px/1.2 var(--disp);letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
 .vlegenda{display:flex;flex-wrap:wrap;gap:6px 18px;margin:0 0 14px;font-size:14px;color:var(--mut)}.vlegenda[hidden]{display:none}
 .vlegenda i{display:inline-block;width:5px;height:16px;margin-right:8px;vertical-align:-3px;border-radius:2px}.vlegenda .lv i{background:var(--s-vyh,#3daf6e)}.vlegenda .lu i{background:var(--s-upyu,#c8284a)}
 .vkh{margin:0 0 16px;padding:14px 16px;border-radius:var(--s-r,12px);background:rgba(61,175,110,.1);border:1px solid rgba(61,175,110,.45);color:var(--body);font-size:15.5px;line-height:1.45}.vkh b{color:var(--ink)}.vkh a{color:var(--ok-t);font-weight:700}
@@ -489,7 +490,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <form class="card lock" id="z-lock" autocomplete="off">
       <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
       <h2>Код виховника</h2>
-      <p class="note" style="margin-bottom:16px">Ваш особистий код — не той, що в юнаків. Сторінка не зберігає ні коду, ні записів.</p>
+      <p class="note" style="margin-bottom:10px"><b>Код виховника до книги гуртка — 6 цифр.</b> Це не той код (4 цифри), що на головній сторінці сайту, і не той, що в юнаків. Сторінка не зберігає ні коду, ні записів.</p>
       <div class="nolink" id="z-noaddr" hidden>
         <h3>Ще немає вашого посилання?</h3>
         <p>Записувати можна лише з <b>особистого посилання (QR) вашого гуртка</b> — у ньому адреса книги гуртка. Його дає той, хто завів книгу.</p>
@@ -497,7 +498,7 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
         <a class="btn main" href="?demo">Спробувати на прикладі <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
       </div>
       <p class="err" id="z-err" hidden></p>
-      <label class="f"><span>Код виховника</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • •"></label>
+      <label class="f"><span>Код виховника до книги</span><input class="in codein" id="z-kod" type="password" autocomplete="off" maxlength="40" placeholder="• • • • • •"></label>
       <button class="btn main" type="submit" id="z-in" style="width:100%">Увійти</button>
     </form>
     <aside class="side">
@@ -515,11 +516,18 @@ textarea.in{resize:vertical;font:inherit;line-height:1.4}
     <div class="tiles">
       <button class="tile main" type="button" id="go-ps" data-ved="гуртковий,заступник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4M8 14l2.5 2.5L16 12"/></svg></span><b>Після сходин</b><span>Тема й програма, хто був, хто заплатив внесок. Одне «Надіслати» — і сходини, відвідуваність і каса записані.</span></button>
       <button class="tile" type="button" id="go-pp" data-ved="впорядник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="4"/><path d="M1.5 21a6.5 6.5 0 0 1 13 0"/><path d="M17 9h5.5M20 6.5L22.5 9 20 11.5M22.5 16H17M19.5 13.5L17 16l2.5 2.5"/></svg></span><b>Прийшов, перейшов, пішов</b><span>Запис про людину: новий, з новацтва, з іншого гуртка, повернувся, йде від нас, особливий випадок. Навіщо: щоб список і історія юнака в книзі були точні.</span></button>
-      <button class="tile" type="button" disabled><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проба чи вмілість</b><span>Хто, що виконав, коли.</span><i>готується</i></button>
+      <a class="tile" href="../proby/?v" data-vkod data-ved="заступник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg></span><b>Проби</b><span>Хто склав пробу чи її точку і коли.</span></a>
+      <a class="tile" href="../vmilosti/?v" data-vkod data-ved="заступник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span><b>Вмілості</b><span>Хто здобув вмілість і коли.</span></a>
+      <a class="tile" href="../vidznachky/?v" data-vkod data-ved="заступник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/></svg></span><b>Відзначки</b><span>Хто отримав відзначку чи нашивку.</span></a>
+      <a class="tile" href="../mandrivky/?v" data-vkod data-ved="хронікар"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg></span><b>Мандрівки й заходи</b><span>Мандрівка, табір, свято, акція: коли, де, скільки було, підсумок.</span></a>
+      <a class="tile" href="../plan/?v" data-vkod data-ved="гуртковий"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><b>План праці</b><span>Що плануємо на сходини й наперед.</span></a>
+      <a class="tile" href="../zavdannia/?v" data-vkod data-ved="гуртковий"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/></svg></span><b>Завдання</b><span>Хто що має зробити й до коли.</span></a>
       <button class="tile" type="button" id="go-gm" data-ved="скарбник,господар"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/></svg></span><b>Гроші й майно</b><span>Купили, витратили, хтось узяв намет: каса й майно гуртка.</span></button>
-      <a class="tile" href="../zvity/" data-ved="vlasne" data-ved-t="Дивитесь ви — книга рахує сама"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
-      <button class="tile" type="button" id="go-nv" data-ved="vlasne" data-ved-t="Перевіряєте ви: що записали юнаки"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
       <button class="tile" type="button" id="go-kp" data-ved="скарбник" data-ved-yak="kontrol"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.5"/><path d="M6 6V4h12v2"/><path d="M16 16l2 2 4-4" /></svg></span><b>Перевірка каси</b><span>Ви — «другі очі»: звіряєте записані платежі з банком і коробкою. Без вашого ✓ внесок не вважається сплаченим.</span></button>
+      <a class="tile" href="../zamovlennia/?v" data-vkod data-ved="скарбник"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4z"/><path d="M3 7v10l9 4 9-4V7M12 11v10"/></svg></span><b>Замовлення нашивок</b><span>Що замовити для гуртка й що вже прийшло.</span></a>
+      <a class="tile" href="../protokol/?v" data-vkod data-ved="писар"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg></span><b>Протоколи</b><span>Рішення Гурткової ради й сходин: питання, голосування, ваша згода.</span></a>
+      <button class="tile" type="button" id="go-nv" data-ved="vlasne" data-ved-t="Перевіряєте ви: що записали юнаки"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><b>Що вже записали діловоди</b><span>Записи, які юнаки зробили самі з телефона. Навіщо: переглянути й затвердити — тоді запис стає остаточним.</span></button>
+      <a class="tile" href="../zvity/" data-ved="vlasne" data-ved-t="Дивитесь ви — книга рахує сама"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><b>Звіти</b><span>Звіт гуртка, фінансовий, присутність, рік за роком, картка учасника — для друку чи PDF.</span></a>
     </div>
     <div class="rare" id="hub-rare"><div class="rt"><b>Раз на гурток</b><span>Не щодня: ви вперше берете гурток чи віддаєте свій, або Гурткова рада обрала нові посади.</span></div><div class="rb"><button class="btn" type="button" id="go-hg-beru">Беру гурток</button><button class="btn" type="button" id="go-hg-peredaiu">Передаю гурток</button><button class="btn" type="button" id="go-zp">Змінити посади</button></div></div>
   </section>
@@ -1300,7 +1308,7 @@ window.Tochky = (function () {
     try {
       const v = await zapyt({kod, dija: 'novi'}); if (!v || !v.ok) return;
       const n = v.chekaiut || 0, o = v.vidkryto || 0, ch = [];
-      if (n) ch.push('чекає вашого ✓: ' + n); if (o) ch.push('особливих випадків: ' + o);
+      if (n) ch.push('чекає ✓: ' + n); if (o) ch.push('особливих: ' + o);
       if (!ch.length) return;
       const e = document.createElement('i'); e.className = 'chek'; e.textContent = ch.join(' · '); t.appendChild(e); t.classList.add('chekaie');
     } catch (x) {}
