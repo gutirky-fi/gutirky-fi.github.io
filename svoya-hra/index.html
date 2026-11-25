@@ -1863,7 +1863,8 @@ function readEd() {
 
 /* ---------- кнопки ---------- */
 $('#teams').addEventListener('input', e => { const i = e.target.dataset.t; if (i != null) { teams[+i].n = e.target.value.trim() || 'Команда ' + (+i + 1); bcast(); } });
-$('#teams').addEventListener('focusout', () => setTimeout(paintLobby, 0));
+$('#teams').addEventListener('focusout', () => { /* назву команди дописали: перемальовуємо лише після кліку, інакше кнопка під мишкою зникає і клік губиться */ if (window.__ptrDown) addEventListener('pointerup', () => setTimeout(paintLobby, 0), { once: true }); else setTimeout(paintLobby, 0); });
+addEventListener('pointerdown', () => { window.__ptrDown = true; }, true); addEventListener('pointerup', () => { window.__ptrDown = false; }, true);
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.mode) { setMode(b.dataset.mode); return; }
